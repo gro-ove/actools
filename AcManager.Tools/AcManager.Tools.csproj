@@ -116,6 +116,7 @@
     <Compile Include="Filters\UniqueAcObjectTester.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Helpers\Api\KunosApiProvider_Consts.cs" />
     <Compile Include="Managers\Online\LanManager.cs" />
     <Compile Include="Managers\Online\OnlineManagerType.cs" />
     <Compile Include="Managers\Online\RecentManager.cs" />
