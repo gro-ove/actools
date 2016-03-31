@@ -45,6 +45,8 @@ namespace AcTools.Utils {
             using (var image = new MagickImage(source)) {
                 if (resize) {
                     var k = Math.Max((double)ApplyPreviewsHeight / image.Height, (double)ApplyPreviewsWidth / image.Width);
+                    image.Interpolate = PixelInterpolateMethod.Bicubic;
+                    image.FilterType = FilterType.Mitchell;
                     image.Resize((int)(k * image.Width), (int)(k * image.Height));
                     image.Crop(ApplyPreviewsWidth, ApplyPreviewsHeight, Gravity.Center);
                 }

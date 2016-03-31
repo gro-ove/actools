@@ -24,7 +24,21 @@ Note should be marked as read after about two seconds of being open."),
 
 Also, if your AC version is able to start the game directly without any tricks (only by launching [i]acs.exe[/i]), [b]Naive Starter[/b] was added.
 
-And, of course, couple of beta-related changes: special option, which allows to upgrade only to tested versions (enabled by default) and button for automatically sending logs (please, use it in case of crashes).")
+And, of course, couple of beta-related changes: special option, which allows to upgrade only to tested versions (enabled by default) and button for automatically sending logs (please, use it in case of crashes)."),
+
+            new ReleaseNotes("0.4.79", @"Assetto Corsa 1.5", @"Auto-update Previews part was updated and fixed to match new previews. Feel free to delete “Studio Black Showroom (AT Previews Special)” showroom.
+
+Only problem is that new Kunos showroom isn't quite match their previews, as you can see here:
+
+ • [b]Original:[/b]
+
+ [img=""http://i.imgur.com/lhyuFFy.jpg|320""]Nothing at the side[/img]
+
+ • [b]Generated:[/b]
+
+ [img=""http://i.imgur.com/rppyiAG.jpg|320""]Weird reflection at the side[/img]
+
+If Kunos [url=""http://www.assettocorsa.net/forum/index.php?threads/custom-camera-position-in-showroom.26796/page-2#post-658117""]will respond[/url], I'll fix it.")
         };
     }
 }

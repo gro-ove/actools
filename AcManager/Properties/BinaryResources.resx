@@ -127,16 +127,10 @@
   <data name="AssistsPro" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\assets\data\assistspro.cmpreset;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="PpFilterAtPreviewsSpecial14" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\assets\data\at-previews special.ini;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="PpFilterAtPreviewsSpecial15" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="PpFilterAtPreviewsSpecial" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\assets\data\at-previews special (1.5).ini;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="PresetPreviewsKunos14" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\assets\data\kunos.cmpreset;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="PresetPreviewsKunos15" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="PresetPreviewsKunos" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\assets\data\kunos (1.5).cmpreset;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ShowroomPanoramaTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">

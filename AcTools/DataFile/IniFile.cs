@@ -147,11 +147,20 @@ namespace AcTools.DataFile {
             base[key] = value.Value.ToString();
         }
 
-        public void Set(string key, double value, string format = "F") {
+        public void Set(string key, double value) {
+            base[key] = value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public void Set(string key, double? value) {
+            if (!value.HasValue) return;
+            base[key] = value.Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public void Set(string key, double value, string format) {
             base[key] = value.ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, double? value, string format = "F") {
+        public void Set(string key, double? value, string format) {
             if (!value.HasValue) return;
             base[key] = value.Value.ToString(format, CultureInfo.InvariantCulture);
         }
@@ -248,8 +257,9 @@ namespace AcTools.DataFile {
         }
 
         public override string Stringify() {
-            return Content.SelectMany(x => new[] { "[" + x.Key + "]" }.Union(x.Value.Select(y => y.Key + "=" + y.Value)))
-                    .JoinToString("\n");
+            return Content.Select(x => (from pair in x.Value
+                                        select pair.Key + "=" + pair.Value
+                    ).Prepend("[" + x.Key + "]").JoinToString("\n")).JoinToString("\n\n");
         }
 
         public override string ToString() {

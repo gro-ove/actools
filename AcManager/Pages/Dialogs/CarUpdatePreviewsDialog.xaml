@@ -43,7 +43,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <CheckBox Grid.Row="2" IsChecked="{Binding DisableWatermark}" Margin="10 0 0 0"
+                    <CheckBox Grid.Row="0" IsChecked="{Binding DisableWatermark}" Margin="10 0 0 0"
                             ToolTip="Kunos watermark will be temporary hidden">
                         <Label>Hide _watermark</Label>
                     </CheckBox>
@@ -80,11 +80,11 @@
                     <TextBox Margin="5 0 5 0" Text="{Binding CameraFov}" mui:TextBoxAdvancement.SpecialMode="Number" />
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="2" Grid.Column="1">
+                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="3" Grid.Column="1">
                     <Grid Margin="0 0 0 5">
                         <TextBlock Text="Exposure:" Style="{StaticResource LabelWithPadding}" />
                     </Grid>
-                    <TextBox Margin="5 0 5 0" Text="{Binding CameraExposure, TargetNullValue='0'}" mui:TextBoxAdvancement.SpecialMode="Number" 
+                    <TextBox Margin="5 0 5 0" Text="{Binding CameraExposure}" mui:TextBoxAdvancement.SpecialMode="Number" 
                              watermark:WatermarkService.Watermark="?" />
                 </StackPanel>
             </Grid>

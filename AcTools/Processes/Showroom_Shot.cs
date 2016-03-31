@@ -23,6 +23,7 @@ namespace AcTools.Processes {
             public double FixedCameraFov, FixedCameraExposure;
 
             public string Filter;
+            public bool? Fxaa;
 
             public bool UseBmp = true,
                         DisableWatermark = true,
@@ -68,6 +69,7 @@ namespace AcTools.Processes {
             shooter.DisableWatermark = properties.DisableWatermark;
             shooter.DisableSweetFx = properties.DisableSweetFx;
             shooter.Filter = properties.Filter;
+            shooter.Fxaa = properties.Fxaa;
 
             return shooter;
         }

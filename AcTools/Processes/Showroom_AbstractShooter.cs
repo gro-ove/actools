@@ -14,6 +14,7 @@ namespace AcTools.Processes {
             public string[] SkinIds;
             public string Filter, TemporaryDirectory;
             public bool UseBmp, DisableWatermark, DisableSweetFx;
+            public bool? Fxaa;
 
             private bool _prepared;
 
@@ -45,6 +46,10 @@ namespace AcTools.Processes {
 
                 if (Filter != null) {
                     _changes.Add(new PpFilterChange(Filter));
+                }
+
+                if (Fxaa.HasValue) {
+                    _changes.Add(new FxaaChange(Fxaa.Value));
                 }
 
                 if (TemporaryDirectory == null) {

@@ -572,12 +572,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <Resource Include="Assets\Data\AT-Previews Special.ini" />
     <None Include="Assets\Data\AssistsGamer.cmpreset" />
     <None Include="Assets\Data\AssistsIntermediate.cmpreset" />
     <None Include="Assets\Data\AT-Previews Special %281.5%29.ini" />
     <None Include="Assets\Data\Kunos %281.5%29.cmpreset" />
-    <None Include="Assets\Data\Kunos.cmpreset" />
     <None Include="Assets\Data\AssistsPro.cmpreset" />
     <None Include="Assets\Data\ShowroomPanoramaTemplate.zip" />
     <None Include="Assets\Data\ShowroomPreviewSphere.zip" />

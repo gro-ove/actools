@@ -65,6 +65,6 @@
     <Grid d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}">
         <Image RenderOptions.BitmapScalingMode="HighQuality" Stretch="UniformToFill"
                 Source="{Binding CurrentImage, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter=oneTrueDpi}" StretchDirection="DownOnly"
-                MaxWidth="{Binding MaxImageWidth}" MaxHeight="{Binding MaxImageHeight}"/>
+                MaxWidth="{Binding MaxImageWidth}" MaxHeight="{Binding MaxImageHeight}" />
     </Grid>
 </mui:ModernDialog>

@@ -93,9 +93,9 @@ namespace AcManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] PpFilterAtPreviewsSpecial14 {
+        internal static byte[] PpFilterAtPreviewsSpecial {
             get {
-                object obj = ResourceManager.GetObject("PpFilterAtPreviewsSpecial14", resourceCulture);
+                object obj = ResourceManager.GetObject("PpFilterAtPreviewsSpecial", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -103,29 +103,9 @@ namespace AcManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] PpFilterAtPreviewsSpecial15 {
+        internal static byte[] PresetPreviewsKunos {
             get {
-                object obj = ResourceManager.GetObject("PpFilterAtPreviewsSpecial15", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] PresetPreviewsKunos14 {
-            get {
-                object obj = ResourceManager.GetObject("PresetPreviewsKunos14", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] PresetPreviewsKunos15 {
-            get {
-                object obj = ResourceManager.GetObject("PresetPreviewsKunos15", resourceCulture);
+                object obj = ResourceManager.GetObject("PresetPreviewsKunos", resourceCulture);
                 return ((byte[])(obj));
             }
         }

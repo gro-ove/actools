@@ -187,8 +187,7 @@ namespace AcManager {
 
         private static void InitializePresets() {
             PresetsManager.Initialize(FilesStorage.Instance.GetDirectory("Presets"));
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos14, "Previews", "Kunos");
-            // PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos15, "Previews", "Kunos");
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos, "Previews", "Kunos");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, "Assists", "Gamer");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, "Assists", "Intermediate");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, "Assists", "Pro");

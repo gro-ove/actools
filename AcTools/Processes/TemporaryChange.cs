@@ -8,6 +8,24 @@ namespace AcTools.Processes {
     internal interface ITemporaryChange : IDisposable {
     }
 
+    internal class FxaaChange : ITemporaryChange {
+        private readonly string _videoCfgFile, _originalFxao;
+
+        public FxaaChange(bool value) {
+            _videoCfgFile = FileUtils.GetCfgVideoFilename();
+            var iniFile = new IniFile(_videoCfgFile);
+            _originalFxao = iniFile["EFFECTS"].Get("FXAA");
+            iniFile["EFFECTS"].Set("FXAA", value);
+            iniFile.Save();
+        }
+
+        public void Dispose() {
+            var iniFile = new IniFile(_videoCfgFile);
+            iniFile["EFFECTS"].Set("FXAA", _originalFxao);
+            iniFile.Save();
+        }
+    }
+
     internal class PpFilterChange : ITemporaryChange {
         private readonly string _videoCfgFile, _originalFilter;
 

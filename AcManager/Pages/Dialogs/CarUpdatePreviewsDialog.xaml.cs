@@ -25,7 +25,6 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarUpdatePreviewsDialog : INotifyPropertyChanged, IProgress<Showroom.ShootingProgress>, IUserPresetable {
@@ -103,9 +102,9 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private double _cameraExposure;
+        private double? _cameraExposure;
 
-        public double CameraExposure {
+        public double? CameraExposure {
             get { return _cameraExposure; }
             set {
                 if (Equals(value, _cameraExposure)) return;
@@ -153,9 +152,10 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public BuiltInPpFilter PreviewsPpFilter14 { get; }
-
-        public BuiltInPpFilter PreviewsPpFilter15 { get; }
+        public BuiltInPpFilter DefaultPpFilter { get; } = new BuiltInPpFilter {
+            Filename = "AT-Previews Special.ini",
+            Content = Properties.BinaryResources.PpFilterAtPreviewsSpecial
+        };
 
         public class BuiltInPpFilter : NotifyPropertyChanged {
             public string Filename;
@@ -185,11 +185,9 @@ namespace AcManager.Pages.Dialogs {
         public IList Filters {
             get {
                 PpFiltersManager.Instance.EnsureLoaded();
-                return _filters ?? (_filters = new ObservableCollection<INotifyPropertyChanged>(new INotifyPropertyChanged[] {
-                    PreviewsPpFilter14
-                }.Concat(
-                    PpFiltersManager.Instance.LoadedOnly.Where(x => x.Id != PreviewsPpFilter14.Id)
-                )));
+                return _filters ?? (_filters = new ObservableCollection<INotifyPropertyChanged>(
+                        PpFiltersManager.Instance.LoadedOnly.Where(x => DefaultPpFilter.Id != x.Id)
+                                        .Cast<INotifyPropertyChanged>().Prepend(DefaultPpFilter)));
             }
         }
         #endregion
@@ -247,7 +245,8 @@ namespace AcManager.Pages.Dialogs {
         private class SaveableData {
             public string ShowroomId, FilterId;
             public string CameraPosition, CameraLookAt;
-            public double CameraFov, CameraExposure;
+            public double CameraFov;
+            public double? CameraExposure;
             public bool DisableSweetFx, DisableWatermark, ResizePreviews;
         }
 
@@ -307,16 +306,6 @@ namespace AcManager.Pages.Dialogs {
         private readonly string[] _skinIds;
 
         public CarUpdatePreviewsDialog(CarObject carObject, string[] skinIds, DialogMode mode, string loadPreset = null) {
-            PreviewsPpFilter14 = new BuiltInPpFilter {
-                Filename = "AT-Previews Special.ini",
-                Content = Properties.BinaryResources.PpFilterAtPreviewsSpecial14
-            };
-
-            PreviewsPpFilter15 = new BuiltInPpFilter {
-                Filename = "AT-Previews Special (1.5).ini",
-                Content = Properties.BinaryResources.PpFilterAtPreviewsSpecial14
-            };
-
             SelectedCar = carObject;
             _skinIds = skinIds;
             _mode = mode;
@@ -356,17 +345,17 @@ namespace AcManager.Pages.Dialogs {
                 CameraPosition = o.CameraPosition;
                 CameraLookAt = o.CameraLookAt;
                 CameraFov = o.CameraFov;
-                CameraExposure = o.CameraExposure;
+                CameraExposure = o.CameraExposure == 0 ? null : o.CameraExposure;
                 DisableWatermark = o.DisableWatermark;
                 DisableSweetFx = o.DisableSweetFx;
                 ResizePreviews = o.ResizePreviews;
             }, () => {
                 SelectedShowroom = null;
-                SelectedFilter = PreviewsPpFilter14;
-                CameraPosition = "-2.461, 0.836, 5.08";
-                CameraLookAt = "0.497, 0.853, 0";
+                SelectedFilter = DefaultPpFilter;
+                CameraPosition = "-3.867643, 1.423590, 4.70381";
+                CameraLookAt = "0.0, 0.7, 0.5";
                 CameraFov = 30;
-                CameraExposure = 0;
+                CameraExposure = 94.5;
                 DisableWatermark = true;
                 DisableSweetFx = true;
                 ResizePreviews = true;
@@ -436,7 +425,7 @@ namespace AcManager.Pages.Dialogs {
             if (CurrentPhase == Phase.Waiting) {
                 _cancellationTokenSource.Cancel(false);
             } else if (CurrentPhase == Phase.Result && IsResultOk) {
-                ImageUtils.ApplyPreviews(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, true);
+                ImageUtils.ApplyPreviews(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews);
             }
         }
 
@@ -552,7 +541,7 @@ namespace AcManager.Pages.Dialogs {
                 var builtInPpFilter = SelectedFilter as BuiltInPpFilter;
                 if (builtInPpFilter != null) {
                     builtInPpFilter.EnsureInstalled();
-                    filterId = builtInPpFilter.Id;
+                    filterId = builtInPpFilter.Name;
                 } else {
                     var filterObject = SelectedFilter as PpFilterObject;
                     filterId = filterObject?.Name;
@@ -565,6 +554,7 @@ namespace AcManager.Pages.Dialogs {
                     ShowroomId = SelectedShowroom.Id,
                     SkinIds = _skinIds,
                     Filter = filterId,
+                    Fxaa = null, // ResizePreviews ? false : (bool?)null,
                     Mode = manualMode ? Showroom.ShotMode.ClassicManual : Showroom.ShotMode.Fixed,
                     UseBmp = true,
                     DisableWatermark = DisableWatermark,
@@ -575,7 +565,7 @@ namespace AcManager.Pages.Dialogs {
                     FixedCameraPosition = CameraPosition,
                     FixedCameraLookAt = CameraLookAt,
                     FixedCameraFov = CameraFov,
-                    FixedCameraExposure = CameraExposure,
+                    FixedCameraExposure = CameraExposure ?? 0d,
                 }, this, _cancellationTokenSource.Token);
                 TakenTime = DateTime.Now - begin;
 
@@ -630,12 +620,10 @@ namespace AcManager.Pages.Dialogs {
 
         private void ImageViewer(bool showUpdated) {
             var current = (ResultPreviewComparison)ResultPreviewComparisonsView.CurrentItem;
-            new ImageViewer(new[] { current.OriginalImage, current.UpdatedImage }, showUpdated ? 1 : 0) {
-                Model = {
-                    MaxImageWidth = 1024,
-                    MaxImageHeight = 575
-                }
-            }.ShowDialog();
+            var viewer = new ImageViewer(new[] { current.OriginalImage, current.UpdatedImage }, showUpdated ? 1 : 0);
+            viewer.Model.MaxImageWidth = 1024;
+            viewer.Model.MaxImageHeight = 575;
+            viewer.ShowDialog();
         }
 
         private void OriginalPreview_OnMouseDown(object sender, MouseButtonEventArgs e) {

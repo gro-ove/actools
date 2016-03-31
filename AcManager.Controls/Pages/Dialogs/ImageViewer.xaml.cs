@@ -81,9 +81,23 @@ namespace AcManager.Controls.Pages.Dialogs {
                 }
             }
 
-            public double MaxImageWidth { get; set; } = double.PositiveInfinity;
+            public double MaxImageWidth {
+                get { return _maxImageWidth; }
+                set {
+                    if (value.Equals(_maxImageWidth)) return;
+                    _maxImageWidth = value;
+                    OnPropertyChanged();
+                }
+            }
 
-            public double MaxImageHeight { get; set; } = double.PositiveInfinity;
+            public double MaxImageHeight {
+                get { return _maxImageHeight; }
+                set {
+                    if (value.Equals(_maxImageHeight)) return;
+                    _maxImageHeight = value;
+                    OnPropertyChanged();
+                }
+            }
 
             public string CurrentImage => _images[_currentPosition];
 
@@ -112,6 +126,8 @@ namespace AcManager.Controls.Pages.Dialogs {
             }, o => CurrentPosition > 0));
 
             private RelayCommand _nextCommand;
+            private double _maxImageWidth = double.NaN;
+            private double _maxImageHeight = double.NaN;
 
             public RelayCommand NextCommand => _nextCommand ?? (_nextCommand = new RelayCommand(o => {
                 CurrentPosition++;
