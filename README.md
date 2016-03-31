@@ -1,6 +1,6 @@
 # AcTools Utils
 
-Set of utils and apps designed for Assetto Corsa.
+Set of utils and apps designed for Assetto Corsa. If you have any interest in them, please, let me know.
 
 ## Common libraries
 
