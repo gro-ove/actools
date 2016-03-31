@@ -1,0 +1,139 @@
+﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarUpdatePreviewsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
+        xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="{Binding SelectedCar.DisplayName, StringFormat='Update previews for \{0\}'}" MinWidth="540" MinHeight="400" Width="540" Height="400"
+        ResizeMode="CanResize" MaxWidth="1920" MaxHeight="1080" Closing="CarUpdatePreviewsDialog_OnClosing" SizeToContent="Manual"
+        Loaded="CarUpdatePreviewsDialog_OnLoaded" d:DataContext="{d:DesignInstance dialogs:CarUpdatePreviewsDialog}">
+    <Grid>
+        <Grid Name="OptionsPhase" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="0" Grid.Column="0">
+                    <Grid Margin="0 0 0 5">
+                        <TextBlock Text="Showroom:" Style="{StaticResource LabelWithPadding}" />
+                    </Grid>
+                    <ComboBox Margin="5 0 5 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="1" Grid.Column="0">
+                    <Grid Margin="0 0 0 5">
+                        <TextBlock Text="Filter:" Style="{StaticResource LabelWithPadding}" />
+                    </Grid>
+                    <ComboBox Margin="5 0 5 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
+                </StackPanel>
+
+                <Grid Grid.Row="2" Grid.Column="0" Grid.RowSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <CheckBox Grid.Row="2" IsChecked="{Binding DisableWatermark}" Margin="10 0 0 0"
+                            ToolTip="Kunos watermark will be temporary hidden">
+                        <Label>Hide _watermark</Label>
+                    </CheckBox>
+
+                    <CheckBox Grid.Row="1" IsChecked="{Binding DisableSweetFx}" Margin="10 0 0 0"
+                            ToolTip="Apparantly SweetFx doesn't affect the result, but could decrease loading time">
+                        <Label>Disable _SweetFX</Label>
+                    </CheckBox>
+
+                    <CheckBox Grid.Row="2" IsChecked="{Binding ResizePreviews}" Margin="10 0 0 0"
+                            ToolTip="Resize previews to Kunos size (1024x575), highly recommended">
+                        <Label>_Resize previews</Label>
+                    </CheckBox>
+                </Grid>
+
+                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="0" Grid.Column="1">
+                    <Grid Margin="0 0 0 5">
+                        <TextBlock Text="Camera Position:" Style="{StaticResource LabelWithPadding}" />
+                    </Grid>
+                    <TextBox Margin="5 0 5 0" Text="{Binding CameraPosition}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="1" Grid.Column="1">
+                    <Grid Margin="0 0 0 5">
+                        <TextBlock Text="Look At:" Style="{StaticResource LabelWithPadding}" />
+                    </Grid>
+                    <TextBox Margin="5 0 5 0" Text="{Binding CameraLookAt}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="2" Grid.Column="1">
+                    <Grid Margin="0 0 0 5">
+                        <TextBlock Text="FOV:" Style="{StaticResource LabelWithPadding}" />
+                    </Grid>
+                    <TextBox Margin="5 0 5 0" Text="{Binding CameraFov}" mui:TextBoxAdvancement.SpecialMode="Number" />
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="2" Grid.Column="1">
+                    <Grid Margin="0 0 0 5">
+                        <TextBlock Text="Exposure:" Style="{StaticResource LabelWithPadding}" />
+                    </Grid>
+                    <TextBox Margin="5 0 5 0" Text="{Binding CameraExposure, TargetNullValue='0'}" mui:TextBoxAdvancement.SpecialMode="Number" 
+                             watermark:WatermarkService.Watermark="?" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <StackPanel Name="WaitingPhase" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+            <mui:ModernProgressRing Margin="10" IsActive="True" Width="80" Height="80" />
+            <TextBlock Text="{Binding Status}" />
+        </StackPanel>
+        <StackPanel Name="ResultPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
+            <ListBox ItemsSource="{Binding ResultPreviewComparisonsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="4"
+                    IsSynchronizedWithCurrentItem="True" MaxHeight="76">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type objects:CarSkinObject}">
+                        <Image RenderOptions.BitmapScalingMode="LowQuality"
+                                Source="{Binding LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="32" Height="32"
+                                ToolTip="{Binding DisplayName}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Grid DataContext="{Binding ResultPreviewComparisonsView.CurrentItem}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="9" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Image Source="{Binding OriginalImage, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
+                        RenderOptions.BitmapScalingMode="HighQuality" Margin="0" MouseDown="OriginalPreview_OnMouseDown" />
+
+                <Image Source="{Binding UpdatedImage, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
+                        RenderOptions.BitmapScalingMode="HighQuality" Margin="0" Grid.Column="2" MouseDown="UpdatedPreview_OnMouseDown" />
+            </Grid>
+
+            <TextBlock Text="{Binding TakenTime, StringFormat='Taken time: \{0:mm\\:ss\}'}" Margin="0 10 0 0" Style="{StaticResource Small}" />
+        </StackPanel>
+        <StackPanel Name="ErrorPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
+            <TextBlock Text="Error" Style="{StaticResource Heading1}" />
+            <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="20" />
+        </StackPanel>
+    </Grid>
+
+    <mui:ModernDialog.ButtonsRowContent>
+        <controls:UserPresetsControl Name="UserPresetsControl" UserPresetable="{Binding}"
+                Visibility="{Binding CurrentPhase, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static dialogs:CarUpdatePreviewsDialog+Phase.Options}}" />
+    </mui:ModernDialog.ButtonsRowContent>
+</mui:ModernDialog>

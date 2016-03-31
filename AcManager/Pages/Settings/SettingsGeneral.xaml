@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsGeneral" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsGeneral+GeneralViewModel}">
+    <UserControl.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+    </UserControl.Resources>
+    <ScrollViewer>
+        <StackPanel Style="{StaticResource SettingsPanel}">
+            <DockPanel>
+                <Label>Assetto Corsa folder:</Label>
+                <Button Command="{Binding ChangeAcRootCommand}">Change</Button>
+                <TextBlock Text="{Binding AcRootDirectoryValue}" />
+            </DockPanel>
+
+            <!--versions-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Auto Updates:</TextBlock>
+
+            <DockPanel>
+                <Label>Check for updates:</Label>
+                <ComboBox ItemsSource="{Binding CommonSettings.Periods}" SelectedItem="{Binding CommonSettings.UpdatePeriod}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <!--app version-->
+            <DockPanel>
+                <Label>App version:</Label>
+                <Button Command="{Binding AppUpdater.CheckAndPrepareIfNeededCommand}">Check for Updates</Button>
+                <TextBlock Text="{x:Static helpers:BuildInformation.AppVersion}" watermark:WatermarkService.Watermark="?" />
+            </DockPanel>
+            
+            <TextBlock Text="{Binding AppUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource ErrorForeground}"
+                    Visibility="{Binding AppUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+
+            <!--content version-->
+            <DockPanel>
+                <Label>Content version:</Label>
+                <Button Command="{Binding ContentSyncronizer.CheckAndUpdateIfNeededCommand}">Check for Updates</Button>
+                <TextBlock Text="{Binding ContentSyncronizer.InstalledVersion}" watermark:WatermarkService.Watermark="?" />
+            </DockPanel>
+            <TextBlock Text="{Binding ContentSyncronizer.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource ErrorForeground}"
+                    Visibility="{Binding ContentSyncronizer.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+
+            <!--values storage-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Values Storage:</TextBlock>
+
+            <DockPanel>
+                <Label>Size:</Label>
+                <Button Command="{Binding CleanUpStorageCommand}" ToolTip="Remove all nonimportant values">Clean Up</Button>
+                <TextBlock>
+                    <Run Text="{Binding ValuesStorage.Count, Mode=OneWay}" />
+                    <Run Text="{Binding ValuesStorage.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='entry', Mode=OneWay}" />
+                </TextBlock>
+            </DockPanel>
+
+            <!--beta access-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Early Access:</TextBlock>
+            <CheckBox IsChecked="{Binding CommonSettings.UpdateToNontestedVersions}">
+                <Label>Update to non-tested versions</Label>
+            </CheckBox>
+            <Button Command="{Binding SendLogsCommand}" >Send Logs to Developers</Button>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

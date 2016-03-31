@@ -1,0 +1,70 @@
+﻿<mui:ModernWindow x:Class="AcManager.Pages.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:windows="clr-namespace:AcManager.Pages.Windows" mc:Ignorable="d" Title="Content Manager" IsTitleVisible="True" MinWidth="800" MinHeight="640"
+        Width="800" Height="720" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
+        Drop="MainWindow_OnDrop" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" SizeChanged="MainWindow_OnSizeChanged"
+        StateChanged="MainWindow_OnStateChanged" Loaded="MainWindow_OnLoaded" Unloaded="MainWindow_OnUnloaded" Closed="MainWindow_OnClosed"
+        d:DataContext="{d:DesignInstance windows:MainWindow+MainWindowViewModel}" AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}"
+        AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow">
+    <mui:ModernWindow.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
+    </mui:ModernWindow.Resources>
+
+    <mui:ModernWindow.MenuLinkGroups>
+        <!--drive-->
+        <mui:LinkGroup GroupKey="drive" DisplayName="single">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="Quick" Source="/Pages/Drive/QuickDrive.xaml" />
+                <mui:Link DisplayName="Career" Source="/Pages/Drive/KunosCareer.xaml" />
+                <mui:Link DisplayName="Challenges" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drive-challenge" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+        <mui:LinkGroupFilterable GroupKey="drive" DisplayName="online" Source="/Pages/Drive/Online.xaml" />
+        <mui:LinkGroupFilterable GroupKey="drive" DisplayName="lan" Source="/Pages/Drive/Online.xaml?Mode=Lan" />
+        <mui:LinkGroupFilterable GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />
+
+        <!--media-->
+        <mui:LinkGroupFilterable GroupKey="media" DisplayName="screenshots" Source="/Pages/Miscellaneous/WorkInProgress.xaml?screenshots" />
+        <mui:LinkGroupFilterable GroupKey="media" DisplayName="replays" Source="/Pages/Lists/ReplaysListPage.xaml" />
+
+        <!--content--> 
+        <mui:LinkGroupFilterable GroupKey="content" DisplayName="cars" Source="/Pages/Lists/CarsListPage.xaml" />
+        <mui:LinkGroupFilterable GroupKey="content" DisplayName="tracks" Source="/Pages/Lists/TracksListPage.xaml" />
+        <mui:LinkGroupFilterable GroupKey="content" DisplayName="showrooms" Source="/Pages/Lists/ShowroomsListPage.xaml" />
+        <mui:LinkGroup GroupKey="content" DisplayName="miscellaneous">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="Apps" Source="/Pages/Miscellaneous/WorkInProgress.xaml?apps" />
+                <mui:Link DisplayName="Fonts" Source="/Pages/Miscellaneous/WorkInProgress.xaml?fonts" />
+                <mui:Link DisplayName="Weather" Source="/Pages/Lists/WeatherListPage.xaml" />
+                <mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+
+        <!--settings-->
+        <mui:LinkGroup DisplayName="settings" GroupKey="settings">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="Content Manager" Source="/Pages/Settings/SettingsPage.xaml" />
+                <mui:Link DisplayName="Assetto Corsa" Source="/Pages/Miscellaneous/WorkInProgress.xaml?settings-assetto corsa" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+
+        <!--about-->
+        <mui:LinkGroup DisplayName="about" GroupKey="about">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="About" Source="/Pages/About/AboutPage.xaml" />
+                <mui:Link DisplayName="Release Notes" Source="/Pages/About/ReleaseNotesPage.xaml" />
+                <mui:Link DisplayName="Important Tips" Source="/Pages/About/ImportantTipsPage.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+    </mui:ModernWindow.MenuLinkGroups>
+
+    <mui:ModernWindow.TitleLinks>
+        <mui:TitleLink DisplayName="drive" GroupKey="drive" Source="/Pages/Drive/QuickDrive.xaml" />
+        <mui:TitleLink DisplayName="media" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
+        <mui:TitleLink DisplayName="content" GroupKey="content" IsEnabled="False" Source="/Pages/Lists/CarsListPage.xaml" />
+        <mui:TitleLink DisplayName="settings" GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml" />
+        <mui:TitleLink DisplayName="about" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />
+        <!--<mui:Link DisplayName="help" Source="https://ascobash.wordpress.com/2015/10/29/content-manager/" />-->
+    </mui:ModernWindow.TitleLinks>
+</mui:ModernWindow>

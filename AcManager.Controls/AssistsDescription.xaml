@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="AcManager.Controls.AssistsDescription" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:viewModels="clr-namespace:AcManager.Controls.ViewModels" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance viewModels:BaseAssistsViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel Margin="4">
+        <TextBlock Style="{StaticResource Heading2}" Text="Assists:" Margin="0 0 0 8" />
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="120" DockPanel.Dock="Left">Ideal line:</Label>
+            <TextBlock Text="{Binding IdealLine, Converter={StaticResource BooleanToTextConverter}}"
+                    Foreground="{Binding IdealLineRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="120" DockPanel.Dock="Left">Auto shifter:</Label>
+            <TextBlock Text="{Binding AutoShifter, Converter={StaticResource BooleanToTextConverter}}"
+                    Foreground="{Binding AutoShifterRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="120" DockPanel.Dock="Left">Auto clutch:</Label>
+            <TextBlock Text="{Binding AutoClutch, Converter={StaticResource BooleanToTextConverter}}"
+                    Foreground="{Binding AutoClutchRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="120" DockPanel.Dock="Left">Auto blip:</Label>
+            <TextBlock Text="{Binding AutoBlip, Converter={StaticResource BooleanToTextConverter}}"
+                    Foreground="{Binding AutoBlipRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="120" DockPanel.Dock="Left">ABS:</Label>
+            <TextBlock Text="{Binding Abs}" Foreground="{Binding AbsRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="120" DockPanel.Dock="Left">TC:</Label>
+            <TextBlock Text="{Binding TractionControl}"
+                    Foreground="{Binding TractionControlRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="120" DockPanel.Dock="Left">Stability control:</Label>
+            <TextBlock Text="{Binding StabilityControl, StringFormat='\{0\}%'}"
+                    Foreground="{Binding StabilityControlRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="120" DockPanel.Dock="Left">Fuel:</Label>
+            <TextBlock Text="{Binding FuelConsumption, Converter={StaticResource BooleanToTextConverter}}"
+                    Foreground="{Binding FuelConsumptionRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+        </DockPanel>
+
+        <DockPanel Margin="0 0 0 4">
+            <Label Width="120" DockPanel.Dock="Left">Tyre wear:</Label>
+            <TextBlock Text="{Binding TyreWearMultipler, StringFormat='\{0\}x'}"
+                    Foreground="{Binding TyreWearMultiplerRealismLevel, Converter={StaticResource RealismLevelToColorConverter}}" />
+        </DockPanel>
+    </StackPanel>
+</UserControl>

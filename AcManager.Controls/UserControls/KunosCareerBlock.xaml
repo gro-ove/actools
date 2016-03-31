@@ -1,0 +1,196 @@
+﻿<UserControl x:Class="AcManager.Controls.UserControls.KunosCareerBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
+        xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:effects="clr-namespace:FirstFloor.ModernUI.Effects;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        DataContextChanged="KunosCareerBlock_OnDataContextChanged">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="CodeStyle" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="40" />
+                <Setter Property="FontWeight" Value="UltraLight" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="TextTrimming" Value="None" />
+                <Setter Property="TextWrapping" Value="NoWrap" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel Height="100" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse, hidden'}"
+            d:DataContext="{d:DesignInstance objects:KunosCareerObject}">
+        <!-- previed image -->
+        <Grid DockPanel.Dock="Left" Background="Black" Margin="0 0 24 0" Width="100" Height="100">
+            <Image RenderOptions.BitmapScalingMode="HighQuality" ToolTip="{Binding DisplayName}"
+                    Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
+                    StretchDirection="DownOnly">
+                <Image.Style>
+                    <Style TargetType="Image">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <effects:GrayscaleEffect x:Name="GrayscaleEffect" SaturationFactor="0" />
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+
+            <Grid Opacity="0" Background="Transparent" Cursor="Hand" MouseLeftButtonDown="Information_OnMouseLeftButtonDown"
+                    Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid Background="#33000000">
+                    <Grid.Effect>
+                        <DropShadowEffect Opacity="1" BlurRadius="4" ShadowDepth="0" />
+                    </Grid.Effect>
+
+                    <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" Width="64" Height="64" />
+                    <Path Data="{StaticResource InformationIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32"
+                            Width="32" Stretch="Uniform" Name="InformationIcon" />
+                </Grid>
+                <Grid.Triggers>
+                    <EventTrigger RoutedEvent="Grid.MouseEnter">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Grid.MouseLeave">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="(Grid.Opacity)" FillBehavior="HoldEnd" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                </Grid.Triggers>
+            </Grid>
+        </Grid>
+
+        <ContentPresenter Name="ButtonPresenter" DockPanel.Dock="Bottom" MinWidth="320" />
+
+        <!-- code -->
+        <Grid DockPanel.Dock="Left" Margin="0 0 8 0">
+            <mui:TextBlockAutoShrink Style="{StaticResource CodeStyle}" Text="{Binding Code}" TextAlignment="Center" Width="64" VerticalAlignment="Center"
+                    Visibility="{Binding Code, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+
+            <Path Grid.Column="0" Data="{Binding Type, Converter={StaticResource KunosCareerTypeToIconConverter}}" Fill="{DynamicResource WindowText}"
+                    SnapsToDevicePixels="True" Width="16" Height="16" Stretch="Uniform" Margin="4 8"
+                    ToolTip="{Binding Type, Converter={StaticResource EnumToDescriptionConverter}}" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <Path.Effect>
+                    <DropShadowEffect Opacity="1" BlurRadius="3" ShadowDepth="0" />
+                </Path.Effect>
+            </Path>
+        </Grid>
+
+        <StackPanel VerticalAlignment="Bottom">
+            <!--name-->
+            <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" TextTrimming="CharacterEllipsis" />
+
+            <!--without errors-->
+            <StackPanel Margin="0 0 0 4" Visibility="{Binding HasErrors, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <!--not available-->
+                <DockPanel Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                    <Path Data="{StaticResource LockIconData}" Fill="{DynamicResource WindowText}" SnapsToDevicePixels="True" MaxHeight="10" Stretch="Uniform"
+                            ToolTip="Required series aren't done yet" DockPanel.Dock="Left" />
+                    <TextBlock Text="{Binding DisplayRequired, StringFormat='Required series: {0}'}" Name="LockTextBlock" Margin="4 0 0 0" />
+                </DockPanel>
+
+                <!--available-->
+                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal"
+                        Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel.Resources>
+                        <Style TargetType="DockPanel">
+                            <Setter Property="Margin" Value="0" />
+                        </Style>
+                        <Style TargetType="Ellipse" BasedOn="{StaticResource PlaceMark.Inline}">
+                            <Setter Property="DockPanel.Dock" Value="Left" />
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <!--completed events: 0/0-->
+
+                    <TextBlock Text="Completed: " />
+                    <TextBlock FontWeight="Bold" Name="ProgressText">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}/{1}">
+                                <Binding Path="CompletedEvents" />
+                                <Binding Path="EventsWrappers.Count" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                                        <Setter Property="Foreground" Value="{DynamicResource Go}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static objects:KunosCareerObjectType.SingleEvents}}">
+                        <TextBlock Text=", " />
+
+                        <DockPanel>
+                            <Ellipse Fill="{StaticResource Gold}" />
+                            <TextBlock Text="{Binding FirstPlaces, StringFormat='{}{0}, '}" FontWeight="Bold" />
+                        </DockPanel>
+
+                        <DockPanel>
+                            <Ellipse Fill="{StaticResource Silver}" />
+                            <TextBlock Text="{Binding SecondPlaces, StringFormat='{}{0}, '}" FontWeight="Bold" />
+                        </DockPanel>
+
+                        <DockPanel>
+                            <Ellipse Fill="{StaticResource Bronze}" />
+                            <TextBlock Text="{Binding ThirdPlaces}" FontWeight="Bold" />
+                        </DockPanel>
+                    </StackPanel>
+
+                    <StackPanel
+                            Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static objects:KunosCareerObjectType.Championship}}">
+                        <TextBlock Visibility="{Binding IsStarted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Run Text="," />
+                            <Run Text="{Binding ChampionshipPlace, Converter={StaticResource OrdinalizingConverter}, ConverterParameter=lower, Mode=OneWay}"
+                                    FontWeight="Bold">
+                                <Run.Style>
+                                    <Style TargetType="Run">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ChampionshipPlace}" Value="1">
+                                                <Setter Property="Foreground" Value="{DynamicResource Go}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Run.Style>
+                            </Run><Run Text="," />
+                            <Run Text="{Binding ChampionshipPoints, Mode=OneWay}" FontWeight="Bold" />
+                            <Run Text="{Binding ChampionshipPoints, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='point'}" />
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+
+            <!--errors-->
+            <DockPanel Margin="0 0 0 4" Visibility="{Binding HasErrors, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" MaxHeight="10" Stretch="Uniform" Fill="{DynamicResource ErrorForeground}" DockPanel.Dock="Left" />
+                <TextBlock Text="{Binding Errors.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} error'}" Margin="4 0 0 0" />
+            </DockPanel>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

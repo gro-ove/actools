@@ -1,0 +1,122 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+/* GENERATED AUTOMATICALLY */
+/* DON'T MODIFY */
+
+using SlimDX.D3DCompiler;
+using SlimDX.Direct3D11;
+using Device = SlimDX.Direct3D11.Device;
+// ReSharper disable InconsistentNaming
+
+namespace AcTools.Kn5Render.Kn5Render.Effects {
+	public static class EffectUtils {
+		internal static ShaderBytecode Compile(byte[] data, string name = "") {
+            try {
+                return ShaderBytecode.Compile(data, "Render", "fx_5_0", ShaderFlags.None, EffectFlags.None);
+            } catch (System.Exception e) {
+                System.Windows.Forms.MessageBox.Show("Shader " + (name ?? "?") + " compilation failed:\n\n" + e.Message);
+                throw;
+            }
+        }
+	}
+
+<#
+	var dataFolder = System.IO.Path.GetFullPath(Host.ResolvePath(@"..\..\Data\Effects"));
+
+	foreach (var file in Directory.GetFiles(dataFolder)){
+		var name = Path.GetFileNameWithoutExtension(file);
+		var data = File.ReadAllText(file);
+
+		var ts = Regex.Matches(data, @"(?:^|\n)technique\d\d\s+(\w+)\s*\{(?:\s*//\s*(\w+))?").Cast<Match>();
+		var tls = ts.Where(x => x.Groups[2].Success);
+
+		var cbs = string.Join("\n", Regex.Matches(data, @"(?:^|\n)cbuffer \w+.+(\n\s+.+)+").Cast<Match>().Select(x => x.Value));
+		
+		var vrs = Regex.Matches(data, @"(?:^|\n)(?:Texture2D|TextureCube)\s+(\w+)\s*;").Cast<Match>();
+		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix)\s+(\w+)\s*;").Cast<Match>();
+		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int)\s+(\w+)\s*;").Cast<Match>();
+		var vvs = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*;").Cast<Match>();
+		var vs = Regex.Matches(cbs, @"\n\s+(?:(?!matrix|float\d?|int)\w+)\s+(\w+)\s*;").Cast<Match>();
+		#>
+	public class Effect<#= name #> : System.IDisposable {
+        public Effect E;
+
+        public ShaderSignature <#= string.Join(", ", tls.Select(x => "InputSignature" + x.Groups[2].Value)) #>;
+        public InputLayout <#= string.Join(", ", tls.Select(x => "Layout" + x.Groups[2].Value)) #>;
+
+		public EffectTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x.Groups[1].Value)) #>;
+
+<# if (vms.Any()){ #>
+		public EffectMatrixVariable <#= string.Join(", ", vms.Select(x => "Fx" + x.Groups[1].Value.Substring(1))) #>;
+<# } #>
+<# if (vrs.Any()){ #>
+		public EffectResourceVariable <#= string.Join(", ", vrs.Select(x => "Fx" + x.Groups[1].Value.Substring(1))) #>;
+<# } #>
+<# if (vss.Any()){ #>
+		public EffectScalarVariable <#= string.Join(", ", vrs.Select(x => "Fx" + x.Groups[1].Value.Substring(1))) #>;
+<# } #>
+<# if (vvs.Any()){ #>
+		public EffectVectorVariable <#= string.Join(", ", vvs.Select(x => "Fx" + x.Groups[1].Value.Substring(1))) #>;
+<# } #>
+<# if (vs.Any()){ #>
+		public EffectVariable <#= string.Join(", ", vs.Select(x => "Fx" + x.Groups[1].Value.Substring(1))) #>;
+<# } #>
+
+		public Effect<#= name #>(Device device) {
+            using (var bc = EffectUtils.Compile(Properties.Resources.Effect<#= name #>, "<#= name #>")){
+                E = new Effect(device, bc);
+			}
+
+<# foreach (var x in ts){ var a = x.Groups[1].Value; #>
+			Tech<#= a #> = E.GetTechniqueByName("<#= a #>");
+<# } #>
+
+<# foreach (var x in tls){ var a = x.Groups[2].Value; var b = x.Groups[1].Value; #>
+			for (var i = 0; i < Tech<#= b #>.Description.PassCount && InputSignature<#= a #> == null; i++) {
+				InputSignature<#= a #> = Tech<#= b #>.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignature<#= a #> == null) throw new System.Exception("input signature (<#= name #>, <#= a #>, <#= b #>) == null");
+			Layout<#= a #> = new InputLayout(device, InputSignature<#= a #>, Vertice<#= a #>.InputElements);
+<# } #>
+
+<# foreach (var x in vms){ #>
+			Fx<#= x.Groups[1].Value.Substring(1) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix();
+<# } #>
+<# foreach (var x in vrs){ #>
+			Fx<#= x.Groups[1].Value.Substring(1) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource();
+<# } #>
+<# foreach (var x in vss){ #>
+			Fx<#= x.Groups[1].Value.Substring(1) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsScalar();
+<# } #>
+<# foreach (var x in vvs){ #>
+			Fx<#= x.Groups[1].Value.Substring(1) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsVector();
+<# } #>
+<# foreach (var x in vs){ #>
+			Fx<#= x.Groups[1].Value.Substring(1) #> = E.GetVariableByName("<#= x.Groups[1].Value #>");
+<# } #>
+		}
+
+        public void Dispose() {
+            E.Dispose();
+<# foreach (var t in tls.Select(x => x.Groups[2].Value)){ #>
+			InputSignature<#= t #>.Dispose();
+            Layout<#= t #>.Dispose();
+<# } #>
+        }
+
+        public void Dispose(bool b) {
+            if (b) Dispose();
+        }
+	}
+
+<#
+	}
+#>
+
+}

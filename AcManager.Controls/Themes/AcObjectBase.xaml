@@ -1,0 +1,50 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+                    xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="ac:AcObjectBase">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ac:AcObjectBase">
+                    <Grid Name="PART_Main">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <ScrollViewer HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" Margin="-8 0 -8 0">
+                            <StackPanel MinWidth="500" Margin="0 0 0 120">
+                                <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}" 
+                                                          IconFilename="{TemplateBinding IconFilename}"
+                                                          x:Name="PART_Header" />
+                                <ac:AcObjectErrorsSection AcObject="{TemplateBinding AcObject}" />
+                                <ContentPresenter Margin="0 12 0 0" Content="{TemplateBinding Content}" />
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <ac:AcToolBar Grid.Row="1" x:Name="PART_ToolBar" ToolBars="{TemplateBinding ToolBars}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding AcObject.Outdated, RelativeSource={RelativeSource Self}}" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ac:AcObjectBase">
+                            <Grid>
+                                <TextBlock Margin="20" FontSize="30" Foreground="Red" Text="OUTDATED!" 
+                                           ToolTip="You weren't supposed to see this, something's gone terribly wrong" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

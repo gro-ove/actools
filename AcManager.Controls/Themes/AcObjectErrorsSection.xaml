@@ -1,0 +1,42 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ac="clr-namespace:AcManager.Controls">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="ac:AcObjectErrorsSection">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Padding" Value="0 12 0 12" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding AcObject.HasErrors, RelativeSource={RelativeSource Self}}" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ac:AcObjectErrorsSection">
+                            <StackPanel Margin="{TemplateBinding Padding}">
+                                <DockPanel HorizontalAlignment="Stretch">
+                                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}"
+                                          Stretch="Uniform" x:Name="ErrorIcon" DockPanel.Dock="Right" />
+                                    <TextBlock Text="Errors:" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
+                                </DockPanel>
+                                <ItemsControl DataContext="{Binding AcObject, RelativeSource={RelativeSource TemplatedParent}}" 
+                                              ItemsSource="{Binding Errors}" x:Name="AcObjectInDataContext">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Margin="40 0 0 0">
+                                                <Hyperlink Command="{Binding StartErrorFixerCommand}" 
+                                                           CommandParameter="{Binding ElementName=AcObjectInDataContext, Path=DataContext}">
+                                                    <TextBlock Text="{Binding Message}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                                                </Hyperlink>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsOnline" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance settings:SettingsOnline+SettingsOnlineViewModel}">
+    <UserControl.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+    </UserControl.Resources>
+    <ScrollViewer>
+        <StackPanel Style="{StaticResource SettingsPanel}">
+            <CheckBox IsChecked="{Binding Holder.RememberPasswords}">
+                <Label>Remember passwords</Label>
+            </CheckBox>
+
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Adding by IP:</TextBlock>
+
+            <DockPanel>
+                <Label>Scan ports:</Label>
+                <TextBox Text="{Binding Holder.PortsEnumeration}" ToolTip="Some enumeration like '9000-10000'"
+                        watermark:WatermarkService.Watermark="?" />
+            </DockPanel>
+
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">LAN:</TextBlock>
+
+            <!--<CheckBox IsChecked="{Binding Holder.AlternativeScanningMethod}" Margin="0 0 0 8" IsEnabled="False">
+                <Label>Alternative scanning method</Label>
+            </CheckBox>-->
+
+            <DockPanel>
+                <Label>Scan ports:</Label>
+                <TextBox Text="{Binding Holder.LanPortsEnumeration}" ToolTip="Some enumeration like '9600,9602,9700-9750'"
+                        watermark:WatermarkService.Watermark="?" />
+            </DockPanel>
+
+            <DockPanel>
+                <Label>Scan using connections:</Label>
+                <ListBox Name="IgnoredInterfacesListBox" ItemsSource="{Binding NetworkInterfaces}" SelectionMode="Multiple"
+                        SelectionChanged="IgnoredInterfacesListBox_OnSelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="networkInformation:NetworkInterface">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

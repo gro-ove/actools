@@ -1,0 +1,278 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+/* GENERATED AUTOMATICALLY */
+/* DON'T MODIFY */
+
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using SlimDX;
+using SlimDX.D3DCompiler;
+using SlimDX.Direct3D11;
+using AcTools.Render.Base.Structs;
+using AcTools.Render.Base.Utils;
+// ReSharper disable InconsistentNaming
+// ReSharper disable LocalizableElement
+
+namespace AcTools.Render.Base.Shaders {
+	public interface IEffectWrapper : System.IDisposable {
+		void Initialize(Device device);
+	}
+
+	public interface IEffectMatricesWrapper : IEffectWrapper {
+		EffectMatrixVariable FxWorld { get; }
+		EffectMatrixVariable FxWorldInvTranspose { get; }
+		EffectMatrixVariable FxWorldViewProj { get; }
+	}
+
+<#
+	var structsNames = new List<string>();
+
+	var dataFolder = System.IO.Path.GetFullPath(Host.ResolvePath(@"..\..\Shaders"));
+
+/* CONSTS */
+	var LiteralRegularMode = true;
+
+/* FUNCTIONS */
+	Func<string,string> ConvertFxName = s => {
+		return "Fx" + (s[0] == 'g' ? s.Substring(1) : s);
+	};
+	Func<string,string> ConvertConstName = s => 
+		Regex.Replace(s.ToLower(), @"^\w|_\w", x => x.Value.Replace("_", "").ToUpper());
+	Func<string,string> MapShaderType = s => 
+		s == "dword" ? "uint" :
+		s == "float2" ? "Vector2" :
+		s == "float3" ? "Vector3" :
+		s == "float4" ? "Vector4" :
+		s;
+	Func<string,string> ClearHlslCode = s => Regex.Replace(s, @"//.+", "");
+	Func<string,string> ConvertStringToLiteral = s => LiteralRegularMode ? 
+		"\"" + s
+			.Replace("\\", @"\\")
+			.Replace("\"", "\\\"")
+			.Replace("\r", @"")
+			.Replace("\t", @"\t")
+			.Replace("\n", @"\n") + 
+		"\"" : 
+		"@\"" + s.Replace("\"", "\"\"") + "\"";
+
+/* INCLUDEABLE FILES */
+	var includes = new Dictionary<string,string>();
+
+	foreach (var file in Directory.GetFiles(dataFolder + "/Includes")){
+		var includeName = Path.GetFileName(file);
+		includes[includeName] = File.ReadAllText(file);
+	}
+
+	foreach (var file in Directory.GetFiles(dataFolder).Union(Directory.GetDirectories(dataFolder).SelectMany(Directory.GetFiles))){
+		if (!file.EndsWith(".fx") || Path.GetDirectoryName(file).EndsWith("\\Includes")){
+			continue;
+		}
+
+		var name = Path.GetFileNameWithoutExtension(file);
+		var data = File.ReadAllText(file);
+
+		var dataLiteral = ConvertStringToLiteral(ClearHlslCode(data));
+
+	/* ADD INCLUDED STUFF */
+		foreach (var match in Regex.Matches(data, @"\s*#include\s+""(.+)""").Cast<Match>()){
+				data = includes[match.Groups[1].Value] + "\n\n" + data;
+		}
+
+	/* TECHNIQUES */
+		var ts_tmp = Regex.Matches(data, @"(?:^|\n)\s*technique\d\d\s+(\w+)\s*\{(?:\s*//\s*(\w+))?\s*((?:\n\s+.+)+?)\n\s*\}").Cast<Match>().ToList();
+		var tls = ts_tmp.Where(x => x.Groups[2].Success).Select(x => new { 
+			Type = x.Groups[2].Value, 
+			TechName = x.Groups[1].Value 
+		})
+			.Where(x => false) // disabling comment support
+			.ToList();
+		var ts = ts_tmp.Select(x => x.Groups[1].Value).ToList();
+		
+			// # > /* < #= (name) # > */ < #
+		foreach (var match in Regex.Matches(data, @"(?:^|\n)\s*struct\s+((?:\w+_)?VS_IN)\s*\{.*((?:\n\s+.+)+?)\n\s*\}").Cast<Match>()){
+			var structName = match.Groups[1].Value;
+
+			// # > /* < #= (name + ": " + structName) # > */ < #
+
+			var techName = Regex.Matches(data, @"(?:^|\n)\s*\w+\s+(\w+)\s*\(\s*" + structName + @" +\w+\s*\)\s*\{").Cast<Match>()
+				.Select(x => x.Groups[1].Value).SelectMany(x => 
+					ts_tmp.Where(y => y.Groups[3].Value.Contains(x)).Select(y => y.Groups[1].Value)
+				).FirstOrDefault();
+			if (techName == null) continue;
+			
+			var types = Regex.Matches(match.Groups[2].Value, @"\b(POSITION|COLOR|NORMAL|TEXCOORD|TANGENT)\b").Cast<Match>().Select(x => x.Value);
+			var result = string.Join("", types.Select(x => x == "TANGENT" ? "G" : "" + x[0])).Trim();
+			if (result.Length == 0) continue;
+			tls.Add(new {
+				Type = result,
+				TechName = techName
+			});
+			// data = includes[match.Groups[1].Value] + "\n\n" + data;
+		}
+
+		if (!tls.Any()) continue;
+		tls = tls.GroupBy(x => x.Type).Select(x => x.First()).ToList();
+
+	/* BUFFERS, VARIABLES, TEXTURES */
+		var cbs = string.Join("\n", Regex.Matches(data, @"(?:^|\n)\s*cbuffer \w+.+(\n\s+.+)*?\n\s*\}").Cast<Match>().Select(x => x.Value));
+		
+		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture2D|TextureCube)\s+(\w+)\s*;").Cast<Match>();
+		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*;").Cast<Match>();
+		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
+		var vvs = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
+		var vs = Regex.Matches(cbs, @"\n\s+(?:(?!matrix|float\d?|int)\w+)\s+(\w+)\s*;").Cast<Match>();
+		
+	/* CONSTS */
+		var consts = Regex.Matches(data, @"(?:^|\n)\s*static const (\w+)\s+(\w+)\s*=\s*(.+?)\s*;").Cast<Match>().Select(x => {
+			var typeName = MapShaderType(x.Groups[1].Value);
+			var isConst = !typeName.StartsWith("Vector");
+			var constName = ConvertConstName(x.Groups[2].Value);
+			var constValue = x.Groups[3].Value.Replace("float3", "new Vector3");
+			return "public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";";
+		});
+
+	/* AND EVEN STRUCTS! */
+		var structs = Regex.Matches(data, @"(?:^|\n)\s*struct\s+([A-Z][a-z]\w+)\s*\{.+((?:\n\s+.+)+?)\n\s*\}").Cast<Match>().Select(x => {
+			structsNames.Add("Effect" + name + "." + x.Groups[1].Value);
+			return string.Format(@"[StructLayout(LayoutKind.Sequential)]
+        public struct {0} {{
+{1}
+
+			public static readonly int Stride = Marshal.SizeOf(typeof({0}));
+        }}", x.Groups[1].Value, 
+			string.Join("\n",
+				x.Groups[2].Value.Split('\n').Select(y => y.Trim().Split(' ')).Where(y => y.Length == 2)
+					.Select(y => "public " + MapShaderType(y[0]) + " " + y[1])
+					.Select(y => "            " + y)
+			));
+		});
+
+	/* IF SHADER CONTAINS ALL OBJECTS MATRICES */
+		var matricesNames = vms.Select(x => x.Groups[1].Value.Substring(1)).ToList();
+		var matricesMode = matricesNames.Contains("World") && matricesNames.Contains("WorldInvTranspose") && matricesNames.Contains("WorldViewProj");
+		#>
+	public class Effect<#= name #> : <#= matricesMode ? "IEffectMatricesWrapper" : "IEffectWrapper" #> {
+		<#= string.Join("\n		", structs) #>
+		<#= string.Join("\n		", consts) #>
+        public Effect E;
+
+        public ShaderSignature <#= string.Join(", ", tls.Select(x => "InputSignature" + x.Type)) #>;
+        public InputLayout <#= string.Join(", ", tls.Select(x => "Layout" + x.Type)) #>;
+
+		public EffectTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x)) #>;
+
+<# foreach (var matriceFieldName in vms.Select(x => "Fx" + x.Groups[1].Value.Substring(1))){ #>
+		public EffectMatrixVariable <#= matriceFieldName #> { get; private set; }
+<# } #>
+<# if (vrs.Any()){ #>
+		public EffectResourceVariable <#= string.Join(", ", vrs.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
+<# } #>
+<# if (vss.Any()){ #>
+		public EffectScalarVariable <#= string.Join(", ", vss.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
+<# } #>
+<# if (vvs.Any()){ #>
+		public EffectVectorVariable <#= string.Join(", ", vvs.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
+<# } #>
+<# if (vs.Any()){ #>
+		public EffectVariable <#= string.Join(", ", vs.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
+<# } #>
+
+		public Effect<#= name #>() {
+		}
+
+		public void Initialize(Device device) {
+            using (var bc = EffectUtils.Compile(Encoding.UTF8.GetBytes(<#= dataLiteral #>), "<#= name #>")){
+                E = new Effect(device, bc);
+			}
+
+<# foreach (var x in ts){ #>
+			Tech<#= x #> = E.GetTechniqueByName("<#= x #>");
+<# } #>
+
+<# foreach (var x in tls){ var a = x.Type; var b = x.TechName; #>
+			for (var i = 0; i < Tech<#= b #>.Description.PassCount && InputSignature<#= a #> == null; i++) {
+				InputSignature<#= a #> = Tech<#= b #>.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignature<#= a #> == null) throw new System.Exception("input signature (<#= name #>, <#= a #>, <#= b #>) == null");
+			Layout<#= a #> = new InputLayout(device, InputSignature<#= a #>, InputLayouts.Vertice<#= a #>.InputElementsValue);
+<# } #>
+
+<# foreach (var x in vms){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsMatrix();
+<# } #>
+<# foreach (var x in vrs){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsResource();
+<# } #>
+<# foreach (var x in vss){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsScalar();
+<# } #>
+<# foreach (var x in vvs){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>").AsVector();
+<# } #>
+<# foreach (var x in vs){ #>
+			<#= ConvertFxName(x.Groups[1].Value) #> = E.GetVariableByName("<#= x.Groups[1].Value #>");
+<# } #>
+		}
+
+        public void Dispose() {
+            E.Dispose();
+<# foreach (var t in tls.Select(x => x.Type)){ #>
+			InputSignature<#= t #>.Dispose();
+            Layout<#= t #>.Dispose();
+<# } #>
+        }
+	}
+
+<#
+	}
+#>
+
+	public static class EffectUtils {
+		private static string GetIncludedData(string filename){
+			switch(filename){
+<# foreach (var pair in includes){ #>
+				case <#= ConvertStringToLiteral(pair.Key) #>:
+					return <#= ConvertStringToLiteral(pair.Value) #>;
+<# } #>
+				default:
+					return null;
+			}
+		}
+
+	    private static readonly Include IncludeFx = new IncludeImplementation();
+
+	    private class IncludeImplementation : Include {
+	        public void Open(IncludeType type, string fileName, Stream parentStream, out Stream stream) {
+	            stream = new MemoryStream(Encoding.UTF8.GetBytes(GetIncludedData(fileName)));
+	        }
+
+	        public void Close(Stream stream) {
+                stream.Close();
+                stream.Dispose();
+	        }
+	    }
+
+		internal static ShaderBytecode Compile(byte[] data, string name = "") {
+            try {
+                return ShaderBytecode.Compile(data, "Render", "fx_5_0", ShaderFlags.None, EffectFlags.None, null, IncludeFx);
+            } catch (System.Exception e) {
+				System.Diagnostics.Debug.WriteLine("Shader " + (name ?? "?") + " compilation failed:\n\n" + e.Message);
+                System.Windows.Forms.MessageBox.Show("Shader " + (name ?? "?") + " compilation failed:\n\n" + e.Message);
+                throw;
+            }
+        }
+		
+<# foreach (var structsName in structsNames){ #>
+        public static void Set(this EffectVariable variable, <#= structsName #> o) {
+            SlimDxExtension.Set(variable, o, <#= structsName #>.Stride);
+        }
+<# } #>
+	}
+}

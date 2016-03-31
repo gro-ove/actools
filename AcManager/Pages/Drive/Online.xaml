@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="AcManager.Pages.Drive.Online" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="Online_OnLoaded" Unloaded="Online_OnUnloaded" SizeChanged="Online_OnSizeChanged"
+        d:DataContext="{d:DesignInstance drive:Online+OnlineViewModel}">
+    <UserControl.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/OnlineSpecific.xaml" />
+    </UserControl.Resources>
+
+    <Grid Style="{StaticResource ContentRoot}">
+        <!-- error -->
+        <StackPanel Visibility="{Binding Manager.Status, Converter={StaticResource EnumToVisibilityConverter}, 
+                ConverterParameter={x:Static acManagersNew:AsyncScanManagerStatus.Error}}" Margin="40 0 40 0">
+            <TextBlock Style="{StaticResource Heading1}" Text="Error" />
+            <mui:BbCodeBlock BbCode="{Binding Manager.ErrorMessage}" Margin="20" />
+            <Button Command="{Binding Manager.RefreshListCommand}" Content="Try again" Margin="20 0 20 0"
+                    Visibility="{Binding Manager.ErrorFatal, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+        </StackPanel>
+
+        <!-- list -->
+        <Grid Visibility="{Binding Manager.Status, Converter={StaticResource EnumToVisibilityConverter}, 
+                ConverterParameter={x:Static acManagersNew:AsyncScanManagerStatus.Ready}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="9" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.Column="0" Visibility="{Binding MainList.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=≠0}">
+                <TextBlock DockPanel.Dock="Bottom" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}"
+                        Text="{Binding MainList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} server'}">
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Reload" InputGestureText="Ctrl+R" Command="{Binding Manager.RefreshListCommand}" />
+                            <MenuItem Header="Add" InputGestureText="Ctrl+A" Command="{Binding AddNewServerCommand}" />
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
+                    <TextBlock.ToolTip>
+                        <ToolTip>
+                            <TextBlock>     
+                                    <Run>Pinged</Run>
+                                    <Run Text="{Binding Manager.Pinged, Mode=OneWay}" />
+                                    <Run Text="out of" />
+                                    <Run Text="{Binding Manager.WrappersList.Count, Mode=OneWay}" />
+                            </TextBlock>
+                        </ToolTip>
+                    </TextBlock.ToolTip>
+                </TextBlock>
+
+                <ListBox Name="ServersListBox" ItemsSource="{Binding MainList}" VirtualizingPanel.IsVirtualizing="True"
+                        VirtualizingPanel.VirtualizationMode="Recycling" IsSynchronizedWithCurrentItem="True" ItemTemplate="{StaticResource SimpleListItem}"
+                        VirtualizingStackPanel.CacheLength="1,2" VirtualizingStackPanel.CacheLengthUnit="Item" VirtualizingStackPanel.ScrollUnit="Pixel"
+                        Style="{StaticResource VirtualizingListBox}" />
+            </DockPanel>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="{StaticResource StatusMargin}">
+                <mui:ModernToggleButton IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}" ToolTip="Empty servers" />
+                <mui:ModernToggleButton IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}" ToolTip="Empty servers" />
+                <mui:ModernToggleButton IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}" ToolTip="Full servers" />
+                <mui:ModernToggleButton IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}" ToolTip="Password protected" />
+                <mui:ModernToggleButton IconData="{StaticResource QuestionMarkIconData}" IsChecked="{Binding FilterMissing}"
+                        ToolTip="Servers with missing content" />
+            </StackPanel>
+
+            <Rectangle Visibility="{Binding SelectedSource, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                    Fill="{DynamicResource SeparatorBackground}" Grid.Column="1" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+            <mui:ModernFrame Grid.Column="2" Source="{Binding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal" Width="450" />
+
+            <ProgressBar IsIndeterminate="True" Margin="20" Width="320" Height="4" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.ColumnSpan="3"
+                    Grid.Column="0" Visibility="{Binding Manager.BackgroundLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            <!--empty-->
+            <StackPanel Visibility="{Binding MainList.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Grid.ColumnSpan="3"
+                    Grid.Column="0" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
+                <Button Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='Recent'}" Margin="0 8 0 0"
+                        Command="{Binding AddNewServerCommand}">
+                    <DockPanel IsHitTestVisible="False">
+                        <Path Data="{StaticResource AddIconData}" Width="10" Height="10"
+                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
+                                ToolTip="Password required" Margin="0 0 4 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                        <TextBlock>Add a New Entry</TextBlock>
+                    </DockPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

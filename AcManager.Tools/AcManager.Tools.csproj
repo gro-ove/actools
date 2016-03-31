@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{764AFD18-0755-4596-839C-FEA3F492303B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AcManager.Tools</RootNamespace>
+    <AssemblyName>AcManager.Tools</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLua">
+      <HintPath>..\AcManager\Libs\NLua.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SevenZipSharp">
+      <HintPath>..\..\..\Temp\seven-sharp\SevenZipSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AcErrors\AcErrorCategory.cs" />
+    <Compile Include="AcErrors\AcErrorType.cs" />
+    <Compile Include="AcErrors\Solver\ShowroomSolvers.cs" />
+    <Compile Include="AcErrors\Solver\CarSolvers.cs" />
+    <Compile Include="AcErrors\Solver\JObjectRestorationSchemeProvider.cs" />
+    <Compile Include="AcErrors\SolvingException.cs" />
+    <Compile Include="AcErrors\Solution.cs" />
+    <Compile Include="AcErrors\Solver\DataSolvers.cs" />
+    <Compile Include="AcManagersNew\AcItemWrapper.cs" />
+    <Compile Include="AcManagersNew\AcManagerFileSpecific.cs" />
+    <Compile Include="AcManagersNew\AsyncScanAcManager.cs" />
+    <Compile Include="AcManagersNew\BaseAcManager.cs" />
+    <Compile Include="AcManagersNew\FileAcManager.cs" />
+    <Compile Include="AcManagersNew\IAcManagerNew.cs" />
+    <Compile Include="AcManagersNew\IAcManagerScanWrapper.cs" />
+    <Compile Include="AcManagersNew\IFileAcManager.cs" />
+    <Compile Include="AcObjectsNew\AcCommonObject.cs" />
+    <Compile Include="AcObjectsNew\AcCommonSingleFileObject.cs" />
+    <Compile Include="AcObjectsNew\AcCommonObject_Commands.cs" />
+    <Compile Include="AcObjectsNew\AcIniObject.cs" />
+    <Compile Include="AcObjectsNew\AcJsonObjectNew_Commands.cs" />
+    <Compile Include="AcObjectsNew\AcJsonObjectNew_Tags.cs" />
+    <Compile Include="AcObjectsNew\AcJsonObjectNew.cs" />
+    <Compile Include="AcObjectsNew\AcCommonObject_Lists.cs" />
+    <Compile Include="AcObjectsNew\AcPlaceholderNew.cs" />
+    <Compile Include="AcObjectsNew\IAcObjectNew.cs" />
+    <Compile Include="AcManagersNew\AcManagerNew_Watcher.cs" />
+    <Compile Include="AcManagersNew\AcManagerNew.cs" />
+    <Compile Include="AcManagersNew\WeatherManagerNew.cs" />
+    <Compile Include="AcObjectsNew\AcCommonObject_Errors.cs" />
+    <Compile Include="AcObjectsNew\AcObjectNew.cs" />
+    <Compile Include="AcObjectsNew\WeatherObjectNew.cs" />
+    <Compile Include="Data\ContentSyncronizer.cs" />
+    <Compile Include="Data\DataProvider.cs" />
+    <Compile Include="Data\GameSpecific\PlaceConditions.cs" />
+    <Compile Include="Data\GameSpecific\SessionResult.cs" />
+    <Compile Include="Data\KunosCareerProgress.cs" />
+    <Compile Include="Data\WeatherDescription.cs" />
+    <Compile Include="Filters\AcCommonObjectTester.cs" />
+    <Compile Include="Filters\AcJsonObjectTester.cs" />
+    <Compile Include="Filters\AcObjectTester.cs" />
+    <Compile Include="Filters\CarObjectTester.cs" />
+    <Compile Include="Filters\CarSkinObjectTester.cs" />
+    <Compile Include="Filters\ServerEntryTester.cs" />
+    <Compile Include="Filters\ShowroomObjectTester.cs" />
+    <Compile Include="Filters\TrackBaseObjectTester.cs" />
+    <Compile Include="Filters\TrackObjectTester.cs" />
+    <Compile Include="Filters\UniqueAcObjectTester.cs" />
+    <Compile Include="Helpers\AbstractFilesStorage.cs" />
+    <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Managers\Online\LanManager.cs" />
+    <Compile Include="Managers\Online\OnlineManagerType.cs" />
+    <Compile Include="Managers\Online\RecentManager.cs" />
+    <Compile Include="Managers\Online\ServerStatus.cs" />
+    <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
+    <Compile Include="Miscellaneous\AcLogHelper.cs" />
+    <Compile Include="SemiGui\DriverName.cs" />
+    <Compile Include="Starters\AcsStarterFactory.cs" />
+    <Compile Include="Helpers\Api\CmApiProvider_Consts.cs" />
+    <Compile Include="Helpers\Api\CmApiProvider.cs" />
+    <Compile Include="Helpers\Api\KunosApiProvider_Lan.cs" />
+    <Compile Include="Helpers\Api\KunosApiProvider.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerActualCarInformation.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerActualInformation.cs" />
+    <Compile Include="Helpers\Api\OpenWeatherApiProvider_ApiCodes.cs" />
+    <Compile Include="Helpers\BuildInformation.cs" />
+    <Compile Include="Helpers\MainExecutingFile.cs" />
+    <Compile Include="Lists\SortedAcWrapperObservableCollection.cs" />
+    <Compile Include="Managers\InnerHelpers\DirectoryWatcher.cs" />
+    <Compile Include="Helpers\HashAlgorithmExtension.cs" />
+    <Compile Include="Helpers\TaskExtension.cs" />
+    <Compile Include="Helpers\IPAddressExtension.cs" />
+    <Compile Include="Helpers\TimeSpanExtension.cs" />
+    <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentEntry.cs" />
+    <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentInstallation.cs" />
+    <Compile Include="Helpers\AdditionalContentInstallation\ArchiveContentInstallator.cs" />
+    <Compile Include="Helpers\AdditionalContentInstallation\IAdditionalContentInstallator.cs" />
+    <Compile Include="Helpers\AdditionalContentInstallation\PasswordException.cs" />
+    <Compile Include="Helpers\Api\OpenWeatherApiProvider.cs" />
+    <Compile Include="Helpers\FilesStorage.cs" />
+    <Compile Include="Helpers\SaveHelper.cs" />
+    <Compile Include="Helpers\StringComparer.cs" />
+    <Compile Include="Miscellaneous\AppReporter_Consts.cs" />
+    <Compile Include="Miscellaneous\AppReporter.cs" />
+    <Compile Include="SemiGui\GameWrapper.cs" />
+    <Compile Include="SemiGui\ImmediateStart.cs" />
+    <Compile Include="SemiGui\INonfatalErrorNotifier.cs" />
+    <Compile Include="SemiGui\NonfatalError.cs" />
+    <Compile Include="Helpers\WeatherProvider.cs" />
+    <Compile Include="Helpers\TimezoneDeterminer.cs" />
+    <Compile Include="Helpers\TracksLocator.cs" />
+    <Compile Include="Helpers\Api\GoogleApiProvider.cs" />
+    <Compile Include="Helpers\Api\YahooApiProvider.cs" />
+    <Compile Include="Helpers\WindowsHelper.cs" />
+    <Compile Include="Lists\AcLoadedOnlyCollection.cs" />
+    <Compile Include="Lists\AcWrapperCollectionView.cs" />
+    <Compile Include="Lists\AsyncObservableCollection.cs" />
+    <Compile Include="Lists\AutocompleteValuesList.cs" />
+    <Compile Include="AcErrors\Solver\AbstractSolver.cs" />
+    <Compile Include="AcErrors\SolversManager.cs" />
+    <Compile Include="Lists\BetterListCollectionView.cs" />
+    <Compile Include="Lists\BetterObservableCollection.cs" />
+    <Compile Include="Managers\AcObjectTypeDirectories.cs" />
+    <Compile Include="Helpers\SteamIdHelper.cs" />
+    <Compile Include="Managers\AcRootDirectory.cs" />
+    <Compile Include="Managers\Addons\AppAddonInformation.cs" />
+    <Compile Include="Managers\Addons\AppAddonsManager.cs" />
+    <Compile Include="Managers\InnerHelpers\IDirectoryListener.cs" />
+    <Compile Include="Managers\InnerHelpers\IWatchingChangeApplier.cs" />
+    <Compile Include="Managers\InnerHelpers\WatchingChange.cs" />
+    <Compile Include="Managers\InnerHelpers\WatchingTask.cs" />
+    <Compile Include="Managers\Online\OnlineManager.cs" />
+    <Compile Include="Managers\Online\BaseOnlineManager.cs" />
+    <Compile Include="Managers\Online\ServerEntry.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerInformation.cs" />
+    <Compile Include="Managers\PresetsManager.cs" />
+    <Compile Include="Managers\PpFiltersManager.cs" />
+    <Compile Include="Managers\ReplaysManager.cs" />
+    <Compile Include="Helpers\SettingsHolder.cs" />
+    <Compile Include="Managers\KunosCareerManager.cs" />
+    <Compile Include="Managers\WeatherManager.cs" />
+    <Compile Include="Managers\ShowroomsManager.cs" />
+    <Compile Include="Managers\SuggestionLists.cs" />
+    <Compile Include="AcErrors\AcError.cs" />
+    <Compile Include="Managers\Superintendent.cs" />
+    <Compile Include="Lists\AcWrapperObservableCollection.cs" />
+    <Compile Include="Helpers\AcStringValues.cs" />
+    <Compile Include="AcErrors\AcErrorException.cs" />
+    <Compile Include="Miscellaneous\AppUpdater.cs" />
+    <Compile Include="Miscellaneous\LuaHelper.cs" />
+    <Compile Include="Objects\CarObject_Parent.cs" />
+    <Compile Include="Objects\CarObject_Skins.cs" />
+    <Compile Include="Objects\CarObject_Kunos.cs" />
+    <Compile Include="Objects\CarObject_SkinsManager.cs" />
+    <Compile Include="Objects\KunosCareerEventObject.cs" />
+    <Compile Include="Objects\KunosCareerObjectType.cs" />
+    <Compile Include="Objects\KunosCareerObject_Events.cs" />
+    <Compile Include="Managers\KunosCareerEventsManager.cs" />
+    <Compile Include="Objects\ReplayObject.cs" />
+    <Compile Include="Objects\PpFilterObject.cs" />
+    <Compile Include="Objects\KunosCareerObject.cs" />
+    <Compile Include="Objects\WeatherObject.cs" />
+    <Compile Include="Objects\TrackObject_TrackExtraConfigurationObject.cs" />
+    <Compile Include="Objects\TrackObject_TrackBaseObject.cs" />
+    <Compile Include="Objects\TrackObject_Lists.cs" />
+    <Compile Include="Objects\CarObject_Lists.cs" />
+    <Compile Include="Objects\CarSkinObject.cs" />
+    <Compile Include="Data\GraphData.cs" />
+    <Compile Include="Objects\ShowroomObject.cs" />
+    <Compile Include="Data\TagsCollection.cs" />
+    <Compile Include="Objects\ToggleException.cs" />
+    <Compile Include="Objects\TrackObject.cs" />
+    <Compile Include="Objects\CarObject.cs" />
+    <Compile Include="Managers\CarsManager.cs" />
+    <Compile Include="Managers\TracksManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Starters\BaseStarter.cs" />
+    <Compile Include="Starters\IAcsPlatformSpecificStarter.cs" />
+    <Compile Include="Starters\IAcsPrepareableStarter.cs" />
+    <Compile Include="Starters\NaiveStarter.cs" />
+    <Compile Include="Starters\StarterPlus.cs" />
+    <Compile Include="Starters\SseStarter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AcTools\AcTools.csproj">
+      <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>
+      <Name>AcTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FirstFloor.ModernUI\FirstFloor.ModernUI.csproj">
+      <Project>{9a653a28-fe46-40e8-a14f-48b0e325165d}</Project>
+      <Name>FirstFloor.ModernUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StringBasedFilter\StringBasedFilter.csproj">
+      <Project>{e9586699-505a-4349-9cbf-7e8ae1521207}</Project>
+      <Name>StringBasedFilter</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

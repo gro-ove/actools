@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{55B65FB4-92CB-42EF-B4BF-F287810986E1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AcTools</RootNamespace>
+    <AssemblyName>AcTools</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>894b5421</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Magick.NET-x86">
+      <HintPath>..\..\..\Temp\magicknet\6.8\Magick.NET-x86.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AcdFile\AcdEntry.cs" />
+    <Compile Include="AcdFile\Acd.cs" />
+    <Compile Include="AcdFile\AcdEncryption.cs" />
+    <Compile Include="AcdFile\AcdWriter.cs" />
+    <Compile Include="AcdFile\AcdReader.cs" />
+    <Compile Include="AcToolsInformation.cs" />
+    <Compile Include="DataAnalyzer\HashStorage.cs" />
+    <Compile Include="DataAnalyzer\RulesSet.cs" />
+    <Compile Include="DataAnalyzer\RulesSet_Test.cs" />
+    <Compile Include="DataFile\LutDataFile.cs" />
+    <Compile Include="DataFile\RawDataFile.cs" />
+    <Compile Include="DataFile\DataWrapper.cs" />
+    <Compile Include="DataFile\AbstractDataFile.cs" />
+    <Compile Include="DataFile\IniFile.cs" />
+    <Compile Include="Kn5File\Kn5_CreateEmpty.cs" />
+    <Compile Include="Kn5File\Kn5_Stats.cs" />
+    <Compile Include="Kn5File\Kn5_ExportFbxIni.cs" />
+    <Compile Include="Kn5File\Kn5_ExportFbx.cs" />
+    <Compile Include="Kn5File\Kn5_ExportJson.cs" />
+    <Compile Include="Kn5File\Kn5_FromJson.cs" />
+    <Compile Include="Processes\AssistState.cs" />
+    <Compile Include="Processes\Game.cs" />
+    <Compile Include="Processes\Game_Result.cs" />
+    <Compile Include="Processes\Game_Properties.cs" />
+    <Compile Include="Processes\Game_Obsolete.cs" />
+    <Compile Include="Processes\TrickyStarter.cs" />
+    <Compile Include="Processes\IAcsStarter.cs" />
+    <Compile Include="Processes\Showroom_Obsolete.cs" />
+    <Compile Include="Processes\Showroom_KunosShooter.cs" />
+    <Compile Include="Processes\Showroom_ClassicShooter.cs" />
+    <Compile Include="Processes\Showroom_AbstractShooter.cs" />
+    <Compile Include="Processes\Showroom_Shot.cs" />
+    <Compile Include="Processes\Showroom_ShotOld.cs" />
+    <Compile Include="Processes\TemporaryChange.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\AcFixer.cs" />
+    <Compile Include="Utils\FileUtils_Paths.cs" />
+    <Compile Include="Utils\FileUtils_Load.cs" />
+    <Compile Include="Utils\FileUtils_FindRenamed.cs" />
+    <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\Helpers\DateTimeExtension.cs" />
+    <Compile Include="Utils\Helpers\EnumExtension.cs" />
+    <Compile Include="Utils\Helpers\FlexibleParser.cs" />
+    <Compile Include="Utils\Helpers\GeoTagsEntry.cs" />
+    <Compile Include="Utils\Helpers\GoodShuffle.cs" />
+    <Compile Include="Utils\Helpers\LinqExtension.cs" />
+    <Compile Include="Utils\Helpers\JsonExtension.cs" />
+    <Compile Include="Utils\Helpers\DictionaryExtension.cs" />
+    <Compile Include="Utils\Helpers\StreamExtension.cs" />
+    <Compile Include="Utils\Helpers\StringExtension.cs" />
+    <Compile Include="Utils\Helpers\ZipFileExtension.cs" />
+    <Compile Include="Utils\Helpers\Utf8Checker.cs" />
+    <Compile Include="Utils\Helpers\DisposeHelper.cs" />
+    <Compile Include="Utils\ImageUtils_Livery.cs" />
+    <Compile Include="Kn5File\Kn5Header.cs" />
+    <Compile Include="Kn5File\Kn5.cs" />
+    <Compile Include="Kn5File\Kn5_ExportCollada.cs" />
+    <Compile Include="Kn5File\Kn5_ExportDirectory.cs" />
+    <Compile Include="Kn5File\Kn5_FromDirectory.cs" />
+    <Compile Include="Kn5File\Kn5_Save.cs" />
+    <Compile Include="Kn5File\Kn5_FromFile.cs" />
+    <Compile Include="Kn5File\Kn5Reader.cs" />
+    <Compile Include="Kn5File\Kn5Writer.cs" />
+    <Compile Include="Kn5File\Kn5Material.cs" />
+    <Compile Include="Kn5File\Kn5Node.cs" />
+    <Compile Include="Kn5File\Kn5Texture.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Processes\Showroom.cs" />
+    <Compile Include="Utils\ImageUtils.cs" />
+    <Compile Include="Utils\KeyboardManager.cs" />
+    <Compile Include="Utils\DataFixer.cs" />
+    <Compile Include="Utils\Kn5Fixer.cs" />
+    <Compile Include="Utils\LogWatcher.cs" />
+    <Compile Include="Utils\MathUtils.cs" />
+    <Compile Include="Utils\Physics\TorquePhysicUtils.cs" />
+    <Compile Include="Utils\Helpers\ProcessExtension.cs" />
+    <Compile Include="Windows\Input\IInputDeviceStateAdaptor.cs" />
+    <Compile Include="Windows\Input\IInputMessageDispatcher.cs" />
+    <Compile Include="Windows\Input\IInputSimulator.cs" />
+    <Compile Include="Windows\Input\IKeyboardSimulator.cs" />
+    <Compile Include="Windows\Input\IMouseSimulator.cs" />
+    <Compile Include="Windows\Input\InputBuilder.cs" />
+    <Compile Include="Windows\Input\InputSimulator.cs" />
+    <Compile Include="Windows\Input\KeyboardSimulator.cs" />
+    <Compile Include="Windows\Input\MouseButton.cs" />
+    <Compile Include="Windows\Input\MouseSimulator.cs" />
+    <Compile Include="Windows\Input\Native\HARDWAREINPUT.cs" />
+    <Compile Include="Windows\Input\Native\INPUT.cs" />
+    <Compile Include="Windows\Input\Native\InputType.cs" />
+    <Compile Include="Windows\Input\Native\KEYBDINPUT.cs" />
+    <Compile Include="Windows\Input\Native\KeyboardFlag.cs" />
+    <Compile Include="Windows\Input\Native\MouseFlag.cs" />
+    <Compile Include="Windows\Input\Native\MOUSEINPUT.cs" />
+    <Compile Include="Windows\Input\Native\MOUSEKEYBDHARDWAREINPUT.cs" />
+    <Compile Include="Windows\Input\Native\NativeMethods.cs" />
+    <Compile Include="Windows\Input\Native\VirtualKeyCode.cs" />
+    <Compile Include="Windows\Input\Native\XButton.cs" />
+    <Compile Include="Windows\Input\WindowsInputDeviceStateAdaptor.cs" />
+    <Compile Include="Windows\Input\WindowsInputMessageDispatcher.cs" />
+    <Compile Include="Windows\Kernel32.cs" />
+    <Compile Include="Windows\User32.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_ac_app.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AcStarter.exe" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,204 @@
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using AcManager.Annotations;
+using AcManager.Controls.Helpers;
+using AcManager.Pages.Miscellaneous;
+using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Lists;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Navigation;
+
+namespace AcManager.Pages.Dialogs {
+    public partial class SelectCarDialog : INotifyPropertyChanged {
+        public const string UriKey = "SelectAndSetupCarDialog.UriKey";
+
+        private static WeakReference<SelectCarDialog> _instance;
+
+        public static SelectCarDialog Instance {
+            get {
+                if (_instance == null) {
+                    return null;
+                }
+
+                SelectCarDialog result;
+                return _instance.TryGetTarget(out result) ? result : null;
+            }
+        }
+
+        private CarSkinObject _selectedSkin;
+
+        private readonly DelayedPropertyWrapper<CarObject> _selectedCar;
+
+        public CarObject SelectedCar {
+            get { return _selectedCar.Value; }
+            set { _selectedCar.Value = value ?? SelectedCar; }
+        }
+
+        private CarObject _selectedTunableVersion;
+
+        public CarObject SelectedTunableVersion {
+            get { return _selectedTunableVersion; }
+            set {
+                if (Equals(value, _selectedTunableVersion)) return;
+                _selectedTunableVersion = value;
+                OnPropertyChanged();
+
+                SelectedCar = value;
+            }
+        }
+
+        private void SelectedCarChanged(CarObject value) {
+            if (value != null) {
+                value.EnsureSkinsLoadedAsync().Forget();
+                SelectedSkin = value.SelectedSkin;
+                UpdateTunableVersions();
+            }
+
+            SelectedTunableVersion = value;
+            OnPropertyChanged(nameof(SelectedCar));
+
+            if (_list != null) {
+                _list.SelectedItem = value;
+            }
+        }
+
+        private CarObject _previousTunableParent;
+
+        private void UpdateTunableVersions() {
+            if (_selectedCar == null) {
+                TunableVersions.Clear();
+                HasChildren = false;
+                _previousTunableParent = null;
+                return;
+            }
+
+            var parent = SelectedCar.ParentId == null ? SelectedCar : SelectedCar.Parent;
+            if (parent == _previousTunableParent) {
+                return;
+            }
+
+            if (parent == null) {
+                TunableVersions.Clear();
+                HasChildren = false;
+                _previousTunableParent = null;
+                return;
+            }
+
+            _previousTunableParent = parent;
+
+            var children = parent.Children.Where(x => x.Enabled).ToList();
+            HasChildren = children.Any();
+
+            if (!HasChildren) {
+                TunableVersions.Clear();
+                return;
+            }
+
+            TunableVersions.ReplaceEverythingBy(new [] { parent }.Where(x => x.Enabled).Union(children));
+        }
+
+        public CarSkinObject SelectedSkin {
+            get { return _selectedSkin; }
+            set {
+                if (Equals(value, _selectedSkin)) return;
+                _selectedSkin = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _hasChildren;
+
+        public bool HasChildren {
+            get { return _hasChildren; }
+            set {
+                if (Equals(value, _hasChildren)) return;
+                _hasChildren = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public BetterObservableCollection<CarObject> TunableVersions { get; } = new BetterObservableCollection<CarObject>();
+
+        public SelectCarDialog(CarObject car) {
+            _selectedCar = new DelayedPropertyWrapper<CarObject>(SelectedCarChanged);
+
+            SelectedCar = car;
+            _instance = new WeakReference<SelectCarDialog>(this);
+
+            InitializeComponent();
+            DataContext = this;
+
+            Tabs.SelectedSource = ValuesStorage.GetUri(UriKey) ?? Tabs.Links.FirstOrDefault()?.Source;
+
+            Buttons = new [] { OkButton, CancelButton };
+        }
+
+        private void SelectAndSetupCarDialog_OnLoaded(object sender, RoutedEventArgs e) {
+            CarsManager.Instance.WrappersList.ItemPropertyChanged += List_ItemPropertyChanged;
+            CarsManager.Instance.WrappersList.WrappedValueChanged += List_WrappedValueChanged;
+        }
+
+        private void SelectAndSetupCarDialog_OnUnloaded(object sender, RoutedEventArgs e) {
+            CarsManager.Instance.WrappersList.ItemPropertyChanged -= List_ItemPropertyChanged;
+            CarsManager.Instance.WrappersList.WrappedValueChanged -= List_WrappedValueChanged;
+        }
+
+        void List_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName != "ParentId") return;
+
+            var car = sender as CarObject;
+            if (car == null || SelectedCar == null) return;
+
+            if (car.ParentId == SelectedCar.Id) {
+                UpdateTunableVersions();
+            }
+        }
+
+        void List_WrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
+            var car = e.NewValue as CarObject;
+            if (car == null || SelectedCar == null) return;
+
+            if (car.ParentId == SelectedCar.Id) {
+                UpdateTunableVersions();
+            }
+        }
+
+        private AcObjectSelectList.AcObjectSelectListViewModel _list;
+
+        private void Tabs_OnFrameNavigated(object sender, NavigationEventArgs e) {
+            /* process AcObjectSelectList: unsubscribe from old, check if there is one */
+            if (_list != null) {
+                _list.PropertyChanged -= List_PropertyChanged;
+            }
+
+            _list = (((ModernTab)sender).Frame.Content as AcObjectSelectList)?.Model;
+            if (_list == null) return;
+
+            _list.SelectedItem = SelectedCar;
+            _list.PropertyChanged += List_PropertyChanged;
+
+            /* save uri */
+            ValuesStorage.Set(UriKey, e.Source);
+        }
+
+        private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == "SelectedItem") {
+                SelectedCar = _list.SelectedItem as CarObject;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+}

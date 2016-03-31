@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsAppearance" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance settings:SettingsAppearance+AppearanceViewModel}">
+    <UserControl.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+    </UserControl.Resources>
+    <ScrollViewer>
+        <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
+            <ListBox ItemsSource="{Binding AppAppearanceManager.AccentColors}" SelectedItem="{Binding AppAppearanceManager.AccentColor, Mode=TwoWay}" Margin="0 0 0 16">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel MaxWidth="{Binding ActualWidth, ElementName=Panel}" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle Width="40" Height="40" Margin="2">
+                            <Rectangle.Fill>
+                                <SolidColorBrush x:Name="Brush" Color="{Binding}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <DockPanel>
+                <Label>Theme:</Label>
+                <ComboBox ItemsSource="{Binding AppAppearanceManager.Themes}" SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}">
+                <Label>Small font</Label>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding AppAppearanceManager.PopupToolBars}" ToolTip="Don't forget, there is a keyboard shortcut for every button">
+                <Label>Popup toolbars</Label>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding AppAppearanceManager.LargeSubMenuFont}" ToolTip="By the way, try shortcuts like F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc.">
+                <Label>Large search boxes</Label>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding FancyBackgroundManager.Enabled}" ToolTip="Extra fancy">
+                <Label>Dynamic background</Label>
+            </CheckBox>
+
+            <DockPanel>
+                <Label>Transition animation:</Label>
+                <ComboBox ItemsSource="{Binding AppAppearanceManager.FrameAnimations}" SelectedItem="{Binding AppAppearanceManager.FrameAnimation, Mode=TwoWay}"
+                        DisplayMemberPath="DisplayName" />
+            </DockPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

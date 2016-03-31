@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="AcManager.Pages.About.ImportantTipsPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:tools="clr-namespace:AcManager.Tools" xmlns:about="clr-namespace:AcManager.Pages.About" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance about:ImportantTipsPage+ImportantTipsPageViewModel}">
+    <Grid Style="{StaticResource ContentRootWithPadding}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="9" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <!-- link list -->
+            <ListBox ItemsSource="{Binding NotesList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsSynchronizedWithCurrentItem="True">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Mark All As Read" Command="{Binding MarkAllAsReadCommand}" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="10 2 2 2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Ellipse Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="2"
+                                    Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Width="8" Height="8"
+                                    ToolTip="New!" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding DisplayName}" FontSize="{DynamicResource SmallFontSize}"
+                                    TextTrimming="CharacterEllipsis" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- seperator -->
+            <Rectangle Grid.Column="1" Fill="{DynamicResource SeparatorBackground}" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+
+            <!-- content -->
+            <about:PieceOfInformationBlock Grid.Column="2" Margin="32 0 0 0" Piece="{Binding NotesList.CurrentItem}" />
+        </Grid>
+    </Grid>
+</UserControl>

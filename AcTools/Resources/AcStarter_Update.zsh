@@ -1,0 +1,1 @@
+cp ../../SimplestLauncher/bin/Release/SimplestLauncher.exe AcStarter.exe

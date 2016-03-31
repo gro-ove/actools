@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ac="clr-namespace:AcManager.Controls" xmlns:oxy="http://oxyplot.org/wpf">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectBase.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectErrorsSection.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectHeaderSection.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectListBox.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcToolBar.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="ac:OxyPlotGraphViewer" BasedOn="{StaticResource {x:Type oxy:PlotView}}">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+</ResourceDictionary>

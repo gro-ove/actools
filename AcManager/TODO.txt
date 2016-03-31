@@ -1,0 +1,580 @@
+done:
+    + brand badge icon as file drag'n'drop
+        + button
+    + upgrade icon d'n'd
+        + button
+    + custom content removing (context menu)
+    + folder watcher
+    + save
+    + remember selected skins
+    + allow to make year empty
+    + change year with arrows
+    + change year in name
+    + detect year in name
+    + missing properties
+    + url highlight
+    + author/version editor
+        + author list
+    + specs loading
+    + detect country
+    + tags fixing and sorting (context menu?)
+    + missing root directory handling
+    + only unique tags
+    + sorting after reloading
+    + fix damaged json
+    + fix filters
+    + change parent
+        + create missing icon
+        + handling of change parent of parent
+    + cut/copy/paste tag
+    + edit tag
+    + switch to NameEditable
+    + detect missing parent
+    + set some delay to folders scanning 
+        + and try to make it smoother
+    + alternative launch way (SSE)
+    + find renamed files/folders 
+    + remember filters
+    + fix filter section highlight
+    + remember current section
+    + proper description reading/changing
+    + auto-update skins previews
+        + dialog
+        + pp-filter
+        + settings
+            + presets
+        + showroom checking/installing
+        + kunos mode
+        + manual mode
+        × classic mode
+    + tracks
+        + tags
+        + information
+    + addons
+    + improve filters
+        + negative
+        + nor
+        + math filtering
+        + tags
+        + specs
+        + save filters
+    + toolbar
+        + fixed
+        + popup
+    + weather section
+        + change type
+    + track layouts support
+        + layout renaming
+        + whole set renaming
+        + edited raising
+    + fullscreen previews
+    + fix tags context menu
+    + ignore brands case
+    + specs editor
+        + specs clearer?
+        + graphs editor
+    + drive feature
+        + quick drive
+            + switch skins
+            + select car by brands
+            + select track
+            + condition fields
+            + conditions to race.ini values
+            + autoupdate conditions
+            + presets
+    + select something legit as a default weather/car/track/etc
+    + fix presets combobox
+    + skip reloading on app changes!
+    + specs editor
+    + hotkeys
+    + auto-update skins colors
+    + keep changes while reloading
+    + error fixer
+        + renamed file founder
+        + damaged json reader
+            + arrays
+            + curves
+            + missing schemes
+    + view presets menu as a tree
+    + update preview for only one skin
+    + replays section
+        + detect used track
+    + showroom filtering (tags, year, etc)
+    + deal with sorting, resorting for watching
+    + tags on lost focus
+    + update selected pages
+    + fix filter auto-update
+    + fix popup toolbars
+    + skins editor
+        + live skins viewer
+        + psd support
+    + Go! style for buttons (with disabled version)
+    + drive feature
+        + quick drive
+            + select car by brands
+                + fix car brands selection
+                + switch between parent+childs
+                + adjustments
+                + change car selection lists to that page
+                + remember position
+                    + working back button (T2)
+                + dynamically update list when new fitting car is loaded
+            + select track
+                + fix tracks selection (list is cutted)
+                + implement track's categories
+                    > kunos, circuit, hillclimb, drift, rally, openworld
+                    + wait for (T1)
+                    + proper pages (brands style)
+            + detailed information
+            + assists
+                + load assists ingame
+                + rearrange everything in dialog
+        + online
+            + full information
+            + car select
+            + toolbar
+                + popup mode
+            + launch
+            + ping
+                + automatically
+                + why does it crashing?
+            + update information
+            + show possible errors from a start
+            + load content automatically
+            + show countries flags
+            + password
+                + remember password to server
+        + career
+            + series
+            + ignore series0
+            + save only available
+            + load/save state
+                + sync state with objects
+            + disable intro for not available careers
+            + events
+                + isavailable and special mark for championships
+            + start racing
+                + some uiracingstarter on .Tools level?
+            + show conditions
+            + show racing details for weekend
+            + show assists presets
+            + receive results
+                + save results
+            + championships
+                + show table
+                    + player's car
+                + handle results
+                + restart option
+            + weekends
+            + select skin
+            + force exit from event page if selected career isn't available
+            + pass errors to careerobject level
+    + find Kunos content
+        + cars
+        + tracks
+        + showrooms
+    + some system for downloadable years, badges, Kunos content lists and stuff (T1)
+    + deal with KeepContentAlive! (T2)
+    + trim name on loading
+    + showrooms
+        + figure out what to show
+        + previews
+    + fix placeholders style
+    + year database
+    + improve assets tooltips
+    + preview tooltips for presets
+    + temperature rounding
+    + args from config
+    + only one instance at the time
+        + one system to process input or drag'n'dropped files
+        + process replay files too
+        + and kn5 files, as a showroom
+        + process original args too
+    + improve filters
+        + auto-update filtered lists on properties changing
+            × or, maybe, update button?
+    + downloadable content — checksum!
+    + dynamic background
+    + that alternative way to load acobjects?
+    + traction loss: smart textbox
+    + require Steam to use
+        + optional flag
+    + placeholders
+    + improved tabs
+        + shortcuts
+            + ctrl+shift+t
+        + better styles
+        + optional bigger size
+    + AI drivers
+        + names
+        + nationalities
+        + types
+            + same car
+            + same group
+            + allow to customize everything
+                + using lua scripts
+            + by filter
+    + app autoupdating
+        × considering steam id or another pc id
+    + bigger search area, optional
+    + remake uri saving
+    + browser-like shortcuts
+    + replace cube icon to apply icon
+    + carobject as content manager
+    + lua scripting support? (≈600 KB)
+    + rewrite uri saving for mainwindow
+    + don't save selected skin/event if it's the first one
+    + remove \r in description on saving
+    + driver's name
+    + drive option: autostart race
+    + tracks
+    + car skins
+    + AI drivers
+        + custom list
+    + special flags
+        + local data
+        + disable AcRootDirectory.CheckDirectory (always true)
+    + hide .update.exe
+    + set player name properly
+        + online
+    + new much better acobject/acmanager system
+        + find a way deal with lists/wrappers/placeholders/bindings
+        + rewrite objects and managers
+        + rewrite UI
+        + sorting for AcLoadedOnlyCollection?
+    + “player” as default
+    + special drive dialog
+        + get results
+            + race/weekend/by sessions
+    + errors raising
+    + don't create disabled folder automatically
+        + watch when will be created
+    + “about” section
+        + introduction
+        + release notes
+        + help
+    + improve tricky starter
+    + third starter based on patching
+        > it works!
+        + add as an addon
+        + allow to switch between stuff
+        + add special tab with selection
+        + describe positive sides and flaws for everything
+        + automatically switch between starters on addon disabling
+    + dynamic background
+
+fixme:
+    - previews loading (could be a much more serious problem)
+    - very slow navigation (pages are too heavy?)
+    - data removed (ui_showroom.json, for example, deleted), but name is still 
+            the same - error? maybe acobject should reset data somehow?
+    - notifypropertychanged for commands
+    - MUI thing with Loaded/Unloaded!
+    - show only enabled skins on other pages
+    - one big NLUA bug
+    - pastload problem!
+    - real conditions
+    - password selection bug!
+
+architectural problems:
+    - complete list reload
+
+todo:
+    - showroom from QD section and not only
+
+    + intellectual content auto-update
+        + cars
+            - skins
+        + showrooms
+        - tracks
+
+    - car mod installation
+        - from archive
+            + basic decompression support
+            - encryption
+            - partial archives?
+        - from folder
+        - selectable update
+        - check for changes?
+
+    - track mod installation
+    - showroom mod installation
+
+    - fix brand fitting on car's selection dialog
+
+    + new much better acobject/acmanager system
+        - add brand/car class/etc to suggestion lists on editing
+        - track: proper HandleChangedFile for extra configurations
+        - Car_ParentIsMissing + Watching (add/remove automatically)
+
+    + drive feature
+        + quick drive
+            + select car by brands
+                - brands cache!
+                - optional list mode?
+                × back button?
+            - tracks by countries
+            - weekends
+            - drag-racing
+        + online
+            + fallback servers
+            + more detailed list view
+                + fix background
+                + fix cars
+                + proper tooltips
+                + try to fix performance issues
+            + lan
+                + setting for ports
+                + direct connection by ip:port
+                    + save in separate file (files?)
+                    + recent servers
+            + filters:
+                + password
+                + filter-in-filter
+                - session times
+                - session durations
+                - player's name
+                - booking
+                - time left
+            + quick filters
+                - saving
+            - fix tab closing
+            - update filtered list on change
+            - booking
+            - favorites
+            - periodic refreshing of all servers 
+            - periodic refreshing of selected server
+            - refresh whole list
+            - list all cars
+            - stop loading while tab is switched
+                - use smart AcManager system?
+                - disable loading for AcManager as well?
+            - keyboard shortcuts
+            - auto saving replays
+            - car/track stats in tooltip
+            - custom sorting
+        - test and fix for AcManager autoupdating feature
+            - handle obsolete!
+        - challenges
+        - handle cars without previews
+            - without skins?
+        - special options
+            - syncronized steering wheel
+            - hidden steering wheel
+            - hud configuration
+            - quickly switchable controls configs?    
+    - car setups management
+    - detect country label by country/nationality name
+
+    - weak reference for collectionview
+    - go buttons keyboard shortcut
+        - special case for try button in drive window
+
+    + skins manager
+        + proper manager functions (async load data about everything and stuff)
+        - proper attributes
+        - deal with window overlapping
+        - enabling/disabling
+        - AcObjectsTester.ParameterNameFromLeftPart
+    - copy track ui properties to other configurations
+        - context menu
+        - button in toolbar
+    + deleting content (button in toolbar)
+        + showroom, car
+        + track
+        - skin
+    - autoadd country on tags cleaning
+    + error fixer
+        + showroom missing kn5 error detection
+        - track missing kn5 error detection
+        - missing sound detection
+        - missing collider.kn5 detection
+        - missing properties fixer
+            + missing name error
+        - CarSkins_SkinsAreMissing
+    - tracks specs editor
+    - remove double spaces, trim strings
+    - car skins errors raising
+    - detect invalid symbols in IDs
+
+    - skins removing
+
+    - auto-update body shadows
+    - checkboxes
+        - custom lists?
+    - progress in taskbar
+    - simple presets mode?
+    - context menu for lists in aclistpages
+        - reload list
+    - option for automatically add .acreplay for replays
+    - context menu for new filters
+        - tags
+        - properties
+
+    - QD: fixed AI order
+        - custom skins?
+
+    - update years database
+
+    - deal with filtering children
+        - filter only by parents in cars tab
+        - filter somehow else in quick drive tab
+
+    - check how auto-update interferes with dialogs
+        - change parent
+        - brand/upgrade icon!
+        - auto-update previews
+
+    + built-in browser
+        - some communication system
+        - find description
+        - track geotags editing
+            - timezone editing
+
+    - favorites
+
+    + additional section “stuff”
+        + weather
+        + replays
+            - warning for cr (will be lost without renaming)
+        - pp filters
+        - apps
+        - fonts
+            - detect what car uses what font
+
+    - description: convert html to bb and back?
+    - improve showroom generator
+        - async
+        - textures as streams
+        - testing
+        - light direction
+        - additional surface?
+
+    - replays filtering
+    - screenshots tab
+
+later:
+    - recent & shortcuts page
+        - solve architectural problems?
+        - pin & unpin servers to move them from recent to main list
+        - watching
+        - customizable recent size
+        - sorting, grouping
+        - find a way to make unavaliable servers visible
+
+    - try that idea with reusing selectedsomethingpage
+
+    - records, best laps, stats
+        - collect and display driving stats?
+        - save all results in database
+        - some viewer for that database
+        - mark new records in gamedialog
+        - sqlite support
+            - move values to sqlite?
+    - gamedialog: separately show drivers (wrekfest-style):
+        - best laptime
+
+    - show flags for nationalities
+
+    - download addons automatically?
+        - or show some message about them?
+
+    - ac options
+        - presets
+        - quick switching
+        - switching for auto-update previews
+        - wrong resolution warning
+
+    - some 100%-customizable mode?
+        > skins, names, AI level, etc
+
+    - color picker
+    - addons directory watching
+    - reducing image footprint
+
+    - custom track presets for QD
+
+    ? drag'n'drop tags
+    ? drag'n'drop tabs
+
+    - analyzer (one big tool)
+        - data analyzer
+            - wrong weight
+            - wrong power
+            - rwd/fwd/awd
+            - unoriginal physic detection
+            - http://planetcalc.ru/1908/
+            - regenerate tags automatically
+        - kn5 analyzer
+            - missing susp
+            - wrong blurred rims
+            - cockpit_lr, steer_lr
+            - detect broakable windows, dirt, int windscreen
+            - quality analyzer:
+                - tris count
+                - wrong textures format
+        - sound analyzer
+            - unoriginal sound detection
+            - unoptimized sound detection
+            - broken sound detection?
+
+    - change serverentry to be inherited from acobjectnew?
+    - run game or install mods from browser using special acmanager:// protocol?
+
+    - highscores
+        - sync with OV1?
+        - or maybe replace OV1 with something similar self-written?
+
+    - optional auto-change brand badge
+    - optional brand-in-name (and optional brand-out-name)?
+
+    - hud configuration editor (apps tab?)
+    + skins editor
+        - uv extractor
+    + special flags
+        - define disabled files location
+        - define temporary files location
+    - map generator
+    - regenerate outline.png from map.png?
+    - addons updating
+    - weather instead of time?
+    - special DisplayName for cars?
+    - number plate generator
+
+    - optional use logo.png instead of brand badge in selectedcarpage
+    - optional bind classes list to race, street, drift?
+
+    + specs editor
+        - optional forced spaces
+        - optional format?
+
+    - font generator
+    - improve image cropper 
+    - url/stuff bb protection
+    - check new content version on acclub
+    - check new content version on RD?
+    - 3d-viewer in-app
+    - warn about stuff like "Mercedes"?
+    - fix bb parsing
+
+    - image cache?
+
+    ? get driver's name from default launcher
+        ? and from Steam
+
+    - mods section?
+        - new damaged glass
+        - disable WRONG_WAY
+        - update damage icons
+        - remove that watermark
+        - apps pin icons
+        - developer mode
+        - screenshots as bmp?
+            - convert screenshots to png/jpg with high quality
+
+    - dispose all CancellationTokenSource
+    - fix dynamic tab (back button problem)
+
+    - localization?
+    - tests?
+    - profiles?

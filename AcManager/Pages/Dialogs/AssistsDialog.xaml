@@ -1,0 +1,138 @@
+﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.AssistsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:viewModels="clr-namespace:AcManager.Controls.ViewModels;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="Assists" d:DataContext="{d:DesignInstance viewModels:AssistsViewModel}" MaxWidth="99999">
+
+    <mui:ModernDialog.Resources>
+        <Thickness x:Key="EntryMargin">0 0 10 10</Thickness>
+    </mui:ModernDialog.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="240" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+
+        <!-- first row -->
+        <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding AutoShifter}" Margin="{StaticResource EntryMargin}"
+                ToolTip="Don't confuse it with automatic gearbox">
+            <Label>_Automatic shifting</Label>
+        </CheckBox>
+
+        <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding AutoClutch}" Margin="{StaticResource EntryMargin}"
+                ToolTip="Automatically press clutch on shifting">
+            <Label>Automatic _clutch</Label>
+        </CheckBox>
+
+        <!-- second row -->
+        <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutoBlip}" Margin="{StaticResource EntryMargin}"
+                ToolTip="Automatically syncronize RPM on downshifts">
+            <Label>Auto_blip</Label>
+        </CheckBox>
+
+        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IdealLine}" Margin="{StaticResource EntryMargin}" ToolTip="Show ideal driving line">
+            <Label>Ideal _line</Label>
+        </CheckBox>
+
+        <!-- third row -->
+        <StackPanel Orientation="Vertical" Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="0" ToolTip="Optimise grip during acceleration">
+            <Grid Margin="0 0 0 5">
+                <TextBlock Text="Traction control:" Style="{StaticResource LabelWithPadding}" />
+            </Grid>
+            <ComboBox Margin="5 0 5 0" SelectedItem="{Binding TractionControl}" ItemsSource="{Binding AssistStates}" />
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="1" ToolTip="Anti-lock braking system">
+            <Grid Margin="0 0 0 5">
+                <TextBlock Text="ABS:" Style="{StaticResource LabelWithPadding}" />
+            </Grid>
+            <ComboBox Margin="5 0 5 0" SelectedItem="{Binding Abs}" ItemsSource="{Binding AssistStates}" />
+        </StackPanel>
+
+        <!-- forth row -->
+        <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="0" Margin="{StaticResource EntryMargin}"
+                ToolTip="Unrealistic, but could be helpful if you're learning how to drive or drift">
+            <Grid Margin="0 0 0 5">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="_Stability control: " Target="{x:Reference StabilityControlTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
+                            Padding="10 0 0 0" />
+                    <TextBox Name="StabilityControlTextBox" Text="{Binding StabilityControl, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                            mui:TextBoxAdvancement.SpecialMode="Integer" />
+                    <Label Content="%" Target="{x:Reference StabilityControlTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                </StackPanel>
+            </Grid>
+            <Slider Minimum="0" Maximum="100" Value="{Binding StabilityControl}" Margin="0 0 0 5" TickFrequency="10" TickPlacement="BottomRight"
+                    IsSnapToTickEnabled="False" />
+        </StackPanel>
+
+        <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding FuelConsumption}" Margin="{StaticResource EntryMargin}" ToolTip="Fuel consumption">
+            <Label>_Fuel consumption</Label>
+        </CheckBox>
+
+        <!-- fifth row -->
+        <StackPanel Orientation="Vertical" Grid.Row="4" Grid.Column="0" Margin="{StaticResource EntryMargin}"
+                ToolTip="Damageable engine, gearbox, suspension and stuff">
+            <Grid Margin="0 0 0 5">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Mechanical _damage: " Target="{x:Reference MechanicalDamageTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
+                            Padding="10 0 0 0" />
+                    <TextBox Name="MechanicalDamageTextBox" Text="{Binding Damage, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                            mui:TextBoxAdvancement.SpecialMode="Integer" />
+                    <Label Content="%" Target="{x:Reference MechanicalDamageTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                </StackPanel>
+            </Grid>
+            <Slider Minimum="0" Maximum="100" Value="{Binding Damage}" Margin="0 0 0 5" TickFrequency="10" TickPlacement="BottomRight"
+                    IsSnapToTickEnabled="True" />
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="4" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="Multipler for tyre wear">
+            <Grid Margin="0 0 0 5">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Tyre Wear: " Target="{x:Reference TyreWearTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" Padding="10 0 0 0" />
+                    <TextBox Name="TyreWearTextBox" Text="{Binding TyreWearMultipler, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                            mui:TextBoxAdvancement.SpecialMode="Number" />
+                    <Label Content="x" Target="{x:Reference TyreWearTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                </StackPanel>
+            </Grid>
+            <Slider Minimum="0" Maximum="5" Value="{Binding TyreWearMultipler}" Margin="0 0 0 5" TickFrequency="1" TickPlacement="BottomRight"
+                    IsSnapToTickEnabled="False" />
+        </StackPanel>
+
+        <!-- sixth row -->
+        <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding TyreBlankets}" Margin="{StaticResource EntryMargin}" ToolTip="Heat tires in pits">
+            <Label>_Tyre blankets</Label>
+        </CheckBox>
+
+        <StackPanel Orientation="Vertical" Grid.Row="5" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="Multipler for slipstream effect">
+            <Grid Margin="0 0 0 5">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Slipstream Effect: " Target="{x:Reference SlipSteamTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
+                            Padding="10 0 0 0" />
+                    <TextBox Name="SlipSteamTextBox" Text="{Binding SlipSteamMultipler, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                            mui:TextBoxAdvancement.SpecialMode="Integer" />
+                    <Label Content="x" Target="{x:Reference SlipSteamTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                </StackPanel>
+            </Grid>
+            <Slider Minimum="0" Maximum="10" Value="{Binding SlipSteamMultipler}" Margin="0 0 0 5" TickFrequency="1" TickPlacement="BottomRight"
+                    IsSnapToTickEnabled="True" />
+        </StackPanel>
+    </Grid>
+
+    <mui:ModernDialog.ButtonsRowContent>
+        <controls:UserPresetsControl UserPresetable="{Binding}" />
+    </mui:ModernDialog.ButtonsRowContent>
+</mui:ModernDialog>

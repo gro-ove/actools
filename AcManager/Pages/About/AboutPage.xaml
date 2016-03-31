@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="AcManager.Pages.About.AboutPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}">
+    <StackPanel>
+        <TextBlock Style="{StaticResource Heading1}">Content Manager</TextBlock>
+        <mui:BbCodeBlock Margin="20">Replacement for default Assetto Corsa launcher and content management app. In development. From authors of [url="http://www.racedepartment.com/downloads/actools-cars-manager.6518/"]Cars Manager[/url].</mui:BbCodeBlock>
+        <TextBlock Style="{StaticResource Heading2}">Key features:</TextBlock>
+        <StackPanel Margin="20">
+            <TextBlock>• Quick drive, career &amp; online mode</TextBlock>
+            <TextBlock>• Real conditions</TextBlock>
+            <TextBlock>• Fast startup</TextBlock>
+            <TextBlock>• Themes</TextBlock>
+            <TextBlock>• Cars, tracks and showrooms management</TextBlock>
+            <TextBlock>• Custom showroom for skins drawing</TextBlock>
+        </StackPanel>
+        <mui:BbCodeBlock>More information [url="http://acstuff.ru/app/"]here[/url] and [url="https://ascobash.wordpress.com/category/stuff/wip/content-manager-wip/"]here[/url]. If you'd like to report about any bug, or you have any idea or suggestion about this app, [url="mailto:illvdg13@gmail.com"]please contact us[/url].</mui:BbCodeBlock>
+    </StackPanel>
+</UserControl>

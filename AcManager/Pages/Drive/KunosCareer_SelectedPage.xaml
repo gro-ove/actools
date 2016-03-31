@@ -1,0 +1,497 @@
+﻿<UserControl x:Class="AcManager.Pages.Drive.KunosCareer_SelectedPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
+        xmlns:helpers="clr-namespace:FirstFloor.ModernUI.Helpers;assembly=FirstFloor.ModernUI"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:acObjectsNew="clr-namespace:AcManager.Tools.AcObjectsNew;assembly=AcManager.Tools" xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:acObjects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
+        xmlns:effects="clr-namespace:FirstFloor.ModernUI.Effects;assembly=FirstFloor.ModernUI"
+        xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
+        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:achelpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance drive:KunosCareer_SelectedPage+KunosCareer_SelectedPageViewModel}" Loaded="KunosCareer_SelectedPage_OnLoaded"
+        Unloaded="KunosCareer_SelectedPage_OnUnloaded">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="ItemTemplate" DataType="{x:Type acObjects:KunosCareerEventObject}">
+                <Grid Width="200" Height="100" Background="Black" ClipToBounds="True">
+                    <Image RenderOptions.BitmapScalingMode="HighQuality" ToolTip="{Binding DisplayName}"
+                            Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
+                            StretchDirection="DownOnly" Name="Image" />
+
+                    <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Name="TopPanel"
+                            Text="{Binding DisplayType}" Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}"
+                            Visibility="{Binding KunosCareerType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.SingleEvents}}">
+                        <TextBlock.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform />
+                                <SkewTransform />
+                                <RotateTransform />
+                                <TranslateTransform />
+                            </TransformGroup>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+
+                    <Grid VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}" Name="BottomPanel">
+                        <Grid.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform />
+                                <SkewTransform />
+                                <RotateTransform />
+                                <TranslateTransform />
+                            </TransformGroup>
+                        </Grid.RenderTransform>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Foreground="White" HorizontalAlignment="Left" Margin="4 4 24 0" Text="{Binding Car.DisplayName}" Name="CarName"
+                                FontSize="{DynamicResource SmallFontSize}" />
+                        <TextBlock Grid.Row="1" Foreground="White" HorizontalAlignment="Left" Margin="4 0 24 4" Text="{Binding TrackObject.LayoutName}"
+                                Name="TrackName" FontSize="{DynamicResource SmallFontSize}" />
+                    </Grid>
+
+                    <TextBlock Text="{Binding TakenPlace, Converter={StaticResource OrdinalizingConverter}}" Style="{StaticResource Heading1}" Padding="8"
+                            TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Name="TakenPlaceText"
+                            Background="{StaticResource DarkenPanel}" />
+
+                    <Grid VerticalAlignment="Bottom" Height="{Binding ActualHeight, ElementName=BottomPanel}" Name="TakenPlaceIcon">
+                        <Ellipse Width="8" Height="8" Margin="8 4" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
+                    </Grid>
+
+                    <Border BorderBrush="{StaticResource Completed}" BorderThickness="1" Visibility="Collapsed" Name="FullyFinished" />
+                </Grid>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                        <Setter TargetName="Image" Property="Effect">
+                            <Setter.Value>
+                                <effects:GrayscaleEffect SaturationFactor="0" />
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding IsPassed}" Value="True">
+                        <Setter TargetName="TakenPlaceText" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="TopPanel" Property="Visibility" Value="Collapsed" />
+                        <Setter TargetName="BottomPanel" Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding TakenPlace}" Value="1">
+                        <Setter TargetName="Image" Property="Effect" Value="{x:Null}" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Duration="0:0:0.12" To="-40" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" />
+                                    <DoubleAnimation Duration="0:0:0.12" To="40" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" />
+                                    <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <Style x:Key="TargetValue" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="FontWeight" Value="Bold" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="True">
+                        <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+                        <Setter Property="TextDecorations" Value="Strikethrough" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Style="{StaticResource ContentRootWithPadding}">
+        <!--career errors-->
+        <controls:AcObjectErrorsSection AcObject="{Binding AcObject}" />
+
+        <Grid Visibility="{Binding AcObject.HasErrors, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" Name="ContentGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="124" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="460" />
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.Row="0" Grid.ColumnSpan="3" Margin="0 -12 0 24">
+                <userControls:KunosCareerBlock Width="480" Margin="0 9 24 0" DockPanel.Dock="Left" DataContext="{Binding AcObject}">
+                    <userControls:KunosCareerBlock.ButtonPlaceholder>
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="0 9 0 -9">
+                                <Button PreviewMouseLeftButtonUp="ResetButton_OnMouseLeftButtonUp" Margin="0 0 4 0"
+                                        Visibility="{Binding ChampionshipResetCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">Reset</Button>
+
+                                <Grid
+                                        Visibility="{Binding NextCareerObject, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
+                                    <Grid.ToolTip>
+                                        <ToolTip>
+                                            <StackPanel Margin="4">
+                                                <TextBlock Text="{Binding NextCareerObject.DisplayName}" />
+                                                <StackPanel
+                                                        Visibility="{Binding NextCareerObject.IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse'}"
+                                                        Margin="0 4 0 0" Orientation="Horizontal">
+                                                    <TextBlock Text="Left to earn: " />
+
+                                                    <StackPanel Orientation="Horizontal"
+                                                            Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.SingleEvents}}">
+                                                        <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Gold}" />
+                                                        <TextBlock Text="{Binding FirstPlacesNeeded, StringFormat='{}{0}, '}" FontWeight="Bold" />
+
+                                                        <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Silver}" />
+                                                        <TextBlock Text="{Binding SecondPlacesNeeded, StringFormat='{}{0}, '}" FontWeight="Bold" />
+
+                                                        <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Bronze}" />
+                                                        <TextBlock Text="{Binding ThirdPlacesNeeded}" FontWeight="Bold" />
+                                                    </StackPanel>
+
+                                                    <TextBlock
+                                                            Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.Championship}}">
+                                                        <Run Text="{Binding ChampionshipPointsNeeded}" FontWeight="Bold" />
+                                                        <Run
+                                                                Text="{Binding ChampionshipPointsNeeded, Converter={StaticResource PluralizingConverter}, ConverterParameter='point'}" />
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </ToolTip>
+                                    </Grid.ToolTip>
+                                    <Button IsEnabled="{Binding NextCareerObject.IsAvailable}" PreviewMouseLeftButtonUp="NextButton_OnMouseLeftButtonUp">Next</Button>
+                                </Grid>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="0 0 0 12">
+                                <TextBlock Text="Series goal: " />
+
+                                <StackPanel Orientation="Horizontal"
+                                        Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.SingleEvents}}">
+                                    <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Gold}" />
+                                    <TextBlock Text="{Binding FirstPlacesGoal, StringFormat='{}{0}, '}" FontWeight="Bold" />
+
+                                    <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Silver}" />
+                                    <TextBlock Text="{Binding SecondPlacesGoal, StringFormat='{}{0}, '}" FontWeight="Bold" />
+
+                                    <Ellipse Style="{StaticResource PlaceMark.Inline}" Fill="{StaticResource Bronze}" />
+                                    <TextBlock Text="{Binding ThirdPlacesGoal}" FontWeight="Bold" />
+                                </StackPanel>
+
+                                <TextBlock
+                                        Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.Championship}}">
+                                <Run Text="{Binding ChampionshipPointsGoal}" FontWeight="Bold" />
+                                <Run Text="{Binding ChampionshipPointsGoal, Converter={StaticResource PluralizingConverter}, ConverterParameter='point'}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </DockPanel>
+                    </userControls:KunosCareerBlock.ButtonPlaceholder>
+                </userControls:KunosCareerBlock>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Name="TableSection"
+                        PreviewMouseWheel="TableSection_OnPreviewMouseWheel" Margin="0 0 0 -12">
+                    <ScrollViewer.Resources>
+                        <mui:BindingProxy x:Key="TableSectionProxy" Data="{Binding ActualWidth, ElementName=TableSection}" />
+                    </ScrollViewer.Resources>
+
+                    <DataGrid ItemsSource="{Binding AcObject.ChampionshipDriversView}" Style="{StaticResource DataGrid.ReadOnly}" HeadersVisibility="None">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="40" Header="" Binding="{Binding Points}" SortDirection="Ascending" SortMemberPath="Points" />
+                            <DataGridTemplateColumn Width="1.5*" Header="Name" SortMemberPath="Name" CellTemplate="{StaticResource DataGridCell.DriverName}" />
+                            <DataGridTemplateColumn Width="2*" Header="Car" SortMemberPath="Car.DisplayName" CellTemplate="{StaticResource DataGridCell.Car}"
+                                    Visibility="{Binding Data, Source={StaticResource TableSectionProxy}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='450'}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </ScrollViewer>
+            </DockPanel>
+
+            <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding AcObject.LoadedOnlyEvents}"
+                    SelectedItem="{Binding AcObject.SelectedEvent, Mode=TwoWay}" ScrollViewer.CanContentScroll="False" Name="ListBox"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                    ItemTemplate="{StaticResource ItemTemplate}" Margin="-4 0 -4 12" ScrollViewer.ScrollChanged="ListBox_ScrollChanged"
+                    PreviewMouseDoubleClick="ListBox_OnPreviewMouseDoubleClick" SelectionChanged="ListBox_OnSelectionChanged">
+                <i:Interaction.Behaviors>
+                    <helpers:HorizontalScrollBehavior />
+                </i:Interaction.Behaviors>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+                        <Setter Property="FontWeight" Value="Normal" />
+                        <Setter Property="Padding" Value="4" />
+
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
+                                <Setter Property="FontWeight" Value="Normal" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel ScrollUnit="Pixel" IsVirtualizing="True" VirtualizationMode="Recycling" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+
+            <Grid Grid.Row="2" Grid.Column="1" DataContext="{Binding AcObject.SelectedEvent}" IsEnabled="{Binding GoCommand.IsAbleToExecute}">
+                <Grid.Resources>
+                    <Style TargetType="DockPanel">
+                        <Setter Property="Margin" Value="0 0 8 8" />
+                    </Style>
+                    <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+                        <Setter Property="Margin" Value="0 0 0 4" />
+                        <Setter Property="DockPanel.Dock" Value="Top" />
+                    </Style>
+                    <Style x:Key="Value" TargetType="TextBlock" BasedOn="{StaticResource Heading1}">
+                        <Setter Property="FontSize" Value="20" />
+                        <Setter Property="Margin" Value="20 0 0 0" />
+                    </Style>
+                </Grid.Resources>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1.5*" MinWidth="149" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!--event errors-->
+                <controls:AcObjectErrorsSection AcObject="{Binding}" Grid.ColumnSpan="2" />
+
+                <!--event params-->
+                <DockPanel Grid.Column="0" Grid.Row="1">
+                    <Label>Time:</Label>
+                    <TextBlock Text="{Binding DisplayTime}" Style="{StaticResource Value}" />
+                </DockPanel>
+                <DockPanel Grid.Column="1" Grid.Row="1">
+                    <Label>Weather:</Label>
+                    <TextBlock Text="{Binding WeatherObject.DisplayName}" Style="{StaticResource Value}" />
+                </DockPanel>
+                <DockPanel Grid.Column="0" Grid.Row="2">
+                    <Label>Temperature:</Label>
+                    <TextBlock Text="{Binding Temperature, StringFormat='{}{0:F0} °C'}" Style="{StaticResource Value}" />
+                    <DockPanel.ToolTip>
+                        <TextBlock Text="{Binding RoadTemperature, StringFormat='{}Road temperature: {0:F0} °C'}" />
+                    </DockPanel.ToolTip>
+                </DockPanel>
+                <DockPanel Grid.Column="1" Grid.Row="2">
+                    <Label>Track Surface:</Label>
+                    <TextBlock Text="{Binding TrackPreset.Name}" Style="{StaticResource Value}" />
+                </DockPanel>
+
+                <!--race params-->
+                <DockPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
+                        Visibility="{Binding StartingPosition, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                    <Label>Starting position:</Label>
+                    <TextBlock Style="{StaticResource Value}">
+                        <Run Text="{Binding StartingPosition, Converter={StaticResource OrdinalizingConverter}, Mode=OneWay}" />
+                        <Run Text="(" /><Run Text="{Binding OpponentsCount, Mode=OneWay}" />
+                        <Run Text="{Binding OpponentsCount, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='opponent'}" /><Run
+                                Text=")" />
+                    </TextBlock>
+                </DockPanel>
+                <DockPanel Grid.Column="0" Grid.Row="4">
+                    <DockPanel.Style>
+                        <Style TargetType="DockPanel" BasedOn="{StaticResource {x:Type DockPanel}}">
+                            <Setter Property="Visibility" Value="Hidden" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding StartingPosition}" Value="{x:Null}" />
+                                        <Condition Binding="{Binding Laps, Converter={StaticResource NullToVisibilityConverter}}" Value="Collapsed" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+                    <Label>Opponents:</Label>
+                    <TextBlock Style="{StaticResource Value}" Text="{Binding OpponentsCount, Mode=OneWay}" />
+                </DockPanel>
+
+                <DockPanel Grid.Column="0" Grid.Row="3"
+                        Visibility="{Binding Laps, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                    <Label>Laps:</Label>
+                    <TextBlock Text="{Binding Laps}" Style="{StaticResource Value}" />
+                </DockPanel>
+                <DockPanel Grid.Column="1" Grid.Row="3" Grid.RowSpan="2"
+                        Visibility="{Binding Laps, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                    <Label>AI Level:</Label>
+                    <Grid>
+                        <TextBlock Text="{Binding AiLevel, StringFormat='{}{0}%'}" Style="{StaticResource Value}"
+                                Visibility="{Binding Data.DriveSettings.KunosCareerUserAiLevel, Source={StaticResource DataContextProxy}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                        <StackPanel
+                                Visibility="{Binding Data.DriveSettings.KunosCareerUserAiLevel, Source={StaticResource DataContextProxy}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="{Binding UserAiLevel, StringFormat='{}{0}%'}" Style="{StaticResource Value}" />
+                            <Slider Minimum="75" Maximum="100" Value="{Binding UserAiLevel}" TickFrequency="5" IsSnapToTickEnabled="False"
+                                    TickPlacement="TopLeft" />
+                            <StackPanel.ToolTip>
+                                <ToolTip Margin="0" Padding="4">
+                                    <TextBlock Text="{Binding AiLevel, StringFormat='{}Recommended value: {0}%'}" />
+                                </ToolTip>
+                            </StackPanel.ToolTip>
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="{Binding AiLevel, StringFormat='{}Recommended value: {0}%'}" StaysOpenOnClick="True" />
+                                    <MenuItem Header="Reset to Recommended Value" Command="{Binding ResetUserAiLevelCommand}" />
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
+                        </StackPanel>
+                    </Grid>
+                </DockPanel>
+            </Grid>
+
+            <!--car and track previews-->
+            <ScrollViewer Grid.Row="2" Grid.Column="0" Width="240" Margin="0 0 24 0" DataContext="{Binding AcObject.SelectedEvent}"
+                    HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                    Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
+                <StackPanel>
+                    <Image Margin="0 0 0 8" Source="{Binding CarSkin.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
+                            RenderOptions.BitmapScalingMode="HighQuality" PreviewMouseLeftButtonDown="CarPreview_OnPreviewMouseLeftButtonDown">
+                        <Image.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Change Skin" IsEnabled="{Binding Source={x:Static achelpers:SettingsHolder.Drive}, Path=KunosCareerUserSkin}"
+                                        PreviewMouseLeftButtonUp="ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp" />
+                            </ContextMenu>
+                        </Image.ContextMenu>
+                        <Image.ToolTip>
+                            <ToolTip>
+                                <StackPanel Margin="4 8">
+                                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding Car.DisplayName}" Margin="0 0 0 4" />
+                                    <userControls:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}"
+                                            Width="512" MaxHeight="320" />
+                                </StackPanel>
+                            </ToolTip>
+                        </Image.ToolTip>
+                    </Image>
+                    <Grid Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Image Source="{Binding TrackObject.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
+                                RenderOptions.BitmapScalingMode="HighQuality" />
+                        <Image Source="{Binding TrackObject.OutlineImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="Uniform"
+                                RenderOptions.BitmapScalingMode="HighQuality" StretchDirection="DownOnly" MaxWidth="240" MaxHeight="135"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Grid.ToolTip>
+                            <ToolTip>
+                                <StackPanel Margin="4 8">
+                                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding TrackObject.DisplayName}" Margin="0 0 0 4" />
+                                    <userControls:TrackBlock Track="{Binding TrackObject}" Width="512" MaxHeight="320" />
+                                </StackPanel>
+                            </ToolTip>
+                        </Grid.ToolTip>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Grid Margin="12 0 0 0" Grid.Row="2" Grid.Column="2" DataContext="{Binding AcObject.SelectedEvent}"
+                    Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                    IsEnabled="{Binding GoCommand.IsAbleToExecute}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Style="{StaticResource Heading1}" Text="{Binding DisplayType}" Margin="0 0 0 4" />
+                        <Ellipse Grid.Column="1" Width="16" Height="16" Margin="8 4" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
+                    </Grid>
+                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 24">
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0 0 0 12" />
+                </ScrollViewer>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Visibility="{Binding ConditionType, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                        <TextBlock Style="{StaticResource Heading2}" Text="{Binding ConditionType}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{StaticResource Gold}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding FirstPlaceTarget}" Style="{StaticResource TargetValue}"
+                                    IsEnabled="{Binding TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=2}" />
+
+                            <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{StaticResource Silver}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding SecondPlaceTarget}" Style="{StaticResource TargetValue}"
+                                    IsEnabled="{Binding TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=3}" />
+
+                            <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{StaticResource Bronze}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding ThirdPlaceTarget}" Style="{StaticResource TargetValue}"
+                                    IsEnabled="{Binding TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=4}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <DockPanel Grid.Column="1" VerticalAlignment="Bottom">
+                        <controls:UserPresetsControl UserPresetable="{Binding Data.AssistsViewModel, Source={StaticResource DataContextProxy}}"
+                                ShowSaveButton="False" Margin="0 0 4 0" DockPanel.Dock="Left" />
+
+                        <Button DockPanel.Dock="Left" DataContext="{Binding Data.AssistsViewModel, Source={StaticResource DataContextProxy}}"
+                                PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp" Margin="0 0 4 0">
+                            …
+                            <Button.ToolTip>
+                                <controls:AssistsDescription />
+                            </Button.ToolTip>
+                        </Button>
+
+                        <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
+                                CommandParameter="{Binding Data.AssistsViewModel.GameProperties, Source={StaticResource DataContextProxy}}">Go!</Button>
+                    </DockPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
