@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Windows.Threading;
-using AcManager.Tools.AcManagersNew;
 
 namespace AcManager.Controls.Helpers {
     public class DelayedPropertyWrapper<T> {
         public readonly TimeSpan Interval;
 
         private T _value, _unappliedValue;
+        private bool _hasUnappliedValue;
+
         private readonly Action<T> _changed;
 
         public DelayedPropertyWrapper(Action<T> changed, TimeSpan inteval) {
@@ -20,15 +21,17 @@ namespace AcManager.Controls.Helpers {
         public T Value {
             get { return _value; }
             set {
-                if (Equals(value, _unappliedValue)) return;
-                _unappliedValue = value;
+                if (Equals(value, _hasUnappliedValue ? _unappliedValue : _value)) return;
 
                 var now = DateTime.Now;
                 if (now - _previousChange > Interval) {
-                    _value = _unappliedValue;
                     _unappliedValue = default(T);
-                    _changed(_value);
+                    _hasUnappliedValue = false;
+                    _value = value;
+                    _changed(value);
                 } else {
+                    _unappliedValue = value;
+                    _hasUnappliedValue = true;
                     ResetTimer();
                 }
 
@@ -41,6 +44,7 @@ namespace AcManager.Controls.Helpers {
             _timer?.Stop();
             _value = newValue;
             _unappliedValue = default(T);
+            _hasUnappliedValue = false;
             _changed(_value);
             _previousChange = DateTime.Now;
         }
@@ -55,6 +59,7 @@ namespace AcManager.Controls.Helpers {
                     _timer.Stop();
                     _value = _unappliedValue;
                     _unappliedValue = default(T);
+                    _hasUnappliedValue = false;
                     _changed(_value);
                     _previousChange = DateTime.Now;
                 };
