@@ -111,7 +111,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return;
                 }
 
-                Logging.Write("[APPUPDATED] Latest version: " + latest);
+                Logging.Write($"[APPUPDATED] Latest version: {latest} (current: {BuildInformation.AppVersion})");
 
                 if (latest.IsVersionNewerThan(BuildInformation.AppVersion)) {
                     await LoadAndPrepare();
@@ -198,9 +198,14 @@ namespace AcManager.Tools.Miscellaneous {
 
                 string preparedVersion = null;
                 await Task.Run(() => {
+                    if (File.Exists(UpdateLocation)) {
+                        File.Delete(UpdateLocation);
+                    }
+
                     using (var stream = new MemoryStream(data, false))
                     using (var archive = new ZipArchive(stream)) {
                         preparedVersion = VersionFromData(archive.GetEntry("Manifest.json").Open().ReadAsStringAndDispose());
+
                         archive.GetEntry("Content Manager.exe").ExtractToFile(UpdateLocation);
                         File.SetAttributes(UpdateLocation, FileAttributes.Hidden);
                         Logging.Write($"[APPUPDATED] New version {preparedVersion} was extracted to “{UpdateLocation}”");

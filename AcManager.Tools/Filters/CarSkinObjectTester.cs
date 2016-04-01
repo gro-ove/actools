@@ -11,7 +11,20 @@ namespace AcManager.Tools.Filters {
                 case "skinname":
                     return nameof(CarSkinObject.Name);
 
-                    // TODO
+                case "driver":
+                case "drivername":
+                    return nameof(CarSkinObject.DriverName);
+
+                case "team":
+                case "teamname":
+                    return nameof(CarSkinObject.Team);
+
+                case "n":
+                case "number":
+                    return nameof(CarSkinObject.SkinNumber);
+
+                case "priority":
+                    return nameof(CarSkinObject.Priority);
             }
 
             return null;
@@ -26,7 +39,20 @@ namespace AcManager.Tools.Filters {
                 case "skinname":
                     return obj.Name != null && value.Test(obj.Name);
 
-                    // TODO
+                case "driver":
+                case "drivername":
+                    return obj.DriverName != null && value.Test(obj.DriverName);
+
+                case "team":
+                case "teamname":
+                    return obj.Team != null && value.Test(obj.Team);
+
+                case "n":
+                case "number":
+                    return obj.SkinNumber != null && value.Test(obj.SkinNumber);
+
+                case "priority":
+                    return obj.Priority.HasValue && value.Test(obj.Priority.Value);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);

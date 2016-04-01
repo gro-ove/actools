@@ -66,5 +66,11 @@ namespace AcManager.Pages.Selected {
         }
 
         private SelectedCarSkinPageViewModel _model;
+
+        private void AcObjectBase_OnIconMouseDown(object sender, MouseButtonEventArgs e) {
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
+                // new BrandBadgeEditor((CarObject)SelectedAcObject).ShowDialog();
+            }
+        }
     }
 }

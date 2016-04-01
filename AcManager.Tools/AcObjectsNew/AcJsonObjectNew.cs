@@ -90,7 +90,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected virtual void LoadData(JObject json) {
-            Name = json.GetStringValueOnly("name").Trim();
+            Name = json.GetStringValueOnly("name")?.Trim();
             if (string.IsNullOrEmpty(Name)) {
                 AddError(AcErrorType.Data_ObjectNameIsMissing);
             }
@@ -108,7 +108,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected void LoadCountry(JObject json) {
-            var value = json.GetStringValueOnly("country");
+            var value = json.GetStringValueOnly("country")?.Trim();
             Country = value != null ? AcStringValues.CountryFromTag(value) ?? value :
                 Tags.Select(AcStringValues.CountryFromTag).FirstOrDefault(x => x != null);
         }
@@ -129,9 +129,9 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected virtual void LoadVersionInfo(JObject json) {
-            Author = json.GetStringValueOnly("author") ?? (TestIfKunos() ? AuthorKunos : null);
-            Version = json.GetStringValueOnly("version");
-            Url = json.GetStringValueOnly("url");
+            Author = json.GetStringValueOnly("author")?.Trim() ?? (TestIfKunos() ? AuthorKunos : null);
+            Version = json.GetStringValueOnly("version")?.Trim();
+            Url = json.GetStringValueOnly("url")?.Trim();
         }
 
         public virtual void SaveData(JObject json) {

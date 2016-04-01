@@ -278,13 +278,15 @@ fixme:
     - one big NLUA bug
     - pastload problem!
     - real conditions
-    - password selection bug!
+    - password selection bug
+    - tags
 
 architectural problems:
     - complete list reload
 
 todo:
     - showroom from QD section and not only
+    - remember all window sizes
 
     + intellectual content auto-update
         + cars
@@ -303,6 +305,14 @@ todo:
 
     - track mod installation
     - showroom mod installation
+
+    - auto-update previews
+        - fix pp-filter
+        - option for FXAO
+        - proper graphic settings
+            - custom settings
+        - 2× mode for best antialiasing
+        - background mode?
 
     - fix brand fitting on car's selection dialog
 
@@ -376,10 +386,11 @@ todo:
 
     + skins manager
         + proper manager functions (async load data about everything and stuff)
-        - proper attributes
-        - deal with window overlapping
+        + proper attributes
+        + deal with window overlapping
+        + AcObjectsTester.ParameterNameFromLeftPart
         - enabling/disabling
-        - AcObjectsTester.ParameterNameFromLeftPart
+
     - copy track ui properties to other configurations
         - context menu
         - button in toolbar

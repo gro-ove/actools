@@ -7,6 +7,8 @@ namespace AcManager.Tools.Managers {
         public static readonly AutocompleteValuesList CarClassesList = new AutocompleteValuesList();
         public static readonly AutocompleteValuesList CarTagsList = new AutocompleteValuesList();
 
+        public static readonly AutocompleteValuesList CarSkinTeamsList = new AutocompleteValuesList();
+
         public static readonly AutocompleteValuesList CarSkinTagsList = new AutocompleteValuesList();
         public static readonly AutocompleteValuesList TrackTagsList = new AutocompleteValuesList();
         public static readonly AutocompleteValuesList ShowroomTagsList = new AutocompleteValuesList();

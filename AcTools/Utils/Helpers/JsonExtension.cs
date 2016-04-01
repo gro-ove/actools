@@ -45,7 +45,6 @@ namespace AcTools.Utils.Helpers {
             } catch (Exception) {
                 return JObject.Parse(data.Replace("﻿", ""));
             }
-            
         }
 
         public static string GetStringValueOnly(this JToken obj, string key) {

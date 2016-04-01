@@ -21,10 +21,13 @@ namespace AcManager.Pages.Dialogs {
         private CarSkinsDialogModel Model => (CarSkinsDialogModel) DataContext;
 
         public CarSkinsDialog([NotNull] CarObject car) {
+            if (car == null) throw new ArgumentNullException(nameof(car));
+
             DataContext = new CarSkinsDialogModel(car);
 
             DefaultContentSource = Model.ListUri;
             MenuLinkGroups.Add(new LinkGroupFilterable {
+                DisplayName = "skins",
                 Source = Model.ListUri
             });
 

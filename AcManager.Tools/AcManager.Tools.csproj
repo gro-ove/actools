@@ -123,6 +123,7 @@
     <Compile Include="Managers\Online\ServerStatus.cs" />
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
+    <Compile Include="Objects\CarSkinObject_Lists.cs" />
     <Compile Include="SemiGui\DriverName.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />
     <Compile Include="Helpers\Api\CmApiProvider_Consts.cs" />

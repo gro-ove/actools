@@ -6,7 +6,7 @@
         xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarSkinPage+SelectedCarSkinPageViewModel}">
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
+    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconFilename="{Binding SelectedObject.LiveryImage}" IconMouseDown="AcObjectBase_OnIconMouseDown">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open showroom's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
@@ -47,6 +47,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <!-- first row -->
@@ -59,10 +61,28 @@
                     <TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
                             mui:FocusAdvancement.AdvancesByEnterKey="True" mui:TextBoxAdvancement.SpecialMode="Integer" watermark:WatermarkService.Watermark="?" />
 
+                    <!-- second row -->
+                    <TextBlock Text="Team:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="Driver:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+
+                    <ComboBox Text="{Binding Team}" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding TeamsList}" IsTextSearchEnabled="True" IsEditable="True"
+                            Style="{StaticResource ComboBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True" watermark:WatermarkService.Watermark="?" />
+                    <TextBox Text="{Binding DriverName}" Grid.Column="3" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}"
+                            mui:FocusAdvancement.AdvancesByEnterKey="True" watermark:WatermarkService.Watermark="?" />
+
+                    <!-- third row -->
+                    <TextBlock Text="Number:" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="Priority:" Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
+
+                    <TextBox Text="{Binding SkinNumber}" Grid.Column="1" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
+                            mui:FocusAdvancement.AdvancesByEnterKey="True" mui:TextBoxAdvancement.SpecialMode="Integer" watermark:WatermarkService.Watermark="?" />
+                    <TextBox Text="{Binding Priority, TargetNullValue=''}" Grid.Column="3" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
+                            mui:FocusAdvancement.AdvancesByEnterKey="True" mui:TextBoxAdvancement.SpecialMode="Integer" watermark:WatermarkService.Watermark="?" />
+
                     <!-- last row -->
-                    <TextBlock Text="Author:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
+                    <TextBlock Text="Author:" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
                     <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" MouseDown="VersionInfoBlock_OnMouseDown" watermark:WatermarkService.Watermark="?"
-                            Grid.Column="1" Grid.Row="1" />
+                            Grid.Column="1" Grid.Row="3" />
                 </Grid>
 
                 <!-- description -->

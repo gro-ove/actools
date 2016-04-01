@@ -18,7 +18,7 @@
                         </Grid.RowDefinitions>
 
                         <ScrollViewer HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" Margin="-8 0 -8 0">
-                            <StackPanel MinWidth="500" Margin="0 0 0 120">
+                            <StackPanel MinWidth="500" Margin="0 0 0 40">
                                 <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}" 
                                                           IconFilename="{TemplateBinding IconFilename}"
                                                           x:Name="PART_Header" />
