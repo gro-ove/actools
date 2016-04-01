@@ -92,7 +92,7 @@
     <SolidColorBrush x:Key="ProgressBackground" Color="#333333" />
 
     <SolidColorBrush x:Key="ScrollBarBackground" Color="#333333" />
-    <SolidColorBrush x:Key="ScrollBarThumb" Color="#333333" />
+    <SolidColorBrush x:Key="ScrollBarThumb" Color="#3e3e42" />
     <SolidColorBrush x:Key="ScrollBarThumbDragging" Color="#555555" />
     <SolidColorBrush x:Key="ScrollBarThumbHover" Color="#444444" />
     <SolidColorBrush x:Key="ScrollBarThumbBackground" Color="Transparent" />

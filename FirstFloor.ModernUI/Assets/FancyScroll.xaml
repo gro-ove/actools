@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
+    <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="true" />
         <Setter Property="IsTabStop" Value="false" />
         <Setter Property="Foreground" Value="{DynamicResource ScrollBarThumb}" />
@@ -57,7 +57,7 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumb}" Width="2" Name="PART_Thumb" />
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="1" Name="PART_Thumb" />
                             </Track.Thumb>
                         </Track>
                         <RepeatButton x:Name="PART_LineDownButton" Height="0" Width="0" Command="{x:Static ScrollBar.LineDownCommand}"
@@ -76,7 +76,7 @@
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Width" To="2" BeginTime="0:0:0.86"
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Width" To="1" BeginTime="0:0:0.86"
                                                 Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
@@ -114,7 +114,7 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumb}" Height="2" Name="PART_Thumb" />
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Height="1" Name="PART_Thumb" />
                             </Track.Thumb>
                         </Track>
                         <RepeatButton x:Name="PART_LineRightButton" Height="0" Width="0" Command="{x:Static ScrollBar.LineRightCommand}"
@@ -133,7 +133,7 @@
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Height" To="2" BeginTime="0:0:0.86"
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Height" To="1" BeginTime="0:0:0.86"
                                                 Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
