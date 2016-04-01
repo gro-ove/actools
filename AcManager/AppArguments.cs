@@ -107,13 +107,6 @@ namespace AcManager {
         ForceToastFallbackMode,
 
         /// <summary>
-        /// Create shortcut in Windows Start Menu if missing. Shortcut is required for
-        /// modern Windows 8/8.1/10 notifications. Disabled by default.
-        /// Example: --create-start-menu-shortcut-if-missing
-        /// </summary>
-        CreateStartMenuShortcutIfMissing,
-
-        /// <summary>
         /// Timeouts for sockets using for scanning lan (ms). Default value: 200.
         /// Example: --lan-socket-timeout=25
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using AcManager.Annotations;
 using AcManager.Tools.Objects;
@@ -32,6 +33,23 @@ namespace AcManager.Pages.Dialogs {
             });
 
             InitializeComponent();
+        }
+
+        private void CarSkinsDialog_OnInitialized(object sender, EventArgs e) {
+            if (Model?.SelectedCar == null) return;
+            Model.SelectedCar.AcObjectOutdated += SelectedCar_AcObjectOutdated;
+        }
+
+        private void CarSkinsDialog_OnClosed(object sender, EventArgs e) {
+            if (Model?.SelectedCar == null) return;
+            Model.SelectedCar.AcObjectOutdated -= SelectedCar_AcObjectOutdated;
+        }
+
+        private async void SelectedCar_AcObjectOutdated(object sender, EventArgs e) {
+            Hide();
+
+            await Task.Delay(10);
+            Close();
         }
     }
 }

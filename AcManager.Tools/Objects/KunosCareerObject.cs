@@ -83,6 +83,14 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        protected override void OnAcObjectOutdated() {
+            foreach (var obj in Events) {
+                obj.Outdate();
+            }
+
+            base.OnAcObjectOutdated();
+        }
+
         public BetterListCollectionView ChampionshipDriversView { get; }
 
         protected override void LoadOrThrow() {

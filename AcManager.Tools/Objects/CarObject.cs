@@ -15,13 +15,9 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Objects {
     public partial class CarObject : AcJsonObjectNew {
         public static int OptionSkinsLoadingConcurrency = 5;
-
+        
         public CarObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
-        }
-
-        protected override void LoadOrThrow() {
-            base.LoadOrThrow();
             SkinsManager = new CarSkinsManager(Id, new AcObjectTypeDirectories(SkinsDirectory)) {
                 ScanWrapper = this
             };
@@ -34,6 +30,14 @@ namespace AcManager.Tools.Objects {
             SuggestionLists.CarBrandsList.AddUnique(Brand);
             SuggestionLists.CarClassesList.AddUnique(CarClass);
             UpdateParentValues();
+        }
+
+        protected override void OnAcObjectOutdated() {
+            foreach (var obj in Skins) {
+                obj.Outdate();
+            }
+
+            base.OnAcObjectOutdated();
         }
 
         public override bool HandleChangedFile(string filename) {
@@ -59,7 +63,7 @@ namespace AcManager.Tools.Objects {
             var local = filename.SubstringExt(Location.Length + 1);
             if (local.StartsWith(@"skins\", true, CultureInfo.InvariantCulture)) {
                 // TODO: proper skin reload
-                EnsureSkinsLoaded();
+                SkinsManager.Rescan();
                 return true;
             }
 

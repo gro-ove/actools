@@ -219,7 +219,7 @@ namespace AcManager.Pages.Drive {
             public CombinedFilter<ServerEntry> ServerCombinedFilter => (CombinedFilter<ServerEntry>)ListFilter;
 
             public OnlineViewModel(OnlineManagerType type, BaseOnlineManager manager, string filter)
-                    : base(manager.WrappersAsIList, GetFilter(filter), "__online_" + type) {
+                    : base(manager, GetFilter(filter), "__online_" + type) {
                 Type = type;
                 Manager = manager;
 

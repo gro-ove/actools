@@ -36,7 +36,7 @@ namespace AcManager.Tools.Managers {
         private void RescanManagers() {
             var start = DateTime.Now;
             foreach (var manager in _managers) {
-                manager.RescanAsync();
+                manager.Rescan();
             }
             Logging.Write("SUPERINTENDENT: rescanning finished: {0} managers, {1}", _managers.Count, DateTime.Now - start);
         }

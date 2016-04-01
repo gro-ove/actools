@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using AcManager.Pages.Dialogs;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
@@ -31,7 +33,7 @@ namespace AcManager.Pages.Selected {
         }
 
         private string _carId, _id;
-        
+
         void IParametrizedUriContent.OnUri(Uri uri) {
             _carId = uri.GetQueryParam("CarId");
             if (_carId == null) throw new ArgumentException("Car ID is missing");
@@ -44,14 +46,27 @@ namespace AcManager.Pages.Selected {
         private CarSkinObject _object;
 
         async Task ILoadableContent.LoadAsync(CancellationToken cancellationToken) {
-            _carObject = await CarsManager.Instance.GetByIdAsync(_carId);
-            if (_carObject == null) return;
-            _object = await _carObject.SkinsManager.GetByIdAsync(_id);
+            do {
+                _carObject = await CarsManager.Instance.GetByIdAsync(_carId);
+                if (_carObject == null) {
+                    _object = null;
+                    return;
+                }
+
+                _object = await _carObject.SkinsManager.GetByIdAsync(_id);
+            } while (_carObject.Outdated);
         }
 
         void ILoadableContent.Load() {
-            _carObject = CarsManager.Instance.GetById(_carId);
-            _object = _carObject?.SkinsManager.GetById(_id);
+            do {
+                _carObject = CarsManager.Instance.GetById(_carId);
+                if (_carObject == null) {
+                    _object = null;
+                    return;
+                }
+
+                _object = _carObject?.SkinsManager.GetById(_id);
+            } while (_carObject.Outdated);
         }
 
         void ILoadableContent.Initialize() {

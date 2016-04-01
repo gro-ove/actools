@@ -19,9 +19,19 @@ namespace AcManager.Tools {
 
         public ToastWin8Helper() {
             ShortcutLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Microsoft\Windows\Start Menu\Programs\Content Manager.lnk");
-            
+
+            SettingsHolder.Common.PropertyChanged += Common_PropertyChanged ;
+
+            CreateShortcutIfMissing();
+            ToastNotifier = File.Exists(ShortcutLocation) ? ToastNotificationManager.CreateToastNotifier(AppUserModelId)
+                : ToastNotificationManager.CreateToastNotifier();
+        }
+
+        private void CreateShortcutIfMissing() {
             // we need a start menu shortcut (a ShellLink object) to show toasts.
-            if (!File.Exists(ShortcutLocation) && Toast.OptionCreateShortcutIfMissing) {
+            if (File.Exists(ShortcutLocation) || !SettingsHolder.Common.CreateStartMenuShortcutIfMissing) return;
+
+            try {
                 var directory = Path.GetDirectoryName(ShortcutLocation) ?? "";
                 if (!Directory.Exists(directory)) {
                     Directory.CreateDirectory(directory);
@@ -32,10 +42,15 @@ namespace AcManager.Tools {
                     shortcut.AppUserModelID = AppUserModelId;
                     shortcut.Save(ShortcutLocation);
                 }
+            } catch (Exception e) {
+                Logging.Write("[TOAST] Can't create shortcut: " + e);
             }
+        }
 
-            ToastNotifier = File.Exists(ShortcutLocation) ? ToastNotificationManager.CreateToastNotifier(AppUserModelId)
-                : ToastNotificationManager.CreateToastNotifier();
+        private void Common_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(SettingsHolder.CommonSettings.CreateStartMenuShortcutIfMissing)) {
+                CreateShortcutIfMissing();
+            }
         }
 
         public void ShowToast(string title, string message, [NotNull] Uri icon, Action click) {
@@ -64,10 +79,8 @@ namespace AcManager.Tools {
 
     public static class Toast {
         public static bool OptionFallbackMode = false;
-        public static bool OptionCreateShortcutIfMissing = false;
 
-        private static bool _winToasterIsNotAvailable;
-
+        private static bool _winToasterIsNotAvailable = true;
         private static Uri _defaultIcon;
 
         public static void SetDefaultIcon(Uri iconUri) {
@@ -91,7 +104,7 @@ namespace AcManager.Tools {
                     ToastWin8Helper.Instance.ShowToast(title, message, icon, click ?? _defaultAction);
                     return;
                 } catch (Exception e) {
-                    Logging.Warning("Win8 Toaster is not available: " + e);
+                    Logging.Warning("[TOAST] Win8 Toaster is not available: " + e);
                     _winToasterIsNotAvailable = true;
                 }
             }

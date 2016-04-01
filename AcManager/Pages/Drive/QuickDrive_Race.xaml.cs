@@ -563,7 +563,7 @@ namespace AcManager.Pages.Drive {
                 }
 
                 foreach (var car in opponentsCars) {
-                    await car.EnsureSkinsLoadedAsync();
+                    await car.SkinsManager.EnsureLoadedAsync();
                 }
 
                 var opponentsCarsEntries = (from x in opponentsCars

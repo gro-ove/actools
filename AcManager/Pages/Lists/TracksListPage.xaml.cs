@@ -27,7 +27,7 @@ namespace AcManager.Pages.Lists {
 
         private class TracksListPageViewModel : AcListPageViewModel<TrackObject> {
             public TracksListPageViewModel(IFilter<TrackObject> listFilter)
-                : base(TracksManager.Instance.WrappersAsIList, listFilter) {
+                : base(TracksManager.Instance, listFilter) {
             }
 
             protected override string GetStatus() => PluralizingConverter.Pluralize(MainList.Count, "{0} track");

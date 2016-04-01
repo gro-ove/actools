@@ -100,7 +100,7 @@ namespace AcManager.Pages.Drive {
 
         public class KunosCareerViewModel : BaseAcObjectListCollectionViewWrapper<KunosCareerObject> {
             public KunosCareerViewModel(IFilter<KunosCareerObject> listFilter)
-                    : base(KunosCareerManager.Instance.WrappersAsIList, listFilter) {
+                    : base(KunosCareerManager.Instance, listFilter) {
             }
 
             public KunosCareerManager Manager { get; } = KunosCareerManager.Instance;

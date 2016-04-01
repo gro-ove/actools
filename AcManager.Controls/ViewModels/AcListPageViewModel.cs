@@ -1,11 +1,11 @@
-﻿using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Lists;
+﻿using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Controls.ViewModels {
     public abstract class AcListPageViewModel<T> : AcObjectListCollectionViewWrapper<T> where T : AcObjectNew {
-        protected AcListPageViewModel([NotNull] IAcObjectList list, IFilter<T> listFilter)
+        protected AcListPageViewModel([NotNull] IAcManagerNew list, IFilter<T> listFilter)
             : base(list, listFilter, "__aclistpageviewmodel_selected") {
         }
 

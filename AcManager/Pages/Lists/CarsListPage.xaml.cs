@@ -29,7 +29,7 @@ namespace AcManager.Pages.Lists {
 
         private class CarsListPageViewModel : AcListPageViewModel<CarObject> {
             public CarsListPageViewModel(IFilter<CarObject> listFilter)
-                    : base(CarsManager.Instance.WrappersAsIList, listFilter) {}
+                    : base(CarsManager.Instance, listFilter) {}
 
             protected override string GetStatus() => PluralizingConverter.Pluralize(MainList.Count, "{0} car");
         }

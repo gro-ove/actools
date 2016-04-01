@@ -16,6 +16,11 @@
                 <TextBlock Text="{Binding AcRootDirectoryValue}" />
             </DockPanel>
 
+            <CheckBox IsChecked="{Binding CommonSettings.CreateStartMenuShortcutIfMissing}"
+                    ToolTip="Create Start Menu shortcut if it's missing, might be able to help if there are no popup notifications">
+                <Label>Start Menu shortcut</Label>
+            </CheckBox>
+
             <!--versions-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Auto Updates:</TextBlock>
 
@@ -60,7 +65,7 @@
             <CheckBox IsChecked="{Binding CommonSettings.UpdateToNontestedVersions}">
                 <Label>Update to non-tested versions</Label>
             </CheckBox>
-            <Button Command="{Binding SendLogsCommand}" >Send Logs to Developers</Button>
+            <Button Command="{Binding SendLogsCommand}">Send Logs to Developers</Button>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

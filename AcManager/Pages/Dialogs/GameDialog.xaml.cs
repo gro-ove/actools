@@ -51,8 +51,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        protected override void OnClosed(EventArgs e) {
-            base.OnClosed(e);
+        public void Dispose() {
             _cancellationSource.Dispose();
         }
 

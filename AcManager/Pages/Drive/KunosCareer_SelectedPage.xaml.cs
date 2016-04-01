@@ -165,7 +165,7 @@ namespace AcManager.Pages.Drive {
             var ev = Model.AcObject.SelectedEvent;
             if (ev == null) return;
 
-            await ev.Car.EnsureSkinsLoadedAsync();
+            await ev.Car.SkinsManager.EnsureLoadedAsync();
 
             var viewer = new ImageViewer(
                 ev.Car.Skins.Select(x => x.PreviewImage),

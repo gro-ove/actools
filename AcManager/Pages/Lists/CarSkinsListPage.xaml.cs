@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Annotations;
 using AcManager.Controls.ViewModels;
@@ -11,34 +13,48 @@ using FirstFloor.ModernUI.Windows.Converters;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {
-    public partial class CarSkinsListPage : IParametrizedUriContent {
+    public partial class CarSkinsListPage : IParametrizedUriContent, ILoadableContent {
         public void OnUri(Uri uri) {
-            var id = uri.GetQueryParam("CarId");
-            if (id == null) {
+            _carId = uri.GetQueryParam("CarId");
+            _filter = uri.GetQueryParam("Filter");
+            if (_carId == null) {
                 throw new Exception("ID is missing");
             }
-
-            var car = CarsManager.Instance.GetById(id);
-            if (car == null) {
-                throw new Exception($"Car with ID “{id}” is missing");
-            }
-
-            Initialize(car, uri.GetQueryParam("Filter"));
         }
 
-        private void Initialize([NotNull] CarObject car, string filter = null) {
-            if (car == null) throw new ArgumentNullException(nameof(car));
+        private string _carId;
+        private CarObject _car;
+        private string _filter;
 
-            car.EnsureSkinsLoaded();
-            DataContext = new CarSkinsListPageViewModel(car, string.IsNullOrEmpty(filter) ? null : Filter.Create(CarSkinObjectTester.Instance, filter));
+        public async Task LoadAsync(CancellationToken cancellationToken) {
+            if (_car == null) {
+                _car = await CarsManager.Instance.GetByIdAsync(_carId);
+                if (_car == null) throw new Exception($"Car with ID “{_carId}” is missing");
+            }
+
+            await _car.SkinsManager.EnsureLoadedAsync();
+        }
+
+        public void Load() {
+            if (_car == null) {
+                _car = CarsManager.Instance.GetById(_carId);
+                if (_car == null) throw new Exception($"Car with ID “{_carId}” is missing");
+            }
+
+            _car.SkinsManager.EnsureLoaded();
+        }
+
+        public void Initialize() {
+            DataContext = new CarSkinsListPageViewModel(_car, string.IsNullOrEmpty(_filter) ? null : Filter.Create(CarSkinObjectTester.Instance, _filter));
             InitializeComponent();
         }
 
         public CarSkinsListPage([NotNull] CarObject car, string filter = null) {
-            Initialize(car, filter);
+            _car = car;
+            _filter = filter;
         }
 
-        public CarSkinsListPage() {}
+        public CarSkinsListPage() { }
 
         private void CarsListPage_OnUnloaded(object sender, RoutedEventArgs e) {
             ((CarSkinsListPageViewModel)DataContext).Unload();
@@ -48,11 +64,11 @@ namespace AcManager.Pages.Lists {
             public CarObject SelectedCar { get; private set; }
 
             public CarSkinsListPageViewModel([NotNull] CarObject car, IFilter<CarSkinObject> listFilter)
-                    : base(car.SkinsManager.WrappersAsIList, listFilter) {
+                    : base(car.SkinsManager, listFilter) {
                 SelectedCar = car;
             }
 
-            protected override string GetStatus(){
+            protected override string GetStatus() {
                 return PluralizingConverter.Pluralize(MainList.Count, @"{0} skin");
             }
         }

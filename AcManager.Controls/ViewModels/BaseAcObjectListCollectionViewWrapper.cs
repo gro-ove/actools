@@ -10,10 +10,13 @@ using StringBasedFilter;
 
 namespace AcManager.Controls.ViewModels {
     public abstract class BaseAcObjectListCollectionViewWrapper<T> : NotifyPropertyChanged, IComparer where T : AcObjectNew {
-        protected readonly IFilter<T> ListFilter;
+        [NotNull]
+        private readonly IAcManagerNew _manager;
 
         [NotNull]
         private readonly IAcObjectList _list;
+
+        protected readonly IFilter<T> ListFilter;
 
         [NotNull]
         private readonly AcWrapperCollectionView _mainList;
@@ -31,10 +34,11 @@ namespace AcManager.Controls.ViewModels {
 
         protected AcItemWrapper CurrentItem => MainList.CurrentItem as AcItemWrapper;
 
-        protected BaseAcObjectListCollectionViewWrapper([NotNull] IAcObjectList list, IFilter<T> listFilter) {
-            _list = list;
+        protected BaseAcObjectListCollectionViewWrapper([NotNull] IAcManagerNew manager, IFilter<T> listFilter) {
+            if (manager == null) throw new ArgumentNullException(nameof(manager));
+            _manager = manager;
+            _list = _manager.WrappersAsIList;
             _mainList = new AcWrapperCollectionView(_list);
-
             ListFilter = listFilter;
         }
 
@@ -70,7 +74,7 @@ namespace AcManager.Controls.ViewModels {
                 MainList.CustomSort = this;
             }
 
-            LoadCurrent(true);
+            LoadCurrent();
             _oldNumber = MainList.Count;
             MainList.CurrentChanged += OnCurrentChanged;
         }
@@ -96,20 +100,21 @@ namespace AcManager.Controls.ViewModels {
         protected abstract void SaveCurrentKey(string id);
 
         private bool _userChange = true;
-        private bool _wrongItemSelected;
-        private void LoadCurrent(bool orFirst) {
+
+        private void LoadCurrent() {
             if (MainList.IsEmpty) return;
 
             var selectedId = LoadCurrentId();
             if (selectedId == InvalidId) return;
 
+            var selected = selectedId == null ? null : _manager.GetObjectById(selectedId);
+
             _userChange = false;
-            if (orFirst) {
-                MainList.MoveCurrentToIdOrFirst(selectedId);
+            if (selected == null) {
+                MainList.MoveCurrentToFirst();
             } else {
-                MainList.MoveCurrentToId(selectedId);
+                MainList.MoveCurrentToOrFirst(selected);
             }
-            _wrongItemSelected = CurrentItem?.Value.Id != selectedId;
             _userChange = true;
         }
 
@@ -132,9 +137,7 @@ namespace AcManager.Controls.ViewModels {
             var newNumber = MainList.Count;
 
             if (MainList.CurrentItem == null) {
-                LoadCurrent(true);
-            } else if (_wrongItemSelected) {
-                LoadCurrent(false);
+                LoadCurrent();
             }
 
             if (newNumber == _oldNumber) return;

@@ -266,6 +266,12 @@ done:
         + showroom, car
         + track
         + skin
+    + skins manager
+        + proper manager functions (async load data about everything and stuff)
+        + proper attributes
+        + deal with window overlapping
+        + AcObjectsTester.ParameterNameFromLeftPart
+        + enabling/disabling
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -280,6 +286,9 @@ fixme:
     - real conditions
     - password selection bug
     - tags
+    - potential error here:
+        http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
+    - some staticresources have the same name as dynamicrecources
 
 architectural problems:
     - complete list reload
@@ -326,7 +335,6 @@ todo:
             + select car by brands
                 - brands cache!
                 - optional list mode?
-                × back button?
             - tracks by countries
             - weekends
             - drag racing
@@ -384,13 +392,6 @@ todo:
     - go buttons keyboard shortcut
         - special case for try button in drive window
 
-    + skins manager
-        + proper manager functions (async load data about everything and stuff)
-        + proper attributes
-        + deal with window overlapping
-        + AcObjectsTester.ParameterNameFromLeftPart
-        - enabling/disabling
-
     - copy track ui properties to other configurations
         - context menu
         - button in toolbar
@@ -407,6 +408,12 @@ todo:
     - remove double spaces, trim strings
     - car skins errors raising
     - detect invalid symbols in IDs
+
+    - some livery.png editor
+        - take color(s?) from preview
+        - number?
+        - even specific shapes?
+        - generate automatically based on preview and/or model
 
     - skins removing
 

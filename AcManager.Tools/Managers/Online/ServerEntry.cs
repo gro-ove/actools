@@ -623,9 +623,9 @@ namespace AcManager.Tools.Managers.Online {
                                   select (CarObject)x.CarObjectWrapper.Value).ToList();
                 }
 
-                foreach (var carObject in carObjects.Where(carObject => carObjects.Any(x => !x.IsSkinsLoaded))) {
+                foreach (var carObject in carObjects.Where(carObject => carObjects.Any(x => !x.SkinsManager.IsLoaded))) {
                     await Task.Delay(50);
-                    await carObject.EnsureSkinsLoadedAsync();
+                    await carObject.SkinsManager.EnsureLoadedAsync();
                 }
 
                 var cars = (from x in information.Cars

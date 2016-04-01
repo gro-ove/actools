@@ -27,7 +27,7 @@ namespace AcManager.Pages.Lists {
 
         private class ShowroomsListPageViewModel : AcListPageViewModel<ShowroomObject> {
             public ShowroomsListPageViewModel(IFilter<ShowroomObject> listFilter)
-                : base(ShowroomsManager.Instance.WrappersAsIList, listFilter) {
+                : base(ShowroomsManager.Instance, listFilter) {
             }
 
             protected override string GetStatus() => PluralizingConverter.Pluralize(MainList.Count, "{0} showroom");

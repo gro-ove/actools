@@ -44,6 +44,10 @@ namespace AcManager.Tools.AcObjectsNew {
         public void Outdate() {
             Outdated = true;
             OnPropertyChanged(nameof(Outdated));
+            OnAcObjectOutdated();
+        }
+
+        protected virtual void OnAcObjectOutdated() {
             AcObjectOutdated?.Invoke(this, EventArgs.Empty);
         }
 

@@ -189,12 +189,12 @@ namespace AcManager.Pages.Selected {
         async Task ILoadableContent.LoadAsync(CancellationToken cancellationToken) {
             _object = await CarsManager.Instance.GetByIdAsync(_id);
             if (_object == null) return;
-            await _object.EnsureSkinsLoadedAsync();
+            await _object.SkinsManager.EnsureLoadedAsync();
         }
 
         void ILoadableContent.Load() {
             _object = CarsManager.Instance.GetById(_id);
-            _object?.EnsureSkinsLoaded();
+            _object?.SkinsManager.EnsureLoaded();
         }
 
         private SelectedCarPageViewModel _model;

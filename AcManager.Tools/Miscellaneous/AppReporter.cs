@@ -41,7 +41,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
         }
 
-        public static void SendLogs() {
+        public static void SendLogs(string message = null) {
             if (ChecksumSalt == null || EncryptionKey == null || ServerAddress == null) {
                 NonfatalError.Notify("Can't send logs", "Server parameters are missing.");
                 return;
@@ -50,6 +50,14 @@ namespace AcManager.Tools.Miscellaneous {
             var tempFilename = FilesStorage.Instance.GetTemporaryFilename("Logs.zip");
             var logsDirectory = FilesStorage.Instance.GetDirectory("Logs");
             using (var zip = ZipFile.Open(tempFilename, ZipArchiveMode.Create)) {
+                if (!string.IsNullOrWhiteSpace(message)) {
+                    try {
+                        zip.CreateEntryFromString("Message.txt", message);
+                    } catch (Exception e) {
+                        Logging.Warning("Can't attach Description.txt: " + e);
+                    }
+                }
+
                 try {
                     zip.CreateEntryFromString("Description.txt", JsonConvert.SerializeObject(new {
                         BuildInformation.AppVersion,

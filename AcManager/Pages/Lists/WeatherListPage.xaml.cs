@@ -23,7 +23,7 @@ namespace AcManager.Pages.Lists {
 
         private class WeatherListPageViewModel : AcListPageViewModel<WeatherObject> {
             public WeatherListPageViewModel(IFilter<WeatherObject> listFilter)
-                : base(WeatherManager.Instance.WrappersAsIList, listFilter) {
+                : base(WeatherManager.Instance, listFilter) {
             }
 
             protected override string GetStatus() => PluralizingConverter.Pluralize(MainList.Count, "{0} weather");

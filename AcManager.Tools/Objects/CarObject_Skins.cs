@@ -12,6 +12,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Objects {
     public partial class CarObject : IAcManagerScanWrapper {
         /* for UI car's skins manager */
+        [NotNull]
         public CarSkinsManager SkinsManager { get; private set; }
 
         public IAcWrapperObservableCollection SkinsWrappers => SkinsManager.WrappersList;
@@ -69,18 +70,6 @@ namespace AcManager.Tools.Objects {
 
             SelectPreviousOrDefaultSkin();
         }
-
-        public void EnsureSkinsLoaded() {
-            SkinsManager.EnsureLoaded();
-        }
-
-        public async Task EnsureSkinsLoadedAsync() {
-            await SkinsManager.EnsureLoadedAsync();
-        }
-
-        public bool IsSkinsScanned => SkinsManager.IsScanned;
-
-        public bool IsSkinsLoaded => SkinsManager.IsLoaded;
 
         [CanBeNull]
         public CarSkinObject GetSkinById([NotNull]string skinId) {

@@ -28,7 +28,7 @@ namespace AcManager.Pages.Lists {
 
         private class ReplaysListPageViewModel : AcListPageViewModel<ReplayObject> {
             public ReplaysListPageViewModel(IFilter<ReplayObject> listFilter)
-                    : base(ReplaysManager.Instance.WrappersAsIList, listFilter) {}
+                    : base(ReplaysManager.Instance, listFilter) {}
 
             protected override string GetStatus() => PluralizingConverter.Pluralize(MainList.Count, "{0} replay");
         }

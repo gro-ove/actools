@@ -181,7 +181,10 @@ namespace AcManager.Tools.AcManagersNew {
 
                 IsLoaded = true;
                 ListReady();
-                Logging.Write($"{{0}}, loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms", GetType());
+                
+                if (GetType() != typeof(CarSkinsManager)) {
+                    Logging.Write($"{{0}}, loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms", GetType());
+                }
             }
         }
 

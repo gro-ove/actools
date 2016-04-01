@@ -71,7 +71,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.KunosCareerIgnoreSkippedEvents, ref KunosCareerEventsManager.OptionIgnoreSkippedEvents);
 
             AppArguments.Set(AppFlag.ForceToastFallbackMode, ref Toast.OptionFallbackMode);
-            AppArguments.Set(AppFlag.CreateStartMenuShortcutIfMissing, ref Toast.OptionCreateShortcutIfMissing);
 
             AppArguments.Set(AppFlag.SmartPresetsChangedHandling, ref UserPresetsControl.OptionSmartChangedHandling);
             AppArguments.Set(AppFlag.EnableRaceIniRestoration, ref Game.OptionEnableRaceIniRestoration);

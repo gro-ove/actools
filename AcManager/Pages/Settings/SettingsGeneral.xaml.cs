@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -62,9 +63,10 @@ namespace AcManager.Pages.Settings {
 
             public AsyncCommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new AsyncCommand(async o => {
                 try {
-                    await Task.Run(() => AppReporter.SendLogs());
+                    var message = Prompt.Show("What's Going On?", "Optional: describe, what's going on.", watermark: "?", multiline: true);
+                    await Task.Run(() => AppReporter.SendLogs(message));
                     ValuesStorage.Set(KeyLogsSentTime, DateTime.Now);
-                    Toast.Show("Logs Sent", "Thank you for help");
+                    Toast.Show("Logs Sent", "Thank you for the help!");
                 } catch (Exception e) {
                     NonfatalError.Notify("Can't send logs", e);
                 }

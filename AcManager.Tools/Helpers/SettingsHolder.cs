@@ -94,6 +94,15 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            public bool CreateStartMenuShortcutIfMissing {
+                get { return ValuesStorage.GetBool("Settings.CommonSettings.CreateStartMenuShortcutIfMissing", false); }
+                set {
+                    if (Equals(value, CreateStartMenuShortcutIfMissing)) return;
+                    ValuesStorage.Set("Settings.CommonSettings.CreateStartMenuShortcutIfMissing", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public static CommonSettings Common { get; } = new CommonSettings();

@@ -13,7 +13,7 @@ namespace AcManager.Tools.SemiGui {
         IGameUi Create();
     }
 
-    public interface IGameUi {
+    public interface IGameUi : IDisposable {
         void Show(Game.StartProperties properties);
 
         void OnProgress(Game.ProgressState progress);
@@ -79,33 +79,34 @@ namespace AcManager.Tools.SemiGui {
                 return await Game.StartAsync(AcsStarterFactory.Create(), properties, null, CancellationToken.None);
             }
 
-            var ui = _factory.Create();
-            ui.Show(properties);
+            using (var ui = _factory.Create()) {
+                ui.Show(properties);
 
-            Logging.Write("[GAMEWRAPPER] Started");
-            try {
-                var result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
-                Logging.Write("[GAMEWRAPPER] Finished: " + (result?.ToString() ?? "NULL"));
+                Logging.Write("[GAMEWRAPPER] Started");
+                try {
+                    var result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
+                    Logging.Write("[GAMEWRAPPER] Finished: " + (result?.ToString() ?? "NULL"));
 
-                if (result == null) {
-                    var whatsGoingOn = AcLogHelper.TryToDetermineWhatsGoingOn();
-                    if (whatsGoingOn != null) {
-                        properties.SetAdditional(whatsGoingOn);
+                    if (result == null) {
+                        var whatsGoingOn = AcLogHelper.TryToDetermineWhatsGoingOn();
+                        if (whatsGoingOn != null) {
+                            properties.SetAdditional(whatsGoingOn);
+                        }
                     }
+
+                    var param = new GameEndedArgs(properties, result);
+                    Ended?.Invoke(null, param);
+                    /* TODO: should I set result to null if param.Cancel is true? */
+                    (result == null || param.Cancel ? Cancelled : Finished)?.Invoke(null, new GameFinishedArgs(properties, result));
+
+                    ui.OnResult(result);
+
+                    return result;
+                } catch (Exception e) {
+                    Logging.Warning("[GAMEWRAPPER] Exception: " + e);
+                    ui.OnError(e);
+                    return null;
                 }
-
-                var param = new GameEndedArgs(properties, result);
-                Ended?.Invoke(null, param);
-                /* TODO: should I set result to null if param.Cancel is true? */
-                (result == null || param.Cancel ? Cancelled : Finished)?.Invoke(null, new GameFinishedArgs(properties, result));
-
-                ui.OnResult(result);
-
-                return result;
-            } catch(Exception e) {
-                Logging.Warning("[GAMEWRAPPER] Exception: " + e);
-                ui.OnError(e);
-                return null;
             }
         }
     }
