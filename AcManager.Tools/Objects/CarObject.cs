@@ -22,7 +22,7 @@ namespace AcManager.Tools.Objects {
 
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
-            SkinsManager = new CarObject_SkinsManager(Id, new AcObjectTypeDirectories(SkinsDirectory)) {
+            SkinsManager = new CarSkinsManager(Id, new AcObjectTypeDirectories(SkinsDirectory)) {
                 ScanWrapper = this
             };
         }

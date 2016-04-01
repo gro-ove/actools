@@ -262,6 +262,10 @@ done:
         + describe positive sides and flaws for everything
         + automatically switch between starters on addon disabling
     + dynamic background
+    + deleting content (button in toolbar)
+        + showroom, car
+        + track
+        + skin
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -315,7 +319,7 @@ todo:
                 × back button?
             - tracks by countries
             - weekends
-            - drag-racing
+            - drag racing
         + online
             + fallback servers
             + more detailed list view
@@ -379,10 +383,6 @@ todo:
     - copy track ui properties to other configurations
         - context menu
         - button in toolbar
-    + deleting content (button in toolbar)
-        + showroom, car
-        + track
-        - skin
     - autoadd country on tags cleaning
     + error fixer
         + showroom missing kn5 error detection
@@ -410,9 +410,6 @@ todo:
     - context menu for new filters
         - tags
         - properties
-
-    - QD: fixed AI order
-        - custom skins?
 
     - update years database
 
@@ -454,7 +451,10 @@ todo:
     - screenshots tab
 
 later:
-    - recent & shortcuts page
+    - QD: fixed AI order
+        - custom skins?
+
+    + recent & shortcuts page
         - solve architectural problems?
         - pin & unpin servers to move them from recent to main list
         - watching

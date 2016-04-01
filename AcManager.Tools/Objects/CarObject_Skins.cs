@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Lists;
+using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public partial class CarObject : IAcManagerScanWrapper {
         /* for UI car's skins manager */
-        public CarObject_SkinsManager SkinsManager { get; private set; }
+        public CarSkinsManager SkinsManager { get; private set; }
 
         public IAcWrapperObservableCollection SkinsWrappers => SkinsManager.WrappersList;
 

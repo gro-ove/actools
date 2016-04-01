@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
+using AcTools.Utils.Helpers;
 
 namespace AcManager.Controls {
     public class AcListPage : Control {
@@ -31,7 +34,7 @@ namespace AcManager.Controls {
                 if (_currentObject != null) {
                     _currentObject.AcObjectOutdated -= SelectedAcObject_Outdated;
                 }
-
+                
                 _currentObject = v?.Loaded();
 
                 if (_currentObject != null) {
@@ -60,8 +63,14 @@ namespace AcManager.Controls {
             }
         }
 
-        private void SelectedAcObject_Outdated(object sender, EventArgs e) {
+        private async void SelectedAcObject_Outdated(object sender, EventArgs e) {
             ItemsSource.MoveCurrentTo(null);
+
+            var id = (sender as AcObjectNew)?.Id;
+            if (id != null) {
+                await Task.Delay(10);
+                ItemsSource.MoveCurrentTo(ItemsSource.OfType<AcItemWrapper>().GetByIdOrDefault(id));
+            }
         }
 
         #region Control Properies

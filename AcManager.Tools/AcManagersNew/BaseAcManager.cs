@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
-using AcManager.Tools.Objects;
+using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -205,7 +205,7 @@ namespace AcManager.Tools.AcManagersNew {
             ListReady();
 
             // TODO: fixme
-            if (!(this is CarObject_SkinsManager)) {
+            if (!(this is CarSkinsManager)) {
                 Logging.Write($"{{0}}, async loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms", GetType());
             }
 

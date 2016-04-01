@@ -14,6 +14,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Pages.Lists;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
@@ -34,22 +35,24 @@ namespace AcManager.Pages.Selected {
             public SelectedCarPageViewModel([NotNull] CarObject acObject) : base(acObject) {}
 
             #region Open In Showroom
-            private ICommand _openInShowroomCommand;
-            public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new RelayCommand(o => {
+            private RelayCommand _openInShowroomCommand;
+
+            public RelayCommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new RelayCommand(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !CarOpenInShowroomDialog.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
                     OpenInShowroomOptionsCommand.Execute(null);
                 }
             }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private ICommand _openInShowroomOptionsCommand;
-            public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new RelayCommand(o => {
+            private RelayCommand _openInShowroomOptionsCommand;
+
+            public RelayCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new RelayCommand(o => {
                 new CarOpenInShowroomDialog(SelectedObject, SelectedObject.SelectedSkin?.Id).ShowDialog();
             }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private ICommand _openInCustomShowroomCommand;
+            private RelayCommand _openInCustomShowroomCommand;
 
-            public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new RelayCommand(o => {
+            public RelayCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new RelayCommand(o => {
                 Kn5RenderWrapper.StartBrightRoomPreview(SelectedObject.Location, SelectedObject.SelectedSkin?.Id);
             }));
             #endregion
@@ -164,6 +167,12 @@ namespace AcManager.Pages.Selected {
             }
 
             #endregion
+
+            private RelayCommand _manageSkinsCommand;
+
+            public RelayCommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new RelayCommand(o => {
+                new CarSkinsDialog(SelectedObject).ShowDialogWithoutBlocking();
+            }));
         }
 
         private string _id;
@@ -203,7 +212,7 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
 
-               // new InputBinding(_model.ManageSkins, new KeyGesture(Key.K, ModifierKeys.Control))
+                new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control))
             });
             InitializeComponent();
         }
@@ -259,8 +268,8 @@ namespace AcManager.Pages.Selected {
             contextMenu.Items.Add(new Separator());
 
             item = new MenuItem { Header = "Update Preview" };
-            item.Click += (sender, args) => new CarUpdatePreviewsDialog(_model.SelectedObject, new[] {skin.Id},
-                                                                        SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
+            item.Click += (sender, args) => new CarUpdatePreviewsDialog(_model.SelectedObject, new[] { skin.Id },
+                    SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             contextMenu.Items.Add(item);
 
             item = new MenuItem { Header = "Update Livery" };

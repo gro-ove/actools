@@ -126,6 +126,9 @@
     <Compile Include="Pages\Dialogs\GameDialog.xaml.cs">
       <DependentUpon>GameDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Selected\SelectedCarSkinPage.xaml.cs">
+      <DependentUpon>SelectedCarSkinPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools\About\AboutHelper.cs" />
     <Compile Include="Tools\About\ImportantTips.cs" />
     <Compile Include="Tools\About\PieceOfInformation.cs" />
@@ -347,6 +350,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedReplayPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Selected\SelectedCarSkinPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

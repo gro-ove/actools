@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -19,7 +20,7 @@ namespace AcManager.Tools.AcManagersNew {
         Task LoadAsync(string id);
     }
 
-    public class AcItemWrapper : NotifyPropertyChanged {
+    public class AcItemWrapper : NotifyPropertyChanged, IWithId {
         private readonly IAcWrapperLoader _loader;
 
         public AcItemWrapper([NotNull]IAcWrapperLoader loader, [NotNull]AcPlaceholderNew initialValue) {
@@ -55,13 +56,14 @@ namespace AcManager.Tools.AcManagersNew {
                 var oldValue = _value;
                 _value = value;
 
-                if (IsLoaded) {
-                    ((AcObjectNew)oldValue).Outdate();
-                }
                 IsLoaded = value.GetType().IsSubclassOf(typeof(AcObjectNew));
 
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(Id));
                 ValueChanged?.Invoke(this, new WrappedValueChangedEventArgs(oldValue, value));
+
+                var oldAcObjectNew = oldValue as AcObjectNew;
+                oldAcObjectNew?.Outdate();
             }
         }
 
@@ -102,6 +104,8 @@ namespace AcManager.Tools.AcManagersNew {
 
             return string.Compare(xw.Value.Id, yw.Value.Id, StringComparison.CurrentCultureIgnoreCase);
         }
+
+        public string Id => Value.Id;
     }
 
     public delegate void WrappedValueChangedEventHandler(object sender, WrappedValueChangedEventArgs args);

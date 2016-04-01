@@ -1,8 +1,9 @@
+using System.Linq;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
-    public class CarObjectTester : ITester<CarObject> {
+    public class CarObjectTester : IParentTester<CarObject> {
         public static CarObjectTester Instance = new CarObjectTester();
 
         internal static string InnerParameterFromKey(string key) {
@@ -38,6 +39,10 @@ namespace AcManager.Tools.Filters {
                 case "pw":
                 case "pwratio":
                     return nameof(CarObject.SpecsPwRatio);
+                    
+                case "skin":
+                case "skins":
+                    return nameof(CarObject.SkinsList);
 
                 default:
                     return null;
@@ -81,9 +86,22 @@ namespace AcManager.Tools.Filters {
                 case "pw":
                 case "pwratio":
                     return obj.SpecsPwRatio != null && value.Test(obj.SpecsPwRatio);
+
+                case "skins":
+                    return obj.SkinsList?.Count > 0 && value.Test(obj.SkinsList.Count);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);
+        }
+
+        public bool TestChild(CarObject obj, string key, IFilter filter) {
+            switch (key) {
+                case null:
+                case "skin":
+                    return obj.Skins?.Any(x => filter.Test(CarSkinObjectTester.Instance, x)) == true;
+            }
+
+            return false;
         }
     }
 }

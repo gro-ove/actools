@@ -72,9 +72,18 @@ namespace AcManager.Tools.AcManagersNew {
             return Task.Run(() => ScanInner());
         }
 
+        protected void ClearList() {
+            foreach (var obj in InnerWrappersList.Select(x => x.Value).OfType<T>()) {
+                obj.Outdate();
+            }
+            InnerWrappersList.Clear();
+            IsScanned = false;
+            IsLoaded = false;
+        }
+
         public async Task ActualScanAsync(CancellationToken cancellation) {
             Status = AsyncScanManagerStatus.Loading;
-            InnerWrappersList.Clear();
+            ClearList();
 
             IEnumerable<AcPlaceholderNew> entries;
             try {
@@ -90,15 +99,10 @@ namespace AcManager.Tools.AcManagersNew {
 
             if (cancellation.IsCancellationRequested) return;
             if (IsScanning) throw new Exception("Scanning already in process");
-
-            IsLoaded = false;
+            
             IsScanning = true;
 
             try {
-                foreach (var obj in InnerWrappersList.Select(x => x.Value).OfType<T>()) {
-                    obj.Outdate();
-                }
-                
                 InnerWrappersList.AddRange(entries.Select(x => new AcItemWrapper(this, x)));
                 Status = AsyncScanManagerStatus.Ready;
             } catch (Exception e) {

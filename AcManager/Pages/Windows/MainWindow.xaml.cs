@@ -25,7 +25,7 @@ using Path = System.IO.Path;
 
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener {
-        public static bool OptionEnableManagerTabs = false;
+        public static bool OptionEnableManagerTabs = true;
 
         private readonly bool _cancelled;
         private readonly string _testGameDialog = null;

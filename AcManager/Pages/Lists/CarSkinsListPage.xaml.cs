@@ -5,9 +5,9 @@ using AcManager.Controls.ViewModels;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Converters;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {
@@ -26,7 +26,7 @@ namespace AcManager.Pages.Lists {
             Initialize(car, uri.GetQueryParam("Filter"));
         }
 
-        private void Initialize([JetBrains.Annotations.NotNull] CarObject car, string filter = null) {
+        private void Initialize([NotNull] CarObject car, string filter = null) {
             if (car == null) throw new ArgumentNullException(nameof(car));
 
             car.EnsureSkinsLoaded();
@@ -53,7 +53,7 @@ namespace AcManager.Pages.Lists {
             }
 
             protected override string GetStatus(){
-                return $"Total skins: {MainList.Count}";
+                return PluralizingConverter.Pluralize(MainList.Count, @"{0} skin");
             }
         }
     }

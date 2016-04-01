@@ -59,7 +59,7 @@
                 <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
                 <Separator />
                 <Button Content="Find Information" IsEnabled="False" />
-                <Button Content="Manage Skins" Command="{Binding ManageSkins}" ToolTip="Manage skins (Ctrl+K)" />
+                <Button Content="Manage Skins" Command="{Binding ManageSkinsCommand}" ToolTip="Manage skins (Ctrl+K)" />
                 <mui:ButtonWithComboBox Content="Update Previews" Command="{Binding UpdatePreviewsCommand}" ButtonToolTip="Update all previews (Ctrl+P)"
                         PreviewMouseDown="ToolbarButtonUpdatePreviews_OnPreviewMouseDown">
                     <MenuItem Header="Manual Mode" ToolTip="Set camera position manually and then press F8 to start shooting" InputGestureText="Ctrl+Alt+P"

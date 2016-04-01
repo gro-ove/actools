@@ -200,7 +200,7 @@
     <Compile Include="Objects\CarObject_Parent.cs" />
     <Compile Include="Objects\CarObject_Skins.cs" />
     <Compile Include="Objects\CarObject_Kunos.cs" />
-    <Compile Include="Objects\CarObject_SkinsManager.cs" />
+    <Compile Include="Managers\CarSkinsManager.cs" />
     <Compile Include="Objects\KunosCareerEventObject.cs" />
     <Compile Include="Objects\KunosCareerObjectType.cs" />
     <Compile Include="Objects\KunosCareerObject_Events.cs" />

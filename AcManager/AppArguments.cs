@@ -37,7 +37,7 @@ namespace AcManager {
         StorageLocation,
 
         /// <summary>
-        /// Enables manager tabs.
+        /// Enables manager tabs, enabled by default.
         /// Example: --manager-mode.
         /// </summary>
         ManagerMode,

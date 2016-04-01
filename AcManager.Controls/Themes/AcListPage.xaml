@@ -49,7 +49,7 @@
                                 VerticalAlignment="Stretch"
                                 Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
 
-                        <mui:ModernFrame Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal" />
+                        <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
