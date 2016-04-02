@@ -1,31 +1,34 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.Managers.InnerHelpers;
-using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Managers {
-    public class AcObjectTypeDirectories : IDisposable {
+namespace AcManager.Tools.Managers.Directories {
+    /// <summary>
+    /// Basic version with only an abstract concept of watching.
+    /// </summary>
+    public abstract class BaseAcDirectories : IDisposable {
         [NotNull]
         public readonly string EnabledDirectory;
+
+        [CanBeNull]
         public readonly string DisabledDirectory;
 
-        public AcObjectTypeDirectories([NotNull] string enabledDirectory, string disabledDirectory) {
+        protected BaseAcDirectories([NotNull] string enabledDirectory, [CanBeNull] string disabledDirectory) {
             if (enabledDirectory == null) throw new ArgumentNullException(nameof(enabledDirectory));
             EnabledDirectory = enabledDirectory.ToLowerInvariant();
             DisabledDirectory = disabledDirectory?.ToLowerInvariant();
             Actual = true;
         }
 
-        public void CreateIfMissing() {
-            Directory.CreateDirectory(EnabledDirectory);
+        protected BaseAcDirectories([NotNull] string enabledDirectory)
+                : this(enabledDirectory, enabledDirectory + "-off") {
         }
 
-        public AcObjectTypeDirectories([NotNull] string enabledDirectory)
-            : this(enabledDirectory, enabledDirectory + "-off") {
+        public void CreateIfMissing() {
+            Directory.CreateDirectory(EnabledDirectory);
         }
 
         public string GetLocation([NotNull] string id, bool enabled) {
@@ -74,36 +77,12 @@ namespace AcManager.Tools.Managers {
             Actual = false;
         }
 
-        private static readonly List<DirectoryWatcher> Watchers = new List<DirectoryWatcher>();
+        public abstract void Subscribe(IDirectoryListener listener);
 
-        private static DirectoryWatcher CreateOrReuseWatcher([NotNull] string directory) {
-            var watcher = Watchers.FirstOrDefault(x => x.TargetDirectory.Equals(directory, StringComparison.OrdinalIgnoreCase));
-            if (watcher != null) {
-                Debug.WriteLine($"REUSE WATCHER FOR: {directory}");
-                return watcher;
-            }
-
-            Debug.WriteLine($"CREATE A NEW WATCHER FOR: {directory}");
-            watcher = new DirectoryWatcher(directory);
-            Watchers.Add(watcher);
-            return watcher;
-        }
-
-        public void Subscribe(IDirectoryListener listener) {
-            Debug.WriteLine($"LISTENER SUBSCRIBED: {GetType()}, {listener.GetType()}");
-            
-            CreateOrReuseWatcher(EnabledDirectory).Subscribe(listener);
-            if (DisabledDirectory != null) {
-                CreateOrReuseWatcher(DisabledDirectory).Subscribe(listener);
-            }
-        }
-
-        public void Dispose() {
-            Watchers.DisposeEverything();
-        }
+        public abstract void Dispose();
 
         public bool CheckIfEnabled([NotNull] string location) {
-            // TODO: What if disabled directory is in enabled (like â€¦/content/cars and â€¦/content/ca)
+            // TODO: What if disabled directory is in enabled (like …/content/cars and …/content/ca)
             return DisabledDirectory == null || !location.StartsWith(DisabledDirectory);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Tools.Managers {
@@ -11,7 +12,7 @@ namespace AcManager.Tools.Managers {
             return Instance = new ReplaysManager();
         }
 
-        public override AcObjectTypeDirectories Directories => AcRootDirectory.Instance.ReplaysDirectories;
+        public override BaseAcDirectories Directories => AcRootDirectory.Instance.ReplaysDirectories;
 
         protected override ReplayObject CreateAcObject(string id, bool enabled) {
             return new ReplayObject(this, id, enabled);

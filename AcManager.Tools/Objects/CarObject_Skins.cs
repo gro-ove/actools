@@ -64,8 +64,7 @@ namespace AcManager.Tools.Objects {
             }
 
             if (!SkinsWrappers.Any()) {
-                AddError(!Directory.Exists(SkinsDirectory) ? AcErrorType.CarSkins_DirectoryIsMissing :
-                        AcErrorType.CarSkins_SkinsAreMissing);
+                AddError(AcErrorType.CarSkins_SkinsAreMissing);
             }
 
             SelectPreviousOrDefaultSkin();

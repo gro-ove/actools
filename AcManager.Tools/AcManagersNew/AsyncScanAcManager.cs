@@ -12,6 +12,10 @@ namespace AcManager.Tools.AcManagersNew {
         Error, Loading, Ready
     }
 
+    /// <summary>
+    /// Primitive non-file version which allows async scanning.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class AsyncScanAcManager<T> : BaseAcManager<T> where T : AcObjectNew {
 
         private AsyncScanManagerStatus _status;

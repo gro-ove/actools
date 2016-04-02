@@ -31,10 +31,6 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Data_ObjectNameIsMissing:
                     return new Data_ObjectNameIsMissingSolver((AcCommonObject)obj, error);
 
-                case AcErrorType.CarSkins_DirectoryIsMissing:
-                    // TODO
-                    break;
-
                 case AcErrorType.Data_IniIsMissing:
                     // TODO
                     break;

@@ -4,13 +4,19 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcManagersNew {
+    /// <summary>
+    /// AcManager for files (but without watching).
+    /// TODO: Combine with AcManagerNew since watchers are required anyway?
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class FileAcManager<T> : BaseAcManager<T>, IFileAcManager where T : AcCommonObject {
-        public abstract AcObjectTypeDirectories Directories { get; }
+        public abstract BaseAcDirectories Directories { get; }
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
             return Directories.GetSubDirectories().Where(Filter).Select(dir =>

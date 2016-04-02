@@ -71,7 +71,7 @@ namespace AcManager.Tools {
                 tempIcon + "\"/><text id=\"1\">" + title + "</text><text id=\"2\">" + message + "</text></binding></visual></toast>");
             var notification = new ToastNotification(content);
             if (click != null) {
-                notification.Activated += (sender, args) => click(); // Logging.Write("Click!");
+                notification.Activated += (sender, args) => click();
             }
             ToastNotifier.Show(notification);
         }
@@ -80,7 +80,7 @@ namespace AcManager.Tools {
     public static class Toast {
         public static bool OptionFallbackMode = false;
 
-        private static bool _winToasterIsNotAvailable = true;
+        private static bool _winToasterIsNotAvailable;
         private static Uri _defaultIcon;
 
         public static void SetDefaultIcon(Uri iconUri) {

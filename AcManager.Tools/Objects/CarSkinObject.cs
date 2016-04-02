@@ -1,9 +1,9 @@
 ﻿using System.IO;
-using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using Newtonsoft.Json.Linq;
 
@@ -14,6 +14,38 @@ namespace AcManager.Tools.Objects {
         public CarSkinObject(string carId, IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             CarId = carId;
+        }
+
+        protected override void ClearData() {
+            base.ClearData();
+            DriverName = null;
+            Team = null;
+            SkinNumber = null;
+            Priority = null;
+        }
+
+        public override void Reload() {
+            base.Reload();
+            OnImageChanged(nameof(PreviewImage));
+            OnImageChanged(nameof(LiveryImage));
+        }
+
+        public override bool HandleChangedFile(string filename) {
+            if (base.HandleChangedFile(filename)) {
+                return true;
+            }
+
+            if (FileUtils.IsAffected(filename, PreviewImage)) {
+                OnImageChanged(nameof(PreviewImage));
+                return true;
+            }
+
+            if (FileUtils.IsAffected(filename, LiveryImage)) {
+                OnImageChanged(nameof(LiveryImage));
+                return true;
+            }
+            
+            return true;
         }
 
         public override string DisplayName => string.IsNullOrWhiteSpace(Name) ? Id : Name;

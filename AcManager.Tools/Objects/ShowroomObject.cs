@@ -18,13 +18,18 @@ namespace AcManager.Tools.Objects {
         public ShowroomObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) { }
 
+        public override void Reload() {
+            base.Reload();
+            OnImageChanged(nameof(PreviewImage));
+        }
+
         public override bool HandleChangedFile(string filename) {
             if (base.HandleChangedFile(filename)) {
                 return true;
             }
 
             if (FileUtils.IsAffected(filename, PreviewImage)) {
-                RefreshPreviewImage();
+                OnImageChanged(nameof(PreviewImage));
                 return true;
             }
 
@@ -72,9 +77,6 @@ namespace AcManager.Tools.Objects {
         public override string JsonFilename => Path.Combine(Location, "ui", "ui_showroom.json");
 
         public string PreviewImage => ImageRefreshing ?? Path.Combine(Location, "preview.jpg");
-        public void RefreshPreviewImage() {
-            OnImageChanged(nameof(PreviewImage));
-        }
 
         public string Kn5Filename => Path.Combine(Location, Id + ".kn5");
 

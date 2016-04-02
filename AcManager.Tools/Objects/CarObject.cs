@@ -8,6 +8,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using Newtonsoft.Json.Linq;
@@ -18,7 +19,7 @@ namespace AcManager.Tools.Objects {
         
         public CarObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
-            SkinsManager = new CarSkinsManager(Id, new AcObjectTypeDirectories(SkinsDirectory)) {
+            SkinsManager = new CarSkinsManager(Id, new InheritingAcDirectories(manager.Directories, SkinsDirectory)) {
                 ScanWrapper = this
             };
         }
@@ -38,6 +39,34 @@ namespace AcManager.Tools.Objects {
             }
 
             base.OnAcObjectOutdated();
+        }
+
+        protected override void ClearData() {
+            base.ClearData();
+
+            Brand = null;
+            Country = null;
+            CarClass = null;
+            ParentId = null;
+            ParentId = null;
+
+            SpecsBhp = null;
+            SpecsTorque = null;
+            SpecsWeight = null;
+            SpecsTopSpeed = null;
+            SpecsAcceleration = null;
+            SpecsPwRatio = null;
+            
+            SpecsTorqueCurve = null;
+            SpecsPowerCurve = null;
+        }
+
+        public override void Reload() {
+            base.Reload();
+            SkinsManager.Rescan();
+            OnImageChanged(nameof(LogoIcon));
+            OnImageChanged(nameof(BrandBadge));
+            OnImageChanged(nameof(UpgradeIcon));
         }
 
         public override bool HandleChangedFile(string filename) {
@@ -62,8 +91,6 @@ namespace AcManager.Tools.Objects {
 
             var local = filename.SubstringExt(Location.Length + 1);
             if (local.StartsWith(@"skins\", true, CultureInfo.InvariantCulture)) {
-                // TODO: proper skin reload
-                SkinsManager.Rescan();
                 return true;
             }
 
@@ -110,6 +137,13 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _brand) return;
                 _brand = value;
+
+                if (value == null && HasData) {
+                    AddError(AcErrorType.Data_CarBrandIsMissing);
+                } else {
+                    RemoveError(AcErrorType.Data_CarBrandIsMissing);
+                }
+
                 OnPropertyChanged(nameof(Brand));
                 Changed = true;
             }
@@ -268,10 +302,6 @@ namespace AcManager.Tools.Objects {
 
             Brand = json.GetStringValueOnly("brand");
 
-            if (string.IsNullOrWhiteSpace(Brand)) {
-                AddError(AcErrorType.Data_CarBrandIsMissing);
-            }
-
             if (Country == null && Brand != null) {
                 Country = AcStringValues.CountryFromBrand(Brand);
             }
@@ -286,12 +316,9 @@ namespace AcManager.Tools.Objects {
             SpecsTopSpeed = specsObj?.GetStringValueOnly("topspeed");
             SpecsAcceleration = specsObj?.GetStringValueOnly("acceleration");
             SpecsPwRatio = specsObj?.GetStringValueOnly("pwratio");
-
-            var torqueCurve = json["torqueCurve"] as JArray;
-            SpecsTorqueCurve = torqueCurve != null ? new GraphData(torqueCurve) : new GraphData();
-
-            var powerCurve = json["powerCurve"] as JArray;
-            SpecsPowerCurve = powerCurve != null ? new GraphData(powerCurve) : new GraphData();
+            
+            SpecsTorqueCurve = new GraphData(json["torqueCurve"] as JArray);
+            SpecsPowerCurve = new GraphData(json["powerCurve"] as JArray);
         }
 
         protected override void LoadYear(JObject json) {

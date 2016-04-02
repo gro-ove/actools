@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Tools.Managers {
@@ -15,10 +16,11 @@ namespace AcManager.Tools.Managers {
         public override string SearchPattern => "*.ini";
 
         public override PpFilterObject GetDefault() {
-            return EnsureWrapperLoaded(WrappersList.FirstOrDefault(x => x.Value.Id.Contains("default"))) ?? base.GetDefault();
+            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains("default"));
+            return v == null ? base.GetDefault() : EnsureWrapperLoaded(v);
         }
 
-        public override AcObjectTypeDirectories Directories => AcRootDirectory.Instance.PpFiltersDirectories;
+        public override BaseAcDirectories Directories => AcRootDirectory.Instance.PpFiltersDirectories;
 
         protected override PpFilterObject CreateAcObject(string id, bool enabled) {
             return new PpFilterObject(this, id, enabled);

@@ -24,7 +24,7 @@ namespace AcManager.Tools.AcObjectsNew {
             if (!FileUtils.IsAffected(filename, IniFilename)) return false;
 
             if (!Changed || ModernDialog.ShowMessage(@"Ini-file updated. Reload? All changes will be lost.", @"Reload file?", MessageBoxButton.YesNo) ==
-                MessageBoxResult.Yes) {
+                    MessageBoxResult.Yes) {
                 ReloadIniData();
             }
 
@@ -45,7 +45,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        public bool HasData => _iniObject != null;
+        public override bool HasData => _iniObject != null;
 
         #region Loading and saving
         protected override void LoadOrThrow() {

@@ -272,6 +272,7 @@ done:
         + deal with window overlapping
         + AcObjectsTester.ParameterNameFromLeftPart
         + enabling/disabling
+    + skins removing
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -294,8 +295,12 @@ architectural problems:
     - complete list reload
 
 todo:
-    - showroom from QD section and not only
+    - showroom from QD/KunosCareer/Online
     - remember all window sizes
+
+    + watching/renaming inside behaviour
+        + proper ShouldSkipFile methods
+        - object-based reload?
 
     + intellectual content auto-update
         + cars
@@ -350,6 +355,8 @@ todo:
                 + direct connection by ip:port
                     + save in separate file (files?)
                     + recent servers
+            + update filtered list on change
+            + car/track stats in tooltip
             + filters:
                 + password
                 + filter-in-filter
@@ -361,7 +368,6 @@ todo:
             + quick filters
                 - saving
             - fix tab closing
-            - update filtered list on change
             - booking
             - favorites
             - periodic refreshing of all servers 
@@ -373,7 +379,6 @@ todo:
                 - disable loading for AcManager as well?
             - keyboard shortcuts
             - auto saving replays
-            - car/track stats in tooltip
             - custom sorting
         - test and fix for AcManager autoupdating feature
             - handle obsolete!
@@ -384,26 +389,17 @@ todo:
             - syncronized steering wheel
             - hidden steering wheel
             - hud configuration
-            - quickly switchable controls configs?    
+            - quickly switchable controls configs?
     - car setups management
     - detect country label by country/nationality name
 
-    - weak reference for collectionview
     - go buttons keyboard shortcut
-        - special case for try button in drive window
+        - special case for try again button in drive window
 
     - copy track ui properties to other configurations
         - context menu
         - button in toolbar
     - autoadd country on tags cleaning
-    + error fixer
-        + showroom missing kn5 error detection
-        - track missing kn5 error detection
-        - missing sound detection
-        - missing collider.kn5 detection
-        - missing properties fixer
-            + missing name error
-        - CarSkins_SkinsAreMissing
     - tracks specs editor
     - remove double spaces, trim strings
     - car skins errors raising
@@ -415,7 +411,14 @@ todo:
         - even specific shapes?
         - generate automatically based on preview and/or model
 
-    - skins removing
+    + error fixer
+        + showroom missing kn5 error detection
+        - track missing kn5 error detection
+        - missing sound detection
+        - missing collider.kn5 detection
+        - missing properties fixer
+            + missing name error
+        - CarSkins_SkinsAreMissing
 
     - auto-update body shadows
     - checkboxes
@@ -425,7 +428,8 @@ todo:
     - context menu for lists in aclistpages
         - reload list
     - option for automatically add .acreplay for replays
-    - context menu for new filters
+    - context menu for adding new filters
+        - in this tab/as a new tab (+ctrl)
         - tags
         - properties
 
@@ -467,6 +471,8 @@ todo:
 
     - replays filtering
     - screenshots tab
+
+    × weak reference for collectionview
 
 later:
     - QD: fixed AI order

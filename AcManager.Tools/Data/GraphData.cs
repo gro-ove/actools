@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
@@ -33,15 +34,13 @@ namespace AcManager.Tools.Objects {
                 Values.Select(x => new Point((x.Key - MinX) / (MaxX - MinX), (x.Value - MinY) / (MaxY - MinY))).ToList();
         }
 
-        public GraphData() : this(new Dictionary<double, double>()) {
-        }
-
-        public GraphData(JArray obj) : this(ConvertToValues(obj)) {
+        public GraphData(JArray obj = null) : this(ConvertToValues(obj)) {
         }
 
         // ReSharper disable once SuggestBaseTypeForParameter
         private static Dictionary<double, double> ConvertToValues(JArray obj) {
             var values = new Dictionary<double, double>();
+            if (obj == null) return values;
 
             foreach (var entry in obj.OfType<JArray>()) {
                 double key, value;

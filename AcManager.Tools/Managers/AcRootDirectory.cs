@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Text.RegularExpressions;
+using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -40,13 +41,13 @@ namespace AcManager.Tools.Managers {
             Value = null;
         }
 
-        public AcObjectTypeDirectories CarsDirectories { get; private set; }
-        public AcObjectTypeDirectories TracksDirectories { get; private set; }
-        public AcObjectTypeDirectories ShowroomsDirectories { get; private set; }
-        public AcObjectTypeDirectories WeatherDirectories { get; private set; }
-        public AcObjectTypeDirectories PpFiltersDirectories { get; private set; }
-        public AcObjectTypeDirectories ReplaysDirectories { get; private set; }
-        public AcObjectTypeDirectories KunosCareerDirectories { get; private set; }
+        public AcDirectories CarsDirectories { get; private set; }
+        public AcDirectories TracksDirectories { get; private set; }
+        public AcDirectories ShowroomsDirectories { get; private set; }
+        public AcDirectories WeatherDirectories { get; private set; }
+        public AcDirectories PpFiltersDirectories { get; private set; }
+        public AcDirectories ReplaysDirectories { get; private set; }
+        public AcDirectories KunosCareerDirectories { get; private set; }
 
         private void UpdateDirectories() {
             CarsDirectories?.Obsolete();
@@ -55,14 +56,14 @@ namespace AcManager.Tools.Managers {
             WeatherDirectories?.Obsolete();
             PpFiltersDirectories?.Obsolete();
 
-            CarsDirectories = Value == null ? null : new AcObjectTypeDirectories(FileUtils.GetCarsDirectory(Value));
-            TracksDirectories = Value == null ? null : new AcObjectTypeDirectories(FileUtils.GetTracksDirectory(Value));
-            ShowroomsDirectories = Value == null ? null : new AcObjectTypeDirectories(FileUtils.GetShowroomsDirectory(Value));
-            WeatherDirectories = Value == null ? null : new AcObjectTypeDirectories(FileUtils.GetWeatherDirectory(Value));
-            PpFiltersDirectories = Value == null ? null : new AcObjectTypeDirectories(FileUtils.GetPpFiltersDirectory(Value));
-            KunosCareerDirectories = Value == null ? null : new AcObjectTypeDirectories(FileUtils.GetKunosCareerDirectory(Value));
+            CarsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetCarsDirectory(Value));
+            TracksDirectories = Value == null ? null : new AcDirectories(FileUtils.GetTracksDirectory(Value));
+            ShowroomsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetShowroomsDirectory(Value));
+            WeatherDirectories = Value == null ? null : new AcDirectories(FileUtils.GetWeatherDirectory(Value));
+            PpFiltersDirectories = Value == null ? null : new AcDirectories(FileUtils.GetPpFiltersDirectory(Value));
+            KunosCareerDirectories = Value == null ? null : new AcDirectories(FileUtils.GetKunosCareerDirectory(Value));
 
-            ReplaysDirectories = ReplaysDirectories ?? new AcObjectTypeDirectories(FileUtils.GetReplaysDirectory(), null);
+            ReplaysDirectories = ReplaysDirectories ?? new AcDirectories(FileUtils.GetReplaysDirectory(), null);
 
             CarsDirectories?.CreateIfMissing();
             TracksDirectories?.CreateIfMissing();

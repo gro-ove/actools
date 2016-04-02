@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 
@@ -14,7 +16,7 @@ namespace AcManager.Tools.Managers {
             return Instance = new TracksManager();
         }
 
-        public override AcObjectTypeDirectories Directories => AcRootDirectory.Instance.TracksDirectories;
+        public override BaseAcDirectories Directories => AcRootDirectory.Instance.TracksDirectories;
 
         public override TrackObject GetDefault() {
             return base.GetById("imola") ?? base.GetDefault();
@@ -33,8 +35,15 @@ namespace AcManager.Tools.Managers {
             return new TrackObject(this, id, enabled);
         }
 
-        protected override bool ShouldSkipFileInternal(string filename) {
-            return filename.EndsWith(".ai", StringComparison.OrdinalIgnoreCase);
+        private static readonly string[] WatchedFileNames = {
+            @"preview.png",
+            @"outline.png",
+            @"ui_track.json"
+        };
+
+        protected override bool ShouldSkipFile(string objectLocation, string filename) {
+            if (base.ShouldSkipFile(objectLocation, filename)) return true;
+            return !WatchedFileNames.Contains(Path.GetFileName(filename).ToLowerInvariant());
         }
     }
 }

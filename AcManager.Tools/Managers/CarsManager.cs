@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Managers {
     public class CarsManager : AcManagerNew<CarObject> {
@@ -12,17 +15,40 @@ namespace AcManager.Tools.Managers {
             return Instance = new CarsManager();
         }
 
-        public override AcObjectTypeDirectories Directories => AcRootDirectory.Instance.CarsDirectories;
+        public override BaseAcDirectories Directories => AcRootDirectory.Instance.CarsDirectories;
 
         public override CarObject GetDefault() {
             return GetById("abarth500") ?? base.GetDefault();
         }
 
-        protected override bool ShouldSkipFileInternal(string filename) {
-            return filename.EndsWith(".ksamin", StringComparison.OrdinalIgnoreCase) ||
-                   filename.EndsWith(".dds", StringComparison.OrdinalIgnoreCase) ||
-                   filename.EndsWith(".psd", StringComparison.OrdinalIgnoreCase) ||
-                   filename.EndsWith("preview_original.jpg", StringComparison.OrdinalIgnoreCase);
+        private static readonly string[] WatchedFiles = {
+            @"logo.png",
+            @"ui\badge.png",
+            @"ui\ui_car.json"
+        };
+
+        private static readonly string[] WatchedSkinFileNames = {
+            @"livery.png",
+            @"preview.jpg",
+            @"ui_skin.json"
+        };
+
+        protected override bool ShouldSkipFile(string objectLocation, string filename) {
+            if (base.ShouldSkipFile(objectLocation, filename)) return true;
+
+            var inner = filename.SubstringExt(objectLocation.Length + 1);
+            if (WatchedFiles.Contains(inner.ToLowerInvariant())) {
+                return false;
+            }
+
+            if (!inner.StartsWith("skins\\") || // sfx\…, data\…
+                    inner.Count(x => x == '\\') > 2 || // skins\abc\def\file.png
+                    inner.EndsWith(".dds", StringComparison.OrdinalIgnoreCase)) {
+                return true;
+            }
+
+            var name = Path.GetFileName(inner);
+            return !WatchedSkinFileNames.Contains(name.ToLowerInvariant());
         }
 
         protected override CarObject CreateAcObject(string id, bool enabled) {

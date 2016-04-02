@@ -1,5 +1,6 @@
 ﻿using System;
 using AcManager.Tools.AcManagersNew;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcObjectNew : AcPlaceholderNew {
@@ -10,7 +11,7 @@ namespace AcManager.Tools.AcObjectsNew {
             Manager = manager;
         }
 
-        public void Reload() {
+        public virtual void Reload() {
             Manager.Reload(Id);
         }
 
@@ -20,6 +21,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private string _name;
 
+        [CanBeNull]
         public virtual string Name {
             get { return _name; }
             protected set {

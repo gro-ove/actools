@@ -107,10 +107,7 @@ namespace AcManager.Tools.AcErrors {
 
         [Description("Car's parent is missing")]
         Car_ParentIsMissing,
-
-
-        [Description("Skins directory is missing")]
-        CarSkins_DirectoryIsMissing,
+        
 
         [Description("Skins are missing")]
         CarSkins_SkinsAreMissing,

@@ -18,6 +18,12 @@ namespace AcManager.Tools.AcObjectsNew {
             FileAcManager = manager;
         }
 
+        public override void Reload() {
+            ClearErrors();
+            LoadOrThrow();
+            Changed = false;
+        }
+
         protected bool LoadingInProcess { get; private set; }
 
         protected abstract void LoadOrThrow();
@@ -46,13 +52,15 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
+        public abstract bool HasData { get; }
+
         public override string Name {
             get { return base.Name; }
             protected set {
                 if (Equals(value, base.Name)) return;
                 base.Name = value;
 
-                if (value == null) {
+                if (value == null && HasData) {
                     AddError(AcErrorType.Data_ObjectNameIsMissing);
                 } else {
                     RemoveError(AcErrorType.Data_ObjectNameIsMissing);
@@ -64,8 +72,7 @@ namespace AcManager.Tools.AcObjectsNew {
                 Changed = true;
             }
         }
-
-        /* TODO: rename to EditableName? */
+        
         public virtual string NameEditable {
             get { return Name ?? Id; }
             set { Name = value; }
@@ -95,7 +102,7 @@ namespace AcManager.Tools.AcObjectsNew {
                 _year = value;
                 OnPropertyChanged(nameof(Year));
 
-                if (_year.HasValue) {
+                if (_year.HasValue && Name != null) {
                     var inName = AcStringValues.GetYearFromName(Name);
                     if (inName.HasValue && inName.Value != _year.Value) {
                         Name = AcStringValues.NameReplaceYear(Name, _year.Value);

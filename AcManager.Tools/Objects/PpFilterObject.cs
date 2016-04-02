@@ -8,5 +8,7 @@ namespace AcManager.Tools.Objects {
 
         public PpFilterObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {}
+
+        public override bool HasData => true;
     }
 }

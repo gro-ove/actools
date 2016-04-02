@@ -9,6 +9,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
+using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
@@ -205,7 +206,9 @@ namespace AcManager.Tools.Managers {
             set { CurrentId = value.Id; }
         }
 
-        protected override bool ShouldSkipFileInternal(string filename) {
+        protected override bool ShouldSkipFile(string objectLocation, string filename) {
+            if (base.ShouldSkipFile(objectLocation, filename)) return true;
+            // TODO
             return false;
         }
 
@@ -225,10 +228,11 @@ namespace AcManager.Tools.Managers {
             return Directories.GetSubDirectories("series*").Where(Filter).Select(dir => CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
         }
 
-        public override AcObjectTypeDirectories Directories => AcRootDirectory.Instance.KunosCareerDirectories;
+        public override BaseAcDirectories Directories => AcRootDirectory.Instance.KunosCareerDirectories;
 
         public override KunosCareerObject GetDefault() {
-            return EnsureWrapperLoaded(WrappersList.FirstOrDefault(x => x.Value.Id.Contains("series0"))) ?? base.GetDefault();
+            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains("series0"));
+            return v != null ? EnsureWrapperLoaded(v) : base.GetDefault();
         }
 
         protected override KunosCareerObject CreateAcObject(string id, bool enabled) {

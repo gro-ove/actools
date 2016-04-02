@@ -11,6 +11,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -100,7 +101,7 @@ namespace AcManager.Tools.Objects {
 
         private void InitializeEventsManager() {
             if (EventsManager != null) return;
-            EventsManager = new KunosCareerEventsManager(Id, Type, new AcObjectTypeDirectories(Location, null)) {
+            EventsManager = new KunosCareerEventsManager(Id, Type, new AcDirectories(Location, null)) {
                 ScanWrapper = this
             };
             EventsManager.EventHasErrorChanged += EventsManager_EventHasErrorChanged;

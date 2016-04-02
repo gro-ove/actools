@@ -10,6 +10,7 @@ using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.AcObjectsNew {
@@ -27,9 +28,11 @@ namespace AcManager.Tools.AcObjectsNew {
             SuggestionLists.CountriesList.AddUnique(Country);
         }
 
-        public void ReloadJsonData() {
+        public virtual void ReloadJsonData() {
             ClearErrors(AcErrorCategory.Data);
-            LoadJsonOrThrow();
+            if (!LoadJsonOrThrow()) {
+                ClearData();
+            }
             Changed = false;
         }
 
@@ -37,7 +40,7 @@ namespace AcManager.Tools.AcObjectsNew {
             if (!FileUtils.IsAffected(filename, JsonFilename)) return false;
 
             if (!Changed || ModernDialog.ShowMessage(@"Json-file updated. Reload? All changes will be lost.", @"Reload file?", MessageBoxButton.YesNo) ==
-                MessageBoxResult.Yes) {
+                    MessageBoxResult.Yes) {
                 ReloadJsonData();
             }
 
@@ -58,24 +61,28 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        public bool HasData => _jsonObject != null;
+        public override bool HasData => _jsonObject != null;
 
         #region Loading and saving
         protected override void LoadOrThrow() {
-            LoadJsonOrThrow();
+            if (!LoadJsonOrThrow()) {
+                ClearData();
+            }
         }
 
-        private void LoadJsonOrThrow() {
+        private bool LoadJsonOrThrow() {
             string text;
 
             try {
                 text = FileUtils.ReadAllText(JsonFilename);
             } catch (FileNotFoundException) {
+                JsonObject = null;
                 AddError(AcErrorType.Data_JsonIsMissing, Path.GetFileName(JsonFilename));
-                return;
+                return false;
             } catch (DirectoryNotFoundException) {
+                JsonObject = null;
                 AddError(AcErrorType.Data_JsonIsMissing, Path.GetFileName(JsonFilename));
-                return;
+                return false;
             }
 
             try {
@@ -83,10 +90,23 @@ namespace AcManager.Tools.AcObjectsNew {
             } catch (Exception) {
                 JsonObject = null;
                 AddError(AcErrorType.Data_JsonIsDamaged, Path.GetFileName(JsonFilename));
-                return;
+                return false;
             }
 
             LoadData(JsonObject);
+            return true;
+        }
+
+        protected virtual void ClearData() {
+            Tags = new TagsCollection();
+            Name = null;
+            Year = null;
+            Country = null;
+            Description = null;
+            Country = null;
+            Version = null;
+            Author = null;
+            Url = null;
         }
 
         protected virtual void LoadData(JObject json) {
@@ -185,6 +205,8 @@ namespace AcManager.Tools.AcObjectsNew {
 
         #region Common fields
         private string _country;
+
+        [CanBeNull]
         public string Country {
             get { return _country; }
             set {
@@ -197,6 +219,8 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         private string _description;
+
+        [CanBeNull]
         public string Description {
             get { return _description; }
             set {
@@ -213,6 +237,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private string _author;
 
+        [CanBeNull]
         public string Author {
             get { return _author; }
             set {
@@ -227,6 +252,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private string _version;
 
+        [CanBeNull]
         public string Version {
             get { return _version; }
             set {
@@ -241,6 +267,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private string _url;
 
+        [CanBeNull]
         public string Url {
             get { return _url; }
             set {

@@ -92,12 +92,9 @@
     <Compile Include="AcObjectsNew\AcCommonObject_Lists.cs" />
     <Compile Include="AcObjectsNew\AcPlaceholderNew.cs" />
     <Compile Include="AcObjectsNew\IAcObjectNew.cs" />
-    <Compile Include="AcManagersNew\AcManagerNew_Watcher.cs" />
     <Compile Include="AcManagersNew\AcManagerNew.cs" />
-    <Compile Include="AcManagersNew\WeatherManagerNew.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject_Errors.cs" />
     <Compile Include="AcObjectsNew\AcObjectNew.cs" />
-    <Compile Include="AcObjectsNew\WeatherObjectNew.cs" />
     <Compile Include="Data\ContentSyncronizer.cs" />
     <Compile Include="Data\DataProvider.cs" />
     <Compile Include="Data\GameSpecific\PlaceConditions.cs" />
@@ -117,6 +114,8 @@
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider_Consts.cs" />
+    <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
+    <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
     <Compile Include="Managers\Online\LanManager.cs" />
     <Compile Include="Managers\Online\OnlineManagerType.cs" />
     <Compile Include="Managers\Online\RecentManager.cs" />
@@ -170,7 +169,7 @@
     <Compile Include="AcErrors\SolversManager.cs" />
     <Compile Include="Lists\BetterListCollectionView.cs" />
     <Compile Include="Lists\BetterObservableCollection.cs" />
-    <Compile Include="Managers\AcObjectTypeDirectories.cs" />
+    <Compile Include="Managers\Directories\AcDirectories.cs" />
     <Compile Include="Helpers\SteamIdHelper.cs" />
     <Compile Include="Managers\AcRootDirectory.cs" />
     <Compile Include="Managers\Addons\AppAddonInformation.cs" />

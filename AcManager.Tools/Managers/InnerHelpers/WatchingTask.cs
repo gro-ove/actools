@@ -4,11 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
-using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Managers.InnerHelpers {
     internal class WatchingTask {

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
+using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -18,7 +19,7 @@ namespace AcManager.Tools.Managers {
         private readonly string _kunosCareerId;
         private readonly KunosCareerObjectType _kunosCareerType;
 
-        internal KunosCareerEventsManager(string kunosCareerId, KunosCareerObjectType kunosCareerType, AcObjectTypeDirectories directories) {
+        internal KunosCareerEventsManager(string kunosCareerId, KunosCareerObjectType kunosCareerType, AcDirectories directories) {
             _kunosCareerId = kunosCareerId;
             _kunosCareerType = kunosCareerType;
             Directories = directories;
@@ -66,7 +67,7 @@ namespace AcManager.Tools.Managers {
             return FilterRegex.IsMatch(Path.GetFileName(filename) ?? "");
         }
 
-        public override AcObjectTypeDirectories Directories { get; }
+        public override BaseAcDirectories Directories { get; }
 
         protected override KunosCareerEventObject CreateAcObject(string id, bool enabled) {
             var result = new KunosCareerEventObject(_kunosCareerId, _kunosCareerType, this, id, enabled);

@@ -13,10 +13,17 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcManagersNew {
+    /// <summary>
+    /// Non-templated base for static fields.
+    /// </summary>
     public abstract class BaseAcManagerNew : NotifyPropertyChanged {
         public static int OptionAcObjectsLoadingConcurrency = 3;
     }
 
+    /// <summary>
+    /// Most base version of AcManager, doesn't have concept of file (so could be used, for example, for online servers).
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class BaseAcManager<T> : BaseAcManagerNew, IAcManagerNew, IAcWrapperLoader where T : AcObjectNew {
         protected readonly AcWrapperObservableCollection InnerWrappersList;
         protected bool IsScanning;

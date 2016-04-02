@@ -70,6 +70,8 @@ namespace AcManager.Tools.Objects {
         }
 
         #region Simple Properties
+        public override bool HasData => ParsedSuccessfully;
+
         private bool _parsedSuccessfully;
 
         public bool ParsedSuccessfully {
@@ -78,6 +80,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _parsedSuccessfully)) return;
                 _parsedSuccessfully = value;
                 OnPropertyChanged(nameof(ParsedSuccessfully));
+                OnPropertyChanged(nameof(HasData));
             }
         }
 

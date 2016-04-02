@@ -18,9 +18,5 @@ namespace AcManager.Tools.AcManagersNew {
             return Directories.GetSubFiles(SearchPattern).Where(Filter).Select(dir =>
                     CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
         }
-
-        protected override bool ShouldSkipFileInternal(string filename) {
-            return false;
-        }
     }
 }

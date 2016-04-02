@@ -1,8 +1,8 @@
-using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Directories;
 
 namespace AcManager.Tools.AcManagersNew {
     public interface IFileAcManager : IAcManagerNew {
-        AcObjectTypeDirectories Directories { get; }
+        BaseAcDirectories Directories { get; }
 
         void Toggle(string id);
 

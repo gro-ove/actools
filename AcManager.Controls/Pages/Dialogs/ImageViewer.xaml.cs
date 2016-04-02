@@ -126,8 +126,8 @@ namespace AcManager.Controls.Pages.Dialogs {
             }, o => CurrentPosition > 0));
 
             private RelayCommand _nextCommand;
-            private double _maxImageWidth = double.NaN;
-            private double _maxImageHeight = double.NaN;
+            private double _maxImageWidth = double.MaxValue;
+            private double _maxImageHeight = double.MaxValue;
 
             public RelayCommand NextCommand => _nextCommand ?? (_nextCommand = new RelayCommand(o => {
                 CurrentPosition++;
