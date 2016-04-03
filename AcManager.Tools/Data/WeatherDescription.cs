@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -42,9 +43,10 @@ namespace AcManager.Tools.Data {
         public static string GetWeatherTypeName (WeatherType type) {
             return Regex.Replace(type.ToString(), @"(?=[A-Z])", " ").TrimStart();
         }
-
+        
+        [Pure]
         public static WeatherType? FindClosestWeather(IEnumerable<WeatherType> list, WeatherType type) {
-            var weatherTypes = list as IList<WeatherType> ?? list.ToList();
+            var weatherTypes = list.ToList();
             for (var i = 0; i < 5; i++) {
                 if (weatherTypes.Contains(type)) return type;
 

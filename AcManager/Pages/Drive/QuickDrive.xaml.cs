@@ -19,6 +19,7 @@ using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Navigation;
 
@@ -501,11 +502,16 @@ namespace AcManager.Pages.Drive {
                 var list = WeatherManager.Instance.LoadedOnly.ToList();
                 _waitingForWeatherList = false;
 
-                var closest = WeatherDescription.FindClosestWeather(list.Select(x => x.WeatherType).Where(x => x.HasValue).Select(x => x.Value), type);
-                if (closest == null) {
+                try {
+                    var closest = WeatherDescription.FindClosestWeather(list.Select(x => x.WeatherType).Where(x => x.HasValue).Select(x => x.Value), type);
+                    if (closest == null) {
+                        IsWeatherNotSupported = true;
+                    } else {
+                        SelectedWeather = list.Where(x => x.WeatherType == closest).RandomElement();
+                    }
+                } catch (Exception e) {
                     IsWeatherNotSupported = true;
-                } else {
-                    SelectedWeather = list.Where(x => x.WeatherType == closest).RandomElement();
+                    Logging.Warning("[QUICKDRIVE] FindClosestWeather exception: " + e);
                 }
             }
             #endregion

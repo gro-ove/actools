@@ -11,6 +11,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
@@ -47,7 +48,6 @@ namespace AcManager.Tools.Objects {
             Brand = null;
             Country = null;
             CarClass = null;
-            ParentId = null;
             ParentId = null;
 
             SpecsBhp = null;
@@ -132,6 +132,8 @@ namespace AcManager.Tools.Objects {
 
         #region Simple Properties
         private string _brand;
+
+        [CanBeNull]
         public string Brand {
             get { return _brand; }
             set {
@@ -150,6 +152,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _carClass;
+
+        [CanBeNull]
         public string CarClass {
             get { return _carClass; }
             set {
@@ -163,6 +167,8 @@ namespace AcManager.Tools.Objects {
 
         #region Specifications
         private string _specsBhp;
+
+        [CanBeNull]
         public string SpecsBhp {
             get { return _specsBhp; }
             set {
@@ -175,6 +181,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsTorque;
+
+        [CanBeNull]
         public string SpecsTorque {
             get { return _specsTorque; }
             set {
@@ -188,6 +196,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsWeight;
+
+        [CanBeNull]
         public string SpecsWeight {
             get { return _specsWeight; }
             set {
@@ -201,6 +211,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsTopSpeed;
+
+        [CanBeNull]
         public string SpecsTopSpeed {
             get { return _specsTopSpeed; }
             set {
@@ -214,6 +226,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsAcceleration;
+
+        [CanBeNull]
         public string SpecsAcceleration {
             get { return _specsAcceleration; }
             set {
@@ -227,6 +241,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsPwRatio;
+
+        [CanBeNull]
         public string SpecsPwRatio {
             get { return _specsPwRatio; }
             set {
@@ -239,6 +255,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        [CanBeNull]
         public string SpecsInfoDisplay {
             get {
                 var result = new StringBuilder();
@@ -262,6 +279,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private GraphData _specsTorqueCurve;
+
+        [CanBeNull]
         public GraphData SpecsTorqueCurve {
             get { return _specsTorqueCurve; }
             set {
@@ -273,6 +292,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private GraphData _specsPowerCurve;
+
+        [CanBeNull]
         public GraphData SpecsPowerCurve {
             get { return _specsPowerCurve; }
             set {

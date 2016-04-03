@@ -24,14 +24,13 @@ namespace AcManager.Tools.Objects {
 
         public TrackObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
-
             var uiDirectory = Path.Combine(Location, "ui");
             if (!Directory.Exists(uiDirectory)) {
                 AddError(AcErrorType.Data_UiDirectoryIsMissing);
                 _layoutLocation = null;
                 return;
             }
-            
+
             var multiLayouts = Directory.GetDirectories(uiDirectory).Where(x => File.Exists(Path.Combine(x, "ui_track.json"))).ToList();
             if (!multiLayouts.Any() || File.Exists(JsonFilename)) {
                 IdWithLayout = Id;
@@ -48,6 +47,11 @@ namespace AcManager.Tools.Objects {
                                 c.PropertyChanged += Configuration_PropertyChanged;
                                 return c;
                             })));
+        }
+
+        public override void Reload() {
+            base.Reload();
+            // TODO: check if MultiLayoutMode is changed!
         }
 
         /// <summary>

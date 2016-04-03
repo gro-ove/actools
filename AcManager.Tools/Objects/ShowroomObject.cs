@@ -85,11 +85,7 @@ namespace AcManager.Tools.Objects {
         public string TrackFilename => Path.Combine(Location, "track.wav");
 
         private void CheckKn5() {
-            if (File.Exists(Kn5Filename)) {
-                RemoveError(AcErrorType.Showroom_Kn5IsMissing);
-            } else {
-                AddError(AcErrorType.Showroom_Kn5IsMissing);
-            }
+            ErrorIf(!File.Exists(Kn5Filename), AcErrorType.Showroom_Kn5IsMissing);
         }
 
         private void CheckSound() {

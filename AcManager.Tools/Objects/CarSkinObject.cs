@@ -5,6 +5,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
@@ -58,6 +59,7 @@ namespace AcManager.Tools.Objects {
 
         private string _driverName;
 
+        [CanBeNull]
         public string DriverName {
             get { return _driverName; }
             set {
@@ -69,6 +71,7 @@ namespace AcManager.Tools.Objects {
 
         private string _team;
 
+        [CanBeNull]
         public string Team {
             get { return _team; }
             set {
@@ -80,6 +83,7 @@ namespace AcManager.Tools.Objects {
 
         private string _skinNumber;
 
+        [CanBeNull]
         public string SkinNumber {
             get { return _skinNumber; }
             set {
@@ -90,7 +94,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private int? _priority;
-
+        
         public int? Priority {
             get { return _priority; }
             set {

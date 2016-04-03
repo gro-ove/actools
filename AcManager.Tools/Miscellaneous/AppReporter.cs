@@ -85,7 +85,7 @@ namespace AcManager.Tools.Miscellaneous {
                 }
 
                 foreach (var fileInfo in new DirectoryInfo(logsDirectory).GetFiles("*.txt").Where(x => x.Length < 100000)
-                        .OrderBy(x => x.CreationTime).Take(15)) {
+                        .OrderBy(x => -x.CreationTime.ToUnixTimestamp()).Take(35)) {
                     try {
                         zip.CreateEntryFromFile(fileInfo.FullName, "Logs/" + fileInfo.Name, CompressionLevel.Optimal);
                     } catch (Exception e) {

@@ -4,6 +4,7 @@ using System.IO;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcCommonObject : AcObjectNew {
@@ -53,7 +54,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public abstract bool HasData { get; }
-
+        
         public override string Name {
             get { return base.Name; }
             protected set {
@@ -72,7 +73,8 @@ namespace AcManager.Tools.AcObjectsNew {
                 Changed = true;
             }
         }
-        
+
+        [CanBeNull]
         public virtual string NameEditable {
             get { return Name ?? Id; }
             set { Name = value; }
@@ -115,6 +117,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public abstract void Save();
 
+        [NotNull]
         public virtual string Location => FileAcManager.Directories.GetLocation(Id, Enabled);
 
         public virtual void ViewInExplorer() {

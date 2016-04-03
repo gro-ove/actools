@@ -16,6 +16,14 @@ namespace AcManager.Tools.AcObjectsNew {
             AddError(new AcError(type, args));
         }
 
+        public void ErrorIf(bool condition, AcErrorType type, params object[] args) {
+            if (condition) {
+                AddError(new AcError(type, args));
+            } else {
+                RemoveError(type);
+            }
+        }
+
         public void AddError(IAcError error) {
             if (HasError(error.Type)) return;
             _errors.Add(error);

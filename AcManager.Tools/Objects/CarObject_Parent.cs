@@ -2,6 +2,7 @@
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Managers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public partial class CarObject {
@@ -13,6 +14,7 @@ namespace AcManager.Tools.Objects {
 
         private string _parentId;
 
+        [CanBeNull]
         public string ParentId {
             get { return _parentId; }
             set {
@@ -57,6 +59,7 @@ namespace AcManager.Tools.Objects {
 
         private CarObject _parent;
 
+        [CanBeNull]
         public CarObject Parent {
             get {
                 if (ParentId == null) return null;
@@ -67,6 +70,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        [CanBeNull]
         public string ParentDisplayName => Parent?.Name ?? ParentId;
 
         /* TODO: Mark as loaded only? */

@@ -8,6 +8,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
@@ -23,6 +24,21 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        protected override void ClearData() {
+            base.ClearData();
+            City = null;
+            GeoTags = null;
+            SpecsLength = null;
+            SpecsPitboxes = null;
+            SpecsWidth = null;
+        }
+
+        public override void Reload() {
+            base.Reload();
+            OnImageChanged(nameof(PreviewImage));
+            OnImageChanged(nameof(OutlineImage));
+        }
+
         public abstract TrackObject MainTrackObject { get; }
 
         public abstract string LayoutId { get; }
@@ -33,6 +49,8 @@ namespace AcManager.Tools.Objects {
 
         #region Properties & Specifications
         private string _city;
+
+        [CanBeNull]
         public string City {
             get { return _city; }
             set {
@@ -45,6 +63,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private GeoTagsEntry _geoTags;
+
+        [CanBeNull]
         public GeoTagsEntry GeoTags {
             get { return _geoTags; }
             set {
@@ -57,6 +77,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsLength;
+
+        [CanBeNull]
         public string SpecsLength {
             get { return _specsLength; }
             set {
@@ -69,6 +91,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsWidth;
+
+        [CanBeNull]
         public string SpecsWidth {
             get { return _specsWidth; }
             set {
@@ -81,6 +105,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private string _specsPitboxes;
+
+        [CanBeNull]
         public string SpecsPitboxes {
             get { return _specsPitboxes; }
             set {
@@ -92,6 +118,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        [CanBeNull]
         public string SpecsInfoDisplay {
             get {
                 var result = new StringBuilder();

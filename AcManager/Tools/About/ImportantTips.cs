@@ -43,8 +43,8 @@ Changes original launcher a little.
 Quite questionable solution. I won't spread about it too much, just basics:
   + Compatible: doesn't mess with [i]AssettoCorsa.exe[/i] at all, can work even if it's runned;
   + Tested: surprisingly solid, works without Internet;
-  + Fast: faster, than everything else;
   − Steam-unfriendly: doesn't work for archievments & stuff.
+  − Obsoletable: you can miss some updates for AC using it.
 
  • [b]Naive Starter[/b]
 CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you're using original Steam version — won't work at all.") {
