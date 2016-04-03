@@ -5,7 +5,7 @@
         xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="{Binding SelectedCar.DisplayName, StringFormat='Update previews for \{0\}'}" MinWidth="540" MinHeight="400" Width="540" Height="400"
+        Title="Update Previews" MinWidth="540" MinHeight="400" Width="540" Height="400"
         ResizeMode="CanResize" MaxWidth="1920" MaxHeight="1080" Closing="CarUpdatePreviewsDialog_OnClosing" SizeToContent="Manual"
         Loaded="CarUpdatePreviewsDialog_OnLoaded" d:DataContext="{d:DesignInstance dialogs:CarUpdatePreviewsDialog}">
     <Grid>

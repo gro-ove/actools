@@ -13,7 +13,7 @@
             <DockPanel>
                 <Label>Assetto Corsa folder:</Label>
                 <Button Command="{Binding ChangeAcRootCommand}">Change</Button>
-                <TextBlock Text="{Binding AcRootDirectoryValue}" />
+                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding CommonSettings.CreateStartMenuShortcutIfMissing}"
@@ -33,9 +33,10 @@
             <DockPanel>
                 <Label>App version:</Label>
                 <Button Command="{Binding AppUpdater.CheckAndPrepareIfNeededCommand}">Check for Updates</Button>
-                <TextBlock Text="{x:Static helpers:BuildInformation.AppVersion}" watermark:WatermarkService.Watermark="?" />
+                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}"
+                        Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, Mode=OneTime}" watermark:WatermarkService.Watermark="?" />
             </DockPanel>
-            
+
             <TextBlock Text="{Binding AppUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource ErrorForeground}"
                     Visibility="{Binding AppUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
@@ -43,7 +44,8 @@
             <DockPanel>
                 <Label>Content version:</Label>
                 <Button Command="{Binding ContentSyncronizer.CheckAndUpdateIfNeededCommand}">Check for Updates</Button>
-                <TextBlock Text="{Binding ContentSyncronizer.InstalledVersion}" watermark:WatermarkService.Watermark="?" />
+                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding ContentSyncronizer.InstalledVersion, Mode=OneWay}"
+                        watermark:WatermarkService.Watermark="?" />
             </DockPanel>
             <TextBlock Text="{Binding ContentSyncronizer.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource ErrorForeground}"
                     Visibility="{Binding ContentSyncronizer.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -54,10 +56,7 @@
             <DockPanel>
                 <Label>Size:</Label>
                 <Button Command="{Binding CleanUpStorageCommand}" ToolTip="Remove all nonimportant values">Clean Up</Button>
-                <TextBlock>
-                    <Run Text="{Binding ValuesStorage.Count, Mode=OneWay}" />
-                    <Run Text="{Binding ValuesStorage.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='entry', Mode=OneWay}" />
-                </TextBlock>
+                <TextBlock Text="{Binding ValuesStorage.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} entry', Mode=OneWay}" />
             </DockPanel>
 
             <!--beta access-->

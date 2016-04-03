@@ -93,10 +93,13 @@ namespace AcManager.Tools.Objects {
 
             for (var i = obj.Where(x => x.Name != null).Select(x => x.Name.Length).Min(); i > 2; i--) {
                 var result = baseName.Substring(0, i);
+                if (obj.Skip(1).Any(x => x.Name?.Substring(0, i) != result)) continue;
 
-                if (obj.Skip(1).All(x => x.Name.Substring(0, i) == result)) {
-                    return result.Trim();
+                result = result.Trim();
+                if (result.Length > 2 && result.EndsWith("-") || result.EndsWith("—")) {
+                    result = result.Substring(0, result.Length - 1).Trim();
                 }
+                return result;
             }
 
             return null;

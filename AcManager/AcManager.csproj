@@ -589,6 +589,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Assets\Img\Showroom.png" />
     <Content Include="Libs\KeraLua.dll" />
     <Content Include="Libs\Lua52.dll" />
     <Content Include="Libs\NLua.dll" />

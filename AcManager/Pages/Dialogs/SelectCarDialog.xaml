@@ -111,11 +111,23 @@
         </Grid.ColumnDefinitions>
 
         <userControls:CarBlock Car="{Binding SelectedCar, Mode=OneWay}" SelectedSkin="{Binding SelectedSkin, Mode=TwoWay}" SelectSkin="True" Margin="0 0 0 -42">
-            <ComboBox Margin="8" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="64" Height="64"
-                    DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" ItemsSource="{Binding TunableVersions}"
-                    Style="{StaticResource TunableVersions.ComboBox}"
-                    Visibility="{Binding HasChildren, Converter={StaticResource BooleanToVisibilityConverter}}" SelectedItem="{Binding SelectedTunableVersion}"
-                    ItemTemplate="{StaticResource TunableVersions.ItemTemplate}" />
+            <Grid>
+                <ComboBox Margin="8" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="64" Height="64"
+                        DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" ItemsSource="{Binding TunableVersions}"
+                        Style="{StaticResource TunableVersions.ComboBox}"
+                        Visibility="{Binding HasChildren, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        SelectedItem="{Binding SelectedTunableVersion}" ItemTemplate="{StaticResource TunableVersions.ItemTemplate}" />
+
+                <Button Margin="8" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="64" Height="64" Padding="0"
+                        DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" Command="{Binding OpenInShowroomCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                    </Button.Style>
+                    <Image RenderOptions.BitmapScalingMode="LowQuality" Source="/Assets/Img/Showroom.png" Width="64" Height="64" />
+                </Button>
+            </Grid>
         </userControls:CarBlock>
 
         <mui:ModernTab Layout="TabWithTitle" Margin="20 0 0 0" LinksMargin="0 0 0 0" FrameMargin="0 30 0 0" x:Name="Tabs" Width="320" Grid.Column="1"

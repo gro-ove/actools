@@ -209,8 +209,8 @@
     <Compile Include="Objects\PpFilterObject.cs" />
     <Compile Include="Objects\KunosCareerObject.cs" />
     <Compile Include="Objects\WeatherObject.cs" />
-    <Compile Include="Objects\TrackObject_TrackExtraConfigurationObject.cs" />
-    <Compile Include="Objects\TrackObject_TrackBaseObject.cs" />
+    <Compile Include="Objects\TrackExtraConfigurationObject.cs" />
+    <Compile Include="Objects\TrackBaseObject.cs" />
     <Compile Include="Objects\TrackObject_Lists.cs" />
     <Compile Include="Objects\CarObject_Lists.cs" />
     <Compile Include="Objects\CarSkinObject.cs" />

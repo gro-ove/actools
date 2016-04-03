@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Annotations;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
@@ -12,6 +13,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
 
@@ -63,6 +65,8 @@ namespace AcManager.Pages.Dialogs {
 
             SelectedTunableVersion = value;
             OnPropertyChanged(nameof(SelectedCar));
+            OpenInShowroomCommand.OnCanExecuteChanged();
+            OpenInShowroomOptionsCommand.OnCanExecuteChanged();
 
             if (_list != null) {
                 _list.SelectedItem = value;
@@ -110,6 +114,8 @@ namespace AcManager.Pages.Dialogs {
                 if (Equals(value, _selectedSkin)) return;
                 _selectedSkin = value;
                 OnPropertyChanged();
+                OpenInShowroomCommand.OnCanExecuteChanged();
+                OpenInShowroomOptionsCommand.OnCanExecuteChanged();
             }
         }
 
@@ -193,6 +199,21 @@ namespace AcManager.Pages.Dialogs {
                 SelectedCar = _list.SelectedItem as CarObject;
             }
         }
+
+        private RelayCommand _openInShowroomCommand;
+
+        public RelayCommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new RelayCommand(o => {
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                    !CarOpenInShowroomDialog.Run(SelectedCar, SelectedSkin?.Id)) {
+                OpenInShowroomOptionsCommand.Execute(null);
+            }
+        }, o => SelectedCar != null && SelectedSkin != null));
+
+        private RelayCommand _openInShowroomOptionsCommand;
+
+        public RelayCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new RelayCommand(o => {
+            new CarOpenInShowroomDialog(SelectedCar, SelectedSkin?.Id).ShowDialog();
+        }, o => SelectedCar != null && SelectedSkin != null));
 
         public event PropertyChangedEventHandler PropertyChanged;
 

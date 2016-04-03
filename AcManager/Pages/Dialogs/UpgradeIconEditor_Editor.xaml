@@ -36,8 +36,7 @@
         <TextBlock Text="New" Style="{StaticResource Heading2}" Grid.Row="0" Grid.Column="1" />
 
         <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Source="{Binding Car.UpgradeIcon, Converter={StaticResource UriToCachedImageConverter}}" Width="64" Height="64" Grid.Row="1" Grid.Column="0">
-        </Image>
+                Source="{Binding Car.UpgradeIcon, Converter={StaticResource UriToCachedImageConverter}}" Width="64" Height="64" Grid.Row="1" Grid.Column="0"/>
 
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid Width="64" Height="64" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8">

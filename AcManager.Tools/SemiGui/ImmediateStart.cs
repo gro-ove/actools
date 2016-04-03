@@ -16,7 +16,7 @@ namespace AcManager.Tools.SemiGui {
         }
 
         private async Task Run() {
-            await Task.Delay(1000);
+            await Task.Delay(5000);
             if (_cancelled) return;
 
             var originalPosition = Cursor.Position;
