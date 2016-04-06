@@ -44,12 +44,12 @@ namespace AcManager.Tools.Starters {
             }
 
             if (GameProcess != null) {
-                if (!GameProcess.HasExited) {
-                    try {
+                try {
+                    if (!GameProcess.HasExited) {
                         GameProcess.Kill();
-                    } catch (Exception e) {
-                        Logging.Warning("[BASESTARTER] Process killing exception: " + e);
                     }
+                } catch (Exception e) {
+                    Logging.Warning("[BASESTARTER] Process killing exception: " + e);
                 }
 
                 GameProcess.Dispose();

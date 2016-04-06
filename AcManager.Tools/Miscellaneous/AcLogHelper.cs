@@ -12,7 +12,13 @@ namespace AcManager.Tools.Miscellaneous {
             OnlineWrongPassword,
 
             [Description("Can't connect to remote server")]
-            OnlineConnectionFailed
+            OnlineConnectionFailed,
+
+            [Description("Suspension objects (SUSP_LF, SUSP_LR, …) are missing")]
+            SuspensionIsMissing,
+
+            [Description("Wheels objects (WHEEL_LF, WHEEL_LR, …) are missing")]
+            WheelsAreMissing,
         }
 
         public static WhatsGoingOn? TryToDetermineWhatsGoingOn() {
@@ -26,8 +32,14 @@ namespace AcManager.Tools.Miscellaneous {
                 if (log.Contains("ERROR: RaceManager :: Handshake FAILED")) {
                     return WhatsGoingOn.OnlineConnectionFailed;
                 }
-
-
+                
+                if (log.Contains("COULD NOT FIND SUSPENSION OBJECT SUSP_")) {
+                    return WhatsGoingOn.SuspensionIsMissing;
+                }
+                
+                if (log.Contains("COULD NOT FIND SUSPENSION OBJECT WHEEL_")) {
+                    return WhatsGoingOn.WheelsAreMissing;
+                }
             } catch (Exception e) {
                 Logging.Write("[ACLOGHELPER] Can't determine what's going on: " + e);
             }

@@ -58,6 +58,20 @@ namespace AcManager.Tools.AcManagersNew {
             _cancellationTokenSource = null;
         }
 
+        public override async Task EnsureLoadedAsync() {
+            if (!IsScanned) {
+                await ScanAsync();
+            }
+            await base.EnsureLoadedAsync();
+        }
+
+        public override async Task RescanAsync() {
+            await ScanAsync();
+            if (InnerWrappersList.HasListeners) {
+                await base.EnsureLoadedAsync();
+            }
+        }
+
         public override void ActualScan() {
             _cancellationTokenSource?.Cancel();
             _scanAsyncTask = null;

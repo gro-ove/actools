@@ -12,6 +12,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
+using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
     public partial class SelectAndSetupCarDialog_Brands : INotifyPropertyChanged {
@@ -23,7 +24,7 @@ namespace AcManager.Pages.Dialogs {
             public string Icon { get; set; }
 
             public Uri PageAddress => UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
-                    $"enabled+&brand:{Name}", Name);
+                    $"enabled+&brand:{Name}", Filter.Encode(Name));
 
             public CarBrandInformation(string name) {
                 Name = name;

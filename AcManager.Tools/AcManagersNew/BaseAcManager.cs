@@ -152,7 +152,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         private Task _loadingTask;
 
-        public async Task EnsureLoadedAsync() {
+        public virtual async Task EnsureLoadedAsync() {
             if (!IsScanned) {
                 Scan();
             }
@@ -169,7 +169,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        public async Task RescanAsync() {
+        public virtual async Task RescanAsync() {
             Scan();
             if (InnerWrappersList.HasListeners) {
                 await LoadAsync();

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -34,12 +36,15 @@ namespace AcManager.Controls.ViewModels {
 
         protected AcItemWrapper CurrentItem => MainList.CurrentItem as AcItemWrapper;
 
-        protected BaseAcObjectListCollectionViewWrapper([NotNull] IAcManagerNew manager, IFilter<T> listFilter) {
+        private readonly bool _allowNonSelected;
+
+        protected BaseAcObjectListCollectionViewWrapper([NotNull] IAcManagerNew manager, IFilter<T> listFilter, bool allowNonSelected) {
             if (manager == null) throw new ArgumentNullException(nameof(manager));
             _manager = manager;
             _list = _manager.WrappersAsIList;
             _mainList = new AcWrapperCollectionView(_list);
             ListFilter = listFilter;
+            _allowNonSelected = allowNonSelected;
         }
 
         private void List_CollectionReady(object sender, EventArgs e) {
@@ -110,7 +115,9 @@ namespace AcManager.Controls.ViewModels {
             var selected = selectedId == null ? null : _manager.GetObjectById(selectedId);
 
             _userChange = false;
-            if (selected == null) {
+            if (_allowNonSelected) {
+                MainList.MoveCurrentToOrNull(selected);
+            } else if (selected == null) {
                 MainList.MoveCurrentToFirst();
             } else {
                 MainList.MoveCurrentToOrFirst(selected);
@@ -124,6 +131,11 @@ namespace AcManager.Controls.ViewModels {
             if (_userChange) {
                 SaveCurrentKey(obj.Value.Id);
             }
+        }
+
+        protected bool FilterTest(AcPlaceholderNew o) {
+            var t = o as T;
+            return t != null && ListFilter.Test(t);
         }
 
         protected bool FilterTest(object o) {
@@ -145,14 +157,32 @@ namespace AcManager.Controls.ViewModels {
             _oldNumber = newNumber;
         }
 
+        private void RefreshFilter(AcPlaceholderNew obj) {
+            var contains = MainList.OfType<AcItemWrapper>().Any(x => x.Value == obj);
+            var newValue = FilterTest(obj);
+
+            if (contains != newValue) {
+                _list.RefreshFilter(obj);
+            }
+        }
+
+        private void RefreshFilter(AcItemWrapper obj) {
+            var contains = MainList.OfType<AcItemWrapper>().Contains(obj);
+            var newValue = FilterTest(obj);
+
+            if (contains != newValue) {
+                _list.RefreshFilter(obj);
+            }
+        }
+
         private void List_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (!ListFilter.IsAffectedBy(e.PropertyName)) return;
-            _list.RefreshFilter((AcPlaceholderNew)sender);
+            RefreshFilter((AcPlaceholderNew)sender);
             MainListUpdated();
         }
 
         private void List_WrapperValueChanged(object sender, WrappedValueChangedEventArgs e) {
-            _list.RefreshFilter((AcItemWrapper)sender);
+            RefreshFilter((AcItemWrapper)sender);
             MainListUpdated();
         }
 

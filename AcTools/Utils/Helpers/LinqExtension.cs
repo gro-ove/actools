@@ -433,6 +433,28 @@ namespace AcTools.Utils.Helpers {
                 if (!Equals(i, value)) yield return i;
             }
         }
+
+        [Pure]
+        public static bool All<T>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, int, bool> predicate) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            var j = 0;
+            foreach (var i in source) {
+                if (!predicate(i, j++)) return false;
+            }
+            return true;
+        }
+
+        [Pure]
+        public static bool Any<T>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, int, bool> predicate) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            var j = 0;
+            foreach (var i in source) {
+                if (predicate(i, j++)) return true;
+            }
+            return false;
+        }
     }
 
     public interface IWithId {

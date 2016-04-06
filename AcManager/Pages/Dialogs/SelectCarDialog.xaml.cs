@@ -186,7 +186,7 @@ namespace AcManager.Pages.Dialogs {
 
             _list = (((ModernTab)sender).Frame.Content as AcObjectSelectList)?.Model;
             if (_list == null) return;
-
+            
             _list.SelectedItem = SelectedCar;
             _list.PropertyChanged += List_PropertyChanged;
 

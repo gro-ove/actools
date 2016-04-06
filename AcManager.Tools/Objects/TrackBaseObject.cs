@@ -34,9 +34,10 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void Reload() {
-            base.Reload();
             OnImageChanged(nameof(PreviewImage));
             OnImageChanged(nameof(OutlineImage));
+
+            base.Reload();
         }
 
         public abstract TrackObject MainTrackObject { get; }

@@ -7,51 +7,84 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class TrackObject : TrackBaseObject {
         public sealed override string Location => base.Location;
 
+        [CanBeNull]
         public sealed override string LayoutId { get; }
 
+        [NotNull]
         public sealed override string IdWithLayout { get; }
 
+        [CanBeNull]
         public BetterObservableCollection<TrackBaseObject> MultiLayouts { get; }
 
-        public bool MultiLayoutMode => _layoutLocation != null;
-
+        [CanBeNull]
         private readonly string _layoutLocation;
+
+        public bool MultiLayoutMode => MultiLayouts != null;
 
         public TrackObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
-            var uiDirectory = Path.Combine(Location, "ui");
-            if (!Directory.Exists(uiDirectory)) {
-                AddError(AcErrorType.Data_UiDirectoryIsMissing);
-                _layoutLocation = null;
-                return;
-            }
-
-            var multiLayouts = Directory.GetDirectories(uiDirectory).Where(x => File.Exists(Path.Combine(x, "ui_track.json"))).ToList();
-            if (!multiLayouts.Any() || File.Exists(JsonFilename)) {
-                IdWithLayout = Id;
-                return;
-            }
-
-            _layoutLocation = multiLayouts[0];
-            LayoutId = Path.GetFileName(_layoutLocation);
-            IdWithLayout = $"{Id}/{LayoutId}";
-            MultiLayouts = new BetterObservableCollection<TrackBaseObject>(
-                    new[] { (TrackBaseObject)this }.Union(
-                            multiLayouts.Skip(1).Select(x => {
+            try {
+                var list = GetMultiLayouts();
+                if (IsInMultiLayoutsMode(list)) {
+                    _layoutLocation = list[0];
+                    LayoutId = Path.GetFileName(_layoutLocation);
+                    IdWithLayout = $"{Id}/{LayoutId}";
+                    MultiLayouts = new BetterObservableCollection<TrackBaseObject>(
+                            list.Skip(1).Select(x => {
                                 var c = new TrackExtraLayoutObject(manager, id, enabled, x);
                                 c.PropertyChanged += Configuration_PropertyChanged;
                                 return c;
-                            })));
+                            }).Prepend((TrackBaseObject)this));
+                    return;
+                }
+            } catch (AcErrorException e) {
+                AddError(e.AcError);
+                IdWithLayout = Id;
+            }
+            
+            IdWithLayout = Id;
+        }
+
+        private List<string> GetMultiLayouts() {
+            var uiDirectory = Path.Combine(Location, "ui");
+            if (!Directory.Exists(uiDirectory)) throw new AcErrorException(AcErrorType.Data_UiDirectoryIsMissing);
+            return Directory.GetDirectories(uiDirectory).Where(x => File.Exists(Path.Combine(x, "ui_track.json"))).ToList();
+        }
+
+        private bool IsInMultiLayoutsMode(IEnumerable<string> list) => !File.Exists(Path.Combine(Location, "ui", "ui_track.json")) && list.Any();
+
+        private bool IsMultiLayoutsChanged() {
+            if (MultiLayouts == null) return false;
+
+            var list = GetMultiLayouts();
+            var actual = IsInMultiLayoutsMode(list);
+            return MultiLayoutMode != actual || list.Count != MultiLayouts.Count ||
+                   list[0] != _layoutLocation ||
+                   list.Skip(1).Any((x, i) => !x.Equals(MultiLayouts[i + 1].Location, StringComparison.OrdinalIgnoreCase));
         }
 
         public override void Reload() {
+            if (IsMultiLayoutsChanged()) {
+                Manager.Reload(Id);
+                return;
+            }
+
             base.Reload();
-            // TODO: check if MultiLayoutMode is changed!
+
+            if (MultiLayouts == null) return;
+            foreach (var layout in MultiLayouts.Skip(1)) {
+                layout.Reload();
+            }
+
+            if (MultiLayouts.Count > 1) {
+                _commonName = FindNameForMultiLayoutMode(MultiLayouts);
+            }
         }
 
         /// <summary>
@@ -73,19 +106,18 @@ namespace AcManager.Tools.Objects {
         }
 
         private void Configuration_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == "Changed" && ((TrackExtraLayoutObject)sender).Changed) {
+            if (e.PropertyName == nameof(Changed) && ((TrackExtraLayoutObject)sender).Changed) {
                 Changed = true;
             }
         }
 
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
-            if (!MultiLayoutMode) return;
 
+            if (MultiLayouts == null) return;
             foreach (var extraLayout in MultiLayouts.Skip(1)) {
                 extraLayout.Load();
             }
-
             if (MultiLayouts.Count > 1) {
                 _commonName = FindNameForMultiLayoutMode(MultiLayouts);
             }
@@ -121,17 +153,19 @@ namespace AcManager.Tools.Objects {
 
             return true;
         }
+        
+        private string UiDirectory => _layoutLocation ?? Path.Combine(Location, "ui");
 
-        public sealed override string JsonFilename => Path.Combine(_layoutLocation ?? Path.Combine(Location, "ui"), "ui_track.json");
+        public sealed override string JsonFilename => Path.Combine(UiDirectory, "ui_track.json");
 
-        public override string PreviewImage => ImageRefreshing ?? Path.Combine(_layoutLocation ?? Path.Combine(Location, "ui"), "preview.png");
+        public override string PreviewImage => ImageRefreshing ?? Path.Combine(UiDirectory, "preview.png");
 
-        public override string OutlineImage => ImageRefreshing ?? Path.Combine(_layoutLocation ?? Path.Combine(Location, "ui"), "outline.png");
+        public override string OutlineImage => ImageRefreshing ?? Path.Combine(UiDirectory, "outline.png");
 
         public override void Save() {
             base.Save();
 
-            if (!MultiLayoutMode) return;
+            if (MultiLayouts == null) return;
             foreach (var layout in MultiLayouts.Skip(1)) {
                 layout.Save();
             }
@@ -142,12 +176,12 @@ namespace AcManager.Tools.Objects {
         public override string NameEditable {
             get { return (MultiLayoutMode ? _commonName : null) ?? base.NameEditable; }
             set {
-                if (MultiLayoutMode && _commonName != null) {
+                if (MultiLayouts != null && _commonName != null) {
                     if (Equals(value, _commonName)) return;
 
-                    base.NameEditable = value + Name.Substring(_commonName.Length);
+                    base.NameEditable = value + Name?.Substring(_commonName.Length);
                     foreach (var layout in MultiLayouts.Skip(1)) {
-                        layout.NameEditable = value + layout.Name.Substring(_commonName.Length);
+                        layout.NameEditable = value + layout.Name?.Substring(_commonName.Length);
                     }
 
                     _commonName = value;
@@ -162,7 +196,7 @@ namespace AcManager.Tools.Objects {
             set { base.NameEditable = value; }
         }
 
-        public override string DisplayName => MultiLayoutMode && MultiLayouts.Count > 1 ?
+        public override string DisplayName => MultiLayouts?.Count > 1 ?
                 _commonName + " (" + MultiLayouts.Count + ")" : base.DisplayName;
 
         public override TrackObject MainTrackObject => this;

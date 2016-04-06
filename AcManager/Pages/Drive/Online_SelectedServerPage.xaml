@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-             Loaded="Online_SelectedServerPage_OnLoaded"
-        Unloaded="Online_SelectedServerPage_OnUnloaded" PreviewMouseDown="Online_SelectedServerPage_OnPreviewMouseDown">
+        Loaded="Online_SelectedServerPage_OnLoaded" Unloaded="Online_SelectedServerPage_OnUnloaded"
+        PreviewMouseDown="Online_SelectedServerPage_OnPreviewMouseDown">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -46,7 +46,7 @@
                 <!-- content -->
                 <StackPanel Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Ready}">
                     <!-- server's name -->
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                    <TextBox Text="{Binding Name, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
 
                     <!-- ip, ping -->
                     <DockPanel Margin="0 4 0 20">
@@ -55,7 +55,7 @@
                             <TextBlock Text=" ms" Opacity="0.5" Style="{StaticResource Small}" />
                         </StackPanel>
 
-                        <TextBlock Text="{Binding Ip}" Style="{StaticResource Small}" HorizontalAlignment="Left" />
+                        <TextBox Text="{Binding Ip, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Small.ReadOnly}" HorizontalAlignment="Left" />
                     </DockPanel>
 
                     <!-- password -->

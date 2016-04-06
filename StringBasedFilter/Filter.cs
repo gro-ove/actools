@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using StringBasedFilter.Parsing;
 
 namespace StringBasedFilter {
@@ -33,6 +34,28 @@ namespace StringBasedFilter {
     public class Filter : IFilter {
         public static IFilter<T> Create<T>(ITester<T> tester, string filter) {
             return new Filter<T>(tester, filter);
+        }
+
+        public static string Encode(string s) {
+            var b = new StringBuilder(s.Length + 5);
+            for (var i = 0; i < s.Length; i++) {
+                switch (s[i]) {
+                    case '(':
+                    case ')':
+                    case '&':
+                    case '!':
+                    case ',':
+                    case '|':
+                    case '\\':
+                    case '^':
+                        b.Append('\\');
+                        break;
+                }
+
+                b.Append(s[i]);
+            }
+
+            return b.ToString();
         }
 
         private readonly string[] _keys;

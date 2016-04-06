@@ -6,7 +6,7 @@ using StringBasedFilter;
 namespace AcManager.Controls.ViewModels {
     public abstract class AcListPageViewModel<T> : AcObjectListCollectionViewWrapper<T> where T : AcObjectNew {
         protected AcListPageViewModel([NotNull] IAcManagerNew list, IFilter<T> listFilter)
-            : base(list, listFilter, "__aclistpageviewmodel_selected") {
+            : base(list, listFilter, "__aclistpageviewmodel_selected", false) {
         }
 
         protected override void FilteredNumberChanged(int oldValue, int newValue) {

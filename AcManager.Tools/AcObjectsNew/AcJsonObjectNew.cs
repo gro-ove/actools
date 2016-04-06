@@ -70,17 +70,15 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        private bool LoadJsonOrThrow() {
+        protected virtual bool LoadJsonOrThrow() {
             string text;
 
             try {
                 text = FileUtils.ReadAllText(JsonFilename);
             } catch (FileNotFoundException) {
-                JsonObject = null;
                 AddError(AcErrorType.Data_JsonIsMissing, Path.GetFileName(JsonFilename));
                 return false;
             } catch (DirectoryNotFoundException) {
-                JsonObject = null;
                 AddError(AcErrorType.Data_JsonIsMissing, Path.GetFileName(JsonFilename));
                 return false;
             }
@@ -88,7 +86,6 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 JsonObject = JsonExtension.Parse(text);
             } catch (Exception) {
-                JsonObject = null;
                 AddError(AcErrorType.Data_JsonIsDamaged, Path.GetFileName(JsonFilename));
                 return false;
             }
@@ -98,6 +95,8 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected virtual void ClearData() {
+            JsonObject = null;
+
             Tags = new TagsCollection();
             Name = null;
             Year = null;

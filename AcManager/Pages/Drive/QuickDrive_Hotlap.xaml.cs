@@ -67,7 +67,7 @@ namespace AcManager.Pages.Drive {
                 await StartAsync(new Game.StartProperties {
                     BasicProperties = new Game.BasicProperties {
                         CarId = selectedCar.Id,
-                        CarSkinId = selectedCar.SelectedSkin.Id,
+                        CarSkinId = selectedCar.SelectedSkin?.Id,
                         TrackId = selectedTrack.Id,
                         TrackConfigurationId = selectedTrack.LayoutId
                     },

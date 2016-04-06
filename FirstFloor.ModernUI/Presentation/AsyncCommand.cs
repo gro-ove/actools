@@ -31,17 +31,19 @@ namespace FirstFloor.ModernUI.Presentation {
         }
         
         protected override async void OnExecute(object parameter) {
-            _inProcess = true;
-            OnCanExecuteChanged();
+            try {
+                _inProcess = true;
+                OnCanExecuteChanged();
 
-            await _execute(parameter);
+                await _execute(parameter);
 
-            if (_additionalDelay != 0) {
-                await Task.Delay(_additionalDelay);
+                if (_additionalDelay != 0) {
+                    await Task.Delay(_additionalDelay);
+                }
+            } finally {
+                _inProcess = false;
+                OnCanExecuteChanged();
             }
-
-            _inProcess = false;
-            OnCanExecuteChanged();
         }
     }
 }

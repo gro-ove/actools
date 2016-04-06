@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
+using AcManager.Tools.Managers.InnerHelpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 
@@ -14,6 +15,26 @@ namespace AcManager.Tools.Managers {
             if (Instance != null) throw new Exception("already initialized");
             return Instance = new CarsManager();
         }
+
+        //private class SkinsHelper : IDirectoryListener {
+        //    public void FileOrDirectoryChanged(object sender, FileSystemEventArgs e) {
+        //    }
+        //    public void FileOrDirectoryCreated(object sender, FileSystemEventArgs e) {
+        //    }
+        //    public void FileOrDirectoryDeleted(object sender, FileSystemEventArgs e) {
+        //    }
+        //    public void FileOrDirectoryRenamed(object sender, RenamedEventArgs e) {
+        //    }
+        //}
+
+        //private bool _subscribed;
+
+        //public override void ActualScan() {
+        //    base.ActualScan();
+        //    if (_subscribed) return;
+        //    // Directories.Subscribe(new SkinsHelper());
+        //    _subscribed = true;
+        //}
 
         public override BaseAcDirectories Directories => AcRootDirectory.Instance.CarsDirectories;
 
@@ -40,6 +61,8 @@ namespace AcManager.Tools.Managers {
             if (WatchedFiles.Contains(inner.ToLowerInvariant())) {
                 return false;
             }
+
+            // return true;
 
             if (!inner.StartsWith("skins\\") || // sfx\…, data\…
                     inner.Count(x => x == '\\') > 2 || // skins\abc\def\file.png

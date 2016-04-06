@@ -17,6 +17,16 @@ namespace AcManager.Tools.Lists {
             MoveCurrentTo(current ?? (Count > 0 ? GetItemAt(0) : null));
         }
 
+        public void MoveCurrentToOrNull(IAcObjectNew obj) {
+            if (obj == null) {
+                base.MoveCurrentTo(null);
+                return;
+            }
+
+            var current = InternalList.Cast<AcItemWrapper>().FirstOrDefault(x => x.Value == obj);
+            MoveCurrentTo(current);
+        }
+
         public void MoveCurrentTo(IAcObjectNew obj) {
             if (obj == null) {
                 base.MoveCurrentTo(null);

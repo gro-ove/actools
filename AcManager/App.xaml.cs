@@ -96,7 +96,7 @@ namespace AcManager {
                 }
 
                 Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename));
-                Logging.Write("app version: " + BuildInformation.AppVersion);
+                Logging.Write("App version: " + BuildInformation.AppVersion);
             }
             ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
             DataProvider.Initialize();

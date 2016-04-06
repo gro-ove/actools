@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using AcManager.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcManagersNew;
@@ -60,9 +61,9 @@ namespace AcManager.Pages.Drive {
             return rect.Contains(bounds.TopLeft) || rect.Contains(bounds.BottomRight);
         }
 
-        private IEnumerable<object> GetVisibleItemsFromListbox(ItemsControl listBox) {
+        private IEnumerable<T> GetVisibleItemsFromListbox<T>(ItemsControl listBox) {
             var any = false;
-            foreach (var item in listBox.Items) {
+            foreach (var item in listBox.Items.OfType<T>()) {
                 var container = listBox.ItemContainerGenerator.ContainerFromItem(item);
                 if (container != null && IsUserVisible((ListBoxItem)container, ServersListBox)) {
                     any = true;
@@ -73,9 +74,22 @@ namespace AcManager.Pages.Drive {
             }
         }
 
+        private int _timerTick;
+
         private void Timer_Tick(object sender, EventArgs e) {
-            foreach (var item in GetVisibleItemsFromListbox(ServersListBox).OfType<ServerEntry>()) {
-                item.OnTick();
+            if (++_timerTick > 5) {
+                _timerTick = 0;
+
+                if (Model.ServerCombinedFilter?.First?.IsAffectedBy(nameof(ServerEntry.SessionEnd)) == true && Model.Manager != null) {
+                    foreach (var serverEntry in Model.Manager.LoadedOnly) {
+                        serverEntry.OnSessionEndTick();
+                    }
+                }
+            }
+
+            if (SimpleListMode != ListMode.DetailedPlus) return;
+            foreach (var item in GetVisibleItemsFromListbox<AcItemWrapper>(ServersListBox)) {
+                (item.Value as ServerEntry)?.OnTick();
             }
         }
 
@@ -141,8 +155,10 @@ namespace AcManager.Pages.Drive {
         }
 
         public class CombinedFilter<T> : IFilter<T> {
+            [CanBeNull]
             public IFilter<T> First { get; set; }
 
+            [CanBeNull]
             public IFilter<T> Second { get; set; }
 
             public bool Test(T obj) {
@@ -152,6 +168,10 @@ namespace AcManager.Pages.Drive {
             public bool IsAffectedBy(string propertyName) {
                 return First?.IsAffectedBy(propertyName) == true || Second?.IsAffectedBy(propertyName) == true;
             }
+
+            public override string ToString() {
+                return $"<{First}>+<{Second}>";
+            }
         }
 
         public class OnlineViewModel : AcObjectListCollectionViewWrapper<ServerEntry> {
@@ -159,26 +179,34 @@ namespace AcManager.Pages.Drive {
 
             public BaseOnlineManager Manager { get; }
 
-            private int _timeLeftHelper;
+            public readonly string KeyQuickFilter;
 
-            public int TimeLeftHelper {
-                get { return _timeLeftHelper; }
-                set {
-                    if (Equals(value, _timeLeftHelper)) return;
-                    _timeLeftHelper = value;
-                    OnPropertyChanged();
-                }
+            private void LoadQuickFilter() {
+                var loaded = ValuesStorage.GetString(KeyQuickFilter);
+                if (loaded == null) return;
+                FilterEmpty = loaded.Contains("drivers");
+                FilterFull = loaded.Contains("full");
+                FilterPassword = loaded.Contains("password");
+                FilterMissing = loaded.Contains("missing");
+                FilterBooking = loaded.Contains("booking");
             }
 
-            private IFilter<ServerEntry> CreateQuickFilter() {
-                var value = new[] {
+            private void SaveQuickFilter() {
+                ValuesStorage.Set(KeyQuickFilter, GetQuickFilterString());
+            }
+
+            private string GetQuickFilterString() {
+                return new[] {
                     FilterEmpty ? "(drivers>0)" : null,
                     FilterFull ? "(full-)" : null,
                     FilterPassword ? "(password-)" : null,
-                    FilterMissing ? "(missing-)" : null,
+                    FilterMissing ? "(missing- & haserrors-)" : null,
                     FilterBooking ? "(booking-)" : null
                 }.Where(x => x != null).JoinToString('&');
+            }
 
+            private IFilter<ServerEntry> CreateQuickFilter() {
+                var value = GetQuickFilterString();
                 return string.IsNullOrWhiteSpace(value) ? null : Filter.Create(ServerEntryTester.Instance, value);
             }
 
@@ -189,6 +217,7 @@ namespace AcManager.Pages.Drive {
                 _updatingQuickFilter = true;
 
                 await Task.Delay(50);
+                SaveQuickFilter();
                 ServerCombinedFilter.Second = CreateQuickFilter();
                 MainList.Refresh();
 
@@ -219,11 +248,13 @@ namespace AcManager.Pages.Drive {
             public CombinedFilter<ServerEntry> ServerCombinedFilter => (CombinedFilter<ServerEntry>)ListFilter;
 
             public OnlineViewModel(OnlineManagerType type, BaseOnlineManager manager, string filter)
-                    : base(manager, GetFilter(filter), "__online_" + type) {
+                    : base(manager, GetFilter(filter), "__online_" + type, false) {
                 Type = type;
                 Manager = manager;
 
-                // TODO: save/load quick filter
+                KeyQuickFilter = "__qf_" + Key;
+                LoadQuickFilter();
+                
                 ServerCombinedFilter.Second = CreateQuickFilter();
             }
 
@@ -250,7 +281,7 @@ namespace AcManager.Pages.Drive {
             private AsyncCommand _addNewServerCommand;
 
             public AsyncCommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new AsyncCommand(async o => {
-                var address = Prompt.Show("Add a New Server", "Server address (IP & HTTP or TCP Port):", "192.168.0.99:8081", // 8081, TODO
+                var address = Prompt.Show("Add a New Server", "Server address (IP & HTTP or TCP Port):", "",
                         "127.0.0.1:8081", "Port could be omitted, in this case app will scan all specific ports");
                 if (address == null) return;
 
@@ -258,7 +289,7 @@ namespace AcManager.Pages.Drive {
                     try {
                         using (var waiting = new WaitingDialog()) {
                             waiting.Report("Adding server…");
-                            await RecentManager.Instance.AddServer(address, waiting);
+                            await RecentManager.Instance.AddServer(s, waiting);
                         }
                     } catch (Exception e) {
                         NonfatalError.Notify("Can't add server", e);

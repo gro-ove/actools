@@ -24,6 +24,8 @@ namespace AcManager.Controls.Services {
             } else if (e.NewValue == null) {
                 control.MouseDown -= Control_MouseDown;
             }
+
+            // control.Cursor = e.NewValue == null ? Cursors.Arrow : Cursors.SizeAll;
         }
 
         private static void Control_MouseDown(object sender, MouseEventArgs e) {

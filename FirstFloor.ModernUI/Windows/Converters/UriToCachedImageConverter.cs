@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Data;
 using System.Globalization;
-using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
@@ -19,18 +18,45 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
             return BitmapSource.Create(width, height, OneTrueDpi, OneTrueDpi, bitmapImage.Format, null, pixelData, stride);
         }
+        
+#if CACHE
+        private class CacheEntry {
+            public BitmapImage Image;
+            public DateTime ModifiedTime;
+        }
+
+        private static readonly Dictionary<string, CacheEntry> Cache = new Dictionary<string, CacheEntry>(50); 
+#endif
 
         public static BitmapSource Convert(object value, bool considerOneTrueDpi = false) {
-            var source = value as Uri;
+#if CACHE
+            var modifiedTime = DateTime.MinValue;
+#endif
 
+            var source = value as Uri;
             if (source == null) {
                 var path = value?.ToString();
                 if (string.IsNullOrEmpty(path)) {
                     return null;
                 }
 
+#if CACHE
+                if (File.Exists(path)) {
+                    modifiedTime = new FileInfo(path).LastWriteTime;
+                }
+#endif
+
                 source = new Uri(path);
             }
+
+#if CACHE
+            var key = source.ToString();
+            CacheEntry entry;
+            if (Cache.TryGetValue(key, out entry) && modifiedTime <= entry.ModifiedTime) {
+                Logging.Write("[IMAGE] Cached: " + source + " (" + modifiedTime + ", " + entry.ModifiedTime + ")");
+                return entry.Image;
+            }
+#endif
 
             try {
                 var bi = new BitmapImage();
@@ -41,10 +67,18 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 bi.UriSource = source;
                 bi.EndInit();
 
+                // Logging.Write("[IMAGE] Loaded: " + source);
+
                 if (considerOneTrueDpi && (Math.Abs(bi.DpiX - OneTrueDpi) > 1 || Math.Abs(bi.DpiY - OneTrueDpi) > 1)) {
                     return ConvertBitmapToOneTrueDpi(bi);
                 }
 
+#if CACHE
+                Cache.Add(key, new CacheEntry {
+                    Image = bi,
+                    ModifiedTime = modifiedTime
+                });
+#endif
                 return bi;
             } catch (Exception) {
                 return null;

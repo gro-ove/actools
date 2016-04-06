@@ -2,14 +2,11 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Lists;
 using FirstFloor.ModernUI.Presentation;
-using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Managers.Online {
@@ -128,11 +125,11 @@ namespace AcManager.Tools.Managers.Online {
             _pingEverythingInProcess = false;
         }
 
-        private ICommand _refreshCommand;
+        private AsyncCommand _refreshCommand;
 
-        public ICommand RefreshListCommand => _refreshCommand ?? (_refreshCommand = new RelayCommand(o => {
-            // RefreshList().Forget();
-            // TODO
+        public AsyncCommand RefreshListCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(async o => {
+            InnerWrappersList.Clear();
+            await RescanAsync();
         }, o => !ErrorFatal));
     }
 }

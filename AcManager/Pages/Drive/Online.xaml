@@ -41,8 +41,8 @@
                             <TextBlock>     
                                     <Run>Pinged</Run>
                                     <Run Text="{Binding Manager.Pinged, Mode=OneWay}" />
-                                    <Run Text="out of" />
-                                    <Run Text="{Binding Manager.WrappersList.Count, Mode=OneWay}" />
+                                    <Run Text="{Binding Manager.WrappersList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter},
+                                            ConverterParameter='{}out of {0} server'}" />
                             </TextBlock>
                         </ToolTip>
                     </TextBlock.ToolTip>

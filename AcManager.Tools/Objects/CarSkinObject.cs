@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
@@ -15,6 +18,29 @@ namespace AcManager.Tools.Objects {
         public CarSkinObject(string carId, IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             CarId = carId;
+        }
+
+        protected override bool LoadJsonOrThrow() {
+            if (!File.Exists(JsonFilename)) {
+                ClearData();
+                Name = AcStringValues.NameFromId(Id);
+                Changed = true;
+                return true;
+            }
+
+            return base.LoadJsonOrThrow();
+        }
+
+        public override void Save() {
+            if (HasData || string.IsNullOrEmpty(Name)) {
+                base.Save();
+            } else {
+                var json = new JObject();
+                SaveData(json);
+
+                Changed = false;
+                File.WriteAllText(JsonFilename, json.ToString());
+            }
         }
 
         protected override void ClearData() {

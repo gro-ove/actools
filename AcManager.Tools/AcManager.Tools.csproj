@@ -41,7 +41,8 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NLua">
+    <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\AcManager\Libs\NLua.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -116,6 +117,7 @@
     <Compile Include="Helpers\Api\KunosApiProvider_Consts.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
+    <Compile Include="Managers\Directories\NonListeningAcDirectories.cs" />
     <Compile Include="Managers\Online\LanManager.cs" />
     <Compile Include="Managers\Online\OnlineManagerType.cs" />
     <Compile Include="Managers\Online\RecentManager.cs" />

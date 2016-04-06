@@ -29,6 +29,9 @@ namespace AcManager.Tools.Managers.Online {
         public class Session {
             public bool IsActive { get; set; }
 
+            /// <summary>
+            /// Seconds.
+            /// </summary>
             public long Duration { get; set; }
 
             public Game.SessionType Type { get; set; }
@@ -151,8 +154,16 @@ namespace AcManager.Tools.Managers.Online {
 
         private void SetSomeProperties(ServerInformation information) {
             Name = Regex.Replace(information.Name.Trim(), @"\s+", " ");
-            Country = information.Country.FirstOrDefault() ?? "";
-            CountryId = information.Country.ElementAtOrDefault(1) ?? "";
+
+            {
+                var country = information.Country.FirstOrDefault() ?? "";
+                Country = Country != null && country == "na" ? Country : country;
+            }
+
+            {
+                var countryId = information.Country.ElementAtOrDefault(1) ?? "";
+                CountryId = CountryId != null && countryId == "na" ? CountryId : countryId;
+            }
 
             CurrentDriversCount = information.Clients;
             Capacity = information.Capacity;
@@ -262,7 +273,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private string _country;
-
+        
         public string Country {
             get { return _country; }
             set {
@@ -274,7 +285,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private string _countryId;
-
+        
         public string CountryId {
             get { return _countryId; }
             set {
@@ -342,13 +353,16 @@ namespace AcManager.Tools.Managers.Online {
         public string DisplayTimeLeft {
             get {
                 var now = DateTime.Now;
-                return SessionEnd <= now ? "session ended" :
-                    (SessionEnd - now).ToProperString();
+                return SessionEnd <= now ? "ended" : (SessionEnd - now).ToProperString();
             }
         }
 
         public void OnTick() {
             OnPropertyChanged(nameof(DisplayTimeLeft));
+        }
+
+        public void OnSessionEndTick() {
+            OnPropertyChanged(nameof(SessionEnd));
         }
 
         private ServerStatus _status;
@@ -522,6 +536,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private BetterObservableCollection<CurrentDriver> _currentDrivers;
 
+        [CanBeNull]
         public BetterObservableCollection<CurrentDriver> CurrentDrivers {
             get { return _currentDrivers; }
             set {
@@ -555,7 +570,9 @@ namespace AcManager.Tools.Managers.Online {
                 Status = ServerStatus.Loading;
                 ErrorMessage = "";
                 IsAvailable = false;
+
                 CurrentDrivers.Clear();
+                OnPropertyChanged(nameof(CurrentDrivers));
 
                 if (mode == UpdateMode.Full) {
                     var newInformation = await Task.Run(() => IsLan || OptionAlwaysGetInformationDirectly ?
@@ -606,6 +623,7 @@ namespace AcManager.Tools.Managers.Online {
                                                        CarId = x.CarId.ToLowerInvariant(),
                                                        CarSkinId = x.CarSkinId.ToLowerInvariant()
                                                    });
+                OnPropertyChanged(nameof(CurrentDrivers));
 
                 CurrentDriversCount = CurrentDrivers.Count;
 

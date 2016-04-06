@@ -144,6 +144,28 @@ done:
             + show countries flags
             + password
                 + remember password to server
+            + fallback servers
+            + more detailed list view
+                + fix background
+                + fix cars
+                + proper tooltips
+                + try to fix performance issues
+            + lan
+                + setting for ports
+                + direct connection by ip:port
+                    + save in separate file (files?)
+                    + recent servers
+            + update filtered list on change
+            + car/track stats in tooltip
+            + filters:
+                + password
+                + filter-in-filter
+                + session durations
+                + booking
+                + player's name
+            + quick filters
+                + saving
+            + fix tab closing
         + career
             + series
             + ignore series0
@@ -295,16 +317,25 @@ architectural problems:
     - complete list reload
 
 todo:
+    - car selection lists (selection by default)
+    - add version to about page
+
     - showroom from QD/KunosCareer/Online
+        + QD
+        - KunosCareer
+        - Online
+
     - remember all window sizes
 
     + watching/renaming inside behaviour
         + proper ShouldSkipFile methods
-        - object-based reload?
+        + object-based reload
+            + tracks
+            - non-json objects
 
     + intellectual content auto-update
         + cars
-            - skins
+            + skins
         + showrooms
         - tracks
 
@@ -316,17 +347,9 @@ todo:
         - from folder
         - selectable update
         - check for changes?
-
+    - skins installation
     - track mod installation
     - showroom mod installation
-
-    - auto-update previews
-        - fix pp-filter
-        - option for FXAO
-        - proper graphic settings
-            - custom settings
-        - 2× mode for best antialiasing
-        - background mode?
 
     - fix brand fitting on car's selection dialog
 
@@ -344,39 +367,17 @@ todo:
             - weekends
             - drag racing
         + online
-            + fallback servers
-            + more detailed list view
-                + fix background
-                + fix cars
-                + proper tooltips
-                + try to fix performance issues
-            + lan
-                + setting for ports
-                + direct connection by ip:port
-                    + save in separate file (files?)
-                    + recent servers
-            + update filtered list on change
-            + car/track stats in tooltip
+            + refresh whole list
             + filters:
-                + password
-                + filter-in-filter
-                - session times
-                - session durations
-                - player's name
-                - booking
-                - time left
-            + quick filters
-                - saving
-            - fix tab closing
+                - time left?
+            + stop loading while tab is switched
+                - use smart AcManager system?
+                - disable loading for AcManager as well?
             - booking
             - favorites
             - periodic refreshing of all servers 
             - periodic refreshing of selected server
-            - refresh whole list
             - list all cars
-            - stop loading while tab is switched
-                - use smart AcManager system?
-                - disable loading for AcManager as well?
             - keyboard shortcuts
             - auto saving replays
             - custom sorting
@@ -399,6 +400,9 @@ todo:
     - copy track ui properties to other configurations
         - context menu
         - button in toolbar
+        - special auto-sync mode
+        - warning for differences
+
     - autoadd country on tags cleaning
     - tracks specs editor
     - remove double spaces, trim strings
@@ -475,8 +479,13 @@ todo:
     × weak reference for collectionview
 
 later:
-    - QD: fixed AI order
-        - custom skins?
+    - auto-update previews
+        - fix pp-filter
+        - option for FXAO
+        - proper graphic settings
+            - custom settings
+        - 2× mode for best antialiasing
+        - background mode?
 
     + recent & shortcuts page
         - solve architectural problems?

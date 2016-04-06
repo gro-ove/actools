@@ -9,6 +9,10 @@ namespace AcManager.Tools.Filters {
             switch (key) {
                 case "year":
                     return nameof(AcCommonObject.Year);
+
+                case "errors":
+                case "haserrors":
+                    return nameof(AcCommonObject.HasErrors);
             }
 
             return null;
@@ -22,6 +26,10 @@ namespace AcManager.Tools.Filters {
             switch (key) {
                 case "year":
                     return obj.Year.HasValue && value.Test(obj.Year.Value);
+
+                case "errors":
+                case "haserrors":
+                    return value.Test(obj.HasErrors);
             }
 
             return AcObjectTester.Instance.Test(obj, key, value);

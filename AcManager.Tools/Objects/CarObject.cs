@@ -62,11 +62,12 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void Reload() {
-            base.Reload();
-            SkinsManager.Rescan();
             OnImageChanged(nameof(LogoIcon));
             OnImageChanged(nameof(BrandBadge));
             OnImageChanged(nameof(UpgradeIcon));
+
+            SkinsManager.Rescan();
+            base.Reload();
         }
 
         public override bool HandleChangedFile(string filename) {

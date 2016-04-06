@@ -223,6 +223,7 @@ namespace AcManager.Pages.Drive {
                 public override string ToString() => Id;
 
                 [JsonConstructor]
+                // ReSharper disable once UnusedMember.Local
                 private GridType() { }
 
                 private GridType(string displayName) {
@@ -413,7 +414,9 @@ namespace AcManager.Pages.Drive {
 
             public override async Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
-                await Drive(selectedCar, selectedTrack, assistsProperties, conditionProperties, trackProperties, new WaitingDialog());
+                using (var waiting = new WaitingDialog()) {
+                    await Drive(selectedCar, selectedTrack, assistsProperties, conditionProperties, trackProperties, waiting);
+                }
             }
 
             public async Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack, Game.AssistsProperties assistsProperties,
@@ -469,7 +472,7 @@ namespace AcManager.Pages.Drive {
                 await StartAsync(new Game.StartProperties {
                     BasicProperties = new Game.BasicProperties {
                         CarId = selectedCar.Id,
-                        CarSkinId = selectedCar.SelectedSkin.Id,
+                        CarSkinId = selectedCar.SelectedSkin?.Id,
                         TrackId = selectedTrack.Id,
                         TrackConfigurationId = selectedTrack.LayoutId
                     },
@@ -486,10 +489,10 @@ namespace AcManager.Pages.Drive {
                 });
             }
 
-            private string PrepareScript(string script) {
+            private static string PrepareScript(string script) {
                 script = script.Trim();
-                var lines = script.Split('\n');
-                if (lines.Length > 1) return script;
+                if (script.Contains('\n')) return script;
+                
                 script = $@"return function(tested)
                     return {script}
                 end";
@@ -524,6 +527,8 @@ namespace AcManager.Pages.Drive {
 
                     if (!string.IsNullOrWhiteSpace(type.Script)) {
                         var state = LuaHelper.GetExtended();
+                        if (state == null) throw new Exception("Can't initialize Lua");
+
                         state["selected"] = car;
                         state["track"] = track;
 
@@ -546,7 +551,8 @@ namespace AcManager.Pages.Drive {
 
             private async Task<IEnumerable<Game.AiCar>> GenerateAiCars(CarObject selectedCar, AcJsonObjectNew selectedTrack, int opponentsNumber, params CarObject[] opponentsCars) {
                 NameNationality[] nameNationalities = null;
-                var trackCountry = DataProvider.Instance.Countries.GetValueOrDefault(selectedTrack.Country.Trim().ToLower()) ?? "Italy";
+                var trackCountry = selectedTrack.Country == null
+                        ? null : DataProvider.Instance.Countries.GetValueOrDefault(selectedTrack.Country.Trim().ToLower()) ?? "Italy";
 
                 if (opponentsNumber == 7) {
                     nameNationalities = new[] {

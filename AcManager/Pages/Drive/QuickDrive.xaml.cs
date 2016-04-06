@@ -537,19 +537,14 @@ namespace AcManager.Pages.Drive {
                 SelectedTrack = dialog.Model.SelectedTrackConfiguration;
             }));
 
-            private RelayCommand _goCommand;
             private QuickDriveModeViewModel _selectedModeViewModel;
 
-            public RelayCommand GoCommand => _goCommand ?? (_goCommand = new RelayCommand(o => {
-                Go().Forget();
-            }, o => !_went && SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
+            private AsyncCommand _goCommand;
 
-            private bool _went;
+            public AsyncCommand GoCommand => _goCommand ?? (_goCommand =
+                    new AsyncCommand(o => Go(), o => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
 
-            public async Task Go() {
-                if (_went) return;
-
-                _went = true;
+            private async Task Go() {
                 GoCommand.OnCanExecuteChanged();
 
                 var selectedMode = SelectedModeViewModel;
@@ -567,7 +562,6 @@ namespace AcManager.Pages.Drive {
                         WeatherName = SelectedWeather?.Id
                     }, SelectedTrackPropertiesPreset.Properties);
                 } finally {
-                    _went = false;
                     GoCommand.OnCanExecuteChanged();
                 }
             }

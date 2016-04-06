@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Api {
     public partial class KunosApiProvider {
-        public static bool OptionSaveResponses = true;
+        public static bool OptionSaveResponses = false;
         public static int OptionPingTimeout = 2000;
         public static int OptionWebRequestTimeout = 3000;
 

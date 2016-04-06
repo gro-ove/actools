@@ -7,6 +7,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Lists;
+using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter;
 
 namespace AcManager.Controls {
@@ -53,7 +54,7 @@ namespace AcManager.Controls {
         private void OnSelectedItemChanged(AcObjectNew oldValue, AcObjectNew newValue) {
             if (InnerItemsSource == null || InnerItemsSource.CurrentItem == newValue) return;
 
-            InnerItemsSource.MoveCurrentTo(newValue);
+            InnerItemsSource.MoveCurrentToOrNull(newValue);
             UpdateSelected();
         }
 
@@ -86,11 +87,20 @@ namespace AcManager.Controls {
             Loaded += AcObjectListBox_Loaded;
         }
 
+        private bool _unloaded = false;
+
         private void AcObjectListBox_Loaded(object sender, RoutedEventArgs e) {
-            Unloaded += AcObjectListBox_Unloaded;
+            if (_unloaded) {
+                _unloaded = false;
+                UpdateFilter();
+            } else {
+                Unloaded += AcObjectListBox_Unloaded;
+            }
         }
 
         internal void AcObjectListBox_Unloaded(object sender, RoutedEventArgs e) {
+            if (_unloaded) return;
+            _unloaded = true;
             ClearFilter();
         }
 
@@ -108,7 +118,6 @@ namespace AcManager.Controls {
             if (newValue == null) return;
 
             InnerItemsSource = new AcWrapperCollectionView(_observableCollection) { CustomSort = this };
-            InnerItemsSource.MoveCurrentTo(SelectedItem);
             InnerItemsSource.CurrentChanged += ItemsSource_CurrentChanged;
             UpdateFilter();
         }
@@ -121,7 +130,7 @@ namespace AcManager.Controls {
             }
         }
 
-        private void UpdateFilter() {
+        private void UpdateFilter(IAcObjectNew selectObject) {
             ClearFilter();
 
             var listView = InnerItemsSource;
@@ -133,6 +142,7 @@ namespace AcManager.Controls {
             var filter = string.IsNullOrWhiteSpace(baseFilter) ? userFilter
                 : string.IsNullOrWhiteSpace(userFilter) ? baseFilter : baseFilter + " & (" + userFilter + ")";
 
+            InnerItemsSource.CurrentChanged -= ItemsSource_CurrentChanged;
             using (listView.DeferRefresh()) {
                 if (string.IsNullOrWhiteSpace(filter)) {
                     listView.Filter = null;
@@ -143,6 +153,13 @@ namespace AcManager.Controls {
                     _observableCollection.WrappedValueChanged += Collection_WrappedValueChanged;
                 }
             }
+            InnerItemsSource.CurrentChanged += ItemsSource_CurrentChanged;
+
+            listView.MoveCurrentToOrNull(selectObject);
+        }
+
+        private void UpdateFilter() {
+            UpdateFilter(SelectedItem);
         }
 
         private void Collection_WrappedValueChanged(object sender, WrappedValueChangedEventArgs e) {
