@@ -20,13 +20,13 @@
         <Setter Property="Validation.ErrorTemplate">
             <Setter.Value>
                 <ControlTemplate>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical">
                         <Border BorderThickness="1" BorderBrush="#FFdc000c" VerticalAlignment="Top">
                             <Grid>
                                 <AdornedElementPlaceholder x:Name="adorner" Margin="-1" />
                             </Grid>
                         </Border>
-                        <Border x:Name="errorBorder" Background="#FFdc000c" Margin="8,0,0,0" Opacity="0" CornerRadius="0" IsHitTestVisible="False"
+                        <Border x:Name="errorBorder" Background="#FFdc000c" Margin="120,0,0,0" Opacity="0" CornerRadius="0" IsHitTestVisible="False"
                                 MinHeight="24">
                             <TextBlock Text="{Binding ElementName=adorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" Foreground="White"
                                     Margin="8,2,8,3" TextWrapping="Wrap" VerticalAlignment="Center" />

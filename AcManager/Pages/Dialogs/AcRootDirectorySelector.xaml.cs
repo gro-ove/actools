@@ -44,7 +44,8 @@ namespace AcManager.Pages.Dialogs {
                 CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, new CombinedCommand(Model.ApplyCommand, new RelayCommand(o => {
                     new MainWindow().Show();
                     CloseWithResult(MessageBoxResult.OK);
-                })))
+                }))),
+                CancelButton
             };
         }
 

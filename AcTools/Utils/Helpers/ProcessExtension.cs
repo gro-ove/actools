@@ -51,7 +51,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static Process Start(string filename, IEnumerable<string> args) {
-            return Process.Start(filename, "--updated " + args.Select(GetQuotedArgument).JoinToString(" "));
+            return Process.Start(filename, args.Select(GetQuotedArgument).JoinToString(" "));
         }
 
         public static Task WaitForExitAsync(this Process process, CancellationToken cancellationToken = default(CancellationToken)) {

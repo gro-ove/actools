@@ -18,8 +18,8 @@
 
             <DockPanel>
                 <Label>Scan ports:</Label>
-                <TextBox Text="{Binding Holder.PortsEnumeration}" ToolTip="Some enumeration like '9000-10000'"
-                        watermark:WatermarkService.Watermark="?" />
+                <TextBox Text="{Binding Holder.PortsEnumeration}" ToolTip="Some enumeration like '9000-10000'" watermark:WatermarkService.Watermark="?"
+                        mui:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">LAN:</TextBlock>
@@ -31,7 +31,7 @@
             <DockPanel>
                 <Label>Scan ports:</Label>
                 <TextBox Text="{Binding Holder.LanPortsEnumeration}" ToolTip="Some enumeration like '9600,9602,9700-9750'"
-                        watermark:WatermarkService.Watermark="?" />
+                        watermark:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
             <DockPanel>

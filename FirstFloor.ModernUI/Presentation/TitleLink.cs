@@ -21,5 +21,16 @@ namespace FirstFloor.ModernUI.Presentation {
                 OnPropertyChanged();
             }
         }
+
+        private bool _isAccented;
+
+        public bool IsAccented {
+            get { return _isAccented; }
+            set {
+                if (Equals(value, _isAccented)) return;
+                _isAccented = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

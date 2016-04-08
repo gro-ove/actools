@@ -99,6 +99,9 @@ namespace AcManager.Tools.Filters {
                 case null:
                 case "skin":
                     return obj.Skins?.Any(x => filter.Test(CarSkinObjectTester.Instance, x)) == true;
+
+                case "parent":
+                    return obj.Parent != null && filter.Test(Instance, obj.Parent);
             }
 
             return false;

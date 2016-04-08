@@ -35,7 +35,9 @@ namespace AcManager.Tools.Helpers.Api {
             if (ServerAddress == null) return null;
 
             try {
-                using (var client = new WebClient { Headers = { [HttpRequestHeader.UserAgent] = UserAgent } }) {
+                using (var client = new WebClient { Headers = {
+                    [HttpRequestHeader.UserAgent] = UserAgent
+                } }) {
                     var result = client.DownloadData(ServerAddress + url);
 
                     var checksum = client.ResponseHeaders.Get(ChecksumHeader);

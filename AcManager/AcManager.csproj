@@ -123,6 +123,9 @@
     <Compile Include="Pages\About\ReleaseNotesPage.xaml.cs">
       <DependentUpon>ReleaseNotesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
+      <DependentUpon>AppKeyDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\GameDialog.xaml.cs">
       <DependentUpon>GameDialog.xaml</DependentUpon>
     </Compile>
@@ -222,6 +225,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dialogs\AcErrorSolutionSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\AppKeyDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -603,6 +610,10 @@
     <Resource Include="Assets\Img\UpgradeStd.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\actools-internal\AcManager.Internal\AcManager.Internal.csproj">
+      <Project>{e1c50bb6-5b63-4917-b5e0-836f38061811}</Project>
+      <Name>AcManager.Internal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AcManager.Tools\AcManager.Tools.csproj">
       <Project>{764afd18-0755-4596-839c-fea3f492303b}</Project>
       <Name>AcManager.Tools</Name>

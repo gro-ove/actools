@@ -93,11 +93,24 @@ namespace AcManager.Tools {
             _defaultAction = defaultAction;
         }
 
+        /// <summary>
+        /// Show a toast.
+        /// </summary>
+        /// <param name="title">Ex.: “Something Happened”</param>
+        /// <param name="message">Ex.: “This and that. Without dot in the end”</param>
+        /// <param name="click">Click action</param>
         public static void Show(string title, string message, Action click = null) {
             if (_defaultIcon == null) return;
             Show(title, message, _defaultIcon, click ?? _defaultAction);
         }
 
+        /// <summary>
+        /// Show a toast.
+        /// </summary>
+        /// <param name="title">Ex.: “Something Happened”</param>
+        /// <param name="message">Ex.: “This and that. Without dot in the end”</param>
+        /// <param name="icon">Uri to some icon</param>
+        /// <param name="click">Click action</param>
         public static void Show(string title, string message, [NotNull] Uri icon, Action click = null) {
             if (!_winToasterIsNotAvailable && !OptionFallbackMode) {
                 try {

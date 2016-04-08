@@ -48,17 +48,17 @@
         <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
     </Style>
 
-    <Style x:Key="LabelWithPadding" TargetType="TextBlock">
+    <Style x:Key="Label" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="/FirstFloor.ModernUI;component/Fonts/#Segoe Condensed" />
         <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="Padding" Value="10 0 0 0" />
         <Setter Property="TextWrapping" Value="NoWrap" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="Padding" Value="0" />
     </Style>
 
-    <Style x:Key="Label" TargetType="TextBlock" BasedOn="{StaticResource LabelWithPadding}">
-        <Setter Property="Padding" Value="0" />
+    <Style x:Key="LabelWithPadding" TargetType="TextBlock" BasedOn="{StaticResource Label}">
+        <Setter Property="Padding" Value="10 0 0 0" />
     </Style>
 </ResourceDictionary>

@@ -24,7 +24,7 @@ namespace AcManager {
             var appGuid = ((GuidAttribute)Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value;
             var mutexId = $@"Global\{{{appGuid}}}";
 
-            if (args.Contains("--restart")) {
+            if (args.Contains(WindowsHelper.RestartArg)) {
                 for (var i = 0; i < 999; i++) {
                     Thread.Sleep(200);
 
@@ -34,8 +34,8 @@ namespace AcManager {
                         }
                     }
                 }
-
-                ProcessExtension.Start(MainExecutingFile.Location, args.Skip(1));
+                
+                ProcessExtension.Start(MainExecutingFile.Location, args.Where(x => x != WindowsHelper.RestartArg));
                 return;
             }
             

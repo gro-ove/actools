@@ -127,6 +127,8 @@
     <Compile Include="Windows\Controls\DataGridCheckBoxColumn.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.cs" />
     <Compile Include="Windows\Controls\DpiInformation.cs" />
+    <Compile Include="Windows\Controls\LimitedMark\LimitedService.cs" />
+    <Compile Include="Windows\Controls\LimitedMark\LimitedAdorner.cs" />
     <Compile Include="Windows\Controls\ModernMenu_Helpers.cs" />
     <Compile Include="Windows\Controls\ModernToggleButton.cs" />
     <Compile Include="Windows\Controls\OutlinedTextBlock.cs" />
@@ -230,6 +232,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\DatePicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\LimitedMark.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

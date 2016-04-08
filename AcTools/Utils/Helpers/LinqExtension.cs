@@ -382,6 +382,12 @@ namespace AcTools.Utils.Helpers {
             return additionalItems.Union(source);
         }
 
+        [Pure]
+        public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, params T[] additionalItems) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            return additionalItems.Where(x => !additionalItems.Contains(x));
+        }
+
         private class FuncBasedComparer<T> : IComparer<T> {
             private readonly Func<T, T, int> _fn;
 

@@ -14,9 +14,13 @@ namespace FirstFloor.ModernUI.Windows.Controls.Watermark {
         /// </summary>
         private readonly FrameworkElement _contentPresenter;
 
-        public static string StyleNameForAdorned(UIElement adornedElement) {
-            return adornedElement is TextBox ? "Watermark.TextBox" : 
-                adornedElement is ComboBox ? "Watermark.ComboBox" : 
+        private static string StyleNameForAdorned(UIElement adornedElement) {
+            var textBox = adornedElement as TextBox;
+            if (textBox != null) {
+                return textBox.Padding.Left < 0 ? "Watermark.TextBoxAsTextBlock" : "Watermark.TextBox";
+            }
+
+            return adornedElement is ComboBox ? "Watermark.ComboBox" : 
                 "Watermark";
         }
 

@@ -233,6 +233,10 @@
     <Compile Include="Starters\SseStarter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\actools-internal\AcManager.Internal\AcManager.Internal.csproj">
+      <Project>{E1C50BB6-5B63-4917-B5E0-836F38061811}</Project>
+      <Name>AcManager.Internal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>
       <Name>AcTools</Name>

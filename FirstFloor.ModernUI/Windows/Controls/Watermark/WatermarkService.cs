@@ -26,6 +26,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.Watermark {
         }
 
         private static void OnWatermarkChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            // TODO: dynamic change?
+
             var control = d as Control;
             if (control == null) {
                 var textBlock = d as TextBlock;

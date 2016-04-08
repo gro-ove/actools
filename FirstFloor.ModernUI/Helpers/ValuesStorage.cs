@@ -415,10 +415,16 @@ namespace FirstFloor.ModernUI.Helpers {
             stuff plain-texted */
         private const string Something = "encisfinedontworry";
 
-        public static string GetEncryptedString(string key, string defaultValue = null) {
+        public static string GetEncryptedString([NotNull] string key, string defaultValue = null) {
+            if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Instance._storage.ContainsKey(key)) return defaultValue;
             var result = StringCipher.Decrypt(GetString(key, defaultValue), key + EncryptionKey);
             return result == null ? null : result.EndsWith(Something) ? result.Substring(0, result.Length - Something.Length) : defaultValue;
+        }
+
+        public static bool GetEncryptedBool([NotNull] string key, bool defaultValue = false) {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            return Instance._storage.ContainsKey(key) ? GetEncryptedString(key) == "1" : defaultValue;
         }
 
         public static void SetEncrypted(string key, string value) {
@@ -428,6 +434,10 @@ namespace FirstFloor.ModernUI.Helpers {
             } else {
                 Set(key, encrypted);
             }
+        }
+
+        public static void SetEncrypted(string key, bool value) {
+            SetEncrypted(key, value ? "1" : "0");
         }
 
         public static void Remove(string key) {

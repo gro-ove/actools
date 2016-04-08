@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.SemiGui;
@@ -16,7 +17,7 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Miscellaneous {
     public class AppUpdater : NotifyPropertyChanged {
-        private static string Branch => SettingsHolder.Common.UpdateToNontestedVersions ? "latest" : "tested";
+        private static string Branch => AppKeyHolder.IsAllRight && SettingsHolder.Common.UpdateToNontestedVersions ? "latest" : "tested";
 
         public static AppUpdater Instance { get; private set; }
 
@@ -307,7 +308,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             File.Copy(MainExecutingFile.Location, originalFilename);
-            ProcessExtension.Start(originalFilename, new []{ "--freshly-updated" }.Union(Environment.GetCommandLineArgs().Skip(1)));
+            ProcessExtension.Start(originalFilename, Environment.GetCommandLineArgs().Skip(1).Prepend("--freshly-updated"));
             Environment.Exit(0);
         }
     }

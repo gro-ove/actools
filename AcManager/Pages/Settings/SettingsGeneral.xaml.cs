@@ -36,7 +36,13 @@ namespace AcManager.Pages.Settings {
                         MessageBoxResult.Yes) return;
                 AcRootDirectory.Instance.Reset();
                 WindowsHelper.RestartCurrentApplication();
-            }, o => true));
+            }));
+
+            private RelayCommand _changeAppKeyCommand;
+
+            public RelayCommand ChangeAppKeyCommand => _changeAppKeyCommand ?? (_changeAppKeyCommand = new RelayCommand(o => {
+                new AppKeyDialog().ShowDialog();
+            }));
 
             public SettingsHolder.CommonSettings CommonSettings => SettingsHolder.Common;
 

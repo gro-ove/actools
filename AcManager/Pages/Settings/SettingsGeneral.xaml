@@ -3,8 +3,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
         xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsGeneral+GeneralViewModel}">
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
+        xmlns:internal="clr-namespace:AcManager.Internal;assembly=AcManager.Internal"
+        xmlns:limitedMark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.LimitedMark;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsGeneral+GeneralViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
@@ -14,6 +16,15 @@
                 <Label>Assetto Corsa folder:</Label>
                 <Button Command="{Binding ChangeAcRootCommand}">Change</Button>
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
+            </DockPanel>
+
+            <!--versions-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">App:</TextBlock>
+            
+            <DockPanel>
+                <Label>App key:</Label>
+                <Button Command="{Binding ChangeAppKeyCommand}">Change</Button>
+                <TextBlock Text="{Binding Source={x:Static internal:AppKeyHolder.KeySafe}, Mode=OneTime}" watermark:WatermarkService.Watermark="?" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding CommonSettings.CreateStartMenuShortcutIfMissing}"
@@ -60,8 +71,9 @@
             </DockPanel>
 
             <!--beta access-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Early Access:</TextBlock>
-            <CheckBox IsChecked="{Binding CommonSettings.UpdateToNontestedVersions}">
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Testing Access:</TextBlock>
+            <CheckBox IsChecked="{Binding CommonSettings.UpdateToNontestedVersions}" IsEnabled="{x:Static internal:AppKeyHolder.IsAllRight}"
+                    limitedMark:LimitedService.Limited="True" HorizontalAlignment="Left" ClipToBounds="False" Padding="0 0 24 0">
                 <Label>Update to non-tested versions</Label>
             </CheckBox>
             <Button Command="{Binding SendLogsCommand}">Send Logs to Developers</Button>

@@ -7,6 +7,7 @@ namespace AcManager.Tools.Filters {
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {
+                case "y":
                 case "year":
                     return nameof(AcCommonObject.Year);
 
@@ -24,6 +25,7 @@ namespace AcManager.Tools.Filters {
 
         public bool Test(AcCommonObject obj, string key, ITestEntry value) {
             switch (key) {
+                case "y":
                 case "year":
                     return obj.Year.HasValue && value.Test(obj.Year.Value);
 

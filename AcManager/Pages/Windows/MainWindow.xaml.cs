@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using AcManager.Controls.Helpers;
+using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
@@ -54,15 +55,12 @@ namespace AcManager.Pages.Windows {
                 return;
             }
 
-            InitializeComponent();
             DataContext = new MainWindowViewModel();
+            InitializeComponent();
             LoadSize();
 
-            if (OptionEnableManagerTabs) {
-                foreach (var menuLinkGroup in TitleLinks) {
-                    menuLinkGroup.IsEnabled = true;
-                }
-            }
+            LinkNavigator.Commands.Add(new Uri("cmd://enterkey"), Model.EnterKeyCommand);
+            AppKeyHolder.ProceedMainWindow(this);
         }
 
         public new void Show() {
@@ -78,6 +76,12 @@ namespace AcManager.Pages.Windows {
 
         public class MainWindowViewModel : NotifyPropertyChanged {
             public MainWindowViewModel() { }
+
+            private RelayCommand _enterKeyCommand;
+
+            public RelayCommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new RelayCommand(o => {
+                new AppKeyDialog().ShowDialog();
+            }));
 
             public AppUpdater AppUpdater => AppUpdater.Instance;
         }

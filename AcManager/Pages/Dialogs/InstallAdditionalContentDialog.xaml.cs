@@ -16,7 +16,7 @@ namespace AcManager.Pages.Dialogs {
         public string Filename { get; set; }
 
         public class EntryWrapper : NotifyPropertyChanged {
-            public AdditionalContentEntry Entry { get; private set; }
+            public AdditionalContentEntry Entry { get; }
 
             private bool _installEntry;
 
@@ -42,9 +42,7 @@ namespace AcManager.Pages.Dialogs {
 
             private readonly UpdateOption[] _updateOptionsList;
 
-            public IReadOnlyList<UpdateOption> UpdateOptionsList {
-                get { return _updateOptionsList; }
-            }
+            public IReadOnlyList<UpdateOption> UpdateOptionsList => _updateOptionsList;
 
             public class UpdateOption : NotifyPropertyChanged {
                 private bool _enabled = true;

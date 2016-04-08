@@ -10,11 +10,12 @@
         <mui:BbCodeBlock BbCode="Welcome to Content Manager and thanks for using it! You have only one thing left to do before launch:" Margin="0 0 0 8"
                 Visibility="{Binding FirstRun, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-        <TextBlock Text="Specify Assetto Corsa Root Folder" Style="{StaticResource Heading2}" />
+        <TextBlock Text="Specify Assetto Corsa root folder:" Style="{StaticResource Heading2}" />
 
         <DockPanel Margin="0 8 0 0">
             <Button Content="…" Click="Button_OnClick" DockPanel.Dock="Right" />
-            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="640" watermark:WatermarkService.Watermark="?" />
+            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="640" watermark:WatermarkService.Watermark="?"
+                    mui:FocusAdvancement.AdvancesByEnterKey="True" />
         </DockPanel>
 
         <mui:BbCodeBlock BbCode="Folder is unacceptable" Foreground="{DynamicResource ErrorForeground}"

@@ -20,7 +20,7 @@ Other changes include improved performance and stability and a lot of bug fixes.
 
 Note should be marked as read after about two seconds of being open."),
 
-            new ReleaseNotes("0.4.71", @"Proper starters", @"Introducing [b]Starter+[/b]! It works with Steam (including archievments and overlay) and, at the same time, should work without Internet and less conflict with original Kunos launcher. You can enable it by installing its addon and selecting option in Drive section of options.
+            new ReleaseNotes("0.4.71", @"Proper starters", @"Introduce [b]Starter+[/b]! It works with Steam (including archievments and overlay) and, at the same time, should work without Internet and less conflict with original Kunos launcher. You can enable it by installing its addon and selecting option in Drive section of options.
 
 Also, if your AC version is able to start the game directly without any tricks (only by launching [i]acs.exe[/i]), [b]Naive Starter[/b] was added.
 

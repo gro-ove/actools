@@ -70,11 +70,12 @@
     <SolidColorBrush x:Key="LinkButtonText" Color="#717171" />
     <SolidColorBrush x:Key="LinkButtonTextHover" Color="#ffffff" />
     <SolidColorBrush x:Key="LinkButtonTextPressed" Color="#515151" />
-    <SolidColorBrush x:Key="LinkButtonTextDisabled" Color="#515151" />
+    <SolidColorBrush x:Key="LinkButtonTextDisabled" Color="#3e3e42" />
 
     <SolidColorBrush x:Key="MenuText" Color="#515151" />
     <SolidColorBrush x:Key="MenuTextHover" Color="#919191" />
     <SolidColorBrush x:Key="MenuTextSelected" Color="#ffffff" />
+    <SolidColorBrush x:Key="MenuTextDisabled" Color="#3e3e42" />
 
     <SolidColorBrush x:Key="ModernButtonBorder" Color="#919191" />
     <SolidColorBrush x:Key="ModernButtonBorderHover" Color="#ffffff" />

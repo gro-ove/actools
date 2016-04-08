@@ -37,10 +37,10 @@ namespace AcManager {
         StorageLocation,
 
         /// <summary>
-        /// Enables manager tabs, enabled by default.
-        /// Example: --manager-mode.
+        /// For testing and some special cases.
+        /// Example: --offline-mode.
         /// </summary>
-        ManagerMode,
+        OfflineMode,
 
         /// <summary>
         /// Disables checking of AC root directory, so any folder will pass.

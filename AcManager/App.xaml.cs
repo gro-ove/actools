@@ -5,13 +5,14 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Controls.Presentation;
+using AcManager.Internal;
+using AcManager.Pages.Dialogs;
 using AcManager.Properties;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
@@ -101,6 +102,8 @@ namespace AcManager {
             ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
             DataProvider.Initialize();
 
+            TestKey();
+
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
             if (!AppArguments.GetBool(AppFlag.PreventDisableWebBrowserEmulationMode) && (
@@ -134,7 +137,7 @@ namespace AcManager {
             RecentManager.Initialize();
             Superintendent.Initialize();
 
-            AppArguments.Set(AppFlag.ManagerMode, ref Pages.Windows.MainWindow.OptionEnableManagerTabs);
+            AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
             Toast.SetDefaultIcon(new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/Icon.ico", UriKind.Absolute));
             Toast.SetDefaultAction(() => (Current.MainWindow as ModernWindow)?.BringToFront());
 
@@ -144,9 +147,27 @@ namespace AcManager {
                     "Pages/Windows/MainWindow.xaml" : "Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
         }
 
-        private void DeleteOldLogs() {
-            Task.Run(() => {
-                Thread.Sleep(500);
+        private async void TestKey() {
+            AppKeyHolder.Initialize(FilesStorage.Instance.GetFilename("License.txt"));
+            var revoked = AppKeyHolder.IsAllRight ? null : AppKeyHolder.Instance.Revoked;
+
+            await Task.Delay(500);
+
+            AppKeyTester.UserAgent = CmApiProvider.UserAgent;
+            if (revoked != null || AppKeyHolder.IsAllRight && await AppKeyTester.CheckKeyAsync(AppKeyHolder.Key) == false) {
+                ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, revoked ?? AppKeyHolder.Key);
+                AppKeyHolder.Instance.SetKey(null);
+
+                Dispatcher.Invoke(AppKeyDialog.ShowRevokedMessage);
+                if (revoked == null) {
+                    Dispatcher.Invoke(WindowsHelper.RestartCurrentApplication);
+                }
+            }
+        }
+
+        private async void DeleteOldLogs() {
+            await Task.Delay(5000);
+            await Task.Run(() => {
                 var directory = FilesStorage.Instance.GetDirectory("Logs");
                 foreach (var f in from file in Directory.GetFiles(directory)
                                   where file.EndsWith(".txt") || file.EndsWith(".json")

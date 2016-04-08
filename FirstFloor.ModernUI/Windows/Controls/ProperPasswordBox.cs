@@ -52,7 +52,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnPasswordChanged(string oldValue, string newValue) {
-            if (_passwordBox == null) return;
+            if (_passwordBox == null || !VisiblePassword) return;
             _skipNext = true;
             _passwordBox.Password = newValue;
             _skipNext = false;

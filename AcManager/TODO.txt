@@ -295,10 +295,10 @@ done:
         + AcObjectsTester.ParameterNameFromLeftPart
         + enabling/disabling
     + skins removing
+    + add version to about page
 
 fixme:
     - previews loading (could be a much more serious problem)
-    - very slow navigation (pages are too heavy?)
     - data removed (ui_showroom.json, for example, deleted), but name is still 
             the same - error? maybe acobject should reset data somehow?
     - notifypropertychanged for commands
@@ -307,18 +307,13 @@ fixme:
     - one big NLUA bug
     - pastload problem!
     - real conditions
-    - password selection bug
     - tags
     - potential error here:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
     - some staticresources have the same name as dynamicrecources
 
-architectural problems:
-    - complete list reload
-
 todo:
     - car selection lists (selection by default)
-    - add version to about page
 
     - showroom from QD/KunosCareer/Online
         + QD

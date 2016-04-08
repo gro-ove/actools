@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringBasedFilter", "String
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringBasedFilter.Tests", "StringBasedFilter.Tests\StringBasedFilter.Tests.csproj", "{AE8B296E-F557-42A5-AFCA-3371153AD45B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.Internal", "..\actools-internal\AcManager.Internal\AcManager.Internal.csproj", "{E1C50BB6-5B63-4917-B5E0-836F38061811}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -369,6 +371,18 @@ Global
 		{AE8B296E-F557-42A5-AFCA-3371153AD45B}.Release|x64.Build.0 = Release|Any CPU
 		{AE8B296E-F557-42A5-AFCA-3371153AD45B}.Release|x86.ActiveCfg = Release|Any CPU
 		{AE8B296E-F557-42A5-AFCA-3371153AD45B}.Release|x86.Build.0 = Release|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|x64.Build.0 = Debug|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Debug|x86.Build.0 = Debug|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|x64.ActiveCfg = Release|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|x64.Build.0 = Release|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|x86.ActiveCfg = Release|Any CPU
+		{E1C50BB6-5B63-4917-B5E0-836F38061811}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
