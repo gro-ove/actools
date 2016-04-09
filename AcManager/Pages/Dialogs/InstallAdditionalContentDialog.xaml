@@ -1,20 +1,21 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.InstallAdditionalContentDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" Title="Install Additional Content" Width="540" MaxHeight="960" Loaded="InstallAdditionalContentDialog_OnLoaded"
-        Unloaded="InstallAdditionalContentDialog_OnUnloaded" Closing="InstallAdditionalContentDialog_OnClosing" SizeToContent="Height">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Install Additional Content"
+        Width="540" MaxHeight="960" Loaded="InstallAdditionalContentDialog_OnLoaded" Unloaded="InstallAdditionalContentDialog_OnUnloaded"
+        Closing="InstallAdditionalContentDialog_OnClosing" SizeToContent="Height" d:DataContext="{d:DesignInstance dialogs:InstallAdditionalContentDialog}">
     <Grid>
-        <mui:ModernProgressRing Name="Loading" Margin="10" IsActive="True" Width="80" Height="80" />
+        <mui:ModernProgressRing Name="Loading" Margin="8" IsActive="True" Width="80" Height="80" />
 
         <Grid Name="MainContent" Visibility="Collapsed">
             <StackPanel Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="Nothing found" />
             </StackPanel>
             <ItemsControl ItemsSource="{Binding Entries}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
-                    VirtualizingPanel.VirtualizationMode="Recycling">
+                    VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0 10 0 0">
+                        <Grid Margin="0 8 0 0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition />
@@ -25,17 +26,17 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
 
-                            <CheckBox Name="InstallEntry"  IsChecked="{Binding InstallEntry}" VerticalAlignment="Top" Margin="0 4 0 0" />
+                            <CheckBox Name="InstallEntry" IsChecked="{Binding InstallEntry}" VerticalAlignment="Top" Margin="0 4 0 0" />
 
-                            <StackPanel Orientation="Vertical" Grid.Column="1">
+                            <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1">
                                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
                                 <TextBlock Text="{Binding Entry.Id, StringFormat='ID: \{0\}'}" Style="{StaticResource Small}" />
                                 <TextBlock Text="{Binding Entry.Path, StringFormat='Path: \{0\}'}" Style="{StaticResource Small}" />
                             </StackPanel>
 
-                            <StackPanel Name="UpdateOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="0 10 0 0"
+                            <StackPanel Name="UpdateOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="0 8 0 0"
                                     IsEnabled="{Binding Path=IsChecked, ElementName=InstallEntry}">
-                                <TextBlock Text="What do update:" Style="{StaticResource LabelWithPadding}" />
+                                <TextBlock Text="What to update:" Style="{StaticResource LabelWithPadding}" />
                                 <ComboBox ItemsSource="{Binding UpdateOptionsList}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0" />
                             </StackPanel>
                         </Grid>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -28,10 +27,17 @@ namespace AcManager.Tools.AcManagersNew {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException(@"ID is wrong", nameof(id));
+            if (wrapper == null) {
+                throw new ArgumentException(@"ID is wrong", nameof(id));
+            }
 
             var currentLocation = ((AcCommonObject)wrapper.Value).Location;
-            var newLocation = Path.Combine(wrapper.Value.Enabled ? Directories.DisabledDirectory : Directories.EnabledDirectory, wrapper.Value.Id);
+            var path = wrapper.Value.Enabled ? Directories.DisabledDirectory : Directories.EnabledDirectory;
+            if (path == null) {
+                throw new Exception("Object can't be toggled");
+            }
+
+            var newLocation = Path.Combine(path, wrapper.Value.Id);
 
             if (File.Exists(newLocation)) {
                 throw new ToggleException("Place is taken");
@@ -55,12 +61,18 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        public string PrepareForAdditionalContent(string id, bool removeExisting) {
+        public string PrepareForAdditionalContent([NotNull] string id, bool removeExisting) {
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
             var existing = GetById(id);
-            var directory = existing == null ? Directories.GetLocation(id, true) : existing.Location;
+            var directory = existing?.Location ?? Directories.GetLocation(id, true);
 
             if (removeExisting && Directory.Exists(directory)) {
                 FileUtils.Recycle(directory);
+
+                if (Directory.Exists(directory)) {
+                    throw new OperationCanceledException("Can't remove existing directory");
+                }
             }
 
             if (!Directory.Exists(directory)) {

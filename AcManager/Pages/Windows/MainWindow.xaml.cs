@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -201,7 +202,12 @@ namespace AcManager.Pages.Windows {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
             Focus();
-            foreach (var filename in (string[])e.Data.GetData(DataFormats.FileDrop)) {
+            Dispatcher.InvokeAsync(() => ProcessDroppedFiles(e.Data.GetData(DataFormats.FileDrop) as string[]));
+        }
+
+        private void ProcessDroppedFiles(IEnumerable<string> files) {
+            if (files == null) return;
+            foreach (var filename in files) {
                 ProcessInputFile(filename);
             }
         }

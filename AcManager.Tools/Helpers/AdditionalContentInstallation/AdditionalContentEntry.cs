@@ -1,17 +1,34 @@
-﻿namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
-    public enum AdditionalContentType {
-        Car, CarSkin, Track, Showroom, Font
-    }
+﻿using System;
+using JetBrains.Annotations;
 
+namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
     public class AdditionalContentEntry {
-        public string Id { get; internal set; }
+        [NotNull]
+        public string Id { get; }
 
-        public AdditionalContentType Type { get; internal set; }
+        /// <summary>
+        /// Empty if object's in root.
+        /// </summary>
+        [NotNull]
+        public string Path { get; }
 
-        public string Name { get; internal set; }
+        public AdditionalContentType Type { get; }
 
-        public string Version { get; internal set; }
+        [NotNull]
+        public string Name { get; }
 
-        public string Path { get; internal set; }
+        [CanBeNull]
+        public string Version { get; }
+
+        public AdditionalContentEntry(AdditionalContentType type, [NotNull] string path, [NotNull] string id, string name = null, string version = null) {
+            if (path == null) throw new ArgumentNullException(nameof(path));
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            Type = type;
+            Path = path;
+            Id = id;
+            Name = name ?? id;
+            Version = version;
+        }
     }
 }

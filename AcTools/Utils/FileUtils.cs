@@ -284,10 +284,10 @@ namespace AcTools.Utils {
             return result;
         }
 
-        public static bool IsAffected(string changedFilename, string filename) {
-            if (string.Equals(changedFilename, filename, StringComparison.OrdinalIgnoreCase)) return true;
+        public static bool IsAffected(string directory, string filename) {
+            if (string.Equals(directory, filename, StringComparison.OrdinalIgnoreCase)) return true;
 
-            var s = filename.SubstringExt(changedFilename.Length);
+            var s = filename.SubstringExt(directory.Length);
             return s.Length > 0 && (s[0] == Path.DirectorySeparatorChar || s[0] == Path.AltDirectorySeparatorChar);
         }
 

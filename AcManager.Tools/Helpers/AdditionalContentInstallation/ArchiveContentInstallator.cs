@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using SevenZip;
 
@@ -10,6 +13,14 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
     public static class SevenZipExtension {
         public static bool HasAnyEncryptedFiles(this SevenZipExtractor extractor) {
             return extractor.ArchiveFileData.Any(x => x.Encrypted);
+        }
+
+        public static string GetFilename(this ArchiveFileInfo fileInfo) {
+            return fileInfo.FileName.Replace('/', '\\');
+        }
+
+        public static string GetName(this ArchiveFileInfo fileInfo) {
+            return Path.GetFileName(fileInfo.FileName ?? "");
         }
 
         public static void ExtractFile(this SevenZipExtractor extractor, ArchiveFileInfo fileInfo, Stream stream) {
@@ -25,13 +36,11 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
     }
 
     public class ArchiveContentInstallator : IAdditionalContentInstallator {
-        public string Filename { get; private set; }
+        public string Filename { get; }
 
         public bool IsPasswordRequired { get; private set; }
 
-        public bool IsPasswordCorrect {
-            get { return !IsPasswordRequired || _extractor != null; }
-        }
+        public bool IsPasswordCorrect => !IsPasswordRequired || _extractor != null;
 
         public string PasswordValue {
             get { return _passwordValue; }
@@ -39,15 +48,12 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                 if (Equals(value, _passwordValue)) return;
                 _passwordValue = value;
 
-                if (_extractor != null) {
-                    _extractor.Dispose();
-                    _extractor = null;
-                }
-
+                DisposeHelper.Dispose(ref _extractor);
                 _extractor = CreateExtractor();
             }
         }
 
+        [CanBeNull]
         private SevenZipExtractor _extractor;
 
         internal ArchiveContentInstallator(string filename) {
@@ -57,14 +63,12 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
 
         private SevenZipExtractor CreateExtractor() {
             try {
-                return PasswordValue == null
-                           ? new SevenZipExtractor(Filename)
-                           : new SevenZipExtractor(Filename, PasswordValue);
+                return PasswordValue == null ? new SevenZipExtractor(Filename)
+                        : new SevenZipExtractor(Filename, PasswordValue);
             } catch (SevenZipArchiveException e) {
                 if (e.Message.Contains("Is it encrypted and a wrong password was provided?")) {
-                    throw new PasswordException(PasswordValue == null
-                                                    ? "Password is required"
-                                                    : "Password is invalid");
+                    throw new PasswordException(PasswordValue == null ? "Password is required" :
+                            "Password is invalid");
                 }
 
                 throw;
@@ -73,12 +77,11 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
 
         private bool HasAnyEncryptedFiles() {
             try {
-                return _extractor.HasAnyEncryptedFiles();
+                return _extractor?.HasAnyEncryptedFiles() == true;
             } catch (SevenZipArchiveException e) {
                 if (e.Message.Contains("Is it encrypted and a wrong password was provided?")) {
-                    throw new PasswordException(PasswordValue == null
-                                                    ? "Password is required"
-                                                    : "Password is invalid");
+                    throw new PasswordException(PasswordValue == null ? "Password is required" :
+                            "Password is invalid");
                 }
 
                 throw;
@@ -93,9 +96,8 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                 IsPasswordRequired = true;
             }
 
-            if (IsPasswordRequired && _extractor != null) {
-                _extractor.Dispose();
-                _extractor = null;
+            if (IsPasswordRequired) {
+                DisposeHelper.Dispose(ref _extractor);
             }
         }
 
@@ -103,83 +105,109 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
         private string _passwordValue;
 
         private IEnumerable<AdditionalContentEntry> GetEntries() {
+            var found = new List<string>();
             using (var extractor = CreateExtractor()) {
-                var fileData = extractor.ArchiveFileData.ToIReadOnlyListIfItsNot();
-                foreach (var fileInfo in fileData) {
-                    var filename = (Path.GetFileName(fileInfo.FileName) ?? "").ToLower();
+                foreach (var fileInfo in extractor.ArchiveFileData.Where(x => !x.IsDirectory)) {
+                    var filename = fileInfo.GetName().ToLower();
 
-                    AdditionalContentType? type;
+                    AdditionalContentType type;
+                    string entryDirectory;
 
                     switch (filename) {
-                        case "ui_car.json":
-                            type = AdditionalContentType.Car;
-                            break;
+                        case "ui_car.json": {
+                                type = AdditionalContentType.Car;
+                                var directory = Path.GetDirectoryName(fileInfo.GetFilename());
+                                if (!string.Equals(Path.GetFileName(directory), "ui", StringComparison.OrdinalIgnoreCase)) continue;
+                                entryDirectory = Path.GetDirectoryName(directory);
+                                break;
+                            }
 
-                        case "ui_skin.json":
-                            type = AdditionalContentType.CarSkin;
-                            break;
+                        case "//ui_skin.json": {
+                                // TODO (disabled atm)
+                                // TODO: detect by preview.jpg & livery.png
+                                type = AdditionalContentType.CarSkin;
+                                entryDirectory = Path.GetDirectoryName(fileInfo.GetFilename());
+                                break;
+                            }
 
-                        case "ui_track.json":
-                            type = AdditionalContentType.Track;
-                            break;
+                        case "ui_track.json": {
+                                type = AdditionalContentType.Track;
+                                var directory = Path.GetDirectoryName(fileInfo.GetFilename());
+                                if (!string.Equals(Path.GetFileName(directory), "ui", StringComparison.OrdinalIgnoreCase)) {
+                                    directory = Path.GetDirectoryName(directory);
+                                }
+                                if (!string.Equals(Path.GetFileName(directory), "ui", StringComparison.OrdinalIgnoreCase)) continue;
+                                entryDirectory = Path.GetDirectoryName(directory);
+                                break;
+                            }
 
-                        case "ui_showroom.json":
-                            type = AdditionalContentType.Showroom;
-                            break;
+                        case "ui_showroom.json": {
+                                type = AdditionalContentType.Showroom;
+                                var directory = Path.GetDirectoryName(fileInfo.GetFilename());
+                                if (!string.Equals(Path.GetFileName(directory), "ui", StringComparison.OrdinalIgnoreCase)) continue;
+                                entryDirectory = Path.GetDirectoryName(directory);
+                                break;
+                            }
 
                         default:
                             continue;
                     }
 
-                    var entryDirectory = Path.GetDirectoryName(Path.GetDirectoryName(fileInfo.FileName));
-                    var id =
-                        (Path.GetFileName(entryDirectory) ?? Path.GetFileNameWithoutExtension(Filename) ?? "").ToLower();
+                    if (entryDirectory == null) {
+                        Logging.Warning("Entry directory is null: " + fileInfo.GetFilename());
+                        continue;
+                    }
+
+                    if (found.Contains(entryDirectory)) continue;
+                    found.Add(entryDirectory);
+
+                    var id = entryDirectory != string.Empty ? Path.GetFileName(entryDirectory) : Path.GetFileNameWithoutExtension(Filename);
+                    if (string.IsNullOrEmpty(id)) {
+                        Logging.Warning("ID is empty: " + fileInfo.GetFilename());
+                        continue;
+                    }
 
                     JObject jObject;
-
                     try {
                         var jsonBytes = extractor.ExtractFile(fileInfo);
                         jObject = JsonExtension.Parse(jsonBytes.GetString());
                     } catch (ExtractionFailedException) {
                         throw;
-                    } catch (Exception) {
-                        jObject = null;
-                    }
-
-                    if (id.Length == 0) {
-                        // TODO
+                    } catch (Exception e) {
+                        Logging.Warning("Can't read as a JSON (" + fileInfo.GetFilename() + "): " + e);
                         continue;
                     }
 
-                    if (jObject == null) {
-                        // TODO
-                        continue;
-                    }
-
-                    yield return new AdditionalContentEntry {
-                        Id = id,
-                        Type = type.Value,
-                        Name = jObject.GetStringValueOnly("name") ?? id,
-                        Version = jObject.GetStringValueOnly("name") ?? id,
-                        Path = entryDirectory
-                    };
+                    yield return new AdditionalContentEntry(type, entryDirectory, id.ToLower(), jObject.GetStringValueOnly("name"),
+                            jObject.GetStringValueOnly("version"));
                 }
             }
         }
 
-        public void InstallEntryTo(AdditionalContentEntry entry, Func<string, bool> filter, string targetDirectory) {
-            throw new NotImplementedException();
-        }
+        void IAdditionalContentInstallator.InstallEntryTo(AdditionalContentEntry entry, Func<string, bool> filter, string targetDirectory) {
+            using (var extractor = CreateExtractor()) {
+                foreach (var fileInfo in extractor.ArchiveFileData.Where(x => !x.IsDirectory)) {
+                    var filename = fileInfo.GetFilename();
+                    if (entry.Path != string.Empty && !FileUtils.IsAffected(entry.Path, filename)) continue;
 
-        public IReadOnlyList<AdditionalContentEntry> Entries {
-            get { return _entries ?? (_entries = GetEntries().ToList()); }
-        }
+                    var subFilename = filename.SubstringExt(entry.Path.Length);
+                    if (subFilename.StartsWith("\\")) {
+                        subFilename = subFilename.Substring(1);
+                    }
 
-        public void Dispose() {
-            if (_extractor != null) {
-                _extractor.Dispose();
-                _extractor = null;
+                    if (filter == null || filter(subFilename)) {
+                        var path = Path.Combine(targetDirectory, subFilename);
+                        Directory.CreateDirectory(Path.GetDirectoryName(path) ?? targetDirectory);
+                        File.WriteAllBytes(path, extractor.ExtractFile(fileInfo));
+                    }
+                }
             }
+        }
+
+        IReadOnlyList<AdditionalContentEntry> IAdditionalContentInstallator.Entries => _entries ?? (_entries = GetEntries().ToList());
+
+        void IDisposable.Dispose() {
+            DisposeHelper.Dispose(ref _extractor);
         }
     }
 }

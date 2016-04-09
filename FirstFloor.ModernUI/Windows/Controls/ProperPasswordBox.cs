@@ -37,10 +37,28 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Password = _passwordBox.Password;
         }
 
+        protected override void OnGotFocus(RoutedEventArgs e) {
+            base.OnGotFocus(e);
+
+            if (VisiblePassword) {
+                _textBox?.Focus();
+            } else {
+                _passwordBox?.Focus();
+            }
+        }
+
+        public void SelectAll() {
+            if (VisiblePassword) {
+                _textBox?.SelectAll();
+            } else {
+                _passwordBox?.SelectAll();
+            }
+        }
+
         private bool _skipNext;
 
         public static readonly DependencyProperty PasswordProperty = DependencyProperty.Register(nameof(Password), typeof(string),
-                typeof(ProperPasswordBox), new PropertyMetadata(OnPasswordChanged));
+                typeof(ProperPasswordBox), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnPasswordChanged));
 
         public string Password {
             get { return (string)GetValue(PasswordProperty); }

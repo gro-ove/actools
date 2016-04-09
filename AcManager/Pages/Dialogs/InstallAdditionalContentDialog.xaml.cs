@@ -8,6 +8,9 @@ using System.Windows;
 using AcManager.Annotations;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.AdditionalContentInstallation;
+using AcManager.Tools.Managers;
+using AcManager.Tools.SemiGui;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using SevenZip;
 
@@ -44,101 +47,19 @@ namespace AcManager.Pages.Dialogs {
 
             public IReadOnlyList<UpdateOption> UpdateOptionsList => _updateOptionsList;
 
-            public class UpdateOption : NotifyPropertyChanged {
-                private bool _enabled = true;
-
-                public string Name { get; set; }
-
-                public Func<string, bool> Filter { get; set; }
-
-                public bool RemoveExisting { get; set; }
-
-                public bool Enabled {
-                    get { return _enabled; }
-                    set {
-                        if (Equals(value, _enabled)) return;
-                        _enabled = value;
-                        OnPropertyChanged();
-                    }
-                }
-
-                public override string ToString() {
-                    return Name;
-                }
-            }
-
             public EntryWrapper(AdditionalContentEntry entry, bool isNew) {
                 Entry = entry;
                 InstallEntry = true;
                 IsNew = isNew;
 
-                if (!isNew) {
-                    _updateOptionsList = new[] {
-                        new UpdateOption { Name = "Update Everytything" }, 
-                        new UpdateOption { Name = "Remove Existing First", RemoveExisting = true },
-
-                        entry.Type == AdditionalContentType.Car ? new UpdateOption { Name = "Keep Skins Previews" } : null,
-                        entry.Type == AdditionalContentType.CarSkin ? new UpdateOption { Name = "Keep Preview" } : null,
-                        entry.Type == AdditionalContentType.CarSkin ? new UpdateOption { Name = "Keep UI Information & Preview" } : null,
-                    }.Union(UpdateOptions(entry.Type)).Where(x => x != null).ToArray();
-
-                    SelectedOption = _updateOptionsList[0];
-                }
-            }
-
-            private IEnumerable<UpdateOption> UpdateOptions(AdditionalContentType type) {
-                switch (type) {
-                    case AdditionalContentType.Car: {
-                            Func<string, bool> uiFilter =
-                                x => x != @"ui\ui_car.json" && x != @"ui\brand.png" && x != @"logo.png" && (
-                                    !x.StartsWith(@"skins\") || !x.EndsWith(@"\ui_skin.json")
-                                );
-                            Func<string, bool> previewsFilter =
-                                x => !x.StartsWith(@"skins\") || !x.EndsWith(@"\preview.jpg");
-                            yield return new UpdateOption { Name = "Keep UI Information", Filter = uiFilter };
-                            yield return new UpdateOption { Name = "Keep Skins Previews", Filter = previewsFilter };
-                            yield return new UpdateOption { Name = "Keep UI Information & Skins Previews", Filter = x => uiFilter(x) && previewsFilter(x) };
-                            break;
-                        }
-
-                    case AdditionalContentType.Track: {
-                            Func<string, bool> uiFilter =
-                                x => !x.StartsWith(@"ui\") ||
-                                     !x.EndsWith(@"\ui_track.json") && !x.EndsWith(@"\preview.png") &&
-                                     !x.EndsWith(@"\outline.png");
-                            yield return new UpdateOption { Name = "Keep UI Information", Filter = uiFilter };
-                            break;
-                        }
-
-                    case AdditionalContentType.CarSkin: {
-                            Func<string, bool> uiFilter = x => x != @"ui_skin.json";
-                            Func<string, bool> previewFilter = x => x != @"preview.jpg";
-                            yield return new UpdateOption { Name = "Keep UI Information", Filter = uiFilter };
-                            yield return new UpdateOption { Name = "Keep Skins Preview", Filter = previewFilter };
-                            yield return new UpdateOption { Name = "Keep UI Information & Skins Preview", Filter = x => uiFilter(x) && previewFilter(x) };
-                            break;
-                        }
-
-                    case AdditionalContentType.Showroom: {
-                            Func<string, bool> uiFilter =
-                                x => x != @"ui\ui_showroom.json";
-                            yield return new UpdateOption { Name = "Keep UI Information", Filter = uiFilter };
-                            break;
-                        }
-
-                    case AdditionalContentType.Font:
-                        break;
-                }
+                if (isNew) return;
+                _updateOptionsList = UpdateOption.GetByType(entry.Type).ToArray();
+                SelectedOption = _updateOptionsList[0];
             }
 
             public bool IsNew { get; set; }
 
-            public string DisplayName {
-                get {
-                    var type = Entry.Type == AdditionalContentType.Car ? @"car " : Entry.Type == AdditionalContentType.CarSkin ? @"skin " : Entry.Type == AdditionalContentType.Track ? @"track " : Entry.Type == AdditionalContentType.Showroom ? @"showroom " : null;
-                    return (IsNew ? @"New " : @"Existed ") + (type ?? "") + Entry.Name;
-                }
-            }
+            public string DisplayName => (IsNew ? @"New " : @"Existed ") + Entry.Type.GetDescription() + ": " + Entry.Name;
         }
 
         public IReadOnlyList<EntryWrapper> Entries {
@@ -147,24 +68,35 @@ namespace AcManager.Pages.Dialogs {
                 if (Equals(value, _entries)) return;
                 _entries = value;
                 OnPropertyChanged();
-                OnPropertyChanged("IsEmpty");
+                OnPropertyChanged(nameof(IsEmpty));
+
+                foreach (var wrapper in _entries) {
+                    wrapper.PropertyChanged += (sender, args) => {
+                        if (args.PropertyName == nameof(EntryWrapper.InstallEntry)) {
+                            InstallCommand.OnCanExecuteChanged();
+                        }
+                    };
+                }
             }
         }
 
-        public bool IsEmpty {
-            get { return !_entries.Any(); }
-        }
+        public bool IsEmpty => _entries?.Any() != true;
 
         private IAdditionalContentInstallator _installator;
+
+        [CanBeNull]
         private IReadOnlyList<EntryWrapper> _entries;
 
         public InstallAdditionalContentDialog(string filename) {
             Filename = filename;
 
-            InitializeComponent();
             DataContext = this;
+            InitializeComponent();
 
-            Buttons = new[] { OkButton, CancelButton };
+            Buttons = new[] {
+                CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, InstallCommand),
+                CancelButton
+            };
         }
 
         private void InstallAdditionalContentDialog_OnLoaded(object sender, RoutedEventArgs e) {
@@ -175,14 +107,11 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void InstallAdditionalContentDialog_OnUnloaded(object sender, RoutedEventArgs e) {
-            if (_installator != null) {
-                _installator.Dispose();
-                _installator = null;
-            }
+            DisposeHelper.Dispose(ref _installator);
         }
 
         private void RequirePassword() {
-            var password = Prompt.Show("Password required", "Archive is encrypted. Input password:", "");
+            var password = Prompt.Show(@"Password required", @"Archive is encrypted. Input password:", passwordMode: true);
             if (password == null) {
                 Close();
                 return;
@@ -196,7 +125,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void RequirePasswordAgain(string oldPassword) {
-            var password = Prompt.Show("Password required", "Password is invalid, try again:", oldPassword);
+            var password = Prompt.Show(@"Password required", @"Password is invalid, try again:", oldPassword, passwordMode: true);
             if (password == null) {
                 Close();
                 return;
@@ -217,7 +146,23 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private IAcManagerNew GetManagerByType(AdditionalContentType type) {
-            throw new NotImplementedException();
+            switch (type) {
+                case AdditionalContentType.Car:
+                    return CarsManager.Instance;
+
+                case AdditionalContentType.Track:
+                    return TracksManager.Instance;
+
+                case AdditionalContentType.Showroom:
+                    return ShowroomsManager.Instance;
+
+                case AdditionalContentType.Font:
+                case AdditionalContentType.CarSkin:
+                    throw new NotImplementedException();
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
 
         private async void UpdateEntries() {
@@ -236,13 +181,13 @@ namespace AcManager.Pages.Dialogs {
                     return new EntryWrapper(x, existed == null);
                 }).Where(x => x != null).ToArray());
             } catch (PasswordException e) {
-                ShowMessage(e.Message, @"Can't unpack", MessageBoxButton.OK);
+                NonfatalError.Notify(@"Can't unpack", e);
                 Close();
-            } catch (ExtractionFailedException) {
-                ShowMessage(@"Archive is damaged or password is incorrect.", @"Can't unpack", MessageBoxButton.OK);
+            } catch (ExtractionFailedException e) {
+                NonfatalError.Notify(@"Can't unpack", @"Archive is damaged or password is incorrect.", e);
                 Close();
             } catch (Exception e) {
-                ShowMessage(@"Exception: " + e, @"Can't unpack", MessageBoxButton.OK);
+                NonfatalError.Notify(@"Can't unpack", e);
                 Close();
             }
 
@@ -252,26 +197,31 @@ namespace AcManager.Pages.Dialogs {
 
         private void InstallEntry(EntryWrapper wrapper) {
             var manager = GetManagerByType(wrapper.Entry.Type) as IFileAcManager;
-            if (manager == null) {
-                return;
-            }
+            if (manager == null) return;
 
-            var directory = manager.PrepareForAdditionalContent(wrapper.Entry.Id,
-                                                                wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
+            var directory = manager.PrepareForAdditionalContent(wrapper.Entry.Id, wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
             _installator.InstallEntryTo(wrapper.Entry, wrapper.SelectedOption?.Filter, directory);
         }
+
+        private AsyncCommand _installCommand;
+
+        public AsyncCommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(async o => {
+            foreach (var entry in Entries.Where(entry => entry.InstallEntry)) {
+                try {
+                    using (WaitingDialog.Create("Installation in progress…")) {
+                        await Task.Run(() => InstallEntry(entry));
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify(@"Can't install " + entry.DisplayName, e);
+                }
+            }
+
+            Close();
+        }, o => Entries?.Any(x => x.InstallEntry) == true));
 
         private void InstallAdditionalContentDialog_OnClosing(object sender, CancelEventArgs eventArgs) {
             if (!IsResultOk || _installator == null) return;
 
-            try {
-                foreach (var entry in Entries.Where(entry => entry.InstallEntry)) {
-                    InstallEntry(entry);
-                }
-            } catch (Exception e) {
-                ShowMessage(@"Exception: " + e, @"Can't unpack", MessageBoxButton.OK);
-                eventArgs.Cancel = true;
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

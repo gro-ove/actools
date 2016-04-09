@@ -6,6 +6,12 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IDisposable {
+        public static WaitingDialog Create(string reportValue) {
+            var w = new WaitingDialog();
+            w.Report(reportValue);
+            return w;
+        }
+
         private string _message;
 
         public string Message {

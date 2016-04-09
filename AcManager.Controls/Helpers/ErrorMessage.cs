@@ -10,7 +10,6 @@ namespace AcManager.Controls.Helpers {
                 exception == null ? problemDescription :
                     $"{problemDescription}:\n\n[b][mono]{exception.Message}[/mono][/b]"
             ) + (solutionCommentary == null ? "" : "\n\n[i]" + solutionCommentary + "[/i]"), "Oops!", MessageBoxButton.OK);
-            Logging.Warning(problemDescription + ":\n" + exception);
         }
 
         public static void Show(string problemDescription, string solutionCommentary, Exception exception) {

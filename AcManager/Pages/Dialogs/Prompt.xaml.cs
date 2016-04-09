@@ -3,20 +3,28 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
     public partial class Prompt {
-        private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline) {
+        private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline, bool passwordMode) {
             DataContext = new PromptViewModel(description, defaultValue, watermark, toolTip);
             InitializeComponent();
             Buttons = new[] { OkButton, CancelButton };
 
             Title = title;
-            TextBox.Focus();
-            TextBox.SelectAll();
 
-            if (multiline) {
-                TextBox.AcceptsReturn = true;
-                TextBox.TextWrapping = TextWrapping.Wrap;
-                TextBox.Height = 240;
-                TextBox.Width = 480;
+            if (passwordMode) {
+                PasswordBox.Focus();
+                PasswordBox.SelectAll();
+                PasswordBox.Visibility = Visibility.Visible;
+                TextBox.Visibility = Visibility.Collapsed;
+            } else {
+                TextBox.Focus();
+                TextBox.SelectAll();
+
+                if (multiline) {
+                    TextBox.AcceptsReturn = true;
+                    TextBox.TextWrapping = TextWrapping.Wrap;
+                    TextBox.Height = 240;
+                    TextBox.Width = 480;
+                }
             }
 
             Closing += (sender, args) => {
@@ -83,8 +91,8 @@ namespace AcManager.Pages.Dialogs {
         public string Result { get; private set; }
 
         public static string Show(string title, string description, string defaultValue = "", string watermark = null, string toolTip = null,
-                bool multiline = false) {
-            var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline);
+                bool multiline = false, bool passwordMode = false) {
+            var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode);
             dialog.ShowDialog();
             return dialog.Result;
         }
