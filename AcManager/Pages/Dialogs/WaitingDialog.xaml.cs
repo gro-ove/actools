@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows.Controls;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
@@ -30,26 +32,51 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new Button[] {};
         }
 
-        private bool _shown;
+        private CancellationTokenSource _cancellationTokenSource;
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public void Report(string value) {
-            if (value != null) {
-                if (!IsVisible && !_shown) {
-                    _shown = true;
-                    ShowDialogWithoutBlocking();
-                }
+        public CancellationToken CancellationToken {
+            get {
+                if (_cancellationTokenSource != null) return _cancellationTokenSource.Token;
 
-                Message = value;
-            } else if (IsVisible) {
-                Close();
+                _cancellationTokenSource = new CancellationTokenSource();
+                Buttons = new[] { CancelButton };
+                Height = 280;
+                Closing += WaitingDialog_Closing;
+                return _cancellationTokenSource.Token;
             }
         }
 
+        private void WaitingDialog_Closing(object sender, CancelEventArgs e) {
+            _cancellationTokenSource?.Cancel();
+        }
+
+        private bool _shown, _closed;
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public void Report(string value) {
+            Dispatcher.Invoke(() => {
+                if (value != null) {
+                    if (!IsVisible && !_shown) {
+                        _shown = true;
+                        ShowDialogWithoutBlocking();
+                    }
+
+                    Message = value;
+                } else if (IsVisible && !_closed) {
+                    Close();
+                    _closed = true;
+                }
+            });
+        }
+
         void IDisposable.Dispose() {
-            if (IsVisible) {
-                Close();
-            }
+            DisposeHelper.Dispose(ref _cancellationTokenSource);
+            Dispatcher.Invoke(() => {
+                if (IsVisible && !_closed) {
+                    Close();
+                    _closed = true;
+                }
+            });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

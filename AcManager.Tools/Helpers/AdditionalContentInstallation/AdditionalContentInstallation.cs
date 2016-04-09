@@ -1,9 +1,10 @@
-﻿using SevenZip;
+﻿using System.Threading.Tasks;
+using SevenZip;
 
 namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
     public static class AdditionalContentInstallation {
-        public static IAdditionalContentInstallator FromFile(string filename) {
-            return new ArchiveContentInstallator(filename);
+        public static Task<ArchiveContentInstallator> FromFile(string filename) {
+            return ArchiveContentInstallator.Create(filename);
         }
 
         public static void Initialize(string sevenZipDllPath) {

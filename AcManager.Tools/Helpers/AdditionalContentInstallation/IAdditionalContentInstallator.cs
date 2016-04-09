@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
     public interface IAdditionalContentInstallator : IDisposable {
-        string PasswordValue { get; set; }
+        string Password { get; }
 
         bool IsPasswordRequired { get; }
 
         bool IsPasswordCorrect { get; }
 
-        IReadOnlyList<AdditionalContentEntry> Entries { get; }
+        Task TrySetPasswordAsync(string password);
 
-        void InstallEntryTo(AdditionalContentEntry entry, Func<string, bool> filter, string targetDirectory);
+        Task<IReadOnlyList<AdditionalContentEntry>> GetEntriesAsync([CanBeNull]IProgress<string> progress, CancellationToken cancellation);
+
+        Task InstallEntryToAsync(AdditionalContentEntry entry, Func<string, bool> filter, string targetDirectory, [CanBeNull]IProgress<string> progress,
+                CancellationToken cancellation);
     }
 }

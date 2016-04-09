@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Install Additional Content"
         Width="540" MaxHeight="960" Loaded="InstallAdditionalContentDialog_OnLoaded" Unloaded="InstallAdditionalContentDialog_OnUnloaded"
-        Closing="InstallAdditionalContentDialog_OnClosing" SizeToContent="Height" d:DataContext="{d:DesignInstance dialogs:InstallAdditionalContentDialog}">
+        SizeToContent="Height" d:DataContext="{d:DesignInstance dialogs:InstallAdditionalContentDialog}">
     <Grid>
         <mui:ModernProgressRing Name="Loading" Margin="8" IsActive="True" Width="80" Height="80" />
 

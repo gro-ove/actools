@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using AcManager.Annotations;
 using AcManager.Tools.AcManagersNew;
@@ -83,6 +83,7 @@ namespace AcManager.Pages.Dialogs {
         public bool IsEmpty => _entries?.Any() != true;
 
         private IAdditionalContentInstallator _installator;
+        private CancellationTokenSource _cancellationTokenSource;
 
         [CanBeNull]
         private IReadOnlyList<EntryWrapper> _entries;
@@ -99,50 +100,43 @@ namespace AcManager.Pages.Dialogs {
             };
         }
 
+        private bool _loaded;
+
         private void InstallAdditionalContentDialog_OnLoaded(object sender, RoutedEventArgs e) {
+            if (_loaded) return;
+            _loaded = true;
+
             CreateInstallator();
-            if (!_installator.IsPasswordRequired || _installator.IsPasswordCorrect) {
-                UpdateEntries();
+        }
+
+        private async void CreateInstallator() {
+            _installator = await AdditionalContentInstallation.FromFile(Filename);
+
+            var msg = @"Archive is encrypted. Input password:";
+            while (_installator.IsPasswordRequired && !_installator.IsPasswordCorrect) {
+                var password = Prompt.Show(@"Password required", msg, passwordMode: true);
+                if (password == null) {
+                    Close();
+                    return;
+                }
+
+                try {
+                    await _installator.TrySetPasswordAsync(password);
+                    break;
+                } catch (PasswordException) {
+                    msg = @"Password is invalid, try again:";
+                }
             }
+
+            UpdateEntries();
         }
 
         private void InstallAdditionalContentDialog_OnUnloaded(object sender, RoutedEventArgs e) {
+            if (!_loaded) return;
+            _loaded = false;
+
+            _cancellationTokenSource?.Cancel();
             DisposeHelper.Dispose(ref _installator);
-        }
-
-        private void RequirePassword() {
-            var password = Prompt.Show(@"Password required", @"Archive is encrypted. Input password:", passwordMode: true);
-            if (password == null) {
-                Close();
-                return;
-            }
-
-            try {
-                _installator.PasswordValue = password;
-            } catch (PasswordException) {
-                RequirePasswordAgain(password);
-            }
-        }
-
-        private void RequirePasswordAgain(string oldPassword) {
-            var password = Prompt.Show(@"Password required", @"Password is invalid, try again:", oldPassword, passwordMode: true);
-            if (password == null) {
-                Close();
-                return;
-            }
-
-            try {
-                _installator.PasswordValue = password;
-            } catch (PasswordException) {
-                RequirePasswordAgain(password);
-            }
-        }
-
-        private void CreateInstallator() {
-            _installator = AdditionalContentInstallation.FromFile(Filename);
-            if (_installator.IsPasswordRequired) {
-                RequirePassword();
-            }
         }
 
         private IAcManagerNew GetManagerByType(AdditionalContentType type) {
@@ -170,16 +164,14 @@ namespace AcManager.Pages.Dialogs {
             MainContent.Visibility = Visibility.Collapsed;
 
             try {
-                Entries = await Task.Run(() => _installator.Entries.Select(x => {
-                    var manager = GetManagerByType(x.Type);
-                    if (manager == null) {
-                        // TODO
-                        return null;
-                    }
-
-                    var existed = manager.GetObjectById(x.Id);
-                    return new EntryWrapper(x, existed == null);
-                }).Where(x => x != null).ToArray());
+                using (_cancellationTokenSource = new CancellationTokenSource()) {
+                    Entries = (await _installator.GetEntriesAsync(null, _cancellationTokenSource.Token)).Select(x => {
+                        var manager = GetManagerByType(x.Type);
+                        if (manager == null) return null;
+                        var existed = manager.GetObjectById(x.Id);
+                        return new EntryWrapper(x, existed == null);
+                    }).Where(x => x != null).ToArray();
+                }
             } catch (PasswordException e) {
                 NonfatalError.Notify(@"Can't unpack", e);
                 Close();
@@ -189,40 +181,36 @@ namespace AcManager.Pages.Dialogs {
             } catch (Exception e) {
                 NonfatalError.Notify(@"Can't unpack", e);
                 Close();
+            } finally {
+                _cancellationTokenSource = null;
             }
 
             Loading.Visibility = Visibility.Collapsed;
             MainContent.Visibility = Visibility.Visible;
         }
 
-        private void InstallEntry(EntryWrapper wrapper) {
-            var manager = GetManagerByType(wrapper.Entry.Type) as IFileAcManager;
-            if (manager == null) return;
-
-            var directory = manager.PrepareForAdditionalContent(wrapper.Entry.Id, wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
-            _installator.InstallEntryTo(wrapper.Entry, wrapper.SelectedOption?.Filter, directory);
-        }
-
         private AsyncCommand _installCommand;
 
         public AsyncCommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(async o => {
-            foreach (var entry in Entries.Where(entry => entry.InstallEntry)) {
-                try {
-                    using (WaitingDialog.Create("Installation in progress…")) {
-                        await Task.Run(() => InstallEntry(entry));
+            using (var waiting = new WaitingDialog()) {
+                foreach (var wrapper in Entries.Where(entry => entry.InstallEntry)) {
+                    waiting.Title = $@"Installing {wrapper.Entry.Name}…";
+                    if (waiting.CancellationToken.IsCancellationRequested) return;
+
+                    try {
+                        var manager = GetManagerByType(wrapper.Entry.Type) as IFileAcManager;
+                        if (manager == null) continue;
+
+                        var directory = manager.PrepareForAdditionalContent(wrapper.Entry.Id, wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
+                        await _installator.InstallEntryToAsync(wrapper.Entry, wrapper.SelectedOption?.Filter, directory, waiting, waiting.CancellationToken);
+                    } catch (Exception e) {
+                        NonfatalError.Notify(@"Can't install " + wrapper.DisplayName, e);
                     }
-                } catch (Exception e) {
-                    NonfatalError.Notify(@"Can't install " + entry.DisplayName, e);
                 }
             }
 
             Close();
         }, o => Entries?.Any(x => x.InstallEntry) == true));
-
-        private void InstallAdditionalContentDialog_OnClosing(object sender, CancelEventArgs eventArgs) {
-            if (!IsResultOk || _installator == null) return;
-
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
