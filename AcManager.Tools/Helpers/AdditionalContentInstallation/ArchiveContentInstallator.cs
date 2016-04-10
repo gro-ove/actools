@@ -9,18 +9,19 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
-using SevenZip;
+using SharpCompress.Archive;
+using SharpCompress.Common;
 
 namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
     public class ArchiveContentInstallator : IAdditionalContentInstallator {
-        public static async Task<ArchiveContentInstallator> Create(string filename) {
+        public static async Task<IAdditionalContentInstallator> Create(string filename) {
             var result = new ArchiveContentInstallator(filename);
             await result.CreateExtractorAsync();
             return result;
         }
 
         [CanBeNull]
-        private SevenZipExtractor _extractor;
+        private IArchive _extractor;
 
         public string Filename { get; }
 
@@ -48,22 +49,17 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
             return CreateExtractorAsync();
         }
 
-        private static SevenZipExtractor CreateExtractor(string filename, string passwordValue) {
+        private static IArchive CreateExtractor(string filename, string password) {
             try {
-                var extractor = passwordValue == null ? new SevenZipExtractor(filename)
-                        : new SevenZipExtractor(filename, passwordValue);
+                var extractor = SharpCompressExtension.Open(filename, password);
                 if (extractor.HasAnyEncryptedFiles()) {
-                    throw new PasswordException(passwordValue == null ? "Password is required" :
+                    throw new PasswordException(password == null ? "Password is required" :
                             "Password is invalid");
                 }
                 return extractor;
-            } catch (SevenZipArchiveException e) {
-                if (e.Message.Contains("Is it encrypted and a wrong password was provided?")) {
-                    throw new PasswordException(passwordValue == null ? "Password is required" :
-                            "Password is invalid");
-                }
-
-                throw;
+            } catch (CryptographicException) {
+                throw new PasswordException(password == null ? "Password is required" :
+                        "Password is invalid");
             }
         }
 
@@ -75,7 +71,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
             var result = new List<AdditionalContentEntry>();
             var found = new List<string>();
 
-            foreach (var fileInfo in _extractor.ArchiveFileData.Where(x => !x.IsDirectory)) {
+            foreach (var fileInfo in _extractor.Entries.Where(x => !x.IsDirectory)) {
                 var filename = fileInfo.GetName().ToLower();
 
                 progress?.Report(filename);
@@ -140,10 +136,8 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
 
                 JObject jObject;
                 try {
-                    var jsonBytes = await _extractor.ExtractFileAsync(fileInfo);
+                    var jsonBytes = await fileInfo.ExtractFileAsync();
                     jObject = JsonExtension.Parse(jsonBytes.GetString());
-                } catch (ExtractionFailedException) {
-                    throw;
                 } catch (Exception e) {
                     Logging.Warning("Can't read as a JSON (" + fileInfo.GetFilename() + "): " + e);
                     continue;
@@ -161,7 +155,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                 throw new Exception("Extractor wasn't initialized");
             }
 
-            foreach (var fileInfo in _extractor.ArchiveFileData.Where(x => !x.IsDirectory)) {
+            foreach (var fileInfo in _extractor.Entries.Where(x => !x.IsDirectory)) {
                 var filename = fileInfo.GetFilename();
                 if (entry.Path != string.Empty && !FileUtils.IsAffected(entry.Path, filename)) continue;
 
@@ -176,7 +170,11 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
 
                     var path = Path.Combine(targetDirectory, subFilename);
                     Directory.CreateDirectory(Path.GetDirectoryName(path) ?? targetDirectory);
-                    File.WriteAllBytes(path, await _extractor.ExtractFileAsync(fileInfo));
+
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    using (var stream = fileInfo.OpenEntryStream()) {
+                        await stream.CopyToAsync(fileStream);
+                    }
                 }
             }
         }
