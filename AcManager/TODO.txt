@@ -142,6 +142,7 @@ done:
             + show possible errors from a start
             + load content automatically
             + show countries flags
+            + stop loading while tab is switched
             + password
                 + remember password to server
             + fallback servers
@@ -157,12 +158,14 @@ done:
                     + recent servers
             + update filtered list on change
             + car/track stats in tooltip
+            + refresh whole list
             + filters:
                 + password
                 + filter-in-filter
                 + session durations
                 + booking
                 + player's name
+                + time left
             + quick filters
                 + saving
             + fix tab closing
@@ -313,7 +316,7 @@ fixme:
     - some staticresources have the same name as dynamicrecources
 
 todo:
-    - 13%
+    + 13%
     - car selection lists (selection by default)
 
     - showroom from QD/KunosCareer/Online
@@ -333,19 +336,22 @@ todo:
         + cars
             + skins
         + showrooms
-        - tracks
+        + tracks
+            - fix tracks layouts bug
 
-    - car mod installation
-        - from archive
+    + car mod installation
+        + from archive
             + basic decompression support
-            - encryption
-            - partial archives?
-        - from folder
-        - selectable update
-        - check for changes?
+            + encryption
+            × partial archives?
+        + from folder
+        + selectable update
+        × check for changes?
+    + track mod installation
+    - font installation
     - skins installation
-    - track mod installation
     - showroom mod installation
+    - pp-filter, app, weather?
 
     - fix brand fitting on car's selection dialog
 
@@ -363,12 +369,6 @@ todo:
             - weekends
             - drag racing
         + online
-            + refresh whole list
-            + filters:
-                - time left?
-            + stop loading while tab is switched
-                - use smart AcManager system?
-                - disable loading for AcManager as well?
             - booking
             - favorites
             - periodic refreshing of all servers 
@@ -376,7 +376,7 @@ todo:
             - list all cars
             - keyboard shortcuts
             - auto saving replays
-            - custom sorting
+            - custom sorting?
         - test and fix for AcManager autoupdating feature
             - handle obsolete!
         - challenges
@@ -421,6 +421,7 @@ todo:
         - CarSkins_SkinsAreMissing
 
     - auto-update body shadows
+    - copy sound from another car?
     - checkboxes
         - custom lists?
     - progress in taskbar

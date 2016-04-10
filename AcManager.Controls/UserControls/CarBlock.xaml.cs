@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
 using AcManager.Controls.Pages.Dialogs;
-using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Controls.UserControls {

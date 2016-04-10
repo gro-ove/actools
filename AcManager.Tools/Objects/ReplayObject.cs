@@ -8,7 +8,7 @@ using FirstFloor.ModernUI.Helpers;
 namespace AcManager.Tools.Objects {
     internal sealed class ReplayReader : BinaryReader {
         public ReplayReader(string filename)
-            : this(File.Open(filename, FileMode.Open, FileAccess.Read)) { }
+            : this(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096)) { }
 
         public ReplayReader(Stream input)
             : base(input) { }

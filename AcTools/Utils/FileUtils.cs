@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable MemberCanBePrivate.Local
@@ -284,15 +285,35 @@ namespace AcTools.Utils {
             return result;
         }
 
-        public static bool IsAffected(string directory, string filename) {
+        public static bool IsAffected([NotNull] string directory, [NotNull] string filename) {
+            if (directory == null) throw new ArgumentNullException(nameof(directory));
+            if (filename == null) throw new ArgumentNullException(nameof(filename));
             if (string.Equals(directory, filename, StringComparison.OrdinalIgnoreCase)) return true;
 
             var s = filename.SubstringExt(directory.Length);
             return s.Length > 0 && (s[0] == Path.DirectorySeparatorChar || s[0] == Path.AltDirectorySeparatorChar);
         }
 
-        public static void Hardlink(string source, string destination) {
+        public static void Hardlink([NotNull] string source, [NotNull] string destination) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (destination == null) throw new ArgumentNullException(nameof(destination));
             Kernel32.CreateHardLink(destination, source, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Check if filename is a directory.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="PathTooLongException"></exception>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <returns></returns>
+        public static bool IsDirectory([NotNull] string filename) {
+            if (filename == null) throw new ArgumentNullException(nameof(filename));
+            return (File.GetAttributes(filename) & FileAttributes.Directory) == FileAttributes.Directory;
         }
     }
 }

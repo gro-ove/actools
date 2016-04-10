@@ -200,7 +200,7 @@ namespace AcManager.Pages.Dialogs {
                         var directory = manager.PrepareForAdditionalContent(wrapper.Entry.Id, wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
                         await _installator.InstallEntryToAsync(wrapper.Entry, wrapper.SelectedOption?.Filter, directory, waiting, waiting.CancellationToken);
                     } catch (Exception e) {
-                        NonfatalError.Notify(@"Can't install " + wrapper.DisplayName, e);
+                        NonfatalError.Notify(@"Can't install " + wrapper.Entry.Name, e);
                     }
                 }
             }

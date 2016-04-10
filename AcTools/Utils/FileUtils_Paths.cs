@@ -141,5 +141,27 @@ namespace AcTools.Utils {
         public static string GetResultJsonFilename() {
             return Path.Combine(GetDocumentsOutDirectory(), "race_out.json");
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename">Ex.: C:\Windows\System32\explorer.exe</param>
+        /// <param name="directory">Ex.: C:\Windows</param>
+        /// <returns>System32\explorer.exe</returns>
+        public static string GetRelativePath(string filename, string directory) {
+            filename = filename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            directory = directory.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            if (!filename.StartsWith(directory) || directory.Length == 0) return filename;
+
+            var result = filename.Substring(directory[directory.Length - 1].IsDirectorySeparator() ? directory.Length - 1 : directory.Length);
+            return result.Length == 0 || !result[0].IsDirectorySeparator() ? filename : result.Substring(1);
+        }
+    }
+
+    public static class CharExtension {
+        public static bool IsDirectorySeparator(this char c) {
+            return c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar;
+        }
     }
 }

@@ -115,6 +115,7 @@
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentType.cs" />
+    <Compile Include="Helpers\AdditionalContentInstallation\BaseAdditionalContentInstallator.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\DirectoryContentInstallator.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\SharpCompressExtension.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />

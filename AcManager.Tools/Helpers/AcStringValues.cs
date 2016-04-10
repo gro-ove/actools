@@ -10,7 +10,7 @@ namespace AcManager.Tools.Helpers {
         private static Regex _idYearRegex;
 
         private static Regex IdYearRegex => _idYearRegex ??
-                                              (_idYearRegex = new Regex(@"(?:19[2-9]|20[01])\d$", RegexOptions.Compiled));
+                                            (_idYearRegex = new Regex(@"(?:19[2-9]|20[01])\d$", RegexOptions.Compiled));
 
         public static int? GetYearFromId([NotNull] string id) {
             var result = IdYearRegex.Match(id);
@@ -67,15 +67,21 @@ namespace AcManager.Tools.Helpers {
         private static Regex _decodeDescriptionRegex;
         private static Regex _cleanDescriptionRegex;
 
-        public static string DecodeDescription(string s) {
+        [CanBeNull]
+        public static string DecodeDescription([CanBeNull] string s) {
             if (s == null) return null;
             s = (_decodeDescriptionRegex ?? (_decodeDescriptionRegex = new Regex(@"<\s*/?\s*br\s*/?\s*>\s*", RegexOptions.Compiled))).Replace(s, "\n");
             s = (_cleanDescriptionRegex ?? (_cleanDescriptionRegex = new Regex(@"<\s*\w+(\s+[^>]*|\s*)>|</\s*\w+\s*>", RegexOptions.Compiled))).Replace(s, "");
             return s;
         }
 
-        public static string EncodeDescription(string s) {
+        [CanBeNull]
+        public static string EncodeDescription([CanBeNull] string s) {
             return s?.Replace("\r", "").Replace("\n", "<br>");
+        }
+
+        public static bool IsAppropriateId([CanBeNull] string id) {
+            return id != null && Regex.IsMatch(id, @"^\w[\w-]*$");
         }
     }
 }

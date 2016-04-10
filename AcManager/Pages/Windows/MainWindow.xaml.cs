@@ -177,15 +177,16 @@ namespace AcManager.Pages.Windows {
         }
 
         private void ProcessInputFile(string filename) {
-            if (filename == null || !File.Exists(filename)) return;
+            if (filename == null || !FileUtils.Exists(filename)) return;
 
-            if (filename.EndsWith(".acreplay", StringComparison.OrdinalIgnoreCase) ||
+            var isDirectory = FileUtils.IsDirectory(filename);
+            if (!isDirectory && filename.EndsWith(".acreplay", StringComparison.OrdinalIgnoreCase) ||
                     Path.GetDirectoryName(filename)?.Equals(FileUtils.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
                 Game.Start(AcsStarterFactory.Create(),
                         new Game.StartProperties(new Game.ReplayProperties {
                             Filename = filename
                         }));
-            } else if (filename.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase)) {
+            } else if (!isDirectory && filename.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase)) {
                 using (var render = new Render(filename, 0, Render.VisualMode.BRIGHT_ROOM)) {
                     render.Form(1280, 720);
                 }

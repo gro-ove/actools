@@ -40,7 +40,7 @@ namespace AcManager.Pages.Dialogs {
 
             Title = "Transmission Loss for " + car.DisplayName;
 
-            Value = 20;
+            Value = 13;
             Buttons = new [] { OkButton, CancelButton };
         }
 
@@ -48,8 +48,7 @@ namespace AcManager.Pages.Dialogs {
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
