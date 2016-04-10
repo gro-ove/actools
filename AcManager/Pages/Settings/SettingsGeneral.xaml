@@ -48,7 +48,7 @@
                         Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, Mode=OneTime}" watermark:WatermarkService.Watermark="?" />
             </DockPanel>
 
-            <TextBlock Text="{Binding AppUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource ErrorForeground}"
+            <TextBlock Text="{Binding AppUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
                     Visibility="{Binding AppUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
             <!--content version-->
@@ -58,7 +58,7 @@
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding ContentSyncronizer.InstalledVersion, Mode=OneWay}"
                         watermark:WatermarkService.Watermark="?" />
             </DockPanel>
-            <TextBlock Text="{Binding ContentSyncronizer.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource ErrorForeground}"
+            <TextBlock Text="{Binding ContentSyncronizer.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
                     Visibility="{Binding ContentSyncronizer.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
             <!--values storage-->

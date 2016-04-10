@@ -2,8 +2,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" Name="ThisControl">
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance local:CarBlock}" Name="ThisControl">
+    <UserControl.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+    </UserControl.Resources>
+
     <DockPanel Name="InnerCarBlockPanel">
         <Grid DockPanel.Dock="Top" Name="Grid" MaxWidth="1024"
                 Visibility="{Binding ShowSkinsAndPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -11,21 +15,15 @@
                     RenderOptions.BitmapScalingMode="HighQuality" Margin="0" MouseDown="PreviewImage_OnMouseDown"
                     Height="{Binding Path=ActualWidth, Converter={StaticResource MultiplyConverter}, ConverterParameter='0.5625', ElementName=Grid}" />
 
-            <ListBox ItemsSource="{Binding Car.LoadedOnlySkins}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="4"
-                    SelectedItem="{Binding SelectedSkin}" VerticalAlignment="Top" MaxHeight="76" BorderThickness="0"
-                    Visibility="{Binding SelectSkin, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="4"
+                    IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding SelectedSkin}" VerticalAlignment="Top" MaxHeight="76" BorderThickness="0"
+                    Visibility="{Binding SelectSkin, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    ItemTemplate="{StaticResource CarSkinItemTemplate}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type objects:CarSkinObject}">
-                        <Image RenderOptions.BitmapScalingMode="LowQuality"
-                                Source="{Binding LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="32" Height="32"
-                                ToolTip="{Binding DisplayName}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
             </ListBox>
 
             <ContentPresenter Content="{Binding PreviewContent}" />

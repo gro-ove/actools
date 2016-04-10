@@ -42,7 +42,7 @@ namespace AcManager.Tools.Filters {
                     
                 case "skin":
                 case "skins":
-                    return nameof(CarObject.SkinsList);
+                    return nameof(CarObject.SkinsEnabledWrappersList);
 
                 default:
                     return null;
@@ -88,7 +88,7 @@ namespace AcManager.Tools.Filters {
                     return obj.SpecsPwRatio != null && value.Test(obj.SpecsPwRatio);
 
                 case "skins":
-                    return obj.SkinsList?.Count > 0 && value.Test(obj.SkinsList.Count);
+                    return obj.SkinsEnabledWrappersList?.Count > 0 && value.Test(obj.SkinsEnabledWrappersList.Count);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);

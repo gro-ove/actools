@@ -81,7 +81,7 @@
                     </TextBlock.ToolTip>
                 </TextBlock>
 
-                <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource ErrorForeground}" Text="{Binding OpponentsCarsError}"
+                <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Error}" Text="{Binding OpponentsCarsError}"
                         Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Grid Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}}">
                     <Grid.RowDefinitions>

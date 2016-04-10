@@ -28,7 +28,7 @@
                     <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <DockPanel HorizontalAlignment="Stretch" Margin="0 12 0 0">
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}" Stretch="Uniform"
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 x:Name="ErrorIcon" DockPanel.Dock="Right" />
                         <TextBlock Text="Errors:" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
                     </DockPanel>
@@ -72,7 +72,7 @@
                         </StackPanel>
 
                         <DockPanel Grid.Column="1">
-                            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}" Stretch="Uniform"
+                            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                     DockPanel.Dock="Right" Visibility="{Binding WrongPassword, Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <mui:ProperPasswordBox Password="{Binding Password, Mode=TwoWay}" Style="{StaticResource ProperPasswordBoxAsTextBlock}" />
                         </DockPanel>

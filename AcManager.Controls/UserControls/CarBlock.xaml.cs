@@ -3,8 +3,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
 using AcManager.Controls.Pages.Dialogs;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Objects;
-using AcTools.Utils.Helpers;
 
 namespace AcManager.Controls.UserControls {
     [ContentProperty("PreviewContent")]
@@ -50,15 +50,14 @@ namespace AcManager.Controls.UserControls {
                 typeof(CarBlock));
 
         public object PreviewContent {
-            get { return (object)GetValue(PreviewContentProperty); }
+            get { return GetValue(PreviewContentProperty); }
             set { SetValue(PreviewContentProperty, value); }
         }
 
         private void PreviewImage_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            var selected = new ImageViewer(
-                Car.Skins.Select(x => x.PreviewImage),
-                Car.Skins.IndexOf(SelectedSkin)
-            ).ShowDialogInSelectMode();
+            var list = Car.SkinsManager.LoadedOnly.Select(x => x.PreviewImage).ToList();
+            var selected = new ImageViewer(list, list.IndexOf(SelectedSkin.PreviewImage))
+                    .ShowDialogInSelectMode();
             SelectedSkin = Car.Skins.ElementAtOrDefault(selected ?? -1) ?? SelectedSkin;
         }
     }

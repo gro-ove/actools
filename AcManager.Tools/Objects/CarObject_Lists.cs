@@ -7,19 +7,35 @@ using AcManager.Tools.Lists;
 namespace AcManager.Tools.Objects {
 
     public partial class CarObject {
-        private AcWrapperCollectionView _skinsListView;
-        public AcWrapperCollectionView SkinsList {
+        private AcWrapperCollectionView _skinsEnabledWrappersListView;
+        public AcWrapperCollectionView SkinsEnabledWrappersList {
             get {
-                if (_skinsListView != null) return _skinsListView;
+                if (_skinsEnabledWrappersListView != null) return _skinsEnabledWrappersListView;
 
-                _skinsListView = new AcWrapperCollectionView(SkinsManager.WrappersAsIList) {
+                _skinsEnabledWrappersListView = new AcWrapperCollectionView(SkinsManager.WrappersAsIList) {
                     Filter = o => (o as AcItemWrapper)?.Value.Enabled == true
                 };
-                _skinsListView.MoveCurrentTo(SelectedSkin);
-                _skinsListView.CurrentChanged += (sender, args) => {
-                    SelectedSkin = (_skinsListView.CurrentItem as AcItemWrapper)?.Loaded() as CarSkinObject;
+                _skinsEnabledWrappersListView.MoveCurrentTo(SelectedSkin);
+                _skinsEnabledWrappersListView.CurrentChanged += (sender, args) => {
+                    SelectedSkin = (_skinsEnabledWrappersListView.CurrentItem as AcItemWrapper)?.Loaded() as CarSkinObject;
                 };
-                return _skinsListView;
+                return _skinsEnabledWrappersListView;
+            }
+        }
+
+        private BetterListCollectionView _skinsActualListView;
+        public BetterListCollectionView SkinsActualList {
+            get {
+                if (_skinsActualListView != null) return _skinsActualListView;
+
+                _skinsActualListView = new BetterListCollectionView(SkinsManager.LoadedOnlyCollection) {
+                    Filter = o => (o as CarSkinObject)?.Enabled == true
+                };
+                _skinsActualListView.MoveCurrentTo(SelectedSkin);
+                _skinsActualListView.CurrentChanged += (sender, args) => {
+                    SelectedSkin = _skinsActualListView.CurrentItem as CarSkinObject;
+                };
+                return _skinsActualListView;
             }
         }
 

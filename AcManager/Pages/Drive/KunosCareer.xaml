@@ -68,7 +68,7 @@
 
                                 <Border BorderBrush="{StaticResource Completed}" BorderThickness="1" Visibility="Collapsed" Name="FullyFinished" />
                                 <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" MaxHeight="50" Stretch="Uniform"
-                                        HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{DynamicResource ErrorForeground}" Visibility="Collapsed"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{DynamicResource Error}" Visibility="Collapsed"
                                         Name="ErrorIcon" />
                             </Grid>
                             <DataTemplate.Triggers>
@@ -114,7 +114,7 @@
                                     <Setter TargetName="CheckIcon" Property="Visibility" Value="Collapsed" />
 
                                     <Setter TargetName="FullyFinished" Property="Visibility" Value="Visible" />
-                                    <Setter TargetName="FullyFinished" Property="BorderBrush" Value="{DynamicResource ErrorForeground}" />
+                                    <Setter TargetName="FullyFinished" Property="BorderBrush" Value="{DynamicResource Error}" />
                                     <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible" />
                                 </DataTrigger>
 

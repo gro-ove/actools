@@ -89,6 +89,7 @@
     <Compile Include="Presentation\AsyncCommand.cs" />
     <Compile Include="Presentation\AutoCompleteBehavior.cs" />
     <Compile Include="Presentation\BindingProxy.cs" />
+    <Compile Include="Presentation\CombinedCommand.cs" />
     <Compile Include="Presentation\CustomLink.cs" />
     <Compile Include="Presentation\LinkInput.cs" />
     <Compile Include="Presentation\LinkInputEmpty.cs" />

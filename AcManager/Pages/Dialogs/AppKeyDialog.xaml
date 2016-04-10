@@ -15,7 +15,7 @@
         <ProgressBar IsIndeterminate="True"
                 Visibility="{Binding CheckingInProgress, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" Margin="0 8 0 0" />
 
-        <TextBlock Foreground="{DynamicResource ErrorForeground}" Visibility="{Binding KeyRevoked, Converter={StaticResource BooleanToVisibilityConverter}}"
+        <TextBlock Foreground="{DynamicResource Error}" Visibility="{Binding KeyRevoked, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Margin="0 8 0 0">
             <Run>Key was revoked</Run><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
                     Command="{Binding RevokedKeyMessageCommand}">[?]</Hyperlink>

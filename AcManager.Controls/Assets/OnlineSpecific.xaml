@@ -17,7 +17,7 @@
                 <userControls:CarBlock Car="{Binding CarObjectWrapper.Value}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
             </StackPanel>
             <DockPanel Margin="4" Visibility="{Binding CarExists, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}" Stretch="Uniform" x:Name="ErrorIcon"
+                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
                         DockPanel.Dock="Left" Margin="0 0 4 0" />
                 <TextBlock>
                             <Run>Car is missing:</Run>
@@ -34,7 +34,7 @@
                 <userControls:TrackBlock Track="{Binding Track}" Width="512" MaxHeight="320" />
             </StackPanel>
             <DockPanel Margin="4" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}}">
-                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}" Stretch="Uniform" x:Name="ErrorIcon"
+                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
                         DockPanel.Dock="Left" Margin="0 0 4 0" />
                 <TextBlock>
                             <Run>Track is missing:</Run>
@@ -151,7 +151,7 @@
                             <TextBlock Text=" ms" Opacity="0.5" Style="{StaticResource Small}" />
                         </StackPanel>
 
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}" Stretch="Uniform"
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="Collapsed" x:Name="ErrorIcon" Grid.Column="2" HorizontalAlignment="Right">
                             <Path.ToolTip>
                                 <StackPanel>
@@ -224,7 +224,7 @@
                             <TextBlock Text=" ms" Opacity="0.5" Style="{StaticResource Small}" />
                         </StackPanel>
 
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}" Stretch="Uniform"
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="Collapsed" x:Name="ErrorIcon" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Right">
                             <Path.ToolTip>
                                 <StackPanel>
@@ -327,7 +327,7 @@
                             <TextBlock Text=" ms" Opacity="0.5" Style="{StaticResource Small}" />
                         </StackPanel>
 
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}" Stretch="Uniform"
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="Collapsed" x:Name="ErrorIcon" Grid.Row="0" Grid.Column="7" HorizontalAlignment="Right">
                             <Path.ToolTip>
                                 <StackPanel>

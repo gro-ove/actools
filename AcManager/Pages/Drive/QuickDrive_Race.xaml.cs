@@ -575,7 +575,7 @@ namespace AcManager.Pages.Drive {
                 var opponentsCarsEntries = (from x in opponentsCars
                                     select new {
                                         Car = x,
-                                        Skins = GoodShuffle.Get(x.LoadedOnlySkins)
+                                        Skins = GoodShuffle.Get(x.SkinsManager.LoadedOnlyCollection)
                                     }).ToList();
                 var opponentsCarsShuffled = GoodShuffle.Get(opponentsCarsEntries);
 

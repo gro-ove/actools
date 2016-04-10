@@ -1,38 +1,15 @@
 ﻿using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
-    public class CombinedCommand : CommandBase {
-        private readonly ICommand _first;
-        private readonly ICommand _second;
-
-        public CombinedCommand(ICommand first, ICommand second) {
-            _first = first;
-            _second = second;
-            WeakEventManager<ICommand, EventArgs>.AddHandler(first, "CanExecuteChanged", Handler);
-            WeakEventManager<ICommand, EventArgs>.AddHandler(second, "CanExecuteChanged", Handler);
-        }
-
-        private void Handler(object sender, EventArgs eventArgs) {
-            OnCanExecuteChanged();
-        }
-
-        protected override void OnExecute(object parameter) {
-            _first.Execute(parameter);
-            _second.Execute(parameter);
-        }
-
-        public override bool CanExecute(object parameter) {
-            return _first.CanExecute(parameter) && _second.CanExecute(parameter);
-        }
-    }
-
     public partial class AcRootDirectorySelector {
         private AcRootDirectorySelectorViewModel Model => (AcRootDirectorySelectorViewModel)DataContext;
 
@@ -49,7 +26,7 @@ namespace AcManager.Pages.Dialogs {
             };
         }
 
-        public class AcRootDirectorySelectorViewModel : NotifyPropertyChanged {
+        public class AcRootDirectorySelectorViewModel : NotifyPropertyChanged, INotifyDataErrorInfo {
             public bool FirstRun { get; private set; }
 
             public bool IsValueAcceptable {
@@ -58,6 +35,7 @@ namespace AcManager.Pages.Dialogs {
                     if (value == _isValueAcceptable) return;
                     _isValueAcceptable = value;
                     OnPropertyChanged();
+                    OnErrorsChanged(nameof(Value));
                     ApplyCommand.OnCanExecuteChanged();
                 }
             }
@@ -72,6 +50,7 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _value)) return;
                     _value = value;
                     OnPropertyChanged();
+                    OnErrorsChanged();
                     IsValueAcceptable = AcRootDirectory.CheckDirectory(_value);
                 }
             }
@@ -89,6 +68,18 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 Value = AcRootDirectory.Instance.IsReady ? AcRootDirectory.Instance.Value : AcRootDirectory.TryToFind();
+            }
+
+            public IEnumerable GetErrors(string propertyName) {
+                return propertyName == nameof(Value) ? (string.IsNullOrWhiteSpace(Value) ? new[] { "Required value" } :
+                        IsValueAcceptable ? null : new[] { "Folder is unacceptable" }) : null;
+            }
+
+            public bool HasErrors => string.IsNullOrWhiteSpace(Value) || !IsValueAcceptable;
+            public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+            public void OnErrorsChanged([CallerMemberName] string propertyName = null) {
+                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
             }
         }
 

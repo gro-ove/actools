@@ -12,13 +12,10 @@
 
         <TextBlock Text="Specify Assetto Corsa root folder:" Style="{StaticResource Heading2}" />
 
-        <DockPanel Margin="0 8 0 0">
+        <DockPanel Margin="0 8 0 0" Width="480">
             <Button Content="…" Click="Button_OnClick" DockPanel.Dock="Right" />
-            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="640" watermark:WatermarkService.Watermark="?"
+            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" watermark:WatermarkService.Watermark="?"
                     mui:FocusAdvancement.AdvancesByEnterKey="True" />
         </DockPanel>
-
-        <mui:BbCodeBlock BbCode="Folder is unacceptable" Foreground="{DynamicResource ErrorForeground}"
-                Visibility="{Binding IsValueAcceptable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 8 0 0" />
     </StackPanel>
 </mui:ModernDialog>

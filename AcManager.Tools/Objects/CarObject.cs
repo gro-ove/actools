@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text;
 using AcManager.Tools.AcErrors;
@@ -71,31 +70,16 @@ namespace AcManager.Tools.Objects {
         }
 
         public override bool HandleChangedFile(string filename) {
-            if (base.HandleChangedFile(filename)) {
-                return true;
-            }
+            if (base.HandleChangedFile(filename)) return true;
 
             if (FileUtils.IsAffected(filename, LogoIcon)) {
                 OnImageChanged(nameof(LogoIcon));
-                return true;
-            }
-
-            if (FileUtils.IsAffected(filename, BrandBadge)) {
+            } else if (FileUtils.IsAffected(filename, BrandBadge)) {
                 OnImageChanged(nameof(BrandBadge));
-                return true;
-            }
-
-            if (FileUtils.IsAffected(filename, UpgradeIcon)) {
+            } else if (FileUtils.IsAffected(filename, UpgradeIcon)) {
                 OnImageChanged(nameof(UpgradeIcon));
-                return true;
             }
 
-            var local = filename.SubstringExt(Location.Length + 1);
-            if (local.StartsWith(@"skins\", true, CultureInfo.InvariantCulture)) {
-                return true;
-            }
-
-            // ignoring everything else
             return true;
         }
 

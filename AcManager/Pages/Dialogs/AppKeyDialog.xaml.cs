@@ -13,7 +13,7 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
     public partial class AppKeyDialog {
-        public static bool OptionOfflineMode = false;
+        public static bool OptionOfflineMode;
 
         public const string AppKeyRevokedKey = "AppKeyRevoked";
 
@@ -23,6 +23,7 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, Model.ApplyCommand),
+                CreateExtraDialogButton(@"Get a New Key", Model.GetNewKeyCommand),
                 CancelButton
             };
             OkButton.ToolTip = "App will be restarted";
@@ -87,6 +88,7 @@ namespace AcManager.Pages.Dialogs {
                     OnPropertyChanged();
                     OnErrorsChanged(nameof(Value));
                     ApplyCommand.OnCanExecuteChanged();
+                    GetNewKeyCommand.OnCanExecuteChanged();
                 }
             }
 
@@ -114,6 +116,7 @@ namespace AcManager.Pages.Dialogs {
                     OnPropertyChanged();
                     OnErrorsChanged();
                     ApplyCommand.OnCanExecuteChanged();
+                    GetNewKeyCommand.OnCanExecuteChanged();
 
                     TestValue();
                 }
@@ -170,6 +173,12 @@ namespace AcManager.Pages.Dialogs {
                 ShowMessage("Now app will be restarted, but it shouldn't take long. Thanks again for your support!\n\n[i]Please, don't share your key, otherwise it might get compromised.[/i]", "Thank You!", MessageBoxButton.OK);
                 WindowsHelper.RestartCurrentApplication();
             }, o => IsValueAcceptable && !CheckingInProgress && !InternetConnectionRequired && !string.IsNullOrWhiteSpace(Value)));
+
+            private RelayCommand _getNewKeyCommand;
+
+            public RelayCommand GetNewKeyCommand => _getNewKeyCommand ?? (_getNewKeyCommand = new RelayCommand(o => {
+                Process.Start("http://acstuff.ru/app/cm/key/get");
+            }, o => !IsValueAcceptable || string.IsNullOrWhiteSpace(Value)));
 
             public IEnumerable GetErrors(string propertyName) {
                 return propertyName == nameof(Value) ? (string.IsNullOrWhiteSpace(Value) ? new[] { "Required value" } :

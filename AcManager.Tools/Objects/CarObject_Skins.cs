@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Lists;
@@ -14,7 +12,7 @@ namespace AcManager.Tools.Objects {
     public partial class CarObject : IAcManagerScanWrapper {
         /* for UI car's skins manager */
         [NotNull]
-        public CarSkinsManager SkinsManager { get; private set; }
+        public CarSkinsManager SkinsManager { get; }
 
         public IAcWrapperObservableCollection SkinsWrappers => SkinsManager.WrappersList;
 
@@ -58,6 +56,7 @@ namespace AcManager.Tools.Objects {
 
             try {
                 SkinsManager.ActualScan();
+                RemoveError(AcErrorType.CarSkins_DirectoryIsUnavailable);
             } catch (IOException e) {
                 AddError(AcErrorType.CarSkins_DirectoryIsUnavailable, e);
                 Logging.Write("Car skins unhandled exception: " + e);

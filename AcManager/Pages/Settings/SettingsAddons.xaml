@@ -43,7 +43,7 @@
                                 <!--description-->
                                 <DockPanel
                                         Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}"
+                                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}"
                                             Stretch="Uniform" x:Name="ErrorIcon" DockPanel.Dock="Right" />
                                     <TextBlock Text="{Binding AppVersion, StringFormat='{}Not available, required app version is {0}'}"
                                             Style="{StaticResource Small}" Margin="0 4 0 8" />

@@ -76,7 +76,7 @@
                                     Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
                                     mui:TextBoxAdvancement.SpecialMode="Time" />
                         </StackPanel>
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource ErrorForeground}"
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}"
                                 Stretch="Uniform" Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="Actual time is out of range, closest value is used" HorizontalAlignment="Right" />
                     </Grid>
@@ -98,7 +98,7 @@
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 5">
                         <TextBlock Text="Weather:" Style="{StaticResource LabelWithPadding}" />
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource ErrorForeground}"
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}"
                                 Stretch="Uniform" Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 HorizontalAlignment="Right">
                             <Path.ToolTip>
@@ -160,7 +160,7 @@
                                 Name="TemperatureSlider" IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}"
                                 TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 -8" Height="16">
-                            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}" Stretch="Uniform"
+                            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                     Visibility="{Binding IsTemperatureClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     ToolTip="Actual temperature is out of range, closest value is used" />
                         </StackPanel>

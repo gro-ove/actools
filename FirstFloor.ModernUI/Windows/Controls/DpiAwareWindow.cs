@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Win32;
 using Microsoft.Win32;
 // ReSharper disable CompareOfFloatsByEqualityOperator
@@ -146,6 +147,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var relScaleX = width / Width;
             var relScaleY = height / Height;
             if (relScaleX == 1.0 && relScaleY == 1.0) return;
+
+            if (!IsFinite(relScaleX)) {
+                Logging.Warning("[DPIAWAREWINDOW] relScaleX is NaN: " + relScaleX + ", " + width + ", " + Width);
+                return;
+            }
+
+            if (!IsFinite(relScaleY)) {
+                Logging.Warning("[DPIAWAREWINDOW] relScaleY is NaN: " + relScaleY + ", " + width + ", " + Width);
+                return;
+            }
 
             // adjust window size constraints as well
             if (IsFinite(MaxWidth)) {

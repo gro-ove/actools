@@ -4,10 +4,9 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
         xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
-        xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
-        mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-                                   d:DataContext="{d:DesignInstance selected:SelectedCarPage+SelectedCarPageViewModel}">
+        xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance selected:SelectedCarPage+SelectedCarPageViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <CollectionViewSource x:Key="ShowroomPresetsItems" Source="{Binding ShowroomPresets}" />
@@ -89,7 +88,8 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- preview of selected skin -->
-                <Grid Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5625}"
+                <Grid
+                        Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5625}"
                         Name="SelectedSkinPreview" MinHeight="160" MaxHeight="575" MaxWidth="1024">
                     <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="0"
                             Source="{Binding SelectedObject.SelectedSkin.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
@@ -101,7 +101,7 @@
                 </Grid>
 
                 <!-- skins list -->
-                <ListBox ItemsSource="{Binding SelectedObject.SkinsList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                <ListBox ItemsSource="{Binding SelectedObject.SkinsEnabledWrappersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         IsSynchronizedWithCurrentItem="True" Grid.Column="1" Width="120" Margin="4 -2 0 -2" VerticalAlignment="Stretch"
                         HorizontalAlignment="Left"
                         Height="{Binding ElementName=SelectedSkinPreview, Path=ActualHeight, Converter={StaticResource SumConverter}, ConverterParameter=4}">
@@ -112,16 +112,18 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type acManagersNew:AcItemWrapper}">
-                            <Image RenderOptions.BitmapScalingMode="LowQuality" MouseDown="SelectedSkinPreview_MouseDown" ToolTip="{Binding Value.DisplayName}"
-                                    Source="{Binding Value.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="32" Height="32" />
+                            <Border BorderThickness="0" Background="Transparent">
+                                <Image RenderOptions.BitmapScalingMode="LowQuality" MouseDown="SelectedSkinPreview_MouseDown"
+                                        ToolTip="{Binding Value.DisplayName}" Width="32" Height="32"
+                                        Source="{Binding Value.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
+                            </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
 
             <!-- data section -->
-            <StackPanel Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    DataContext="{Binding SelectedObject}">
+            <StackPanel Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedObject}">
                 <!-- tags -->
                 <mui:TagsList ItemsSource="{Binding Tags}" SuggestionsSource="{Binding TagsList}" MouseDown="TagsList_OnMouseDown" />
 

@@ -15,7 +15,7 @@
                         <ControlTemplate TargetType="ac:AcObjectErrorsSection">
                             <StackPanel Margin="{TemplateBinding Padding}">
                                 <DockPanel HorizontalAlignment="Stretch">
-                                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource ErrorForeground}"
+                                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}"
                                           Stretch="Uniform" x:Name="ErrorIcon" DockPanel.Dock="Right" />
                                     <TextBlock Text="Errors:" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
                                 </DockPanel>

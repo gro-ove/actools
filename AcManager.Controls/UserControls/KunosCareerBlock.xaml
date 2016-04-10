@@ -188,7 +188,7 @@
 
             <!--errors-->
             <DockPanel Margin="0 0 0 4" Visibility="{Binding HasErrors, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" MaxHeight="10" Stretch="Uniform" Fill="{DynamicResource ErrorForeground}" DockPanel.Dock="Left" />
+                <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" MaxHeight="10" Stretch="Uniform" Fill="{DynamicResource Error}" DockPanel.Dock="Left" />
                 <TextBlock Text="{Binding Errors.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} error'}" Margin="4 0 0 0" />
             </DockPanel>
         </StackPanel>
