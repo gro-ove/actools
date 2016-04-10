@@ -18,12 +18,6 @@ namespace AcManager {
         DisableLogging,
 
         /// <summary>
-        /// Don't use 7z library for unpacking.
-        /// Example: --disable-seven-zip-library.
-        /// </summary>
-        DisableSevenZipLibrary,
-
-        /// <summary>
         /// Saves Values.data without compressing.
         /// Example: --disable-values-compression.
         /// </summary>

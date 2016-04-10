@@ -12,7 +12,6 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using SevenZip;
 
 namespace AcManager.Pages.Dialogs {
     public partial class InstallAdditionalContentDialog : INotifyPropertyChanged {
@@ -173,13 +172,10 @@ namespace AcManager.Pages.Dialogs {
                     }).Where(x => x != null).ToArray();
                 }
             } catch (PasswordException e) {
-                NonfatalError.Notify(@"Can't unpack", e);
-                Close();
-            } catch (ExtractionFailedException e) {
-                NonfatalError.Notify(@"Can't unpack", @"Archive is damaged or password is incorrect.", e);
+                NonfatalError.Notify(@"Password is incorrect", e);
                 Close();
             } catch (Exception e) {
-                NonfatalError.Notify(@"Can't unpack", e);
+                NonfatalError.Notify(@"Can't unpack", @"Maybe archive is damaged or password is incorrect.", e);
                 Close();
             } finally {
                 _cancellationTokenSource = null;

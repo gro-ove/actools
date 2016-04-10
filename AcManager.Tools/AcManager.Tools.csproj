@@ -47,8 +47,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SevenZipSharp">
-      <HintPath>..\..\..\Temp\seven-sharp\SevenZipSharp.dll</HintPath>
+    <Reference Include="SharpCompress.Unsigned">
+      <HintPath>..\..\sharpcompress\bin\SharpCompress.Unsigned.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -115,7 +115,7 @@
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentType.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\SevenZipExtension.cs" />
+    <Compile Include="Helpers\AdditionalContentInstallation\SharpCompressExtension.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider_Consts.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />

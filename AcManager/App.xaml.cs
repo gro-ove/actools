@@ -19,7 +19,6 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.AdditionalContentInstallation;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Addons;
@@ -84,10 +83,6 @@ namespace AcManager {
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
             NonfatalError.Register(new NonfatalErrorNotifier());
-
-            if (!AppArguments.GetBool(AppFlag.DisableSevenZipLibrary)) {
-                InitializeSevenZipLibrary().Forget();
-            }
 
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
                 var logFilename = FilesStorage.Instance.GetFilename("Logs", "Main Log.txt");
@@ -211,14 +206,6 @@ namespace AcManager {
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, "Assists", "Gamer");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, "Assists", "Intermediate");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, "Assists", "Pro");
-        }
-
-        private static async Task InitializeSevenZipLibrary() {
-            await Task.Run(() => InitializeSevenZipLibrary_Inner());
-        }
-
-        private static void InitializeSevenZipLibrary_Inner() {
-            AdditionalContentInstallation.Initialize(MainExecutingFile.Directory + @"\Assets\Libs\7z.dll");
         }
 
         private static void LoadMagick() {
