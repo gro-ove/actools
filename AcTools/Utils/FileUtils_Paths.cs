@@ -142,8 +142,11 @@ namespace AcTools.Utils {
             return Path.Combine(GetDocumentsOutDirectory(), "race_out.json");
         }
 
+        public static string[] Split(string s) {
+            return s.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="filename">Ex.: C:\Windows\System32\explorer.exe</param>
         /// <param name="directory">Ex.: C:\Windows</param>

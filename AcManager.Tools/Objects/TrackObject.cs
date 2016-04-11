@@ -7,6 +7,7 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -51,6 +52,10 @@ namespace AcManager.Tools.Objects {
             IdWithLayout = Id;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <exception cref="AcErrorException"></exception>
+        /// <returns></returns>
         private List<string> GetMultiLayouts() {
             var uiDirectory = Path.Combine(Location, "ui");
             if (!Directory.Exists(uiDirectory)) throw new AcErrorException(AcErrorType.Data_UiDirectoryIsMissing);
@@ -60,11 +65,21 @@ namespace AcManager.Tools.Objects {
         private bool IsInMultiLayoutsMode(IEnumerable<string> list) => !File.Exists(Path.Combine(Location, "ui", "ui_track.json")) && list.Any();
 
         private bool IsMultiLayoutsChanged() {
-            if (MultiLayouts == null) return false;
+            var previous = MultiLayouts != null;
 
-            var list = GetMultiLayouts();
+            List<string> list;
+            try {
+                list = GetMultiLayouts();
+            } catch (Exception) {
+                return previous;
+            }
+
             var actual = IsInMultiLayoutsMode(list);
-            return MultiLayoutMode != actual || list.Count != MultiLayouts.Count ||
+            if (MultiLayouts == null) {
+                return actual;
+            }
+
+            return previous != actual || list.Count != MultiLayouts.Count ||
                    list[0] != _layoutLocation ||
                    list.Skip(1).Any((x, i) => !x.Equals(MultiLayouts[i + 1].Location, StringComparison.OrdinalIgnoreCase));
         }
@@ -142,15 +157,13 @@ namespace AcManager.Tools.Objects {
         }
 
         public override bool HandleChangedFile(string filename) {
-            if (base.HandleChangedFile(filename)) {
-                return true;
-            }
-
-            var local = filename.SubstringExt(Location.Length + 1).ToLower();
-            if (local.StartsWith(@"ui\")) {
+            Logging.Write("HANDLE CHANGED FILE: " + filename);
+            if (IsMultiLayoutsChanged()) {
+                Logging.Write("IsMultiLayoutsChanged=TRUE");
                 return false;
             }
 
+            base.HandleChangedFile(filename);
             return true;
         }
         

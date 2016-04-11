@@ -26,6 +26,7 @@ namespace AcManager.Tools.Managers {
         }
 
         private static readonly string[] WatchedFiles = {
+            @"ui",
             @"ui\ui_showroom.json",
             @"preview.jpg",
             @"track.wav",

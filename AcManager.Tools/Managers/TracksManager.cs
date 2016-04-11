@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
+using AcTools.Utils;
 
 namespace AcManager.Tools.Managers {
     public class TracksManager : AcManagerNew<TrackObject> {
@@ -43,7 +42,18 @@ namespace AcManager.Tools.Managers {
 
         protected override bool ShouldSkipFile(string objectLocation, string filename) {
             if (base.ShouldSkipFile(objectLocation, filename)) return true;
-            return !WatchedFileNames.Contains(Path.GetFileName(filename).ToLowerInvariant());
+            if (WatchedFileNames.Contains(Path.GetFileName(filename).ToLowerInvariant())) {
+                return false;
+            }
+
+            var relative = FileUtils.GetRelativePath(filename, objectLocation);
+
+            var splitted = FileUtils.Split(relative);
+            if (!string.Equals(splitted[0], "ui", StringComparison.OrdinalIgnoreCase) || splitted.Length > 3) {
+                return true;
+            }
+
+            return false;
         }
     }
 }

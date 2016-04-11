@@ -38,7 +38,22 @@ Only problem is that new Kunos showroom isn't quite match their previews, as you
 
  [img=""http://i.imgur.com/rppyiAG.jpg|320""]Weird reflection at the side[/img]
 
-If Kunos [url=""http://www.assettocorsa.net/forum/index.php?threads/custom-camera-position-in-showroom.26796/page-2#post-658117""]will respond[/url], I'll fix it.")
+If Kunos [url=""http://www.assettocorsa.net/forum/index.php?threads/custom-camera-position-in-showroom.26796/page-2#post-658117""]will respond[/url], I'll fix it."),
+
+            new ReleaseNotes("0.4.111", @"Some changes", @"Some of important changes since 0.4.79:
+
+ • [b]Mods Installation[/b]
+Just try to drag-n-drop archive on app's window to add a new car or track or update it. Sadly, at the moment app supports only Zip, Rar (but not Rar5), 7Zip (non-encrypted only), Tar and GZip; also, unpacking for Rar-archives is pretty slow. But, if you're using WinRAR, don't worry — you can just drag'n'drop required folder from its window to CM.
+
+ • [b]Skins Manager[/b]
+Finally, it works! Just press [i]Ctrl+K[/i] on car's page. Livery editor isn't ready yet though.
+
+ • [b]Filters[/b]
+I'll make another page in Important Tips section, but for just some examples:
+  [b][mono]bhp>500 & (weight<1000 | skins=5), brand:A*[/mono][/b] — as you can see, this one is for cars, filters all cars by their power and weight or number or skins; and, just as an addition, keeps all cars if their brand's name is started with “A” (“,” works as “|”, totally the same);
+  [b][mono]length<5000 & pits=5[/mono][/b] — this one is for tracks, filters by length and number of pitstops;
+  [b][mono]practice+ & qualification-[/mono][/b] — online servers, keeps only the ones with practice session, but without qualification one;
+  [b][mono]available(bhp>500)[/mono][/b] — again online servers, at this time you'll get only servers which have available car with more than 500 bhp.")
         };
     }
 }

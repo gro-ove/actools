@@ -15,6 +15,21 @@ namespace FirstFloor.ModernUI.Presentation {
             }
         }
 
+        private bool _isNew;
+
+        public bool IsNew {
+            get { return _isNew; }
+            set {
+                if (Equals(value, _isNew)) return;
+                _isNew = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public void SetNew(bool isNew) {
+            IsNew = isNew;
+        }
+
         private Uri _source;
 
         public virtual Uri Source {

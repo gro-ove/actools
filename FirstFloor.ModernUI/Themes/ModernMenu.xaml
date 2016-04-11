@@ -37,6 +37,8 @@
                         <TextBlock Name="NameTextBox" Text="{Binding DisplayName, Converter={StaticResource ToUpperSpecialConverter}}" TextAlignment="Center"
                                 controls:FocusAdvancement.AdvancesByEnterKey="True" Margin="2" />
                         <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" FontWeight="Bold" Visibility="Hidden" Margin="2" />
+                        <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 -6 -1 0"
+                                IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

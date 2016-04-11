@@ -299,11 +299,26 @@ done:
         + enabling/disabling
     + skins removing
     + add version to about page
+    + 13%
+
+    + intellectual content auto-update
+        + cars
+            + skins
+        + showrooms
+        + tracks
+            + fix tracks layouts bug
+    + car mod installation
+        + from archive
+            + basic decompression support
+            + encryption
+            × partial archives?
+        + from folder
+        + selectable update
+        × check for changes?
+    + track mod installation
 
 fixme:
     - previews loading (could be a much more serious problem)
-    - data removed (ui_showroom.json, for example, deleted), but name is still 
-            the same - error? maybe acobject should reset data somehow?
     - notifypropertychanged for commands
     - MUI thing with Loaded/Unloaded!
     - show only enabled skins on other pages
@@ -316,7 +331,6 @@ fixme:
     - some staticresources have the same name as dynamicrecources
 
 todo:
-    + 13%
     - car selection lists (selection by default)
 
     - showroom from QD/KunosCareer/Online
@@ -332,22 +346,6 @@ todo:
             + tracks
             - non-json objects
 
-    + intellectual content auto-update
-        + cars
-            + skins
-        + showrooms
-        + tracks
-            - fix tracks layouts bug
-
-    + car mod installation
-        + from archive
-            + basic decompression support
-            + encryption
-            × partial archives?
-        + from folder
-        + selectable update
-        × check for changes?
-    + track mod installation
     - font installation
     - skins installation
     - showroom mod installation

@@ -116,15 +116,20 @@ namespace AcManager.Pages.Windows {
         }
 
         private void UpdateAboutIsNew() {
-            var aboutLink = TitleLinks.FirstOrDefault(x => x.DisplayName == "about") as TitleLink;
-            if (aboutLink != null) {
-                aboutLink.IsNew = AboutHelper.Instance.HasSomethingNew;
-            }
+            TitleLinks.FirstOrDefault(x => x.DisplayName == "about")?
+                      .SetNew(AboutHelper.Instance.HasNewImportantTips || AboutHelper.Instance.HasNewReleaseNotes);
+            MenuLinkGroups.SelectMany(x => x.Links)
+                          .FirstOrDefault(x => x.DisplayName == "Release Notes")?
+                          .SetNew(AboutHelper.Instance.HasNewReleaseNotes);
+            MenuLinkGroups.SelectMany(x => x.Links)
+                          .FirstOrDefault(x => x.DisplayName == "Important Tips")?
+                          .SetNew(AboutHelper.Instance.HasNewImportantTips);
         }
 
         private void About_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName != nameof(AboutHelper.HasSomethingNew)) return;
-            UpdateAboutIsNew();
+            if (e.PropertyName == nameof(AboutHelper.HasNewReleaseNotes) || e.PropertyName == nameof(AboutHelper.HasNewImportantTips)) {
+                UpdateAboutIsNew();
+            }
         }
 
         private void MainWindow_OnUnloaded(object sender, RoutedEventArgs e) {

@@ -9,9 +9,9 @@
  [img=""http://i.imgur.com/qO7oOVn.png|240""]Example of that file[/img]
 
 Here are some of the arguments:
- [b][mono]--disable-logging[/mono][/b] — please, don't use it now, app could crash in any time.
- [b][mono]--storage-location=LOCATION[/mono][/b] — change location of data folder (of course, this one should be used only as a command-line argument).
- [b][mono]--ping-concurrency=30[/mono][/b] — number of servers being pinged concurrently.
+ [b][mono]--disable-logging[/mono][/b] — please, don't use it now, app could crash in any time, and logs could be very helpful;
+ [b][mono]--storage-location=LOCATION[/mono][/b] — change location of data folder (of course, this one should be used only as a command-line argument);
+ [b][mono]--ping-concurrency=30[/mono][/b] — number of servers being pinged concurrently;
  [b][mono]--enable-race-ini-restoration=false[/mono][/b] — don't revert changes in [i]race.ini[/i].
 
 You can see the full list [url=""https://github.com/gro-ove/actools/blob/master/AcManager/AppArguments.cs""]here[/url]."),

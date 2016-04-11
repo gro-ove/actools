@@ -6,6 +6,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -38,6 +39,18 @@ namespace AcManager.Tools.Objects {
             OnImageChanged(nameof(OutlineImage));
 
             base.Reload();
+        }
+
+        public override bool HandleChangedFile(string filename) {
+            if (base.HandleChangedFile(filename)) return true;
+
+            if (FileUtils.IsAffected(filename, PreviewImage)) {
+                OnImageChanged(nameof(PreviewImage));
+            } else if (FileUtils.IsAffected(filename, OutlineImage)) {
+                OnImageChanged(nameof(OutlineImage));
+            }
+
+            return true;
         }
 
         public abstract TrackObject MainTrackObject { get; }
