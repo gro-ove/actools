@@ -157,68 +157,60 @@ namespace AcManager.Tools.AcManagersNew {
             Debug.WriteLine("    current list: " + InnerWrappersList.Select(x => x.Value.Id).JoinToString(", "));
         }
 
-        void IDirectoryListener.FileOrDirectoryChanged(object sender, FileSystemEventArgs e) {
-            if (ShouldIgnoreChanges()) return;
-
+        private void OnChanged(string fullPath) {
             // ignore all directories changes — we'll receive events on sublevel anyway
-            if (File.GetAttributes(e.FullPath).HasFlag(FileAttributes.Directory)) return;
+            if (FileUtils.IsDirectory(fullPath)) return;
 
             bool inner;
-            var objectLocation = GetObjectLocation(e.FullPath, out inner)?.ToLowerInvariant();
-            if (objectLocation == null || !Filter(objectLocation) || inner && ShouldSkipFile(objectLocation, e.FullPath)) return;
-            GetWatchingTask(objectLocation).AddEvent(inner ? WatcherChangeTypes.Changed : e.ChangeType, null, e.FullPath);
+            var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();
+            if (objectLocation == null || !Filter(objectLocation) || inner && ShouldSkipFile(objectLocation, fullPath)) return;
+            GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Changed, null, fullPath);
+        }
+
+        void IDirectoryListener.FileOrDirectoryChanged(object sender, FileSystemEventArgs e) {
+            if (ShouldIgnoreChanges()) return;
+            OnChanged(e.FullPath);
+        }
+
+        private void OnCreated(string fullPath) {
+            bool inner;
+            var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();
+            if (objectLocation == null || !Filter(objectLocation) || inner && ShouldSkipFile(objectLocation, fullPath)) return;
+            GetWatchingTask(objectLocation).AddEvent(inner ? WatcherChangeTypes.Changed : WatcherChangeTypes.Created, null, fullPath);
         }
 
         void IDirectoryListener.FileOrDirectoryCreated(object sender, FileSystemEventArgs e) {
             if (ShouldIgnoreChanges()) return;
-
-            bool inner;
-            var objectLocation = GetObjectLocation(e.FullPath, out inner)?.ToLowerInvariant();
-            if (objectLocation == null || !Filter(objectLocation) || inner && ShouldSkipFile(objectLocation, e.FullPath)) return;
-            GetWatchingTask(objectLocation).AddEvent(inner ? WatcherChangeTypes.Changed : e.ChangeType, null, e.FullPath);
+            OnCreated(e.FullPath);
         }
 
-        private void RemoveEverythingFromListByEnabledState(bool state) {
-            Application.Current.Dispatcher.InvokeAsync(() => {
-                while (InnerWrappersList.Remove(InnerWrappersList.FirstOrDefault(x => x.Value.Enabled == state))) { }
-            });
+        private void OnDeleted(string fullPath) {
+            bool inner;
+            var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();
+            if (objectLocation == null || !Filter(objectLocation) || inner && ShouldSkipFile(objectLocation, fullPath)) return;
+            GetWatchingTask(objectLocation).AddEvent(inner ? WatcherChangeTypes.Changed : WatcherChangeTypes.Deleted, null, fullPath);
         }
 
         void IDirectoryListener.FileOrDirectoryDeleted(object sender, FileSystemEventArgs e) {
             if (ShouldIgnoreChanges()) return;
 
+            // special case for whole directory being deleted
             if (e.Name == null) {
                 var state = Directories.CheckIfEnabled(e.FullPath);
-                RemoveEverythingFromListByEnabledState(state);
+                Application.Current.Dispatcher.InvokeAsync(() => {
+                    while (InnerWrappersList.Remove(InnerWrappersList.FirstOrDefault(x => x.Value.Enabled == state))) { }
+                });
                 return;
             }
 
-            bool inner;
-            var objectLocation = GetObjectLocation(e.FullPath, out inner)?.ToLowerInvariant();
-            if (objectLocation == null || !Filter(objectLocation) || inner && ShouldSkipFile(objectLocation, e.FullPath)) return;
-            GetWatchingTask(objectLocation).AddEvent(inner ? WatcherChangeTypes.Changed : e.ChangeType, null, e.FullPath);
+            OnDeleted(e.FullPath);
         }
-
+        
         void IDirectoryListener.FileOrDirectoryRenamed(object sender, RenamedEventArgs e) {
             if (ShouldIgnoreChanges()) return;
 
-            bool inner;
-            var objectLocation = GetObjectLocation(e.OldFullPath, out inner)?.ToLowerInvariant();
-            if (objectLocation == null || !Filter(objectLocation)) return;
-
-            if (!inner) {
-                GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Renamed, GetObjectLocation(e.FullPath, out inner), null);
-                return;
-            }
-
-            if (!ShouldSkipFile(objectLocation, e.OldFullPath)) {
-                GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Changed, null, e.OldFullPath);
-            }
-
-            if (!ShouldSkipFile(objectLocation, e.FullPath)) {
-                GetWatchingTask(objectLocation).AddEvent(WatcherChangeTypes.Changed, null, e.FullPath);
-            }
-
+            OnDeleted(e.OldFullPath);
+            OnCreated(e.FullPath);
         }
 
         private DateTime _ignoreChanges;

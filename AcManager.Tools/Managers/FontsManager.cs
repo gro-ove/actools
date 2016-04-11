@@ -4,6 +4,9 @@ using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class FontsManager : AcManagerFileSpecific<FontObject> {
@@ -27,6 +30,11 @@ namespace AcManager.Tools.Managers {
             return new FontObject(this, id, enabled);
         }
 
+        protected override bool ShouldSkipFile(string objectLocation, string filename) {
+            return !FontObject.BitmapExtensions.Any(x => filename.EndsWith(x, StringComparison.OrdinalIgnoreCase)) &&
+                   !filename.EndsWith(FontObject.FontExtension, StringComparison.OrdinalIgnoreCase);
+        }
+
         protected override string GetObjectLocation(string filename, out bool inner) {
             var minLength = Math.Min(Directories.EnabledDirectory.Length,
                 Directories.DisabledDirectory?.Length ?? int.MaxValue);
@@ -37,6 +45,14 @@ namespace AcManager.Tools.Managers {
                 if (parent == null) return null;
 
                 if (parent == Directories.EnabledDirectory || parent == Directories.DisabledDirectory) {
+                    Logging.Write(filename);
+                    var special = FontObject.BitmapExtensions.FirstOrDefault(x => filename.EndsWith(x, StringComparison.OrdinalIgnoreCase));
+                    Logging.Write(special);
+                    if (special != null) {
+                        inner = true;
+                        return filename.ApartFromLast(special, StringComparison.OrdinalIgnoreCase) + FontObject.FontExtension;
+                    }
+
                     return filename;
                 }
 
