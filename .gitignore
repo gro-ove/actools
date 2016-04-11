@@ -84,3 +84,7 @@ AcManager.Tools/Helpers/Api/OpenWeatherApiProvider_ApiCodes.cs
 AcManager.Tools/Helpers/Api/KunosApiProvider_Consts.cs
 AcManager.Tools/Helpers/Api/CmApiProvider_Consts.cs
 AcManager.Tools/Miscellaneous/AppReporter_Consts.cs
+
+# RAM Disk trick
+*/bin~
+*/obj~
