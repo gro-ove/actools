@@ -27,6 +27,10 @@ namespace AcManager.Tools.AcErrors {
                 return UriExtension.Create("/Pages/Selected/SelectedReplayPage.xaml?Id={0}", obj.Id);
             }
 
+            if (obj is FontObject) {
+                return UriExtension.Create("/Pages/Selected/SelectedFontPage.xaml?Id={0}", obj.Id);
+            }
+
             var carSkinObject = obj as CarSkinObject;
             if (carSkinObject != null) {
                 return UriExtension.Create("/Pages/Selected/SelectedCarSkinPage.xaml?Id={0}&CarId={1}", carSkinObject.Id, carSkinObject.CarId);

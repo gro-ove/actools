@@ -34,21 +34,23 @@
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\AcManager\Libs\NLua.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="SharpCompress.Unsigned">
       <HintPath>..\..\sharpcompress\bin\SharpCompress.Unsigned.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -123,6 +125,7 @@
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
     <Compile Include="Managers\Directories\NonListeningAcDirectories.cs" />
+    <Compile Include="Managers\FontsManager.cs" />
     <Compile Include="Managers\Online\LanManager.cs" />
     <Compile Include="Managers\Online\OnlineManagerType.cs" />
     <Compile Include="Managers\Online\RecentManager.cs" />
@@ -130,6 +133,7 @@
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
     <Compile Include="Objects\CarSkinObject_Lists.cs" />
+    <Compile Include="Objects\FontObject.cs" />
     <Compile Include="SemiGui\DriverName.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />
     <Compile Include="Helpers\Api\CmApiProvider_Consts.cs" />
@@ -241,18 +245,22 @@
     <ProjectReference Include="..\..\actools-internal\AcManager.Internal\AcManager.Internal.csproj">
       <Project>{E1C50BB6-5B63-4917-B5E0-836F38061811}</Project>
       <Name>AcManager.Internal</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>
       <Name>AcTools</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\FirstFloor.ModernUI\FirstFloor.ModernUI.csproj">
       <Project>{9a653a28-fe46-40e8-a14f-48b0e325165d}</Project>
       <Name>FirstFloor.ModernUI</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\StringBasedFilter\StringBasedFilter.csproj">
       <Project>{e9586699-505a-4349-9cbf-7e8ae1521207}</Project>
       <Name>StringBasedFilter</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

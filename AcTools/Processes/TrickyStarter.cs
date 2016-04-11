@@ -48,10 +48,10 @@ namespace AcTools.Processes {
             }
 
             _acLauncher = FileUtils.GetAcLauncherFilename(AcRoot);
-            _acLauncherBackup = _acLauncher.ApartFromLast(".exe") + "_backup_ts.exe";
+            _acLauncherBackup = _acLauncher.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_ts.exe";
 
             if (File.Exists(_acLauncherBackup) && new FileInfo(_acLauncher).Length > ApproximateAcstarterSize) {
-                File.Move(_acLauncherBackup, _acLauncherBackup.ApartFromLast(".exe") + "_" + DateTime.Now.Ticks + ".exe");
+                File.Move(_acLauncherBackup, _acLauncherBackup.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_" + DateTime.Now.Ticks + ".exe");
             }
 
             if (!File.Exists(_acLauncherBackup)) {
@@ -73,13 +73,13 @@ namespace AcTools.Processes {
             _launcherProcess?.WaitForExit();
 
             for (var i = 0; i < 10; i++) {
-                _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe")).FirstOrDefault();
+                _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (_gameProcess != null) break;
                 Thread.Sleep(2500);
             }
 
             Thread.Sleep(2500);
-            _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe")).FirstOrDefault();
+            _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         }
 
         public void WaitGame() {
@@ -136,13 +136,13 @@ namespace AcTools.Processes {
             }
 
             for (var i = 0; i < 10; i++) {
-                _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe")).FirstOrDefault();
+                _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (_gameProcess != null) break;
                 await Task.Delay(2500, cancellation);
             }
 
             await Task.Delay(2500, cancellation);
-            _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe")).FirstOrDefault();
+            _gameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         }
 
         public async Task WaitGameAsync(CancellationToken cancellation) {

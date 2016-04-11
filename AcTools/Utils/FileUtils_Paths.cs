@@ -86,6 +86,10 @@ namespace AcTools.Utils {
             return Path.Combine(acRoot, "content", "showroom");
         }
 
+        public static string GetFontsDirectory(string acRoot) {
+            return Path.Combine(acRoot, "content", "fonts");
+        }
+
         public static string GetWeatherDirectory(string acRoot) {
             return Path.Combine(acRoot, "content", "weather");
         }

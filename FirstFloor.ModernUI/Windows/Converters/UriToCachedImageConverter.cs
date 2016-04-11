@@ -2,6 +2,7 @@
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Media.Imaging;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     public class UriToCachedImageConverter
@@ -46,7 +47,12 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 }
 #endif
 
-                source = new Uri(path);
+                try {
+                    source = new Uri(path);
+                } catch (Exception) {
+                    Logging.Warning("[IMAGE] Invalid URI format: " + path);
+                    return null;
+                }
             }
 
 #if CACHE

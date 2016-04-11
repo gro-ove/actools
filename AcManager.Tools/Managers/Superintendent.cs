@@ -24,6 +24,7 @@ namespace AcManager.Tools.Managers {
                 ShowroomsManager.Initialize(),
                 WeatherManager.Initialize(),
                 PpFiltersManager.Initialize(),
+                FontsManager.Initialize(),
                 ReplaysManager.Initialize(),
                 KunosCareerManager.Initialize()
             };

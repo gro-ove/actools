@@ -11,8 +11,8 @@ namespace AcManager.Tools.AcManagersNew {
         private Regex _regex;
 
         protected override bool Filter(string filename) => SearchPattern == "*" || (_regex ?? (_regex = new Regex(
-                SearchPattern.Replace(".", "[.]").Replace("*", ".*").Replace("?", ".")))
-                ).IsMatch(Path.GetFileName(filename) ?? "");
+                SearchPattern.Replace(".", "[.]").Replace("*", ".*").Replace("?", "."))))
+                .IsMatch(Path.GetFileName(filename) ?? "");
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
             return Directories.GetSubFiles(SearchPattern).Where(Filter).Select(dir =>

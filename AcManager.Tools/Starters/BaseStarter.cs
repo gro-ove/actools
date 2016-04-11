@@ -24,13 +24,13 @@ namespace AcManager.Tools.Starters {
             if (GameProcess != null) return;
 
             for (var i = 0; i < 100; i++) {
-                GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe")).FirstOrDefault();
+                GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (GameProcess != null) break;
                 Thread.Sleep(1000);
             }
 
             Thread.Sleep(1000);
-            GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe")).FirstOrDefault();
+            GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         }
 
         public virtual void WaitGame() {
@@ -67,7 +67,7 @@ namespace AcManager.Tools.Starters {
             Logging.Warning("[BASESTARTER] WaitUntilGameAsync(): first stage");
 
             for (var i = 0; i < 100; i++) {
-                GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe")).FirstOrDefault();
+                GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (GameProcess != null) break;
                 Logging.Warning($"[BASESTARTER] ActiveProcess '{AcsName}' == null…");
                 await Task.Delay(1000, cancellation);
@@ -76,7 +76,7 @@ namespace AcManager.Tools.Starters {
             Logging.Warning("[BASESTARTER] WaitUntilGameAsync(): second stage");
 
             await Task.Delay(1000, cancellation);
-            GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe")).FirstOrDefault();
+            GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         }
 
         public virtual async Task WaitGameAsync(CancellationToken cancellation) {

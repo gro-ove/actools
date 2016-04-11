@@ -47,6 +47,7 @@ namespace AcManager.Tools.Managers {
         public AcDirectories WeatherDirectories { get; private set; }
         public AcDirectories PpFiltersDirectories { get; private set; }
         public AcDirectories ReplaysDirectories { get; private set; }
+        public AcDirectories FontsDirectories { get; private set; }
         public AcDirectories KunosCareerDirectories { get; private set; }
 
         private void UpdateDirectories() {
@@ -61,6 +62,7 @@ namespace AcManager.Tools.Managers {
             ShowroomsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetShowroomsDirectory(Value));
             WeatherDirectories = Value == null ? null : new AcDirectories(FileUtils.GetWeatherDirectory(Value));
             PpFiltersDirectories = Value == null ? null : new AcDirectories(FileUtils.GetPpFiltersDirectory(Value));
+            FontsDirectories = Value == null ? null : new AcDirectories(FileUtils.GetFontsDirectory(Value));
             KunosCareerDirectories = Value == null ? null : new AcDirectories(FileUtils.GetKunosCareerDirectory(Value));
 
             ReplaysDirectories = ReplaysDirectories ?? new AcDirectories(FileUtils.GetReplaysDirectory(), null);
@@ -136,14 +138,14 @@ namespace AcManager.Tools.Managers {
 
             var launcher = Path.Combine(directory, "AssettoCorsa.exe");
             if (!File.Exists(launcher)) {
-                var backup = launcher.ApartFromLast(".exe") + "_backup_ts.exe";
+                var backup = launcher.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_ts.exe";
                 if (File.Exists(backup)) {
                     TryToFix(backup, launcher);
                 }
             }
 
             if (!File.Exists(launcher)) {
-                var backup = launcher.ApartFromLast(".exe") + "_backup_sp.exe";
+                var backup = launcher.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_sp.exe";
                 if (File.Exists(backup)) {
                     TryToFix(backup, launcher);
                 }

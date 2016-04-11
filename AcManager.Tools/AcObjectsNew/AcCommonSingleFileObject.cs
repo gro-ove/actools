@@ -2,6 +2,7 @@
 using System.IO;
 using AcManager.Tools.AcManagersNew;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcCommonSingleFileObject : AcCommonObject {
@@ -19,9 +20,7 @@ namespace AcManager.Tools.AcObjectsNew {
         public string GetOriginalFilename() {
             var fileInfo = new FileInfo(Location);
             var result = fileInfo.Directory?.GetFiles(fileInfo.Name)[0].Name ?? Location;
-            return Extension != "" && result.EndsWith(Extension, StringComparison.OrdinalIgnoreCase) ?
-                result.Substring(0, result.Length - Extension.Length) :
-                result;
+            return result.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
         }
 
         protected override void LoadOrThrow() {
@@ -29,7 +28,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public override void Save() {
-            FileUtils.Move(Location, FileAcManager.Directories.GetLocation(Name + ".ini", Enabled));
+            FileUtils.Move(Location, FileAcManager.Directories.GetLocation(Name + Extension, Enabled));
         }
 
         public override bool HandleChangedFile(string filename) {

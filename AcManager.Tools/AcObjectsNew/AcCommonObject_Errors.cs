@@ -16,6 +16,12 @@ namespace AcManager.Tools.AcObjectsNew {
             AddError(new AcError(type, args));
         }
 
+        /// <summary>
+        /// Add error if condition is true, remove existing if exists otherwise.
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="type"></param>
+        /// <param name="args"></param>
         public void ErrorIf(bool condition, AcErrorType type, params object[] args) {
             if (condition) {
                 AddError(new AcError(type, args));

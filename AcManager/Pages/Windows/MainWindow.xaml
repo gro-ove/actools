@@ -35,7 +35,7 @@
         <mui:LinkGroup GroupKey="content" DisplayName="miscellaneous">
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="Apps" Source="/Pages/Miscellaneous/WorkInProgress.xaml?apps" />
-                <mui:Link DisplayName="Fonts" Source="/Pages/Miscellaneous/WorkInProgress.xaml?fonts" />
+                <mui:Link DisplayName="Fonts" Source="/Pages/Lists/FontsListPage.xaml" />
                 <mui:Link DisplayName="Weather" Source="/Pages/Lists/WeatherListPage.xaml" />
                 <mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" />
             </mui:LinkGroup.Links>

@@ -232,7 +232,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         private const string UpdatePostfix = ".update" + ExecutableExtension;
 
-        public static string UpdateLocation => MainExecutingFile.Location.ApartFromLast(ExecutableExtension) + UpdatePostfix;
+        public static string UpdateLocation => MainExecutingFile.Location.ApartFromLast(ExecutableExtension, StringComparison.OrdinalIgnoreCase) + UpdatePostfix;
 
         public static bool OnStartup(string[] args) {
             if (args.Contains("--freshly-updated")) {
@@ -269,7 +269,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         private static void InstallAndRunNewVersion() {
             /* will be replaced this file */
-            var originalFilename = MainExecutingFile.Location.ApartFromLast(UpdatePostfix) + ExecutableExtension;
+            var originalFilename = MainExecutingFile.Location.ApartFromLast(UpdatePostfix, StringComparison.OrdinalIgnoreCase) + ExecutableExtension;
 
             /* if file already exists */
             if (File.Exists(originalFilename)) {

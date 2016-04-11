@@ -87,7 +87,7 @@ namespace AcManager {
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
                 var logFilename = FilesStorage.Instance.GetFilename("Logs", "Main Log.txt");
                 if (File.Exists(logFilename)) {
-                    File.Move(logFilename, $"{logFilename.ApartFromLast(".txt")}_{DateTime.Now.ToUnixTimestamp()}.txt");
+                    File.Move(logFilename, $"{logFilename.ApartFromLast(".txt", StringComparison.OrdinalIgnoreCase)}_{DateTime.Now.ToUnixTimestamp()}.txt");
                     DeleteOldLogs();
                 }
 

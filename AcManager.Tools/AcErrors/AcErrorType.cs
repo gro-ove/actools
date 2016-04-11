@@ -118,5 +118,9 @@ namespace AcManager.Tools.AcErrors {
 
         [Description("Model (kn5-file) is missing")]
         Showroom_Kn5IsMissing,
+
+
+        [Description("Font's bitmap is missing")]
+        Font_BitmapIsMissing,
     }
 }

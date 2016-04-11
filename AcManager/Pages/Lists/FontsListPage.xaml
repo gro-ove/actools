@@ -1,0 +1,9 @@
+﻿<UserControl x:Class="AcManager.Pages.Lists.FontsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        Unloaded="FontsListPage_OnUnloaded">
+    <Grid Style="{StaticResource ContentRoot}">
+        <ac:AcListPage ItemsSource="{Binding MainList}" />
+    </Grid>
+</UserControl>

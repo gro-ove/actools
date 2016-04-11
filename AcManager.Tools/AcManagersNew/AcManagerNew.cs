@@ -36,7 +36,7 @@ namespace AcManager.Tools.AcManagersNew {
             Directories.Subscribe(this);
         }
 
-        private string GetObjectLocation(string filename, out bool inner) {
+        protected virtual string GetObjectLocation(string filename, out bool inner) {
             var minLength = Math.Min(Directories.EnabledDirectory.Length,
                 Directories.DisabledDirectory?.Length ?? int.MaxValue);
 

@@ -139,7 +139,13 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static string ApartFromLast(this string s, string apart) {
+            if (apart == string.Empty) return s;
             return s.EndsWith(apart) ? s.ApartFromLast(apart?.Length ?? 0) : s;
+        }
+
+        public static string ApartFromLast(this string s, string apart, StringComparison comparisonType) {
+            if (apart == string.Empty) return s;
+            return s.EndsWith(apart, comparisonType) ? s.ApartFromLast(apart?.Length ?? 0) : s;
         }
 
         [Pure]

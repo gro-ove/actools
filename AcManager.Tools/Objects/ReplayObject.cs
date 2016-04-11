@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Objects {
     internal sealed class ReplayReader : BinaryReader {

@@ -339,6 +339,8 @@ todo:
         - Online
 
     - remember all window sizes
+    - mark new content
+    - automatically switch to freshly installed content in some cases (optional)?
 
     + watching/renaming inside behaviour
         + proper ShouldSkipFile methods

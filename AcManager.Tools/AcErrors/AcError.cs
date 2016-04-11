@@ -70,11 +70,12 @@ namespace AcManager.Tools.AcErrors {
 
         private static AcErrorCategory CategoryFromType(AcErrorType type) {
             AcErrorCategory result;
-            if (!Enum.TryParse(type.ToString().Split(new[] {'_'}, 2)[0], out result)) {
-                throw new Exception("Can't get category for AcErrorType: " + type);
+            if (Enum.TryParse(type.ToString().Split(new[] { '_' }, 2)[0], out result)) {
+                return result;
             }
 
-            return result;
+            Logging.Warning("Can't get category for AcErrorType: " + type);
+            return AcErrorCategory.Unspecific;
         }
 
         private static IUiAcErrorFixer _uiAcErrorFixer;

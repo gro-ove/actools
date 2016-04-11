@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AcTools.Utils.Helpers;
 
@@ -15,7 +16,7 @@ namespace AcManager.Tools.Data.GameSpecific {
 
     public class CommonSessionResult : SessionResult {
         internal CommonSessionResult(AcTools.Processes.Game.ResultSession parsedData) {
-            DisplayName = parsedData.Type.GetDescription() ?? parsedData.Name.ApartFromLast(" Session");
+            DisplayName = parsedData.Type.GetDescription() ?? parsedData.Name.ApartFromLast(" Session", StringComparison.OrdinalIgnoreCase);
         }
 
         public override string DisplayName { get; }
