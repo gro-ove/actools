@@ -5,8 +5,6 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class FontsManager : AcManagerFileSpecific<FontObject> {
@@ -45,9 +43,7 @@ namespace AcManager.Tools.Managers {
                 if (parent == null) return null;
 
                 if (parent == Directories.EnabledDirectory || parent == Directories.DisabledDirectory) {
-                    Logging.Write(filename);
                     var special = FontObject.BitmapExtensions.FirstOrDefault(x => filename.EndsWith(x, StringComparison.OrdinalIgnoreCase));
-                    Logging.Write(special);
                     if (special != null) {
                         inner = true;
                         return filename.ApartFromLast(special, StringComparison.OrdinalIgnoreCase) + FontObject.FontExtension;

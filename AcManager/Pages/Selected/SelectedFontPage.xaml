@@ -5,7 +5,7 @@
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
         xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance selected:SelectedFontPage+SelectedFontPageViewModel}">
+        d:DataContext="{d:DesignInstance selected:SelectedFontPage+SelectedFontPageViewModel}" Loaded="SelectedFontPage_OnLoaded">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
@@ -26,10 +26,19 @@
             <Image Source="{Binding SelectedObject.FontBitmap, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" StretchDirection="DownOnly"
                     Stretch="Uniform" services:ImageViewerService.Image="{Binding SelectedObject.FontBitmap}" />
 
-            <TextBlock Text="Used in:" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-            <TextBlock Text="" watermark:WatermarkService.Watermark="?" Margin="0 4 0 0" />
-            <TextBlock Text="Last checked: Never" TextAlignment="Right" Style="{StaticResource Small}" Margin="0 4 0 0" />
-            <Button Margin="8">Update</Button>
+            <StackPanel Margin="8 12 8 0">
+                <TextBlock Text="Test:" Style="{StaticResource Label}" Margin="0 12 0 0" />
+                <TextBox x:Name="TextBox" Text="0123456789 Test" watermark:WatermarkService.Watermark="?" Margin="0 4 0 0"
+                        TextChanged="TestTextBox_OnTextChanged" />
+                <Canvas x:Name="Canvas" Height="120" Background="Black" Margin="0 4 0 0" ClipToBounds="True" />
+            </StackPanel>
+
+            <StackPanel Margin="8 12 8 0">
+                <TextBlock Text="Used in:" Style="{StaticResource Label}" Margin="0 12 0 0" />
+                <TextBlock Text="" watermark:WatermarkService.Watermark="?" Margin="0 4 0 0" />
+                <TextBlock Text="Last scanned: Never" TextAlignment="Right" Style="{StaticResource Small}" Margin="0 4 0 0" />
+                <Button Margin="0 4 0 0">Rescan</Button>
+            </StackPanel>
         </StackPanel>
     </ac:AcObjectBase>
 </selected:SelectedAcObjectPage>

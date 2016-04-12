@@ -4,9 +4,7 @@ using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Objects {
     public class FontObject : AcCommonSingleFileObject {
