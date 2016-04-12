@@ -22,7 +22,7 @@ namespace AcManager.Tools.AcManagersNew {
                     CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
         }
 
-        public void Toggle(string id) {
+        public virtual void Toggle(string id) {
             if (!Directories.Actual) return;
             if (id == null) throw new ArgumentNullException(nameof(id));
 

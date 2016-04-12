@@ -59,7 +59,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public enum SpecialMode {
-            None, Number, Integer, Time
+            None, Number, Integer, Positive, Time
         }
 
         public static SpecialMode GetSpecialMode(DependencyObject obj) {
@@ -113,7 +113,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         return FlexibleParser.ReplaceDouble(text, value + delta);
                     }
 
-                case SpecialMode.Integer: {
+                case SpecialMode.Integer:
+                case SpecialMode.Positive: {
                         int value;
                         if (!FlexibleParser.TryParseInt(text, out value)) return null;
 
@@ -125,7 +126,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                             delta *= 2.0;
                         }
 
-                        return FlexibleParser.ReplaceDouble(text, value + delta);
+                        value = (int)(value + delta);
+                        if (mode == SpecialMode.Positive && value < 1) {
+                            value = 1;
+                        }
+
+                        return FlexibleParser.ReplaceDouble(text, value);
                     }
 
                 case SpecialMode.Time: {

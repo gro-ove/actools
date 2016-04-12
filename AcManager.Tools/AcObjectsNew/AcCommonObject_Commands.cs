@@ -13,7 +13,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }));
 
         private ICommand _toggleCommand;
-        public ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new RelayCommand(o => {
+        public virtual ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new RelayCommand(o => {
             try {
                 Toggle();
             } catch (ToggleException ex) {
@@ -25,7 +25,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private ICommand _deleteCommand;
 
-        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
+        public virtual ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
             try {
                 Delete();
             } catch (Exception ex) {

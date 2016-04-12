@@ -455,12 +455,12 @@ todo:
 
     + additional section “stuff”
         + weather
+        + fonts
+            + detect what car uses what font
         + replays
             - warning for cr (will be lost without renaming)
         - pp filters
         - apps
-        - fonts
-            - detect what car uses what font
 
     - description: convert html to bb and back?
     - improve showroom generator

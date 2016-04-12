@@ -1,7 +1,7 @@
-﻿using AcManager.Tools.Objects;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Controls {
@@ -11,30 +11,30 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty AcObjectProperty = DependencyProperty.Register(nameof(AcObject), typeof(AcCommonObject),
-                                                                                          typeof(AcObjectHeaderSection));
+                typeof(AcObjectHeaderSection));
 
         public AcCommonObject AcObject {
             get { return (AcCommonObject)GetValue(AcObjectProperty); }
             set { SetValue(AcObjectProperty, value); }
         }
 
-        public static readonly DependencyProperty ShowIconProperty = DependencyProperty.Register(nameof(ShowIcon), typeof (bool),
-                                                                                          typeof (AcObjectHeaderSection));
+        public static readonly DependencyProperty ShowIconProperty = DependencyProperty.Register(nameof(ShowIcon), typeof(bool),
+                typeof(AcObjectHeaderSection));
 
         public bool ShowIcon {
-            get { return (bool) GetValue(ShowIconProperty); }
+            get { return (bool)GetValue(ShowIconProperty); }
             set { SetValue(ShowIconProperty, value); }
         }
 
-        public static readonly DependencyProperty IconFilenameProperty = DependencyProperty.Register(nameof(IconFilename), typeof(string),
-                                                                                          typeof(AcObjectHeaderSection));
+        public static readonly DependencyProperty IconProperty = DependencyProperty.Register(nameof(Icon), typeof(BitmapSource),
+                typeof(AcObjectHeaderSection));
 
-        public string IconFilename {
-            get { return (string)GetValue(IconFilenameProperty); }
-            set { SetValue(IconFilenameProperty, value); }
+        public BitmapSource Icon {
+            get { return (BitmapSource)GetValue(IconProperty); }
+            set { SetValue(IconProperty, value); }
         }
 
-        private Image _iconImage;
+        private UIElement _iconImage;
 
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
@@ -43,7 +43,7 @@ namespace AcManager.Controls {
                 _iconImage.MouseDown -= IconImage_MouseDown;
             }
 
-            _iconImage = GetTemplateChild("PART_IconImage") as Image;
+            _iconImage = GetTemplateChild("PART_IconImage") as UIElement;
 
             if (_iconImage != null) {
                 _iconImage.MouseDown += IconImage_MouseDown;

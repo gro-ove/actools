@@ -11,6 +11,7 @@
                 <mui:Link DisplayName="addons" Source="/Pages/Settings/SettingsAddons.xaml" />
                 <mui:Link DisplayName="drive" Source="/Pages/Settings/SettingsDrive.xaml" />
                 <mui:Link DisplayName="online" Source="/Pages/Settings/SettingsOnline.xaml" />
+                <mui:Link DisplayName="content" Source="/Pages/Settings/SettingsContent.xaml" />
                 <mui:Link DisplayName="appearance" Source="/Pages/Settings/SettingsAppearance.xaml" IsEnabled="{x:Static internal:AppKeyHolder.IsAllRight}" />
             </mui:ModernTab.Links>
         </mui:ModernTab>

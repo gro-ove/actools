@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Addons;
 using AcManager.Tools.Starters;
 using AcTools.DataFile;
@@ -243,5 +244,31 @@ namespace AcManager.Tools.Helpers {
         }
 
         public static DriveSettings Drive { get; } = new DriveSettings();
+
+        public class ContentSettings : NotifyPropertyChanged {
+            internal ContentSettings() { }
+
+            public int LoadingConcurrency {
+                get { return ValuesStorage.GetInt("Settings.ContentSettings.LoadingConcurrency", BaseAcManagerNew.OptionAcObjectsLoadingConcurrency); }
+                set {
+                    value = value < 1 ? 1 : value;
+                    if (Equals(value, LoadingConcurrency)) return;
+                    ValuesStorage.Set("Settings.ContentSettings.LoadingConcurrency", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public string FontIconCharacter {
+                get { return ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", "A"); }
+                set {
+                    value = value.Substring(0, 1);
+                    if (Equals(value, FontIconCharacter)) return;
+                    ValuesStorage.Set("Settings.ContentSettings.FontIconCharacter", value);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public static ContentSettings Content = new ContentSettings();
     }
 }

@@ -22,10 +22,13 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ac:AcObjectHeaderSection">
                             <StackPanel Orientation="Horizontal">
-                                <Image x:Name="PART_IconImage" RenderOptions.BitmapScalingMode="HighQuality" Width="24" Height="24" Margin="0 0 4 0" Source="{Binding IconFilename, RelativeSource={RelativeSource TemplatedParent}, IsAsync=True, 
-                                                Converter={StaticResource UriToCachedImageConverter}}" />
+                                <Grid x:Name="PART_IconImage" Width="24" Height="24" Margin="0 0 4 0">
+                                    <Image RenderOptions.BitmapScalingMode="HighQuality"
+                                            Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" />
+                                </Grid>
                                 <TextBox Style="{StaticResource TextBoxAsTextBlock.Heading2}" Padding="1 0 1 0" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                        Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}" FontStyle="{Binding AcObject.Changed, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToFontStyleConverter}}" />
+                                        Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
+                                        FontStyle="{Binding AcObject.Changed, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToFontStyleConverter}}" />
                             </StackPanel>
                         </ControlTemplate>
                     </Setter.Value>

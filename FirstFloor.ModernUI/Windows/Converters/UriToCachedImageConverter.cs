@@ -6,7 +6,7 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     public class UriToCachedImageConverter
-        : IValueConverter {
+            : IValueConverter {
         public const double OneTrueDpi = 96d;
 
         public static BitmapSource ConvertBitmapToOneTrueDpi(BitmapImage bitmapImage) {
@@ -19,7 +19,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
             return BitmapSource.Create(width, height, OneTrueDpi, OneTrueDpi, bitmapImage.Format, null, pixelData, stride);
         }
-        
+
 #if CACHE
         private class CacheEntry {
             public BitmapImage Image;

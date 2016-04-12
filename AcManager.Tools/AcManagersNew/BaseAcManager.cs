@@ -209,7 +209,7 @@ namespace AcManager.Tools.AcManagersNew {
 
                 loaded.PastLoad();
                 x.Value = loaded;
-            }), OptionAcObjectsLoadingConcurrency);
+            }), SettingsHolder.Content.LoadingConcurrency);
 
             IsLoaded = true;
             ListReady();

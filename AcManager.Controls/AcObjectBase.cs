@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using AcManager.Tools.Objects;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media.Imaging;
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Controls {
@@ -72,42 +72,42 @@ namespace AcManager.Controls {
         public event MouseButtonEventHandler IconMouseDown;
 
         public static readonly DependencyProperty AcObjectProperty = DependencyProperty.Register(nameof(AcObject), typeof(AcObjectNew),
-                                                                                          typeof(AcObjectBase));
+                typeof(AcObjectBase));
 
         public AcObjectNew AcObject {
             get { return (AcObjectNew)GetValue(AcObjectProperty); }
             set { SetValue(AcObjectProperty, value); }
         }
 
-        public static readonly DependencyProperty ShowIconProperty = DependencyProperty.Register(nameof(ShowIcon), typeof (bool),
-                                                                                             typeof (AcObjectBase));
+        public static readonly DependencyProperty ShowIconProperty = DependencyProperty.Register(nameof(ShowIcon), typeof(bool),
+                typeof(AcObjectBase));
 
         public bool ShowIcon {
-            get { return (bool) GetValue(ShowIconProperty); }
+            get { return (bool)GetValue(ShowIconProperty); }
             set { SetValue(ShowIconProperty, value); }
         }
 
-        public static readonly DependencyProperty IconFilenameProperty = DependencyProperty.Register(nameof(IconFilename), typeof (string),
-                                                                                             typeof (AcObjectBase));
+        public static readonly DependencyProperty IconProperty = DependencyProperty.Register(nameof(Icon), typeof(BitmapSource),
+                typeof(AcObjectBase));
 
-        public string IconFilename {
-            get { return (string) GetValue(IconFilenameProperty); }
-            set { SetValue(IconFilenameProperty, value); }
+        public BitmapSource Icon {
+            get { return (BitmapSource)GetValue(IconProperty); }
+            set { SetValue(IconProperty, value); }
         }
 
         public static readonly DependencyProperty ContentProperty = DependencyProperty.Register(nameof(Content), typeof(object),
-                                                                                          typeof(AcObjectBase));
+                typeof(AcObjectBase));
 
         public object Content {
             get { return GetValue(ContentProperty); }
             set { SetValue(ContentProperty, value); }
         }
 
-        public static readonly DependencyProperty ToolBarsProperty = DependencyProperty.Register(nameof(ToolBars), typeof (Collection<ToolBar>),
-                                                                                          typeof (AcObjectBase));
+        public static readonly DependencyProperty ToolBarsProperty = DependencyProperty.Register(nameof(ToolBars), typeof(Collection<ToolBar>),
+                typeof(AcObjectBase));
 
         public Collection<ToolBar> ToolBars {
-            get { return (Collection<ToolBar>) GetValue(ToolBarsProperty); }
+            get { return (Collection<ToolBar>)GetValue(ToolBarsProperty); }
             set { SetValue(ToolBarsProperty, value); }
         }
     }

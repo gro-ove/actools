@@ -6,11 +6,14 @@
         xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedFontPage+SelectedFontPageViewModel}" Loaded="SelectedFontPage_OnLoaded">
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
+    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" Icon="{Binding SelectedObject.IconBitmap}" IconMouseDown="AcObjectBase_OnIconMouseDown">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open weather's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" />
+            </ToolBar>
+            <ToolBar Band="0" BandIndex="0">
+                <Button Content="Create New Font" Command="{Binding CreateNewFontCommand}" ToolTip="Create a new font using Kunos tool (Ctrl+N)" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
@@ -20,24 +23,26 @@
                 <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed json-file (Ctrl+S)" />
                 <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
             </ToolBar>
+            <ToolBar Band="1" BandIndex="1">
+                <Button Content="Disable Unused" Command="{Binding DisableUnusedCommand}" ToolTip="Rescan usings and disable all unused fonts (Ctrl+Shift+D)" />
+            </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
         <StackPanel>
-            <Image Source="{Binding SelectedObject.FontBitmap, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" StretchDirection="DownOnly"
-                    Stretch="Uniform" services:ImageViewerService.Image="{Binding SelectedObject.FontBitmap}" />
-
-            <StackPanel Margin="8 12 8 0">
+            <StackPanel Margin="8 0 8 0">
                 <TextBlock Text="Test:" Style="{StaticResource Label}" Margin="0 12 0 0" />
-                <TextBox x:Name="TextBox" Text="0123456789 Test" watermark:WatermarkService.Watermark="?" Margin="0 4 0 0"
-                        TextChanged="TestTextBox_OnTextChanged" />
-                <Canvas x:Name="Canvas" Height="120" Background="Black" Margin="0 4 0 0" ClipToBounds="True" />
+                <TextBox x:Name="TextBox" watermark:WatermarkService.Watermark="?" Margin="0 4 0 0" TextChanged="TestTextBox_OnTextChanged" />
+                <Grid x:Name="Canvas" Height="120" Background="Black" Margin="0 4 0 0" ClipToBounds="True"
+                        services:ImageViewerService.Image="{Binding SelectedObject.FontBitmap}" />
             </StackPanel>
 
             <StackPanel Margin="8 12 8 0">
                 <TextBlock Text="Used in:" Style="{StaticResource Label}" Margin="0 12 0 0" />
-                <TextBlock Text="" watermark:WatermarkService.Watermark="?" Margin="0 4 0 0" />
-                <TextBlock Text="Last scanned: Never" TextAlignment="Right" Style="{StaticResource Small}" Margin="0 4 0 0" />
-                <Button Margin="0 4 0 0">Rescan</Button>
+                <TextBlock Text="{Binding SelectedObject.UsingsCarsIds, Converter={x:Static selected:SelectedFontPage.UsingsConverter}, IsAsync=True}"
+                        watermark:WatermarkService.Watermark="?" Margin="0 4 0 0" TextWrapping="Wrap" FontWeight="Bold" />
+                <TextBlock Text="{Binding Manager.LastUsingsRescan, StringFormat='{}Last scanned: {0}', TargetNullValue='Last scanned: Never'}"
+                        TextAlignment="Right" Style="{StaticResource Small}" Margin="0 4 0 0" />
+                <Button Margin="0 4 0 0" Command="{Binding UsingsRescanCommand}">Rescan</Button>
             </StackPanel>
         </StackPanel>
     </ac:AcObjectBase>

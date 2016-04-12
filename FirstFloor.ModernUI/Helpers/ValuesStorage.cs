@@ -100,7 +100,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     case '\t':
                         result.Append(@"\t");
                         break;
-                        
+
                     case '\b':
                     case '\r':
                         break;
@@ -123,11 +123,11 @@ namespace FirstFloor.ModernUI.Helpers {
                     result.Append(c);
                     continue;
                 }
-                
+
                 if (++i >= s.Length) {
                     break;
                 }
-                
+
                 switch (s[i]) {
                     case '\\':
                         result.Append(@"\");
@@ -155,7 +155,7 @@ namespace FirstFloor.ModernUI.Helpers {
             try {
                 var splitted = DecodeBytes(File.ReadAllBytes(_filename))
                     .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-                Load(int.Parse(splitted[0].Split(new []{ "version:" }, StringSplitOptions.None)[1].Trim()), splitted.Skip(1));
+                Load(int.Parse(splitted[0].Split(new[] { "version:" }, StringSplitOptions.None)[1].Trim()), splitted.Skip(1));
             } catch (Exception e) {
                 Logging.Warning("Cannot load data: " + e);
                 _storage.Clear();
@@ -261,7 +261,8 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <returns>List if exists, default value otherwise, empty list if default value is null</returns>
         public static IEnumerable<string> GetStringList([NotNull] string key, IEnumerable<string> defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            return Instance._storage.ContainsKey(key) ? Instance._storage[key].Split('\n').Select(Decode) : defaultValue ?? new string[] { };
+            return Instance._storage.ContainsKey(key) && !string.IsNullOrEmpty(Instance._storage[key])
+                    ? Instance._storage[key].Split('\n').Select(Decode) : defaultValue ?? new string[] { };
         }
 
         public static TimeSpan GetTimeSpan([NotNull] string key, TimeSpan defaultValue) {

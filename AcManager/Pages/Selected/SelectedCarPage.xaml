@@ -15,8 +15,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconFilename="{Binding SelectedObject.BrandBadge}"
-            IconMouseDown="AcObjectBase_IconMouseDown">
+    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_IconMouseDown"
+            Icon="{Binding SelectedObject.BrandBadge, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open car's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />

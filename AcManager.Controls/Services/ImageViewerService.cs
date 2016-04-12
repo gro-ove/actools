@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.Pages.Dialogs;
 
@@ -17,20 +16,19 @@ namespace AcManager.Controls.Services {
             typeof(string), typeof(ImageViewerService), new FrameworkPropertyMetadata(null, OnImageChanged));
         
         private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            var control = d as Image;
+            var control = d as UIElement;
             if (control == null) return;
             if (e.OldValue == null) {
-                control.MouseDown += Control_MouseDown;
+                control.MouseLeftButtonDown += Control_MouseDown;
             } else if (e.NewValue == null) {
-                control.MouseDown -= Control_MouseDown;
+                control.MouseLeftButtonDown -= Control_MouseDown;
             }
 
             // control.Cursor = e.NewValue == null ? Cursors.Arrow : Cursors.SizeAll;
         }
 
         private static void Control_MouseDown(object sender, MouseEventArgs e) {
-            // TODO: which button?
-            new ImageViewer(GetImage((Image)sender)).ShowDialog();
+            new ImageViewer(GetImage((DependencyObject)sender)).ShowDialog();
         }
     }
 }

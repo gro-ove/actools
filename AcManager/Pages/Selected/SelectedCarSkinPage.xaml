@@ -6,7 +6,8 @@
         xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarSkinPage+SelectedCarSkinPageViewModel}">
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconFilename="{Binding SelectedObject.LiveryImage}" IconMouseDown="AcObjectBase_OnIconMouseDown">
+    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_OnIconMouseDown"
+            Icon="{Binding SelectedObject.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open showroom's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />

@@ -138,6 +138,9 @@
     <Compile Include="Pages\Selected\SelectedFontPage.xaml.cs">
       <DependentUpon>SelectedFontPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\SettingsContent.xaml.cs">
+      <DependentUpon>SettingsContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools\About\AboutHelper.cs" />
     <Compile Include="Tools\About\ImportantTips.cs" />
     <Compile Include="Tools\About\PieceOfInformation.cs" />
@@ -395,6 +398,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Settings\SettingsDrive.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\SettingsContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
