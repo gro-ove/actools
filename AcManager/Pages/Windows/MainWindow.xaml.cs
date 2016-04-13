@@ -9,6 +9,7 @@ using System.Windows.Interop;
 using AcManager.Controls.Helpers;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Drive;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
@@ -33,14 +34,12 @@ namespace AcManager.Pages.Windows {
         private readonly string _testGameDialog = null;
 
         public MainWindow() {
-            var args = Environment.GetCommandLineArgs();
-
-            _cancelled = false;
-            foreach (var arg in args.Skip(1).Where(x => !x.StartsWith("-"))
-                    .Union(args.SkipWhile(x => x != "-").Skip(1).Where(x => x.StartsWith("-")))) {
+            _cancelled = AppArguments.Values.Count > 0;
+            foreach (var arg in AppArguments.Values) {
                 Logging.Write("[MAINWINDOW] Input file: " + arg);
-                ProcessInputFile(arg);
-                _cancelled = true;
+                if (ProcessArgument(arg)) {
+                    _cancelled = false;
+                }
             }
 
             if (_testGameDialog != null) {
@@ -156,7 +155,7 @@ namespace AcManager.Pages.Windows {
             var data = EntryPoint.ReceiveSomeData();
             Task.Run(() => {
                 foreach (var filename in data) {
-                    ProcessInputFile(filename);
+                    ProcessArgument(filename);
                 }
             }).Forget();
 
@@ -181,12 +180,43 @@ namespace AcManager.Pages.Windows {
             ValuesStorage.Set("MainWindow.Maximized", WindowState == WindowState.Maximized);
         }
 
-        private void ProcessInputFile(string filename) {
-            if (filename == null || !FileUtils.Exists(filename)) return;
+        /// <summary>
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <returns>True if form should be shown</returns>
+        private bool ProcessArgument(string argument) {
+            if (string.IsNullOrWhiteSpace(argument)) return true;
 
+            if (argument.StartsWith(CustomUriSchemeHelper.UriScheme)) {
+                return ProcessUriRequest(argument);
+            }
+
+            try {
+                if (!FileUtils.Exists(argument)) return true;
+            } catch (Exception) {
+                return true;
+            }
+
+            return ProcessInputFile(argument);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>True if form should be shown</returns>
+        private bool ProcessUriRequest(string request) {
+            Logging.Write("[MAINWINDOW] URI Request: " + request);
+            return true;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns>True if form should be shown</returns>
+        private bool ProcessInputFile(string filename) {
             var isDirectory = FileUtils.IsDirectory(filename);
             if (!isDirectory && filename.EndsWith(".acreplay", StringComparison.OrdinalIgnoreCase) ||
-                    Path.GetDirectoryName(filename)?.Equals(FileUtils.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
+                Path.GetDirectoryName(filename)?.Equals(FileUtils.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
                 Game.Start(AcsStarterFactory.Create(),
                         new Game.StartProperties(new Game.ReplayProperties {
                             Filename = filename
@@ -202,6 +232,8 @@ namespace AcManager.Pages.Windows {
                     NonfatalError.Notify("Can't install additional content", e);
                 }
             }
+
+            return false;
         }
 
         private void MainWindow_OnDrop(object sender, DragEventArgs e) {
@@ -214,7 +246,7 @@ namespace AcManager.Pages.Windows {
         private void ProcessDroppedFiles(IEnumerable<string> files) {
             if (files == null) return;
             foreach (var filename in files) {
-                ProcessInputFile(filename);
+                ProcessArgument(filename);
             }
         }
 

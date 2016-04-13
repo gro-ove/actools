@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.InnerHelpers;
+using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -38,7 +39,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         protected virtual string GetObjectLocation(string filename, out bool inner) {
             var minLength = Math.Min(Directories.EnabledDirectory.Length,
-                Directories.DisabledDirectory?.Length ?? int.MaxValue);
+                    Directories.DisabledDirectory?.Length ?? int.MaxValue);
 
             inner = false;
             while (filename.Length > minLength) {
@@ -54,6 +55,41 @@ namespace AcManager.Tools.AcManagersNew {
             }
 
             return null;
+        }
+
+        public override void Toggle(string id) {
+            if (!Directories.Actual) return;
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            var wrapper = GetWrapperById(id);
+            if (wrapper == null) {
+                throw new ArgumentException(@"ID is wrong", nameof(id));
+            }
+
+            var currentLocation = ((AcCommonObject)wrapper.Value).Location;
+            var path = wrapper.Value.Enabled ? Directories.DisabledDirectory : Directories.EnabledDirectory;
+            if (path == null) {
+                throw new Exception("Object can't be toggled");
+            }
+
+            var newLocation = Path.Combine(path, wrapper.Value.Id);
+
+            if (FileUtils.Exists(newLocation)) {
+                throw new ToggleException("Place is taken");
+            }
+
+            try {
+                using (IgnoreChanges()) {
+                    FileUtils.Move(currentLocation, newLocation);
+
+                    RemoveFromList(id);
+                    var obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(newLocation));
+                    InnerWrappersList.Add(new AcItemWrapper(this, obj));
+                    UpdateList();
+                }
+            } catch (Exception e) {
+                throw new ToggleException(e.Message);
+            }
         }
 
         private readonly Dictionary<string, WatchingTask> _watchingTasks = new Dictionary<string, WatchingTask>();

@@ -4,6 +4,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="LimitedMarkStyle" TargetType="TextBlock" BasedOn="{StaticResource Label}">
+        <Setter Property="Text" Value="LIMITED" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="FontSize" Value="10" />

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -15,6 +17,17 @@ namespace AcManager.Tools.AcManagersNew {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class FileAcManager<T> : BaseAcManager<T>, IFileAcManager where T : AcCommonObject {
+        protected FileAcManager() {
+            SettingsHolder.Content.PropertyChanged += Content_PropertyChanged;
+        }
+
+        private void Content_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName != nameof(SettingsHolder.ContentSettings.NewContentPeriod)) return;
+            foreach (var entry in LoadedOnly) {
+                entry.CheckIfNew();
+            }
+        }
+
         public abstract BaseAcDirectories Directories { get; }
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {

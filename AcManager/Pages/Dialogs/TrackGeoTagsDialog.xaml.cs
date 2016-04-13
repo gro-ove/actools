@@ -5,6 +5,7 @@ using System.Timers;
 using System.Windows.Navigation;
 using AcManager.Annotations;
 using AcManager.Controls.Helpers;
+using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;

@@ -140,6 +140,8 @@ namespace AcManager {
 
             StartupUri = new Uri(Superintendent.Instance.IsReady ?
                     "Pages/Windows/MainWindow.xaml" : "Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
+
+            RegisterUriScheme();
         }
 
         private async void TestKey() {
@@ -158,6 +160,11 @@ namespace AcManager {
                     Dispatcher.Invoke(WindowsHelper.RestartCurrentApplication);
                 }
             }
+        }
+
+        private async void RegisterUriScheme() {
+            await Task.Delay(1500);
+            CustomUriSchemeHelper.EnsureRegistered();
         }
 
         private async void DeleteOldLogs() {

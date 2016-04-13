@@ -1,14 +1,16 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
+        xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
         xmlns:acObjectsNew="clr-namespace:AcManager.Tools.AcObjectsNew;assembly=AcManager.Tools"
         xmlns:acObjects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools">
     <ResourceDictionary.MergedDictionaries>
         <!--<ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />-->
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
+
     <DataTemplate x:Key="AcItemWrapperSpecific.ComboBoxItemTemplate" DataType="acManagersNew:AcItemWrapper">
-        <TextBlock Text="{Binding Value.DisplayName}"/>
+        <TextBlock Text="{Binding Value.DisplayName}" />
     </DataTemplate>
 
     <DataTemplate x:Key="AcItemWrapperSpecific.ListItemTemplate" DataType="{x:Type acManagersNew:AcItemWrapper}">
@@ -30,6 +32,9 @@
                     <DockPanel HorizontalAlignment="Stretch">
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}"
                                 Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon" />
+                        <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="4"
+                                IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                DockPanel.Dock="Right" />
                         <TextBlock Text="{Binding DisplayName}" Margin="10,2,2,2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
                                 HorizontalAlignment="Stretch" x:Name="DisplayNameText" ToolTip="{Binding Location}" />
                     </DockPanel>
@@ -53,7 +58,7 @@
         </ContentControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="CarSkinItemTemplate"  DataType="{x:Type acObjects:CarSkinObject}">
+    <DataTemplate x:Key="CarSkinItemTemplate" DataType="{x:Type acObjects:CarSkinObject}">
         <Border Width="32" Height="32" Background="Transparent" BorderThickness="0">
             <Image RenderOptions.BitmapScalingMode="LowQuality" ToolTip="{Binding DisplayName}"
                     Source="{Binding LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
@@ -71,7 +76,7 @@
                 <!-- accommonobject -->
                 <DataTemplate DataType="{x:Type acObjects:CarSkinObject}">
                     <Image RenderOptions.BitmapScalingMode="LowQuality" ToolTip="{Binding DisplayName}"
-                            Source="{Binding LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"/>
+                            Source="{Binding LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>

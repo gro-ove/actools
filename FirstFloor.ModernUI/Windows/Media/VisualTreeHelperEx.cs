@@ -111,7 +111,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
             if (dependencyObject == null) throw new ArgumentNullException(nameof(dependencyObject));
 
             var fe = dependencyObject as FrameworkElement;
-            if (fe != null) return fe.Parent;
+            if (fe?.Parent != null) return fe.Parent;
 
             var ce = dependencyObject as ContentElement;
             if (ce == null) return VisualTreeHelper.GetParent(dependencyObject);

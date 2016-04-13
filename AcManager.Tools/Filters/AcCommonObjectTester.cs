@@ -10,6 +10,9 @@ namespace AcManager.Tools.Filters {
                 case "y":
                 case "year":
                     return nameof(AcCommonObject.Year);
+                    
+                case "new":
+                    return nameof(AcCommonObject.IsNew);
 
                 case "errors":
                 case "haserrors":
@@ -28,6 +31,9 @@ namespace AcManager.Tools.Filters {
                 case "y":
                 case "year":
                     return obj.Year.HasValue && value.Test(obj.Year.Value);
+
+                case "new":
+                    return value.Test(obj.IsNew);
 
                 case "errors":
                 case "haserrors":

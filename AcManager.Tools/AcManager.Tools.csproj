@@ -123,6 +123,8 @@
     <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\ZipContentInstallator.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider_Consts.cs" />
+    <Compile Include="Helpers\CustomUriSchemeHelper.cs" />
+    <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
     <Compile Include="Managers\Directories\NonListeningAcDirectories.cs" />

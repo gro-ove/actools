@@ -114,7 +114,6 @@
     <Compile Include="UserPresetsControl.cs" />
     <Compile Include="AcObjectListBox.cs" />
     <Compile Include="Helpers\AcObjectsUriProvider.cs" />
-    <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="OxyPlotGraphViewer.cs" />
     <Compile Include="GraphViewer.xaml.cs">
       <DependentUpon>GraphViewer.xaml</DependentUpon>

@@ -19,10 +19,32 @@ namespace AcManager.Tools.AcObjectsNew {
             FileAcManager = manager;
         }
 
+        private bool _isNew;
+
+        public bool IsNew {
+            get { return _isNew; }
+            set {
+                if (Equals(value, _isNew)) return;
+                _isNew = value;
+                OnPropertyChanged();
+            }
+        }
+
         public override void Reload() {
             ClearErrors();
             LoadOrThrow();
             Changed = false;
+        }
+
+        private DateTime? _creationTime;
+
+        public void CheckIfNew() {
+            try {
+                var creationTime = _creationTime ?? (_creationTime = File.GetCreationTime(Location));
+                IsNew = DateTime.Now - creationTime < SettingsHolder.Content.NewContentPeriod.TimeSpan;
+            } catch (Exception) {
+                IsNew = false;
+            }
         }
 
         protected bool LoadingInProcess { get; private set; }
@@ -33,6 +55,8 @@ namespace AcManager.Tools.AcObjectsNew {
             ClearErrors();
             Changed = false;
             LoadingInProcess = true;
+
+            CheckIfNew();
 
             try {
                 LoadOrThrow();

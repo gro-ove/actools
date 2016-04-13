@@ -257,7 +257,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             var tryAgainButton = CreateExtraDialogButton(@"Try again", () => {
-                CloseWithResult(MessageBoxResult.Cancel);
+                CloseWithResult(MessageBoxResult.None);
                 GameWrapper.StartAsync(_properties).Forget();
             });
 

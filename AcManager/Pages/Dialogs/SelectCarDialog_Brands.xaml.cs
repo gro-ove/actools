@@ -24,7 +24,7 @@ namespace AcManager.Pages.Dialogs {
             public string Icon { get; set; }
 
             public Uri PageAddress => UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
-                    $"enabled+&brand:{Name}", Filter.Encode(Name));
+                    $"enabled+&brand:{Filter.Encode(Name)}", Name);
 
             public CarBrandInformation(string name) {
                 Name = name;
@@ -126,9 +126,10 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void ListItem_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
+
             var selected = ((FrameworkElement)sender).DataContext as CarBrandInformation;
             if (selected == null) return;
-            e.Handled = true;
             NavigationCommands.GoToPage.Execute(selected.PageAddress, (IInputElement)sender);
         }
 

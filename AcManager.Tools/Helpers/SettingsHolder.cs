@@ -12,6 +12,12 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.Helpers {
     public class SettingsHolder {
+        public class PeriodEntry {
+            public string DisplayName { get; internal set; }
+
+            public TimeSpan TimeSpan { get; internal set; }
+        }
+
         public class OnlineSettings : NotifyPropertyChanged {
             internal OnlineSettings() { }
 
@@ -56,12 +62,6 @@ namespace AcManager.Tools.Helpers {
 
         public class CommonSettings : NotifyPropertyChanged {
             internal CommonSettings() { }
-
-            public class PeriodEntry {
-                public string DisplayName { get; internal set; }
-
-                public TimeSpan TimeSpan { get; internal set; }
-            }
 
             private PeriodEntry[] _periodEntries;
 
@@ -264,6 +264,30 @@ namespace AcManager.Tools.Helpers {
                     value = value.Substring(0, 1);
                     if (Equals(value, FontIconCharacter)) return;
                     ValuesStorage.Set("Settings.ContentSettings.FontIconCharacter", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private PeriodEntry[] _periodEntries;
+
+            public PeriodEntry[] NewContentPeriods => _periodEntries ?? (_periodEntries = new[] {
+                new PeriodEntry { DisplayName = "Disabled", TimeSpan = TimeSpan.Zero },
+                new PeriodEntry { DisplayName = "One day", TimeSpan = TimeSpan.FromDays(1) },
+                new PeriodEntry { DisplayName = "Three days", TimeSpan = TimeSpan.FromDays(3) },
+                new PeriodEntry { DisplayName = "Week", TimeSpan = TimeSpan.FromDays(7) },
+                new PeriodEntry { DisplayName = "Two weeks", TimeSpan = TimeSpan.FromDays(14) },
+                new PeriodEntry { DisplayName = "Month", TimeSpan = TimeSpan.FromDays(30) }
+            });
+
+            public PeriodEntry NewContentPeriod {
+                get {
+                    return NewContentPeriods.FirstOrDefault(x =>
+                            x.TimeSpan == ValuesStorage.GetTimeSpan("Settings.ContentSettings.NewContentPeriod", NewContentPeriods.ElementAt(4).TimeSpan)) ??
+                            NewContentPeriods.FirstOrDefault();
+                }
+                set {
+                    if (Equals(value, NewContentPeriod)) return;
+                    ValuesStorage.Set("Settings.ContentSettings.NewContentPeriod", value.TimeSpan);
                     OnPropertyChanged();
                 }
             }

@@ -334,6 +334,9 @@ fixme:
     - some staticresources have the same name as dynamicrecources
 
 todo:
+    - install by path dropped
+    - download and install by url dropped
+    
     - showroom from QD/KunosCareer/Online
         + QD
         - KunosCareer

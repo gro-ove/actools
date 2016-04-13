@@ -14,7 +14,6 @@ namespace FirstFloor.ModernUI.Windows.Controls.LimitedMark {
             IsHitTestVisible = true;
             
             _contentPresenter = new TextBlock {
-                Text = "LIMITED",
                 Style = FindResource("LimitedMarkStyle") as Style
             };
 
