@@ -9,9 +9,9 @@ using SharpCompress.Archive;
 using SharpCompress.Common;
 
 namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
-    internal class ArchiveContentInstallator : BaseAdditionalContentInstallator {
+    internal class SharpCompressContentInstallator : BaseAdditionalContentInstallator {
         public static async Task<IAdditionalContentInstallator> Create(string filename) {
-            var result = new ArchiveContentInstallator(filename);
+            var result = new SharpCompressContentInstallator(filename);
             await result.CreateExtractorAsync();
             return result;
         }
@@ -21,8 +21,17 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
 
         public string Filename { get; }
 
-        private ArchiveContentInstallator(string filename) {
+        private SharpCompressContentInstallator(string filename) {
             Filename = filename;
+        }
+
+        private async Task CreateExtractorAsync() {
+            try {
+                _extractor = await Task.Run(() => CreateExtractor(Filename, Password));
+            } catch (PasswordException) {
+                IsPasswordRequired = true;
+                DisposeHelper.Dispose(ref _extractor);
+            }
         }
 
         public override bool IsPasswordCorrect => !IsPasswordRequired || _extractor != null;
@@ -38,17 +47,21 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
             public ArchiveFileInfo(IArchiveEntry archiveEntry) {
                 _archiveEntry = archiveEntry;
             }
-            
-            public string Filename => _archiveEntry.GetFilename();
 
-            public Task<byte[]> ReadAsync() {
-                return _archiveEntry.ExtractFileAsync();
+            public string Filename => _archiveEntry.Key.Replace('/', '\\');
+
+            public async Task<byte[]> ReadAsync() {
+                using (var memory = new MemoryStream())
+                using (var stream = _archiveEntry.OpenEntryStream()) {
+                    await stream.CopyToAsync(memory);
+                    return memory.ToArray();
+                }
             }
 
-            public Task CopyTo(string destination) {
+            public async Task CopyTo(string destination) {
                 using (var fileStream = new FileStream(destination, FileMode.Create))
                 using (var stream = _archiveEntry.OpenEntryStream()) {
-                    return stream.CopyToAsync(fileStream);
+                    await stream.CopyToAsync(fileStream);
                 }
             }
         }
@@ -57,15 +70,6 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
             if (_extractor == null) throw new Exception("Extractor wasn't initialized");
             return Task.FromResult(
                     _extractor.Entries.Where(x => !x.IsDirectory).Select(x => (IFileInfo)new ArchiveFileInfo(x)));
-        }
-
-        private async Task CreateExtractorAsync() {
-            try {
-                _extractor = await Task.Run(() => CreateExtractor(Filename, Password));
-            } catch (PasswordException) {
-                IsPasswordRequired = true;
-                DisposeHelper.Dispose(ref _extractor);
-            }
         }
 
         public override Task TrySetPasswordAsync(string password) {

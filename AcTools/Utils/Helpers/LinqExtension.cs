@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
-// ReSharper disable LoopCanBeConvertedToQuery
-// ReSharper disable LoopCanBePartlyConvertedToQuery
 
 namespace AcTools.Utils.Helpers {
     public static class LinqExtension {
@@ -433,22 +430,11 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
-        public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, T value) {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            foreach (var i in source) {
-                if (!Equals(i, value)) yield return i;
-            }
-        }
-
-        [Pure]
         public static bool All<T>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, int, bool> predicate) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             var j = 0;
-            foreach (var i in source) {
-                if (!predicate(i, j++)) return false;
-            }
-            return true;
+            return source.All(i => predicate(i, j++));
         }
 
         [Pure]
@@ -456,10 +442,7 @@ namespace AcTools.Utils.Helpers {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             var j = 0;
-            foreach (var i in source) {
-                if (predicate(i, j++)) return true;
-            }
-            return false;
+            return source.Any(i => predicate(i, j++));
         }
     }
 

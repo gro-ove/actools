@@ -61,8 +61,8 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                         Func<string, bool> uiFilter = x => x != @"ui_skin.json";
                         Func<string, bool> previewFilter = x => x != @"preview.jpg";
                         yield return new UpdateOption { Name = "Keep UI Information", Filter = uiFilter };
-                        yield return new UpdateOption { Name = "Keep Skins Preview", Filter = previewFilter };
-                        yield return new UpdateOption { Name = "Keep UI Information & Skins Preview", Filter = x => uiFilter(x) && previewFilter(x) };
+                        yield return new UpdateOption { Name = "Keep Skin Preview", Filter = previewFilter };
+                        yield return new UpdateOption { Name = "Keep UI Information & Skin Preview", Filter = x => uiFilter(x) && previewFilter(x) };
                         break;
                     }
 

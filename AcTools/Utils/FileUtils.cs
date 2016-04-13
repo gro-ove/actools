@@ -40,6 +40,7 @@ namespace AcTools.Utils {
 
             [MarshalAs(UnmanagedType.U4)]
             public FileOperationType wFunc;
+
             public string pFrom;
             public readonly string pTo;
             public FileOperationFlags fFlags;
@@ -55,10 +56,11 @@ namespace AcTools.Utils {
         private static extern int SHFileOperation(ref SHFILEOPSTRUCT FileOp);
 
         private static bool DeleteFile(string[] path, FileOperationFlags flags) {
+            if (path == null || path.All(x => x == null)) return false;
             try {
                 var fs = new SHFILEOPSTRUCT {
                     wFunc = FileOperationType.FO_DELETE,
-                    pFrom = string.Join("\0", path) + "\0\0",
+                    pFrom = string.Join("\0", path.Where(x => x != null)) + "\0\0",
                     fFlags = flags
                 };
                 SHFileOperation(ref fs);
@@ -68,25 +70,25 @@ namespace AcTools.Utils {
             }
         }
 
-        public static bool Recycle(params string[] path) {
+        public static bool Recycle([CanBeNull] params string[] path) {
             return DeleteFile(path, FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMATION |
-                FileOperationFlags.FOF_WANTNUKEWARNING);
+                                    FileOperationFlags.FOF_WANTNUKEWARNING);
         }
 
-        public static bool MoveToRecycleBin(params string[] path) {
+        public static bool MoveToRecycleBin([CanBeNull] params string[] path) {
             return DeleteFile(path, FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMATION |
-                FileOperationFlags.FOF_NOERRORUI | FileOperationFlags.FOF_SILENT);
+                                    FileOperationFlags.FOF_NOERRORUI | FileOperationFlags.FOF_SILENT);
         }
 
-        public static bool DeleteSilent(params string[] path) {
+        public static bool DeleteSilent([CanBeNull] params string[] path) {
             return DeleteFile(path, FileOperationFlags.FOF_NOCONFIRMATION | FileOperationFlags.FOF_NOERRORUI |
-                FileOperationFlags.FOF_SILENT);
+                                    FileOperationFlags.FOF_SILENT);
         }
 
         public static bool Undo() {
             var handle = User32.FindWindowEx(
-                User32.FindWindowEx(User32.FindWindow("Progman", "Program Manager"), IntPtr.Zero, "SHELLDLL_DefView", ""),
-                IntPtr.Zero, "SysListView32", "FolderView");
+                    User32.FindWindowEx(User32.FindWindow("Progman", "Program Manager"), IntPtr.Zero, "SHELLDLL_DefView", ""),
+                    IntPtr.Zero, "SysListView32", "FolderView");
             if (handle != IntPtr.Zero) {
                 var current = User32.GetForegroundWindow();
                 User32.SetForegroundWindow(handle);
@@ -98,7 +100,7 @@ namespace AcTools.Utils {
             }
         }
         #endregion
-        
+
         public static void EnsureFileDirectoryExists(string filename) {
             EnsureDirectoryExists(Path.GetDirectoryName(filename));
         }
@@ -175,9 +177,9 @@ namespace AcTools.Utils {
                 }
 
                 if (dirs != null) {
-                    foreach (var t in from t in dirs 
-                                      let attributes = new DirectoryInfo(t).Attributes 
-                                      where (attributes & (FileAttributes.ReparsePoint | FileAttributes.Hidden | FileAttributes.System)) == 0 
+                    foreach (var t in from t in dirs
+                                      let attributes = new DirectoryInfo(t).Attributes
+                                      where (attributes & (FileAttributes.ReparsePoint | FileAttributes.Hidden | FileAttributes.System)) == 0
                                       select t) {
                         queue.Enqueue(t);
                     }
@@ -215,7 +217,7 @@ namespace AcTools.Utils {
         /// <param name="to"></param>
         public static void Move(string from, string to) {
             if (from.Equals(to, StringComparison.Ordinal) ||
-                    Path.GetDirectoryName(from)?.Equals(Path.GetDirectoryName(to), StringComparison.OrdinalIgnoreCase) == true) return;
+                Path.GetDirectoryName(from)?.Equals(Path.GetDirectoryName(to), StringComparison.OrdinalIgnoreCase) == true) return;
             EnsureFileDirectoryExists(to);
             if (File.GetAttributes(from).HasFlag(FileAttributes.Directory)) {
                 Directory.Move(from, to);
@@ -275,13 +277,13 @@ namespace AcTools.Utils {
 
         public static string GetTempFileName(string dir) {
             string result;
-            for (var i = 0; File.Exists(result = Path.Combine(dir, "__tmp_" + i)); i++) { }
+            for (var i = 0; File.Exists(result = Path.Combine(dir, "__tmp_" + i)); i++) {}
             return result;
         }
 
         public static string GetTempFileName(string dir, string extension) {
             string result;
-            for (var i = 0; File.Exists(result = Path.Combine(dir, "__tmp_" + i + extension)); i++) { }
+            for (var i = 0; File.Exists(result = Path.Combine(dir, "__tmp_" + i + extension)); i++) {}
             return result;
         }
 

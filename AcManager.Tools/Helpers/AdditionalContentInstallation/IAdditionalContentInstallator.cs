@@ -16,7 +16,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
 
         Task<IReadOnlyList<AdditionalContentEntry>> GetEntriesAsync([CanBeNull]IProgress<string> progress, CancellationToken cancellation);
 
-        Task InstallEntryToAsync(AdditionalContentEntry entry, Func<string, bool> filter, string targetDirectory, [CanBeNull]IProgress<string> progress,
+        Task InstallEntryToAsync(AdditionalContentEntry entry, Func<string, bool> filter, string destination, [CanBeNull]IProgress<string> progress,
                 CancellationToken cancellation);
     }
 }

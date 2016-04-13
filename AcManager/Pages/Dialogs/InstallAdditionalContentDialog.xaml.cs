@@ -150,6 +150,8 @@ namespace AcManager.Pages.Dialogs {
                     return ShowroomsManager.Instance;
 
                 case AdditionalContentType.Font:
+                    return FontsManager.Instance;
+
                 case AdditionalContentType.CarSkin:
                     throw new NotImplementedException();
 
@@ -197,7 +199,8 @@ namespace AcManager.Pages.Dialogs {
                         var manager = GetManagerByType(wrapper.Entry.Type) as IFileAcManager;
                         if (manager == null) continue;
 
-                        var directory = manager.PrepareForAdditionalContent(wrapper.Entry.Id, wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
+                        var directory = manager.PrepareForAdditionalContent(wrapper.Entry.Id,
+                                wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
                         await _installator.InstallEntryToAsync(wrapper.Entry, wrapper.SelectedOption?.Filter, directory, waiting, waiting.CancellationToken);
                     } catch (Exception e) {
                         NonfatalError.Notify(@"Can't install " + wrapper.Entry.Name, e);

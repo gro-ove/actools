@@ -95,69 +95,69 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static string ProcessText(SpecialMode mode, string text, double delta) {
             switch (mode) {
                 case SpecialMode.Number: {
-                        double value;
-                        if (!FlexibleParser.TryParseDouble(text, out value)) return null;
+                    double value;
+                    if (!FlexibleParser.TryParseDouble(text, out value)) return null;
 
-                        if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
-                            delta *= 0.1;
-                        }
-
-                        if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
-                            delta *= 10.0;
-                        }
-
-                        if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
-                            delta *= 2.0;
-                        }
-
-                        return FlexibleParser.ReplaceDouble(text, value + delta);
+                    if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
+                        delta *= 0.1;
                     }
+
+                    if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
+                        delta *= 10.0;
+                    }
+
+                    if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
+                        delta *= 2.0;
+                    }
+
+                    return FlexibleParser.ReplaceDouble(text, value + delta);
+                }
 
                 case SpecialMode.Integer:
                 case SpecialMode.Positive: {
-                        int value;
-                        if (!FlexibleParser.TryParseInt(text, out value)) return null;
+                    int value;
+                    if (!FlexibleParser.TryParseInt(text, out value)) return null;
 
-                        if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
-                            delta *= 10.0;
-                        }
-
-                        if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
-                            delta *= 2.0;
-                        }
-
-                        value = (int)(value + delta);
-                        if (mode == SpecialMode.Positive && value < 1) {
-                            value = 1;
-                        }
-
-                        return FlexibleParser.ReplaceDouble(text, value);
+                    if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
+                        delta *= 10.0;
                     }
+
+                    if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
+                        delta *= 2.0;
+                    }
+
+                    value = (int)(value + delta);
+                    if (mode == SpecialMode.Positive && value < 1) {
+                        value = 1;
+                    }
+
+                    return FlexibleParser.ReplaceDouble(text, value);
+                }
 
                 case SpecialMode.Time: {
-                        var splitted = text.Split(':');
-                        int hours, minutes;
+                    var splitted = text.Split(':');
+                    int hours, minutes;
 
-                        if (splitted.Length != 2 || !FlexibleParser.TryParseInt(splitted[0], out hours) ||
-                            !FlexibleParser.TryParseInt(splitted[1], out minutes)) return null;
+                    if (splitted.Length != 2 || !FlexibleParser.TryParseInt(splitted[0], out hours) ||
+                        !FlexibleParser.TryParseInt(splitted[1], out minutes)) return null;
 
-                        var totalMinutes = hours * 60 + minutes;
+                    var totalMinutes = hours * 60 + minutes;
 
-                        if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
-                            delta *= 0.5;
-                        }
-
-                        if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
-                            delta *= 6.0;
-                        }
-
-                        if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
-                            delta *= 2.0;
-                        }
-
-                        totalMinutes += (int)(delta * 10);
-                        return $"{totalMinutes / 60:D}:{totalMinutes % 60:D}";
+                    if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
+                        delta *= 0.5;
                     }
+
+                    if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
+                        delta *= 6.0;
+                    }
+
+                    if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
+                        delta *= 2.0;
+                    }
+
+                    totalMinutes += (int)(delta * 10);
+                    return $"{totalMinutes / 60:D}:{totalMinutes % 60:D}";
+                }
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);

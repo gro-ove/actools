@@ -16,12 +16,13 @@ namespace AcManager.Controls {
         }
 
         public bool SelectMode { get; set; }
-
-        public event EventHandler<AcObjectEventArgs> SelectedAcObjectChanged;
+        
         private ListBox _list;
 
         private readonly DelayedPropertyWrapper<AcItemWrapper> _selectedWrapper;
         private AcObjectNew _currentObject;
+
+        private bool _setNextToNull;
 
         public AcListPage() {
             SelectMode = false;
@@ -39,9 +40,7 @@ namespace AcManager.Controls {
 
                 if (_currentObject != null) {
                     _currentObject.AcObjectOutdated += SelectedAcObject_Outdated;
-                    
-                    SetCurrentValue(SelectedSourceProperty, AcObjectsUriManager.GetUri(_currentObject));
-                    SelectedAcObjectChanged?.Invoke(this, new AcObjectEventArgs(_currentObject));
+                    SetCurrentValue(SelectedSourceProperty, _setNextToNull ? null : AcObjectsUriManager.GetUri(_currentObject));
                 } else {
                     SetCurrentValue(SelectedSourceProperty, null);
                 }
@@ -64,12 +63,24 @@ namespace AcManager.Controls {
         }
 
         private async void SelectedAcObject_Outdated(object sender, EventArgs e) {
-            ItemsSource.MoveCurrentTo(null);
+            _setNextToNull = true;
 
             var id = (sender as AcObjectNew)?.Id;
-            if (id != null) {
-                await Task.Delay(10);
-                ItemsSource.MoveCurrentTo(ItemsSource.OfType<AcItemWrapper>().GetByIdOrDefault(id));
+            if (id == null) {
+                _setNextToNull = false;
+                return;
+            }
+
+            await Task.Delay(1);
+
+            _setNextToNull = false;
+            var newItem = ItemsSource.OfType<AcItemWrapper>().GetByIdOrDefault(id);
+            if (newItem != null) {
+                ItemsSource.MoveCurrentTo(newItem);
+            } else if (_currentObject != null) {
+                SetCurrentValue(SelectedSourceProperty, AcObjectsUriManager.GetUri(_currentObject));
+            } else {
+                ItemsSource.MoveCurrentToFirst();
             }
         }
 

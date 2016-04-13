@@ -1,15 +1,9 @@
 using System;
-using System.IO;
 using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using SharpCompress.Archive;
-using SharpCompress.Archive.GZip;
 using SharpCompress.Archive.Rar;
-using SharpCompress.Archive.SevenZip;
-using SharpCompress.Archive.Tar;
 using SharpCompress.Archive.Zip;
 using SharpCompress.Common;
 
@@ -46,31 +40,6 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
             } catch (Exception e) {
                 Logging.Write("SharpCompressExtension.HasAnyEncryptedFiles exception: " + e);
                 return true;
-            }
-        }
-
-        public static string GetFilename(this IArchiveEntry fileInfo) {
-            return fileInfo.Key.Replace('/', '\\');
-        }
-
-        public static string GetName(this IArchiveEntry fileInfo) {
-            return Path.GetFileName(fileInfo.Key ?? "");
-        }
-
-
-        public static byte[] ExtractFile(this IArchiveEntry fileInfo) {
-            using (var stream = fileInfo.OpenEntryStream())
-            using (var memory = new MemoryStream()) {
-                stream.CopyTo(memory);
-                return memory.ToArray();
-            }
-        }
-
-        public static async Task<byte[]> ExtractFileAsync(this IArchiveEntry fileInfo) {
-            using (var stream = fileInfo.OpenEntryStream())
-            using (var memory = new MemoryStream()) {
-                await stream.CopyToAsync(memory);
-                return memory.ToArray();
             }
         }
     }

@@ -102,13 +102,35 @@ namespace AcManager.Tools.Managers {
             }
 
             try {
-                FileUtils.Move(currentLocation, newLocation);
+                using (IgnoreChanges()) {
+                    FileUtils.Move(currentLocation, newLocation);
 
-                if (currentBitmapLocation != null) {
-                    FileUtils.Move(currentBitmapLocation, newBitmapLocation);
+                    if (currentBitmapLocation != null) {
+                        FileUtils.Move(currentBitmapLocation, newBitmapLocation);
+                    }
+
+                    RemoveFromList(id);
+                    var obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(newLocation));
+                    InnerWrappersList.Add(new AcItemWrapper(this, obj));
+                    UpdateList();
                 }
             } catch (Exception e) {
                 throw new ToggleException(e.Message);
+            }
+        }
+
+        public override void Delete(string id) {
+            if (!Directories.Actual) return;
+            if (id == null) throw new ArgumentNullException(nameof(id));
+
+            var obj = GetById(id);
+            if (obj == null) throw new ArgumentException(@"ID is wrong", nameof(id));
+
+            using (IgnoreChanges()) {
+                FileUtils.Recycle(obj.Location, obj.FontBitmap);
+                if (!FileUtils.Exists(obj.Location)) {
+                    RemoveFromList(id);
+                }
             }
         }
 

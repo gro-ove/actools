@@ -45,7 +45,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
             if (root == null) return null;
             return (from @group in VisualStateManager.GetVisualStateGroups(root)?.OfType<VisualStateGroup>()
                     where string.CompareOrdinal(groupName, @group.Name) == 0
-                    select @group).FirstOrDefault<VisualStateGroup>();
+                    select @group).FirstOrDefault();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
             if (1 != VisualTreeHelper.GetChildrenCount(dependencyObject)) {
                 return null;
             }
-            return (VisualTreeHelper.GetChild(dependencyObject, 0) as FrameworkElement);
+            return VisualTreeHelper.GetChild(dependencyObject, 0) as FrameworkElement;
         }
 
         /// <summary>
@@ -105,8 +105,13 @@ namespace FirstFloor.ModernUI.Windows.Media {
         /// </summary>
         /// <param name="dependencyObject">The dependency object</param>
         /// <returns>The parent object or null if there is no parent.</returns>
+        [Pure]
+        [CanBeNull]
         public static DependencyObject GetParent(this DependencyObject dependencyObject) {
             if (dependencyObject == null) throw new ArgumentNullException(nameof(dependencyObject));
+
+            var fe = dependencyObject as FrameworkElement;
+            if (fe != null) return fe.Parent;
 
             var ce = dependencyObject as ContentElement;
             if (ce == null) return VisualTreeHelper.GetParent(dependencyObject);
@@ -118,6 +123,30 @@ namespace FirstFloor.ModernUI.Windows.Media {
 
             var fce = ce as FrameworkContentElement;
             return fce?.Parent;
+        }
+
+        [Pure]
+        public static IEnumerable<DependencyObject> GetParents([NotNull] this DependencyObject dependencyObject) {
+            if (dependencyObject == null) throw new ArgumentNullException(nameof(dependencyObject));
+
+            var parent = dependencyObject.GetParent();
+            while (parent != null) {
+                yield return parent;
+                parent = parent.GetParent();
+            }
+        }
+
+        [Pure]
+        [CanBeNull]
+        public static DependencyObject GetParentWhere([NotNull] this DependencyObject dependencyObject, [NotNull] Func<DependencyObject, bool> predicate) {
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            return dependencyObject.GetParents().Where(predicate).FirstOrDefault();
+        }
+
+        [Pure]
+        [CanBeNull]
+        public static T GetParentOfType<T>([NotNull] this FrameworkElement dependencyObject) where T : DependencyObject {
+            return dependencyObject.GetParents().OfType<T>().FirstOrDefault();
         }
     }
 }

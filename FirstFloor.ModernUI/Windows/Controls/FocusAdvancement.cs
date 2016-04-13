@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public static class FocusAdvancement {
@@ -11,14 +13,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             obj.SetValue(AdvancesByEnterKeyProperty, value);
         }
 
-        public static readonly DependencyProperty AdvancesByEnterKeyProperty = DependencyProperty.RegisterAttached("AdvancesByEnterKey", 
+        public static readonly DependencyProperty AdvancesByEnterKeyProperty = DependencyProperty.RegisterAttached("AdvancesByEnterKey",
             typeof(bool), typeof(FocusAdvancement), new UIPropertyMetadata(OnAdvancesByEnterKeyPropertyChanged));
 
         static void OnAdvancesByEnterKeyPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = d as UIElement;
             if (element == null) return;
 
-            if ((bool) e.NewValue) {
+            if ((bool)e.NewValue) {
                 element.KeyDown += Element_KeyDown;
             } else {
                 element.KeyDown -= Element_KeyDown;
@@ -26,13 +28,27 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         static void Element_KeyDown(object sender, KeyEventArgs e) {
-            if (!e.Key.Equals(Key.Enter)) return;
+            switch (e.Key) {
+                case Key.Escape: {
+                    var element = sender as DependencyObject;
+                    var parent = element?.GetParents().OfType<IInputElement>().FirstOrDefault(x => x.Focusable);
+                    if (parent != null) {
+                        FocusManager.SetFocusedElement(FocusManager.GetFocusScope(element), parent);
+                        break;
+                    }
 
-            var element = sender as UIElement;
-            if (element == null) return;
+                    goto case Key.Enter;
+                }
 
-            element.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-            e.Handled = true;
+                case Key.Enter: {
+                    var element = sender as UIElement;
+                    if (element == null) return;
+
+                    element.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                    e.Handled = true;
+                    break;
+                }
+            }
         }
     }
 }

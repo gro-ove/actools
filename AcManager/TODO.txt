@@ -316,6 +316,9 @@ done:
         + selectable update
         × check for changes?
     + track mod installation
+    + font installation
+    + showroom mod installation
+    + car selection lists (selection by default)
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -331,8 +334,6 @@ fixme:
     - some staticresources have the same name as dynamicrecources
 
 todo:
-    - car selection lists (selection by default)
-
     - showroom from QD/KunosCareer/Online
         + QD
         - KunosCareer
@@ -347,11 +348,14 @@ todo:
         + object-based reload
             + tracks
             - non-json objects
+                - font
 
-    - font installation
+    - drivers installation
     - skins installation
-    - showroom mod installation
     - pp-filter, app, weather?
+
+    - remove old data before installing the new one, etc
+    - define installation modes in lua-scripts in content
 
     - fix brand fitting on car's selection dialog
 
@@ -472,8 +476,6 @@ todo:
 
     - replays filtering
     - screenshots tab
-
-    × weak reference for collectionview
 
 later:
     - auto-update previews

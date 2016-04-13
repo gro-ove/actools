@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -10,6 +12,14 @@ using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
+    using IFileInfo = BaseAdditionalContentInstallator.IFileInfo;
+
+    internal static class FileInfoEnumerableExtension {
+        internal static IFileInfo GetByPathOrDefault(this IEnumerable<IFileInfo> source, string path) {
+            return source.FirstOrDefault(x => string.Equals(x.Filename, path, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
     internal abstract class BaseAdditionalContentInstallator : IAdditionalContentInstallator {
         public virtual Task TrySetPasswordAsync(string password) {
             throw new NotSupportedException();
@@ -30,7 +40,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
         [NotNull]
         protected abstract Task<IEnumerable<IFileInfo>> GetFileEntriesAsync();
 
-        protected interface IFileInfo {
+        internal interface IFileInfo {
             string Filename { get; }
 
             [ItemNotNull]
@@ -43,17 +53,18 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
             var result = new List<AdditionalContentEntry>();
             var found = new List<string>();
 
-            foreach (var fileInfo in await GetFileEntriesAsync()) {
-                var filename = Path.GetFileName(fileInfo.Filename)?.ToLower();
-                if (filename == null) continue;
+            var list = (await GetFileEntriesAsync()).ToList();
+            foreach (var fileInfo in list) {
+                var name = Path.GetFileName(fileInfo.Filename)?.ToLower();
+                if (name == null) continue;
 
-                progress?.Report(filename);
+                progress?.Report(name);
                 if (cancellation.IsCancellationRequested) break;
 
                 AdditionalContentType type;
                 string entryDirectory;
 
-                switch (filename) {
+                switch (name) {
                     case "ui_car.json": {
                         type = AdditionalContentType.Car;
                         var directory = Path.GetDirectoryName(fileInfo.Filename);
@@ -120,29 +131,69 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                         jObject.GetStringValueOnly("version")));
             }
 
+            result.AddRange(from fileInfo in list
+                            select fileInfo.Filename
+                            into filename
+                            let directory = Path.GetDirectoryName(filename)
+                                    // only something in fonts/ or directly in root
+                            where string.IsNullOrWhiteSpace(directory) || Path.GetFileName(directory) == "fonts"
+                                    // only something ends on .txt
+                            where filename.EndsWith(FontObject.FontExtension, StringComparison.OrdinalIgnoreCase)
+                            let withoutExtension = filename.ApartFromLast(FontObject.FontExtension)
+                                    // only something with a name which is a valid id
+                            where AcStringValues.IsAppropriateId(Path.GetFileName(withoutExtension))
+                            let bitmap = FontObject.BitmapExtensions.Select(x => list.GetByPathOrDefault(withoutExtension + x)).FirstOrDefault(x => x != null)
+                                    // only something with a bitmap nearby
+                            where bitmap != null
+                            select new AdditionalContentEntry(AdditionalContentType.Font, bitmap.Filename, Path.GetFileName(filename)?.ToLower() ?? "",
+                                    Path.GetFileName(withoutExtension)));
+
             return result;
         }
 
-        public virtual async Task InstallEntryToAsync(AdditionalContentEntry entry, Func<string, bool> filter, string targetDirectory,
+        public virtual async Task InstallEntryToAsync(AdditionalContentEntry entry, Func<string, bool> filter, string destination,
                 IProgress<string> progress, CancellationToken cancellation) {
-            foreach (var fileInfo in await GetFileEntriesAsync()) {
-                var filename = fileInfo.Filename;
-                if (entry.Path != string.Empty && !FileUtils.IsAffected(entry.Path, filename)) continue;
+            var list = (await GetFileEntriesAsync()).ToList();
 
-                var subFilename = filename.SubstringExt(entry.Path.Length);
-                if (subFilename.StartsWith("\\")) {
-                    subFilename = subFilename.Substring(1);
-                }
+            switch (entry.Type) {
+                case AdditionalContentType.Car:
+                case AdditionalContentType.Track:
+                case AdditionalContentType.Showroom:
+                    foreach (var fileInfo in list) {
+                        var filename = fileInfo.Filename;
+                        if (entry.Path != string.Empty && !FileUtils.IsAffected(entry.Path, filename)) continue;
 
-                if (filter == null || filter(subFilename)) {
-                    progress?.Report(subFilename);
-                    if (cancellation.IsCancellationRequested) return;
+                        var subFilename = filename.SubstringExt(entry.Path.Length);
+                        if (subFilename.StartsWith("\\")) subFilename = subFilename.Substring(1);
 
-                    var path = Path.Combine(targetDirectory, subFilename);
-                    Directory.CreateDirectory(Path.GetDirectoryName(path) ?? targetDirectory);
+                        if (filter == null || filter(subFilename)) {
+                            progress?.Report(subFilename);
+                            if (cancellation.IsCancellationRequested) return;
 
-                    await fileInfo.CopyTo(path);
-                }
+                            var path = Path.Combine(destination, subFilename);
+                            Directory.CreateDirectory(Path.GetDirectoryName(path) ?? destination);
+
+                            await fileInfo.CopyTo(path);
+                        }
+                    }
+
+                    break;
+
+                case AdditionalContentType.CarSkin:
+                    break;
+
+                case AdditionalContentType.Font:
+                    var bitmapExtension = Path.GetExtension(entry.Path);
+
+                    var mainEntry = list.GetByPathOrDefault(entry.Path.ApartFromLast(bitmapExtension) + FontObject.FontExtension);
+                    await mainEntry.CopyTo(destination);
+
+                    var bitmapDestination = destination.ApartFromLast(FontObject.FontExtension) + bitmapExtension;
+                    await list.GetByPathOrDefault(entry.Path).CopyTo(bitmapDestination);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

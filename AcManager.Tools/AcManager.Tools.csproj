@@ -121,6 +121,7 @@
     <Compile Include="Helpers\AdditionalContentInstallation\DirectoryContentInstallator.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\SharpCompressExtension.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />
+    <Compile Include="Helpers\AdditionalContentInstallation\ZipContentInstallator.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider_Consts.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
@@ -153,7 +154,7 @@
     <Compile Include="Helpers\TimeSpanExtension.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentEntry.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentInstallation.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\ArchiveContentInstallator.cs" />
+    <Compile Include="Helpers\AdditionalContentInstallation\SharpCompressContentInstallator.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\IAdditionalContentInstallator.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\PasswordException.cs" />
     <Compile Include="Helpers\Api\OpenWeatherApiProvider.cs" />

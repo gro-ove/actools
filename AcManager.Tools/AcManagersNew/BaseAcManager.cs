@@ -347,8 +347,7 @@ namespace AcManager.Tools.AcManagersNew {
             var wrapper = WrappersList.FirstOrDefault();
             return wrapper == null ? null : EnsureWrapperLoaded(wrapper);
         }
-
-        [CanBeNull]
+        
         public IAcObjectNew GetObjectById(string id) {
             return GetById(id);
         }

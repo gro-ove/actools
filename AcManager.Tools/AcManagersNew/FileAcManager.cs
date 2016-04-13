@@ -39,7 +39,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             var newLocation = Path.Combine(path, wrapper.Value.Id);
 
-            if (File.Exists(newLocation)) {
+            if (FileUtils.Exists(newLocation)) {
                 throw new ToggleException("Place is taken");
             }
 
@@ -50,36 +50,34 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        public void Delete([NotNull]string id) {
+        public virtual void Delete([NotNull]string id) {
             if (!Directories.Actual) return;
             if (id == null) throw new ArgumentNullException(nameof(id));
-            var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException(@"ID is wrong", nameof(id));
-            FileUtils.Recycle(((AcCommonObject)wrapper.Value).Location);
-            if (wrapper.IsLoaded && !File.Exists(((AcCommonObject)wrapper.Value).Location)) {
-                ((AcObjectNew)wrapper.Value).Outdate();
+
+            var obj = GetById(id);
+            if (obj == null) throw new ArgumentException(@"ID is wrong", nameof(id));
+            
+            FileUtils.Recycle(obj.Location);
+            if (!FileUtils.Exists(obj.Location)) {
+                RemoveFromList(id);
             }
         }
 
-        public string PrepareForAdditionalContent([NotNull] string id, bool removeExisting) {
+        public virtual string PrepareForAdditionalContent([NotNull] string id, bool removeExisting) {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var existing = GetById(id);
-            var directory = existing?.Location ?? Directories.GetLocation(id, true);
+            var location = existing?.Location ?? Directories.GetLocation(id, true);
 
-            if (removeExisting && Directory.Exists(directory)) {
-                FileUtils.Recycle(directory);
+            if (removeExisting && FileUtils.Exists(location)) {
+                FileUtils.Recycle(location);
 
-                if (Directory.Exists(directory)) {
+                if (FileUtils.Exists(location)) {
                     throw new OperationCanceledException("Can't remove existing directory");
                 }
             }
 
-            if (!Directory.Exists(directory)) {
-                Directory.CreateDirectory(directory);
-            }
-
-            return directory;
+            return location;
         }
     }
 }
