@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:windows="clr-namespace:AcManager.Pages.Windows" mc:Ignorable="d" Title="Content Manager (Limited Mode)" IsTitleVisible="True" MinWidth="800"
         MinHeight="640" Width="800" Height="720" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="MainWindow_OnDrop"
+                  DragEnter="MainWindow_OnDragEnter"
         DefaultContentSource="/Pages/Drive/QuickDrive.xaml" SizeChanged="MainWindow_OnSizeChanged" StateChanged="MainWindow_OnStateChanged"
         Loaded="MainWindow_OnLoaded" Unloaded="MainWindow_OnUnloaded" Closed="MainWindow_OnClosed"
         d:DataContext="{d:DesignInstance windows:MainWindow+MainWindowViewModel}" AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}"

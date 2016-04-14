@@ -46,8 +46,8 @@ namespace AcManager.Pages.Drive {
                 public double GhostCarAdvantage;
             }
 
-            public QuickDrive_HotlapViewModel() {
-                (Saveable = new SaveHelper<SaveableData>("__QuickDrive_Hotlap", () => new SaveableData {
+            public QuickDrive_HotlapViewModel(bool initialize = true) {
+                Saveable = new SaveHelper<SaveableData>("__QuickDrive_Hotlap", () => new SaveableData {
                     Penalties = Penalties,
                     GhostCar = GhostCar,
                     GhostCarAdvantage = GhostCarAdvantage
@@ -59,7 +59,13 @@ namespace AcManager.Pages.Drive {
                     Penalties = true;
                     GhostCar = true;
                     GhostCarAdvantage = 0.0;
-                })).Init();
+                });
+
+                if (initialize) {
+                    Saveable.Init();
+                } else {
+                    Saveable.Reset();
+                }
             }
 
             public override async Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack, Game.AssistsProperties assistsProperties,

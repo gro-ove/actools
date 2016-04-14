@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -41,7 +42,7 @@ namespace AcManager.Tools.Managers {
         public override FontObject GetDefault() {
             var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains("arial"));
             return v == null ? base.GetDefault() : EnsureWrapperLoaded(v);
-        } 
+        }
 
         public override BaseAcDirectories Directories => AcRootDirectory.Instance.FontsDirectories;
 
@@ -149,13 +150,13 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        public async Task UsingsRescan(IProgress<string> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task<List<string>> UsingsRescan(IProgress<string> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             try {
                 await EnsureLoadedAsync();
-                if (cancellation.IsCancellationRequested) return;
+                if (cancellation.IsCancellationRequested) return null;
 
                 await CarsManager.Instance.EnsureLoadedAsync();
-                if (cancellation.IsCancellationRequested) return;
+                if (cancellation.IsCancellationRequested) return null;
 
                 var list = (await TaskExtension.WhenAll(CarsManager.Instance.LoadedOnly.Select(async car => {
                     if (cancellation.IsCancellationRequested) return null;
@@ -164,16 +165,21 @@ namespace AcManager.Tools.Managers {
                     return new {
                         CarId = car.Id,
                         FontIds = (await Task.Run(() => new IniFile(car.Location, "digital_instruments.ini"), cancellation))
-                                .Values.Select(x => x.Get("FONT")).Where(x => !string.IsNullOrWhiteSpace(x)).ToList()
+                                .Values.Select(x => x.Get("FONT")?.ToLowerInvariant()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList()
                     };
                 }), 12)).Where(x => x != null && x.FontIds.Count > 0).ToListIfItsNot();
 
-                if (cancellation.IsCancellationRequested) return;
+                if (cancellation.IsCancellationRequested) return null;
                 foreach (var fontObject in LoadedOnly) {
                     fontObject.UsingsCarsIds = list.Where(x => x.FontIds.Contains(fontObject.AcId)).Select(x => x.CarId).ToArray();
                 }
+
+                return list.SelectMany(x => x.FontIds).Distinct().Where(id => GetWrapperById(id + FontObject.FontExtension) == null).ToList();
+            } catch (TaskCanceledException) {
+                return null;
             } catch (Exception e) {
                 NonfatalError.Notify("Can't rescan cars", e);
+                return null;
             } finally {
                 LastUsingsRescan = DateTime.Now;
             }

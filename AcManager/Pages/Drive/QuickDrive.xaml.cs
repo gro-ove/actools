@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -31,7 +32,7 @@ namespace AcManager.Pages.Drive {
 
         public QuickDrive() {
             InitializeComponent();
-            DataContext = _model = new QuickDriveViewModel();
+            DataContext = _model = new QuickDriveViewModel(null, true);
         }
 
         private DispatcherTimer _realConditionsTimer;
@@ -67,6 +68,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public class QuickDriveViewModel : NotifyPropertyChanged, IUserPresetable {
+            private readonly bool _uiMode;
+
             #region Notifieable Stuff
             private Uri _selectedMode;
             private CarObject _selectedCar;
@@ -85,6 +88,33 @@ namespace AcManager.Pages.Drive {
                     _selectedMode = value;
                     OnPropertyChanged();
                     SaveLater();
+
+                    if (_uiMode) return;
+                    switch (value.ToString()) {
+                        case "/Pages/Drive/QuickDrive_Drift.xaml":
+                            SelectedModeViewModel = new QuickDrive_Drift.QuickDrive_DriftViewModel(false);
+                            break;
+
+                        case "/Pages/Drive/QuickDrive_Hotlap.xaml":
+                            SelectedModeViewModel = new QuickDrive_Hotlap.QuickDrive_HotlapViewModel(false);
+                            break;
+
+                        case "/Pages/Drive/QuickDrive_Practice.xaml":
+                            SelectedModeViewModel = new QuickDrive_Practice.QuickDrive_PracticeViewModel(false);
+                            break;
+
+                        case "/Pages/Drive/QuickDrive_Race.xaml":
+                            SelectedModeViewModel = new QuickDrive_Race.QuickDrive_RaceViewModel(false);
+                            break;
+
+                        case "/Pages/Drive/QuickDrive_TimeAttack.xaml":
+                            SelectedModeViewModel = new QuickDrive_TimeAttack.QuickDrive_TimeAttackViewModel(false);
+                            break;
+
+                        default:
+                            Logging.Warning("[QUICKDRIVE] Not supported mode: " + value);
+                            break;
+                    }
                 }
             }
 
@@ -307,8 +337,10 @@ namespace AcManager.Pages.Drive {
                 Changed?.Invoke(this, EventArgs.Empty);
             }
 
-            internal QuickDriveViewModel() {
-                (_saveable = new SaveHelper<SaveableData>("__QuickDrive_Main", () => new SaveableData {
+            internal QuickDriveViewModel(string serializedPreset, bool uiMode) {
+                _uiMode = uiMode;
+
+                _saveable = new SaveHelper<SaveableData>("__QuickDrive_Main", () => new SaveableData {
                     RealConditions = RealConditions,
                     RealConditionsTimezones = RealConditionsTimezones,
                     RealConditionsLighting = RealConditionsLighting,
@@ -335,8 +367,9 @@ namespace AcManager.Pages.Drive {
                     if (o.CarId != null) SelectedCar = CarsManager.Instance.GetById(o.CarId) ?? SelectedCar;
                     if (o.TrackId != null) SelectedTrack = TracksManager.Instance.GetLayoutById(o.TrackId) ?? SelectedTrack;
                     if (o.WeatherId != null) SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
-                    if (o.TrackPropertiesPreset != null) SelectedTrackPropertiesPreset =
-                            Game.DefaultTrackPropertiesPresets.FirstOrDefault(x => x.Name == o.TrackPropertiesPreset) ?? SelectedTrackPropertiesPreset;
+                    if (o.TrackPropertiesPreset != null)
+                        SelectedTrackPropertiesPreset =
+                                Game.DefaultTrackPropertiesPresets.FirstOrDefault(x => x.Name == o.TrackPropertiesPreset) ?? SelectedTrackPropertiesPreset;
 
                     Temperature = o.Temperature;
                     Time = o.Time;
@@ -355,7 +388,14 @@ namespace AcManager.Pages.Drive {
                     Temperature = 12.0;
                     Time = 12 * 60 * 60;
                     TimeMultipler = 1;
-                })).Init();
+                });
+
+                if (string.IsNullOrEmpty(serializedPreset)) {
+                    _saveable.Init();
+                } else {
+                    _saveable.Reset();
+                    _saveable.FromSerializedStringWithoutSaving(serializedPreset);
+                }
             }
 
             #region Presets
@@ -592,6 +632,28 @@ namespace AcManager.Pages.Drive {
             private void SelectedModeViewModel_Changed(object sender, EventArgs e) {
                 Changed?.Invoke(this, new EventArgs());
             }
+
+            internal bool Run() {
+                if (GoCommand.CanExecute(null)) {
+                    GoCommand.Execute(null);
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public static bool Run(TrackBaseObject track, CarObject carObject, string selectedSkinId) {
+            throw new NotImplementedException();
+            // return new QuickDrive.QuickDriveViewModel();
+        }
+
+        public static bool RunPreset(string presetFilename) {
+            return RunSerializedPreset(File.ReadAllText(presetFilename));
+        }
+
+        public static bool RunSerializedPreset(string preset) {
+            return new QuickDriveViewModel(preset, false).Run();
         }
     }
 
@@ -600,7 +662,7 @@ namespace AcManager.Pages.Drive {
     }
 
     public abstract class QuickDriveModeViewModel : NotifyPropertyChanged {
-        protected ISaveHelper Saveable { set; private get; }
+        protected ISaveHelper Saveable { set; get; }
 
         public event EventHandler Changed;
 

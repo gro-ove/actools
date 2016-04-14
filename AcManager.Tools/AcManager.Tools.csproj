@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="AcErrors\AcErrorCategory.cs" />
     <Compile Include="AcErrors\AcErrorType.cs" />
+    <Compile Include="AcErrors\Solver\FontSolvers.cs" />
     <Compile Include="AcErrors\Solver\ShowroomSolvers.cs" />
     <Compile Include="AcErrors\Solver\CarSolvers.cs" />
     <Compile Include="AcErrors\Solver\JObjectRestorationSchemeProvider.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Data\GameSpecific\PlaceConditions.cs" />
     <Compile Include="Data\GameSpecific\SessionResult.cs" />
     <Compile Include="Data\KunosCareerProgress.cs" />
+    <Compile Include="Data\AsyncProgressEntry.cs" />
     <Compile Include="Data\WeatherDescription.cs" />
     <Compile Include="Filters\AcCommonObjectTester.cs" />
     <Compile Include="Filters\AcJsonObjectTester.cs" />
@@ -123,7 +125,16 @@
     <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\ZipContentInstallator.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider_Consts.cs" />
+    <Compile Include="Helpers\CookieAwareWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Helpers\CustomUriSchemeHelper.cs" />
+    <Compile Include="Helpers\Loaders\AcClubLoader.cs" />
+    <Compile Include="Helpers\Loaders\DirectLoader.cs" />
+    <Compile Include="Helpers\Loaders\FlexibleLoader.cs" />
+    <Compile Include="Helpers\Loaders\GoogleDriveLoader.cs" />
+    <Compile Include="Helpers\Loaders\ILoader.cs" />
+    <Compile Include="Helpers\Loaders\RaceDepartmentLoader.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />

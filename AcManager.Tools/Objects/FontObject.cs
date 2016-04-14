@@ -33,7 +33,9 @@ namespace AcManager.Tools.Objects {
 
         public FontObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
             AcId = id.ApartFromLast(FontExtension);
+
             _usingsCarsIds = ValuesStorage.GetStringList(KeyUsingsCarsIds).ToArray();
+            IsUsed = _usingsCarsIds.Any();
         }
 
         public override string DisplayName => Id.ApartFromLast(".txt", StringComparison.OrdinalIgnoreCase);
@@ -114,7 +116,14 @@ namespace AcManager.Tools.Objects {
             OnPropertyChanged(nameof(IconBitmap));
 
             var baseFilename = Location.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
-            FontBitmap = BitmapExtensions.Select(ext => baseFilename + ext).FirstOrDefault(File.Exists);
+            var bitmap = BitmapExtensions.Select(ext => baseFilename + ext).FirstOrDefault(File.Exists);
+
+            if (bitmap != FontBitmap) {
+                FontBitmap = bitmap;
+            } else {
+                OnImageChanged(nameof(FontBitmap));
+            }
+
             ErrorIf(FontBitmap == null, AcErrorType.Font_BitmapIsMissing);
         }
 
@@ -168,7 +177,21 @@ namespace AcManager.Tools.Objects {
                 _usingsCarsIds = value;
                 OnPropertyChanged();
 
+                IsUsed = value.Any();
                 ValuesStorage.Set(KeyUsingsCarsIds, value);
+            }
+        }
+
+        private bool _isUsed;
+
+        public bool IsUsed {
+            get { return _isUsed; }
+            set {
+                if (Equals(value, _isUsed)) return;
+                _isUsed = value;
+                OnPropertyChanged();
+
+                ErrorIf(IsUsed && !Enabled, AcErrorType.Font_UsedButDisabled);
             }
         }
 
@@ -177,6 +200,7 @@ namespace AcManager.Tools.Objects {
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
             UpdateFontBitmap();
+            ErrorIf(IsUsed && !Enabled, AcErrorType.Font_UsedButDisabled);
         }
 
         public void ResetIconBitmap() {

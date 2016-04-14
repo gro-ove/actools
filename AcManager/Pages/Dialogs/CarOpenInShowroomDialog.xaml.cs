@@ -11,6 +11,7 @@ using AcManager.Tools.Objects;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarOpenInShowroomDialog {
@@ -35,7 +36,7 @@ namespace AcManager.Pages.Dialogs {
                 PpFiltersManager.Instance.EnsureLoaded();
 
                 SelectedCar = carObject;
-                SelectedSkinId = selectedSkinId ?? SelectedCar.SelectedSkin.Id;
+                SelectedSkinId = selectedSkinId ?? SelectedCar.SelectedSkin?.Id;
 
                 _saveable = new SaveHelper<SaveableData>("__CarOpenInShowroom", () => new SaveableData {
                     ShowroomId = SelectedShowroom?.Id,
@@ -71,6 +72,7 @@ namespace AcManager.Pages.Dialogs {
 
             public CarObject SelectedCar { get; set; }
 
+            [CanBeNull]
             public string SelectedSkinId { get; set; }
 
             private bool _disableSweetFx;

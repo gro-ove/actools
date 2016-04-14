@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
@@ -12,18 +13,21 @@ using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcTools.Kn5Render.Kn5Render;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
+using DragDropEffects = System.Windows.DragDropEffects;
 using Path = System.IO.Path;
 
 namespace AcManager.Pages.Windows {
@@ -34,12 +38,10 @@ namespace AcManager.Pages.Windows {
         private readonly string _testGameDialog = null;
 
         public MainWindow() {
-            _cancelled = AppArguments.Values.Count > 0;
-            foreach (var arg in AppArguments.Values) {
-                Logging.Write("[MAINWINDOW] Input file: " + arg);
-                if (ProcessArgument(arg)) {
-                    _cancelled = false;
-                }
+            _cancelled = false;
+
+            if (AppArguments.Values.Any()) {
+                ProcessArguments();
             }
 
             if (_testGameDialog != null) {
@@ -63,6 +65,24 @@ namespace AcManager.Pages.Windows {
             AppKeyHolder.ProceedMainWindow(this);
         }
 
+        private async void ProcessArguments() {
+            Visibility = Visibility.Hidden;
+
+            var cancelled = true;
+            foreach (var arg in AppArguments.Values) {
+                Logging.Write("[MAINWINDOW] Input: " + arg);
+                if (await ProcessArgument(arg)) {
+                    Logging.Write("[MAINWINDOW] Set visible");
+                    Visibility = Visibility.Visible;
+                    cancelled = false;
+                }
+            }
+
+            if (cancelled) {
+                Close();
+            }
+        }
+
         public new void Show() {
             if (_cancelled) {
                 Logging.Write("[MAINWINDOW] Cancelled");
@@ -75,8 +95,6 @@ namespace AcManager.Pages.Windows {
         private MainWindowViewModel Model => (MainWindowViewModel)DataContext;
 
         public class MainWindowViewModel : NotifyPropertyChanged {
-            public MainWindowViewModel() { }
-
             private RelayCommand _enterKeyCommand;
 
             public RelayCommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new RelayCommand(o => {
@@ -153,14 +171,18 @@ namespace AcManager.Pages.Windows {
             if (message != EntryPoint.SecondInstanceMessage) return IntPtr.Zero;
 
             var data = EntryPoint.ReceiveSomeData();
-            Task.Run(() => {
-                foreach (var filename in data) {
-                    ProcessArgument(filename);
-                }
-            }).Forget();
+            HandleMessagesAsync(data);
 
             BringToFront();
             return IntPtr.Zero;
+        }
+
+        private async void HandleMessagesAsync(IEnumerable<string> data) {
+            await Task.Delay(1);
+            foreach (var filename in data) {
+                await ProcessArgument(filename);
+                await Task.Delay(1);
+            }
         }
 
         private void LoadSize() {
@@ -180,15 +202,27 @@ namespace AcManager.Pages.Windows {
             ValuesStorage.Set("MainWindow.Maximized", WindowState == WindowState.Maximized);
         }
 
+        private async Task<string> LoadRemoveFile(string argument, string name) {
+            using (var waiting = new WaitingDialog("Loading…")) {
+                return await FlexibleLoader.LoadAsync(argument, name, waiting, waiting.CancellationToken);
+            }
+        }
+
         /// <summary>
         /// </summary>
         /// <param name="argument"></param>
         /// <returns>True if form should be shown</returns>
-        private bool ProcessArgument(string argument) {
+        private async Task<bool> ProcessArgument(string argument) {
             if (string.IsNullOrWhiteSpace(argument)) return true;
 
             if (argument.StartsWith(CustomUriSchemeHelper.UriScheme)) {
-                return ProcessUriRequest(argument);
+                return await ProcessUriRequest(argument);
+            }
+
+            if (argument.StartsWith("http", StringComparison.OrdinalIgnoreCase) || argument.StartsWith("https", StringComparison.OrdinalIgnoreCase) ||
+                    argument.StartsWith("ftp", StringComparison.OrdinalIgnoreCase)) {
+                argument = await LoadRemoveFile(argument, null);
+                if (string.IsNullOrWhiteSpace(argument)) return true;
             }
 
             try {
@@ -202,11 +236,57 @@ namespace AcManager.Pages.Windows {
 
         /// <summary>
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="uri"></param>
         /// <returns>True if form should be shown</returns>
-        private bool ProcessUriRequest(string request) {
+        private async Task<bool> ProcessUriRequest(string uri) {
+            if (!uri.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.OrdinalIgnoreCase)) return true;
+
+            var request = uri.SubstringExt(CustomUriSchemeHelper.UriScheme.Length);
             Logging.Write("[MAINWINDOW] URI Request: " + request);
-            return true;
+
+            string key, param;
+            NameValueCollection query;
+
+            {
+                var splitted = request.Split(new[] { '/' }, 2);
+                if (splitted.Length != 2) return false;
+
+                key = splitted[0];
+                param = splitted[1];
+
+                var index = param.IndexOf('?');
+                if (index != -1) {
+                    query = HttpUtility.ParseQueryString(param.SubstringExt(index + 1));
+                    param = param.Substring(0, index);
+                } else {
+                    query = null;
+                }
+            }
+
+            switch (key) {
+                case "quickdrive":
+                    var preset = Convert.FromBase64String(param).ToUtf8String();
+                    if (!QuickDrive.RunSerializedPreset(preset)) {
+                        NonfatalError.Notify("Can't start race", "Make sure required car & track are installed and available.");
+                    }
+                    break;
+
+                case "open":
+                case "install":
+                    var address = Convert.FromBase64String(param).ToUtf8String();
+                    var path = await LoadRemoveFile(address, query?.Get("name"));
+                    if (string.IsNullOrWhiteSpace(path)) return true;
+
+                    try {
+                        if (!FileUtils.Exists(path)) return true;
+                    } catch (Exception) {
+                        return true;
+                    }
+
+                    return ProcessInputFile(path);
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -237,16 +317,29 @@ namespace AcManager.Pages.Windows {
         }
 
         private void MainWindow_OnDrop(object sender, DragEventArgs e) {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
 
             Focus();
-            Dispatcher.InvokeAsync(() => ProcessDroppedFiles(e.Data.GetData(DataFormats.FileDrop) as string[]));
+
+            var data = e.Data.GetData(DataFormats.FileDrop) as string[] ??
+                       (e.Data.GetData(DataFormats.UnicodeText) as string)?.Split('\n')
+                                                                           .Select(x => x.Trim())
+                                                                           .Select(x => x.Length > 1 && x.StartsWith("\"") && x.EndsWith("\"")
+                                                                                   ? x.Substring(1, x.Length - 2) : x);
+            Dispatcher.InvokeAsync(() => ProcessDroppedFiles(data));
         }
 
-        private void ProcessDroppedFiles(IEnumerable<string> files) {
+        private void MainWindow_OnDragEnter(object sender, DragEventArgs e) {
+            if (e.AllowedEffects.HasFlag(DragDropEffects.All) &&
+                (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.UnicodeText))) {
+                e.Effects = DragDropEffects.All;
+            }
+        }
+
+        private async void ProcessDroppedFiles(IEnumerable<string> files) {
             if (files == null) return;
             foreach (var filename in files) {
-                ProcessArgument(filename);
+                await ProcessArgument(filename);
             }
         }
 

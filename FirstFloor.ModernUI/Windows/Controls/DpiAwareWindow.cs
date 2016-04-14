@@ -45,6 +45,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 owner.IsDimmed = true;
             }
 
+            if (owner?.Visibility != Visibility.Visible) {
+                ShowInTaskbar = true;
+            }
+
             base.ShowDialog();
 
             if (owner != null) {

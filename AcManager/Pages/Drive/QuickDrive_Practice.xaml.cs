@@ -38,8 +38,8 @@ namespace AcManager.Pages.Drive {
                 public string StartType;
             }
 
-            public QuickDrive_PracticeViewModel() {
-                (Saveable = new SaveHelper<SaveableData>("__QuickDrive_Practice", () => new SaveableData {
+            public QuickDrive_PracticeViewModel(bool initialize = true) {
+                Saveable = new SaveHelper<SaveableData>("__QuickDrive_Practice", () => new SaveableData {
                     Penalties = Penalties,
                     StartType = SelectedStartType.Value
                 }, o => {
@@ -48,7 +48,13 @@ namespace AcManager.Pages.Drive {
                 }, () => {
                     Penalties = true;
                     SelectedStartType = Game.StartType.Pit;
-                })).Init();
+                });
+
+                if (initialize) {
+                    Saveable.Init();
+                } else {
+                    Saveable.Reset();
+                }
             }
 
             public override async Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack, Game.AssistsProperties assistsProperties,

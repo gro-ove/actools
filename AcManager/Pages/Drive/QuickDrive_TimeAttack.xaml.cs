@@ -22,14 +22,20 @@ namespace AcManager.Pages.Drive {
                 public bool Penalties;
             }
 
-            public QuickDrive_TimeAttackViewModel() {
-                (Saveable = new SaveHelper<SaveableData>("__QuickDrive_TimeAttack", () => new SaveableData {
+            public QuickDrive_TimeAttackViewModel(bool initialize = true) {
+                Saveable = new SaveHelper<SaveableData>("__QuickDrive_TimeAttack", () => new SaveableData {
                     Penalties = Penalties,
                 }, o => {
                     Penalties = o.Penalties;
                 }, () => {
                     Penalties = true;
-                })).Init();
+                });
+
+                if (initialize) {
+                    Saveable.Init();
+                } else {
+                    Saveable.Reset();
+                }
             }
 
             public override async Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack, Game.AssistsProperties assistsProperties,

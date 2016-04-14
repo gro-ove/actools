@@ -121,7 +121,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                 JObject jObject;
                 try {
                     var jsonBytes = await fileInfo.ReadAsync();
-                    jObject = JsonExtension.Parse(jsonBytes.GetString());
+                    jObject = JsonExtension.Parse(jsonBytes.ToUtf8String());
                 } catch (Exception e) {
                     Logging.Warning("Can't read as a JSON (" + fileInfo.Filename + "): " + e);
                     continue;

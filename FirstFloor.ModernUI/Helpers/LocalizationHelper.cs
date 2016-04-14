@@ -81,7 +81,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return result.Any() ? string.Join(" ", result.Take(2)) : "0 seconds";
         }
 
-        public static string ReadableSize(long i) {
+        public static string ReadableSize(long i, int round = 2) {
             var absoluteI = i < 0 ? -i : i;
 
             string suffix;
@@ -109,7 +109,27 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             readable = readable / 1024;
-            return readable.ToString("0.## ") + suffix;
+
+            string format;
+            switch (round) {
+                case 1:
+                    format = "0.# ";
+                    break;
+
+                case 2:
+                    format = "0.## ";
+                    break;
+
+                case 3:
+                    format = "0.### ";
+                    break;
+
+                default:
+                    format = "0 ";
+                    break;
+            }
+
+            return readable.ToString(format) + suffix;
         }
     }
 }

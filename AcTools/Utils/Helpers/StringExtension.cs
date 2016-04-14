@@ -114,6 +114,10 @@ namespace AcTools.Utils.Helpers {
             return currentVersion.CompareAsVersionTo(checkableVersion) < 0;
         }
 
+        public static bool Contains(this string s, string sub, StringComparison comparison) {
+            return s.IndexOf(sub, comparison) != -1;
+        }
+
         public static string SubstringExt(this string s, int from) {
             if (from < 0) {
                 from = s.Length - from;
@@ -162,7 +166,7 @@ namespace AcTools.Utils.Helpers {
         /// <returns></returns>
         [Pure]
         [NotNull]
-        public static string GetString([NotNull]this byte[] bytes) {
+        public static string ToUtf8String([NotNull]this byte[] bytes) {
             return (UTF8Checker.IsUtf8(bytes, 200) ? Encoding.UTF8 : Encoding.Default).GetString(bytes);
         }
 

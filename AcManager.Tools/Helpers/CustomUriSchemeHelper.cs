@@ -4,7 +4,7 @@ using Microsoft.Win32;
 
 namespace AcManager.Tools.Helpers {
     public static class CustomUriSchemeHelper {
-        public const string UriSchemeLabel = "acmanager";
+        private const string UriSchemeLabel = "acmanager";
         public const string UriScheme = UriSchemeLabel + ":";
 
         private const string ClassName = "acmanager";

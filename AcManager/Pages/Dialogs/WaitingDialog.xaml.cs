@@ -3,11 +3,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Controls;
+using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IDisposable {
+    public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<AsyncProgressEntry>, IDisposable {
         public static WaitingDialog Create(string reportValue) {
             var w = new WaitingDialog();
             w.Report(reportValue);
@@ -25,11 +26,38 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public WaitingDialog(string title = "Please, wait…") {
+        private double? _progress;
+
+        public double? Progress {
+            get { return _progress; }
+            set {
+                if (Equals(value, _progress)) return;
+                _progress = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _progressIndetermitate;
+
+        public bool ProgressIndetermitate {
+            get { return _progressIndetermitate; }
+            set {
+                if (Equals(value, _progressIndetermitate)) return;
+                _progressIndetermitate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public WaitingDialog(string title = null) {
             Title = title;
             DataContext = this;
             InitializeComponent();
             Buttons = new Button[] {};
+        }
+
+        public new string Title {
+            get { return base.Title; }
+            set { base.Title = value ?? "Please, wait…"; }
         }
 
         private CancellationTokenSource _cancellationTokenSource;
@@ -54,6 +82,7 @@ namespace AcManager.Pages.Dialogs {
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Report(string value) {
+            if (Message == value) return;
             Dispatcher.Invoke(() => {
                 if (value != null) {
                     if (!IsVisible && !_shown) {
@@ -62,6 +91,43 @@ namespace AcManager.Pages.Dialogs {
                     }
 
                     Message = value;
+                } else if (IsVisible && !_closed) {
+                    Close();
+                    _closed = true;
+                }
+            });
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public void Report(double? value) {
+            if (Progress.HasValue && value.HasValue && Math.Abs(Progress.Value - value.Value) < 0.0001) return;
+            Dispatcher.Invoke(() => {
+                if (value != null) {
+                    if (!IsVisible && !_shown) {
+                        _shown = true;
+                        ShowDialogWithoutBlocking();
+                    }
+                    
+                    Progress = value;
+                    ProgressIndetermitate = value == 0d;
+                } else if (IsVisible && !_closed) {
+                    Close();
+                    _closed = true;
+                }
+            });
+        }
+
+        public void Report(AsyncProgressEntry value) {
+            Dispatcher.Invoke(() => {
+                if (value.Message != null) {
+                    if (!IsVisible && !_shown) {
+                        _shown = true;
+                        ShowDialogWithoutBlocking();
+                    }
+
+                    Message = value.Message;
+                    Progress = value.Progress;
+                    ProgressIndetermitate = value.Progress == 0d;
                 } else if (IsVisible && !_closed) {
                     Close();
                     _closed = true;

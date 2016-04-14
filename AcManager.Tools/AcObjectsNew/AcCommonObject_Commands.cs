@@ -35,7 +35,11 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private ICommand _reloadCommand;
         public ICommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new RelayCommand(o => {
-            Reload();
+            if (o as string == "full") {
+                Manager.Reload(Id);
+            } else {
+                Reload();
+            }
         }));
 
         private ICommand _saveCommand;

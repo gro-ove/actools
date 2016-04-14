@@ -281,6 +281,12 @@ namespace AcTools.Utils {
             return result;
         }
 
+        public static string GetTempFileNameFixed(string dir, string fixedName) {
+            var d = GetTempFileName(dir);
+            Directory.CreateDirectory(d);
+            return Path.Combine(d, fixedName);
+        }
+
         public static string GetTempFileName(string dir, string extension) {
             string result;
             for (var i = 0; File.Exists(result = Path.Combine(dir, "__tmp_" + i + extension)); i++) {}

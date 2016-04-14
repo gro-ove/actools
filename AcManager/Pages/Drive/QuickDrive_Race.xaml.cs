@@ -153,11 +153,11 @@ namespace AcManager.Pages.Drive {
                 public string[] ManualList;
             }
 
-            public QuickDrive_RaceViewModel() {
+            public QuickDrive_RaceViewModel(bool initialize = true) {
                 OpponentsCars = new BetterObservableCollection<CarObject>();
                 OpponentsCarsView = new BetterListCollectionView(OpponentsCars) { CustomSort = this };
 
-                (Saveable = new SaveHelper<SaveableData>("__QuickDrive_Race", () => new SaveableData {
+                Saveable = new SaveHelper<SaveableData>("__QuickDrive_Race", () => new SaveableData {
                     Penalties = Penalties,
                     AiLevel = AiLevel,
                     LapsNumber = LapsNumber,
@@ -186,7 +186,13 @@ namespace AcManager.Pages.Drive {
                     StartingPosition = 4;
                     SelectedGridType = GridType.SameCar;
                     OpponentsCarsFilter = string.Empty;
-                })).Init();
+                });
+
+                if (initialize) {
+                    Saveable.Init();
+                } else {
+                    Saveable.Reset();
+                }
             }
 
             public class GridType : IWithId {

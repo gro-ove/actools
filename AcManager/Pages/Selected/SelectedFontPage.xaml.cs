@@ -19,6 +19,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Selected {
@@ -31,18 +32,24 @@ namespace AcManager.Pages.Selected {
             private AsyncCommand _usingsRescanCommand;
 
             public AsyncCommand UsingsRescanCommand => _usingsRescanCommand ?? (_usingsRescanCommand = new AsyncCommand(async o => {
+                List<string> missing;
                 using (var waiting = new WaitingDialog()) {
-                    await FontsManager.Instance.UsingsRescan(waiting, waiting.CancellationToken);
+                    missing = await FontsManager.Instance.UsingsRescan(waiting, waiting.CancellationToken);
+                }
+
+                if (missing?.Any() == true) {
+                    ModernDialog.ShowMessage(missing.JoinToString(", "), "Missing Fonts", MessageBoxButton.OK);
                 }
             }));
 
             private AsyncCommand _disableUnusedCommand;
 
             public AsyncCommand DisableUnusedCommand => _disableUnusedCommand ?? (_disableUnusedCommand = new AsyncCommand(async o => {
-                using (var waiting = new WaitingDialog()) {
+                using (var waiting = new WaitingDialog("Scanning…")) {
                     await FontsManager.Instance.UsingsRescan(waiting, waiting.CancellationToken);
                     if (waiting.CancellationToken.IsCancellationRequested) return;
 
+                    waiting.Title = null;
                     var toDisable = FontsManager.Instance.LoadedOnly.Where(x => x.Enabled && x.UsingsCarsIds.Length == 0).ToList();
                     foreach (var font in toDisable) {
                         waiting.Report($@"Disabling {font.DisplayName}…");
@@ -87,6 +94,7 @@ namespace AcManager.Pages.Selected {
             InitializeAcObjectPage(new SelectedFontPageViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.CreateNewFontCommand, new KeyGesture(Key.N, ModifierKeys.Control)),
+                new InputBinding(Model.UsingsRescanCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
                 new InputBinding(Model.DisableUnusedCommand, new KeyGesture(Key.D, ModifierKeys.Control | ModifierKeys.Shift))
             });
             InitializeComponent();

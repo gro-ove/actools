@@ -9,7 +9,7 @@
         <controls:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open track's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
-                <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" />
+                <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
                 <Button Content="Analyze" IsEnabled="False" />
             </ToolBar>

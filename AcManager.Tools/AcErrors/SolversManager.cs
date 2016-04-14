@@ -48,6 +48,31 @@ namespace AcManager.Tools.AcErrors {
 
                 case AcErrorType.Showroom_Kn5IsMissing:
                     return new Showroom_Kn5IsMissingSolver((ShowroomObject)obj, error);
+                    
+                case AcErrorType.Data_KunosCareerEventsAreMissing:
+                    break;
+                case AcErrorType.Data_KunosCareerConditions:
+                    break;
+                case AcErrorType.Data_KunosCareerContentIsMissing:
+                    break;
+                case AcErrorType.Data_KunosCareerTrackIsMissing:
+                    break;
+                case AcErrorType.Data_KunosCareerCarIsMissing:
+                    break;
+                case AcErrorType.Data_KunosCareerCarSkinIsMissing:
+                    break;
+                case AcErrorType.Data_KunosCareerWeatherIsMissing:
+                    break;
+                case AcErrorType.CarSkins_SkinsAreMissing:
+                    break;
+                case AcErrorType.CarSkins_DirectoryIsUnavailable:
+                    break;
+
+                case AcErrorType.Font_BitmapIsMissing:
+                    return new Font_BitmapIsMissingSolver((FontObject)obj, error);
+
+                case AcErrorType.Font_UsedButDisabled:
+                    return new Font_UsedButDisabledSolver((FontObject)obj, error);
 
                 default:
                     // throw new ArgumentOutOfRangeException();

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using AcTools.AcdFile;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public class IniFileSection : Dictionary<string, string> {
@@ -23,6 +24,7 @@ namespace AcTools.DataFile {
             }
         }
 
+        [CanBeNull]
         public string Get(string key) {
             return ContainsKey(key) ? base[key] : null;
         }
@@ -85,7 +87,9 @@ namespace AcTools.DataFile {
                 throw new ArgumentException("T must be an enumerated type");
             }
 
-            return (T)Enum.Parse(typeof(T), Get(key), ignoreCase);
+            var value = Get(key);
+            if (value == null) return default(T);
+            return (T)Enum.Parse(typeof(T), value, ignoreCase);
         }
 
         public T? GetEnumOrNull<T>(string key, bool ignoreCase = true) where T : struct, IConvertible {

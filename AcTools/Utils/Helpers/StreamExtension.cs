@@ -30,7 +30,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static string ReadAsString(this Stream s) {
-            return ReadAsBytes(s).GetString();
+            return ReadAsBytes(s).ToUtf8String();
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace AcTools.Utils.Helpers {
         /// </summary>
         /// <returns></returns>
         public static string ReadAsStringAndDispose(this Stream s) {
-            return ReadAsBytesAndDispose(s).GetString();
+            return ReadAsBytesAndDispose(s).ToUtf8String();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace AcTools.Utils {
     public partial class FileUtils {
         public static string ReadAllText(string filename) {
             var bytes = File.ReadAllBytes(filename);
-            return bytes.GetString();
+            return bytes.ToUtf8String();
         }
     }
 }

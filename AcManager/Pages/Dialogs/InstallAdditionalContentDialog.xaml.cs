@@ -101,7 +101,7 @@ namespace AcManager.Pages.Dialogs {
 
         private bool _loaded;
 
-        private void InstallAdditionalContentDialog_OnLoaded(object sender, RoutedEventArgs e) {
+        private void InstallAdditionalContentDialog_OnLoaded(object sender, RoutedEventArgs args) {
             if (_loaded) return;
             _loaded = true;
 
@@ -109,7 +109,13 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private async void CreateInstallator() {
-            _installator = await AdditionalContentInstallation.FromFile(Filename);
+            try {
+                _installator = await AdditionalContentInstallation.FromFile(Filename);
+            } catch (Exception e) {
+                NonfatalError.Notify("Can't install content from file", e);
+                Close();
+                return;
+            }
 
             var msg = @"Archive is encrypted. Input password:";
             while (_installator.IsPasswordRequired && !_installator.IsPasswordCorrect) {

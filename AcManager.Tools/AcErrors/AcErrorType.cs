@@ -122,5 +122,8 @@ namespace AcManager.Tools.AcErrors {
 
         [Description("Font's bitmap is missing")]
         Font_BitmapIsMissing,
+
+        [Description("Font is used but disabled")]
+        Font_UsedButDisabled,
     }
 }
