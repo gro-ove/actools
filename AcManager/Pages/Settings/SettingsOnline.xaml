@@ -14,6 +14,11 @@
                 <Label>Remember passwords</Label>
             </CheckBox>
 
+            <DockPanel>
+                <Label>Use server:</Label>
+                <ComboBox ItemsSource="{Binding Holder.OnlineServers}" SelectedItem="{Binding Holder.OnlineServer}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Adding by IP:</TextBlock>
 
             <DockPanel>

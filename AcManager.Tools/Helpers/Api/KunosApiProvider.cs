@@ -15,13 +15,19 @@ using Newtonsoft.Json;
 namespace AcManager.Tools.Helpers.Api {
     public partial class KunosApiProvider {
         public static bool OptionSaveResponses = false;
+        public static bool OptionUseWebClient = false;
+        public static bool OptionForceDisabledCache = false;
+        public static bool OptionIgnoreSystemProxy = true;
+
         public static int OptionPingTimeout = 2000;
-        public static int OptionWebRequestTimeout = 3000;
+        public static int OptionWebRequestTimeout = 5000;
 
         private static int _currentServerUri;
 
+        public static int ServersNumber => ServerUris.Length;
+
         [CanBeNull]
-        private static string ServerUri => ServerUris.ElementAtOrDefault(_currentServerUri);
+        private static string ServerUri => ServerUris.ElementAtOrDefault((_currentServerUri + SettingsHolder.Online.OnlineServerId) % ServersNumber);
 
         private static void NextServer() {
             _currentServerUri++;
@@ -31,11 +37,33 @@ namespace AcManager.Tools.Helpers.Api {
         private static HttpRequestCachePolicy _cachePolicy;
 
         private static string Load(string uri) {
+            return OptionUseWebClient ? LoadUsingClient(uri) : LoadUsingRequest(uri);
+        }
+
+        private static string LoadUsingClient(string uri) {
+            using (var client = new WebClient {
+                Headers = {
+                    [HttpRequestHeader.UserAgent] = UserAgent
+                }
+            }) {
+                return client.DownloadString(uri);
+            }
+        }
+        
+        private static string LoadUsingRequest(string uri) {
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
             request.UserAgent = UserAgent;
-            request.CachePolicy = _cachePolicy ??
-                    (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
+
+            if (OptionIgnoreSystemProxy) {
+                request.Proxy = null;
+            }
+
+            if (OptionForceDisabledCache) {
+                request.CachePolicy = _cachePolicy ??
+                        (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
+            }
+
             request.Timeout = OptionWebRequestTimeout;
 
             string result;
@@ -72,7 +100,14 @@ namespace AcManager.Tools.Helpers.Api {
             while (ServerUri != null) {
                 var requestUri = $"http://{ServerUri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
                 try {
-                    return JsonConvert.DeserializeObject<ServerInformation[]>(Load(requestUri));
+                    var watch = Stopwatch.StartNew();
+                    var data = Load(requestUri);
+                    var loadTime = watch.Elapsed;
+                    watch.Restart();
+                    var parsed = JsonConvert.DeserializeObject<ServerInformation[]>(data);
+                    var parsingTime = watch.Elapsed;
+                    Logging.Write($"[KUNOSAPIPROVIDER] List (loading/parsing): {loadTime.TotalMilliseconds:F1} ms/{parsingTime.TotalMilliseconds:F1} ms");
+                    return parsed;
                 } catch (Exception e) {
                     Logging.Warning("cannot get servers list: {0}\n{1}", requestUri, e);
                 }

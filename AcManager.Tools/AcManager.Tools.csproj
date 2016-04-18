@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="Helpers\CustomUriSchemeHelper.cs" />
     <Compile Include="Helpers\Loaders\AcClubLoader.cs" />
+    <Compile Include="Helpers\Loaders\AssettoDbLoader.cs" />
     <Compile Include="Helpers\Loaders\DirectLoader.cs" />
     <Compile Include="Helpers\Loaders\FlexibleLoader.cs" />
     <Compile Include="Helpers\Loaders\GoogleDriveLoader.cs" />

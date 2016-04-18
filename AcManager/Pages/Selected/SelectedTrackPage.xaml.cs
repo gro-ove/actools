@@ -39,7 +39,7 @@ namespace AcManager.Pages.Selected {
         private void GeoTags_KeyDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
-                new TrackGeoTagsDialog(_model.SelectedObject).ShowDialog();
+                new TrackGeoTagsDialog(_model.SelectedTrackConfiguration).ShowDialog();
             }
         }
 

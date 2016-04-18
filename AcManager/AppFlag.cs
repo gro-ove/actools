@@ -162,6 +162,13 @@ namespace AcManager {
         /// in other words — broken). I don't think it'll work, but anyway.
         /// Example: --kunos-career-ignore-skipped-events=true
         /// </summary>
-        KunosCareerIgnoreSkippedEvents
+        KunosCareerIgnoreSkippedEvents,
+
+        /// <summary>
+        /// Ignore system proxy settings (from IE). Enabled by default, could work slower if 
+        /// disabled.
+        /// Example: --ignore-system-proxy=false
+        /// </summary>
+        IgnoreSystemProxy,
     }
 }

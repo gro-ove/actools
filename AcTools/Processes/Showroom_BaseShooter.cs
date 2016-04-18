@@ -7,18 +7,18 @@ using AcTools.Utils.Helpers;
 
 namespace AcTools.Processes {
     public partial class Showroom {
-        public abstract class AbstractShotter : IDisposable {
+        public abstract class BaseShotter : IDisposable {
             public string OutputDirectory { get; private set; }
 
             public string AcRoot, CarId, ShowroomId;
             public string[] SkinIds;
             public string Filter, TemporaryDirectory;
-            public bool UseBmp, DisableWatermark, DisableSweetFx;
+            public bool UseBmp, DisableWatermark, DisableSweetFx, SpecialResolution, MaximizeVideoSettings;
             public bool? Fxaa;
 
             private bool _prepared;
 
-            private readonly List<ITemporaryChange> _changes = new List<ITemporaryChange>();
+            private readonly List<IDisposable> _changes = new List<IDisposable>();
 
             protected virtual void Prepare() {
                 if (_prepared) return;
@@ -44,13 +44,7 @@ namespace AcTools.Processes {
                     _changes.Add(new DisableSweetFxChange(AcRoot));
                 }
 
-                if (Filter != null) {
-                    _changes.Add(new PpFilterChange(Filter));
-                }
-
-                if (Fxaa.HasValue) {
-                    _changes.Add(new FxaaChange(Fxaa.Value));
-                }
+                _changes.Add(new VideoIniChange(Filter, Fxaa, SpecialResolution, MaximizeVideoSettings));
 
                 if (TemporaryDirectory == null) {
                     TemporaryDirectory = Path.GetTempPath();
@@ -78,7 +72,7 @@ namespace AcTools.Processes {
             }
         }
 
-        public abstract class AbstractIterableShooter : AbstractShotter {
+        public abstract class BaseIterableShooter : BaseShotter {
             public abstract void Shot(string skinId);
 
             public override void ShotAll() {

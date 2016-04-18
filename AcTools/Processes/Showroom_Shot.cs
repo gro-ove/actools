@@ -26,12 +26,14 @@ namespace AcTools.Processes {
             public bool? Fxaa;
 
             public bool UseBmp = true,
-                        DisableWatermark = true,
-                        DisableSweetFx = false;
+                    DisableWatermark = true,
+                    DisableSweetFx = false,
+                    SpecialResolution = false,
+                    MaximizeVideoSettings = false;
         }
 
-        private static AbstractShotter CreateShooter(ShotProperties properties) {
-            AbstractShotter shooter;
+        private static BaseShotter CreateShooter(ShotProperties properties) {
+            BaseShotter shooter;
 
             switch (properties.Mode) {
                 case ShotMode.Classic: {
@@ -70,6 +72,8 @@ namespace AcTools.Processes {
             shooter.DisableSweetFx = properties.DisableSweetFx;
             shooter.Filter = properties.Filter;
             shooter.Fxaa = properties.Fxaa;
+            shooter.SpecialResolution = properties.SpecialResolution;
+            shooter.MaximizeVideoSettings = properties.MaximizeVideoSettings;
 
             return shooter;
         }
@@ -94,7 +98,7 @@ namespace AcTools.Processes {
                                                    CancellationToken cancellationToken) {
             return await Task.Run(() => {
                 using (var shooter = CreateShooter(properties)) {
-                    var iterableShooter = shooter as AbstractIterableShooter;
+                    var iterableShooter = shooter as BaseIterableShooter;
                     if (iterableShooter == null) {
                         shooter.ShotAll();
                     } else {

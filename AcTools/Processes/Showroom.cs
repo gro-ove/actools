@@ -59,15 +59,13 @@ namespace AcTools.Processes {
                 using (properties.UseBmp ? new ScreenshotFormatChange(properties.AcRoot, "BMP") : null)
                 using (properties.DisableWatermark ? new DisableShowroomWatermarkChange(properties.AcRoot) : null)
                 using (properties.DisableSweetFx ? new DisableSweetFxChange(properties.AcRoot) : null)
-                using (properties.Filter != null ? new PpFilterChange(properties.Filter) : null) {
+                using (properties.Filter != null ? new VideoIniChange(properties.Filter, null, false, false) : null) {
                     var process = Process.Start(new ProcessStartInfo {
                         WorkingDirectory = properties.AcRoot,
                         FileName = "acShowroom.exe"
                     });
 
-                    if (process != null) {
-                        process.WaitForExit();
-                    }
+                    process?.WaitForExit();
                 }
             } finally {
                 _busy = false;

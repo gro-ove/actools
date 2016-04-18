@@ -84,6 +84,9 @@
     <Compile Include="Helpers\DelayedPropertyWrapper.cs" />
     <Compile Include="Helpers\ErrorMessage.cs" />
     <Compile Include="Helpers\FancyBackgroundManager.cs" />
+    <Compile Include="Pages\Dialogs\CarOpenInShowroomDialog.xaml.cs">
+      <DependentUpon>CarOpenInShowroomDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\KunosCareerIntro.xaml.cs">
       <DependentUpon>KunosCareerIntro.xaml</DependentUpon>
     </Compile>
@@ -168,6 +171,10 @@
     <Page Include="GraphViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\CarOpenInShowroomDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\KunosCareerIntro.xaml">
       <Generator>MSBuild:Compile</Generator>

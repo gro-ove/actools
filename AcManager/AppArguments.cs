@@ -61,10 +61,9 @@ namespace AcManager {
             return _args != null && _args.ContainsKey(flag) ? _args[flag] : null;
         }
 
-        public static bool GetBool(AppFlag flag) {
-            bool b = false;
-            Set(flag, ref b);
-            return b;
+        public static bool GetBool(AppFlag flag, bool defaultValue = false) {
+            Set(flag, ref defaultValue);
+            return defaultValue;
         }
 
         public static void Set(AppFlag flag, ref bool option) {

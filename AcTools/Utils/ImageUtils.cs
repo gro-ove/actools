@@ -38,7 +38,7 @@ namespace AcTools.Utils {
             AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
         }
 
-        private const int ApplyPreviewsWidth = 1024;
+        private const int ApplyPreviewsWidth = 1022;
         private const int ApplyPreviewsHeight = 575;
 
         private static void ApplyPreviewImageMagick(string source, string destination, bool resize) {

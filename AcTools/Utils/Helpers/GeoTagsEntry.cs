@@ -5,7 +5,7 @@ namespace AcTools.Utils.Helpers {
         public readonly string Latitude, Longitude;
         public readonly double LatitudeValue, LongitudeValue;
 
-        public bool IsEmptyOrInvalid { get; private set; }
+        public bool IsEmptyOrInvalid { get; }
 
         public GeoTagsEntry(string lat, string lon) {
             Latitude = lat;
@@ -32,12 +32,10 @@ namespace AcTools.Utils.Helpers {
             LatitudeValue = lat;
             LongitudeValue = lon;
 
-            Latitude = string.Format("{0:F5}° {1}", lat, lat < 0 ? "S" : "N");
-            Longitude = string.Format("{0:F5}° {1}", lon, lon < 0 ? "W" : "E");
+            Latitude = $"{lat:F5}° {(lat < 0 ? "S" : "N")}";
+            Longitude = $"{lon:F5}° {(lon < 0 ? "W" : "E")}";
         }
 
-        public override string ToString() {
-            return IsEmptyOrInvalid ? "" : Latitude + ", " + Longitude;
-        }
+        public override string ToString() => IsEmptyOrInvalid ? "" : Latitude + ", " + Longitude;
     }
 }

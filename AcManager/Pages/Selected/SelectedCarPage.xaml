@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
-        xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
         xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarPage+SelectedCarPageViewModel}">
@@ -89,8 +88,8 @@
 
                 <!-- preview of selected skin -->
                 <Grid
-                        Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5625}"
-                        Name="SelectedSkinPreview" MinHeight="160" MaxHeight="575" MaxWidth="1024">
+                        Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
+                        Name="SelectedSkinPreview" MinHeight="160" MaxHeight="575" MaxWidth="1022">
                     <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="0"
                             Source="{Binding SelectedObject.SelectedSkin.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
                             MouseDown="SelectedSkinPreview_MouseDown" Name="SelectedSkinPreviewImage" />
@@ -112,9 +111,9 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type acManagersNew:AcItemWrapper}">
-                            <Border BorderThickness="0" Background="Transparent">
+                            <Border BorderThickness="0" Background="Transparent" Width="32" Height="32">
                                 <Image RenderOptions.BitmapScalingMode="LowQuality" MouseDown="SelectedSkinPreview_MouseDown"
-                                        ToolTip="{Binding Value.DisplayName}" Width="32" Height="32"
+                                        ToolTip="{Binding Value.DisplayName}"
                                         Source="{Binding Value.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
                             </Border>
                         </DataTemplate>

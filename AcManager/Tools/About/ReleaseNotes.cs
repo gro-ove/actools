@@ -53,7 +53,19 @@ I'll make another page in Important Tips section, but for just some examples:
   [b][mono]bhp>500 & (weight<1000 | skins=5), brand:A*[/mono][/b] — as you can see, this one is for cars, filters all cars by their power and weight or number or skins; and, just as an addition, keeps all cars if their brand's name is started with “A” (“,” works as “|”, totally the same);
   [b][mono]length<5000 & pits=5[/mono][/b] — this one is for tracks, filters by length and number of pitstops;
   [b][mono]practice+ & qualification-[/mono][/b] — online servers, keeps only the ones with practice session, but without qualification one;
-  [b][mono]available(bhp>500)[/mono][/b] — again online servers, at this time you'll get only servers which have available car with more than 500 bhp.")
+  [b][mono]available(bhp>500)[/mono][/b] — again online servers, at this time you'll get only servers which have available car with more than 500 bhp."),
+
+            new ReleaseNotes("0.5.123", @"Assetto Corsa 1.5.8", @"Auto-update Previews part was updated again. Also, some new options were added. One of them, “Shot in 3840×2160”, makes previews much smoother and nicer (but may take a bit more time). 
+
+ [img=""http://i.imgur.com/IMvD9Y1.jpg|320""]Example of a new preview[/img]
+
+Another big change is a special protocol which allows to install mods directly from different sites (and [url=""http://jsfiddle.net/x4fab/ppp0rjkm/1/embedded/result/""]something[/url] [url=""http://jsfiddle.net/x4fab/8dcj8b37/embedded/result/""]else[/url]).
+
+ [img=""http://i.imgur.com/bWC2e3s.jpg|349""]AssettoCorsa.club[/img]
+
+ [img=""http://i.imgur.com/0iPlIYH.jpg|349""]RaceDepartment.com[/img]
+
+If you want to get those buttons, please, install [url=""https://greasyfork.org/en/scripts/18779-actools-content-manager-helper""]this userscript[/url]. Works for [url=""assettocorsa.club""]AssettoCorsa.club[/url] and [url=""racedepartment.com""]RaceDepartment.com[/url].")
         };
     }
 }

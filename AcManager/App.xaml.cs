@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -44,6 +45,10 @@ namespace AcManager {
         }
 
         public App() {
+            if (AppArguments.GetBool(AppFlag.IgnoreSystemProxy, true)) {
+                WebRequest.DefaultWebProxy = null;
+            }
+
             AppArguments.Initialize(Environment.GetCommandLineArgs().Skip(1));
             FilesStorage.Initialize(AppArguments.Get(AppFlag.StorageLocation) ?? GetLocalApplicationDataDirectory());
             AppArguments.AddFromFile(FilesStorage.Instance.GetFilename("Arguments.txt"));
@@ -55,6 +60,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.ForceSteamId, ref SteamIdHelper.OptionForceValue);
 
             AppArguments.Set(AppFlag.PingTimeout, ref KunosApiProvider.OptionPingTimeout);
+            AppArguments.Set(AppFlag.IgnoreSystemProxy, ref KunosApiProvider.OptionIgnoreSystemProxy);
             AppArguments.Set(AppFlag.ScanPingTimeout, ref RecentManager.OptionScanPingTimeout);
             AppArguments.Set(AppFlag.LanSocketTimeout, ref KunosApiProvider.OptionLanSocketTimeout);
             AppArguments.Set(AppFlag.LanPollTimeout, ref KunosApiProvider.OptionLanPollTimeout);

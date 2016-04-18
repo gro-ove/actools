@@ -3,14 +3,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="Update Previews" MinWidth="540" MinHeight="400" Width="540" Height="400"
-        ResizeMode="CanResize" MaxWidth="1920" MaxHeight="1080" Closing="CarUpdatePreviewsDialog_OnClosing" SizeToContent="Manual"
-        Loaded="CarUpdatePreviewsDialog_OnLoaded" d:DataContext="{d:DesignInstance dialogs:CarUpdatePreviewsDialog}">
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" Title="Update Previews" MinWidth="540" MinHeight="400" Width="540" Height="400" ResizeMode="CanResize" MaxWidth="1920"
+        MaxHeight="1080" Closing="CarUpdatePreviewsDialog_OnClosing" SizeToContent="Manual" Loaded="CarUpdatePreviewsDialog_OnLoaded"
+        d:DataContext="{d:DesignInstance dialogs:CarUpdatePreviewsDialog}">
     <Grid>
-        <Grid Name="OptionsPhase" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <DockPanel Name="OptionsPhase" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <!--first two rows-->
+            <Grid HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -18,79 +18,99 @@
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!--first column, showroom & filter-->
+                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
+                    <TextBlock Margin="0 0 0 4" Text="Showroom:" Style="{StaticResource LabelWithPadding}" />
+                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
+                    <TextBlock Margin="0 0 0 4" Text="Filter:" Style="{StaticResource LabelWithPadding}" />
+                    <ComboBox Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
+                </StackPanel>
+
+                <!--second column, camera position-->
+                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">
+                    <TextBlock Margin="0 0 0 4" Text="Camera Position:" Style="{StaticResource LabelWithPadding}" />
+                    <TextBox Margin="4 0 4 0" Text="{Binding CameraPosition}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="1">
+                    <TextBlock Margin="0 0 0 4" Text="Look At:" Style="{StaticResource LabelWithPadding}" />
+                    <TextBox Margin="4 0 4 0" Text="{Binding CameraLookAt}" />
+                </StackPanel>
+            </Grid>
+
+            <Grid HorizontalAlignment="Stretch" DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="0" Grid.Column="0">
-                    <Grid Margin="0 0 0 5">
-                        <TextBlock Text="Showroom:" Style="{StaticResource LabelWithPadding}" />
-                    </Grid>
-                    <ComboBox Margin="5 0 5 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}" />
-                </StackPanel>
-
-                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="1" Grid.Column="0">
-                    <Grid Margin="0 0 0 5">
-                        <TextBlock Text="Filter:" Style="{StaticResource LabelWithPadding}" />
-                    </Grid>
-                    <ComboBox Margin="5 0 5 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
-                </StackPanel>
-
-                <Grid Grid.Row="2" Grid.Column="0" Grid.RowSpan="2">
+                <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <CheckBox Grid.Row="0" IsChecked="{Binding DisableWatermark}" Margin="10 0 0 0"
-                            ToolTip="Kunos watermark will be temporary hidden">
+                    <CheckBox Grid.Row="0" IsChecked="{Binding DisableWatermark}" Margin="8 0 0 0" ToolTip="Kunos watermark will be temporary hidden">
                         <Label>Hide _watermark</Label>
                     </CheckBox>
 
-                    <CheckBox Grid.Row="1" IsChecked="{Binding DisableSweetFx}" Margin="10 0 0 0"
+                    <CheckBox Grid.Row="1" IsChecked="{Binding DisableSweetFx}" Margin="8 0 0 0"
                             ToolTip="Apparantly SweetFx doesn't affect the result, but could decrease loading time">
                         <Label>Disable _SweetFX</Label>
                     </CheckBox>
 
-                    <CheckBox Grid.Row="2" IsChecked="{Binding ResizePreviews}" Margin="10 0 0 0"
-                            ToolTip="Resize previews to Kunos size (1024x575), highly recommended">
+                    <CheckBox Grid.Row="2" IsChecked="{Binding ResizePreviews}" Margin="8 0 0 0"
+                            ToolTip="Resize previews to Kunos size (1022x575), highly recommended">
                         <Label>_Resize previews</Label>
                     </CheckBox>
                 </Grid>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="0" Grid.Column="1">
-                    <Grid Margin="0 0 0 5">
-                        <TextBlock Text="Camera Position:" Style="{StaticResource LabelWithPadding}" />
-                    </Grid>
-                    <TextBox Margin="5 0 5 0" Text="{Binding CameraPosition}" />
-                </StackPanel>
+                <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="1" Grid.Column="1">
-                    <Grid Margin="0 0 0 5">
-                        <TextBlock Text="Look At:" Style="{StaticResource LabelWithPadding}" />
-                    </Grid>
-                    <TextBox Margin="5 0 5 0" Text="{Binding CameraLookAt}" />
-                </StackPanel>
+                    <CheckBox Grid.Row="0" IsChecked="{Binding MaximizeVideoSettings}" Margin="8 0 0 0"
+                            ToolTip="Enable all video effets like reflections or glare, recommended">
+                        <Label>Enable all e_ffects</Label>
+                    </CheckBox>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="2" Grid.Column="1">
-                    <Grid Margin="0 0 0 5">
-                        <TextBlock Text="FOV:" Style="{StaticResource LabelWithPadding}" />
-                    </Grid>
+                    <CheckBox Grid.Row="1" IsChecked="{Binding EnableFxaa}" Margin="8 0 0 0" ToolTip="Use FXAA for previews">
+                        <Label>Enable FX_AA</Label>
+                    </CheckBox>
+
+                    <CheckBox Grid.Row="2" IsChecked="{Binding UseSpecialResolution}" Margin="8 0 0 0" ToolTip="Enable for the best quality">
+                        <Label>Shot in 3840×2160</Label>
+                    </CheckBox>
+                </Grid>
+
+                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="2">
+                    <TextBlock Margin="0 0 0 4" Text="FOV:" Style="{StaticResource LabelWithPadding}" />
                     <TextBox Margin="5 0 5 0" Text="{Binding CameraFov}" mui:TextBoxAdvancement.SpecialMode="Number" />
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 10" Grid.Row="3" Grid.Column="1">
-                    <Grid Margin="0 0 0 5">
-                        <TextBlock Text="Exposure:" Style="{StaticResource LabelWithPadding}" />
-                    </Grid>
-                    <TextBox Margin="5 0 5 0" Text="{Binding CameraExposure}" mui:TextBoxAdvancement.SpecialMode="Number" 
-                             watermark:WatermarkService.Watermark="?" />
+                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="2">
+                    <TextBlock Margin="0 0 0 4" Text="Exposure:" Style="{StaticResource LabelWithPadding}" />
+                    <TextBox Margin="4 0 4 0" Text="{Binding CameraExposure}" mui:TextBoxAdvancement.SpecialMode="Number"
+                            watermark:WatermarkService.Watermark="?" />
                 </StackPanel>
             </Grid>
-        </Grid>
+        </DockPanel>
         <StackPanel Name="WaitingPhase" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
-            <mui:ModernProgressRing Margin="10" IsActive="True" Width="80" Height="80" />
+            <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" />
             <TextBlock Text="{Binding Status}" />
         </StackPanel>
         <StackPanel Name="ResultPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
@@ -124,7 +144,7 @@
                         RenderOptions.BitmapScalingMode="HighQuality" Margin="0" Grid.Column="2" MouseDown="UpdatedPreview_OnMouseDown" />
             </Grid>
 
-            <TextBlock Text="{Binding TakenTime, StringFormat='Taken time: \{0:mm\\:ss\}'}" Margin="0 10 0 0" Style="{StaticResource Small}" />
+            <TextBlock Text="{Binding TakenTime, StringFormat='Taken time: \{0:mm\\:ss\}'}" Margin="0 8 0 0" Style="{StaticResource Small}" />
         </StackPanel>
         <StackPanel Name="ErrorPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
             <TextBlock Text="Error" Style="{StaticResource Heading1}" />

@@ -107,7 +107,7 @@ namespace AcTools.Kn5Render.Utils {
             if (modeName == "seatleon") mode = Render.VisualMode.SIMPLE_PREVIEW_SEAT_LEON_EUROCUP;
             using (var render = new Render(kn5File, 0, mode)) {
                 foreach (var skin in skins) {
-                    render.ShotToFile(1024, 575, Path.Combine(output, Path.GetFileName(skin) + ".bmp"));
+                    render.ShotToFile(1022, 575, Path.Combine(output, Path.GetFileName(skin) + ".bmp"));
                     render.LoadSkin(render.SelectedSkin + 1);
                 }
             }

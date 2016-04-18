@@ -1,9 +1,9 @@
 ﻿using System;
-using AcManager.Tools.AcManagersNew;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.AcObjectsNew {
-    public class AcPlaceholderNew : NotifyPropertyChanged, IAcObjectNew {
+    public class AcPlaceholderNew : NotifyPropertyChanged, IAcObjectNew, IWithId {
         public string Id { get; }
 
         public virtual string DisplayName => Id;

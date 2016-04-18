@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -25,6 +25,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using Newtonsoft.Json;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarUpdatePreviewsDialog : INotifyPropertyChanged, IProgress<Showroom.ShootingProgress>, IUserPresetable {
@@ -63,6 +64,39 @@ namespace AcManager.Pages.Dialogs {
                 _resizePreviews = value;
                 OnPropertyChanged();
                 SaveLater();
+            }
+        }
+
+        private bool _maximizeVideoSettings;
+
+        public bool MaximizeVideoSettings {
+            get { return _maximizeVideoSettings; }
+            set {
+                if (Equals(value, _maximizeVideoSettings)) return;
+                _maximizeVideoSettings = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _enableFxaa;
+
+        public bool EnableFxaa {
+            get { return _enableFxaa; }
+            set {
+                if (Equals(value, _enableFxaa)) return;
+                _enableFxaa = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private bool _useSpecialResolution;
+
+        public bool UseSpecialResolution {
+            get { return _useSpecialResolution; }
+            set {
+                if (Equals(value, _useSpecialResolution)) return;
+                _useSpecialResolution = value;
+                OnPropertyChanged();
             }
         }
 
@@ -134,9 +168,9 @@ namespace AcManager.Pages.Dialogs {
 
         public AcLoadedOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.LoadedOnlyCollection;
 
-        private INotifyPropertyChanged _selectedFilter;
+        private IWithId _selectedFilter;
 
-        public INotifyPropertyChanged SelectedFilter {
+        public IWithId SelectedFilter {
             get { return _selectedFilter; }
             set {
                 if (Equals(value, _selectedFilter)) return;
@@ -153,11 +187,12 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public BuiltInPpFilter DefaultPpFilter { get; } = new BuiltInPpFilter {
+            Name = "AT-Previews Special (Obsolete)",
             Filename = "AT-Previews Special.ini",
             Content = Properties.BinaryResources.PpFilterAtPreviewsSpecial
         };
 
-        public class BuiltInPpFilter : NotifyPropertyChanged {
+        public class BuiltInPpFilter : NotifyPropertyChanged, IWithId {
             public string Filename;
             public byte[] Content;
 
@@ -165,7 +200,16 @@ namespace AcManager.Pages.Dialogs {
 
             public string Id => _id ?? (_id = Filename.ToLower());
 
-            public string Name => _name ?? (_name = Path.GetFileNameWithoutExtension(Filename));
+            public string Name {
+                get {
+                    return _name ?? (_name = Path.GetFileNameWithoutExtension(Filename));
+                }
+                set {
+                    if (Equals(value, _name)) return;
+                    _name = value;
+                    OnPropertyChanged();
+                }
+            } 
 
             public override string ToString() {
                 return Name;
@@ -180,14 +224,14 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private IList _filters;
+        private IReadOnlyList<IWithId> _filters;
 
-        public IList Filters {
+        public IReadOnlyList<IWithId> Filters {
             get {
                 PpFiltersManager.Instance.EnsureLoaded();
-                return _filters ?? (_filters = new ObservableCollection<INotifyPropertyChanged>(
+                return _filters ?? (_filters = new ObservableCollection<IWithId>(
                         PpFiltersManager.Instance.LoadedOnly.Where(x => DefaultPpFilter.Id != x.Id)
-                                        .Cast<INotifyPropertyChanged>().Prepend(DefaultPpFilter)));
+                                        .Cast<IWithId>().Prepend(DefaultPpFilter)));
             }
         }
         #endregion
@@ -247,7 +291,30 @@ namespace AcManager.Pages.Dialogs {
             public string CameraPosition, CameraLookAt;
             public double CameraFov;
             public double? CameraExposure;
-            public bool DisableSweetFx, DisableWatermark, ResizePreviews;
+
+            [DefaultValue(true)]
+            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            public bool DisableSweetFx;
+
+            [DefaultValue(true)]
+            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            public bool DisableWatermark;
+
+            [DefaultValue(true)]
+            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            public bool ResizePreviews;
+
+            [DefaultValue(true)]
+            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            public bool MaximizeVideoSettings;
+
+            [DefaultValue(true)]
+            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            public bool EnableFxaa;
+
+            [DefaultValue(true)]
+            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            public bool UseSpecialResolution;
         }
 
         private void SaveLater() {
@@ -313,7 +380,7 @@ namespace AcManager.Pages.Dialogs {
 
             _saveable = new SaveHelper<SaveableData>("__AutoUpdatePreviews", () => IsVisible ? new SaveableData {
                 ShowroomId = SelectedShowroom?.Id,
-                FilterId = (SelectedFilter as PpFilterObject)?.Id,
+                FilterId = SelectedFilter?.Id,
                 CameraPosition = CameraPosition,
                 CameraLookAt = CameraLookAt,
                 CameraFov = CameraFov,
@@ -321,6 +388,9 @@ namespace AcManager.Pages.Dialogs {
                 DisableSweetFx = DisableSweetFx,
                 DisableWatermark = DisableWatermark,
                 ResizePreviews = ResizePreviews,
+                MaximizeVideoSettings = MaximizeVideoSettings,
+                EnableFxaa = EnableFxaa,
+                UseSpecialResolution = UseSpecialResolution
             } : null, o => {
                 if (o.ShowroomId != null) {
                     var showroom = ShowroomsManager.Instance.GetById(o.ShowroomId);
@@ -340,7 +410,11 @@ namespace AcManager.Pages.Dialogs {
                     }
                 }
 
-                if (o.FilterId != null) SelectedFilter = PpFiltersManager.Instance.GetById(o.FilterId) ?? SelectedFilter;
+                if (o.FilterId != null) {
+                    SelectedFilter = Filters.GetByIdOrDefault(o.FilterId) ?? SelectedFilter;
+                } else {
+                    SelectedFilter = PpFiltersManager.Instance.GetDefault();
+                }
 
                 CameraPosition = o.CameraPosition;
                 CameraLookAt = o.CameraLookAt;
@@ -349,9 +423,12 @@ namespace AcManager.Pages.Dialogs {
                 DisableWatermark = o.DisableWatermark;
                 DisableSweetFx = o.DisableSweetFx;
                 ResizePreviews = o.ResizePreviews;
+                MaximizeVideoSettings = o.MaximizeVideoSettings;
+                EnableFxaa = o.EnableFxaa;
+                UseSpecialResolution = o.UseSpecialResolution;
             }, () => {
                 SelectedShowroom = null;
-                SelectedFilter = DefaultPpFilter;
+                SelectedFilter = PpFiltersManager.Instance.GetDefault();
                 CameraPosition = "-3.867643, 1.423590, 4.70381";
                 CameraLookAt = "0.0, 0.7, 0.5";
                 CameraFov = 30;
@@ -359,6 +436,9 @@ namespace AcManager.Pages.Dialogs {
                 DisableWatermark = true;
                 DisableSweetFx = true;
                 ResizePreviews = true;
+                MaximizeVideoSettings = true;
+                EnableFxaa = true;
+                UseSpecialResolution = true;
             });
 
             InitializeComponent();
@@ -383,12 +463,12 @@ namespace AcManager.Pages.Dialogs {
                 } else {
                     _saveable.Reset();
                     UserPresetsControl.CurrentUserPreset =
-                        UserPresetsControl.SavedPresets.FirstOrDefault(x => x.ToString() == "Kunos");
+                            UserPresetsControl.SavedPresets.FirstOrDefault(x => x.ToString() == "Kunos");
                 }
             } else {
                 _saveable.Reset();
                 UserPresetsControl.CurrentUserPreset =
-                    UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
+                        UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
             }
 
             if (_mode == DialogMode.Options) {
@@ -554,7 +634,9 @@ namespace AcManager.Pages.Dialogs {
                     ShowroomId = SelectedShowroom.Id,
                     SkinIds = _skinIds,
                     Filter = filterId,
-                    Fxaa = null, // ResizePreviews ? false : (bool?)null,
+                    Fxaa = EnableFxaa,
+                    SpecialResolution = UseSpecialResolution,
+                    MaximizeVideoSettings = MaximizeVideoSettings,
                     Mode = manualMode ? Showroom.ShotMode.ClassicManual : Showroom.ShotMode.Fixed,
                     UseBmp = true,
                     DisableWatermark = DisableWatermark,
@@ -621,7 +703,7 @@ namespace AcManager.Pages.Dialogs {
         private void ImageViewer(bool showUpdated) {
             var current = (ResultPreviewComparison)ResultPreviewComparisonsView.CurrentItem;
             var viewer = new ImageViewer(new[] { current.OriginalImage, current.UpdatedImage }, showUpdated ? 1 : 0);
-            viewer.Model.MaxImageWidth = 1024;
+            viewer.Model.MaxImageWidth = 1022;
             viewer.Model.MaxImageHeight = 575;
             viewer.ShowDialog();
         }

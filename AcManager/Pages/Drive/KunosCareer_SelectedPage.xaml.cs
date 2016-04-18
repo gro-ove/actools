@@ -15,7 +15,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -161,35 +160,15 @@ namespace AcManager.Pages.Drive {
             Model.AcObject.ChampionshipResetCommand.Execute(null);
         }
 
-        private async void CarPreview_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            var ev = Model.AcObject.SelectedEvent;
-            if (ev == null) return;
-
-            await ev.Car.SkinsManager.EnsureLoadedAsync();
-
-            var viewer = new ImageViewer(
-                ev.Car.Skins.Select(x => x.PreviewImage),
-                ev.Car.Skins.IndexOf(ev.CarSkin)
-            );
-
-            if (SettingsHolder.Drive.KunosCareerUserSkin) {
-                var selected = viewer.ShowDialogInSelectMode();
-                if (SettingsHolder.Drive.KunosCareerUserSkin) {
-                    ev.CarSkin = ev.Car.Skins.ElementAtOrDefault(selected ?? -1) ?? ev.CarSkin;
-                }
-            } else {
-                viewer.ShowDialog();
-            }
-        }
-
-        private void ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+        private void CarPreview_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             var ev = Model.AcObject.SelectedEvent;
             if (ev == null) return;
 
             var control = new CarBlock {
                 Car = ev.Car,
                 SelectedSkin = ev.CarSkin,
-                SelectSkin = true
+                SelectSkin = true,
+                OpenShowroom = true
             };
 
             var dialog = new ModernDialog {
@@ -207,6 +186,27 @@ namespace AcManager.Pages.Drive {
 
             if (dialog.IsResultOk) {
                 ev.CarSkin = control.SelectedSkin;
+            }
+        }
+
+        private async void ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            var ev = Model.AcObject.SelectedEvent;
+            if (ev == null) return;
+
+            await ev.Car.SkinsManager.EnsureLoadedAsync();
+
+            var viewer = new ImageViewer(
+                ev.Car.Skins.Select(x => x.PreviewImage),
+                ev.Car.Skins.IndexOf(ev.CarSkin)
+            );
+
+            if (SettingsHolder.Drive.KunosCareerUserSkin) {
+                var selected = viewer.ShowDialogInSelectMode();
+                if (SettingsHolder.Drive.KunosCareerUserSkin) {
+                    ev.CarSkin = ev.Car.Skins.ElementAtOrDefault(selected ?? -1) ?? ev.CarSkin;
+                }
+            } else {
+                viewer.ShowDialog();
             }
         }
 

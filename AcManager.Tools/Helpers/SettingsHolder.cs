@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Addons;
 using AcManager.Tools.Starters;
 using AcTools.DataFile;
@@ -9,6 +10,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+// ReSharper disable RedundantArgumentDefaultValue
 
 namespace AcManager.Tools.Helpers {
     public class SettingsHolder {
@@ -18,8 +20,40 @@ namespace AcManager.Tools.Helpers {
             public TimeSpan TimeSpan { get; internal set; }
         }
 
+        public class OnlineServerEntry {
+            private string _displayName;
+
+            public string DisplayName => _displayName ?? (_displayName = LocalizationHelper.GetOrdinalReadable(Id + 1));
+
+            public int Id { get; internal set; }
+        }
+
         public class OnlineSettings : NotifyPropertyChanged {
             internal OnlineSettings() { }
+
+            private OnlineServerEntry[] _onlineServers;
+
+            public OnlineServerEntry[] OnlineServers => _onlineServers ??
+                    (_onlineServers = Enumerable.Range(0, KunosApiProvider.ServersNumber).Select(x => new OnlineServerEntry { Id = x }).ToArray());
+
+            public OnlineServerEntry OnlineServer {
+                get {
+                    var id = OnlineServerId;
+                    return OnlineServers.FirstOrDefault(x => x.Id == id) ??
+                            OnlineServers.FirstOrDefault();
+                }
+                set { OnlineServerId = value.Id; }
+            }
+
+            public int OnlineServerId {
+                get { return ValuesStorage.GetInt("Settings.OnlineSettings.OnlineServerId", 0); }
+                set {
+                    if (Equals(value, OnlineServerId)) return;
+                    ValuesStorage.Set("Settings.OnlineSettings.OnlineServerId", value);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(OnlineServerId));
+                }
+            }
 
             public bool RememberPasswords {
                 get { return ValuesStorage.GetBool("Settings.OnlineSettings.RememberPasswords", true); }

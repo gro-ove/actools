@@ -12,7 +12,7 @@ using AcTools.Windows.Input;
 using AcTools.Windows.Input.Native;
 
 namespace AcTools.Processes {
-    class DistanceChange : ITemporaryChange {
+    class DistanceChange : IDisposable {
         private readonly string _cfgFile, _originalValue;
 
         public DistanceChange(double value) {
@@ -30,7 +30,7 @@ namespace AcTools.Processes {
         }
     }
 
-    class LogActivateChange : ITemporaryChange {
+    class LogActivateChange : IDisposable {
         private readonly string _cfgFile, _originalValue;
 
         public LogActivateChange(string acRoot) {
@@ -50,7 +50,7 @@ namespace AcTools.Processes {
     }
 
     public partial class Showroom {
-        public class ClassicShooter : AbstractShotter {
+        public class ClassicShooter : BaseShotter {
             private const int WaitTimeoutPre = 1000;
             private const int WaitTimeoutStep = 200;
             private const int WaitTimeoutShot = 300;
@@ -67,7 +67,7 @@ namespace AcTools.Processes {
             private double _dx, _dy;
             private bool _slowMode;
 
-            private ITemporaryChange _distanceChange, _logActivateChange;
+            private IDisposable _distanceChange, _logActivateChange;
 
             private Process _process;
             private readonly InputSimulator _inputSimulator;

@@ -9,7 +9,7 @@
     </UserControl.Resources>
 
     <DockPanel Name="InnerCarBlockPanel">
-        <Grid DockPanel.Dock="Top" Name="Grid" MaxWidth="1024"
+        <Grid DockPanel.Dock="Top" Name="Grid" MaxWidth="1022"
                 Visibility="{Binding ShowSkinsAndPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Image Source="{Binding SelectedSkin.PreviewImage, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
                     RenderOptions.BitmapScalingMode="HighQuality" Margin="0" MouseDown="PreviewImage_OnMouseDown"
@@ -27,6 +27,16 @@
             </ListBox>
 
             <ContentPresenter Content="{Binding PreviewContent}" />
+
+            <Button Margin="8" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="64" Height="64" Padding="0"
+                    PreviewMouseDown="ShowroomButton_OnMouseDown">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </Button.Style>
+                <Image RenderOptions.BitmapScalingMode="LowQuality" Source="/Assets/Img/Showroom.png" Width="64" Height="64" />
+            </Button>
         </Grid>
 
         <!-- data section -->

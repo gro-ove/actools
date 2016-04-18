@@ -38,7 +38,7 @@
         <StackPanel>
             <Image Margin="0 0 0 12" RenderOptions.BitmapScalingMode="LowQuality"
                     Source="{Binding SelectedObject.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
-                    services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1024" MaxHeight="575"
+                    services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1022" MaxHeight="575"
                     Visibility="{Binding SelectedObject.PreviewImage, Converter={StaticResource ExistToVisibilityConverter}}" />
 
             <!-- data section -->

@@ -29,6 +29,14 @@ namespace AcManager.Controls.UserControls {
             set { SetValue(SelectSkinProperty, value); }
         }
 
+        public static readonly DependencyProperty OpenShowroomProperty = DependencyProperty.Register(nameof(OpenShowroom), typeof(bool),
+                typeof(CarBlock));
+
+        public bool OpenShowroom {
+            get { return (bool)GetValue(OpenShowroomProperty); }
+            set { SetValue(OpenShowroomProperty, value); }
+        }
+
         public static readonly DependencyProperty CarProperty = DependencyProperty.Register(nameof(Car), typeof(CarObject),
                 typeof(CarBlock));
 
@@ -58,6 +66,13 @@ namespace AcManager.Controls.UserControls {
             var selected = new ImageViewer(list, list.IndexOf(SelectedSkin.PreviewImage))
                     .ShowDialogInSelectMode();
             SelectedSkin = Car.Skins.ElementAtOrDefault(selected ?? -1) ?? SelectedSkin;
+        }
+
+        private void ShowroomButton_OnMouseDown(object sender, MouseButtonEventArgs e) {
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                    !CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id)) {
+                new CarOpenInShowroomDialog(Car, SelectedSkin?.Id).ShowDialog();
+            }
         }
     }
 }

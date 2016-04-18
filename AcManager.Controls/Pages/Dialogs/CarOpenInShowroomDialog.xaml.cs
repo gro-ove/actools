@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using AcManager.Controls;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
@@ -13,7 +12,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
-namespace AcManager.Pages.Dialogs {
+namespace AcManager.Controls.Pages.Dialogs {
     public partial class CarOpenInShowroomDialog {
         public const string UserPresetableKeyValue = "Showroom";
 

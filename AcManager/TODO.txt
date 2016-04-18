@@ -327,6 +327,10 @@ done:
     + download and install by url dropped
     + proper flexibleloader
     + show missing fonts
+    + watching/renaming inside behaviour
+        + proper ShouldSkipFile methods
+        + object-based reload
+            + tracks
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -337,30 +341,27 @@ fixme:
     - pastload problem!
     - real conditions
     - tags
+    - iconintaskbar for dialogs
     - potential error here:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
-    - some staticresources have the same name as dynamicrecources
-    - fix unused fonts detection!
 
 todo:
+    - focus on closest object on removing
+    
+    - lite mode (without main form): overlays, second commands, attempts to open main form?
     - show race params on loading screen?
+    - send AC's log.txt as well
 
     - button "drive" on content page
+    - errors & fixers for badly make ui_skin.json
 
     - showroom from QD/KunosCareer/Online
         + QD
-        - KunosCareer
+        + KunosCareer
         - Online
 
     - remember all window sizes
     - automatically switch to freshly installed content in some cases (optional)?
-
-    + watching/renaming inside behaviour
-        + proper ShouldSkipFile methods
-        + object-based reload
-            + tracks
-            - non-json objects
-                - font
 
     - drivers installation
     - skins installation
@@ -488,6 +489,10 @@ todo:
 
     - replays filtering
     - screenshots tab
+
+    + object-based reload
+        - non-json objects
+            - font
 
 later:
     - auto-update previews

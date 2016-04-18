@@ -7,23 +7,18 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Markup;
 using AcManager.Annotations;
 using AcManager.Controls;
-using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
-using AcManager.Pages.Lists;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Kn5Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -226,7 +221,7 @@ namespace AcManager.Pages.Selected {
                 } else if (e.ClickCount == 1 && ReferenceEquals(sender, SelectedSkinPreviewImage) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                     e.Handled = true;
                     new ImageViewer(
-                        _model.SelectedObject.Skins.Select(x => x.PreviewImage),
+                        from skin in _model.SelectedObject.Skins where skin.Enabled select skin.PreviewImage,
                         _model.SelectedObject.Skins.IndexOf(_model.SelectedObject.SelectedSkin)
                     ).ShowDialog();
                 }

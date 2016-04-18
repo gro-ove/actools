@@ -6,7 +6,7 @@ using AcTools.DataFile;
 
 namespace AcTools.Processes {
     public partial class Showroom {
-        public class KunosShotter : AbstractIterableShooter {
+        public class KunosShotter : BaseIterableShooter {
             private Process _process;
             private string _originalShowroomFile;
 

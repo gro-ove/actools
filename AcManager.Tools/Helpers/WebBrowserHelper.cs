@@ -2,13 +2,17 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Controls;
+using JetBrains.Annotations;
 using Microsoft.Win32;
 
 namespace AcManager.Tools.Helpers {
     public static class WebBrowserHelper {
         private const uint EmulationModeDisabled = 10000;
 
-        public static void SetBrowserFeatureControlKey(string feature, string appName, uint value) {
+        public static void SetBrowserFeatureControlKey([NotNull] string feature, [NotNull] string appName, uint value) {
+            if (feature == null) throw new ArgumentNullException(nameof(feature));
+            if (appName == null) throw new ArgumentNullException(nameof(appName));
+
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Internet Explorer\Main\FeatureControl\" + feature,
                     RegistryKeyPermissionCheck.ReadWriteSubTree)) {
                 if (key == null) return;
@@ -21,11 +25,20 @@ namespace AcManager.Tools.Helpers {
             SetBrowserFeatureControlKey("FEATURE_BROWSER_EMULATION", MainExecutingFile.Name, EmulationModeDisabled);
         }
 
-        public static void SetSilent(WebBrowser browser, bool silent) {
-            if (browser == null) {
-                throw new ArgumentNullException(nameof(browser));
-            }
-            
+        public static void SetSilentAlternative([NotNull] WebBrowser browser, bool silent) {
+            if (browser == null) throw new ArgumentNullException(nameof(browser));
+
+            var fiComWebBrowser = typeof(WebBrowser).GetField("_axIWebBrowser2",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+            var objComWebBrowser = fiComWebBrowser?.GetValue(browser);
+            objComWebBrowser?.GetType().InvokeMember(
+                    "Silent", BindingFlags.SetProperty, null, objComWebBrowser,
+                    new object[] { silent });
+        }
+
+        public static void SetSilent([NotNull] WebBrowser browser, bool silent) {
+            if (browser == null) throw new ArgumentNullException(nameof(browser));
+
             var sp = browser.Document as IOleServiceProvider;
             if (sp == null) return;
 

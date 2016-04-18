@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using AcManager.Tools.AcErrors;
+﻿using System.IO;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -138,9 +136,9 @@ namespace AcManager.Tools.Objects {
         }
 
         private void SaveSkinRelated(JObject json) {
-            json["drivername"] = DriverName;
-            json["team"] = Team;
-            json["number"] = SkinNumber;
+            json["drivername"] = DriverName ?? string.Empty;
+            json["team"] = Team ?? string.Empty;
+            json["number"] = SkinNumber ?? string.Empty;
 
             if (Priority.HasValue) {
                 json["priority"] = Priority.Value;
@@ -173,7 +171,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void SaveData(JObject json) {
-            json["skinname"] = Name ?? "";
+            json["skinname"] = Name ?? string.Empty;
             SaveTags(json);
             SaveCountry(json);
             SaveDescription(json);

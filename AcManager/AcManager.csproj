@@ -151,9 +151,6 @@
     <Compile Include="Pages\Dialogs\AssistsDialog.xaml.cs">
       <DependentUpon>AssistsDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\CarOpenInShowroomDialog.xaml.cs">
-      <DependentUpon>CarOpenInShowroomDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Dialogs\CarUpdatePreviewsDialog.xaml.cs">
       <DependentUpon>CarUpdatePreviewsDialog.xaml</DependentUpon>
     </Compile>
@@ -246,10 +243,6 @@
     <Page Include="Pages\Dialogs\AssistsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Dialogs\CarOpenInShowroomDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\CarUpdatePreviewsDialog.xaml">
       <SubType>Designer</SubType>

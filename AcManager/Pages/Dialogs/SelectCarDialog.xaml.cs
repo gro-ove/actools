@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.Annotations;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;

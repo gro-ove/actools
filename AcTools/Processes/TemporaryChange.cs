@@ -5,46 +5,50 @@ using AcTools.Properties;
 using AcTools.Utils;
 
 namespace AcTools.Processes {
-    internal interface ITemporaryChange : IDisposable {
-    }
+    internal class VideoIniChange : IDisposable {
+        private readonly string _filename, _originalContent;
 
-    internal class FxaaChange : ITemporaryChange {
-        private readonly string _videoCfgFile, _originalFxao;
+        public VideoIniChange(string ppFilter, bool? fxaa, bool specialResolution, bool maximizeSettings) {
+            _filename = FileUtils.GetCfgVideoFilename();
+            _originalContent = File.ReadAllText(_filename);
 
-        public FxaaChange(bool value) {
-            _videoCfgFile = FileUtils.GetCfgVideoFilename();
-            var iniFile = new IniFile(_videoCfgFile);
-            _originalFxao = iniFile["EFFECTS"].Get("FXAA");
-            iniFile["EFFECTS"].Set("FXAA", value);
-            iniFile.Save();
+            var video = IniFile.Parse(_originalContent);
+            if (fxaa.HasValue) {
+                video["EFFECTS"].Set("FXAA", fxaa.Value);
+                video["POST_PROCESS"].Set("FXAA", fxaa.Value);
+            }
+
+            if (ppFilter != null) {
+                video["POST_PROCESS"].Set("FILTER", ppFilter);
+            }
+
+            if (specialResolution) {
+                video["VIDEO"].Set("FULLSCREEN", false);
+                video["VIDEO"].Set("WIDTH", 1920*2);
+                video["VIDEO"].Set("HEIGHT", 1080*2);
+            }
+
+            if (maximizeSettings) {
+                video["POST_PROCESS"].Set("ENABLED", true);
+                video["POST_PROCESS"].Set("DOF", 0);
+                video["POST_PROCESS"].Set("GLARE", 4);
+                video["POST_PROCESS"].Set("HEAT_SHIMMER", 0);
+                video["POST_PROCESS"].Set("QUALITY", 5);
+                video["POST_PROCESS"].Set("RAYS_OF_GOD", 1);
+                video["CUBEMAP"].Set("FACES_PER_FRAME", 6);
+                video["CUBEMAP"].Set("FARPLANE", 500);
+                video["CUBEMAP"].Set("SIZE", 2048);
+            }
+
+            video.Save(_filename);
         }
 
         public void Dispose() {
-            var iniFile = new IniFile(_videoCfgFile);
-            iniFile["EFFECTS"].Set("FXAA", _originalFxao);
-            iniFile.Save();
+            File.WriteAllText(_filename, _originalContent);
         }
     }
 
-    internal class PpFilterChange : ITemporaryChange {
-        private readonly string _videoCfgFile, _originalFilter;
-
-        public PpFilterChange(string value) {
-            _videoCfgFile = FileUtils.GetCfgVideoFilename();
-            var iniFile = new IniFile(_videoCfgFile);
-            _originalFilter = iniFile["POST_PROCESS"].Get("FILTER");
-            iniFile["POST_PROCESS"].Set("FILTER", value);
-            iniFile.Save();
-        }
-
-        public void Dispose() {
-            var iniFile = new IniFile(_videoCfgFile);
-            iniFile["POST_PROCESS"].Set("FILTER", _originalFilter);
-            iniFile.Save();
-        }
-    }
-
-    internal class ScreenshotFormatChange : ITemporaryChange {
+    internal class ScreenshotFormatChange : IDisposable {
         private readonly string _cfgFile, _originalFormat;
 
         public ScreenshotFormatChange(string acRoot, string value) {
@@ -62,7 +66,7 @@ namespace AcTools.Processes {
         }
     }
 
-    internal class DisableShowroomWatermarkChange : ITemporaryChange {
+    internal class DisableShowroomWatermarkChange : IDisposable {
         private readonly string _acLogo, _acLogoBackup;
 
         public DisableShowroomWatermarkChange(string acRoot) {
@@ -86,7 +90,7 @@ namespace AcTools.Processes {
         }
     }
 
-    internal class DisableSweetFxChange : ITemporaryChange {
+    internal class DisableSweetFxChange : IDisposable {
         private readonly string _acSweetFx, _acSweetFxBackup;
 
         public DisableSweetFxChange(string acRoot) {
