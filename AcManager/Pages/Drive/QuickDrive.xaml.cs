@@ -11,6 +11,7 @@ using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Windows;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
@@ -32,7 +33,11 @@ namespace AcManager.Pages.Drive {
 
         public QuickDrive() {
             InitializeComponent();
-            DataContext = _model = new QuickDriveViewModel(null, true);
+            DataContext = _model = new QuickDriveViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack);
+
+            _selectNextCar = null;
+            _selectNextCarSkinId = null;
+            _selectNextTrack = null;
         }
 
         private DispatcherTimer _realConditionsTimer;
@@ -333,11 +338,14 @@ namespace AcManager.Pages.Drive {
             private readonly ISaveHelper _saveable;
 
             private void SaveLater() {
+                if (!_uiMode) return;
+
                 _saveable.SaveLater();
                 Changed?.Invoke(this, EventArgs.Empty);
             }
 
-            internal QuickDriveViewModel(string serializedPreset, bool uiMode) {
+            internal QuickDriveViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, 
+                    TrackBaseObject trackObject = null) {
                 _uiMode = uiMode;
 
                 _saveable = new SaveHelper<SaveableData>("__QuickDrive_Main", () => new SaveableData {
@@ -395,6 +403,15 @@ namespace AcManager.Pages.Drive {
                 } else {
                     _saveable.Reset();
                     _saveable.FromSerializedStringWithoutSaving(serializedPreset);
+                }
+
+                if (carObject != null) {
+                    SelectedCar = carObject;
+                    // TODO: skin?
+                }
+
+                if (trackObject != null) {
+                    SelectedTrack = trackObject;
                 }
             }
 
@@ -584,7 +601,7 @@ namespace AcManager.Pages.Drive {
             public AsyncCommand GoCommand => _goCommand ?? (_goCommand =
                     new AsyncCommand(o => Go(), o => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
 
-            private async Task Go() {
+            internal async Task Go() {
                 GoCommand.OnCanExecuteChanged();
 
                 var selectedMode = SelectedModeViewModel;
@@ -643,17 +660,37 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        public static bool Run(TrackBaseObject track, CarObject carObject, string selectedSkinId) {
-            throw new NotImplementedException();
-            // return new QuickDrive.QuickDriveViewModel();
+        public static bool Run(CarObject car = null, string carSkinId = null, TrackBaseObject track = null) {
+            return new QuickDriveViewModel(string.Empty, false, car, carSkinId, track).Run();
         }
 
-        public static bool RunPreset(string presetFilename) {
-            return RunSerializedPreset(File.ReadAllText(presetFilename));
+        public static async Task<bool> RunAsync(CarObject car = null, string carSkinId = null, TrackBaseObject track = null) {
+            var model = new QuickDriveViewModel(string.Empty, false, car, carSkinId, track);
+            if (!model.GoCommand.CanExecute(null)) return false;
+            await model.Go();
+            return true;
+        }
+
+        public static bool RunPreset(string presetFilename, CarObject car = null, string carSkinId = null, TrackBaseObject track = null) {
+            return new QuickDriveViewModel(File.ReadAllText(presetFilename), false, car, carSkinId, track).Run();
         }
 
         public static bool RunSerializedPreset(string preset) {
             return new QuickDriveViewModel(preset, false).Run();
+        }
+
+        private static CarObject _selectNextCar;
+        private static string _selectNextCarSkinId;
+        private static TrackBaseObject _selectNextTrack;
+
+        public static void Show(CarObject car = null, string carSkinId = null, TrackBaseObject track = null) {
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            if (mainWindow == null) return;
+
+            _selectNextCar = car;
+            _selectNextCarSkinId = carSkinId;
+            _selectNextTrack = track;
+            mainWindow.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
         }
     }
 

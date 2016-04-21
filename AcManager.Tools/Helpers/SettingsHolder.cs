@@ -67,6 +67,7 @@ namespace AcManager.Tools.Helpers {
             public string PortsEnumeration {
                 get { return ValuesStorage.GetString("Settings.OnlineSettings.PortsEnumeration", "9000-10000"); }
                 set {
+                    value = value.Trim();
                     if (Equals(value, PortsEnumeration)) return;
                     ValuesStorage.Set("Settings.OnlineSettings.PortsEnumeration", value);
                     OnPropertyChanged();
@@ -76,6 +77,7 @@ namespace AcManager.Tools.Helpers {
             public string LanPortsEnumeration {
                 get { return ValuesStorage.GetString("Settings.OnlineSettings.LanPortsEnumeration", "9456-9458,9556,9600-9612,9700"); }
                 set {
+                    value = value.Trim();
                     if (Equals(value, LanPortsEnumeration)) return;
                     ValuesStorage.Set("Settings.OnlineSettings.LanPortsEnumeration", value);
                     OnPropertyChanged();
@@ -212,6 +214,36 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            public bool AutoSaveReplays {
+                get { return ValuesStorage.GetBool("Settings.DriveSettings.AutoSaveReplays", false); }
+                set {
+                    if (Equals(value, AutoSaveReplays)) return;
+                    ValuesStorage.Set("Settings.DriveSettings.AutoSaveReplays", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool AutoAddReplaysExtension {
+                get { return ValuesStorage.GetBool("Settings.DriveSettings.AutoAddReplaysExtension", false); }
+                set {
+                    if (Equals(value, AutoAddReplaysExtension)) return;
+                    ValuesStorage.Set("Settings.DriveSettings.AutoAddReplaysExtension", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public string DefaultReplaysNameFormat => "_autosave_{car.id}_{track.id}_{date_ac}.acreplay";
+
+            public string ReplaysNameFormat {
+                get { return ValuesStorage.GetString("Settings.DriveSettings.ReplaysNameFormat", "_autosave_{car.id}_{track.id}_{date_ac}.acreplay"); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, ReplaysNameFormat)) return;
+                    ValuesStorage.Set("Settings.DriveSettings.ReplaysNameFormat", value);
+                    OnPropertyChanged();
+                }
+            }
+
             public bool Use32BitVersion {
                 get { return ValuesStorage.GetBool("Settings.DriveSettings.Use32BitVersion", false); }
                 set {
@@ -224,6 +256,7 @@ namespace AcManager.Tools.Helpers {
             public string PlayerName {
                 get { return ValuesStorage.GetString("Settings.DriveSettings.PlayerName", null); }
                 set {
+                    value = value.Trim();
                     if (Equals(value, PlayerName)) return;
                     ValuesStorage.Set("Settings.DriveSettings.PlayerName", value);
                     OnPropertyChanged();
@@ -234,6 +267,7 @@ namespace AcManager.Tools.Helpers {
             public string PlayerNationality {
                 get { return ValuesStorage.GetString("Settings.DriveSettings.PlayerNationality", null); }
                 set {
+                    value = value.Trim();
                     if (Equals(value, PlayerNationality)) return;
                     ValuesStorage.Set("Settings.DriveSettings.PlayerNationality", value);
                     OnPropertyChanged();
@@ -252,6 +286,7 @@ namespace AcManager.Tools.Helpers {
             public string PlayerNameOnline {
                 get { return ValuesStorage.GetString("Settings.DriveSettings.PlayerNameOnline", PlayerName); }
                 set {
+                    value = value.Trim();
                     if (Equals(value, PlayerNameOnline)) return;
                     ValuesStorage.Set("Settings.DriveSettings.PlayerNameOnline", value);
                     OnPropertyChanged();
@@ -295,7 +330,7 @@ namespace AcManager.Tools.Helpers {
             public string FontIconCharacter {
                 get { return ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", "A"); }
                 set {
-                    value = value.Substring(0, 1);
+                    value = value?.Trim().Substring(0, 1);
                     if (Equals(value, FontIconCharacter)) return;
                     ValuesStorage.Set("Settings.ContentSettings.FontIconCharacter", value);
                     OnPropertyChanged();

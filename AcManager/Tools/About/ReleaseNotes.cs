@@ -65,7 +65,17 @@ Another big change is a special protocol which allows to install mods directly f
 
  [img=""http://i.imgur.com/0iPlIYH.jpg|349""]RaceDepartment.com[/img]
 
-If you want to get those buttons, please, install [url=""https://greasyfork.org/en/scripts/18779-actools-content-manager-helper""]this userscript[/url]. Works for [url=""assettocorsa.club""]AssettoCorsa.club[/url] and [url=""racedepartment.com""]RaceDepartment.com[/url].")
+If you want to get those buttons, please, install [url=""https://greasyfork.org/en/scripts/18779-actools-content-manager-helper""]this userscript[/url]. Works for [url=""assettocorsa.club""]AssettoCorsa.club[/url] and [url=""racedepartment.com""]RaceDepartment.com[/url]."),
+
+            new ReleaseNotes("0.5.130", @"Trello", @"Good news! I've made a [url=""https://trello.com/b/MwqpL8Bw""]Trello board[/url] for this app.
+
+ [img=""http://i.imgur.com/ydstiDS.png|32""]Trello icon[/img]
+
+It might be a pretty handy to send feedback, watch progress, report bugs and stuff using this board. Only problem is that for commenting and rating you'll have to sign up (or log in using Google), but I think it's worth it (seriosly, it's a superbly made service, Google could learn a lot from those guys about proper webapps).
+
+Of course, you can still use e-mails for a feedback though.
+
+[i]By the way, sorry to bother, but if you're going to join Trello, could you please register using [url=""https://trello.com/x4fab/recommend""]this link[/url]? Thanks in advance.[/i].")
         };
     }
 }

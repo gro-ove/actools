@@ -124,6 +124,8 @@
     <Compile Include="Helpers\AdditionalContentInstallation\SharpCompressExtension.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\ZipContentInstallator.cs" />
+    <Compile Include="Helpers\Api\CmHelpersProvider_Consts.cs" />
+    <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider_Consts.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>
@@ -145,11 +147,17 @@
     <Compile Include="Managers\Online\OnlineManagerType.cs" />
     <Compile Include="Managers\Online\RecentManager.cs" />
     <Compile Include="Managers\Online\ServerStatus.cs" />
+    <Compile Include="Managers\ReplaysExtensionSetter.cs" />
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
     <Compile Include="Objects\CarSkinObject_Lists.cs" />
     <Compile Include="Objects\FontObject.cs" />
     <Compile Include="SemiGui\DriverName.cs" />
+    <Compile Include="SemiGui\GameEndedArgs.cs" />
+    <Compile Include="SemiGui\GameFinishedArgs.cs" />
+    <Compile Include="SemiGui\ReplayHelper.cs" />
+    <Compile Include="SemiGui\IGameUi.cs" />
+    <Compile Include="SemiGui\IGameUiFactory.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />
     <Compile Include="Helpers\Api\CmApiProvider_Consts.cs" />
     <Compile Include="Helpers\Api\CmApiProvider.cs" />

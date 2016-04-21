@@ -76,7 +76,7 @@
                                     <Grid HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}" VerticalAlignment="Top"
                                             Margin="{TemplateBinding LinksMargin}">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
 
@@ -86,6 +86,8 @@
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="FontFamily" Value="Segoe UI" />
                                                     <Setter Property="FontSize" Value="15" />
+                                                    <Setter Property="HorizontalAlignment" Value="Right" />
+                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis" />
                                                     <Setter Property="FontWeight" Value="Bold" />
                                                     <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
                                                     <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" />

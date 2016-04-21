@@ -30,6 +30,16 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             return index < _value.Length ? _value[index] : char.MaxValue;
         }
 
+        private int _kept;
+
+        public void Keep() {
+            _kept = _position;
+        }
+
+        public void Restore() {
+            _position = _kept;
+        }
+
         /// <summary>
         /// Marks the current _position.
         /// </summary>

@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="AcManager.Pages.Dialogs.SelectTrackDialog_Countries" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Loaded="SelectTrackDialog_Countries_OnLoaded" d:DataContext="{d:DesignInstance dialogs:SelectTrackDialog_Countries}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ListBox ItemsSource="{Binding Countries}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="CountriesListBox"
+            PreviewKeyDown="CountriesListBox_OnPreviewKeyDown" ScrollViewer.CanContentScroll="False">
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+            <DataTemplate DataType="{x:Type dialogs:SelectTrackDialog_Countries+CountryInformation}">
+                <Grid Width="72" Height="72" PreviewMouseLeftButtonDown="ListItem_OnPreviewMouseLeftButtonDown" Background="Transparent">
+                    <Image RenderOptions.BitmapScalingMode="LowQuality" Source="{Binding CountryId, Converter={StaticResource CountryIdToImageConverter}}"
+                            Margin="8 8 8 24" Stretch="None" />
+                    <TextBlock Style="{StaticResource LabelWithPadding}" HorizontalAlignment="Center" Text="{Binding Name}" Margin="4" Padding="0"
+                            VerticalAlignment="Bottom" />
+                </Grid>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</UserControl>

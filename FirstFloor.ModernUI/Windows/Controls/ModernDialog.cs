@@ -217,12 +217,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, Window owner = null) {
             var dlg = new ModernDialog {
                 Title = title,
-                Content = new BbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
+                Content = new ScrollViewer {
+                    Content = new BbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+                },
                 MinHeight = 0,
                 MinWidth = 0,
                 MaxHeight = 480,
                 MaxWidth = 640
             };
+
             if (owner != null) {
                 dlg.Owner = owner;
             }

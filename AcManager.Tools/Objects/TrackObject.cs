@@ -6,8 +6,8 @@ using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Lists;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -120,13 +120,30 @@ namespace AcManager.Tools.Objects {
             return MultiLayouts?.FirstOrDefault(x => x.LayoutId.Equals(layoutId, StringComparison.OrdinalIgnoreCase));
         }
 
-        private void Configuration_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(Changed) && ((TrackExtraLayoutObject)sender).Changed) {
-                Changed = true;
+        private bool _extraLayoutChanged;
+
+        public bool ExtraLayoutChanged {
+            get { return _extraLayoutChanged; }
+            set {
+                if (Equals(value, _extraLayoutChanged)) return;
+                _extraLayoutChanged = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Changed));
             }
         }
 
+        public override bool Changed {
+            get { return base.Changed || ExtraLayoutChanged; }
+            protected set { base.Changed = value; }
+        }
+
+        private void Configuration_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName != nameof(Changed)) return;
+            ExtraLayoutChanged = MultiLayouts?.Skip(1).Any(x => x.Changed) == true;
+        }
+
         protected override void LoadOrThrow() {
+            _extraLayoutChanged = false;
             base.LoadOrThrow();
 
             if (MultiLayouts == null) return;
@@ -157,10 +174,12 @@ namespace AcManager.Tools.Objects {
         }
 
         public override bool HandleChangedFile(string filename) {
-            Logging.Write("HANDLE CHANGED FILE: " + filename);
-            if (IsMultiLayoutsChanged()) {
-                Logging.Write("IsMultiLayoutsChanged=TRUE");
-                return false;
+            if (IsMultiLayoutsChanged()) return false;
+
+            if (MultiLayouts != null) {
+                foreach (var layout in MultiLayouts.Skip(1).Where(layout => FileUtils.IsAffected(layout.Location, filename))) {
+                    return layout.HandleChangedFile(filename);
+                }
             }
 
             base.HandleChangedFile(filename);

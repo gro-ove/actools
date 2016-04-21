@@ -190,12 +190,16 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        public string GetData() {
+            return "version: " + ActualVersion + "\n" + string.Join("\n", from x in _storage
+                                                                          where x.Key != null && x.Value != null
+                                                                          select Encode(x.Key) + '\t' + Encode(x.Value));
+        }
+
         private void Save() {
             if (_filename == null) return;
 
-            var data = "version: " + ActualVersion + "\n" + string.Join("\n", from x in _storage
-                                                                              where x.Key != null && x.Value != null
-                                                                              select Encode(x.Key) + '\t' + Encode(x.Value));
+            var data = GetData();
             try {
                 File.WriteAllBytes(_filename, EncodeBytes(data));
             } catch (Exception e) {
@@ -259,10 +263,29 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="key">Value key</param>
         /// <param name="defaultValue">Default value</param>
         /// <returns>List if exists, default value otherwise, empty list if default value is null</returns>
+        [NotNull]
         public static IEnumerable<string> GetStringList([NotNull] string key, IEnumerable<string> defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             return Instance._storage.ContainsKey(key) && !string.IsNullOrEmpty(Instance._storage[key])
                     ? Instance._storage[key].Split('\n').Select(Decode) : defaultValue ?? new string[] { };
+        }
+
+        [NotNull]
+        public static Dictionary<string, string> GetDictionary([NotNull] string key) {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
+            var result = new Dictionary<string, string>();
+            string k = null;
+            foreach (var item in GetStringList(key)) {
+                if (k == null) {
+                    k = item;
+                } else {
+                    result[k] = item;
+                    k = null;
+                }
+            }
+
+            return result;
         }
 
         public static TimeSpan GetTimeSpan([NotNull] string key, TimeSpan defaultValue) {
@@ -313,7 +336,9 @@ namespace FirstFloor.ModernUI.Helpers {
         public static TimeZoneInfo GetTimeZoneInfo([NotNull] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
-                return TimeZoneInfo.FromSerializedString(GetString(key));
+                var value = GetString(key);
+                if (value == null) return null;
+                return TimeZoneInfo.FromSerializedString(value);
             } catch (Exception) {
                 return null;
             }
@@ -388,6 +413,11 @@ namespace FirstFloor.ModernUI.Helpers {
         public static void Set(string key, [NotNull] IEnumerable<string> value) {
             if (value == null) throw new ArgumentNullException(nameof(value));
             Set(key, string.Join("\n", value.Select(Encode)));
+        }
+
+        public static void Set(string key, [NotNull] IReadOnlyDictionary<string, string> value) {
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            Set(key, string.Join("\n", value.SelectMany(x => new[] { Encode(x.Key), Encode(x.Value) })));
         }
 
         public static void Set(string key, TimeSpan timeSpan) {

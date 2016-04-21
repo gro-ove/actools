@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls.BbCode;
 using FirstFloor.ModernUI.Windows.Navigation;
 
@@ -45,7 +46,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             // ensures the implicit BbCodeBlock style is used
             DefaultStyleKey = typeof(BbCodeBlock);
 
-            AddHandler(Hyperlink.LoadedEvent, new RoutedEventHandler(OnLoaded));
+            AddHandler(FrameworkContentElement.LoadedEvent, new RoutedEventHandler(OnLoaded));
             AddHandler(Hyperlink.RequestNavigateEvent, new RequestNavigateEventHandler(OnRequestNavigate));
         }
 
@@ -56,7 +57,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static void OnLinkNavigatorChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             if (e.NewValue == null) {
                 // null values disallowed
-                throw new ArgumentNullException("LinkNavigator");
+                throw new NullReferenceException("LinkNavigator");
             }
 
             ((BbCodeBlock)o).UpdateDirty();
@@ -87,8 +88,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         Commands = LinkNavigator.Commands
                     };
                     inline = parser.Parse();
-                } catch (Exception) {
-                    // parsing failed, display BbCode value as-is
+                } catch (Exception e) {
+                    Logging.Warning("[BBCODEBLOCK] Parsing failed: " + e);
                     inline = new Run { Text = bbcode };
                 }
                 Inlines.Add(inline);

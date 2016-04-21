@@ -19,7 +19,7 @@ namespace AcManager.Pages.About {
             public ImportantTipsPageViewModel(string key) {
                 NotesList = new ListCollectionView(ImportantTips.Tips.Reverse().ToList());
                 if (key != null) {
-                    NotesList.MoveCurrentTo(ImportantTips.Tips.FirstOrDefault(x => x.Key?.Contains(key) == true));
+                    NotesList.MoveCurrentTo(ImportantTips.Tips.FirstOrDefault(x => x.Id?.Contains(key) == true));
                 } else {
                     NotesList.MoveCurrentToFirst();
                 }

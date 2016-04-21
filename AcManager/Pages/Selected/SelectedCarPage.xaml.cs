@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -8,12 +7,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Annotations;
-using AcManager.Controls;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Kn5Render.Utils;
@@ -27,12 +24,17 @@ using MenuItem = System.Windows.Controls.MenuItem;
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarPage : ILoadableContent, IParametrizedUriContent {
         public class SelectedCarPageViewModel : SelectedAcObjectViewModel<CarObject> {
-            public SelectedCarPageViewModel([NotNull] CarObject acObject) : base(acObject) {}
+            public SelectedCarPageViewModel([NotNull] CarObject acObject) : base(acObject) { }
 
             #region Open In Showroom
             private RelayCommand _openInShowroomCommand;
 
             public RelayCommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new RelayCommand(o => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
+                    OpenInCustomShowroomCommand.Execute(o);
+                    return;
+                }
+
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !CarOpenInShowroomDialog.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
                     OpenInShowroomOptionsCommand.Execute(null);
@@ -48,8 +50,24 @@ namespace AcManager.Pages.Selected {
             private RelayCommand _openInCustomShowroomCommand;
 
             public RelayCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new RelayCommand(o => {
+                // also in CarBlock.xaml.cs
                 Kn5RenderWrapper.StartBrightRoomPreview(SelectedObject.Location, SelectedObject.SelectedSkin?.Id);
             }));
+
+            private RelayCommand _driveCommand;
+
+            public RelayCommand DriveCommand => _driveCommand ?? (_driveCommand = new RelayCommand(o => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                        !QuickDrive.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
+                    DriveOptionsCommand.Execute(null);
+                }
+            }, o => SelectedObject.Enabled));
+
+            private RelayCommand _driveOptionsCommand;
+
+            public RelayCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new RelayCommand(o => {
+                QuickDrive.Show(SelectedObject, SelectedObject.SelectedSkin?.Id);
+            }, o => SelectedObject.Enabled));
             #endregion
 
             #region Auto-Update Previews
@@ -106,32 +124,13 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private static readonly List<PresetsHandlerToRemove> PresetsHandlersToRemove = new List<PresetsHandlerToRemove>();
             private static ObservableCollection<MenuItem> _showroomPresets, _updatePreviewsPresets, _quickDrivePresets;
-
-            private class PresetsHandlerToRemove {
-                public string Key;
-                public EventHandler Handler;
-            }
-
-            private ObservableCollection<MenuItem> CreatePresetsMenu(string presetsKey, Action<string> action) {
-                var result = new BetterObservableCollection<MenuItem>();
-
-                Action rebuildPresets = () => result.ReplaceEverythingBy(UserPresetsControl.GroupPresets(presetsKey, (sender, args) => {
-                    action(((UserPresetsControl.TagHelper)((MenuItem)sender).Tag).Entry.Filename);
-                }));
-                rebuildPresets();
-
-                var updateHandler = new EventHandler((sender, e) => rebuildPresets());
-                PresetsManager.Instance.Watcher(presetsKey).Update += updateHandler;
-                PresetsHandlersToRemove.Add(new PresetsHandlerToRemove { Key = presetsKey, Handler = updateHandler });
-
-                return result;
-            }
-
+            
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
-                    ShowroomPresets = CreatePresetsMenu(CarOpenInShowroomDialog.UserPresetableKeyValue, p => {
+                    // BUG FIXME
+                    // TODO FIXME
+                    ShowroomPresets = PresetsMenuHelper.CreatePresetsMenu(CarOpenInShowroomDialog.UserPresetableKeyValue, p => {
                         CarOpenInShowroomDialog.RunPreset(p, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
@@ -139,28 +138,19 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = CreatePresetsMenu(QuickDrive.UserPresetableKeyValue, p => {
-                        // TODO
+                    QuickDrivePresets = PresetsMenuHelper.CreatePresetsMenu(QuickDrive.UserPresetableKeyValue, p => {
+                        QuickDrive.RunPreset(p, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
             }
 
             public void InitializeUpdatePreviewsPresets() {
                 if (UpdatePreviewsPresets == null) {
-                    UpdatePreviewsPresets = CreatePresetsMenu(CarUpdatePreviewsDialog.UserPresetableKeyValue, presetFilename => {
+                    UpdatePreviewsPresets = PresetsMenuHelper.CreatePresetsMenu(CarUpdatePreviewsDialog.UserPresetableKeyValue, presetFilename => {
                         new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode(), presetFilename).ShowDialog();
                     });
                 }
             }
-
-            public void UnloadPresetsWatchers() {
-                foreach (var presetsHandlerToRemove in PresetsHandlersToRemove) {
-                    PresetsManager.Instance.Watcher(presetsHandlerToRemove.Key).Update -= presetsHandlerToRemove.Handler;
-                }
-
-                PresetsHandlersToRemove.Clear();
-            }
-
             #endregion
 
             private RelayCommand _manageSkinsCommand;
@@ -203,9 +193,12 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.UpdatePreviewsOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.UpdatePreviewsManuallyCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
 
+                new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
+
                 new InputBinding(_model.OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(_model.OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
-                new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
+                new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
 
                 new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control))
             });
@@ -248,18 +241,19 @@ namespace AcManager.Pages.Selected {
             item.Click += (sender, args) => CarOpenInShowroomDialog.Run(_model.SelectedObject, skin.Id);
             contextMenu.Items.Add(item);
 
-            item = new MenuItem { Header = "Open In Custom Showroom", InputGestureText = "Ctrl+U" };
+            item = new MenuItem { Header = "Open In Custom Showroom", InputGestureText = "Alt+H" };
             item.Click += (sender, args) => Kn5RenderWrapper.StartBrightRoomPreview(_model.SelectedObject.Location, skin.Id);
             contextMenu.Items.Add(item);
 
+            // TODO
             item = new MenuItem { Header = "Drive", IsEnabled = false };
             contextMenu.Items.Add(item);
-            
+
             contextMenu.Items.Add(new MenuItem {
                 Header = "Folder",
                 Command = skin.ViewInExplorerCommand
             });
-            
+
             contextMenu.Items.Add(new Separator());
 
             item = new MenuItem { Header = "Update Preview" };
@@ -302,7 +296,7 @@ namespace AcManager.Pages.Selected {
         #region Icons & Specs
         private void AcObjectBase_IconMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
-                new BrandBadgeEditor((CarObject) SelectedAcObject).ShowDialog();
+                new BrandBadgeEditor((CarObject)SelectedAcObject).ShowDialog();
             }
         }
 

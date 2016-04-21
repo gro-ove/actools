@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Globalization;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
@@ -24,6 +25,8 @@ namespace AcManager.Tools.Helpers {
                                               (_nameYearRegex = new Regex(@"\s(?:'(\d\d)|'?((?:19[2-9]|20[01])\d))$", RegexOptions.Compiled));
 
         public static int? GetYearFromName([NotNull] string name) {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+
             var result = NameYearRegex.Match(name);
             if (!result.Success) return null;
 
@@ -38,27 +41,50 @@ namespace AcManager.Tools.Helpers {
             return value.HasValue && (!year.HasValue || value.Value == year.Value);
         }
 
+        [NotNull]
         public static string NameReplaceYear([NotNull] string name, int year) {
             var digits = (year % 100).ToString(CultureInfo.InvariantCulture);
             return NameYearRegex.Replace(name, digits.Length == 2 ? " '" + digits : " '0" + digits, 1);
         }
 
+        private static Regex _nameVersionRegex;
+
+        private static Regex NameVersionRegex => _nameVersionRegex ??
+                                              (_nameVersionRegex = new Regex(@"^(.+?) (?:[vV]?(\d+\.\d[\w\.]*))$", RegexOptions.Compiled));
+
+        public static string GetVersionFromName([NotNull] string name, out string nameWithoutVersion) {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+
+            var match = NameVersionRegex.Match(name);
+            if (match.Success) {
+                nameWithoutVersion = match.Groups[1].Value;
+                return match.Groups[2].Value;
+            }
+
+            nameWithoutVersion = name;
+            return null;
+        }
+
+        [CanBeNull]
         public static string CountryFromBrand([NotNull] string brand) {
             var key = brand.Trim().ToLower();
             return DataProvider.Instance.BrandCountries.GetValueOrDefault(key);
         }
 
+        [CanBeNull]
         public static string CountryFromTag([NotNull] string tag) {
             var key = tag.Trim().ToLower();
             return DataProvider.Instance.TagCountries.GetValueOrDefault(key) ?? DataProvider.Instance.Countries.GetValueOrDefault(key);
         }
 
+        [NotNull]
         public static string NameFromId([NotNull] string id) {
             id = Regex.Replace(id, @"[\s_]+|(?<=[a-z])-?(?=[A-Z\d])", " ");
             id = Regex.Replace(id, @"\b[a-z]", x => x.Value.ToUpper());
             return id;
         }
 
+        [NotNull]
         public static string IdFromName([NotNull] string name) {
             name = Regex.Replace(name, @"\W+", "_");
             return name.ToLower();

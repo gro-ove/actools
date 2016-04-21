@@ -1,9 +1,14 @@
-﻿namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
+﻿using System;
+using FirstFloor.ModernUI.Helpers;
+
+namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     /// <summary>
     /// The BbCode lexer.
     /// </summary>
     internal class BbCodeLexer
         : Lexer {
+        private const string TagNewline = "br";
+
         private static readonly char[] QuoteChars = { '\'', '"' };
         private static readonly char[] WhitespaceChars = { ' ', '\t' };
         private static readonly char[] NewlineChars = { '\r', '\n' };
@@ -81,12 +86,21 @@
             return new Token(string.Empty, TokenLineBreak);
         }
 
-        private Token Text() {
+        private Token Text(bool force) {
             Mark();
-            while (La(1) != '[' && La(1) != char.MaxValue && !IsInRange(NewlineChars)) {
+            for (var c = La(1); force || c != '[' && c != char.MaxValue && !IsInRange(NewlineChars); c = La(1)) {
+                if (force) {
+                    force = false;
+                }
+
+                if (c == '\\') {
+                    Consume();
+                }
+
                 Consume();
             }
-            return new Token(GetMark(), TokenText);
+
+            return new Token(GetMark().Replace("\\[", "["), TokenText);
         }
 
         private Token Attribute() {
@@ -139,20 +153,53 @@
                 switch (State) {
                     case StateNormal:
                         if (La(1) == '[') {
-                            if (La(2) == '/') {
-                                return CloseTag();
-                            }
+                            Keep();
+                            try {
+                                if (La(2) == '/') {
+                                    return CloseTag();
+                                }
 
-                            var token = OpenTag();
-                            PushState(StateTag);
-                            return token;
+                                var token = OpenTag();
+                                if (token.Value == string.Empty || La(1) != '=' && La(1) != ']') {
+                                    Restore();
+                                    return Text(true);
+                                }
+
+                                if (string.Equals(token.Value, TagNewline, StringComparison.OrdinalIgnoreCase)) {
+                                    Match(']');
+                                    return new Token(string.Empty, TokenLineBreak);
+                                }
+
+                                PushState(StateTag);
+                                return token;
+                            } catch (ParseException) {
+                                Restore();
+                                return Text(true);
+                            }
                         }
-                        return IsInRange(NewlineChars) ? Newline() : Text();
+
+                        return IsInRange(NewlineChars) ? Newline() : Text(false);
+
                     case StateTag:
-                        if (La(1) != ']') return Attribute();
-                        Consume();
+                        if (La(1) == '=') {
+                            Keep();
+                            try {
+                                return Attribute();
+                            } catch (ParseException) {
+                                PopState();
+                                Restore();
+                                return Text(true);
+                            }
+                        }
+
                         PopState();
-                        break;
+                        if (La(1) == ']') {
+                            Consume();
+                            break;
+                        }
+
+                        return Text(true);
+
                     default:
                         throw new ParseException("Invalid state");
                 }

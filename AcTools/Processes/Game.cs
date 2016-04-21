@@ -161,6 +161,8 @@ namespace AcTools.Processes {
 
             public List<object> AdditionalPropertieses = new List<object>();
 
+            public DateTime StartTime { get; internal set; }
+
             public void SetAdditional<T>(T properties) {
                 AdditionalPropertieses.Remove(GetAdditional<T>());
                 if (properties == null) return;
@@ -239,6 +241,8 @@ namespace AcTools.Processes {
 
                 _disposeLater.Add(AssistsProperties?.Set());
                 _disposeLater.AddRange(AdditionalPropertieses.OfType<AdditionalProperties>().Select(x => x.Set()));
+
+                StartTime = DateTime.Now;
             }
 
             internal void SetGame() {

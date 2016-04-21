@@ -53,10 +53,17 @@ namespace AcManager.Pages.Selected {
                                 UseBmp = true,
                                 DisableWatermark = true,
                                 DisableSweetFx = true,
+                                MaximizeVideoSettings = true,
+                                SpecialResolution = false,
+                                Fxaa = true,
                                 FixedCameraPosition = "-1.8,0.8,3",
                                 FixedCameraLookAt = "0,0.5,0",
                                 FixedCameraFov = 40,
                             });
+
+                            if (resultDirectory == null) {
+                                throw new Exception("Process cancelled");
+                            }
 
                             ImageUtils.ApplyPreview(Path.Combine(resultDirectory, "0.bmp"), SelectedObject.PreviewImage,
                                                     true);

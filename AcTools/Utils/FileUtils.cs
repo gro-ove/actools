@@ -323,5 +323,23 @@ namespace AcTools.Utils {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
             return (File.GetAttributes(filename) & FileAttributes.Directory) == FileAttributes.Directory;
         }
+
+        public static string EnsureFileNameIsValid(string fileName) {
+            return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c, '-'));
+        }
+
+        public static string EnsureUnique(string filename) {
+            if (!File.Exists(filename)) return filename;
+            
+            var ext = Path.GetExtension(filename) ?? "";
+            var start = filename.Substring(0, filename.Length - ext.Length);
+
+            for (var i = 1; i < 99999; i++) {
+                var result = start + "-" + i + ext;
+                if (!File.Exists(result)) return result;
+            }
+
+            throw new Exception("Can't find unique filename");
+        }
     }
 }

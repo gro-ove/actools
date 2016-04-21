@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -6,20 +7,19 @@ using System.Windows.Markup;
 namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty("MenuItems")]
     public class ButtonWithComboBox
-        : Button {
-
+            : Button {
         public ButtonWithComboBox() {
             DefaultStyleKey = typeof(ButtonWithComboBox);
             MenuItems = new Collection<DependencyObject>();
         }
 
-        public Collection<DependencyObject> MenuItems {
+        public IList MenuItems {
             get { return (Collection<DependencyObject>)GetValue(MenuItemsProperty); }
             set { SetValue(MenuItemsProperty, value); }
         }
 
-        public static readonly DependencyProperty MenuItemsProperty = DependencyProperty.Register("MenuItems", typeof(Collection<DependencyObject>),
-            typeof(ButtonWithComboBox));
+        public static readonly DependencyProperty MenuItemsProperty = DependencyProperty.Register("MenuItems", typeof(IList),
+                typeof(ButtonWithComboBox));
 
         public string ButtonToolTip {
             get { return (string)GetValue(ButtonToolTipProperty); }
@@ -27,6 +27,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty ButtonToolTipProperty = DependencyProperty.Register("ButtonToolTip", typeof(string),
-            typeof(ButtonWithComboBox));
+                typeof(ButtonWithComboBox));
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.SemiGui;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
@@ -54,8 +55,14 @@ namespace AcManager.Tools.Miscellaneous {
                     try {
                         zip.CreateEntryFromString("Message.txt", message);
                     } catch (Exception e) {
-                        Logging.Warning("Can't attach Description.txt: " + e);
+                        Logging.Warning("Can't attach Message.txt: " + e);
                     }
+                }
+
+                try {
+                    zip.CreateEntryFromFile(FileUtils.GetLogFilename(), "AC Log.txt");
+                } catch (Exception e) {
+                    Logging.Warning("Can't attach AC Log.txt: " + e);
                 }
 
                 try {
@@ -64,14 +71,15 @@ namespace AcManager.Tools.Miscellaneous {
                         MainExecutingFile.Location,
                         Environment.OSVersion,
                         Environment.CommandLine,
-                        Environment = Environment.GetEnvironmentVariables()
+                        Environment = Environment.GetEnvironmentVariables(),
+                        SteamId = SteamIdHelper.Instance.Value
                     }, Formatting.Indented));
                 } catch (Exception e) {
                     Logging.Warning("Can't attach Description.txt: " + e);
                 }
 
                 try {
-                    zip.CreateEntryFromFile(FilesStorage.Instance.GetFilename("Values.data"), "Values.data");
+                    zip.CreateEntryFromString("Values.txt", ValuesStorage.Instance.GetData());
                 } catch (Exception e) {
                     Logging.Warning("Can't attach Values.data: " + e);
                 }

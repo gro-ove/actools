@@ -48,7 +48,7 @@ namespace AcManager.Pages.Windows {
                 Logging.Write("[MAINWINDOW] Testing mode");
                 var ui = new GameDialog();
                 ui.ShowDialogWithoutBlocking();
-                ((IGameUi)ui).OnResult(JsonConvert.DeserializeObject<Game.Result>(FileUtils.ReadAllText(_testGameDialog)));
+                ((IGameUi)ui).OnResult(JsonConvert.DeserializeObject<Game.Result>(FileUtils.ReadAllText(_testGameDialog)), null);
                 _cancelled = true;
             }
 
@@ -71,11 +71,9 @@ namespace AcManager.Pages.Windows {
             var cancelled = true;
             foreach (var arg in AppArguments.Values) {
                 Logging.Write("[MAINWINDOW] Input: " + arg);
-                if (await ProcessArgument(arg)) {
-                    Logging.Write("[MAINWINDOW] Set visible");
-                    Visibility = Visibility.Visible;
-                    cancelled = false;
-                }
+                if (!await ProcessArgument(arg)) continue;
+                Visibility = Visibility.Visible;
+                cancelled = false;
             }
 
             if (cancelled) {

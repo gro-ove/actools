@@ -151,6 +151,14 @@ namespace AcManager.Tools.AcObjectsNew {
             Author = json.GetStringValueOnly("author")?.Trim() ?? (TestIfKunos() ? AuthorKunos : null);
             Version = json.GetStringValueOnly("version")?.Trim();
             Url = json.GetStringValueOnly("url")?.Trim();
+
+            if (Version == null && Name != null) {
+                string name;
+                Version = AcStringValues.GetVersionFromName(Name, out name);
+                if (Version != null) {
+                    Name = name;
+                }
+            }
         }
 
         public virtual void SaveData(JObject json) {

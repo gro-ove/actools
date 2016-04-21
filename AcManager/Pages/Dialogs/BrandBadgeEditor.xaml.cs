@@ -11,6 +11,7 @@ using AcManager.Annotations;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using Microsoft.Win32;
@@ -19,7 +20,7 @@ namespace AcManager.Pages.Dialogs {
     public partial class BrandBadgeEditor : INotifyPropertyChanged {
         private ObservableCollection<FilesStorage.ContentEntry> _icons;
         private FilesStorage.ContentEntry _selected;
-        public CarObject Car { get; private set; }
+        public CarObject Car { get; }
 
         public ObservableCollection<FilesStorage.ContentEntry> Icons {
             get { return _icons; }
@@ -69,12 +70,9 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 File.Copy(Selected.Filename, Car.BrandBadge);
-            } catch (Exception) {
-                ShowMessage(@"Can't change brand badge.", @"Fail", MessageBoxButton.OK);
-                return;
+            } catch (Exception ex) {
+                NonfatalError.Notify(@"Can't change brand badge.", "Make sure car's brand badge file is available to write.", ex);
             }
-
-            // Car.RefreshBrandBadge();
         }
 
         private void BrandBadgeEditor_Update(object sender, EventArgs e) {
@@ -85,7 +83,7 @@ namespace AcManager.Pages.Dialogs {
             Icons = new ObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges));
 
             if (Icons.Contains(Selected)) return;
-            var brandLower = Car.Brand.ToLower(); // TODO: Weird bug?
+            var brandLower = Car.Brand?.ToLower(); // TODO: Weird bug?
             Selected = Icons.FirstOrDefault(x => x.Name.ToLower() == brandLower) ?? (Icons.Count > 0 ? Icons[0] : null);
         }
 
@@ -147,8 +145,7 @@ namespace AcManager.Pages.Dialogs {
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

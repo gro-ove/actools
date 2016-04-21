@@ -2,12 +2,16 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Controls;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 
 namespace AcManager.Tools.Helpers {
     public static class WebBrowserHelper {
-        private const uint EmulationModeDisabled = 10000;
+        /// <summary>
+        /// Internet Explorer 11. Webpages are displayed in IE11 Standards mode, regardless of the !DOCTYPE directive.
+        /// </summary>
+        private const uint EmulationModeDisabled = 0x2EDF;
 
         public static void SetBrowserFeatureControlKey([NotNull] string feature, [NotNull] string appName, uint value) {
             if (feature == null) throw new ArgumentNullException(nameof(feature));
@@ -16,6 +20,7 @@ namespace AcManager.Tools.Helpers {
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Internet Explorer\Main\FeatureControl\" + feature,
                     RegistryKeyPermissionCheck.ReadWriteSubTree)) {
                 if (key == null) return;
+                Logging.Write($"[WEBBROWSERHELPER] SetBrowserFeatureControlKey('{appName}', '{value}')");
                 key.SetValue(appName, value, RegistryValueKind.DWord);
             }
         }

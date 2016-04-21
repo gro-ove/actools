@@ -1,50 +1,14 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.SemiGui {
-    public interface IGameUiFactory {
-        IGameUi Create();
-    }
-
-    public interface IGameUi : IDisposable {
-        void Show(Game.StartProperties properties);
-
-        void OnProgress(Game.ProgressState progress);
-
-        void OnResult(Game.Result result);
-
-        void OnError(Exception exception);
-
-        CancellationToken CancellationToken { get; }
-    }
-
-    public class GameEndedArgs : CancelEventArgs {
-        public readonly Game.StartProperties StartProperties;
-        public readonly Game.Result Result;
-
-        public GameEndedArgs(Game.StartProperties startProperties, Game.Result result) {
-            StartProperties = startProperties;
-            Result = result;
-        }
-    }
-
-    public class GameFinishedArgs : EventArgs {
-        public readonly Game.StartProperties StartProperties;
-        public readonly Game.Result Result;
-
-        public GameFinishedArgs(Game.StartProperties startProperties, Game.Result result) {
-            StartProperties = startProperties;
-            Result = result;
-        }
-    }
-
     public static class GameWrapper {
         private static IGameUiFactory _factory;
 
@@ -52,9 +16,9 @@ namespace AcManager.Tools.SemiGui {
             _factory = factory;
         }
 
-        public static event EventHandler<GameEndedArgs> Ended; 
-        public static event EventHandler<GameFinishedArgs> Finished; 
-        public static event EventHandler<GameFinishedArgs> Cancelled; 
+        public static event EventHandler<GameEndedArgs> Ended;
+        public static event EventHandler<GameFinishedArgs> Finished;
+        public static event EventHandler<GameFinishedArgs> Cancelled;
 
         private class ProgressHandler : IProgress<Game.ProgressState> {
             private readonly IGameUi _ui;
@@ -76,7 +40,9 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new DriverName());
 
             if (_factory == null) {
-                return await Game.StartAsync(AcsStarterFactory.Create(), properties, null, CancellationToken.None);
+                using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
+                    return await Game.StartAsync(AcsStarterFactory.Create(), properties, null, CancellationToken.None);
+                }
             }
 
             using (var ui = _factory.Create()) {
@@ -84,7 +50,11 @@ namespace AcManager.Tools.SemiGui {
 
                 Logging.Write("[GAMEWRAPPER] Started");
                 try {
-                    var result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
+                    Game.Result result;
+                    using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
+                        result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
+                    }
+
                     Logging.Write("[GAMEWRAPPER] Finished: " + (result?.ToString() ?? "NULL"));
 
                     if (result == null) {
@@ -96,10 +66,12 @@ namespace AcManager.Tools.SemiGui {
 
                     var param = new GameEndedArgs(properties, result);
                     Ended?.Invoke(null, param);
-                    /* TODO: should I set result to null if param.Cancel is true? */
+                    /* TODO: should set result to null if param.Cancel is true? */
+
+                    var replayHelper = new ReplayHelper(properties, result);
                     (result == null || param.Cancel ? Cancelled : Finished)?.Invoke(null, new GameFinishedArgs(properties, result));
 
-                    ui.OnResult(result);
+                    ui.OnResult(result, replayHelper);
 
                     return result;
                 } catch (Exception e) {

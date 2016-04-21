@@ -1,9 +1,13 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows.Navigation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -15,32 +19,70 @@ namespace AcManager.Pages.Dialogs {
             DataContext = new TrackGeoTagsDialogViewModel(track);
             InitializeComponent();
 
-            Buttons = new[] { OkButton, CancelButton };
-            MapWebBrowser.Navigate(CmHelpersProvider.GetAddress("map"));
+            Buttons = new[] {
+                CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, new CombinedCommand(Model.SaveCommand, CloseCommand)),
+                CancelButton
+            };
+
+            MapWebBrowser.ObjectForScripting = new ScriptProvider(Model);
+            MapWebBrowser.Navigate(GetMapAddress(track));
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         [ComVisible(true)]
+        public class ScriptProvider {
+            private readonly TrackGeoTagsDialogViewModel _model;
+
+            public ScriptProvider(TrackGeoTagsDialogViewModel model) {
+                _model = model;
+            }
+
+            public void Log(string message) {
+                Logging.Write("[SCRIPTPROVIDER] " + message);
+            }
+
+            public void Alert(string message) {
+                ShowMessage(message);
+            }
+
+            public string Prompt(string message, string defaultValue) {
+                return Dialogs.Prompt.Show("Webpage says", message, defaultValue);
+            }
+
+            public void Update(double lat, double lng) {
+                _model.Latitude = lat;
+                _model.Longitude = lng;
+            }
+
+            public object CmTest() {
+                return true;
+            }
+        }
+
         public class TrackGeoTagsDialogViewModel : NotifyPropertyChanged {
 
-            private string _latitude;
+            private double? _latitude;
 
-            public string Latitude {
+            public double? Latitude {
                 get { return _latitude; }
                 set {
+                    value = value.HasValue ? Math.Round(MathUtils.Clamp(value.Value, -90d, 90d), 5) : (double?)null;
                     if (value == _latitude) return;
                     _latitude = value;
                     OnPropertyChanged();
+                    SaveCommand.OnCanExecuteChanged();
                 }
             }
-            private string _longitude;
+            private double? _longitude;
 
-            public string Longitude {
+            public double? Longitude {
                 get { return _longitude; }
                 set {
+                    value = value.HasValue ? Math.Round(MathUtils.Clamp(value.Value, -180d, 180d), 5) : (double?)null;
                     if (value == _longitude) return;
                     _longitude = value;
                     OnPropertyChanged();
+                    SaveCommand.OnCanExecuteChanged();
                 }
             }
 
@@ -48,8 +90,8 @@ namespace AcManager.Pages.Dialogs {
                 Track = track;
 
                 if (track.GeoTags != null) {
-                    Latitude = track.GeoTags.Latitude;
-                    Longitude = track.GeoTags.Longitude;
+                    Latitude = track.GeoTags.LatitudeValue;
+                    Longitude = track.GeoTags.LongitudeValue;
                 } else {
                     Latitude = null;
                     Longitude = null;
@@ -58,30 +100,23 @@ namespace AcManager.Pages.Dialogs {
 
             public TrackBaseObject Track { get; }
 
-            public void Test(string value) {
-                Logging.Write("TEST: " + value);
-            }
+            private RelayCommand _saveCommand;
+
+            public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
+                Track.GeoTags = new GeoTagsEntry(Latitude ?? 0d, Longitude ?? 0d);
+            }, o => Latitude != null && Longitude != null));
         }
         
-        private static string GetMapsAddress(TrackBaseObject track) {
-            return track.GeoTags?.IsEmptyOrInvalid == false ?
-                    $"https://www.google.ru/maps/@{track.GeoTags.LatitudeValue},{track.GeoTags.LongitudeValue},13z" :
-                    $"https://www.google.ru/maps/?q={track.City}+{track.Country}";
-        }
-
-        private void MapWebBrowser_OnNavigating(object sender, NavigatingCancelEventArgs e) {
-            // UpdateValues(e.Uri.AbsolutePath);
+        private static string GetMapAddress(TrackBaseObject track) {
+            return CmHelpersProvider.GetAddress("map") + "?t#" + (
+                    track.GeoTags?.IsEmptyOrInvalid == false ?
+                            $"{track.GeoTags.LatitudeValue};{track.GeoTags.LongitudeValue}" :
+                            string.IsNullOrEmpty(track.City) && string.IsNullOrEmpty(track.Country) ? track.Name :
+                                    new[] { track.City, track.Country }.Where(x => x != null).JoinToString(", "));
         }
 
         private void MapWebBrowser_OnNavigated(object sender, NavigationEventArgs e) {
             WebBrowserHelper.SetSilent(MapWebBrowser, true);
-
-            /*try {
-                ModernDialog.ShowMessage(MapWebBrowser.InvokeScript("eval", "5+11+'called from script code'")?.ToString() ?? "NULL");
-                ModernDialog.ShowMessage(MapWebBrowser.InvokeScript("eval", "window.external.Test('called from script code')")?.ToString() ?? "NULL");
-            } catch (Exception ex) {
-                Logging.Write("HERE: " + ex);
-            }*/
         }
     }
 }

@@ -2,12 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -21,12 +19,14 @@ namespace AcManager.Pages.Selected {
             private ICommand _playCommand;
 
             public ICommand PlayCommand => _playCommand ?? (_playCommand = new RelayCommand(o => {
-                Game.Start(AcsStarterFactory.Create(),
-                    new Game.StartProperties(new Game.ReplayProperties {
-                        Name = SelectedObject.Filename,
-                        TrackId = SelectedObject.TrackId,
-                        TrackConfiguration = SelectedObject.TrackConfiguration
-                    }));
+                using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
+                    Game.Start(AcsStarterFactory.Create(),
+                            new Game.StartProperties(new Game.ReplayProperties {
+                                Name = SelectedObject.Filename,
+                                TrackId = SelectedObject.TrackId,
+                                TrackConfiguration = SelectedObject.TrackConfiguration
+                            }));
+                }
             }, o => SelectedObject.Enabled));
         }
 

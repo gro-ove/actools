@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Tools.Objects;
+using AcTools.Kn5Render.Utils;
 
 namespace AcManager.Controls.UserControls {
     [ContentProperty("PreviewContent")]
@@ -69,9 +71,34 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void ShowroomButton_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
-                    !CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id)) {
-                new CarOpenInShowroomDialog(Car, SelectedSkin?.Id).ShowDialog();
+            if (e.ChangedButton == MouseButton.Left) {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
+                    Kn5RenderWrapper.StartBrightRoomPreview(Car.Location, SelectedSkin?.Id);
+                    return;
+                }
+
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                        !CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id)) {
+                    new CarOpenInShowroomDialog(Car, SelectedSkin?.Id).ShowDialog();
+                }
+            } else if (e.ChangedButton == MouseButton.Right) {
+                var contextMenu = new ContextMenu();
+
+                var item = new MenuItem { Header = "Open In Showroom" };
+                item.Click += (s, args) => CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id);
+                contextMenu.Items.Add(item);
+
+                item = new MenuItem { Header = "Settings", InputGestureText = "Shift" };
+                item.Click += (s, args) => new CarOpenInShowroomDialog(Car, SelectedSkin?.Id).ShowDialog();
+                contextMenu.Items.Add(item);
+
+                // TODO: Presets!
+
+                item = new MenuItem { Header = "Open In Custom Showroom", InputGestureText = "Alt" };
+                item.Click += (s, args) => Kn5RenderWrapper.StartBrightRoomPreview(Car.Location, SelectedSkin?.Id);
+                contextMenu.Items.Add(item);
+
+                contextMenu.IsOpen = true;
             }
         }
     }

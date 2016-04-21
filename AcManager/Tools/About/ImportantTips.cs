@@ -1,7 +1,7 @@
 ﻿namespace AcManager.Tools.About {
     public sealed class ImportantTips : PieceOfInformation {
-        private ImportantTips(string displayName, string description)
-                : base(displayName, description) {}
+        private ImportantTips(string displayName, string description, string id = null)
+                : base(displayName, description, id) {}
 
         public static readonly ImportantTips[] Tips = {
             new ImportantTips(@"Command-Line Arguments",
@@ -49,9 +49,20 @@ Quite questionable solution. I won't spread about it too much, just basics:
   − Obsoletable: you can miss some updates for AC using it.
 
  • [b]Naive Starter[/b]
-CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you're using original Steam version — won't work at all.") {
-                Key = "starters"
-            }
+CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you're using original Steam version — won't work at all.", "starters"),
+
+            new ImportantTips(@"Track Previews How-To",
+                    @"Race will be started as usual, but instead of driving you need to make some picturesque shots (you'll be able to choose one of them later).
+
+Hints:
+ • Press F8 to make a shot;
+ • Press F7 to switch to a Free Camera mode;
+ • In Free Camera mode use arrows to move camera around; also you may hold Ctrl or Shift to adjust its speed;
+ • And, as usual, PageUp/PageDown allow to tune exposure.
+
+ [img=""http://i.imgur.com/LzLLjAw.png|355""]Example[/img]
+
+Good luck!", "trackPreviews")
         };
     }
 }

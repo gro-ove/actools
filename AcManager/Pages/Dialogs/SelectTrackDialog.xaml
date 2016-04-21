@@ -72,6 +72,7 @@
                 FrameNavigated="Tabs_OnNavigated" mui:ModernFrame.TopSource="/Pages/Dialogs/SelectTrackDialog_Categories.xaml"
                 mui:ModernFrame.KeepContentAlive="True">
             <mui:ModernTab.Links>
+                <mui:Link DisplayName="Countries" Source="/Pages/Dialogs/SelectTrackDialog_Countries.xaml" />
                 <mui:Link DisplayName="Categories" Source="/Pages/Dialogs/SelectTrackDialog_Categories.xaml" />
                 <!-- ReSharper disable once Xaml.PathError -->
                 <mui:Link DisplayName="All" Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&amp;Filter=enabled+" />

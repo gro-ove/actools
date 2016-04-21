@@ -15,7 +15,7 @@ namespace AcManager.Tools.Objects {
         public string ReadString(int limit) {
             var length = ReadInt32();
             if (length > limit) {
-                throw new Exception("Not a string");
+                throw new Exception("Unsupported format");
             }
 
             return Encoding.ASCII.GetString(ReadBytes(length));
@@ -27,18 +27,22 @@ namespace AcManager.Tools.Objects {
     }
 
     public class ReplayObject : AcCommonSingleFileObject {
+        public static string PreviousReplayName => "cr";
         public const string ReplayExtension = ".acreplay";
 
         public override string Extension => ReplayExtension;
 
         public ReplayObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {
-        }
+                : base(manager, id, enabled) {}
 
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
 
             Date = File.GetLastWriteTime(Location);
+
+            if (Filename == PreviousReplayName) {
+                IsNew = true;
+            }
 
             try {
                 using (var reader = new ReplayReader(Location)) {
@@ -61,7 +65,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override string DisplayName => Filename == "cr" && Name == "cr" ? "Previous Online Session" : base.DisplayName;
+        public override string DisplayName => Filename == PreviousReplayName && Name == PreviousReplayName ? "Previous Online Session" : base.DisplayName;
 
         public override int CompareTo(AcPlaceholderNew o) {
             var or = o as ReplayObject;

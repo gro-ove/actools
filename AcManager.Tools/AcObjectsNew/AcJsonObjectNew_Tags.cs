@@ -6,7 +6,6 @@ using System.Windows.Data;
 using AcManager.Tools.Data;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Objects;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {

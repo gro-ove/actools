@@ -2,6 +2,7 @@
 using System.Windows;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Settings {
@@ -27,6 +28,12 @@ namespace AcManager.Pages.Settings {
             public RelayCommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new RelayCommand(o => {
                 (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri(o?.ToString() ?? "", UriKind.RelativeOrAbsolute));
             }));
+
+            private RelayCommand _addReplaysExtensionsCommand;
+
+            public RelayCommand AddReplaysExtensionsCommand => _addReplaysExtensionsCommand ?? (_addReplaysExtensionsCommand = new RelayCommand(o => {
+                ReplaysExtensionSetter.RenameAll();
+            }, o => ReplaysExtensionSetter.HasWithoutExtension()));
         }
     }
 }

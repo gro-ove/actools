@@ -69,6 +69,10 @@ namespace AcManager.Tools.Filters {
         }
 
         public bool Test(ServerEntry obj, string key, ITestEntry value) {
+            if (key == null) {
+                return value.Test(obj.Id) || value.Test(obj.DisplayName);
+            }
+
             switch (key) {
                 case "country":
                     return value.Test(obj.Country);

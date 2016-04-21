@@ -131,9 +131,13 @@
     <Compile Include="Pages\Dialogs\GameDialog.xaml.cs">
       <DependentUpon>GameDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\SelectTrackDialog_Countries.xaml.cs">
+      <DependentUpon>SelectTrackDialog_Countries.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\FontsListPage.xaml.cs">
       <DependentUpon>FontsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Selected\PresetsMenuHelper.cs" />
     <Compile Include="Pages\Selected\SelectedCarSkinPage.xaml.cs">
       <DependentUpon>SelectedCarSkinPage.xaml</DependentUpon>
     </Compile>
@@ -257,6 +261,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dialogs\CarSkinsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Dialogs\SelectTrackDialog_Countries.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

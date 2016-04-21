@@ -80,7 +80,7 @@ namespace StringBasedFilter.Tests {
             Console.WriteLine(s);
 
 
-            Assert.AreEqual(s, @"{ ""~\bA"" && ""~\bB"" }");
+            Assert.AreEqual(@"{ ""=a"" && ""=b"" }", s);
             Assert.IsTrue(filter.Test("A B"));
             Assert.IsTrue(filter.Test("a b"));
             Assert.IsFalse(filter.Test("A"));

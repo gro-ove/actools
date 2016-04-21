@@ -1,14 +1,27 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Drive;
+using AcManager.Tools.About;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI;
+using AcManager.Tools.SemiGui;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedTrackPage : ILoadableContent, IParametrizedUriContent {
@@ -27,6 +40,97 @@ namespace AcManager.Pages.Selected {
                     OnPropertyChanged();
                 }
             }
+
+            private RelayCommand _driveCommand;
+
+            public RelayCommand DriveCommand => _driveCommand ?? (_driveCommand = new RelayCommand(o => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+                        !QuickDrive.Run(track: SelectedTrackConfiguration)) {
+                    DriveOptionsCommand.Execute(null);
+                }
+            }, o => SelectedTrackConfiguration.Enabled));
+
+            private RelayCommand _driveOptionsCommand;
+
+            public RelayCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new RelayCommand(o => {
+                QuickDrive.Show(track: SelectedTrackConfiguration);
+            }, o => SelectedTrackConfiguration.Enabled));
+
+            public ObservableCollection<MenuItem> QuickDrivePresets {
+                get { return _quickDrivePresets; }
+                private set {
+                    if (Equals(value, _quickDrivePresets)) return;
+                    _quickDrivePresets = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private static ObservableCollection<MenuItem> _quickDrivePresets;
+
+            public void InitializeQuickDrivePresets() {
+                if (QuickDrivePresets == null) {
+                    QuickDrivePresets = PresetsMenuHelper.CreatePresetsMenu(QuickDrive.UserPresetableKeyValue, p => {
+                        QuickDrive.RunPreset(p, track: SelectedTrackConfiguration);
+                    });
+                }
+            }
+
+            private const string KeyUpdatePreviewMessageShown = "SelectTrackPage.UpdatePreviewMessageShown";
+
+            private AsyncCommand _updatePreviewCommand;
+
+            public AsyncCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new AsyncCommand(async o => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
+                    UpdatePreviewDirectCommand.Execute(o);
+                    return;
+                }
+
+                if (!ValuesStorage.GetBool(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
+                        ImportantTips.Tips.GetByIdOrDefault("trackPreviews")?.Details, "How-To", MessageBoxButton.OK) !=
+                        MessageBoxResult.OK) {
+                    return;
+                }
+
+                var directory = FileUtils.GetDocumentsScreensDirectory();
+                var shots = Directory.GetFiles(directory);
+
+                await QuickDrive.RunAsync(track: SelectedTrackConfiguration);
+                var newShots = Directory.GetFiles(directory).Where(x => !shots.Contains(x) && (
+                        x.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                                x.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                                x.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))).ToList();
+
+                if (!newShots.Any()) {
+                    NonfatalError.Notify("Can't update preview", "You were supposed to make at least one screenshot.");
+                    return;
+                }
+
+                ValuesStorage.Set(KeyUpdatePreviewMessageShown, true);
+
+                var shot = new ImageViewer(newShots) {
+                    Model = {
+                        MaxImageHeight = 200d,
+                        MaxImageWidth = 355d
+                    }
+                }.ShowDialogInSelectFileMode();
+                if (shot == null) return;
+
+                ImageUtils.ApplyPreview(shot, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
+            }, o => SelectedObject.Enabled));
+
+            private RelayCommand _updatePreviewDirectCommand;
+
+            public RelayCommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new RelayCommand(o => {
+                var dialog = new OpenFileDialog {
+                    Filter = FileDialogFilters.ImagesFilter,
+                    Title = "Select New Preview Image",
+                    InitialDirectory = FileUtils.GetDocumentsScreensDirectory(),
+                    RestoreDirectory = true
+                };
+                if (dialog.ShowDialog() == true) {
+                    ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
+                }
+            }));
         }
 
         private void SpecsInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
@@ -66,9 +170,20 @@ namespace AcManager.Pages.Selected {
             if (_object == null) throw new ArgumentException("Can't find object with provided ID");
 
             InitializeAcObjectPage(_model = new SelectedTrackPageViewModel(_object));
+            InputBindings.AddRange(new[] {
+                new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
+                new InputBinding(_model.UpdatePreviewDirectCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
+
+                new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift))
+            });
             InitializeComponent();
         }
 
         private SelectedTrackPageViewModel _model;
+
+        private void ToolbarButtonQuickDrive_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+            _model.InitializeQuickDrivePresets();
+        }
     }
 }

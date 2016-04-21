@@ -19,6 +19,9 @@ namespace AcManager.Tools.Miscellaneous {
 
             [Description("Wheels objects (WHEEL_LF, WHEEL_LR, …) are missing")]
             WheelsAreMissing,
+
+            [Description("Driver model is probably missing")]
+            DriverModelIsMissing,
         }
 
         public static WhatsGoingOn? TryToDetermineWhatsGoingOn() {
@@ -39,6 +42,10 @@ namespace AcManager.Tools.Miscellaneous {
                 
                 if (log.Contains("COULD NOT FIND SUSPENSION OBJECT WHEEL_")) {
                     return WhatsGoingOn.WheelsAreMissing;
+                }
+                
+                if (log.SkipWhile(x => x != "CRASH in:").Any(x => x.Contains("DriverModel::DriverModel"))) {
+                    return WhatsGoingOn.DriverModelIsMissing;
                 }
             } catch (Exception e) {
                 Logging.Write("[ACLOGHELPER] Can't determine what's going on: " + e);

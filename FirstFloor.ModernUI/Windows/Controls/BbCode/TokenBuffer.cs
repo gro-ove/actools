@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     /// <summary>
@@ -14,10 +15,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         /// Initializes a new instance of the <see cref="T:TokenBuffer"/> class.
         /// </summary>
         /// <param name="lexer">The lexer.</param>
-        public TokenBuffer(Lexer lexer) {
-            if (lexer == null) {
-                throw new ArgumentNullException(nameof(lexer));
-            }
+        public TokenBuffer([NotNull] Lexer lexer) {
+            if (lexer == null) throw new ArgumentNullException(nameof(lexer));
 
             Token token;
             do {

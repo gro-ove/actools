@@ -2,8 +2,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}">
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
+        xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance selected:SelectedReplayPage+SelectedReplayPageViewModel}">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
@@ -23,33 +26,42 @@
         </ac:AcObjectBase.ToolBars>
 
         <StackPanel>
-            <StackPanel DataContext="{Binding SelectedObject}"
-                    Visibility="{Binding ParsedSuccessfully, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Grid Margin="0 8 8 8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="120" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
+            <Grid DataContext="{Binding SelectedObject}" Visibility="{Binding ParsedSuccessfully, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Margin="0 8 8 8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
 
-                    <TextBlock Text="Track:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Track Configuration:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="Track:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="Track Configuration:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
-                    <TextBlock Text="{Binding TrackId}" Grid.Column="1" Grid.Row="0" />
-                    <TextBlock Text="{Binding TrackConfiguration}" Grid.Column="1" Grid.Row="1" />
+                <TextBlock Text="{Binding TrackId}" Grid.Column="1" Grid.Row="0" />
+                <TextBlock Text="{Binding TrackConfiguration}" Grid.Column="1" Grid.Row="1" />
 
-                    <TextBlock Text="Weather:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Date:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="Weather:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="Date:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
-                    <TextBlock Text="{Binding WeatherId}" Grid.Column="3" Grid.Row="0" />
-                    <TextBlock Text="{Binding Date}" Grid.Column="3" Grid.Row="1" />
-                </Grid>
-            </StackPanel>
+                <TextBlock Text="{Binding WeatherId}" Grid.Column="3" Grid.Row="0" />
+                <TextBlock Text="{Binding Date}" Grid.Column="3" Grid.Row="1" />
+            </Grid>
+
+            <Grid Margin="0 0 0 8"
+                    Visibility="{Binding SelectedObject.Name, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static objects:ReplayObject.PreviousReplayName}}">
+                <Rectangle Stroke="{DynamicResource Error}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+                <StackPanel Margin="8">
+                    <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}">Warning</TextBlock>
+                    <TextBlock>Replay will be overwritten after the next race. Rename it to keep it.</TextBlock>
+                    <TextBlock Margin="0 4 0 0" FontStyle="Italic"
+                            Visibility="{Binding AutoSaveReplays, Source={x:Static helpers:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">You can go to Settings and enable “Save replays automatically” option to avoid losing something valuable.</TextBlock>
+                </StackPanel>
+            </Grid>
         </StackPanel>
     </ac:AcObjectBase>
 </selected:SelectedAcObjectPage>

@@ -14,10 +14,10 @@ namespace AcManager.Tools.Helpers {
             }
 
             var result = new YahooApiProvider().TryToLocate(country, city);
-            if (result == null) return null;
+            if (result?.LatitudeValue == null || result.LongitudeValue == null) return null;
 
-            ValuesStorage.Set(key + "__lat", result.LatitudeValue);
-            ValuesStorage.Set(key + "__lon", result.LongitudeValue);
+            ValuesStorage.Set(key + "__lat", result.LatitudeValue.Value);
+            ValuesStorage.Set(key + "__lon", result.LongitudeValue.Value);
             return result;
         }
 

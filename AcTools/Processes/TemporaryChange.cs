@@ -6,7 +6,8 @@ using AcTools.Utils;
 
 namespace AcTools.Processes {
     internal class VideoIniChange : IDisposable {
-        private readonly string _filename, _originalContent;
+        private readonly string _filename, _backup, _originalContent;
+        private bool _changed;
 
         public VideoIniChange(string ppFilter, bool? fxaa, bool specialResolution, bool maximizeSettings) {
             _filename = FileUtils.GetCfgVideoFilename();
@@ -16,16 +17,19 @@ namespace AcTools.Processes {
             if (fxaa.HasValue) {
                 video["EFFECTS"].Set("FXAA", fxaa.Value);
                 video["POST_PROCESS"].Set("FXAA", fxaa.Value);
+                _changed = true;
             }
 
             if (ppFilter != null) {
                 video["POST_PROCESS"].Set("FILTER", ppFilter);
+                _changed = true;
             }
 
             if (specialResolution) {
                 video["VIDEO"].Set("FULLSCREEN", false);
                 video["VIDEO"].Set("WIDTH", 1920*2);
                 video["VIDEO"].Set("HEIGHT", 1080*2);
+                _changed = true;
             }
 
             if (maximizeSettings) {
@@ -38,13 +42,29 @@ namespace AcTools.Processes {
                 video["CUBEMAP"].Set("FACES_PER_FRAME", 6);
                 video["CUBEMAP"].Set("FARPLANE", 500);
                 video["CUBEMAP"].Set("SIZE", 2048);
+                _changed = true;
             }
 
+            if (!_changed) return;
+            _backup = _filename + ".backup";
+            if (File.Exists(_backup)) {
+                File.Delete(_backup);
+            }
+            File.Move(_filename, _backup);
             video.Save(_filename);
         }
 
         public void Dispose() {
-            File.WriteAllText(_filename, _originalContent);
+            if (!_changed) return;
+            if (File.Exists(_backup)) {
+                if (File.Exists(_filename)) {
+                    File.Delete(_filename);
+                }
+
+                File.Move(_backup, _filename);
+            } else {
+                File.WriteAllText(_filename, _originalContent);
+            }
         }
     }
 

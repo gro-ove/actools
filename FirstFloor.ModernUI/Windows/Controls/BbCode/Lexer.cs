@@ -70,6 +70,14 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             return _buffer.La(count);
         }
 
+        protected void Keep() {
+            _buffer.Keep();
+        }
+
+        protected void Restore() {
+            _buffer.Restore();
+        }
+
         /// <summary>
         /// Marks the current position.
         /// </summary>
@@ -129,7 +137,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             if (La(1) == value) {
                 Consume();
             } else {
-                throw new ParseException("Character mismatch");
+                throw new ParseException($"Character mismatch (required: '{value}')");
             }
         }
 

@@ -89,7 +89,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="controls:ButtonWithComboBox" BasedOn="{StaticResource BaseButtonStyle}">
+    <Style TargetType="{x:Type controls:ButtonWithComboBox}" BasedOn="{StaticResource BaseButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:ButtonWithComboBox}">
@@ -102,8 +102,7 @@
                             <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
                                     Foreground="{TemplateBinding Foreground}">
                                 <MenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
-                                        ItemsSource="{TemplateBinding MenuItems}">
-                                </MenuItem>
+                                        ItemsSource="{TemplateBinding MenuItems}"/>
                             </Menu>
                         </StackPanel>
                     </Border>
@@ -128,5 +127,55 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="Go.ButtonWithComboBox" TargetType="{x:Type controls:ButtonWithComboBox}" BasedOn="{StaticResource {x:Type controls:ButtonWithComboBox}}">
+        <Setter Property="Background" Value="{DynamicResource GoButtonBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorder}" />
+        <Setter Property="Foreground" Value="{DynamicResource GoButtonText}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:ButtonWithComboBox}">
+                    <Border Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                        <StackPanel Orientation="Horizontal">
+                            <ContentPresenter Name="Presenter" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ToolTip="{TemplateBinding ButtonToolTip}" />
+                            <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
+                                    Foreground="{TemplateBinding Foreground}" FontWeight="Normal">
+                                <MenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
+                                        ItemsSource="{TemplateBinding MenuItems}"/>
+                            </Menu>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource GoButtonTextDisabled}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource GoButtonBackgroundHover}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderHover}" />
+                            <Setter Property="Foreground" Value="{DynamicResource GoButtonTextHover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource GoButtonBackgroundPressed}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorderPressed}" />
+                            <Setter Property="Foreground" Value="{DynamicResource GoButtonTextPressed}" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Go}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Go.ToolBarButtonWithComboBox" BasedOn="{StaticResource Go.ButtonWithComboBox}" TargetType="{x:Type controls:ButtonWithComboBox}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
     </Style>
 </ResourceDictionary>

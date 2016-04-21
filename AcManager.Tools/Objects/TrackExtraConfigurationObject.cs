@@ -24,6 +24,15 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        public override string Name {
+            get { return base.Name; }
+            protected set {
+                if (Equals(value, base.Name)) return;
+                base.Name = value;
+                OnPropertyChanged(nameof(LayoutName));
+            }
+        }
+
         public override string LayoutName {
             get { return NameEditable; }
             set { NameEditable = value; }

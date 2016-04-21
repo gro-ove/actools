@@ -82,6 +82,7 @@ done:
             + conditions to race.ini values
             + autoupdate conditions
             + presets
+        + auto saving replays
     + select something legit as a default weather/car/track/etc
     + fix presets combobox
     + skip reloading on app changes!
@@ -267,6 +268,7 @@ done:
         + rewrite objects and managers
         + rewrite UI
         + sorting for AcLoadedOnlyCollection?
+        + track: proper HandleChangedFile for extra configurations
     + “player” as default
     + special drive dialog
         + get results
@@ -300,7 +302,6 @@ done:
     + skins removing
     + add version to about page
     + 13%
-
     + intellectual content auto-update
         + cars
             + skins
@@ -331,58 +332,66 @@ done:
         + proper ShouldSkipFile methods
         + object-based reload
             + tracks
+    + auto-update previews
+        + fix pp-filter
+        + option for FXAO
+        + 2× mode for best antialiasing
+        + proper graphic settings
+    + option for automatically add .acreplay for replays
+    + fix brand fitting on car's selection dialog
+    + track's preview generator?
+    + button "drive" on content page
+    + send AC's log.txt as well
+    + change serverentry to be inherited from acobjectnew?
+    + run game or install mods from browser using special acmanager:// protocol?
 
 fixme:
     - previews loading (could be a much more serious problem)
     - notifypropertychanged for commands
     - MUI thing with Loaded/Unloaded!
-    - show only enabled skins on other pages
     - one big NLUA bug
     - pastload problem!
-    - real conditions
     - tags
     - iconintaskbar for dialogs
     - potential error here:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
+    - presets menus problem!
 
 todo:
-    - focus on closest object on removing
-    
     - lite mode (without main form): overlays, second commands, attempts to open main form?
-    - show race params on loading screen?
-    - send AC's log.txt as well
 
-    - button "drive" on content page
     - errors & fixers for badly make ui_skin.json
 
     - showroom from QD/KunosCareer/Online
         + QD
         + KunosCareer
         - Online
+        - custom showroom
+        - presets
+
+    - improve custom showroom
+        - reduce GPU consuming
 
     - remember all window sizes
     - automatically switch to freshly installed content in some cases (optional)?
 
     - drivers installation
     - skins installation
-    - pp-filter, app, weather?
+    - pp-filter, app, weather installation?
 
     - remove old data before installing the new one, etc
     - define installation modes in lua-scripts in content
 
-    - fix brand fitting on car's selection dialog
-
     + new much better acobject/acmanager system
         - add brand/car class/etc to suggestion lists on editing
-        - track: proper HandleChangedFile for extra configurations
         - Car_ParentIsMissing + Watching (add/remove automatically)
 
     + drive feature
         + quick drive
+            + tracks by countries
             + select car by brands
-                - brands cache!
+                + brands cache!
                 - optional list mode?
-            - tracks by countries
             - weekends
             - drag racing
         + online
@@ -392,12 +401,12 @@ todo:
             - periodic refreshing of selected server
             - list all cars
             - keyboard shortcuts
-            - auto saving replays
+            - flag fitting
             - custom sorting?
         - test and fix for AcManager autoupdating feature
             - handle obsolete!
         - challenges
-        - handle cars without previews
+        + handle cars without previews
             - without skins?
         - special options
             - syncronized steering wheel
@@ -438,6 +447,7 @@ todo:
         - CarSkins_SkinsAreMissing
 
     - auto-update body shadows
+    - auto-update track's map
     - copy sound from another car?
     - checkboxes
         - custom lists?
@@ -445,7 +455,6 @@ todo:
     - simple presets mode?
     - context menu for lists in aclistpages
         - reload list
-    - option for automatically add .acreplay for replays
     - context menu for adding new filters
         - in this tab/as a new tab (+ctrl)
         - tags
@@ -463,10 +472,10 @@ todo:
         - auto-update previews
 
     + built-in browser
-        - some communication system
-        - find description
-        - track geotags editing
-            - timezone editing
+        + some communication system
+        + track geotags editing
+        - find car description
+        - find track description
 
     - favorites
 
@@ -475,11 +484,16 @@ todo:
         + fonts
             + detect what car uses what font
         + replays
-            - warning for cr (will be lost without renaming)
+            + warning for cr (will be lost without renaming)
+            - filtering
+            - try again to read car's id
+            - show replay's size
+            - length in minutes?
+            - track's display name
+            - weather's display name
         - pp filters
         - apps
 
-    - description: convert html to bb and back?
     - improve showroom generator
         - async
         - textures as streams
@@ -487,20 +501,20 @@ todo:
         - light direction
         - additional surface?
 
-    - replays filtering
     - screenshots tab
 
     + object-based reload
         - non-json objects
             - font
+    - show race params on loading screen?
 
 later:
-    - auto-update previews
-        - fix pp-filter
-        - option for FXAO
-        - proper graphic settings
-            - custom settings
-        - 2× mode for best antialiasing
+    - option for disabling .acreplay on renaming replays in content tab
+    - try to implement some stuff from /r/loadingicon/?
+    - description: convert html to bb and back?
+
+    + auto-update previews
+        - custom graphic settings?
         - background mode?
 
     + recent & shortcuts page
@@ -528,7 +542,7 @@ later:
     - download addons automatically?
         - or show some message about them?
 
-    - update font on-fly
+    - update fonts on-fly
 
     - ac options
         - presets
@@ -569,9 +583,6 @@ later:
             - unoptimized sound detection
             - broken sound detection?
 
-    - change serverentry to be inherited from acobjectnew?
-    - run game or install mods from browser using special acmanager:// protocol?
-
     - highscores
         - sync with OV1?
         - or maybe replace OV1 with something similar self-written?
@@ -596,10 +607,9 @@ later:
     - optional bind classes list to race, street, drift?
 
     + specs editor
-        - optional forced spaces
-        - optional format?
+        - optional forced spaces?
+        × optional format?
 
-    - font generator
     - improve image cropper 
     - url/stuff bb protection
     - check new content version on acclub
@@ -629,3 +639,5 @@ later:
     - localization?
     - tests?
     - profiles?
+
+    × font generator

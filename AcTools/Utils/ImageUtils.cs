@@ -41,10 +41,18 @@ namespace AcTools.Utils {
         private const int ApplyPreviewsWidth = 1022;
         private const int ApplyPreviewsHeight = 575;
 
-        private static void ApplyPreviewImageMagick(string source, string destination, bool resize) {
+        public static void ApplyPreview(string source, string destination, bool resize) {
+            if (resize) {
+                ApplyPreview(source, destination, ApplyPreviewsWidth, ApplyPreviewsHeight);
+            } else {
+                ApplyPreview(source, destination);
+            }
+        }
+
+        private static void ApplyPreviewImageMagick(string source, string destination, double maxWidth = 0d, double maxHeight = 0d) {
             using (var image = new MagickImage(source)) {
-                if (resize) {
-                    var k = Math.Max((double)ApplyPreviewsHeight / image.Height, (double)ApplyPreviewsWidth / image.Width);
+                if (maxWidth > 0d || maxHeight > 0d) {
+                    var k = Math.Max(maxHeight / image.Height, maxWidth / image.Width);
                     image.Interpolate = PixelInterpolateMethod.Bicubic;
                     image.FilterType = FilterType.Mitchell;
                     image.Resize((int)(k * image.Width), (int)(k * image.Height));
@@ -57,18 +65,18 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void ApplyPreview(string source, string destination, bool resize) {
+        public static void ApplyPreview(string source, string destination, double maxWidth = 0d, double maxHeight = 0d) {
             if (File.Exists(destination)) {
                 File.Delete(destination);
             }
 
             if (IsMagickAsseblyLoaded) {
-                ApplyPreviewImageMagick(source, destination, resize);
+                ApplyPreviewImageMagick(source, destination, maxWidth, maxHeight);
             } else {
                 var encoder = ImageCodecInfo.GetImageDecoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
                 var parameters = new EncoderParameters(1) {Param = {[0] = new EncoderParameter(Encoder.Quality, 100L)}};
 
-                if (resize) {
+                if (maxWidth > 0d || maxHeight > 0d) {
                     using (var bitmap = new Bitmap(ApplyPreviewsWidth, ApplyPreviewsHeight))
                     using (var graphics = Graphics.FromImage(bitmap)) {
                         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -76,8 +84,7 @@ namespace AcTools.Utils {
                         graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
                         using (var image = Image.FromFile(source)) {
-                            var k = Math.Max((double) ApplyPreviewsHeight/image.Height,
-                                             (double) ApplyPreviewsWidth/image.Width);
+                            var k = Math.Max(maxHeight / image.Height, maxWidth / image.Width);
                             graphics.DrawImage(image, (int) (0.5*(ApplyPreviewsWidth - k*image.Width)),
                                                (int) (0.5*(ApplyPreviewsHeight - k*image.Height)),
                                                (int) (k*image.Width), (int) (k*image.Height));

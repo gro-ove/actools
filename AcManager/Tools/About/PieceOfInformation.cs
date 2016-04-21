@@ -1,23 +1,25 @@
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.About {
-    public class PieceOfInformation : Displayable {
+    public class PieceOfInformation : Displayable, IWithId {
+        private readonly string _keyIsNotNew;
+
         public sealed override string DisplayName { get; set; }
 
-        public PieceOfInformation(string displayName, string details) {
-            Id = displayName.Length + "_" + displayName.GetHashCode() + "_" + details.GetHashCode();
+        public PieceOfInformation(string displayName, string details, string id = null) {
+            _keyIsNotNew = "PieceOfInformation.IsNotNew_" + displayName.Length + "_" + displayName.GetHashCode() + "_" + details.GetHashCode();
+            Id = id;
 
             Details = details;
             DisplayName = displayName;
-            IsNew = !ValuesStorage.GetBool(KeyIsNotNew);
+            IsNew = !ValuesStorage.GetBool(_keyIsNotNew);
         }
-
-        public string Key { get; set; }
 
         public string Details { get; }
 
-        public string Id { get; }
+        public string Id { get; set; }
 
         private bool _isNew;
 
@@ -30,12 +32,10 @@ namespace AcManager.Tools.About {
             }
         }
 
-        private string KeyIsNotNew => "PieceOfInformation.IsNotNew_" + Id;
-
         public void MarkAsRead() {
             IsNew = false;
             AboutHelper.Instance.CheckIfThereIsSomethingNew();
-            ValuesStorage.Set(KeyIsNotNew, true);
+            ValuesStorage.Set(_keyIsNotNew, true);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace AcManager.Tools.Objects {
         public AcLoadedOnlyCollection<CarSkinObject> LoadedOnlySkins => SkinsManager.LoadedOnlyCollection;
 
         /* TODO: force sorting by ID! */
-
+        [CanBeNull]
         private CarSkinObject _selectedSkin;
 
         [CanBeNull]

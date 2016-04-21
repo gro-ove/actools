@@ -23,12 +23,14 @@ namespace AcManager.Pages.Dialogs {
 
             public string Icon { get; set; }
 
+            internal bool BuiltInIcon;
+
             public Uri PageAddress => UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
                     $"enabled+&brand:{Filter.Encode(Name)}", Name);
 
             public CarBrandInformation(string name) {
                 Name = name;
-                Icon = GetBrandIcon(name);
+                Icon = GetBrandIcon(name, out BuiltInIcon);
             }
 
             public override string ToString() {
@@ -44,9 +46,10 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private static string GetBrandIcon(string brand) {
+        private static string GetBrandIcon(string brand, out bool builtInIcon) {
             var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, brand + ".png");
-            if (entry != null && File.Exists(entry.Filename)) return entry.Filename;
+            builtInIcon = entry != null && File.Exists(entry.Filename);
+            if (builtInIcon) return entry.Filename;
 
             var fromList = CarsManager.Instance.LoadedOnly.FirstOrDefault(x => x.Brand == brand);
             return fromList?.BrandBadge;
@@ -56,28 +59,43 @@ namespace AcManager.Pages.Dialogs {
 
         private static ListCollectionView _brands;
         private static BetterObservableCollection<CarBrandInformation> _carBrandsInformationList;
+        private const string KeyBrandsCache = "__SelectAndSetupCarDialog_Brands__cache";
+        private static bool _savedToCache;
+
+        private static void UpdateCache() {
+            if (!_savedToCache && CarsManager.Instance.IsLoaded) {
+                ValuesStorage.Set(KeyBrandsCache, _carBrandsInformationList.Where(x => x.BuiltInIcon).Select(x => x.Name));
+                _savedToCache = true;
+            }
+        }
 
         private static void InitializeOnce() {
             _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>(
                 SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x))
             );
 
+            _carBrandsInformationList.AddRange(from name in ValuesStorage.GetStringList(KeyBrandsCache)
+                                               where _carBrandsInformationList.All(x => x.Name != name)
+                                               select new CarBrandInformation(name));
+
             SuggestionLists.CarBrandsList.CollectionChanged += CarBrandsList_CollectionChanged;
 
             _brands = (ListCollectionView)CollectionViewSource.GetDefaultView(_carBrandsInformationList);
             _brands.SortDescriptions.Add(new SortDescription());
+
+            UpdateCache();
         }
 
         private static void CarBrandsList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             switch (e.Action) {
                 case NotifyCollectionChangedAction.Add:
-                    _carBrandsInformationList.AddRange(e.NewItems.Cast<string>().Select(x => new CarBrandInformation(x)));
+                    _carBrandsInformationList.AddRange(e.NewItems.OfType<string>().Where(x => _carBrandsInformationList.Any(y => y.Name == x))
+                                                        .Select(x => new CarBrandInformation(x)));
                     break;
 
                 default:
                     _carBrandsInformationList.ReplaceEverythingBy(
-                        SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x))
-                    );
+                            SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x)));
                     break;
             }
         }
@@ -89,7 +107,10 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
             DataContext = this;
 
-            CarsManager.Instance.EnsureLoadedAsync().Forget();
+            if (!CarsManager.Instance.IsLoaded) {
+                EnsureLoaded();
+            }
+
             if (_carBrandsInformationList == null) {
                 InitializeOnce();
             }
@@ -97,8 +118,14 @@ namespace AcManager.Pages.Dialogs {
             UpdateSelected();
         }
 
+
+        private async void EnsureLoaded() {
+            await CarsManager.Instance.EnsureLoadedAsync();
+            UpdateCache();
+        }
+
         void MainDialog_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == "SelectedCar") {
+            if (e.PropertyName == nameof(SelectCarDialog.SelectedCar)) {
                 UpdateSelected();
             }
         }

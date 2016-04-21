@@ -249,11 +249,27 @@ namespace AcManager.Pages.Dialogs {
             public TimeSpan? TheoreticallLapTime { get; set; }
         }
 
-        void IGameUi.OnResult(Game.Result result) {
+        void IGameUi.OnResult(Game.Result result, ReplayHelper replayHelper) {
             if (result != null && result.NumberOfSessions == 1 && result.Sessions.Length == 1
                     && result.Sessions[0].Type == Game.SessionType.Practice && SettingsHolder.Drive.SkipPracticeResults) {
                 Close();
                 return;
+            }
+
+            Func<string> buttonText = () => replayHelper?.IsReplayRenamed == true ? @"Unsave replay" : @"Save replay";
+
+            var saveReplayButton = CreateExtraDialogButton(buttonText(), () => {
+                if (replayHelper == null) return;
+                replayHelper.IsReplayRenamed = !replayHelper.IsReplayRenamed;
+            });
+            if (replayHelper == null) {
+                saveReplayButton.IsEnabled = false;
+            } else {
+                replayHelper.PropertyChanged += (sender, args) => {
+                    if (args.PropertyName == nameof(ReplayHelper.IsReplayRenamed)) {
+                        saveReplayButton.Content = buttonText();
+                    }
+                };
             }
 
             var tryAgainButton = CreateExtraDialogButton(@"Try again", () => {
@@ -266,6 +282,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             Buttons = new[] {
+                saveReplayButton,
                 tryAgainButton,
                 CloseButton
             };

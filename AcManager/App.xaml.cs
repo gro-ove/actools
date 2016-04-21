@@ -108,10 +108,10 @@ namespace AcManager {
             AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
 
             if (!AppArguments.GetBool(AppFlag.PreventDisableWebBrowserEmulationMode) && (
-                    !ValuesStorage.GetBool(WebBrowserEmulationModeDisabledKey) || AppArguments.GetBool(AppFlag.ForceDisableWebBrowserEmulationMode))) {
+                    ValuesStorage.GetInt(WebBrowserEmulationModeDisabledKey) < 2 || AppArguments.GetBool(AppFlag.ForceDisableWebBrowserEmulationMode))) {
                 try {
                     WebBrowserHelper.DisableBrowserEmulationMode();
-                    ValuesStorage.Set(WebBrowserEmulationModeDisabledKey, true);
+                    ValuesStorage.Set(WebBrowserEmulationModeDisabledKey, 2);
                 } catch (Exception e) {
                     Logging.Warning("cannot disable emulation mode: " + e);
                 }

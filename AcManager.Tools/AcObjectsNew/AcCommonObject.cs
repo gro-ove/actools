@@ -106,7 +106,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private bool _changed;
 
-        public bool Changed {
+        public virtual bool Changed {
             get { return _changed; }
             protected set {
                 if (value == _changed || LoadingInProcess) return;

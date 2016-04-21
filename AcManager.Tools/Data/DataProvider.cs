@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -134,6 +132,40 @@ namespace AcManager.Tools.Data {
                 }
 
                 return _countries;
+            }
+        }
+
+        private Dictionary<string, string> _countryByIds;
+
+        [NotNull]
+        public IReadOnlyDictionary<string, string> CountryByIds {
+            get {
+                if (_countryByIds != null) return _countryByIds;
+
+                try {
+                    _countryByIds = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                        FilesStorage.Instance.LoadContentFile(ContentCategory.Data, "CountryIds.json"));
+                } catch (Exception e) {
+                    Logging.Warning("Cannot load CountryIds.json: " + e);
+                    _countryByIds = new Dictionary<string, string>();
+                }
+
+                return _countryByIds;
+            }
+        }
+
+        private Dictionary<string, string> _countryToIds;
+
+        [NotNull]
+        public IReadOnlyDictionary<string, string> CountryToIds {
+            get {
+                if (_countryToIds != null) return _countryToIds;
+
+                _countryToIds = new Dictionary<string, string>(CountryByIds.Count);
+                foreach (var pair in CountryByIds) {
+                    _countryToIds[pair.Value] = pair.Key;
+                }
+                return _countryToIds;
             }
         }
 

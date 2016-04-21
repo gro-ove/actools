@@ -18,7 +18,23 @@ namespace AcManager.Pages.Dialogs {
     public partial class SelectTrackDialog {
         public const string UriKey = "SelectTrackDialog.UriKey";
 
+
+        private static WeakReference<SelectTrackDialog> _instance;
+
+        public static SelectTrackDialog Instance {
+            get {
+                if (_instance == null) {
+                    return null;
+                }
+
+                SelectTrackDialog result;
+                return _instance.TryGetTarget(out result) ? result : null;
+            }
+        }
+
         public SelectTrackDialog(TrackBaseObject selectedTrackConfiguration) {
+            _instance = new WeakReference<SelectTrackDialog>(this);
+
             DataContext = new SelectTrackDialogViewModel(selectedTrackConfiguration);
             InitializeComponent();
 

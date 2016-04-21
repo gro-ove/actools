@@ -2,14 +2,16 @@
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 using Path = System.IO.Path;
 
 namespace AcManager.Controls.Pages.Dialogs {
     public partial class ImageViewer { 
-        public ImageViewer(string image) : this(new[] { image }, 0) { }
+        public ImageViewer(string image) : this(new[] { image }) { }
 
-        public ImageViewer(IEnumerable<string> images, int position) {
+        public ImageViewer(IEnumerable<string> images, int position = 0) {
             DataContext = new ImageViewerViewModel(images, position);
             InitializeComponent();
             Buttons = new Button[] { };
@@ -41,6 +43,13 @@ namespace AcManager.Controls.Pages.Dialogs {
             Model.SelectionMode = true;
             ShowDialog();
             return IsSelected ? Model.CurrentPosition : (int?)null;
+        }
+
+        [CanBeNull]
+        public string ShowDialogInSelectFileMode() {
+            Model.SelectionMode = true;
+            ShowDialog();
+            return IsSelected ? Model.CurrentImage : null;
         }
 
         private void ApplyButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {

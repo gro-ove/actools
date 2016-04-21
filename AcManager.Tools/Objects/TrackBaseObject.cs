@@ -164,7 +164,15 @@ namespace AcManager.Tools.Objects {
 
         protected override void LoadData(JObject json) {
             base.LoadData(json);
-            
+
+            if (Version == null && Description != null) {
+                string description;
+                Version = AcStringValues.GetVersionFromName(Description, out description);
+                if (Version != null) {
+                    Description = description;
+                }
+            }
+
             City = json.GetStringValueOnly("city");
             GeoTags = json.GetGeoTagsValueOnly("geotags");
 
