@@ -137,7 +137,6 @@
     <Compile Include="Pages\Lists\FontsListPage.xaml.cs">
       <DependentUpon>FontsListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Selected\PresetsMenuHelper.cs" />
     <Compile Include="Pages\Selected\SelectedCarSkinPage.xaml.cs">
       <DependentUpon>SelectedCarSkinPage.xaml</DependentUpon>
     </Compile>

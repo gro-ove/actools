@@ -79,7 +79,7 @@
 
 	float4 ps_Tonemap (PS_IN pin) : SV_Target {
 		float currentBrightness = 0.167 + dot(tex(gBrightnessMap, 0.5).rgb, LUM_CONVERT) * 0.667;
-		return float4(ToneReinhard(tex(pin.Tex).rgb, currentBrightness, 0.45, 1.2), 1) + tex(gBloomMap, pin.Tex);
+		return float4(ToneReinhard(tex(pin.Tex).rgb, currentBrightness, 0.56, 1.2), 1) + tex(gBloomMap, pin.Tex);
 	}
 
 	technique11 Tonemap {

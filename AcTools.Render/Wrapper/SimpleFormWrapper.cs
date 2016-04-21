@@ -9,10 +9,10 @@ namespace AcTools.Render.Wrapper {
     public class SimpleFormWrapper {
         private readonly string _title;
 
-        public readonly AbstractRenderer Renderer;
+        public readonly BaseRenderer Renderer;
         public readonly RenderForm Form;
 
-        public SimpleFormWrapper(AbstractRenderer renderer, string title, int width, int height) {
+        public SimpleFormWrapper(BaseRenderer renderer, string title, int width, int height) {
             _title = title;
 
             Form = new RenderForm(title) {

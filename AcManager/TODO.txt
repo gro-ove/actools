@@ -355,7 +355,6 @@ fixme:
     - iconintaskbar for dialogs
     - potential error here:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
-    - presets menus problem!
 
 todo:
     - lite mode (without main form): overlays, second commands, attempts to open main form?

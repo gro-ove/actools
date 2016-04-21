@@ -68,7 +68,7 @@
 
 		float3 color = baseValue.rgb;
 		float diffuseValue = baseValue.a;
-		float3 lightnessResult = color * diffuseValue * gLightColor * lightness;
+		float3 lightnessResult = color * diffuseValue * gLightColor;
 			
 		float specIntensity = mapsValue.r * 1.2;
 		float specExp = mapsValue.g * 250 + 1;

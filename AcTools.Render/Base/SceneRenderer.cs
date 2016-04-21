@@ -1,9 +1,8 @@
-﻿using System.Diagnostics;
-using AcTools.Render.Base.Camera;
+﻿using AcTools.Render.Base.Camera;
 using AcTools.Render.Base.Objects;
 
 namespace AcTools.Render.Base {
-    public abstract class SceneRenderer : AbstractRenderer, IReflectionDraw {
+    public abstract class SceneRenderer : BaseRenderer, IReflectionDraw {
         public readonly RenderableList Scene;
 
         public AbstractCamera Camera { get; protected set; } 

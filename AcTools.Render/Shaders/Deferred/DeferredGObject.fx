@@ -31,6 +31,7 @@
 	Texture2D gMapsMap;
 	Texture2D gDetailsMap;
 	Texture2D gDetailsNormalMap;
+	TextureCube gReflectionCubemap;
 
 // input resources
 	cbuffer cbPerObject : register(b0) {
@@ -41,6 +42,7 @@
 	}
 
 	cbuffer cbPerFrame {
+		float3 gEyePosW;
 	}
 
 // standart
@@ -58,9 +60,6 @@
 	}
 
 	float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW){
-		// Weirdly, but it looks like AC doesn't use Tangents (or uses it somehow else)
-		// tangentW = 1;
-
 		// Uncompress each component from [0,1] to [-1,1].
 		float3 normalT = 2.0f*normalMapSample - 1.0f;
 
@@ -101,8 +100,7 @@
 		float reflectiveness = saturate(gMaterial.FresnelMaxLevel);
 		float metalness = saturate(max(
 			gMaterial.FresnelC / gMaterial.FresnelMaxLevel, 
-			1.1 / (gMaterial.FresnelExp + 1) - 0.1
-		));
+			1.1 / (gMaterial.FresnelExp + 1) - 0.1));
 		
 		if ((gMaterial.Flags & HAS_MAPS) == HAS_MAPS){
 			float4 mapsValue = gMapsMap.Sample(samAnisotropic, pin.Tex);
@@ -131,7 +129,6 @@
 		// diffuse part - end
 		
 		pout.Maps = float4(specular, glossiness, reflectiveness, metalness);
-
 		return pout;
 	}
 
@@ -152,6 +149,50 @@
 			SetVertexShader( CompileShader( vs_4_0, vs_Standard() ) );
 			SetGeometryShader( NULL );
 			SetPixelShader( CompileShader( ps_4_0, ps_StandardForward() ) );
+		}
+	}
+
+// transparent part
+	float4 ps_TransparentForward(PS_IN pin) : SV_Target{
+		float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
+
+		float3 color = diffuseValue.rgb;
+		float alpha = diffuseValue.a;
+		float3 normal;
+
+		[flatten]
+		if ((gMaterial.Flags & HAS_NORMAL_MAP) == HAS_NORMAL_MAP) {
+			float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
+			alpha *= normalValue.a;
+			normal = normalize(NormalSampleToWorldSpace(normalize(normalValue.xyz), pin.NormalW, pin.TangentW));
+		} else {
+			normal = normalize(pin.NormalW);
+		}
+
+		float specular = saturate(gMaterial.Specular / 2.5);
+		float glossiness = saturate((gMaterial.SpecularExp - 1) / 250);
+		float reflectiveness = saturate(gMaterial.FresnelMaxLevel);
+		float metalness = saturate(max(
+				gMaterial.FresnelC / gMaterial.FresnelMaxLevel,
+				1.1 / (gMaterial.FresnelExp + 1) - 0.1));
+
+		float3 toEyeW = normalize(gEyePosW - pin.PosW);
+
+		float rid = saturate(dot(toEyeW, pin.NormalW));
+		float rim = pow(1 - rid, gMaterial.FresnelExp);
+
+		float4 reflectionColor = gReflectionCubemap.SampleBias(samAnisotropic, reflect(-toEyeW, normal),
+				1.0f - glossiness);
+
+		// return float4(color, alpha);
+		return float4(color * (gMaterial.Ambient - reflectiveness / 2) + reflectionColor * reflectiveness * rim, alpha);
+	}
+
+	technique11 TransparentForward {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_Standard()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_TransparentForward()));
 		}
 	}
 
@@ -195,4 +236,3 @@
 			SetPixelShader( CompileShader( ps_5_0, ps_AmbientShadowDeferred() ) );
 		}
 	}
-	

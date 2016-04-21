@@ -12,9 +12,7 @@ namespace AcTools.Render.Base {
 
         private QuadBuffers _quadBuffers;
 
-        public QuadBuffers QuadBuffers {
-            get { return _quadBuffers ?? (_quadBuffers = new QuadBuffers(Device)); }
-        }
+        public QuadBuffers QuadBuffers => _quadBuffers ?? (_quadBuffers = new QuadBuffers(Device));
 
         public DeviceContextHolder(Device device) {
             Device = device;

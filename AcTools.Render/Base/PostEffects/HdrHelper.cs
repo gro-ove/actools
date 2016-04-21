@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
 using SlimDX;

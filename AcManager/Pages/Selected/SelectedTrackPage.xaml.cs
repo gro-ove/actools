@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
@@ -66,10 +67,16 @@ namespace AcManager.Pages.Selected {
             }
 
             private static ObservableCollection<MenuItem> _quickDrivePresets;
+            private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
+
+            public override void Unload() {
+                base.Unload();
+                _helper.Dispose();
+            }
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = PresetsMenuHelper.CreatePresetsMenu(QuickDrive.UserPresetableKeyValue, p => {
+                    QuickDrivePresets = _helper.Create(QuickDrive.UserPresetableKeyValue, p => {
                         QuickDrive.RunPreset(p, track: SelectedTrackConfiguration);
                     });
                 }

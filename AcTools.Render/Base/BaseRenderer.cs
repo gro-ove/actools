@@ -10,30 +10,24 @@ using Resource = SlimDX.Direct3D11.Resource;
 using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Base {
-    public abstract class AbstractRenderer : IDisposable {
-        public Device Device {
-            get { return _deviceContextHolder.Device; }
-        }
-
-        public DeviceContext DeviceContext {
-            get { return _deviceContextHolder.DeviceContext; }
-        }
-
-        public DeviceContextHolder DeviceContextHolder {
-            get { return _deviceContextHolder; }
-        }
-
-        public SampleDescription SampleDescription {
-            get { return _sampleDescription; }
-        }
-
+    public abstract class BaseRenderer : IDisposable {
         private DeviceContextHolder _deviceContextHolder;
-
         private SwapChainDescription _swapChainDescription;
         private SwapChain _swapChain;
-
+        private DepthStencilState _normalDepthState, _readOnlyDepthState;
         private SampleDescription _sampleDescription;
-        private DepthStencilState _depthState;
+
+        public Device Device => _deviceContextHolder.Device;
+
+        public DeviceContext DeviceContext => _deviceContextHolder.DeviceContext;
+
+        public DeviceContextHolder DeviceContextHolder => _deviceContextHolder;
+
+        public SampleDescription SampleDescription => _sampleDescription;
+
+        public DepthStencilState NormalDepthState => _normalDepthState;
+
+        public DepthStencilState ReadOnlyDepthState => _readOnlyDepthState;
 
         private int _width;
         private int _height;
@@ -57,18 +51,14 @@ namespace AcTools.Render.Base {
             }
         }
 
-        public float AspectRatio {
-            get { return (float)_width / _height; }
-        }
+        public float AspectRatio => (float)_width / _height;
 
         #region Frames per second section
         private readonly Stopwatch _clock;
 
         private float _previousElapsed;
 
-        public float Elapsed {
-            get { return _clock.ElapsedMilliseconds / 1000.0f; }
-        }
+        public float Elapsed => _clock.ElapsedMilliseconds / 1000.0f;
         private long _frames;
         private float _framesFrom;
         private const float FramesPerSecondInterval = 0.12f;
@@ -88,7 +78,7 @@ namespace AcTools.Render.Base {
         }
         #endregion
 
-        protected AbstractRenderer() {
+        protected BaseRenderer() {
             Configuration.EnableObjectTracking = false;
             Configuration.ThrowOnShaderCompileError = true;
 
@@ -144,7 +134,7 @@ namespace AcTools.Render.Base {
                 ModeDescription = new ModeDescription(0, 0, new Rational(60, 1), Format.R8G8B8A8_UNorm),
                 IsWindowed = true,
                 OutputHandle = outputHandle,
-                SampleDescription = _sampleDescription,
+                SampleDescription = SampleDescription,
                 SwapEffect = SwapEffect.Discard,
                 Usage = Usage.RenderTargetOutput
             };
@@ -173,7 +163,7 @@ namespace AcTools.Render.Base {
             SlimDxExtension.Dispose(ref _renderView);
             SlimDxExtension.Dispose(ref _depthBuffer);
             SlimDxExtension.Dispose(ref _depthView);
-            SlimDxExtension.Dispose(ref _depthState);
+            SlimDxExtension.Dispose(ref _normalDepthState);
 
             if (_swapChain != null) {
                 _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, _width, _height,
@@ -186,7 +176,7 @@ namespace AcTools.Render.Base {
                     MipLevels = 1,
                     ArraySize = 1,
                     Format = Format.R8G8B8A8_UNorm,
-                    SampleDescription = _sampleDescription,
+                    SampleDescription = SampleDescription,
                     Usage = ResourceUsage.Default,
                     BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget,
                     CpuAccessFlags = CpuAccessFlags.None,
@@ -201,7 +191,7 @@ namespace AcTools.Render.Base {
                 MipLevels = 1,
                 Width = _width,
                 Height = _height,
-                SampleDescription = _sampleDescription,
+                SampleDescription = SampleDescription,
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.DepthStencil,
                 CpuAccessFlags = CpuAccessFlags.None,
@@ -211,16 +201,22 @@ namespace AcTools.Render.Base {
             _depthView = new DepthStencilView(Device, _depthBuffer);
             DeviceContext.Rasterizer.SetViewports(new Viewport(0, 0, _width, _height, 0.0f, 1.0f));
             ResetTargets();
-
-            // what's that?
-            _depthState = DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
+            
+            _normalDepthState = DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
                 IsDepthEnabled = true,
                 IsStencilEnabled = false,
                 DepthWriteMask = DepthWriteMask.All,
                 DepthComparison = Comparison.Less,
             });
-            DeviceContext.OutputMerger.DepthStencilState = _depthState;
 
+            _readOnlyDepthState = DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
+                IsDepthEnabled = true,
+                IsStencilEnabled = false,
+                DepthWriteMask = DepthWriteMask.Zero,
+                DepthComparison = Comparison.Less,
+            });
+
+            DeviceContext.OutputMerger.DepthStencilState = NormalDepthState;
             ResizeInner();
         }
 
@@ -228,13 +224,9 @@ namespace AcTools.Render.Base {
             DeviceContext.OutputMerger.SetTargets(_depthView, _renderView);
         }
 
-        protected DepthStencilView DepthStencilView {
-            get { return _depthView; }
-        }
+        protected DepthStencilView DepthStencilView => _depthView;
 
-        protected RenderTargetView RenderTargetView {
-            get { return _renderView; }
-        }
+        protected RenderTargetView RenderTargetView => _renderView;
 
         public virtual void Draw() {
             Debug.Assert(_initialized);
@@ -251,9 +243,7 @@ namespace AcTools.Render.Base {
             _frames++;
             DrawInner();
 
-            if (_swapChain != null) {
-                _swapChain.Present(SyncInterval ? 1 : 0, PresentFlags.None);
-            }
+            _swapChain?.Present(SyncInterval ? 1 : 0, PresentFlags.None);
         }
 
         public bool SyncInterval = true;
@@ -289,7 +279,8 @@ namespace AcTools.Render.Base {
             SlimDxExtension.Dispose(ref _renderView);
             SlimDxExtension.Dispose(ref _depthBuffer);
             SlimDxExtension.Dispose(ref _depthView);
-            SlimDxExtension.Dispose(ref _depthState);
+            SlimDxExtension.Dispose(ref _normalDepthState);
+            SlimDxExtension.Dispose(ref _readOnlyDepthState);
             SlimDxExtension.Dispose(ref _deviceContextHolder);
             SlimDxExtension.Dispose(ref _swapChain);
         }

@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Tools.Objects;
 using AcTools.Kn5Render.Utils;
@@ -86,6 +87,14 @@ namespace AcManager.Controls.UserControls {
 
                 var item = new MenuItem { Header = "Open In Showroom" };
                 item.Click += (s, args) => CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id);
+                contextMenu.Items.Add(item);
+
+                item = new MenuItem { Header = "Presets" };
+                foreach (var menuItem in PresetsMenuHelper.GroupPresets(CarOpenInShowroomDialog.UserPresetableKeyValue, p => {
+                    CarOpenInShowroomDialog.RunPreset(p, Car, SelectedSkin?.Id);
+                })) {
+                    item.Items.Add(menuItem);
+                }
                 contextMenu.Items.Add(item);
 
                 item = new MenuItem { Header = "Settings", InputGestureText = "Shift" };

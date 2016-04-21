@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using AcTools.DataFile;
@@ -26,16 +25,14 @@ namespace AcTools.Render.Kn5Specific {
 
         public bool AutoRotate = true;
 
-        public CameraOrbit CameraOrbit {
-            get { return Camera as CameraOrbit; }
-        }
+        public CameraOrbit CameraOrbit => Camera as CameraOrbit;
 
         protected override Vector3 GetReflectionCubemapPosition() {
             return new Vector3(0f, 0.5f, 0f);
         }
 
         public Kn5ObjectRenderer(string mainKn5Filename, params string[] additionalKn5Filenames) {
-            _kn5 = new []{ mainKn5Filename }.Union(additionalKn5Filenames).Where(x => x != null).Select(Kn5.FromFile).ToArray();
+            _kn5 = new[] { mainKn5Filename }.Union(additionalKn5Filenames).Where(x => x != null).Select(Kn5.FromFile).ToArray();
             _mainDirectory = Path.GetDirectoryName(mainKn5Filename);
             _mainData = DataWrapper.FromFile(_mainDirectory);
 
@@ -45,19 +42,18 @@ namespace AcTools.Render.Kn5Specific {
 
         private Kn5RenderableList FindParentNodeByName(string name) {
             return Scene.OfType<RenderableList>().SelectManyRecursive(x => x.OfType<Kn5RenderableList>())
-                .OfType<Kn5RenderableList>().FirstOrDefault(x => x.OriginalNode.Name == name);
+                        .OfType<Kn5RenderableList>().FirstOrDefault(x => x.OriginalNode.Name == name);
         }
 
         private void LoadBodyAmbientShadow() {
             var iniFile = _mainData.GetIniFile("ambient_shadows.ini");
             var ambientBodyShadowSize = new Vector3(
-                (float)iniFile["SETTINGS"].GetDouble("WIDTH", 1d), 1.0f,
-                (float)iniFile["SETTINGS"].GetDouble("LENGTH", 1d)
-            );
+                    (float)iniFile["SETTINGS"].GetDouble("WIDTH", 1d), 1.0f,
+                    (float)iniFile["SETTINGS"].GetDouble("LENGTH", 1d));
 
             var filename = Path.Combine(_mainDirectory, "body_shadow.png");
-            Scene.Add(new AmbientShadow(filename, Matrix.Scaling(ambientBodyShadowSize)*Matrix.RotationY(MathF.PI)*
-                                                  Matrix.Translation(0f, 0.001f, 0f)));
+            Scene.Add(new AmbientShadow(filename, Matrix.Scaling(ambientBodyShadowSize) * Matrix.RotationY(MathF.PI) *
+                    Matrix.Translation(0f, 0.001f, 0f)));
         }
 
         private void LoadWheelAmbientShadow(string nodeName, string textureName) {
@@ -68,8 +64,8 @@ namespace AcTools.Render.Kn5Specific {
             wheel.Y = 0.001f;
 
             var filename = Path.Combine(_mainDirectory, textureName);
-            Scene.Add(new AmbientShadow(filename, Matrix.Scaling(0.3f, 1.0f, 0.3f)*Matrix.RotationY(MathF.PI)*
-                                                  Matrix.Translation(wheel)));
+            Scene.Add(new AmbientShadow(filename, Matrix.Scaling(0.3f, 1.0f, 0.3f) * Matrix.RotationY(MathF.PI) *
+                    Matrix.Translation(wheel)));
         }
 
         private void LoadAmbientShadows() {
@@ -104,7 +100,7 @@ namespace AcTools.Render.Kn5Specific {
             };
 
             Lights.Add(new PointLight {
-                Radius = 96f,
+                Radius = 196f,
                 Color = new Vector3(1.0f, 1.0f, 0.9f),
                 Position = new Vector3(1.2f, 3.4f, 2.2f)
             });
@@ -124,7 +120,7 @@ namespace AcTools.Render.Kn5Specific {
 
         public void AddLight() {
             var color = new Vector3((float)_random.NextDouble(), (float)_random.NextDouble(),
-                                    (float)_random.NextDouble());
+                    (float)_random.NextDouble());
             color.Normalize();
             var light = new PointLight {
                 Radius = 0.01f * _random.Next(500, 1500),

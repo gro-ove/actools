@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AcTools.Render.Base;
+using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
@@ -79,9 +79,9 @@ namespace AcTools.Render.DeferredShading {
             _reflectionCubemap.DrawScene(DeviceContextHolder, GetReflectionCubemapPosition(), this);
 
             DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.TargetView, _gBufferBase.TargetView,
-                                                  _gBufferNormal.TargetView, _gBufferMaps.TargetView);
+                    _gBufferNormal.TargetView, _gBufferMaps.TargetView);
             DeviceContext.ClearDepthStencilView(_gDepthBuffer.TargetView,
-                                                DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+                    DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
             DeviceContext.ClearRenderTargetView(_gBufferBase.TargetView, ColorTransparent);
             DeviceContext.ClearRenderTargetView(_gBufferNormal.TargetView, ColorTransparent);
             DeviceContext.ClearRenderTargetView(_gBufferMaps.TargetView, ColorTransparent);
@@ -98,6 +98,11 @@ namespace AcTools.Render.DeferredShading {
             DrawLights();
             DrawReflections();
             CombineResult();
+
+           // if (Mode == RenderingMode.Result) {
+                DrawTransparent();
+           // }
+
             ProcessHdr();
             FinalStepWithFxao();
         }
@@ -150,12 +155,12 @@ namespace AcTools.Render.DeferredShading {
             _sslrHelper.Effect.TechHabrahabrVersion.DrawAllPasses(DeviceContext, 6);
 
             DeviceContext.OutputMerger.SetTargets(_temporaryBuffer1.TargetView);
-            DeviceContextHolder.GetHelper<BlurHelper>().BlurReflectionVertically(DeviceContextHolder, _temporaryBuffer2.View, 
-                _gBufferMaps.View);
+            DeviceContextHolder.GetHelper<BlurHelper>().BlurReflectionVertically(DeviceContextHolder, _temporaryBuffer2.View,
+                    _gBufferMaps.View);
 
             DeviceContext.OutputMerger.SetTargets(_temporaryBuffer2.TargetView);
-            DeviceContextHolder.GetHelper<BlurHelper>().BlurReflectionHorizontally(DeviceContextHolder, _temporaryBuffer1.View, 
-                _gBufferMaps.View);
+            DeviceContextHolder.GetHelper<BlurHelper>().BlurReflectionHorizontally(DeviceContextHolder, _temporaryBuffer1.View,
+                    _gBufferMaps.View);
         }
 
         public Vector3 AmbientLower, AmbientUpper;
@@ -166,6 +171,7 @@ namespace AcTools.Render.DeferredShading {
             DeviceContextHolder.QuadBuffers.Prepare(DeviceContext, _deferredResult.LayoutPT);
 
             _deferredResult.FxWorldViewProjInv.SetMatrix(Camera.ViewProjInvert);
+            _deferredResult.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
 
             _deferredResult.FxAmbientDown.Set(AmbientLower);
             _deferredResult.FxAmbientRange.Set(AmbientUpper - AmbientLower);
@@ -207,6 +213,44 @@ namespace AcTools.Render.DeferredShading {
             }
 
             tech.DrawAllPasses(DeviceContext, 6);
+        }
+
+        private BlendState _transparentBlendState;
+
+        private BlendState InitializeTransparentBlendState() {
+            var desc = new BlendStateDescription {
+                AlphaToCoverageEnable = false,
+                IndependentBlendEnable = false
+            };
+
+            desc.RenderTargets[0].BlendEnable = true;
+            desc.RenderTargets[0].SourceBlend = BlendOption.SourceAlpha;
+            desc.RenderTargets[0].DestinationBlend = BlendOption.InverseSourceAlpha;
+            desc.RenderTargets[0].BlendOperation = BlendOperation.Add;
+            desc.RenderTargets[0].SourceBlendAlpha = BlendOption.One;
+            desc.RenderTargets[0].DestinationBlendAlpha = BlendOption.One;
+            desc.RenderTargets[0].BlendOperationAlpha = BlendOperation.Add;
+            desc.RenderTargets[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
+
+            return BlendState.FromDescription(Device, desc);
+        }
+
+        private void DrawTransparent() {
+            if (_transparentBlendState == null) {
+                _transparentBlendState = InitializeTransparentBlendState();
+            }
+
+            var effect = DeviceContextHolder.GetEffect<EffectDeferredGObject>();
+            effect.FxReflectionCubemap.SetResource(_reflectionCubemap.View);
+            effect.FxEyePosW.Set(Camera.Position);
+
+            DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.TargetView, _temporaryBuffer1.TargetView);
+            DeviceContext.OutputMerger.BlendState = _transparentBlendState;
+            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.TransparentDepth);
+            
+            DeviceContext.OutputMerger.DepthStencilState = ReadOnlyDepthState;
+            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.Transparent);
+            DeviceContext.OutputMerger.DepthStencilState = NormalDepthState;
         }
 
         private void ProcessHdr() {

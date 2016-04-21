@@ -30,7 +30,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (!OriginalNode.Active || !OriginalNode.IsVisible || !OriginalNode.IsRenderable || OriginalNode.IsTransparent) return;
+            if (!OriginalNode.Active || !OriginalNode.IsVisible || !OriginalNode.IsRenderable || (OriginalNode.IsTransparent && mode != SpecialRenderMode.Transparent && _material.)) return;
 
             _material.Prepare(contextHolder, mode);
             base.DrawInner(contextHolder, camera, mode);

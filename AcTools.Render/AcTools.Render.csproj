@@ -56,7 +56,7 @@
     <Compile Include="Base\PostEffects\IRenderHelper.cs" />
     <Compile Include="Base\ReflectionCubemap.cs" />
     <Compile Include="Base\SceneRenderer.cs" />
-    <Compile Include="Base\AbstractRenderer.cs" />
+    <Compile Include="Base\BaseRenderer.cs" />
     <Compile Include="Base\Camera\AbstractCamera.cs" />
     <Compile Include="Base\Camera\CameraOrbit.cs" />
     <Compile Include="Base\Camera\CameraOrtho.cs" />
@@ -105,6 +105,7 @@
     <Content Include="Shaders\Deferred\DeferredGObjectSpecial.fx" />
     <Content Include="Shaders\Deferred\DeferredLight.fx" />
     <Content Include="Shaders\Deferred\DeferredPpSslr.fx" />
+    <Content Include="Shaders\Deferred\DeferredTransparent.fx" />
     <Content Include="Shaders\Deferred\DeferredResult.fx" />
     <Content Include="Shaders\Includes\Deferred.fx" />
     <Content Include="Shaders\Includes\FXAA.fx" />

@@ -27,7 +27,6 @@
 		float3 gAmbientDown;
 		float3 gAmbientRange;
 		float3 gEyePosW;
-		float4 gScreenSize;
 	}
 
 // fn structs
@@ -165,12 +164,8 @@
 		float4 base = gBaseMap.SampleLevel(samInputImage, pin.Tex, 0.0);
 		float4 light = gLightMap.SampleLevel(samInputImage, pin.Tex, 0.0);
 		float4 reflection = gLocalReflectionMap.SampleLevel(samInputImage, pin.Tex, 0.0);
-
-		float x = saturate((pin.Tex.x * (gScreenSize.x / 16) % 2 - 1.0) * 1e6);
-		float y = saturate((pin.Tex.y * (gScreenSize.y / 16) % 2 - 1.0) * 1e6);
-		float background = ((x + y) % 2) * 0.2 + 0.2;
-
-		return background * (1 - reflection.a) + reflection * reflection.a;
+		// return reflection * reflection.a;
+		return (base + light) * (1 - reflection.a) + reflection * reflection.a;
 	}
 
 	technique11 DebugLocalReflections {

@@ -4,7 +4,10 @@ using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
     public enum SpecialRenderMode {
-        Default, Reflection
+        Default,
+        Reflection,
+        TransparentDepth,
+        Transparent
     }
 
     public interface IRenderableObject : IDisposable {

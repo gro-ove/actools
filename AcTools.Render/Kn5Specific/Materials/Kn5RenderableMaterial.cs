@@ -12,12 +12,12 @@ namespace AcTools.Render.Kn5Specific.Materials {
     public static class Kn5MaterialExtend {
         public static float GetPropertyValueAByName(this Kn5Material mat, string name, float defaultValue = 0.0f) {
             var property = mat.GetPropertyByName(name);
-            return property == null ? defaultValue : property.ValueA;
+            return property?.ValueA ?? defaultValue;
         }
 
         public static Vector3 GetPropertyValueCByName(this Kn5Material mat, string name, Vector3 defaultValue) {
             var property = mat.GetPropertyByName(name);
-            return property == null ? defaultValue : property.ValueC.ToVector3();
+            return property?.ValueC.ToVector3() ?? defaultValue;
         }
 
         public static Vector3 GetPropertyValueCByName(this Kn5Material mat, string name) {
@@ -25,11 +25,13 @@ namespace AcTools.Render.Kn5Specific.Materials {
         }
 
         public static void SetResource(this EffectResourceVariable variable, IRenderableTexture texture) {
-            variable.SetResource(texture == null ? null : texture.Resource);
+            variable.SetResource(texture?.Resource);
         }
     }
 
     public class Kn5RenderableMaterial : IRenderableMaterial {
+        public readonly bool IsBlending;
+
         private readonly string _kn5Filename;
         private readonly Kn5Material _kn5Material;
         private EffectDeferredGObject.Material _material;
@@ -41,6 +43,8 @@ namespace AcTools.Render.Kn5Specific.Materials {
         internal Kn5RenderableMaterial(string kn5Filename, Kn5Material material) {
             _kn5Filename = kn5Filename;
             _kn5Material = material;
+
+            IsBlending = _kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend;
         }
 
         private IRenderableTexture GetTexture(string mappingName, DeviceContextHolder contextHolder) {
@@ -95,15 +99,19 @@ namespace AcTools.Render.Kn5Specific.Materials {
         }
 
         public void Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode == SpecialRenderMode.Default) {
+            if (mode == SpecialRenderMode.Reflection) {
+                _effect.FxDiffuseMap.SetResource(_txDiffuse);
+            } else {
+                _effect.FxMaterial.Set(_material);
+                _effect.FxDiffuseMap.SetResource(_txDiffuse);
                 _effect.FxNormalMap.SetResource(_txNormal);
+                _effect.FxDetailsMap.SetResource(_txDetails);
                 _effect.FxDetailsNormalMap.SetResource(_txDetailsNormal);
+                _effect.FxMapsMap.SetResource(_txMaps);
             }
-            
-            _effect.FxMaterial.Set(_material);
-            _effect.FxDiffuseMap.SetResource(_txDiffuse);
-            _effect.FxDetailsMap.SetResource(_txDetails);
-            _effect.FxMapsMap.SetResource(_txMaps);
+
+            if ((mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth) &&
+                    _kn5Material.BlendMode != Kn5MaterialBlendMode.AlphaBlend) return;
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
         }
 
@@ -114,10 +122,17 @@ namespace AcTools.Render.Kn5Specific.Materials {
         }
 
         public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            if (_kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend) return;
+            if (_kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend) {
+                if (mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth) {
+                    _effect.TechTransparentForward.DrawAllPasses(contextHolder.DeviceContext, indices);
+                }
 
+                return;
+            }
+
+            if (mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth) return;
             (mode == SpecialRenderMode.Default ? _effect.TechStandardDeferred : _effect.TechStandardForward)
-                .DrawAllPasses(contextHolder.DeviceContext, indices);
+                    .DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 
         public void Dispose() {

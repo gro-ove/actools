@@ -8,6 +8,10 @@ using FirstFloor.ModernUI.Presentation;
 namespace AcManager.Pages.Selected {
     public interface ISelectedAcObjectViewModel {
         AcCommonObject SelectedAcObject { get; }
+
+        void Load();
+
+        void Unload();
     }
 
     public class SelectedAcObjectViewModel<T> : NotifyPropertyChanged, ISelectedAcObjectViewModel where T : AcCommonObject {
@@ -19,6 +23,10 @@ namespace AcManager.Pages.Selected {
         protected SelectedAcObjectViewModel([NotNull] T acObject) {
             SelectedObject = acObject;
         }
+
+        public virtual void Load() { }
+
+        public virtual void Unload() { }
     }
 
     public abstract class SelectedAcObjectPage : UserControl {
@@ -34,6 +42,25 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(SelectedAcObject.DeleteCommand, new KeyGesture(Key.Delete, ModifierKeys.Control))
             });
             DataContext = model;
+
+            Loaded += SelectedAcObjectPage_Loaded;
+            Unloaded += SelectedAcObjectPage_Unloaded;
+        }
+
+        private bool _loaded;
+
+        private void SelectedAcObjectPage_Loaded(object sender, System.Windows.RoutedEventArgs e) {
+            if (_loaded) return;
+            _loaded = true;
+
+            ((ISelectedAcObjectViewModel)DataContext).Load();
+        }
+
+        private void SelectedAcObjectPage_Unloaded(object sender, System.Windows.RoutedEventArgs e) {
+            if (!_loaded) return;
+            _loaded = false;
+
+            ((ISelectedAcObjectViewModel)DataContext).Unload();
         }
     }
 

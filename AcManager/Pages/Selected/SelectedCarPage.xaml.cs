@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Annotations;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
@@ -124,13 +125,17 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private static ObservableCollection<MenuItem> _showroomPresets, _updatePreviewsPresets, _quickDrivePresets;
-            
+            private ObservableCollection<MenuItem> _showroomPresets, _updatePreviewsPresets, _quickDrivePresets;
+            private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
+
+            public override void Unload() {
+                base.Unload();
+                _helper.Dispose();
+            }
+
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
-                    // BUG FIXME
-                    // TODO FIXME
-                    ShowroomPresets = PresetsMenuHelper.CreatePresetsMenu(CarOpenInShowroomDialog.UserPresetableKeyValue, p => {
+                    ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.UserPresetableKeyValue, p => {
                         CarOpenInShowroomDialog.RunPreset(p, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
@@ -138,7 +143,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = PresetsMenuHelper.CreatePresetsMenu(QuickDrive.UserPresetableKeyValue, p => {
+                    QuickDrivePresets = _helper.Create(QuickDrive.UserPresetableKeyValue, p => {
                         QuickDrive.RunPreset(p, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
@@ -146,7 +151,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeUpdatePreviewsPresets() {
                 if (UpdatePreviewsPresets == null) {
-                    UpdatePreviewsPresets = PresetsMenuHelper.CreatePresetsMenu(CarUpdatePreviewsDialog.UserPresetableKeyValue, presetFilename => {
+                    UpdatePreviewsPresets = _helper.Create(CarUpdatePreviewsDialog.UserPresetableKeyValue, presetFilename => {
                         new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode(), presetFilename).ShowDialog();
                     });
                 }
