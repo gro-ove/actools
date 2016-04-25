@@ -1,6 +1,6 @@
 ﻿using System;
 using AcTools.Render.Base;
-using AcTools.Render.Base.Camera;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using SlimDX;
 
@@ -8,7 +8,7 @@ namespace AcTools.Render.Kn5Specific.Materials {
     public interface IRenderableMaterial : IDisposable {
         void Initialize(DeviceContextHolder contextHolder);
 
-        void Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode);
+        bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode);
 
         void SetMatrices(Matrix objectTransform, ICamera camera);
 

@@ -36,6 +36,14 @@
     <Reference Include="SlimDX">
       <HintPath>..\..\..\Temp\sharp-dx\SlimDX.dll</HintPath>
     </Reference>
+    <Reference Include="SpriteTextRenderer, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\SpriteTextRenderer\SpriteTextRenderer.SlimDX\bin\Release\SpriteTextRenderer.dll</HintPath>
+    </Reference>
+    <Reference Include="SpriteTextRenderer.SlimDX, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\SpriteTextRenderer\SpriteTextRenderer.SlimDX\bin\Release\SpriteTextRenderer.SlimDX.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -47,19 +55,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\Camera\FpsCamera.cs" />
-    <Compile Include="Base\Objects\AbstractRenderableObject.cs" />
+    <Compile Include="Base\Cameras\FpsCamera.cs" />
+    <Compile Include="Base\Cameras\FrustrumIntersectionType.cs" />
+    <Compile Include="Base\Cameras\Frustum.cs" />
+    <Compile Include="Base\Cameras\ICamera.cs" />
+    <Compile Include="Base\Objects\BaseRenderableObject.cs" />
     <Compile Include="Base\Objects\IRenderableObject.cs" />
     <Compile Include="Base\Objects\RenderableList.cs" />
+    <Compile Include="Base\Objects\SpecialRenderMode.cs" />
     <Compile Include="Base\PostEffects\BlurHelper.cs" />
     <Compile Include="Base\PostEffects\HdrHelper.cs" />
     <Compile Include="Base\PostEffects\IRenderHelper.cs" />
-    <Compile Include="Base\ReflectionCubemap.cs" />
+    <Compile Include="Base\Reflections\IReflectionDraw.cs" />
+    <Compile Include="Base\Reflections\ReflectionCubemap.cs" />
     <Compile Include="Base\SceneRenderer.cs" />
     <Compile Include="Base\BaseRenderer.cs" />
-    <Compile Include="Base\Camera\AbstractCamera.cs" />
-    <Compile Include="Base\Camera\CameraOrbit.cs" />
-    <Compile Include="Base\Camera\CameraOrtho.cs" />
+    <Compile Include="Base\Cameras\BaseCamera.cs" />
+    <Compile Include="Base\Cameras\CameraOrbit.cs" />
+    <Compile Include="Base\Cameras\CameraOrtho.cs" />
     <Compile Include="Base\Objects\TrianglesRenderableObject.cs" />
     <Compile Include="Base\DeviceContextHolder.cs" />
     <Compile Include="Base\Shaders\ShadersTemplate.cs">
@@ -68,28 +81,46 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Base\QuadBuffers.cs" />
+    <Compile Include="Base\Shadows\IShadowsDraw.cs" />
+    <Compile Include="Base\Shadows\ShadowsDirectional.cs" />
+    <Compile Include="Base\Shadows\ShadowsPoint.cs" />
     <Compile Include="Base\Structs\InputLayouts.cs" />
-    <Compile Include="Base\TargetResourceTexture.cs" />
+    <Compile Include="Base\TargetTextures\BaseTargetResourceTexture.cs" />
+    <Compile Include="Base\TargetTextures\TargetResourceDepthTexture.cs" />
+    <Compile Include="Base\TargetTextures\TargetResourceTexture.cs" />
+    <Compile Include="Base\Utils\FrameMonitor.cs" />
+    <Compile Include="Base\Utils\GeometryGenerator.cs" />
     <Compile Include="Base\Utils\MathF.cs" />
     <Compile Include="Base\Utils\MathF_CosTable.cs" />
     <Compile Include="Base\Utils\SlimDxExtension.cs" />
     <Compile Include="DeferredShading\DeferredShadingRenderer.cs" />
+    <Compile Include="DeferredShading\Lights\DirectionalLight.cs" />
     <Compile Include="DeferredShading\Lights\PointLight.cs" />
     <Compile Include="DeferredShading\Lights\ILight.cs" />
     <Compile Include="DeferredShading\PostEffects\SslrHelper.cs" />
+    <Compile Include="DeferredShading\SpriteDeferredShadingRenderer.cs" />
     <Compile Include="Kn5Specific\Kn5ObjectRenderer.cs" />
     <Compile Include="Kn5Specific\Materials\AmbientShadowMaterial.cs" />
+    <Compile Include="Kn5Specific\Materials\InvisibleMaterial.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5RenderableSpecialGlMaterial.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5RenderableMaterial.cs" />
     <Compile Include="Kn5Specific\Materials\IRenderableMaterial.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialsProvider.cs" />
+    <Compile Include="Kn5Specific\Materials\MirrorMaterial.cs" />
     <Compile Include="Kn5Specific\Objects\AmbientShadow.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableList.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableObject.cs" />
+    <Compile Include="Kn5Specific\Materials\SkyMaterial.cs" />
+    <Compile Include="Kn5Specific\Objects\SkyObject.cs" />
     <Compile Include="Kn5Specific\Textures\RenderableTexture.cs" />
     <Compile Include="Kn5Specific\Textures\IRenderableTexture.cs" />
     <Compile Include="Kn5Specific\Textures\TexturesProvider.cs" />
     <Compile Include="Kn5Specific\Utils\Kn5Converter.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wrapper\SimpleFormWrapper.cs" />
@@ -102,13 +133,20 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="Resources\SearchTex.dds" />
+    <None Include="Resources\AreaTexDX10.dds" />
+    <Content Include="Shaders\Deferred\DeferredGSky.fx" />
     <Content Include="Shaders\Deferred\DeferredGObjectSpecial.fx" />
     <Content Include="Shaders\Deferred\DeferredLight.fx" />
     <Content Include="Shaders\Deferred\DeferredPpSslr.fx" />
     <Content Include="Shaders\Deferred\DeferredTransparent.fx" />
     <Content Include="Shaders\Deferred\DeferredResult.fx" />
     <Content Include="Shaders\Includes\Deferred.fx" />
+    <Content Include="Shaders\Includes\FXAA_311.fx" />
     <Content Include="Shaders\Includes\FXAA.fx" />
+    <Content Include="Shaders\Includes\SMAA.fx" />
+    <Content Include="Shaders\Pp\PpSmaa.fx" />
+    <Content Include="Shaders\Pp\PpFxaa311.fx" />
     <Content Include="Shaders\Pp\PpBlur.fx" />
     <Content Include="Shaders\Pp\PpHdr.fx" />
     <Content Include="Shaders\Pp\PpSsao.fx" />
@@ -128,6 +166,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

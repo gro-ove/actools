@@ -1,12 +1,15 @@
-﻿using AcTools.Render.Base.Camera;
+﻿using System.Linq;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Structs;
+using AcTools.Render.Base.Utils;
+using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.Base.Objects {
-    public class TrianglesRenderableObject<T> : AbstractRenderableObject where T : struct, InputLayouts.ILayout {
-        protected bool IsEmpty { get; private set; }
+    public class TrianglesRenderableObject<T> : BaseRenderableObject where T : struct, InputLayouts.ILayout {
+        protected bool IsEmpty { get; }
 
         protected readonly T[] Vertices;
         protected readonly ushort[] Indices;
@@ -15,6 +18,8 @@ namespace AcTools.Render.Base.Objects {
         private VertexBufferBinding _verticesBufferBinding;
 
         public TrianglesRenderableObject(T[] vertices, ushort[] indices) {
+            BoundingBox = vertices.Select(x => x.Position).ToBoundingBox();
+
             Vertices = vertices;
             Indices = indices;
 
@@ -24,13 +29,13 @@ namespace AcTools.Render.Base.Objects {
         protected override void Initialize(DeviceContextHolder contextHolder) {
             if (IsEmpty) return;
 
-            var vbd = new BufferDescription(Vertices[0].Stride*Vertices.Length, ResourceUsage.Immutable,
-                                            BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+            var vbd = new BufferDescription(Vertices[0].Stride * Vertices.Length, ResourceUsage.Immutable,
+                    BindFlags.VertexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
             _verticesBuffer = new Buffer(contextHolder.Device, new DataStream(Vertices, false, false), vbd);
             _verticesBufferBinding = new VertexBufferBinding(_verticesBuffer, Vertices[0].Stride, 0);
 
-            var ibd = new BufferDescription(sizeof (ushort)*Indices.Length, ResourceUsage.Immutable,
-                                            BindFlags.IndexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+            var ibd = new BufferDescription(sizeof(ushort) * Indices.Length, ResourceUsage.Immutable,
+                    BindFlags.IndexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
 
             _indicesBuffer = new Buffer(contextHolder.Device, new DataStream(Indices, false, false), ibd);
         }
@@ -43,8 +48,8 @@ namespace AcTools.Render.Base.Objects {
 
         public override void Dispose() {
             if (IsEmpty) return;
-            _verticesBuffer.Dispose();
-            _indicesBuffer.Dispose();
+            DisposeHelper.Dispose(ref _verticesBuffer);
+            DisposeHelper.Dispose(ref _indicesBuffer);
         }
     }
 }

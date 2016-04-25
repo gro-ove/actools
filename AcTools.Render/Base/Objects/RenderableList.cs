@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
-using AcTools.Render.Base.Camera;
+using System.Linq;
+using AcTools.Render.Base.Cameras;
+using AcTools.Render.Base.Utils;
 using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
@@ -15,6 +17,8 @@ namespace AcTools.Render.Base.Objects {
                 UpdateMatrix();
             }
         }
+
+        public bool IsReflectable { get; set; } = true;
 
         private Matrix _localMatrix = Matrix.Identity;
         public Matrix LocalMatrix {
@@ -36,22 +40,45 @@ namespace AcTools.Render.Base.Objects {
             UpdateMatrix();
         }
 
-        public RenderableList() : this(Matrix.Identity) {
-        }
+        public RenderableList() : this(Matrix.Identity) {}
 
         private void UpdateMatrix() {
-            Matrix = _localMatrix*_parentMatrix;
+            Matrix = _localMatrix * _parentMatrix;
             foreach (var child in this) {
                 child.ParentMatrix = Matrix;
             }
+
+            UpdateLocalBoundingBox();
         }
 
+        public BoundingBox? LocalBoundingBox { get; private set; }
+
+        public BoundingBox? BoundingBox { get; private set; }
+
+        public BoundingBox? WorldBoundingBox { get; private set; }
+
+        public void UpdateLocalBoundingBox() {
+            LocalBoundingBox = this.Skip(1).Aggregate(this.FirstOrDefault()?.BoundingBox,
+                    (current, child) => child.BoundingBox.HasValue ? current?.ExtendBy(child.BoundingBox.Value) : current);
+            BoundingBox = LocalBoundingBox?.Transform(LocalMatrix);
+            WorldBoundingBox = LocalBoundingBox?.Transform(Matrix);
+        }
+        
         public new void Add(IRenderableObject obj) {
             base.Add(obj);
             obj.ParentMatrix = Matrix;
+            UpdateLocalBoundingBox();
+        }
+
+        public new void Remove(IRenderableObject obj) {
+            base.Remove(obj);
+            obj.ParentMatrix = Matrix;
+            UpdateLocalBoundingBox();
         }
 
         public virtual void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
+            if (WorldBoundingBox == null || !camera.Visible(WorldBoundingBox.Value)) return;
             foreach (var child in this) {
                 child.Draw(contextHolder, camera, mode);
             }

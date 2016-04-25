@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Linq;
-using AcTools.Render.Base.Camera;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
-namespace AcTools.Render.Base {
-    public interface IReflectionDraw {
-        void DrawSceneForReflection(DeviceContextHolder holder, ICamera camera);
-    }
-
+namespace AcTools.Render.Base.Reflections {
     public class ReflectionCubemap : IDisposable {
         private readonly int _cubeMapSize;
         private readonly Viewport _viewport;
@@ -20,9 +17,7 @@ namespace AcTools.Render.Base {
         private RenderTargetView[] _targetView;
         private DepthStencilView _depthTargetView;
 
-        public ShaderResourceView View {
-            get { return _view; }
-        }
+        public ShaderResourceView View => _view;
 
         public ReflectionCubemap(int cubeMapSize) {
             _cubeMapSize = cubeMapSize;
@@ -31,12 +26,12 @@ namespace AcTools.Render.Base {
         }
 
         public void Initialize(DeviceContextHolder holder) {
-            const Format format = Format.R8G8B8A8_UNorm;
+            const Format format = Format.R16G16B16A16_Float;
 
-            using (var cubeTex = new Texture2D(holder.Device, new Texture2DDescription() {
+            using (var cubeTex = new Texture2D(holder.Device, new Texture2DDescription {
                 Width = _cubeMapSize,
                 Height = _cubeMapSize,
-                MipLevels = 0,
+                MipLevels = 2,
                 ArraySize = 6,
                 SampleDescription = new SampleDescription(1, 0),
                 Format = format,
@@ -46,7 +41,7 @@ namespace AcTools.Render.Base {
                 OptionFlags = ResourceOptionFlags.GenerateMipMaps | ResourceOptionFlags.TextureCube
             })) {
                 _targetView = Enumerable.Range(0, 6).Select(x => new RenderTargetView(holder.Device, cubeTex,
-                    new RenderTargetViewDescription() {
+                    new RenderTargetViewDescription {
                         Format = format,
                         Dimension =
                             RenderTargetViewDimension
@@ -86,7 +81,7 @@ namespace AcTools.Render.Base {
             }
         }
 
-        private void UpdateCameras(Vector3 center) {
+        public void Update(Vector3 center) {
             var targets = new[] {
                 new Vector3(center.X + 1, center.Y, center.Z),
                 new Vector3(center.X - 1, center.Y, center.Z),
@@ -108,17 +103,15 @@ namespace AcTools.Render.Base {
             for (var i = 0; i < 6; i++) {
                 _cameras[i] = new FpsCamera(MathF.PI / 2) {
                     NearZ = 0.1f,
-                    FarZ = 100.0f
+                    FarZ = 500.0f
                 };
                 _cameras[i].LookAt(center, targets[i], ups[i]);
-                _cameras[i].SetLens(1.0f);
+                _cameras[i].SetLens(1f);
                 _cameras[i].UpdateViewMatrix();
             }
         }
 
-        public void DrawScene(DeviceContextHolder holder, Vector3 position, IReflectionDraw draw) {
-            UpdateCameras(position);
-
+        public void DrawScene(DeviceContextHolder holder, IReflectionDraw draw) {
             holder.SaveRenderTargetAndViewport();
             holder.DeviceContext.Rasterizer.SetViewports(_viewport);
             for (var i = 0; i < 6; i++) {
@@ -137,8 +130,8 @@ namespace AcTools.Render.Base {
         public void Dispose() {
             if (_targetView == null) return;
 
-            SlimDxExtension.Dispose(ref _view);
-            SlimDxExtension.Dispose(ref _depthTargetView);
+            DisposeHelper.Dispose(ref _view);
+            DisposeHelper.Dispose(ref _depthTargetView);
 
             foreach (var view in _targetView) {
                 view.Dispose();

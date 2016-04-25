@@ -105,7 +105,7 @@
 
 // bloom
 	float4 ps_Bloom (PS_IN pin) : SV_Target {
-		return saturate(tex(pin.Tex) - 1.0);
+		return saturate(tex(pin.Tex) - 2.5) * 0.5;
 	}
 
 	technique11 Bloom {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using AcTools.Render.Base;
-using AcTools.Render.Base.Camera;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Structs;
@@ -61,7 +61,7 @@ namespace AcTools.Render.Temporary {
         }
 
         protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.Default) return;
+            if (mode != SpecialRenderMode.Deferred) return;
 
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effectMiniCube.LayoutPC;
             base.DrawInner(contextHolder, camera, mode);

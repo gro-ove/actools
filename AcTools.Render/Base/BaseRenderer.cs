@@ -2,9 +2,11 @@
 using System.Diagnostics;
 using System.Drawing;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
+using SpriteTextRenderer.SlimDX;
 using Device = SlimDX.Direct3D11.Device;
 using Resource = SlimDX.Direct3D11.Resource;
 using Debug = System.Diagnostics.Debug;
@@ -32,6 +34,11 @@ namespace AcTools.Render.Base {
         private int _width;
         private int _height;
         private bool _resized = true;
+        private SpriteRenderer _sprite;
+
+        protected SpriteRenderer Sprite => _sprite ?? (_sprite = new SpriteRenderer(Device));
+
+        public bool SpriteInitialized => _sprite != null;
 
         public int Width {
             get { return _width; }
@@ -53,37 +60,17 @@ namespace AcTools.Render.Base {
 
         public float AspectRatio => (float)_width / _height;
 
-        #region Frames per second section
-        private readonly Stopwatch _clock;
+        private readonly FrameMonitor _frameMonitor = new FrameMonitor();
+        private readonly Stopwatch _stopwatch = new Stopwatch();
 
+        public float FramesPerSecond => _frameMonitor.FramesPerSecond;
+
+        public float Elapsed => _stopwatch.ElapsedMilliseconds / 1000f;
         private float _previousElapsed;
-
-        public float Elapsed => _clock.ElapsedMilliseconds / 1000.0f;
-        private long _frames;
-        private float _framesFrom;
-        private const float FramesPerSecondInterval = 0.12f;
-        private float _framesPerSecondPrevious;
-
-        public float FramesPerSecond {
-            get {
-                var time = Elapsed;
-                var delta = time - _framesFrom;
-                if (delta > FramesPerSecondInterval) {
-                    _framesPerSecondPrevious += (_frames / delta - _framesPerSecondPrevious) * 0.75f;
-                    _frames = 0;
-                    _framesFrom = time;
-                }
-                return _framesPerSecondPrevious;
-            }
-        }
-        #endregion
 
         protected BaseRenderer() {
             Configuration.EnableObjectTracking = false;
             Configuration.ThrowOnShaderCompileError = true;
-
-            _clock = new Stopwatch();
-            _clock.Start();
         }
 
         private bool _initialized;
@@ -159,11 +146,11 @@ namespace AcTools.Render.Base {
         protected virtual void Resize() {
             if (_width == 0 || _height == 0) return;
 
-            SlimDxExtension.Dispose(ref _renderBuffer);
-            SlimDxExtension.Dispose(ref _renderView);
-            SlimDxExtension.Dispose(ref _depthBuffer);
-            SlimDxExtension.Dispose(ref _depthView);
-            SlimDxExtension.Dispose(ref _normalDepthState);
+            DisposeHelper.Dispose(ref _renderBuffer);
+            DisposeHelper.Dispose(ref _renderView);
+            DisposeHelper.Dispose(ref _depthBuffer);
+            DisposeHelper.Dispose(ref _depthView);
+            DisposeHelper.Dispose(ref _normalDepthState);
 
             if (_swapChain != null) {
                 _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, _width, _height,
@@ -201,7 +188,7 @@ namespace AcTools.Render.Base {
             _depthView = new DepthStencilView(Device, _depthBuffer);
             DeviceContext.Rasterizer.SetViewports(new Viewport(0, 0, _width, _height, 0.0f, 1.0f));
             ResetTargets();
-            
+
             _normalDepthState = DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
                 IsDepthEnabled = true,
                 IsStencilEnabled = false,
@@ -236,12 +223,20 @@ namespace AcTools.Render.Base {
                 _resized = false;
             }
 
+            if (!_stopwatch.IsRunning) {
+                _stopwatch.Start();
+            }
+
             var elapsed = Elapsed;
             Update(elapsed - _previousElapsed);
             _previousElapsed = elapsed;
 
-            _frames++;
+            _frameMonitor.Tick();
+
             DrawInner();
+            if (SpriteInitialized) {
+                DrawSprites();
+            }
 
             _swapChain?.Present(SyncInterval ? 1 : 0, PresentFlags.None);
         }
@@ -251,10 +246,14 @@ namespace AcTools.Render.Base {
         protected abstract void InitializeInner();
 
         protected abstract void ResizeInner();
-        
+
         protected virtual void DrawInner() {
             DeviceContext.ClearDepthStencilView(_depthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
             DeviceContext.ClearRenderTargetView(_renderView, Color.DarkCyan);
+        }
+
+        protected virtual void DrawSprites() {
+            _sprite?.Flush();
         }
 
         protected abstract void Update(float dt);
@@ -275,14 +274,15 @@ namespace AcTools.Render.Base {
         }
 
         public virtual void Dispose() {
-            SlimDxExtension.Dispose(ref _renderBuffer);
-            SlimDxExtension.Dispose(ref _renderView);
-            SlimDxExtension.Dispose(ref _depthBuffer);
-            SlimDxExtension.Dispose(ref _depthView);
-            SlimDxExtension.Dispose(ref _normalDepthState);
-            SlimDxExtension.Dispose(ref _readOnlyDepthState);
-            SlimDxExtension.Dispose(ref _deviceContextHolder);
-            SlimDxExtension.Dispose(ref _swapChain);
+            DisposeHelper.Dispose(ref _sprite);
+            DisposeHelper.Dispose(ref _renderBuffer);
+            DisposeHelper.Dispose(ref _renderView);
+            DisposeHelper.Dispose(ref _depthBuffer);
+            DisposeHelper.Dispose(ref _depthView);
+            DisposeHelper.Dispose(ref _normalDepthState);
+            DisposeHelper.Dispose(ref _readOnlyDepthState);
+            DisposeHelper.Dispose(ref _deviceContextHolder);
+            DisposeHelper.Dispose(ref _swapChain);
         }
     }
 }

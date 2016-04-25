@@ -6,6 +6,8 @@
 	static const dword HAS_DETAILS_NORMAL_MAP = 4;
 	static const dword HAS_MAPS = 8;
 	static const dword USE_DIFFUSE_ALPHA_AS_MAP = 16;
+	static const dword ALPHA_BLEND = 32;
+	static const dword SPECIAL_MAPS_MODE = 64;
 
 	struct Material {
 		float Ambient;
@@ -43,6 +45,18 @@
 
 	cbuffer cbPerFrame {
 		float3 gEyePosW;
+		float3 gAmbientDown;
+		float3 gAmbientRange;
+
+		float3 gLightColor;
+		float3 gDirectionalLightDirection;
+	}
+
+// functions
+	float3 CalcAmbient(float3 normal, float3 color) {
+		float up = normal.y * 0.5 + 0.5;
+		float3 ambient = gAmbientDown + up * gAmbientRange;
+		return ambient * color;
 	}
 
 // standart
@@ -56,6 +70,12 @@
 		vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
 		vout.Tex = vin.Tex;
 
+		return vout;
+	}
+
+	PosOnly_PS_IN vs_PosOnly(VS_IN vin) {
+		PosOnly_PS_IN vout;
+		vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
 		return vout;
 	}
 
@@ -90,17 +110,20 @@
 				normalValue += (detailsNormalValue - 0.5) * gMaterial.DetailsNormalBlend * (1.0 - diffuseValue.a);
 			}
 
-			pout.Normal = normalize(NormalSampleToWorldSpace(normalize(normalValue.xyz), pin.NormalW, pin.TangentW));
+			pout.Normal = float4(normalize(NormalSampleToWorldSpace(normalize(normalValue.xyz), pin.NormalW, pin.TangentW)),
+					normalValue.a * diffuseValue.a);
 		} else {
-			pout.Normal = normalize(pin.NormalW);
+			pout.Normal = float4(normalize(pin.NormalW), diffuseValue.a);
 		}
+			
+		pout.Normal.a = min(pout.Normal.a + 1.0 - (gMaterial.Flags & ALPHA_BLEND) / ALPHA_BLEND, 1.0);
 
 		float specular = saturate(gMaterial.Specular / 2.5);
-		float glossiness = saturate((gMaterial.SpecularExp - 1) / 250);
+		float glossiness = saturate((gMaterial.SpecularExp - 1) / 400 + 0.5 * (gMaterial.Flags & SPECIAL_MAPS_MODE) / SPECIAL_MAPS_MODE);
 		float reflectiveness = saturate(gMaterial.FresnelMaxLevel);
 		float metalness = saturate(max(
-			gMaterial.FresnelC / gMaterial.FresnelMaxLevel, 
-			1.1 / (gMaterial.FresnelExp + 1) - 0.1));
+				gMaterial.FresnelC / gMaterial.FresnelMaxLevel, 
+				1.1 / (gMaterial.FresnelExp + 1) - 0.1));
 		
 		if ((gMaterial.Flags & HAS_MAPS) == HAS_MAPS){
 			float4 mapsValue = gMapsMap.Sample(samAnisotropic, pin.Tex);
@@ -124,8 +147,7 @@
 		}
 		
 		float ambient = max(gMaterial.Ambient, 0.05);
-		pout.Base = diffuseValue * ambient;
-		pout.Base.a = gMaterial.Diffuse / ambient;
+		pout.Base = float4(CalcAmbient(pout.Normal.xyz, diffuseValue.rgb * ambient), gMaterial.Diffuse / ambient);
 		// diffuse part - end
 		
 		pout.Maps = float4(specular, glossiness, reflectiveness, metalness);
@@ -141,7 +163,25 @@
 	}
 
 	float4 ps_StandardForward(PS_IN pin) : SV_Target {
-		return gDiffuseMap.Sample(samAnisotropic, pin.Tex);
+		float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
+		float ambient = max(gMaterial.Ambient, 0.05);
+
+		float3 normal;
+		[flatten]
+		if ((gMaterial.Flags & HAS_NORMAL_MAP) == HAS_NORMAL_MAP) {
+			float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
+			normal = normalize(NormalSampleToWorldSpace(normalize(normalValue.xyz), pin.NormalW, pin.TangentW));
+		} else {
+			normal = normalize(pin.NormalW);
+		}
+
+		float3 toLight = -gDirectionalLightDirection;
+		float lightness = saturate(dot(normal, toLight));
+
+		float3 lighted = CalcAmbient(normal, diffuseValue.rgb * ambient) + 
+				diffuseValue.rgb * gMaterial.Diffuse * gLightColor * lightness;
+
+		return float4(lighted, 1.0);
 	}
 
 	technique11 StandardForward {
@@ -149,50 +189,6 @@
 			SetVertexShader( CompileShader( vs_4_0, vs_Standard() ) );
 			SetGeometryShader( NULL );
 			SetPixelShader( CompileShader( ps_4_0, ps_StandardForward() ) );
-		}
-	}
-
-// transparent part
-	float4 ps_TransparentForward(PS_IN pin) : SV_Target{
-		float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
-
-		float3 color = diffuseValue.rgb;
-		float alpha = diffuseValue.a;
-		float3 normal;
-
-		[flatten]
-		if ((gMaterial.Flags & HAS_NORMAL_MAP) == HAS_NORMAL_MAP) {
-			float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
-			alpha *= normalValue.a;
-			normal = normalize(NormalSampleToWorldSpace(normalize(normalValue.xyz), pin.NormalW, pin.TangentW));
-		} else {
-			normal = normalize(pin.NormalW);
-		}
-
-		float specular = saturate(gMaterial.Specular / 2.5);
-		float glossiness = saturate((gMaterial.SpecularExp - 1) / 250);
-		float reflectiveness = saturate(gMaterial.FresnelMaxLevel);
-		float metalness = saturate(max(
-				gMaterial.FresnelC / gMaterial.FresnelMaxLevel,
-				1.1 / (gMaterial.FresnelExp + 1) - 0.1));
-
-		float3 toEyeW = normalize(gEyePosW - pin.PosW);
-
-		float rid = saturate(dot(toEyeW, pin.NormalW));
-		float rim = pow(1 - rid, gMaterial.FresnelExp);
-
-		float4 reflectionColor = gReflectionCubemap.SampleBias(samAnisotropic, reflect(-toEyeW, normal),
-				1.0f - glossiness);
-
-		// return float4(color, alpha);
-		return float4(color * (gMaterial.Ambient - reflectiveness / 2) + reflectionColor * reflectiveness * rim, alpha);
-	}
-
-	technique11 TransparentForward {
-		pass P0 {
-			SetVertexShader(CompileShader(vs_4_0, vs_Standard()));
-			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_4_0, ps_TransparentForward()));
 		}
 	}
 
@@ -234,5 +230,68 @@
 			SetVertexShader( CompileShader( vs_5_0, vs_AmbientShadowDeferred() ) );
 			SetGeometryShader( NULL );
 			SetPixelShader( CompileShader( ps_5_0, ps_AmbientShadowDeferred() ) );
+		}
+	}
+
+// transparent deferred part
+	technique11 TransparentDeferred {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_Standard()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_StandardDeferred()));
+		}
+	}
+
+// transparent part
+	float4 ps_TransparentForward(PS_IN pin) : SV_Target{
+		float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
+
+		float alpha = diffuseValue.a;
+		float3 normal;
+
+		[flatten]
+		if ((gMaterial.Flags & HAS_NORMAL_MAP) == HAS_NORMAL_MAP) {
+			float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
+			alpha *= normalValue.a;
+			normal = normalize(NormalSampleToWorldSpace(normalize(normalValue.xyz), pin.NormalW, pin.TangentW));
+		}
+		else {
+			normal = normalize(pin.NormalW);
+		}
+
+		float3 color = CalcAmbient(normal, diffuseValue.rgb);
+
+		float specular = saturate(gMaterial.Specular / 2.5);
+		float glossiness = saturate((gMaterial.SpecularExp - 1) / 400 + (gMaterial.Flags & SPECIAL_MAPS_MODE) / SPECIAL_MAPS_MODE);
+		float reflectiveness = saturate(gMaterial.FresnelMaxLevel);
+		float metalness = saturate(max(
+				gMaterial.FresnelC / gMaterial.FresnelMaxLevel,
+				1.1 / (gMaterial.FresnelExp + 1) - 0.1));
+
+		float3 toEyeW = normalize(gEyePosW - pin.PosW);
+
+		float rid = saturate(dot(toEyeW, pin.NormalW));
+		float rim = pow(1 - rid, gMaterial.FresnelExp);
+
+		float4 reflectionColor = gReflectionCubemap.SampleBias(samAnisotropic, reflect(-toEyeW, normal),
+			1.0f - glossiness);
+
+		// return float4(color, alpha);
+		return float4(color * (gMaterial.Ambient - reflectiveness / 2) + reflectionColor * reflectiveness * rim, alpha);
+	}
+
+	technique11 TransparentForward {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_Standard()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_TransparentForward()));
+		}
+	}
+
+	technique11 TransparentMask {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_PosOnly()));
+			SetGeometryShader(NULL);
+			SetPixelShader(NULL);
 		}
 	}

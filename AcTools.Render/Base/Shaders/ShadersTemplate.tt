@@ -123,8 +123,8 @@ namespace AcTools.Render.Base.Shaders {
 	/* BUFFERS, VARIABLES, TEXTURES */
 		var cbs = string.Join("\n", Regex.Matches(data, @"(?:^|\n)\s*cbuffer \w+.+(\n\s+.+)*?\n\s*\}").Cast<Match>().Select(x => x.Value));
 		
-		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture2D|TextureCube)\s+(\w+)\s*;").Cast<Match>();
-		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*;").Cast<Match>();
+		var vrs = Regex.Matches(data, @"(?:^|\n)\s*(?:Texture2D|TextureCube)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
+		var vms = Regex.Matches(cbs, @"\n\s+(?:matrix|float4x4)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vss = Regex.Matches(cbs, @"\n\s+(?:float|int)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vvs = Regex.Matches(cbs, @"\n\s+(?:float\d)\s+(\w+)\s*(?:\[\w+\]\s*)?;").Cast<Match>();
 		var vs = Regex.Matches(cbs, @"\n\s+(?:(?!matrix|float\d?|int)\w+)\s+(\w+)\s*;").Cast<Match>();
@@ -265,7 +265,8 @@ namespace AcTools.Render.Base.Shaders {
             } catch (System.Exception e) {
 				System.Diagnostics.Debug.WriteLine("Shader " + (name ?? "?") + " compilation failed:\n\n" + e.Message);
                 System.Windows.Forms.MessageBox.Show("Shader " + (name ?? "?") + " compilation failed:\n\n" + e.Message);
-                throw;
+				System.Environment.Exit(1);
+				return null;
             }
         }
 		

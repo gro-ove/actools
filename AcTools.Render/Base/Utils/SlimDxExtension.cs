@@ -6,10 +6,51 @@ using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Base.Utils {
     public static class SlimDxExtension {
-        public static void Dispose<T>(ref T obj) where T : class, IDisposable {
-            if (obj == null) return;
-            obj.Dispose();
-            obj = null;
+        public static BoundingBox ToBoundingBox(this IEnumerable<Vector3> vertices) {
+            var ie = vertices.GetEnumerator();
+            if (!ie.MoveNext()) return new BoundingBox();
+
+            var v = ie.Current;
+            var minX = v.X;
+            var minY = v.Y;
+            var minZ = v.Z;
+            var maxX = v.X;
+            var maxY = v.Y;
+            var maxZ = v.Z;
+
+            while (ie.MoveNext()) {
+                var n = ie.Current;
+                if (minX > n.X) minX = n.X;
+                if (minY > n.Y) minY = n.Y;
+                if (minZ > n.Z) minZ = n.Z;
+                if (maxX < n.X) maxX = n.X;
+                if (maxY < n.Y) maxY = n.Y;
+                if (maxZ < n.Z) maxZ = n.Z;
+            }
+
+            return new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
+        }
+
+        public static BoundingBox ExtendBy(this BoundingBox bb, BoundingBox next) {
+            return new BoundingBox(
+                    new Vector3(
+                            Math.Min(bb.Minimum.X, next.Minimum.X),
+                            Math.Min(bb.Minimum.Y, next.Minimum.Y),
+                            Math.Min(bb.Minimum.Z, next.Minimum.Z)),
+                    new Vector3(
+                            Math.Max(bb.Maximum.X, next.Maximum.X),
+                            Math.Max(bb.Maximum.Y, next.Maximum.Y),
+                            Math.Max(bb.Maximum.Z, next.Maximum.Z)));
+        }
+
+        public static Vector3 GetXyz(this Vector4 vec) {
+            return new Vector3(vec.X, vec.Y, vec.Z);
+        }
+
+        public static BoundingBox Transform(this BoundingBox bb, Matrix matrix) {
+            return new BoundingBox(
+                    Vector3.Transform(bb.Minimum, matrix).GetXyz(),
+                    Vector3.Transform(bb.Maximum, matrix).GetXyz());
         }
 
         public static void DrawAllPasses(this EffectTechnique tech, DeviceContext context, int indexCount) {

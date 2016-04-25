@@ -33,7 +33,7 @@ cbuffer cbPerFrame : register(b0) {
 
 // special reflection mode
 	float4 ps_ReflectionGaussianBlur(PS_IN pin) : SV_Target {
-		float power = saturate(1 - tex(gMapsMap, pin.Tex).y * 8);
+		float power = saturate(1 - tex(gMapsMap, pin.Tex).y);
 
 		float4 c = 0;
 		for (int i = 0; i < SAMPLE_COUNT; i++){
@@ -49,4 +49,4 @@ cbuffer cbPerFrame : register(b0) {
 			SetGeometryShader( NULL );
 			SetPixelShader( CompileShader( ps_4_0, ps_ReflectionGaussianBlur() ) );
 		}
-}
+	}

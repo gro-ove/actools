@@ -1,15 +1,10 @@
 ﻿using AcTools.Render.Base.Utils;
 using SlimDX;
 
-namespace AcTools.Render.Base.Camera {
-    public interface ICamera {
-        Matrix ViewProj { get; }
+namespace AcTools.Render.Base.Cameras {
+    public abstract class BaseCamera : ICamera {
+        public Vector3 Position { get; protected set; }
 
-        Matrix ViewProjInvert { get; }
-    }
-
-    public abstract class AbstractCamera : ICamera {
-        public Vector3 Position;
         public Vector3 Right;
         public Vector3 Up;
         public Vector3 Look;
@@ -18,14 +13,8 @@ namespace AcTools.Render.Base.Camera {
         public float Aspect;
         public float FovY;
 
-        public bool Moved;
+        public float FovX => 2.0f * MathF.Atan(0.5f * NearWindowWidth / NearZ);
 
-        public float FovX {
-            get {
-                var halfWidth = 0.5f * NearWindowWidth;
-                return 2.0f * MathF.Atan(halfWidth / NearZ);
-            }
-        }
         public float NearWindowWidth;
         public float NearWindowHeight;
         public float FarWindowWidth;
@@ -33,25 +22,13 @@ namespace AcTools.Render.Base.Camera {
         public Matrix View;
         public Matrix Proj;
 
-        public Matrix ViewProj { get { return View * Proj; } }
+        public Matrix ViewProj => View * Proj;
 
-        public Matrix ViewInvert {
-            get {
-                var matrix = View;
-                matrix.Invert();
-                return matrix;
-            }
-        }
+        public Matrix ViewInvert => Matrix.Invert(View);
 
-        public Matrix ViewProjInvert {
-            get {
-                var matrix = ViewProj;
-                matrix.Invert();
-                return matrix;
-            }
-        }
+        public Matrix ViewProjInvert => Matrix.Invert(ViewProj);
 
-        protected AbstractCamera(float fov) {
+        protected BaseCamera(float fov) {
             Position = new Vector3();
             Right = new Vector3(1, 0, 0);
             Up = new Vector3(0, 1, 0);
@@ -66,11 +43,17 @@ namespace AcTools.Render.Base.Camera {
         }
 
         public abstract void LookAt(Vector3 pos, Vector3 target, Vector3 up);
+
         public abstract void Strafe(float d);
+
         public abstract void Walk(float d);
+
         public abstract void Pitch(float angle);
+
         public abstract void Yaw(float angle);
+
         public abstract void Zoom(float dr);
+
         public abstract void UpdateViewMatrix();
 
         public abstract void Save();
@@ -98,20 +81,25 @@ namespace AcTools.Render.Base.Camera {
             var vy = (-2.0f * sp.Y / screenDims.Y + 1.0f) / p.M22;
 
             var ray = new Ray(new Vector3(), new Vector3(vx, vy, 1.0f));
-            var v = View;
-            var invView = Matrix.Invert(v);
 
-
-            var toWorld = invView;
-
+            var toWorld = ViewInvert;
             ray = new Ray(Vector3.TransformCoordinate(ray.Position, toWorld), Vector3.TransformNormal(ray.Direction, toWorld));
 
             ray.Direction.Normalize();
             return ray;
         }
 
-        // TODO:
-        // protected Frustum _frustum;
+        protected Frustum Frustum;
+
+        public Plane[] FrustumPlanes => Frustum.Planes;
+
+        public virtual bool Visible(BoundingBox box) {
+            return Frustum.Intersect(box) > 0;
+        }
+
+        public FrustrumIntersectionType Intersect(BoundingBox box) {
+            return Frustum.Intersect(box);
+        }
 
         public Vector3[] GetFrustumCorners() {
             var hNear = 2 * MathF.Tan(FovY / 2) * NearZ;
@@ -125,21 +113,21 @@ namespace AcTools.Render.Base.Camera {
 
             return new[] {
                 //ntl
-                cNear + (Up*hNear/2) - (Right*wNear/2),
+                cNear + (Up * hNear / 2) - (Right * wNear / 2),
                 //ntr
-                cNear + (Up*hNear/2) + (Right*wNear/2),
+                cNear + (Up * hNear / 2) + (Right * wNear / 2),
                 //nbl
-                cNear - (Up *hNear/2) - (Right*wNear/2),
+                cNear - (Up * hNear / 2) - (Right * wNear / 2),
                 //nbr
-                cNear - (Up *hNear/2) + (Right*wNear/2),
+                cNear - (Up * hNear / 2) + (Right * wNear / 2),
                 //ftl
-                cFar + (Up*hFar/2) - (Right*wFar/2),
+                cFar + (Up * hFar / 2) - (Right * wFar / 2),
                 //ftr
-                cFar + (Up*hFar/2) + (Right*wFar/2),
+                cFar + (Up * hFar / 2) + (Right * wFar / 2),
                 //fbl
-                cFar - (Up *hFar/2) - (Right*wFar/2),
+                cFar - (Up * hFar / 2) - (Right * wFar / 2),
                 //fbr
-                cFar - (Up *hFar/2) + (Right*wFar/2),
+                cFar - (Up * hFar / 2) + (Right * wFar / 2),
             };
         }
     }

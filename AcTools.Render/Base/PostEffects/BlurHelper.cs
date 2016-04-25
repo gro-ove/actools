@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using AcTools.Render.Base.Shaders;
+using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using SlimDX;
 using SlimDX.Direct3D11;
@@ -25,7 +25,7 @@ namespace AcTools.Render.Base.PostEffects {
         }
 
         static float ComputeGaussian(float n, float theta) {
-            return MathF.Exp(-n*n/(2.0f*theta*theta))/MathF.Sqrt(2.0f*MathF.PI*theta);
+            return MathF.Exp(-n * n / (2.0f * theta * theta)) / MathF.Sqrt(2.0f * MathF.PI * theta);
         }
 
         public static void CalculateGaussian(float dx, float dy, float force, out float[] weightsParameter, out Vector4[] offsetsParameter) {
@@ -88,7 +88,7 @@ namespace AcTools.Render.Base.PostEffects {
         public void BlurHorizontally(DeviceContextHolder holder, ShaderResourceView view, float power) {
             holder.DeviceContext.OutputMerger.BlendState = null;
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
-            
+
             _effect.FxInputMap.SetResource(view);
             _effect.FxSampleOffsets.Set(_hoso);
             _effect.FxSampleWeights.Set(_hosw);
@@ -99,7 +99,7 @@ namespace AcTools.Render.Base.PostEffects {
         public void BlurVertically(DeviceContextHolder holder, ShaderResourceView view, float power) {
             holder.DeviceContext.OutputMerger.BlendState = null;
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
-            
+
             _effect.FxInputMap.SetResource(view);
             _effect.FxSampleOffsets.Set(_voso);
             _effect.FxSampleWeights.Set(_vosw);
@@ -107,10 +107,21 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechGaussianBlur.DrawAllPasses(holder.DeviceContext, 6);
         }
 
+        public void Blur(DeviceContextHolder holder, TargetResourceTexture source, TargetResourceTexture temporary, float power = 1f, int iterations = 1,
+                TargetResourceTexture target = null) {
+            for (var i = 0; i < iterations; i++) {
+                holder.DeviceContext.OutputMerger.SetTargets(temporary.TargetView);
+                BlurHorizontally(holder, (i == 0 ? null : target?.View) ?? source.View, power);
+
+                holder.DeviceContext.OutputMerger.SetTargets(target?.TargetView ?? source.TargetView);
+                BlurVertically(holder, temporary.View, power);
+            }
+        }
+
         public void BlurReflectionHorizontally(DeviceContextHolder holder, ShaderResourceView view, ShaderResourceView mapsView) {
             holder.DeviceContext.OutputMerger.BlendState = null;
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
-            
+
             _effect.FxInputMap.SetResource(view);
             _effect.FxMapsMap.SetResource(mapsView);
             _effect.FxSampleOffsets.Set(_hoso);
@@ -122,7 +133,7 @@ namespace AcTools.Render.Base.PostEffects {
         public void BlurReflectionVertically(DeviceContextHolder holder, ShaderResourceView view, ShaderResourceView mapsView) {
             holder.DeviceContext.OutputMerger.BlendState = null;
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
-            
+
             _effect.FxInputMap.SetResource(view);
             _effect.FxMapsMap.SetResource(mapsView);
             _effect.FxSampleOffsets.Set(_voso);

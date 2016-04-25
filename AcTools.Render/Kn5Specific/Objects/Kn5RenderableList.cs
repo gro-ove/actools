@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
-using AcTools.Render.Base.Camera;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Utils;
@@ -17,7 +17,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public override void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (!OriginalNode.Active || OriginalNode.Name == "COCKPIT_LR" || OriginalNode.Name == "STEER_LR" ||
-                OriginalNode.Name == "CINTURE_ON") return;
+                    OriginalNode.Name == "CINTURE_ON" || OriginalNode.Name.StartsWith("DAMAGE_GLASS")) return;
             base.Draw(contextHolder, camera, mode);
         }
     }

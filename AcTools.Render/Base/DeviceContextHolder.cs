@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils.Helpers;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Base {
     public class DeviceContextHolder : IDisposable {
         public readonly Device Device;
         public readonly DeviceContext DeviceContext;
+
+        // public IEffectMatricesWrapper EffectReplacement { get; set; }
+        // public EffectTechnique TechniqueReplacement { get; set; }
 
         private QuadBuffers _quadBuffers;
 
@@ -65,7 +69,7 @@ namespace AcTools.Render.Base {
         }
 
         public void Dispose() {
-            SlimDxExtension.Dispose(ref _quadBuffers);
+            DisposeHelper.Dispose(ref _quadBuffers);
 
             foreach (var effect in _effects.Values) {
                 effect.Dispose();

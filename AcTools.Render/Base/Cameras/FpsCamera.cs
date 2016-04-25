@@ -1,10 +1,10 @@
 ﻿using AcTools.Render.Base.Utils;
 using SlimDX;
 
-namespace AcTools.Render.Base.Camera {
+namespace AcTools.Render.Base.Cameras {
     public delegate float HeightFunc(float x, float y);
 
-    public class FpsCamera : AbstractCamera {
+    public class FpsCamera : BaseCamera {
         public override void Save() {
             throw new System.NotImplementedException();
         }
@@ -49,15 +49,10 @@ namespace AcTools.Render.Base.Camera {
         }
 
         public override void UpdateViewMatrix() {
-            var r = Right;
-            var u = Up;
-            var l = Look;
             var p = Position;
-
-            l = Vector3.Normalize(l);
-            u = Vector3.Normalize(Vector3.Cross(l, r));
-
-            r = Vector3.Cross(u, l);
+            var l = Vector3.Normalize(Look);
+            var u = Vector3.Normalize(Vector3.Cross(l, Right));
+            var r = Vector3.Cross(u, l);
 
             var x = -Vector3.Dot(p, r);
             var y = -Vector3.Dot(p, u);
@@ -66,29 +61,26 @@ namespace AcTools.Render.Base.Camera {
             Right = r;
             Up = u;
             Look = l;
+            View = new Matrix {
+                [0, 0] = Right.X,
+                [1, 0] = Right.Y,
+                [2, 0] = Right.Z,
+                [3, 0] = x,
+                [0, 1] = Up.X,
+                [1, 1] = Up.Y,
+                [2, 1] = Up.Z,
+                [3, 1] = y,
+                [0, 2] = Look.X,
+                [1, 2] = Look.Y,
+                [2, 2] = Look.Z,
+                [3, 2] = z,
+                [0, 3] = 0,
+                [1, 3] = 0,
+                [2, 3] = 0,
+                [3, 3] = 1
+            };
 
-            var v = new Matrix();
-            v[0, 0] = Right.X;
-            v[1, 0] = Right.Y;
-            v[2, 0] = Right.Z;
-            v[3, 0] = x;
-
-            v[0, 1] = Up.X;
-            v[1, 1] = Up.Y;
-            v[2, 1] = Up.Z;
-            v[3, 1] = y;
-
-            v[0, 2] = Look.X;
-            v[1, 2] = Look.Y;
-            v[2, 2] = Look.Z;
-            v[3, 2] = z;
-
-            v[0, 3] = v[1, 3] = v[2, 3] = 0;
-            v[3, 3] = 1;
-
-            View = v;
-
-            // _frustum = Frustum.FromViewProj(ViewProj);
+            Frustum = Frustum.FromViewProj(ViewProj);
         }
     }
 }

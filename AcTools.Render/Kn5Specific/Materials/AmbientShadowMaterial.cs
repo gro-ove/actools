@@ -1,9 +1,10 @@
 ﻿using AcTools.Render.Base;
-using AcTools.Render.Base.Camera;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Textures;
+using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 
@@ -66,33 +67,30 @@ namespace AcTools.Render.Kn5Specific.Materials {
             _blendState = BlendState.FromDescription(contextHolder.Device, transDesc);
         }
 
-        private bool _skip;
+        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+            if (mode != SpecialRenderMode.Deferred) return false;
 
-        public void Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            _skip = mode != SpecialRenderMode.Default;
-            if (_skip) return;
             _effect.FxDiffuseMap.SetResource(_txDiffuse);
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPT;
             contextHolder.DeviceContext.OutputMerger.BlendState = _blendState;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = _depthStencilState;
+            return true;
         }
 
         public void SetMatrices(Matrix objectTransform, ICamera camera) {
-            if (_skip) return;
             _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
             _effect.FxWorld.SetMatrix(objectTransform);
         }
 
         public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            if (_skip) return;
             _effect.TechAmbientShadowDeferred.DrawAllPasses(contextHolder.DeviceContext, indices);
             contextHolder.DeviceContext.OutputMerger.BlendState = null;
             contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
         }
 
         public void Dispose() {
-            _blendState.Dispose();
-            _depthStencilState.Dispose();
+            DisposeHelper.Dispose(ref _blendState);
+            DisposeHelper.Dispose(ref _depthStencilState);
         }
     }
 }

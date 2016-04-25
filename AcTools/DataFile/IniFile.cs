@@ -329,5 +329,14 @@ namespace AcTools.DataFile {
                 Remove(key);
             }
         }
+
+        /// <summary>
+        /// Get all sections by prefix like SECTION_0, SECTION_1, …
+        /// </summary>
+        /// <param name="prefixName">Prefix (e.g. “SECTION”)</param>
+        /// <param name="startFrom">ID of first section</param>
+        public IEnumerable<IniFileSection> GetSections(string prefixName, int startFrom = 0) {
+            return LinqExtension.RangeFrom(startFrom).Select(x => $"{prefixName}_{x}").TakeWhile(ContainsKey).Select(key => this[key]);
+        }
     }
 }

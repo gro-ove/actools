@@ -1,12 +1,9 @@
-﻿using AcTools.Kn5File;
-using AcTools.Render.Base;
-using AcTools.Render.Base.Camera;
+﻿using AcTools.Render.Base;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
-using AcTools.Render.Kn5Specific.Textures;
 using SlimDX;
-using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5Specific.Materials {
     public class Kn5RenderableSpecialGlMaterial : IRenderableMaterial {
@@ -16,8 +13,17 @@ namespace AcTools.Render.Kn5Specific.Materials {
             _effect = contextHolder.GetEffect<EffectDeferredGObjectSpecial>();
         }
 
-        public void Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
+        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+            switch (mode) {
+                case SpecialRenderMode.Deferred:
+                case SpecialRenderMode.Reflection:
+                case SpecialRenderMode.Shadow:
+                    contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
+                    return true;
+
+                default:
+                    return false;
+            }
         }
 
         public void SetMatrices(Matrix objectTransform, ICamera camera) {
@@ -27,8 +33,19 @@ namespace AcTools.Render.Kn5Specific.Materials {
         }
 
         public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            (mode == SpecialRenderMode.Default ? _effect.TechSpecialGlDeferred : _effect.TechSpecialGlForward)
-                .DrawAllPasses(contextHolder.DeviceContext, indices);
+            switch (mode) {
+                case SpecialRenderMode.Deferred:
+                    _effect.TechSpecialGlDeferred.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    break;
+
+                case SpecialRenderMode.Reflection:
+                    _effect.TechSpecialGlForward.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    break;
+
+                case SpecialRenderMode.Shadow:
+                    _effect.TechSpecialGlMask.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    break;
+            }
         }
 
         public void Dispose() {

@@ -17,7 +17,30 @@ namespace AcTools.Render.Base.Structs {
         public interface ILayout {
             int Stride { get; }
 
+            Vector3 Position { get; }
+
             InputElement[] InputElements { get; }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct VerticeP : ILayout {
+            public readonly Vector3 Position;
+
+            public VerticeP(Vector3 p) {
+                Position = p;
+            }
+
+            public static readonly int StrideValue = Marshal.SizeOf(typeof(VerticeP));
+
+            public static readonly InputElement[] InputElementsValue = {
+                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0)
+            };
+
+            public int Stride => StrideValue;
+
+            public InputElement[] InputElements => InputElementsValue;
+
+            Vector3 ILayout.Position => Position;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -37,13 +60,11 @@ namespace AcTools.Render.Base.Structs {
                 new InputElement("TEXCOORD", 0, Format.R32G32_Float, 12, 0, InputClassification.PerVertexData, 0)
             };
 
-            public int Stride {
-                get { return StrideValue; }
-            }
+            public int Stride => StrideValue;
 
-            public InputElement[] InputElements {
-                get { return InputElementsValue; }
-            }
+            public InputElement[] InputElements => InputElementsValue;
+
+            Vector3 ILayout.Position => Position;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -63,13 +84,11 @@ namespace AcTools.Render.Base.Structs {
                 new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 12, 0, InputClassification.PerVertexData, 0)
             };
 
-            public int Stride {
-                get { return StrideValue; }
-            }
+            public int Stride => StrideValue;
 
-            public InputElement[] InputElements {
-                get { return InputElementsValue; }
-            }
+            public InputElement[] InputElements => InputElementsValue;
+
+            Vector3 ILayout.Position => Position;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -92,13 +111,11 @@ namespace AcTools.Render.Base.Structs {
                 new InputElement("TEXCOORD", 0, Format.R32G32_Float, 24, 0, InputClassification.PerVertexData, 0)
             };
 
-            public int Stride {
-                get { return StrideValue; }
-            }
+            public int Stride => StrideValue;
 
-            public InputElement[] InputElements {
-                get { return InputElementsValue; }
-            }
+            public InputElement[] InputElements => InputElementsValue;
+
+            Vector3 ILayout.Position => Position;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -124,13 +141,11 @@ namespace AcTools.Render.Base.Structs {
                 new InputElement("TANGENT", 0, Format.R32G32B32_Float, 32, 0, InputClassification.PerVertexData, 0)
             };
 
-            public int Stride {
-                get { return StrideValue; }
-            }
+            public int Stride => StrideValue;
 
-            public InputElement[] InputElements {
-                get { return InputElementsValue; }
-            }
+            public InputElement[] InputElements => InputElementsValue;
+
+            Vector3 ILayout.Position => Position;
         }
     }
 }

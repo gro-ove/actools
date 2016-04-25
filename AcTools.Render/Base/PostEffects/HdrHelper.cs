@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AcTools.Render.Base.Shaders;
+using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using SlimDX;
 using SlimDX.Direct3D11;
@@ -42,7 +44,7 @@ namespace AcTools.Render.Base.PostEffects {
         public void Resize(DeviceContextHolder holder, int width, int height) {
             var i = 4 * 3;
             foreach (var texture in _textures) {
-                texture.Resize(holder, width / i, height / i);
+                texture.Resize(holder, Math.Max(width / i, 1), Math.Max(height / i, 1));
                 i *= 4;
             }
 

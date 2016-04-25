@@ -20,9 +20,7 @@ namespace AcTools.DataFile {
             }
         }
 
-        public bool IsEmpty {
-            get { return _acd == null; }
-        }
+        public bool IsEmpty => _acd == null;
 
         public IniFile GetIniFile(string name){
             return new IniFile(_carDirectory, name, _acd);

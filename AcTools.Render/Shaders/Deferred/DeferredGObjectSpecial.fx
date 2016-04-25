@@ -22,6 +22,12 @@
 		return vout;
 	}
 
+	PosOnly_PS_IN vs_PosOnly(VS_IN vin) {
+		PosOnly_PS_IN vout;
+		vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+		return vout;
+	}
+
 	PS_OUT ps_SpecialGlDeferred(SpecialGl_PS_IN pin) : SV_Target {
 		PS_OUT pout;
 		pout.Base = float4(normalize(pin.PosL), 1.0);
@@ -47,5 +53,13 @@
 			SetVertexShader( CompileShader( vs_4_0, vs_SpecialGl() ) );
 			SetGeometryShader( NULL );
 			SetPixelShader( CompileShader( ps_4_0, ps_SpecialGlForward() ) );
+		}
+	}
+
+	technique11 SpecialGlMask {
+		pass P0 {
+			SetVertexShader( CompileShader( vs_4_0, vs_PosOnly() ) );
+			SetGeometryShader( NULL );
+			SetPixelShader( NULL );
 		}
 	}

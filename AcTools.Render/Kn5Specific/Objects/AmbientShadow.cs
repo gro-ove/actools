@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AcTools.Render.Base;
-using AcTools.Render.Base.Camera;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Kn5Specific.Materials;
@@ -42,9 +42,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.Default) return;
+            if (mode != SpecialRenderMode.Deferred) return;
 
-            _material.Prepare(contextHolder, mode);
+            if (!_material.Prepare(contextHolder, mode)) return;
             base.DrawInner(contextHolder, camera, mode);
 
             _material.SetMatrices(_transform*ParentMatrix, camera);

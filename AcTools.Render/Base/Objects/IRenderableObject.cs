@@ -1,18 +1,15 @@
 ﻿using System;
-using AcTools.Render.Base.Camera;
+using AcTools.Render.Base.Cameras;
 using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
-    public enum SpecialRenderMode {
-        Default,
-        Reflection,
-        TransparentDepth,
-        Transparent
-    }
-
     public interface IRenderableObject : IDisposable {
         Matrix ParentMatrix { get; set; }
 
-        void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode = SpecialRenderMode.Default);
+        bool IsReflectable { get; set; }
+
+        BoundingBox? BoundingBox { get; }
+
+        void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode = SpecialRenderMode.Deferred);
     }
 }

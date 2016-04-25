@@ -79,7 +79,7 @@ namespace AcTools.Render.Wrapper {
         }
 
         private void OnRender() {
-            Form.Text = string.Format("{0} (FPS: {1:F0})", _title, Renderer.FramesPerSecond);
+            Form.Text = $"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
             Renderer.Draw();
         }
     }

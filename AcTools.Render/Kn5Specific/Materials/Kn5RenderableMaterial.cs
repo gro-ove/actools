@@ -1,6 +1,7 @@
-﻿using AcTools.Kn5File;
+﻿using System;
+using AcTools.Kn5File;
 using AcTools.Render.Base;
-using AcTools.Render.Base.Camera;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
@@ -83,6 +84,14 @@ namespace AcTools.Render.Kn5Specific.Materials {
                 flags |= EffectDeferredGObject.UseDiffuseAlphaAsMap;
             }
 
+            if (IsBlending) {
+                flags |= EffectDeferredGObject.AlphaBlend;
+            }
+
+            if (Math.Abs(_kn5Material.GetPropertyValueAByName("isAdditive") - 2.0f) < 0.01f) {
+                flags |= EffectDeferredGObject.SpecialMapsMode;
+            }
+
             _material = new EffectDeferredGObject.Material {
                 Ambient = _kn5Material.GetPropertyValueAByName("ksAmbient"),
                 Diffuse = _kn5Material.GetPropertyValueAByName("ksDiffuse"),
@@ -98,10 +107,17 @@ namespace AcTools.Render.Kn5Specific.Materials {
             };
         }
 
-        public void Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+            if (mode == SpecialRenderMode.TransparentMask) return IsBlending;
+
             if (mode == SpecialRenderMode.Reflection) {
                 _effect.FxDiffuseMap.SetResource(_txDiffuse);
+                _effect.FxNormalMap.SetResource(_txNormal);
+                _effect.FxMaterial.Set(_material);
             } else {
+                if ((mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth ||
+                        mode == SpecialRenderMode.TransparentDeferred) && !IsBlending) return false;
+
                 _effect.FxMaterial.Set(_material);
                 _effect.FxDiffuseMap.SetResource(_txDiffuse);
                 _effect.FxNormalMap.SetResource(_txNormal);
@@ -110,29 +126,41 @@ namespace AcTools.Render.Kn5Specific.Materials {
                 _effect.FxMapsMap.SetResource(_txMaps);
             }
 
-            if ((mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth) &&
-                    _kn5Material.BlendMode != Kn5MaterialBlendMode.AlphaBlend) return;
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
+            return true;
         }
 
         public void SetMatrices(Matrix objectTransform, ICamera camera) {
-            _effect.FxWorldViewProj.SetMatrix(objectTransform*camera.ViewProj);
+            _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
             _effect.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
             _effect.FxWorld.SetMatrix(objectTransform);
         }
 
-        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            if (_kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend) {
-                if (mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth) {
-                    _effect.TechTransparentForward.DrawAllPasses(contextHolder.DeviceContext, indices);
-                }
+        public static int Drawed = 0;
 
+        public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+            if (mode == SpecialRenderMode.TransparentMask || mode == SpecialRenderMode.Shadow) {
+                _effect.TechTransparentMask.DrawAllPasses(contextHolder.DeviceContext, indices);
+                Drawed++;
                 return;
             }
 
-            if (mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth) return;
-            (mode == SpecialRenderMode.Default ? _effect.TechStandardDeferred : _effect.TechStandardForward)
+            if (IsBlending) {
+                if (mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth) {
+                    _effect.TechTransparentForward.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    Drawed++;
+                } else if (mode == SpecialRenderMode.TransparentDeferred) {
+                    _effect.TechTransparentDeferred.DrawAllPasses(contextHolder.DeviceContext, indices);
+                    Drawed++;
+                }
+                return;
+            }
+
+            if (mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth ||
+                    mode == SpecialRenderMode.TransparentDeferred) return;
+            (mode == SpecialRenderMode.Deferred ? _effect.TechStandardDeferred : _effect.TechStandardForward)
                     .DrawAllPasses(contextHolder.DeviceContext, indices);
+            Drawed++;
         }
 
         public void Dispose() {

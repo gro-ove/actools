@@ -1,11 +1,13 @@
-﻿using AcTools.Render.Base.Camera;
+﻿using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
+using AcTools.Render.Base.Reflections;
+using AcTools.Render.Base.Shadows;
 
 namespace AcTools.Render.Base {
-    public abstract class SceneRenderer : BaseRenderer, IReflectionDraw {
+    public abstract class SceneRenderer : BaseRenderer, IReflectionDraw, IShadowsDraw {
         public readonly RenderableList Scene;
 
-        public AbstractCamera Camera { get; protected set; } 
+        public BaseCamera Camera { get; protected set; } 
 
         protected SceneRenderer() {
             Scene = new RenderableList();
@@ -22,11 +24,15 @@ namespace AcTools.Render.Base {
         protected override void DrawInner() {
             DrawPrepare();
             base.DrawInner();
-            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.Default);
+            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.Deferred);
         }
 
         public virtual void DrawSceneForReflection(DeviceContextHolder holder, ICamera camera) {
             Scene.Draw(holder, camera, SpecialRenderMode.Reflection);
+        }
+
+        public void DrawSceneForShadows(DeviceContextHolder holder, ICamera camera) {
+            Scene.Draw(holder, camera, SpecialRenderMode.Shadow);
         }
 
         public override void Dispose() {

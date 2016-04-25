@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AcTools.Kn5File;
-using AcTools.Render.Base;
 
 namespace AcTools.Render.Kn5Specific.Materials {
     public static class Kn5MaterialsProvider {
@@ -40,6 +39,10 @@ namespace AcTools.Render.Kn5Specific.Materials {
         private static IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
             if (kn5Material.ShaderName == "GL") {
                 return new Kn5RenderableSpecialGlMaterial();
+            }
+
+            if (kn5Material.ShaderName == "ksWindscreen") {
+                return new InvisibleMaterial();
             }
             
             return new Kn5RenderableMaterial(_kn5.OriginalFilename, kn5Material);
