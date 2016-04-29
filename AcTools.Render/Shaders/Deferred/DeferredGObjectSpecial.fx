@@ -31,7 +31,7 @@
 	PS_OUT ps_SpecialGlDeferred(SpecialGl_PS_IN pin) : SV_Target {
 		PS_OUT pout;
 		pout.Base = float4(normalize(pin.PosL), 1.0);
-		pout.Normal = normalize(pin.NormalW);
+		pout.Normal = float4(normalize(pin.NormalW), 1.0);
 		pout.Maps = 0;
 		return pout;
 	}

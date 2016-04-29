@@ -3,12 +3,13 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 
-namespace AcTools.Render.Kn5Specific.Materials {
-    public class SkyMaterial : IRenderableMaterial {
+namespace AcTools.Render.Kn5SpecificDeferred.Materials {
+    public class SkyMaterialDeferred : IRenderableMaterial {
         private EffectDeferredGSky _effect;
 
         public Vector3 SkyColorLower { get; set; } = Vector3.Normalize(new Vector3(35, 83, 167)) * 2.1f;
@@ -55,5 +56,7 @@ namespace AcTools.Render.Kn5Specific.Materials {
 
             contextHolder.DeviceContext.Rasterizer.State = null;
         }
+
+        public bool IsBlending => false;
     }
 }

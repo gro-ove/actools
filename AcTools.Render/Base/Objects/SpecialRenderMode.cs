@@ -1,13 +1,15 @@
 namespace AcTools.Render.Base.Objects {
     public enum SpecialRenderMode {
+        Simple,
+        SimpleTransparent,
+
         Deferred,
+        DeferredTransparentMask,    // draw depth of transparent surfaces for filtering stuff under
+        DeferredTransparentDepth,   // ?
+        DeferredTransparentForw,    // for transparent surfaces behind something transparent
+        DeferredTransparentDef,     // for most top transparent surfaces, maximum of niceness
 
         Reflection,
-        Shadow,
-
-        TransparentMask,
-        TransparentDeferred,
-        TransparentDepth,
-        Transparent
+        Shadow
     }
 }

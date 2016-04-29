@@ -46,27 +46,24 @@ namespace AcTools.Render.Base.Shadows {
         }
 
         public class Split : IDisposable {
-            private readonly float _size;
-
-            internal readonly CameraOrthoShadow Camera;
+            internal readonly float Size;
             internal readonly TargetResourceDepthTexture Buffer;
+            internal readonly CameraOrthoShadow Camera;
 
             public float GetShadowDepth(BaseCamera camera) {
-                var m = Vector3.Transform(new Vector3(0, 0, _size / 2), camera.Proj);
+                var m = Vector3.Transform(new Vector3(0, 0, Size / 2), camera.Proj);
                 return m.Z / m.W;
             }
 
             public Split(float size) {
-                _size = size;
+                Size = size;
                 Buffer = TargetResourceDepthTexture.Create();
-
                 Camera = new CameraOrthoShadow {
                     NearZ = 0.1f,
                     FarZ = ClipDistance * 2f,
                     Width = size,
                     Height = size
                 };
-
                 Camera.SetLens(1f);
             }
 
@@ -104,7 +101,7 @@ namespace AcTools.Render.Base.Shadows {
             _mapSize = mapSize;
 
             Splits = new [] {
-                new Split(5f),
+                // new Split(5f),
                 new Split(15f),
                 new Split(50f),
                 new Split(200f)
@@ -127,7 +124,7 @@ namespace AcTools.Render.Base.Shadows {
                 FillMode = FillMode.Solid,
                 IsAntialiasedLineEnabled = false,
                 IsDepthClipEnabled = true,
-                DepthBias = 10000,
+                DepthBias = 1000,
                 DepthBiasClamp = 0f,
                 SlopeScaledDepthBias = 1f
             });
@@ -140,9 +137,9 @@ namespace AcTools.Render.Base.Shadows {
             });
         }
 
-        public void Update(Vector3 direction, Vector3 lookAt) {
+        public void Update(Vector3 direction, BaseCamera camera) {
             foreach (var split in Splits) {
-                split.LookAt(direction, lookAt);
+                split.LookAt(direction, camera.Position + camera.Look * split.Size / 2);
             }
         }
 

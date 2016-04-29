@@ -3,10 +3,11 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Kn5Specific.Materials;
 using SlimDX;
 
-namespace AcTools.Render.Kn5Specific.Materials {
-    public class Kn5RenderableSpecialGlMaterial : IRenderableMaterial {
+namespace AcTools.Render.Kn5SpecificDeferred.Materials {
+    public class Kn5MaterialGlDeferred : IRenderableMaterial {
         private EffectDeferredGObjectSpecial _effect;
 
         public void Initialize(DeviceContextHolder contextHolder) {
@@ -27,7 +28,7 @@ namespace AcTools.Render.Kn5Specific.Materials {
         }
 
         public void SetMatrices(Matrix objectTransform, ICamera camera) {
-            _effect.FxWorldViewProj.SetMatrix(objectTransform*camera.ViewProj);
+            _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
             _effect.FxWorldInvTranspose.SetMatrix(Matrix.Invert(Matrix.Transpose(objectTransform)));
             _effect.FxWorld.SetMatrix(objectTransform);
         }
@@ -48,7 +49,8 @@ namespace AcTools.Render.Kn5Specific.Materials {
             }
         }
 
-        public void Dispose() {
-        }
+        public bool IsBlending => false;
+
+        public void Dispose() {}
     }
 }

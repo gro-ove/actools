@@ -53,8 +53,10 @@
     }
 
     float CalculateReflectionPower(float3 toEyeNormalW, float3 normalW, float metalness){
+		metalness = max(metalness, 0.1);
+
         float rid = 1 - dot(toEyeNormalW, normalW);
-        float rim = metalness + pow(rid, max(1 / metalness - 2.4, 0));
+        float rim = metalness + pow(saturate(rid), max(1 / metalness - 2.4, 0));
         return saturate(rim);
     }
 
@@ -81,7 +83,7 @@
         } else {
             if (pin.Tex.x < 0.5){
                 float depthValue = gDepthMap.Sample(samInputImage, pin.Tex * 2 - float2(0, 1)).x;
-                return (1 - pow(depthValue, 10));
+                return (1 - pow(saturate(depthValue), 10));
             }
         }
         
@@ -193,7 +195,6 @@
 
     float4 ps_0(PS_IN pin) : SV_Target {
         // normal and position
-        // float4 normalValue = gNormalMap.Sample(samTest, pin.Tex);
         float4 normalValue = gNormalMap.Sample(samTest, pin.Tex);
 
         float3 normal = normalValue.xyz;
@@ -216,18 +217,18 @@
 
         float4 localReflectionColor = gLocalReflectionMap.Sample(samInputImage, pin.Tex);
         float reflectionAlpha = saturate((localReflectionColor.a - 0.5) * 2.0 + 0.5);
-        reflectionColor = reflectionColor * (1 - reflectionAlpha) + localReflectionColor.rgb * reflectionAlpha;
+        reflectionColor = reflectionColor * (1.0 - reflectionAlpha) + localReflectionColor.rgb * reflectionAlpha;
 
-        float reflectionPower = saturate(2 * reflectiveness * CalculateReflectionPower(toEyeW, normal, metalness));
-        float3 reflection = reflectionColor * reflectionPower;
+        float reflectionPower = saturate(reflectiveness * CalculateReflectionPower(toEyeW, normal, metalness));
+        float3 reflection = reflectionColor * (1.0 - metalness * 0.1) * reflectionPower;
 
         float alpha = min(normalValue.a + reflectionPower * metalness, 1.0);
 
-        float metalnessFine = saturate(metalness * reflectiveness) * 0.2;
+        float metalnessFine = metalness * reflectiveness * 0.5;
         lighted = max(lighted - metalnessFine, 0.0);
 
-        return gBottomLayerMap.Sample(samInputImage, pin.Tex) * (1 - alpha) + 
-                float4(lighted + reflection, 1.0) * alpha;
+		return gBottomLayerMap.Sample(samInputImage, pin.Tex) * (1.0 - alpha) +
+			float4(lighted + reflection, 1.0) * alpha;
     }
 
     technique11 Combine0 {

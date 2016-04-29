@@ -1,6 +1,5 @@
 // textures
 	Texture2D gInputMap;
-	Texture2D gDepthMap;
 
 	Texture2D gEdgesMap;
 	Texture2D gBlendMap;

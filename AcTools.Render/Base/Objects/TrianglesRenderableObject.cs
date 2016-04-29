@@ -11,19 +11,26 @@ namespace AcTools.Render.Base.Objects {
     public class TrianglesRenderableObject<T> : BaseRenderableObject where T : struct, InputLayouts.ILayout {
         protected bool IsEmpty { get; }
 
-        protected readonly T[] Vertices;
-        protected readonly ushort[] Indices;
+        public readonly T[] Vertices;
+        public readonly ushort[] Indices;
+
+        public int IndicesCount => Indices.Length;
 
         private Buffer _verticesBuffer, _indicesBuffer;
         private VertexBufferBinding _verticesBufferBinding;
 
         public TrianglesRenderableObject(T[] vertices, ushort[] indices) {
-            BoundingBox = vertices.Select(x => x.Position).ToBoundingBox();
-
             Vertices = vertices;
             Indices = indices;
 
             IsEmpty = Vertices.Length == 0;
+            if (IsEnabled && IsEmpty) {
+                IsEnabled = false;
+            }
+        }
+
+        public override void UpdateBoundingBox() {
+            BoundingBox = IsEmpty ? (BoundingBox?)null : Vertices.Select(x => Vector3.Transform(x.Position, ParentMatrix).GetXyz()).ToBoundingBox();
         }
 
         protected override void Initialize(DeviceContextHolder contextHolder) {
@@ -36,7 +43,6 @@ namespace AcTools.Render.Base.Objects {
 
             var ibd = new BufferDescription(sizeof(ushort) * Indices.Length, ResourceUsage.Immutable,
                     BindFlags.IndexBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
-
             _indicesBuffer = new Buffer(contextHolder.Device, new DataStream(Indices, false, false), ibd);
         }
 

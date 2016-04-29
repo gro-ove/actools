@@ -13,5 +13,7 @@ namespace AcTools.Render.Kn5Specific.Materials {
         void SetMatrices(Matrix objectTransform, ICamera camera);
 
         void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode);
+
+        bool IsBlending { get; }
     }
 }

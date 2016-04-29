@@ -20,6 +20,8 @@ namespace AcTools.Render.Base.Objects {
 
         public bool IsReflectable { get; set; } = true;
 
+        public bool IsEnabled { get; set; } = true;
+
         private Matrix _localMatrix = Matrix.Identity;
         public Matrix LocalMatrix {
             get { return _localMatrix; }
@@ -47,39 +49,49 @@ namespace AcTools.Render.Base.Objects {
             foreach (var child in this) {
                 child.ParentMatrix = Matrix;
             }
-
-            UpdateLocalBoundingBox();
         }
-
-        public BoundingBox? LocalBoundingBox { get; private set; }
 
         public BoundingBox? BoundingBox { get; private set; }
 
-        public BoundingBox? WorldBoundingBox { get; private set; }
+        public void UpdateBoundingBox() {
+            BoundingBox? bb = null;
 
-        public void UpdateLocalBoundingBox() {
-            LocalBoundingBox = this.Skip(1).Aggregate(this.FirstOrDefault()?.BoundingBox,
-                    (current, child) => child.BoundingBox.HasValue ? current?.ExtendBy(child.BoundingBox.Value) : current);
-            BoundingBox = LocalBoundingBox?.Transform(LocalMatrix);
-            WorldBoundingBox = LocalBoundingBox?.Transform(Matrix);
+            for (var i = 0; i < Count; i++) {
+                var c = this[i];
+                if (!c.IsEnabled) continue;
+
+                c.UpdateBoundingBox();
+                var cb = c.BoundingBox;
+                if (!cb.HasValue) continue;
+
+                bb = bb?.ExtendBy(cb.Value) ?? c.BoundingBox;
+            }
+
+            BoundingBox = bb;
         }
         
         public new void Add(IRenderableObject obj) {
             base.Add(obj);
             obj.ParentMatrix = Matrix;
-            UpdateLocalBoundingBox();
+        }
+        
+        public new void AddRange(IEnumerable<IRenderableObject> objs) {
+            foreach (var o in objs) {
+                base.Add(o);
+                o.ParentMatrix = Matrix;
+            }
         }
 
         public new void Remove(IRenderableObject obj) {
             base.Remove(obj);
             obj.ParentMatrix = Matrix;
-            UpdateLocalBoundingBox();
         }
 
         public virtual void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
+            if (!IsEnabled) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
-            if (WorldBoundingBox == null || !camera.Visible(WorldBoundingBox.Value)) return;
-            foreach (var child in this) {
+            if (BoundingBox == null || !camera.Visible(BoundingBox.Value)) return;
+            foreach (var child in this.Where(x => x.IsEnabled)) {
                 child.Draw(contextHolder, camera, mode);
             }
         }

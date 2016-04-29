@@ -7,7 +7,7 @@
 	static const dword HAS_MAPS = 8;
 	static const dword USE_DIFFUSE_ALPHA_AS_MAP = 16;
 	static const dword ALPHA_BLEND = 32;
-	static const dword SPECIAL_MAPS_MODE = 64;
+	static const dword IS_ADDITIVE = 64;
 
 	struct Material {
 		float Ambient;
@@ -66,6 +66,7 @@
 		vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld).xyz;
 		vout.NormalW = mul(vin.NormalL, (float3x3)gWorldInvTranspose);
 		vout.TangentW = mul(vin.TangentL, (float3x3)gWorldInvTranspose);
+		vout.BitangentW = mul(cross(vin.NormalL, vin.TangentL), (float3x3)gWorldInvTranspose);
 
 		vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
 		vout.Tex = vin.Tex;
@@ -75,55 +76,43 @@
 
 	PosOnly_PS_IN vs_PosOnly(VS_IN vin) {
 		PosOnly_PS_IN vout;
-		vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
+		vout.PosH = mul(float4(vin.PosL, 1.0), gWorldViewProj);
 		return vout;
 	}
 
-	float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW){
-		// Uncompress each component from [0,1] to [-1,1].
-		float3 normalT = 2.0f*normalMapSample - 1.0f;
-
-		// Build orthonormal basis.
-		float3 N = unitNormalW;
-		float3 T = normalize(tangentW - dot(tangentW, N)*N);
-		float3 B = cross(N, T);
-
-		float3x3 TBN = float3x3(T, B, N);
-
-		// Transform from tangent space to world space.
-		float3 bumpedNormalW = mul(normalT, TBN);
-		return bumpedNormalW;
+	float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 N, float3 T, float3 B){
+		return mul(2.0 * normalMapSample - 1.0, float3x3(T, B, N));
 	}
 
-	PS_OUT ps_StandardDeferred(PS_IN pin) : SV_Target{
+	float CalculateAlpha(float value) {
+		return min(value + 1.0 - (gMaterial.Flags & ALPHA_BLEND) / ALPHA_BLEND, 1.0);
+	}
+
+	PS_OUT ps_StandardDeferred(PS_IN pin) : SV_Target {
 		float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
 
 		PS_OUT pout;
-		
-		[flatten]
 		if ((gMaterial.Flags & HAS_NORMAL_MAP) == HAS_NORMAL_MAP){
 			float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 		
-			[flatten]
 			if ((gMaterial.Flags & HAS_DETAILS_NORMAL_MAP) == HAS_DETAILS_NORMAL_MAP){
 				float4 detailsNormalValue = gDetailsNormalMap.Sample(samAnisotropic, pin.Tex * gMaterial.DetailsUvMultipler);
 				normalValue += (detailsNormalValue - 0.5) * gMaterial.DetailsNormalBlend * (1.0 - diffuseValue.a);
 			}
 
-			pout.Normal = float4(normalize(NormalSampleToWorldSpace(normalize(normalValue.xyz), pin.NormalW, pin.TangentW)),
-					normalValue.a * diffuseValue.a);
+			pout.Normal = float4(
+				normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW)),
+				CalculateAlpha(normalValue.a * diffuseValue.a));
 		} else {
-			pout.Normal = float4(normalize(pin.NormalW), diffuseValue.a);
+			pout.Normal = float4(normalize(pin.NormalW), CalculateAlpha(diffuseValue.a));
 		}
-			
-		pout.Normal.a = min(pout.Normal.a + 1.0 - (gMaterial.Flags & ALPHA_BLEND) / ALPHA_BLEND, 1.0);
 
 		float specular = saturate(gMaterial.Specular / 2.5);
-		float glossiness = saturate((gMaterial.SpecularExp - 1) / 400 + 0.5 * (gMaterial.Flags & SPECIAL_MAPS_MODE) / SPECIAL_MAPS_MODE);
+		float glossiness = saturate((gMaterial.SpecularExp - 1) / 250);
 		float reflectiveness = saturate(gMaterial.FresnelMaxLevel);
 		float metalness = saturate(max(
 				gMaterial.FresnelC / gMaterial.FresnelMaxLevel, 
-				1.1 / (gMaterial.FresnelExp + 1) - 0.1));
+				1.1 / (gMaterial.FresnelExp + 1) - 0.1) - (gMaterial.Flags & IS_ADDITIVE));
 		
 		if ((gMaterial.Flags & HAS_MAPS) == HAS_MAPS){
 			float4 mapsValue = gMapsMap.Sample(samAnisotropic, pin.Tex);
@@ -138,7 +127,6 @@
 		}
 		
 		// diffuse part
-		[flatten]
 		if ((gMaterial.Flags & HAS_DETAILS_MAP) == HAS_DETAILS_MAP){
 			float4 detailsValue = gDetailsMap.Sample(samAnisotropic, pin.Tex * gMaterial.DetailsUvMultipler);
 
@@ -146,8 +134,8 @@
 			glossiness *= (1.0 - detailsValue.a * (1.0 - diffuseValue.a)) / 2 + 0.5;
 		}
 		
-		float ambient = max(gMaterial.Ambient, 0.05);
-		pout.Base = float4(CalcAmbient(pout.Normal.xyz, diffuseValue.rgb * ambient), gMaterial.Diffuse / ambient);
+		float ambient = max(gMaterial.Ambient, 0.01);
+		pout.Base = float4(CalcAmbient(pout.Normal.xyz, diffuseValue.rgb * ambient) + diffuseValue.rgb * gMaterial.Emissive, gMaterial.Diffuse / ambient);
 		// diffuse part - end
 		
 		pout.Maps = float4(specular, glossiness, reflectiveness, metalness);
@@ -167,10 +155,9 @@
 		float ambient = max(gMaterial.Ambient, 0.05);
 
 		float3 normal;
-		[flatten]
 		if ((gMaterial.Flags & HAS_NORMAL_MAP) == HAS_NORMAL_MAP) {
 			float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
-			normal = normalize(NormalSampleToWorldSpace(normalize(normalValue.xyz), pin.NormalW, pin.TangentW));
+			normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW));
 		} else {
 			normal = normalize(pin.NormalW);
 		}
@@ -178,13 +165,13 @@
 		float3 toLight = -gDirectionalLightDirection;
 		float lightness = saturate(dot(normal, toLight));
 
-		float3 lighted = CalcAmbient(normal, diffuseValue.rgb * ambient) + 
+		float3 lighted = CalcAmbient(normal, diffuseValue.rgb * ambient) + diffuseValue.rgb * gMaterial.Emissive +
 				diffuseValue.rgb * gMaterial.Diffuse * gLightColor * lightness;
 
 		return float4(lighted, 1.0);
 	}
 
-	technique11 StandardForward {
+	technique10 StandardForward {
 		pass P0 {
 			SetVertexShader( CompileShader( vs_4_0, vs_Standard() ) );
 			SetGeometryShader( NULL );
@@ -216,7 +203,7 @@
 		PS_OUT pout;
 
 		float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex);
-		float shadowLevel = diffuseValue.x * 1.15;
+		float shadowLevel = diffuseValue.x;
 
 		pout.Base = float4(0, 0, 0, shadowLevel);
 		pout.Normal = 0;
@@ -227,9 +214,9 @@
 
 	technique11 AmbientShadowDeferred {
 		pass P0 {
-			SetVertexShader( CompileShader( vs_5_0, vs_AmbientShadowDeferred() ) );
+			SetVertexShader( CompileShader( vs_4_0, vs_AmbientShadowDeferred() ) );
 			SetGeometryShader( NULL );
-			SetPixelShader( CompileShader( ps_5_0, ps_AmbientShadowDeferred() ) );
+			SetPixelShader( CompileShader( ps_4_0, ps_AmbientShadowDeferred() ) );
 		}
 	}
 
@@ -249,20 +236,18 @@
 		float alpha = diffuseValue.a;
 		float3 normal;
 
-		[flatten]
 		if ((gMaterial.Flags & HAS_NORMAL_MAP) == HAS_NORMAL_MAP) {
 			float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex);
 			alpha *= normalValue.a;
-			normal = normalize(NormalSampleToWorldSpace(normalize(normalValue.xyz), pin.NormalW, pin.TangentW));
-		}
-		else {
+			normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, normalize(pin.NormalW), pin.TangentW, pin.BitangentW));
+		} else {
 			normal = normalize(pin.NormalW);
 		}
 
 		float3 color = CalcAmbient(normal, diffuseValue.rgb);
 
 		float specular = saturate(gMaterial.Specular / 2.5);
-		float glossiness = saturate((gMaterial.SpecularExp - 1) / 400 + (gMaterial.Flags & SPECIAL_MAPS_MODE) / SPECIAL_MAPS_MODE);
+		float glossiness = saturate((gMaterial.SpecularExp - 1) / 250);
 		float reflectiveness = saturate(gMaterial.FresnelMaxLevel);
 		float metalness = saturate(max(
 				gMaterial.FresnelC / gMaterial.FresnelMaxLevel,
@@ -273,14 +258,14 @@
 		float rid = saturate(dot(toEyeW, pin.NormalW));
 		float rim = pow(1 - rid, gMaterial.FresnelExp);
 
-		float4 reflectionColor = gReflectionCubemap.SampleBias(samAnisotropic, reflect(-toEyeW, normal),
-			1.0f - glossiness);
+		float3 reflectionColor = gReflectionCubemap.SampleBias(samAnisotropic, reflect(-toEyeW, normal),
+			1.0f - glossiness).rgb;
 
-		// return float4(color, alpha);
-		return float4(color * (gMaterial.Ambient - reflectiveness / 2) + reflectionColor * reflectiveness * rim, alpha);
+		return float4(color * (gMaterial.Ambient - reflectiveness / 2) + diffuseValue.rgb * gMaterial.Emissive * diffuseValue.a + 
+				reflectionColor * reflectiveness * rim, alpha);
 	}
 
-	technique11 TransparentForward {
+	technique10 TransparentForward {
 		pass P0 {
 			SetVertexShader(CompileShader(vs_4_0, vs_Standard()));
 			SetGeometryShader(NULL);

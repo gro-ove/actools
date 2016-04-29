@@ -4,14 +4,16 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 <#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Resources" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 /* GENERATED AUTOMATICALLY */
 /* DON'T MODIFY */
 
-using System.IO;
+using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
-using System.Text;
 using SlimDX;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
@@ -33,8 +35,64 @@ namespace AcTools.Render.Base.Shaders {
 
 <#
 	var structsNames = new List<string>();
+	var dataFolder = Path.GetFullPath(Host.ResolvePath(@"..\..\Shaders"));
 
-	var dataFolder = System.IO.Path.GetFullPath(Host.ResolvePath(@"..\..\Shaders"));
+/* GENERATE SHADERS */
+	var tempFolder = Path.Combine(Path.GetFullPath(Host.ResolvePath(@"..\..")), "obj", "Shaders");
+	var resxLocation = Path.GetFullPath(Host.ResolvePath(@"..\..\Shaders.resources"));
+
+	Directory.CreateDirectory(tempFolder);
+
+	Func<string, byte[]> CompileShader = f => {
+		var n = Path.GetFileName(f);
+		var c = f + ".o";
+		var h = Path.Combine(tempFolder, n + ".o");
+		var v = Path.Combine(tempFolder, n + ".warn");
+
+		if (File.Exists(h) && new FileInfo(f).LastWriteTime < new FileInfo(h).LastWriteTime){
+			if (File.Exists(v)) Debug.WriteLine(File.ReadAllText(v));
+			return File.ReadAllBytes(h);
+		}
+
+		var p = Process.Start(new ProcessStartInfo {
+			FileName = @"C:\Windows\SysNative\fxc.exe",
+			Arguments = "/nologo /T fx_5_0 /O3 /I../Includes /E Render /Fo\"" + Path.GetFileName(c) + "\" \"" + n + "\"",
+			WorkingDirectory = Path.GetDirectoryName(f),
+			RedirectStandardError = true,
+			RedirectStandardOutput = true,
+			UseShellExecute = false
+		});
+	
+		p.Start();
+		var w = p.StandardError.ReadToEnd().Replace("warning X4717: Effects deprecated for D3DCompiler_47", "")
+				.Replace(Path.GetDirectoryName(f) + "\\", "").Trim();
+		if (w.Length > 0) Debug.WriteLine(w);
+		p.WaitForExit();
+	
+		if (p.ExitCode != 0){
+			throw new Exception(w);
+		}
+	
+		if (File.Exists(h)) File.Delete(h);
+		File.Move(c, h);
+		if (w.Length > 0){
+			File.WriteAllText(v, w);
+		} else {
+			File.Delete(v);
+		}
+		return File.ReadAllBytes(h);
+	};
+
+	using (var writer = new ResourceWriter(resxLocation)){
+		foreach (var f in Directory.GetFiles(dataFolder, "*.fx").Union(
+				Directory.GetDirectories(dataFolder)
+						.Where(x => !string.Equals(Path.GetFileName(x), "Includes", StringComparison.OrdinalIgnoreCase))
+						.SelectMany(x => Directory.GetFiles(x, "*.fx")))){
+			writer.AddResource(Path.GetFileNameWithoutExtension(f), CompileShader(f));
+		}
+	
+		writer.Generate();
+	}
 
 /* CONSTS */
 	var LiteralRegularMode = true;
@@ -86,7 +144,7 @@ namespace AcTools.Render.Base.Shaders {
 		}
 
 	/* TECHNIQUES */
-		var ts_tmp = Regex.Matches(data, @"(?:^|\n)\s*technique\d\d\s+(\w+)\s*\{(?:\s*//\s*(\w+))?\s*((?:\n\s+.+)+?)\n\s*\}").Cast<Match>().ToList();
+		var ts_tmp = Regex.Matches(data, @"(?:^|\n)\s*technique(?:1[01])?\s+(\w+)\s*\{(?:\s*//\s*(\w+))?\s*((?:\n\s+.+)+?)\n\s*\}").Cast<Match>().ToList();
 		var tls = ts_tmp.Where(x => x.Groups[2].Success).Select(x => new { 
 			Type = x.Groups[2].Value, 
 			TechName = x.Groups[1].Value 
@@ -135,18 +193,22 @@ namespace AcTools.Render.Base.Shaders {
 			var isConst = !typeName.StartsWith("Vector");
 			var constName = ConvertConstName(x.Groups[2].Value);
 			var constValue = x.Groups[3].Value.Replace("float3", "new Vector3");
-			return "public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";";
+			return "public " + (isConst ? "const " : "static readonly ") + typeName + " " + constName + " = " + constValue + ";\n		";
 		});
 
 	/* AND EVEN STRUCTS! */
-		var structs = Regex.Matches(data, @"(?:^|\n)\s*struct\s+([A-Z][a-z]\w+)\s*\{.+((?:\n\s+.+)+?)\n\s*\}").Cast<Match>().Select(x => {
+		var structs = Regex.Matches(data, @"(?:^|\n)\s*struct\s+([A-Z][a-z]\w+)\s*\{.+((?:\n\s+.+)+?)\n\s*\}").Cast<Match>()
+				.Where(x => !x.Groups[1].Value.EndsWith("_IN", StringComparison.OrdinalIgnoreCase) && 
+						!x.Groups[1].Value.EndsWith("_OUTPUT", StringComparison.OrdinalIgnoreCase)).Select(x => {
 			structsNames.Add("Effect" + name + "." + x.Groups[1].Value);
 			return string.Format(@"[StructLayout(LayoutKind.Sequential)]
         public struct {0} {{
 {1}
 
 			public static readonly int Stride = Marshal.SizeOf(typeof({0}));
-        }}", x.Groups[1].Value, 
+        }}
+
+		", x.Groups[1].Value, 
 			string.Join("\n",
 				x.Groups[2].Value.Split('\n').Select(y => y.Trim().Split(' ')).Where(y => y.Length == 2)
 					.Select(y => "public " + MapShaderType(y[0]) + " " + y[1])
@@ -159,9 +221,7 @@ namespace AcTools.Render.Base.Shaders {
 		var matricesMode = matricesNames.Contains("World") && matricesNames.Contains("WorldInvTranspose") && matricesNames.Contains("WorldViewProj");
 		#>
 	public class Effect<#= name #> : <#= matricesMode ? "IEffectMatricesWrapper" : "IEffectWrapper" #> {
-		<#= string.Join("\n		", structs) #>
-		<#= string.Join("\n		", consts) #>
-        public Effect E;
+		<#= string.Join("", structs) #><#= string.Join("", consts) #>public Effect E;
 
         public ShaderSignature <#= string.Join(", ", tls.Select(x => "InputSignature" + x.Type)) #>;
         public InputLayout <#= string.Join(", ", tls.Select(x => "Layout" + x.Type)) #>;
@@ -184,13 +244,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVariable <#= string.Join(", ", vs.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
 <# } #>
 
-		public Effect<#= name #>() {
-		}
-
 		public void Initialize(Device device) {
-            using (var bc = EffectUtils.Compile(Encoding.UTF8.GetBytes(<#= dataLiteral #>), "<#= name #>")){
-                E = new Effect(device, bc);
-			}
+			E = new Effect(device, EffectUtils.Load("<#= name #>"));
 
 <# foreach (var x in ts){ #>
 			Tech<#= x #> = E.GetTechniqueByName("<#= x #>");
@@ -222,11 +277,12 @@ namespace AcTools.Render.Base.Shaders {
 		}
 
         public void Dispose() {
-            E.Dispose();
+			if (E == null) return;
 <# foreach (var t in tls.Select(x => x.Type)){ #>
 			InputSignature<#= t #>.Dispose();
             Layout<#= t #>.Dispose();
 <# } #>
+            E.Dispose();
         }
 	}
 
@@ -234,42 +290,7 @@ namespace AcTools.Render.Base.Shaders {
 	}
 #>
 
-	public static class EffectUtils {
-		private static string GetIncludedData(string filename){
-			switch(filename){
-<# foreach (var pair in includes){ #>
-				case <#= ConvertStringToLiteral(pair.Key) #>:
-					return <#= ConvertStringToLiteral(pair.Value) #>;
-<# } #>
-				default:
-					return null;
-			}
-		}
-
-	    private static readonly Include IncludeFx = new IncludeImplementation();
-
-	    private class IncludeImplementation : Include {
-	        public void Open(IncludeType type, string fileName, Stream parentStream, out Stream stream) {
-	            stream = new MemoryStream(Encoding.UTF8.GetBytes(GetIncludedData(fileName)));
-	        }
-
-	        public void Close(Stream stream) {
-                stream.Close();
-                stream.Dispose();
-	        }
-	    }
-
-		internal static ShaderBytecode Compile(byte[] data, string name = "") {
-            try {
-                return ShaderBytecode.Compile(data, "Render", "fx_5_0", ShaderFlags.None, EffectFlags.None, null, IncludeFx);
-            } catch (System.Exception e) {
-				System.Diagnostics.Debug.WriteLine("Shader " + (name ?? "?") + " compilation failed:\n\n" + e.Message);
-                System.Windows.Forms.MessageBox.Show("Shader " + (name ?? "?") + " compilation failed:\n\n" + e.Message);
-				System.Environment.Exit(1);
-				return null;
-            }
-        }
-		
+	public static class EffectExtension {		
 <# foreach (var structsName in structsNames){ #>
         public static void Set(this EffectVariable variable, <#= structsName #> o) {
             SlimDxExtension.Set(variable, o, <#= structsName #>.Stride);

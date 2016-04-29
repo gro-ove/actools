@@ -1,16 +1,34 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using AcTools.Render.Base;
 using SlimDX.Windows;
 
 namespace AcTools.Render.Wrapper {
+    public static class ImageExtension {
+        public static Image HighQualityResize(this Image img, Size size) {
+            var percent = Math.Min(size.Width / (float)img.Width, size.Height / (float)img.Height);
+            var width = (int)(img.Width * percent);
+            var height = (int)(img.Height * percent);
+
+            var b = new Bitmap(width, height);
+            using (var g = Graphics.FromImage(b)) {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(img, 0, 0, width, height);
+            }
+
+            return b;
+        }
+    }
+
     public class SimpleFormWrapper {
         private readonly string _title;
 
         public readonly BaseRenderer Renderer;
         public readonly RenderForm Form;
+
+        private bool _paused;
 
         public SimpleFormWrapper(BaseRenderer renderer, string title, int width, int height) {
             _title = title;
@@ -29,28 +47,32 @@ namespace AcTools.Render.Wrapper {
 
             Form.UserResized += OnResize;
             Form.KeyUp += OnKeyUp;
+
+            Form.GotFocus += OnGotFocus;
+            Form.LostFocus += OnLostFocus;
+        }
+
+        private void OnGotFocus(object sender, EventArgs e) {
+            _paused = false;
+        }
+
+        private void OnLostFocus(object sender, EventArgs e) {
+            _paused = true;
         }
 
         public void Run() {
             MessagePump.Run(Form, OnRender);
         }
 
-        private void OnResize(object sender, EventArgs eventArgs) {
+        protected virtual void OnResize(object sender, EventArgs eventArgs) {
             Renderer.Width = Form.ClientSize.Width;
             Renderer.Height = Form.ClientSize.Height;
         }
 
-        private void OnKeyUp(object sender, KeyEventArgs args) {
-            switch (args.KeyCode) {
-                /* case Keys.F5:
-                    renderer.SwapChain.SetFullscreenState(true, null);
-                    break;
-
-                case Keys.F4:
-                    renderer.SwapChain.SetFullscreenState(false, null);
-                    break;*/
-
+        protected virtual void OnKeyUp(object sender, KeyEventArgs args) {
+            switch (args.KeyCode) { 
                 case Keys.Escape:
+                    args.Handled = true;
                     Form.Close();
                     break;
             }
@@ -79,6 +101,7 @@ namespace AcTools.Render.Wrapper {
         }
 
         private void OnRender() {
+            if (_paused) return;
             Form.Text = $"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
             Renderer.Draw();
         }

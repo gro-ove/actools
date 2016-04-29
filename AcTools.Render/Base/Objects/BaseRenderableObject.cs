@@ -5,14 +5,16 @@ namespace AcTools.Render.Base.Objects {
     public abstract class BaseRenderableObject : IRenderableObject {
         private bool _initialized;
 
-        public Matrix ParentMatrix { get; set; }
+        public virtual Matrix ParentMatrix { get; set; }
 
         public bool IsReflectable { get; set; } = true;
+
+        public bool IsEnabled { get; set; } = true;
 
         public BoundingBox? BoundingBox { get; protected set; }
 
         public void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
+            if (!IsEnabled || mode == SpecialRenderMode.Reflection && !IsReflectable) return;
 
             if (!_initialized) {
                 Initialize(contextHolder);
@@ -21,6 +23,8 @@ namespace AcTools.Render.Base.Objects {
 
             DrawInner(contextHolder, camera, mode);
         }
+
+        public abstract void UpdateBoundingBox();
 
         protected abstract void Initialize(DeviceContextHolder contextHolder);
 

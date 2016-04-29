@@ -7,7 +7,7 @@ namespace AcTools.Render.Base {
     public abstract class SceneRenderer : BaseRenderer, IReflectionDraw, IShadowsDraw {
         public readonly RenderableList Scene;
 
-        public BaseCamera Camera { get; protected set; } 
+        public BaseCamera Camera { get; protected set; }
 
         protected SceneRenderer() {
             Scene = new RenderableList();

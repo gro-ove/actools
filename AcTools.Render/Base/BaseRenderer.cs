@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -13,10 +14,11 @@ using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Base {
     public abstract class BaseRenderer : IDisposable {
+        public static readonly Color4 ColorTransparent = new Color4(0f, 0f, 0f, 0f);
+
         private DeviceContextHolder _deviceContextHolder;
         private SwapChainDescription _swapChainDescription;
         private SwapChain _swapChain;
-        private DepthStencilState _normalDepthState, _readOnlyDepthState;
         private SampleDescription _sampleDescription;
 
         public Device Device => _deviceContextHolder.Device;
@@ -27,16 +29,14 @@ namespace AcTools.Render.Base {
 
         public SampleDescription SampleDescription => _sampleDescription;
 
-        public DepthStencilState NormalDepthState => _normalDepthState;
-
-        public DepthStencilState ReadOnlyDepthState => _readOnlyDepthState;
-
         private int _width;
         private int _height;
         private bool _resized = true;
         private SpriteRenderer _sprite;
 
-        protected SpriteRenderer Sprite => _sprite ?? (_sprite = new SpriteRenderer(Device));
+        [CanBeNull]
+        protected SpriteRenderer Sprite => _sprite != null || FeatureLevel < FeatureLevel.Level_10_0 ? _sprite :
+                (_sprite = new SpriteRenderer(Device));
 
         public bool SpriteInitialized => _sprite != null;
 
@@ -79,6 +79,8 @@ namespace AcTools.Render.Base {
             return new SampleDescription(4, msaaQuality - 1);
         }
 
+        protected abstract FeatureLevel FeatureLevel { get; }
+   
         /// <summary>
         /// Get Device (could be temporary, could be not), set proper SampleDescription
         /// </summary>
@@ -86,8 +88,8 @@ namespace AcTools.Render.Base {
             Debug.Assert(_initialized == false);
 
             var device = new Device(DriverType.Hardware, DeviceCreationFlags.None);
-            if (device.FeatureLevel != FeatureLevel.Level_11_0) {
-                throw new Exception("Direct3D Feature Level 11 unsupported");
+            if (device.FeatureLevel < FeatureLevel) {
+                throw new Exception($"Direct3D Feature {FeatureLevel} unsupported");
             }
 
             var msaaQuality = device.CheckMultisampleQualityLevels(Format.R8G8B8A8_UNorm, 4);
@@ -103,8 +105,8 @@ namespace AcTools.Render.Base {
             Debug.Assert(_initialized == false);
 
             _deviceContextHolder = new DeviceContextHolder(InitializeDevice());
-
             InitializeInner();
+
             _initialized = true;
         }
 
@@ -133,10 +135,13 @@ namespace AcTools.Render.Base {
             using (var factory = _swapChain.GetParent<Factory>()) {
                 factory.SetWindowAssociation(outputHandle, WindowAssociationFlags.IgnoreAll);
             }
-
+            
             InitializeInner();
+
             _initialized = true;
         }
+
+        protected abstract void InitializeInner();
 
         private Texture2D _renderBuffer;
         private RenderTargetView _renderView;
@@ -150,7 +155,6 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _renderView);
             DisposeHelper.Dispose(ref _depthBuffer);
             DisposeHelper.Dispose(ref _depthView);
-            DisposeHelper.Dispose(ref _normalDepthState);
 
             if (_swapChain != null) {
                 _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, _width, _height,
@@ -173,7 +177,7 @@ namespace AcTools.Render.Base {
 
             _renderView = new RenderTargetView(Device, _renderBuffer);
             _depthBuffer = new Texture2D(Device, new Texture2DDescription {
-                Format = Format.D32_Float_S8X24_UInt,
+                Format = FeatureLevel < FeatureLevel.Level_10_0 ? Format.D16_UNorm : Format.D32_Float,
                 ArraySize = 1,
                 MipLevels = 1,
                 Width = _width,
@@ -189,23 +193,14 @@ namespace AcTools.Render.Base {
             DeviceContext.Rasterizer.SetViewports(new Viewport(0, 0, _width, _height, 0.0f, 1.0f));
             ResetTargets();
 
-            _normalDepthState = DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                IsDepthEnabled = true,
-                IsStencilEnabled = false,
-                DepthWriteMask = DepthWriteMask.All,
-                DepthComparison = Comparison.Less,
-            });
+            DeviceContext.OutputMerger.DepthStencilState = null;
+            Sprite?.RefreshViewport();
 
-            _readOnlyDepthState = DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                IsDepthEnabled = true,
-                IsStencilEnabled = false,
-                DepthWriteMask = DepthWriteMask.Zero,
-                DepthComparison = Comparison.Less,
-            });
-
-            DeviceContext.OutputMerger.DepthStencilState = NormalDepthState;
             ResizeInner();
+            DeviceContextHolder.OnResize(Width, Height);
         }
+
+        protected abstract void ResizeInner();
 
         protected void ResetTargets() {
             DeviceContext.OutputMerger.SetTargets(_depthView, _renderView);
@@ -228,7 +223,8 @@ namespace AcTools.Render.Base {
             }
 
             var elapsed = Elapsed;
-            Update(elapsed - _previousElapsed);
+            OnTick(elapsed - _previousElapsed);
+            Tick?.Invoke(this, new TickEventArgs(elapsed - _previousElapsed));
             _previousElapsed = elapsed;
 
             _frameMonitor.Tick();
@@ -243,10 +239,6 @@ namespace AcTools.Render.Base {
 
         public bool SyncInterval = true;
 
-        protected abstract void InitializeInner();
-
-        protected abstract void ResizeInner();
-
         protected virtual void DrawInner() {
             DeviceContext.ClearDepthStencilView(_depthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
             DeviceContext.ClearRenderTargetView(_renderView, Color.DarkCyan);
@@ -256,7 +248,9 @@ namespace AcTools.Render.Base {
             _sprite?.Flush();
         }
 
-        protected abstract void Update(float dt);
+        public event TickEventHandler Tick;
+
+        protected abstract void OnTick(float dt);
 
         public void ExitFullscreen() {
             if (_swapChain == null) return;
@@ -279,10 +273,36 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _renderView);
             DisposeHelper.Dispose(ref _depthBuffer);
             DisposeHelper.Dispose(ref _depthView);
-            DisposeHelper.Dispose(ref _normalDepthState);
-            DisposeHelper.Dispose(ref _readOnlyDepthState);
             DisposeHelper.Dispose(ref _deviceContextHolder);
             DisposeHelper.Dispose(ref _swapChain);
         }
+
+        public virtual Image Shot(int multipler) {
+            var width = Width;
+            var height = Height;
+
+            Width = width * multipler;
+            Height = height * multipler;
+            Draw();
+
+            Width = width;
+            Height = height;
+
+            using (var stream = new System.IO.MemoryStream()) {
+                Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, stream);
+                stream.Position = 0;
+                return Image.FromStream(stream);
+            }
+        }
+    }
+
+    public delegate void TickEventHandler(object sender, TickEventArgs args);
+
+    public class TickEventArgs : EventArgs {
+        public TickEventArgs(float deltaTime) {
+            DeltaTime = deltaTime;
+        }
+
+        public float DeltaTime { get; }
     }
 }

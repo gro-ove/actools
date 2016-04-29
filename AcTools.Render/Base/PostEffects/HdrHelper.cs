@@ -20,7 +20,7 @@ namespace AcTools.Render.Base.PostEffects {
 
         private TargetResourceTexture _bloomTexture, _tempTexture;
 
-        public void Initialize(DeviceContextHolder holder) {
+        public void OnInitialize(DeviceContextHolder holder) {
             _effect = holder.GetEffect<EffectPpHdr>();
             _blurHelper = holder.GetHelper<BlurHelper>();
 
@@ -37,11 +37,14 @@ namespace AcTools.Render.Base.PostEffects {
             _newAverageColor = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
             _newAverageColor.Resize(holder, 1, 1);
 
-            _bloomTexture = TargetResourceTexture.Create(Format.R11G11B10_Float);
-            _tempTexture = TargetResourceTexture.Create(Format.R11G11B10_Float);
+            _bloomTexture = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
+            _tempTexture = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
         }
 
-        public void Resize(DeviceContextHolder holder, int width, int height) {
+        public void OnResize(DeviceContextHolder holder) {
+            var width = holder.Width;
+            var height = holder.Height;
+
             var i = 4 * 3;
             foreach (var texture in _textures) {
                 texture.Resize(holder, Math.Max(width / i, 1), Math.Max(height / i, 1));
@@ -50,8 +53,6 @@ namespace AcTools.Render.Base.PostEffects {
 
             _bloomTexture.Resize(holder, width, height);
             _tempTexture.Resize(holder, width, height);
-
-            _blurHelper.Resize(holder, width, height);
         }
 
         private int _currentTexture;
@@ -92,40 +93,49 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechBloom.DrawAllPasses(holder.DeviceContext, 6);
 
             // blurring
-            holder.DeviceContext.OutputMerger.SetTargets(_tempTexture.TargetView);
+            _blurHelper.Blur(holder, _bloomTexture, _tempTexture, 1f, 2);
+            /*holder.DeviceContext.OutputMerger.SetTargets(_tempTexture.TargetView);
             _blurHelper.BlurHorizontally(holder, _bloomTexture.View, 5.0f);
 
             holder.DeviceContext.OutputMerger.SetTargets(_bloomTexture.TargetView);
-            _blurHelper.BlurHorizontally(holder, _tempTexture.View, 1.0f);
+            _blurHelper.BlurHorizontally(holder, _tempTexture.View, 1.0f);*/
         }
 
         public bool BloomDebug = false;
 
-        public void Draw(DeviceContextHolder holder, ShaderResourceView view) {
+        public void Draw(DeviceContextHolder holder, ShaderResourceView view, TargetResourceTexture temporary) {
             // preparation
             holder.SaveRenderTargetAndViewport();
             holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
-
-            // update bloom texture (bright areas)
-            UpdateBloom(holder, view);
 
             // update those small texture
             UpdateNewAverateColor(holder, view);
             UpdateAdaptation(holder);
 
-            // reset viewport
             holder.RestoreRenderTargetAndViewport();
+            holder.DeviceContext.OutputMerger.SetTargets(temporary.TargetView);
+            holder.DeviceContext.ClearRenderTargetView(temporary.TargetView, BaseRenderer.ColorTransparent);
+
+            _effect.FxInputMap.SetResource(view);
+            _effect.FxBrightnessMap.SetResource(GetAdaptationTexture().View);
+            _effect.TechTonemap.DrawAllPasses(holder.DeviceContext, 6);
+
+            // update bloom texture (bright areas)
+            UpdateBloom(holder, temporary.View);
 
             if (BloomDebug) {
+                holder.RestoreRenderTargetAndViewport();
                 _effect.FxInputMap.SetResource(_bloomTexture.View);
                 _effect.TechCopy.DrawAllPasses(holder.DeviceContext, 6);
                 return;
             }
 
-            _effect.FxInputMap.SetResource(view);
-            _effect.FxBrightnessMap.SetResource(GetAdaptationTexture().View);
+            // reset viewport
+            holder.RestoreRenderTargetAndViewport();
+
+            _effect.FxInputMap.SetResource(temporary.View);
             _effect.FxBloomMap.SetResource(_bloomTexture.View);
-            _effect.TechTonemap.DrawAllPasses(holder.DeviceContext, 6);
+            _effect.TechCombine.DrawAllPasses(holder.DeviceContext, 6);
         }
 
         public void Dispose() {

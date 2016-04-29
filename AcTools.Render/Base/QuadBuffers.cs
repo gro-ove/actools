@@ -43,6 +43,10 @@ namespace AcTools.Render.Base {
 
         public void Prepare(DeviceContext deviceContext, InputLayout layout) {
             deviceContext.OutputMerger.DepthStencilState = null;
+            PrepareInputAssembler(deviceContext, layout);
+        }
+
+        public void PrepareInputAssembler(DeviceContext deviceContext, InputLayout layout) {
             deviceContext.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
             deviceContext.InputAssembler.InputLayout = layout;
             deviceContext.InputAssembler.SetVertexBuffers(0, VertexBinding);

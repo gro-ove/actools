@@ -23,21 +23,17 @@ namespace AcTools.Render.Base.TargetTextures {
             }
         }
 
-        public static TargetResourceTexture Create(Format format, SampleDescription sampleDescription) {
+        public static TargetResourceTexture Create(Format format, SampleDescription? sampleDescription = null, int mipLevels = 1) {
             return new TargetResourceTexture(new Texture2DDescription {
-                MipLevels = 1,
+                MipLevels = mipLevels,
                 ArraySize = 1,
                 Format = format,
-                SampleDescription = sampleDescription,
+                SampleDescription = sampleDescription ?? DefaultSampleDescription,
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget,
                 CpuAccessFlags = CpuAccessFlags.None,
                 OptionFlags = ResourceOptionFlags.None
             });
-        }
-
-        public static TargetResourceTexture Create(Format format) {
-            return Create(format, DefaultSampleDescription);
         }
     }
 

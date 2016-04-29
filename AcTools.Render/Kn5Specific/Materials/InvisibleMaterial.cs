@@ -9,12 +9,12 @@ namespace AcTools.Render.Kn5Specific.Materials {
 
         public void Initialize(DeviceContextHolder contextHolder) {}
 
-        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            return false;
-        }
+        public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) => false;
 
         public void SetMatrices(Matrix objectTransform, ICamera camera) {}
 
         public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {}
+
+        public bool IsBlending => false;
     }
 }

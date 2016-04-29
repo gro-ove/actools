@@ -5,7 +5,7 @@ namespace AcTools.Render.Base.TargetTextures {
     public class TargetResourceDepthTexture : BaseTargetResourceTexture {
         public DepthStencilView StencilView { get; private set; }
 
-        public TargetResourceDepthTexture(Texture2DDescription description) : base(description) { }
+        private TargetResourceDepthTexture(Texture2DDescription description) : base(description) { }
 
         public override void Resize(DeviceContextHolder holder, int width, int height) {
             base.Resize(holder, width, height);

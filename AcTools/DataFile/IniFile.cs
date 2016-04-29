@@ -45,6 +45,11 @@ namespace AcTools.DataFile {
         public IEnumerable<string> GetStrings(string key) {
             return Get(key)?.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0) ?? new string[0];
         }
+        
+        public double[] GetVector3(string key) {
+            var result = GetStrings(key).Select(x => FlexibleParser.ParseDouble(x, 0d)).ToArray();
+            return result.Length == 3 ? result : new double[3];
+        }
 
         public double GetDouble(string key) {
             return FlexibleParser.ParseDouble(Get(key));

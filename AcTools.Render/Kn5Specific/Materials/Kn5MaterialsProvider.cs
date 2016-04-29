@@ -1,20 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AcTools.Kn5File;
+using AcTools.Utils.Helpers;
 
 namespace AcTools.Render.Kn5Specific.Materials {
     public static class Kn5MaterialsProvider {
         private static Kn5 _kn5;
+        private static IKn5MaterialsProvider _instance;
 
-        public static void Initialize(Kn5 kn5) {
+        public static void Initialize(IKn5MaterialsProvider materialProvider) {
+            _instance = materialProvider;
+        }
+
+        public static void SetKn5(Kn5 kn5) {
             _kn5 = kn5;
         }
 
         public static void DisposeAll() {
-            foreach (var material in Materials.Values) {
-                material.Dispose();
-            }
-            Materials.Clear();
+            Materials.DisposeEverything();
         }
 
         public static void DisposeFor(Kn5 kn5) {
@@ -26,26 +30,24 @@ namespace AcTools.Render.Kn5Specific.Materials {
             }
         }
 
-        private static readonly Dictionary<string, IRenderableMaterial> Materials = new Dictionary<string, IRenderableMaterial>(); 
+        private static readonly Dictionary<string, IRenderableMaterial> Materials = new Dictionary<string, IRenderableMaterial>();
 
-        public static IRenderableMaterial GetMaterial(uint materialId) {
-            var key = _kn5.OriginalFilename + "//" + materialId;
-            if (Materials.ContainsKey(key)) return Materials[key];
-
-            var kn5Material = _kn5.Materials.Values.ElementAtOrDefault((int) materialId);
-            return Materials[key] = CreateMaterial(_kn5.OriginalFilename, kn5Material);
+        private static IRenderableMaterial GetOrCreate(string key, Func<IRenderableMaterial> create) {
+            IRenderableMaterial material;
+            if (Materials.TryGetValue(key, out material)) return material;
+            return Materials[key] = create();
         }
 
-        private static IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
-            if (kn5Material.ShaderName == "GL") {
-                return new Kn5RenderableSpecialGlMaterial();
-            }
+        public static IRenderableMaterial GetMaterial(uint materialId) => GetOrCreate(_kn5.OriginalFilename + "//" + materialId,
+                () => _instance.CreateMaterial(_kn5.OriginalFilename, _kn5.Materials.Values.ElementAtOrDefault((int)materialId)));
 
-            if (kn5Material.ShaderName == "ksWindscreen") {
-                return new InvisibleMaterial();
-            }
-            
-            return new Kn5RenderableMaterial(_kn5.OriginalFilename, kn5Material);
-        }
+        public static IRenderableMaterial GetAmbientShadowMaterial(string filename) => GetOrCreate("//ambientshadow//" + filename,
+                () => _instance.CreateAmbientShadowMaterial(filename));
+
+        public static IRenderableMaterial GetSkyMaterial() => GetOrCreate("//sky",
+                () => _instance.CreateSkyMaterial());
+
+        public static IRenderableMaterial GetMirrorMaterial() => GetOrCreate("//mirror",
+                () => _instance.CreateMirrorMaterial());
     }
 }

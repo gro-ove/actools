@@ -63,7 +63,7 @@
 		float Lp = Yxy.r * exposure / average;         
                 
 		// (Ld) Scale all luminance within a displayable range of 0 to 1
-		Yxy.r = (Lp * (1.0f + Lp/(whitePoint * whitePoint)))/(1.0f + Lp);
+		Yxy.r = (Lp * (1.0f + Lp / (whitePoint * whitePoint)))/(1.0f + Lp);
   
 		// Yxy -> XYZ conversion
 		XYZ.r = Yxy.r * Yxy.g / Yxy. b;               // X = Y * x / y
@@ -74,12 +74,12 @@
 		const float3x3 XYZ2RGB  = {  2.5651, -1.1665, -0.3986,
 									-1.0217,  1.9777,  0.0439, 
 									 0.0753, -0.2543,  1.1892  };
-		return saturate(mul(XYZ2RGB, XYZ));
+		return mul(XYZ2RGB, XYZ);
 	}
 
 	float4 ps_Tonemap (PS_IN pin) : SV_Target {
 		float currentBrightness = 0.167 + dot(tex(gBrightnessMap, 0.5).rgb, LUM_CONVERT) * 0.667;
-		return float4(ToneReinhard(tex(pin.Tex).rgb, currentBrightness, 0.56, 1.2), 1) + tex(gBloomMap, pin.Tex);
+		return float4(ToneReinhard(tex(pin.Tex).rgb, currentBrightness, 0.56, 1.2), 1);
 	}
 
 	technique11 Tonemap {
@@ -102,10 +102,24 @@
 			SetPixelShader( CompileShader( ps_4_0, ps_Copy() ) );
 		}
 	}
+	
+// combine
+	float4 ps_Combine (PS_IN pin) : SV_Target {
+		float3 value = tex(pin.Tex).rgb + tex(gBloomMap, pin.Tex).rgb;
+		return float4(saturate(value), 1.0);
+	}
+
+	technique11 Combine {
+		pass P0 {
+			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
+			SetGeometryShader( NULL );
+			SetPixelShader( CompileShader( ps_4_0, ps_Combine() ) );
+		}
+	}
 
 // bloom
 	float4 ps_Bloom (PS_IN pin) : SV_Target {
-		return saturate(tex(pin.Tex) - 2.5) * 0.5;
+		return saturate(tex(pin.Tex) - 1.2) * 1;
 	}
 
 	technique11 Bloom {

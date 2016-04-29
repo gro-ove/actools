@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using AcTools.Render.Base;
@@ -11,71 +12,35 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.DeferredShading.Lights;
 using AcTools.Render.DeferredShading.PostEffects;
+using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 
 namespace AcTools.Render.DeferredShading {
     public abstract class DeferredShadingRenderer : SceneRenderer {
-        private static readonly Color4 ColorTransparent = new Color4(0f, 0f, 0f, 0f);
-
         private EffectDeferredLight _deferredLighting;
         private EffectDeferredResult _deferredResult;
         private EffectPpBasic _ppBasic;
-        private BlendState _addBlendState;
-        private BlendState _transparentBlendState;
-        private DepthStencilState _lessEqualDepthState, _greaterReadOnlyDepthState;
 
         private TargetResourceDepthTexture _gDepthBuffer, _temporaryDepthBuffer;
 
         private TargetResourceTexture _gBufferBase, _gBufferNormal, _gBufferMaps,
                 _temporaryBuffer0, _temporaryBuffer1, _temporaryBuffer2, _temporaryBuffer3,
                 _outputBuffer;
-
-        private HdrHelper _hdrHelper;
-        private SslrHelper _sslrHelper;
+        
         private ReflectionCubemap _reflectionCubemap;
+        protected virtual Vector3 ReflectionCubemapPosition => Camera.Position;
 
-        protected DirectionalLight Sun;
+        [CanBeNull]
+        public DirectionalLight Sun { get; protected set; }
         private ShadowsDirectional _sunShadows;
 
         protected override void InitializeInner() {
             _deferredLighting = DeviceContextHolder.GetEffect<EffectDeferredLight>();
             _deferredResult = DeviceContextHolder.GetEffect<EffectDeferredResult>();
             _ppBasic = DeviceContextHolder.GetEffect<EffectPpBasic>();
-            _addBlendState = Device.CreateBlendState(BlendOperation.Add);
-
-            _lessEqualDepthState = DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                IsDepthEnabled = true,
-                IsStencilEnabled = false,
-                DepthWriteMask = DepthWriteMask.All,
-                DepthComparison = Comparison.LessEqual
-            });
-
-            _greaterReadOnlyDepthState = DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
-                IsDepthEnabled = true,
-                IsStencilEnabled = false,
-                DepthWriteMask = DepthWriteMask.Zero,
-                DepthComparison = Comparison.Greater
-            });
-
-            {
-                var desc = new BlendStateDescription {
-                    AlphaToCoverageEnable = false,
-                    IndependentBlendEnable = false
-                };
-
-                desc.RenderTargets[0].BlendEnable = true;
-                desc.RenderTargets[0].SourceBlend = BlendOption.SourceAlpha;
-                desc.RenderTargets[0].DestinationBlend = BlendOption.InverseSourceAlpha;
-                desc.RenderTargets[0].BlendOperation = BlendOperation.Add;
-                desc.RenderTargets[0].SourceBlendAlpha = BlendOption.One;
-                desc.RenderTargets[0].DestinationBlendAlpha = BlendOption.One;
-                desc.RenderTargets[0].BlendOperationAlpha = BlendOperation.Add;
-                desc.RenderTargets[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
-
-                _transparentBlendState = BlendState.FromDescription(Device, desc);
-            }
 
             _gDepthBuffer = TargetResourceDepthTexture.Create();
             _gBufferBase = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
@@ -89,9 +54,6 @@ namespace AcTools.Render.DeferredShading {
             _temporaryBuffer3 = TargetResourceTexture.Create(Format.R16G16B16A16_Float);
             _outputBuffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
 
-            _hdrHelper = DeviceContextHolder.GetHelper<HdrHelper>();
-            _sslrHelper = DeviceContextHolder.GetHelper<SslrHelper>();
-
             _reflectionCubemap = new ReflectionCubemap(1024);
             _reflectionCubemap.Initialize(DeviceContextHolder);
 
@@ -99,9 +61,9 @@ namespace AcTools.Render.DeferredShading {
             _sunShadows.Initialize(DeviceContextHolder);
         }
 
-        protected override SampleDescription GetSampleDescription(int msaaQuality) {
-            return new SampleDescription(1, 0);
-        }
+        protected override SampleDescription GetSampleDescription(int msaaQuality) => new SampleDescription(1, 0);
+
+        protected override FeatureLevel FeatureLevel => FeatureLevel.Level_11_0;
 
         protected override void ResizeInner() {
             base.ResizeInner();
@@ -117,44 +79,25 @@ namespace AcTools.Render.DeferredShading {
             _temporaryBuffer2.Resize(DeviceContextHolder, Width, Height);
             _temporaryBuffer3.Resize(DeviceContextHolder, Width, Height);
             _outputBuffer.Resize(DeviceContextHolder, Width, Height);
-
-            _hdrHelper.Resize(DeviceContextHolder, Width, Height);
-            _sslrHelper.Resize(DeviceContextHolder, Width, Height);
-        }
-
-        protected virtual Vector3 GetReflectionCubemapPosition() {
-            return Camera.Position;
         }
 
         protected override void DrawPrepare() {
             base.DrawPrepare();
 
-            var effect = DeviceContextHolder.GetEffect<EffectDeferredGObject>();
-            effect.FxAmbientDown.Set(AmbientLower);
-            effect.FxAmbientRange.Set(AmbientUpper - AmbientLower);
-
-            if (Sun != null) {
-                effect.FxDirectionalLightDirection.Set(Sun.Direction);
-                effect.FxLightColor.Set(AmbientLight(Sun.Color));
-
-                if (UseShadows) {
-                    _sunShadows.Update(Sun.Direction, Camera.Position);
-                    _sunShadows.DrawScene(DeviceContextHolder, this);
-                }
-            } else {
-                effect.FxDirectionalLightDirection.Set(Vector3.Zero);
-                effect.FxLightColor.Set(Vector3.Zero);
+            if (Sun != null && UseShadows) {
+                _sunShadows.Update(Sun.Direction, Camera);
+                _sunShadows.DrawScene(DeviceContextHolder, this);
             }
 
             if (UseCubemapReflections) {
-                _reflectionCubemap.Update(GetReflectionCubemapPosition());
+                _reflectionCubemap.Update(ReflectionCubemapPosition);
                 _reflectionCubemap.DrawScene(DeviceContextHolder, this);
             }
 
             DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.StencilView, _gBufferBase.TargetView,
                     _gBufferNormal.TargetView, _gBufferMaps.TargetView);
             DeviceContext.ClearDepthStencilView(_gDepthBuffer.StencilView,
-                    DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+                    DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
             DeviceContext.ClearRenderTargetView(_gBufferBase.TargetView, ColorTransparent);
             DeviceContext.ClearRenderTargetView(_gBufferNormal.TargetView, ColorTransparent);
             DeviceContext.ClearRenderTargetView(_gBufferMaps.TargetView, ColorTransparent);
@@ -173,70 +116,81 @@ namespace AcTools.Render.DeferredShading {
         public bool UseLocalReflections = true;
         public bool UseShadows = true;
         public bool UseDebugShadows = false;
-        public bool UseShadowsFilter = false;
+        public bool UseShadowsFilter = true;
         public bool UseCubemapReflections = true;
         public bool BlurLocalReflections = false;
+        public bool LimitLightsThroughGlass = true;
 
         protected override void DrawInner() {
             base.DrawInner();
 
-            if (Mode == RenderingMode.DebugLighting) {
-                DrawLights(_temporaryBuffer0);
-                FinalStep(_temporaryBuffer0, _sunShadows.Splits[0].Buffer);
-                return;
-            }
-
-            if (Mode == RenderingMode.Result) {
-                DeviceContext.ClearDepthStencilView(_temporaryDepthBuffer.StencilView,
-                        DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
-                DeviceContext.OutputMerger.SetTargets(_temporaryDepthBuffer.StencilView);
-                DeviceContext.OutputMerger.BlendState = null;
-
-                Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.TransparentMask);
-                DrawLights(_temporaryBuffer0, _temporaryDepthBuffer.StencilView);
-
-                if (UseLocalReflections) {
-                    DrawReflections(_temporaryBuffer2, BlurLocalReflections ? _temporaryBuffer1 : null, _temporaryBuffer0,
-                            _temporaryDepthBuffer.StencilView);
-                }
-
-                CombineResult(_temporaryBuffer1, _temporaryBuffer0, UseLocalReflections ? _temporaryBuffer2 : null, null,
-                        _temporaryDepthBuffer.StencilView);
-
-                DrawTransparent();
-                ProcessHdr(_temporaryBuffer0, _temporaryBuffer2);
-            } else {
-                DrawLights(_temporaryBuffer0);
-                DrawReflections(_temporaryBuffer2, BlurLocalReflections ? _temporaryBuffer1 : null, _temporaryBuffer0);
-                CombineResult(_temporaryBuffer1, _temporaryBuffer0, _temporaryBuffer2);
-                ProcessHdr(_temporaryBuffer0, _temporaryBuffer1);
-            }
-
-            var input = _temporaryBuffer0;
             switch (Mode) {
-                case RenderingMode.DebugGBuffer:
-                case RenderingMode.DebugPostEffects:
-                case RenderingMode.DebugLocalReflections:
-                    input = _temporaryBuffer1;
-                    break;
-            }
+                case RenderingMode.Result:
+                    DeviceContext.ClearDepthStencilView(_temporaryDepthBuffer.StencilView,
+                            DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+                    DeviceContext.OutputMerger.SetTargets(_temporaryDepthBuffer.StencilView);
+                    DeviceContext.OutputMerger.BlendState = null;
 
-            FinalStep(input, UseFxaa);
+                    Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentMask);
+                    DrawLights(_temporaryBuffer0, _temporaryDepthBuffer.StencilView);
+
+                    if (UseLocalReflections) {
+                        DrawReflections(_temporaryBuffer2, BlurLocalReflections ? _temporaryBuffer1 : null, _temporaryBuffer0,
+                                _temporaryDepthBuffer.StencilView);
+                    }
+
+                    CombineResult(_temporaryBuffer1, _temporaryBuffer0, UseLocalReflections ? _temporaryBuffer2 : null, null,
+                            _temporaryDepthBuffer.StencilView);
+
+                    DrawTransparent();
+                    ProcessHdr(_temporaryBuffer0, _temporaryBuffer2, _temporaryBuffer3);
+                    FinalStep(_temporaryBuffer0);
+                    break;
+
+                case RenderingMode.WithoutTransparent:
+                    DrawLights(_temporaryBuffer0);
+                    DrawReflections(_temporaryBuffer2, BlurLocalReflections ? _temporaryBuffer1 : null, _temporaryBuffer0);
+                    CombineResult(_temporaryBuffer1, _temporaryBuffer0, _temporaryBuffer2);
+                    ProcessHdr(_temporaryBuffer0, _temporaryBuffer1, _temporaryBuffer3);
+                    FinalStep(_temporaryBuffer0);
+                    break;
+
+                case RenderingMode.DebugGBuffer:
+                    CombineResult(_temporaryBuffer0, null, null);
+                    FinalStep(_temporaryBuffer0);
+                    return;
+
+                case RenderingMode.DebugLighting:
+                    DrawLights(_temporaryBuffer0);
+                    FinalStep(_temporaryBuffer0, _sunShadows.Splits[0].Buffer);
+                    break;
+
+                case RenderingMode.DebugLocalReflections:
+                case RenderingMode.DebugPostEffects:
+                    DrawLights(_temporaryBuffer0);
+                    DrawReflections(_temporaryBuffer2, BlurLocalReflections ? _temporaryBuffer1 : null, _temporaryBuffer0);
+                    CombineResult(_temporaryBuffer1, _temporaryBuffer0, _temporaryBuffer2);
+                    FinalStep(_temporaryBuffer1);
+                    return;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public List<ILight> Lights = new List<ILight>();
 
         private void DrawLights(TargetResourceTexture target, DepthStencilView limitedBy = null) {
             // set blending & prepare quad
-            DeviceContext.OutputMerger.BlendState = _addBlendState;
-            DeviceContextHolder.QuadBuffers.Prepare(DeviceContext, _deferredLighting.LayoutPT);
+            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.AddBlendState;
 
             // proper render target
             if (limitedBy == null) {
                 DeviceContext.OutputMerger.SetTargets(target.TargetView);
+                DeviceContext.OutputMerger.DepthStencilState = null;
             } else {
                 DeviceContext.OutputMerger.SetTargets(limitedBy, target.TargetView);
-                DeviceContext.OutputMerger.DepthStencilState = _greaterReadOnlyDepthState;
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.GreaterReadOnlyDepthState;
             }
 
             DeviceContext.ClearRenderTargetView(target.TargetView, ColorTransparent);
@@ -244,6 +198,7 @@ namespace AcTools.Render.DeferredShading {
             // camera position & matrix
             _deferredLighting.FxWorldViewProjInv.SetMatrix(Camera.ViewProjInvert);
             _deferredLighting.FxEyePosW.Set(Camera.Position);
+            _deferredLighting.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
 
             // g-buffer
             _deferredLighting.FxBaseMap.SetResource(_gBufferBase.View);
@@ -253,8 +208,6 @@ namespace AcTools.Render.DeferredShading {
 
             // lights!
             if (UseShadows) {
-                var depths = _sunShadows.Splits.Take(EffectDeferredLight.NumSplits).Select(x => x.GetShadowDepth(Camera)).ToArray();
-                _deferredLighting.FxShadowDepths.Set(new Vector4(depths[0], depths[1], depths[2], depths[3]));
                 _deferredLighting.FxShadowMaps.SetResourceArray(_sunShadows.Splits.Take(EffectDeferredLight.NumSplits).Select(x => x.View).ToArray());
                 _deferredLighting.FxShadowViewProj.SetMatrixArray(
                         _sunShadows.Splits.Take(EffectDeferredLight.NumSplits).Select(x => x.ShadowTransform).ToArray());
@@ -262,44 +215,44 @@ namespace AcTools.Render.DeferredShading {
                 _deferredLighting.FxShadowMaps.SetResource(null);
             }
 
-            Sun.Draw(DeviceContext, _deferredLighting,
-                    UseDebugShadows ? SpecialLightMode.Debug : !UseShadows
-                            ? SpecialLightMode.Default : UseShadowsFilter ? SpecialLightMode.Shadows : SpecialLightMode.ShadowsWithoutFilter);
-            if (limitedBy == null) {
+            Sun?.Draw(DeviceContextHolder, Camera,
+                    UseDebugShadows ? SpecialLightMode.Debug : !UseShadows ? SpecialLightMode.Default :
+                            UseShadowsFilter ? SpecialLightMode.Shadows : SpecialLightMode.ShadowsWithoutFilter);
+            if (!LimitLightsThroughGlass || limitedBy == null) {
                 foreach (var light in Lights) {
-                    light.Draw(DeviceContext, _deferredLighting, SpecialLightMode.Default);
+                    light.Draw(DeviceContextHolder, Camera, SpecialLightMode.Default);
                 }
             }
 
             if (limitedBy != null) {
-                DeviceContext.OutputMerger.DepthStencilState = NormalDepthState;
+                DeviceContext.OutputMerger.DepthStencilState = null;
             }
         }
 
-        private void DrawReflections(TargetResourceTexture target, TargetResourceTexture temporary = null, TargetResourceTexture light = null,
-                DepthStencilView limitedBy = null) {
-            DeviceContextHolder.QuadBuffers.Prepare(DeviceContext, _sslrHelper.Effect.LayoutPT);
+        private void DrawReflections(TargetResourceTexture target, TargetResourceTexture temporary = null, TargetResourceTexture light = null, DepthStencilView limitedBy = null) {
+            var sslr = DeviceContextHolder.GetHelper<SslrHelper>();
+
+            DeviceContextHolder.QuadBuffers.Prepare(DeviceContext, sslr.Effect.LayoutPT);
             DeviceContext.OutputMerger.BlendState = null;
 
-            if (limitedBy == null) {
-                DeviceContext.OutputMerger.SetTargets(target.TargetView);
-            } else {
+            if (limitedBy == null) DeviceContext.OutputMerger.SetTargets(target.TargetView);
+            else {
                 DeviceContext.OutputMerger.SetTargets(limitedBy, target.TargetView);
-                DeviceContext.OutputMerger.DepthStencilState = _greaterReadOnlyDepthState;
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.GreaterReadOnlyDepthState;
             }
 
             // camera position & matrix
-            _sslrHelper.Effect.FxWorldViewProj.SetMatrix(Camera.ViewProj);
-            _sslrHelper.Effect.FxWorldViewProjInv.SetMatrix(Camera.ViewProjInvert);
-            _sslrHelper.Effect.FxEyePosW.Set(Camera.Position);
+            sslr.Effect.FxWorldViewProj.SetMatrix(Camera.ViewProj);
+            sslr.Effect.FxWorldViewProjInv.SetMatrix(Camera.ViewProjInvert);
+            sslr.Effect.FxEyePosW.Set(Camera.Position);
 
             // g-buffer
-            _sslrHelper.Effect.FxBaseMap.SetResource(_gBufferBase.View);
-            _sslrHelper.Effect.FxNormalMap.SetResource(_gBufferNormal.View);
-            _sslrHelper.Effect.FxDepthMap.SetResource(_gDepthBuffer.View);
-            _sslrHelper.Effect.FxLightMap.SetResource(light?.View);
+            sslr.Effect.FxBaseMap.SetResource(_gBufferBase.View);
+            sslr.Effect.FxNormalMap.SetResource(_gBufferNormal.View);
+            sslr.Effect.FxDepthMap.SetResource(_gDepthBuffer.View);
+            sslr.Effect.FxLightMap.SetResource(light?.View);
 
-            _sslrHelper.Effect.TechHabrahabrVersion.DrawAllPasses(DeviceContext, 6);
+            sslr.Effect.TechHabrahabrVersion.DrawAllPasses(DeviceContext, 6);
 
             if (temporary != null) {
                 DeviceContext.OutputMerger.SetTargets(temporary.TargetView);
@@ -310,15 +263,11 @@ namespace AcTools.Render.DeferredShading {
             }
 
             if (limitedBy != null) {
-                DeviceContext.OutputMerger.DepthStencilState = NormalDepthState;
+                DeviceContext.OutputMerger.DepthStencilState = null;
             }
         }
 
         public Vector3 AmbientLower, AmbientUpper;
-
-        public float GetBrightness(Vector3 lightColor) {
-            return lightColor.X * 0.299f + lightColor.Y * 0.587f + lightColor.Z * 0.114f;
-        }
 
         public Vector3 AmbientLight(Vector3 lightColor) {
             var a = (AmbientLower + AmbientUpper) * 0.5f;
@@ -327,7 +276,7 @@ namespace AcTools.Render.DeferredShading {
 
         public Vector3 FixLight(Vector3 lightColor) {
             var a = (AmbientLower + AmbientUpper) * 0.5f;
-            var l = GetBrightness(a);
+            var l = a.GetBrightness();
             return new Vector3(lightColor.X * l / a.X, lightColor.Y * l / a.Y, lightColor.Z * l / a.Z);
         }
 
@@ -340,7 +289,7 @@ namespace AcTools.Render.DeferredShading {
                 DeviceContext.OutputMerger.SetTargets(target.TargetView);
             } else {
                 DeviceContext.OutputMerger.SetTargets(limitedBy, target.TargetView);
-                DeviceContext.OutputMerger.DepthStencilState = _greaterReadOnlyDepthState;
+                DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.GreaterReadOnlyDepthState;
             }
 
             DeviceContext.ClearRenderTargetView(target.TargetView, ColorTransparent);
@@ -388,40 +337,34 @@ namespace AcTools.Render.DeferredShading {
 
             tech.DrawAllPasses(DeviceContext, 6);
 
-            if (limitedBy != null) {
-                DeviceContext.OutputMerger.DepthStencilState = NormalDepthState;
-            }
+            if (limitedBy != null) DeviceContext.OutputMerger.DepthStencilState = null;
         }
 
         private void DrawTransparent() {
             var effect = DeviceContextHolder.GetEffect<EffectDeferredGObject>();
             effect.FxReflectionCubemap.SetResource(_reflectionCubemap.View);
             effect.FxEyePosW.Set(Camera.Position);
-
+            
             DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.StencilView, _temporaryBuffer1.TargetView);
-            DeviceContext.OutputMerger.BlendState = _transparentBlendState;
-            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.TransparentDepth);
+            DeviceContext.OutputMerger.BlendState = DeviceContextHolder.TransparentBlendState;
+            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentDepth);
 
-            DeviceContext.OutputMerger.DepthStencilState = ReadOnlyDepthState;
-            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.Transparent);
-            DeviceContext.OutputMerger.DepthStencilState = NormalDepthState;
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.ReadOnlyDepthState;
+            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentForw);
+            DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
 
-            DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.StencilView, _gBufferBase.TargetView,
-                    _gBufferNormal.TargetView, _gBufferMaps.TargetView);
-            DeviceContext.OutputMerger.DepthStencilState = _lessEqualDepthState;
-            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.TransparentDeferred);
+            DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.StencilView, _gBufferBase.TargetView, _gBufferNormal.TargetView, _gBufferMaps.TargetView);
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.LessEqualDepthState;
+            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentDef);
 
             DrawLights(_temporaryBuffer0);
-
-            if (UseLocalReflections) {
-                DrawReflections(_temporaryBuffer3, BlurLocalReflections ? _temporaryBuffer2 : null, _temporaryBuffer0);
-            }
+            if (UseLocalReflections) DrawReflections(_temporaryBuffer3, BlurLocalReflections ? _temporaryBuffer2 : null, _temporaryBuffer0);
 
             CombineResult(_temporaryBuffer2, _temporaryBuffer0, UseLocalReflections ? _temporaryBuffer3 : null, _temporaryBuffer1);
         }
 
-        private void ProcessHdr(TargetResourceTexture target, TargetResourceTexture source) {
+        private void ProcessHdr(TargetResourceTexture target, TargetResourceTexture source, TargetResourceTexture temporary) {
             switch (Mode) {
                 case RenderingMode.DebugGBuffer:
                 case RenderingMode.DebugPostEffects:
@@ -432,70 +375,23 @@ namespace AcTools.Render.DeferredShading {
             DeviceContext.OutputMerger.SetTargets(target.TargetView);
             DeviceContext.ClearRenderTargetView(target.TargetView, ColorTransparent);
             DeviceContext.OutputMerger.BlendState = null;
-            _hdrHelper.Draw(DeviceContextHolder, source.View);
+            DeviceContextHolder.GetHelper<HdrHelper>().Draw(DeviceContextHolder, source.View, temporary);
         }
 
-        ShaderResourceView _areasTexMap, _searchTexMap;
-
-        protected void FinalStep(TargetResourceTexture source, bool fxaa) {
+        protected void FinalStep(TargetResourceTexture source) {
             DeviceContext.ClearRenderTargetView(_outputBuffer.TargetView, ColorTransparent);
 
-            if (fxaa && UseExperimentalSmaa) {
-                var effect = DeviceContextHolder.GetEffect<EffectPpSmaa>();
-                if (_areasTexMap == null) {
-                    _areasTexMap = ShaderResourceView.FromMemory(Device, Resources.AreaTexDX10);
-                    _searchTexMap = ShaderResourceView.FromMemory(Device, Resources.SearchTex);
-                }
+            if (!UseFxaa) {
+                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, source.View, _outputBuffer.TargetView);
+                return;
+            }
 
-                DeviceContextHolder.QuadBuffers.Prepare(DeviceContext, effect.LayoutPT);
-                DeviceContext.OutputMerger.BlendState = null;
-
-                // edges
-                DeviceContext.OutputMerger.SetTargets(_gBufferBase.TargetView);
-                DeviceContext.ClearRenderTargetView(_gBufferBase.TargetView, ColorTransparent);
-
-                effect.FxScreenSizeSpec.Set(new Vector4(1f / Width, 1f / Height, Width, Height));
-
-                effect.FxInputMap.SetResource(source.View);
-                effect.FxDepthMap.SetResource(_gDepthBuffer.View);
-
-                effect.TechSmaa.DrawAllPasses(DeviceContext, 6);
-
-                // b
-                DeviceContext.OutputMerger.SetTargets(_temporaryBuffer3.TargetView);
-                DeviceContext.ClearRenderTargetView(_temporaryBuffer3.TargetView, ColorTransparent);
-
-                effect.FxEdgesMap.SetResource(_gBufferBase.View);
-                effect.FxAreaTexMap.SetResource(_areasTexMap);
-                effect.FxSearchTexMap.SetResource(_searchTexMap);
-
-                effect.TechSmaaB.DrawAllPasses(DeviceContext, 6);
-
-                // n
-                DeviceContext.OutputMerger.SetTargets(_outputBuffer.TargetView);
-
-                effect.FxBlendMap.SetResource(_temporaryBuffer3.View);
-
-                effect.TechSmaaN.DrawAllPasses(DeviceContext, 6);
-            } else if (fxaa && UseExperimentalFxaa) {
-                var effect = DeviceContextHolder.GetEffect<EffectPpFxaa311>();
-                DeviceContextHolder.QuadBuffers.Prepare(DeviceContext, effect.LayoutPT);
-
-                DeviceContext.OutputMerger.SetTargets(_gBufferMaps.TargetView);
-                effect.FxInputMap.SetResource(source.View);
-                effect.TechLuma.DrawAllPasses(DeviceContext, 6);
-
-                DeviceContext.OutputMerger.SetTargets(_outputBuffer.TargetView);
-                effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
-                effect.FxInputMap.SetResource(_gBufferMaps.View);
-                effect.TechFxaa.DrawAllPasses(DeviceContext, 6);
+            if (UseExperimentalSmaa) {
+                DeviceContextHolder.GetHelper<SmaaHelper>().Draw(DeviceContextHolder, source.View, _outputBuffer.TargetView, _gBufferBase, _temporaryBuffer3);
+            } else if (UseExperimentalFxaa) {
+                DeviceContextHolder.GetHelper<Fxaa311Helper>().Draw(DeviceContextHolder, source.View, _outputBuffer.TargetView, _gBufferMaps);
             } else {
-                DeviceContext.OutputMerger.SetTargets(_outputBuffer.TargetView);
-                DeviceContextHolder.QuadBuffers.Prepare(DeviceContext, _ppBasic.LayoutPT);
-
-                _ppBasic.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
-                _ppBasic.FxInputMap.SetResource(source.View);
-                (fxaa ? _ppBasic.TechFxaa : _ppBasic.TechCopy).DrawAllPasses(DeviceContext, 6);
+                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, source.View, _outputBuffer.TargetView);
             }
         }
 
@@ -514,6 +410,8 @@ namespace AcTools.Render.DeferredShading {
         protected virtual void DrawSpritesInner() {}
 
         protected sealed override void DrawSprites() {
+            if (Sprite == null) throw new NotSupportedException();
+
             // drawing GUI
             Sprite.HandleBlendState = false;
             Sprite.HandleDepthStencilState = false;
@@ -526,8 +424,7 @@ namespace AcTools.Render.DeferredShading {
 
             // blurring
             DeviceContext.OutputMerger.BlendState = null;
-            DeviceContextHolder.GetHelper<BlurHelper>()
-                               .Blur(DeviceContextHolder, _temporaryBuffer0, _temporaryBuffer1, target: _temporaryBuffer2, iterations: 2);
+            DeviceContextHolder.GetHelper<BlurHelper>().Blur(DeviceContextHolder, _temporaryBuffer0, _temporaryBuffer1, target: _temporaryBuffer2, iterations: 2);
 
             // as a shadow
             _ppBasic.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
@@ -541,30 +438,41 @@ namespace AcTools.Render.DeferredShading {
 
             // combining with _outputBuffer
             ResetTargets();
-            DeviceContextHolder.QuadBuffers.Prepare(DeviceContext, _ppBasic.LayoutPT);
+            DeviceContextHolder.PrepareQuad(_ppBasic.LayoutPT);
 
             _ppBasic.FxInputMap.SetResource(_outputBuffer.View);
             _ppBasic.FxOverlayMap.SetResource(_temporaryBuffer1.View);
             _ppBasic.TechOverlay.DrawAllPasses(DeviceContext, 6);
         }
 
+        public override Image Shot(int multipler) {
+            var useFxaa = UseFxaa;
+            UseFxaa = false;
+
+            try {
+                return base.Shot(multipler);
+            } finally {
+                UseFxaa = useFxaa;
+            }
+        }
+
         public override void Dispose() {
             base.Dispose();
+
+            Lights.DisposeEverything();
 
             _gBufferBase.Dispose();
             _gBufferNormal.Dispose();
             _gBufferMaps.Dispose();
             _gDepthBuffer.Dispose();
+            _temporaryDepthBuffer.Dispose();
             _temporaryBuffer0.Dispose();
             _temporaryBuffer1.Dispose();
             _temporaryBuffer2.Dispose();
             _temporaryBuffer3.Dispose();
-
-            _addBlendState.Dispose();
-            _lessEqualDepthState.Dispose();
-            _greaterReadOnlyDepthState.Dispose();
-            _transparentBlendState.Dispose();
+            
             _reflectionCubemap.Dispose();
+            _sunShadows.Dispose();
         }
     }
 }

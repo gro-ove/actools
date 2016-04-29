@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AcTools.Render.Base;
+﻿using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
@@ -31,9 +26,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private readonly IRenderableMaterial _material;
 
         public AmbientShadow(string filename, Matrix transform)
-            : base(BaseVertices, BaseIndices) {
+                : base(BaseVertices, BaseIndices) {
             _transform = transform;
-            _material = new AmbientShadowMaterial(filename);
+            _material = Kn5MaterialsProvider.GetAmbientShadowMaterial(filename);
         }
 
         protected override void Initialize(DeviceContextHolder contextHolder) {
@@ -42,12 +37,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.Deferred) return;
+            if (mode != SpecialRenderMode.Deferred && mode != SpecialRenderMode.Simple) return;
 
             if (!_material.Prepare(contextHolder, mode)) return;
             base.DrawInner(contextHolder, camera, mode);
 
-            _material.SetMatrices(_transform*ParentMatrix, camera);
+            _material.SetMatrices(_transform * ParentMatrix, camera);
             _material.Draw(contextHolder, Indices.Length, mode);
         }
 

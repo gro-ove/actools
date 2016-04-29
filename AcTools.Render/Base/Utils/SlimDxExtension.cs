@@ -43,14 +43,34 @@ namespace AcTools.Render.Base.Utils {
                             Math.Max(bb.Maximum.Z, next.Maximum.Z)));
         }
 
+        public static Vector3 GetCenter(this BoundingBox bb) {
+            return (bb.Minimum + bb.Maximum) / 2f;
+        }
+
+        public static Vector3 GetSize(this BoundingBox bb) {
+            return bb.Maximum - bb.Minimum;
+        }
+
         public static Vector3 GetXyz(this Vector4 vec) {
             return new Vector3(vec.X, vec.Y, vec.Z);
         }
 
+        public static float GetBrightness(this Vector3 vec) {
+            return vec.X * 0.299f + vec.Y * 0.587f + vec.Z * 0.114f;
+        }
+
         public static BoundingBox Transform(this BoundingBox bb, Matrix matrix) {
+            var a = Vector3.Transform(bb.Minimum, matrix);
+            var b = Vector3.Transform(bb.Maximum, matrix);
             return new BoundingBox(
-                    Vector3.Transform(bb.Minimum, matrix).GetXyz(),
-                    Vector3.Transform(bb.Maximum, matrix).GetXyz());
+                    new Vector3(
+                            Math.Min(a.X, b.X),
+                            Math.Min(a.Y, b.Y),
+                            Math.Min(a.Z, b.Z)),
+                    new Vector3(
+                            Math.Max(a.X, b.X),
+                            Math.Max(a.Y, b.Y),
+                            Math.Max(a.Z, b.Z)));
         }
 
         public static void DrawAllPasses(this EffectTechnique tech, DeviceContext context, int indexCount) {
@@ -69,6 +89,10 @@ namespace AcTools.Render.Base.Utils {
         }
 
         public static Vector3 ToVector3FixX(this float[] vec3) {
+            return new Vector3(-vec3[0], vec3[1], vec3[2]);
+        }
+
+        public static Vector3 ToVector3Tangent(this float[] vec3) {
             return new Vector3(-vec3[0], vec3[1], vec3[2]);
         }
 
@@ -169,21 +193,12 @@ namespace AcTools.Render.Base.Utils {
             Set(variable, o, Marshal.SizeOf(o));
         }
 
-        public static BlendState CreateBlendState(this Device device, BlendOperation operation) {
+        public static BlendState CreateBlendState(this Device device, RenderTargetBlendDescription description) {
             var desc = new BlendStateDescription {
                 AlphaToCoverageEnable = false,
                 IndependentBlendEnable = false
             };
-
-            desc.RenderTargets[0].BlendEnable = true;
-            desc.RenderTargets[0].SourceBlend = BlendOption.SourceAlpha;
-            desc.RenderTargets[0].DestinationBlend = BlendOption.One;
-            desc.RenderTargets[0].BlendOperation = operation;
-            desc.RenderTargets[0].SourceBlendAlpha = BlendOption.One;
-            desc.RenderTargets[0].DestinationBlendAlpha = BlendOption.Zero;
-            desc.RenderTargets[0].BlendOperationAlpha = BlendOperation.Add;
-            desc.RenderTargets[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
-
+            desc.RenderTargets[0] = description;
             return BlendState.FromDescription(device, desc);
         }
     }

@@ -232,7 +232,25 @@ namespace AcTools.Utils.Helpers {
             foreach (var i in source.Where(x => x != null)) {
                 i.Dispose();
             }
-            source.Clear();
+            if (!source.IsReadOnly) {
+                source.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Dispose everything and clear dictionary.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="source"></param>
+        public static void DisposeEverything<TKey, T>([NotNull] this IDictionary<TKey, T> source) where T : IDisposable {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            foreach (var i in source.Values.Where(x => x != null)) {
+                i.Dispose();
+            }
+            if (!source.IsReadOnly) {
+                source.Clear();
+            }
         }
 
         [Pure]

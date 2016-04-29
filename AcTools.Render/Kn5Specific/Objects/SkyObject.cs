@@ -13,7 +13,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private SkyObject(InputLayouts.VerticeP[] vertices, ushort[] indices) : base(vertices, indices) {
             BoundingBox = new BoundingBox(new Vector3(-9e9f), new Vector3(9e9f));
-            _material = new SkyMaterial();
+            _material = Kn5MaterialsProvider.GetSkyMaterial();
         }
 
         public static SkyObject Create(float radius) {

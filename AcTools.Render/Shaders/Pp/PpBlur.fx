@@ -33,7 +33,7 @@ cbuffer cbPerFrame : register(b0) {
 
 // special reflection mode
 	float4 ps_ReflectionGaussianBlur(PS_IN pin) : SV_Target {
-		float power = saturate(1 - tex(gMapsMap, pin.Tex).y);
+		float power = saturate(1 - tex(gMapsMap, pin.Tex).y * 15);
 
 		float4 c = 0;
 		for (int i = 0; i < SAMPLE_COUNT; i++){

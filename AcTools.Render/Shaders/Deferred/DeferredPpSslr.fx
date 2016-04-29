@@ -2,6 +2,7 @@
     Texture2D gBaseMap;
     Texture2D gLightMap;
     Texture2D gNormalMap;
+    Texture2D gMapsMap;
     Texture2D gDepthMap;
 
     SamplerState samInputImage {

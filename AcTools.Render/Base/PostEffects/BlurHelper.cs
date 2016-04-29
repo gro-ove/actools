@@ -14,12 +14,15 @@ namespace AcTools.Render.Base.PostEffects {
         private float[] _vosw;
         private Vector4[] _voso;
 
-        public void Initialize(DeviceContextHolder holder) {
+        public void OnInitialize(DeviceContextHolder holder) {
             _effect = holder.GetEffect<EffectPpBlur>();
         }
 
-        public void Resize(DeviceContextHolder holder, int width, int height) {
-            var bloomBlur = 16f;
+        public void OnResize(DeviceContextHolder holder) {
+            var width = holder.Width;
+            var height = holder.Height;
+
+            var bloomBlur = 8f;
             CalculateGaussian(1f / width, 0, bloomBlur, out _hosw, out _hoso);
             CalculateGaussian(0, 1f / height, bloomBlur, out _vosw, out _voso);
         }
@@ -126,7 +129,7 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.FxMapsMap.SetResource(mapsView);
             _effect.FxSampleOffsets.Set(_hoso);
             _effect.FxSampleWeights.Set(_hosw);
-            _effect.FxPower.Set(2.0f);
+            _effect.FxPower.Set(0.1f);
             _effect.TechReflectionGaussianBlur.DrawAllPasses(holder.DeviceContext, 6);
         }
 
@@ -138,7 +141,7 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.FxMapsMap.SetResource(mapsView);
             _effect.FxSampleOffsets.Set(_voso);
             _effect.FxSampleWeights.Set(_vosw);
-            _effect.FxPower.Set(2.0f);
+            _effect.FxPower.Set(0.1f);
             _effect.TechReflectionGaussianBlur.DrawAllPasses(holder.DeviceContext, 6);
         }
 

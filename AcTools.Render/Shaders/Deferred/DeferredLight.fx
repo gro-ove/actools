@@ -63,12 +63,15 @@
         return vout;
     }
 
-    PS_IN vs_replacement(VS_REPL_IN vin) {
-        PS_IN vout;
-        vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
-        vout.Tex = vin.Tex;
-        return vout;
-    }
+	struct PosOnly_PS_IN {
+		float4 PosH : SV_POSITION;
+	};
+
+	PosOnly_PS_IN vs_PosOnly(VS_IN vin) {
+		PosOnly_PS_IN vout;
+		vout.PosH = mul(float4(vin.PosL, 1.0), gWorldViewProj);
+		return vout;
+	}
 
 // functions
     float3 GetPosition(float2 uv, float depth) {
@@ -79,8 +82,7 @@
 	void GetParams(float2 uv,
 		out float3 normal, out float3 position, out float depth,
 		out float3 lightResult,
-		out float specIntensity, out float specExp
-		) {
+		out float specIntensity, out float specExp) {
 
 		normal = gNormalMap.Sample(samInputImage, uv).xyz;
 		depth = gDepthMap.Sample(samInputImage, uv).x;
@@ -96,40 +98,81 @@
 
 // point light
     float4 ps_PointLight_inner(float2 tex) {
-        float3 normal, position, lightResult;
-        float depth, specIntensity, specExp;
-        GetParams(tex, normal, position, depth, lightResult, specIntensity, specExp);
+		float3 normal, position, lightResult;
+		float depth, specIntensity, specExp;
+		GetParams(tex, normal, position, depth, lightResult, specIntensity, specExp);
 
-        float3 lightVector = gPointLightPosition - position;
-        float3 toLight = normalize(lightVector);
+		float3 lightVector = gPointLightPosition - position;
+		float3 toLight = normalize(lightVector);
 
-        float distance = dot(lightVector, lightVector);
-        float lightness = saturate(dot(normal, toLight)) * saturate(1 - distance / gPointLightRadius);
+		float distance = saturate(1 - dot(lightVector, lightVector) / gPointLightRadius);
+		float lightness = saturate(dot(normal, toLight));
 
-        float3 toEye = normalize(gEyePosW - position);
-        float3 halfway = normalize(toEye + toLight);
+		float3 toEye = normalize(gEyePosW - position);
+		float3 halfway = normalize(toEye + toLight);
 
-        float nDotH = saturate(dot(halfway, normal));
-        float specularLightness = pow(nDotH, specExp) * specIntensity;
+		float nDotH = saturate(dot(halfway, normal));
+		float specularLightness = pow(nDotH, specExp) * specIntensity;
 
-        [flatten]
-        if (specExp > 30) {
-            specularLightness += pow(nDotH, specExp * 10 + 5000) * (specIntensity * 12 + 5) * saturate((specExp - 30) / 40);
-        }
+		if (specExp > 30) {
+			specularLightness += pow(nDotH, specExp * 10 + 15000) * (specIntensity * 12 + 5) * saturate((specExp - 30) / 40);
+		}
 
-        lightResult += specularLightness * gLightColor;
-        return float4(lightResult, lightness + specularLightness);
-    }
+		lightResult += specularLightness * gLightColor;
+		return float4(lightResult, (lightness + specularLightness) * distance);
+	}
+
+	float4 ps_PointLight_inner_NoSpec(float2 tex) {
+		float3 normal, position, lightResult;
+		float depth, specIntensity, specExp;
+		GetParams(tex, normal, position, depth, lightResult, specIntensity, specExp);
+
+		float3 lightVector = gPointLightPosition - position;
+		float3 toLight = normalize(lightVector);
+
+		float distance = saturate(1 - dot(lightVector, lightVector) / gPointLightRadius);
+		float lightness = saturate(dot(normal, toLight));
+
+		return float4(lightResult, lightness * distance);
+	}
 
 	float4 ps_PointLight(PS_IN pin) : SV_Target {
 		return ps_PointLight_inner(pin.Tex);
 	}
 
+	float4 ps_PointLight_PosOnly(PosOnly_PS_IN pin) : SV_Target {
+		return ps_PointLight_inner(pin.PosH.xy / gScreenSize.xy);
+	}
+
+	float4 ps_PointLight_PosOnly_NoSpec(PosOnly_PS_IN pin) : SV_Target {
+		return ps_PointLight_inner_NoSpec(pin.PosH.xy / gScreenSize.xy);
+	}
+
     technique11 PointLight {
         pass P0 {
-            SetVertexShader(CompileShader(vs_4_0, vs_main()));
+            SetVertexShader(CompileShader(vs_4_0, vs_PosOnly()));
             SetGeometryShader(NULL);
-            SetPixelShader(CompileShader(ps_4_0, ps_PointLight()));
+            SetPixelShader(CompileShader(ps_4_0, ps_PointLight_PosOnly()));
+        }
+    }
+
+    technique11 PointLight_NoSpec {
+        pass P0 {
+            SetVertexShader(CompileShader(vs_4_0, vs_PosOnly()));
+            SetGeometryShader(NULL);
+            SetPixelShader(CompileShader(ps_4_0, ps_PointLight_PosOnly_NoSpec()));
+        }
+    }
+
+	float4 ps_PointLight_PosOnly_Debug(PosOnly_PS_IN pin) : SV_Target{
+		return float4(gLightColor, 1.0);
+	}
+
+    technique11 PointLight_Debug {
+        pass P0 {
+            SetVertexShader(CompileShader(vs_4_0, vs_PosOnly()));
+            SetGeometryShader(NULL);
+            SetPixelShader(CompileShader(ps_4_0, ps_PointLight_PosOnly_Debug()));
         }
     }
 
@@ -155,7 +198,7 @@
 	static const float SMAP_SIZE = 2048.0f;
 	static const float SMAP_DX = 1.0f / 2048.0f;
 
-	float GetShadowInner(float3 position, Texture2D tex, matrix viewProj) {
+	/*float GetShadowInner2(float3 position, Texture2D tex, matrix viewProj) {
 		float4 uv = mul(float4(position, 1.0f), viewProj);
 		uv.xyz /= uv.w;
 
@@ -166,7 +209,7 @@
 		return shadow / 16.0;
 	}
 
-	float GetShadow(float3 position, float depth) {
+	float GetShadow2(float3 position, float depth) {
 		float shadow0, shadow1, edge;
 		if (depth > gShadowDepths.w) {
 			return 1;
@@ -213,28 +256,72 @@
 		} else {
 			return GetShadowInner_NoFilter(position, gShadowMaps[0], gShadowViewProj[0]);
 		}
+	}*/
+
+	float GetShadowInner(Texture2D tex, float3 uv) {
+		float shadow = 0.0, x, y;
+		for (y = -1.5; y <= 1.5; y += 1.0)
+			for (x = -1.5; x <= 1.5; x += 1.0)
+				shadow += tex.SampleCmpLevelZero(samShadow, uv.xy + float2(x, y) * SMAP_DX, uv.z).r;
+		// return shadow / 16.0;
+		return saturate((shadow / 16 - 0.5) * 4 + 0.5);
 	}
 
-	float GetShadow_NoFilter(float3 position, float depth) {
-		float4 pos = float4(position, 1.0f), uv, nv;
+	#define SHADOW_A 0.0001
+	#define SHADOW_Z 0.9999
+
+	float GetShadow(float3 position, float depth) {
+		float4 pos = float4(position, 1.0), uv, nv;
 
 		uv = mul(pos, gShadowViewProj[3]);
 		uv.xyz /= uv.w;
-		if (uv.x < 0 || uv.x > 1 || uv.y < 0 || uv.y > 1) return 1;
+		if (uv.x < SHADOW_A || uv.x > SHADOW_Z || uv.y < SHADOW_A || uv.y > SHADOW_Z)
+			return 1;
 
 		nv = mul(pos, gShadowViewProj[2]);
 		nv.xyz /= nv.w;
-		if (nv.x < 0 || nv.x > 1 || nv.y < 0 || nv.y > 1) return gShadowMaps[3].SampleCmpLevelZero(samShadow, uv.xy, uv.z).r;
+		if (nv.x < SHADOW_A || nv.x > SHADOW_Z || nv.y < SHADOW_A || nv.y > SHADOW_Z)
+			return GetShadowInner(gShadowMaps[3], uv);
 		uv = nv;
 
 		nv = mul(pos, gShadowViewProj[1]);
 		nv.xyz /= nv.w;
-		if (nv.x < 0 || nv.x > 1 || nv.y < 0 || nv.y > 1) return gShadowMaps[2].SampleCmpLevelZero(samShadow, uv.xy, uv.z).r;
+		if (nv.x < SHADOW_A || nv.x > SHADOW_Z || nv.y < SHADOW_A || nv.y > SHADOW_Z)
+			return GetShadowInner(gShadowMaps[2], uv);
 		uv = nv;
 
 		nv = mul(pos, gShadowViewProj[0]);
 		nv.xyz /= nv.w;
-		if (nv.x < 0 || nv.x > 1 || nv.y < 0 || nv.y > 1) return gShadowMaps[1].SampleCmpLevelZero(samShadow, uv.xy, uv.z).r;
+		if (nv.x < SHADOW_A || nv.x > SHADOW_Z || nv.y < SHADOW_A || nv.y > SHADOW_Z)
+			return GetShadowInner(gShadowMaps[1], uv);
+
+		return GetShadowInner(gShadowMaps[0], nv);
+	}
+
+	float GetShadow_NoFilter(float3 position, float depth) {
+		float4 pos = float4(position, 1.0), uv, nv;
+
+		uv = mul(pos, gShadowViewProj[3]);
+		uv.xyz /= uv.w;
+		if (uv.x < SHADOW_A || uv.x > SHADOW_Z || uv.y < SHADOW_A || uv.y > SHADOW_Z)
+			return 1;
+
+		nv = mul(pos, gShadowViewProj[2]);
+		nv.xyz /= nv.w;
+		if (nv.x < SHADOW_A || nv.x > SHADOW_Z || nv.y < SHADOW_A || nv.y > SHADOW_Z)
+			return gShadowMaps[3].SampleCmpLevelZero(samShadow, uv.xy, uv.z).r;
+		uv = nv;
+
+		nv = mul(pos, gShadowViewProj[1]);
+		nv.xyz /= nv.w;
+		if (nv.x < SHADOW_A || nv.x > SHADOW_Z || nv.y < SHADOW_A || nv.y > SHADOW_Z)
+			return gShadowMaps[2].SampleCmpLevelZero(samShadow, uv.xy, uv.z).r;
+		uv = nv;
+
+		nv = mul(pos, gShadowViewProj[0]);
+		nv.xyz /= nv.w;
+		if (nv.x < SHADOW_A || nv.x > SHADOW_Z || nv.y < SHADOW_A || nv.y > SHADOW_Z)
+			return gShadowMaps[1].SampleCmpLevelZero(samShadow, uv.xy, uv.z).r;
 		
 		return gShadowMaps[0].SampleCmpLevelZero(samShadow, nv.xy, nv.z).r;
 	}
@@ -269,7 +356,7 @@
 
 		float3 toLight = -gDirectionalLightDirection;
 		float lightness = saturate(dot(normal, toLight));
-		lightness *= GetShadow(position, depth);
+		float shadow = GetShadow(position, depth);
 
 		float3 toEye = normalize(gEyePosW - position);
 		float3 halfway = normalize(toEye + toLight);
@@ -283,7 +370,7 @@
 		}
 
 		lightResult += specularLightness * gLightColor;
-		return float4(lightResult, lightness + specularLightness);
+		return float4(lightResult, (lightness + specularLightness) * shadow);
 	}
 
 	float4 ps_DirectionalLight_Shadows_NoFilter(PS_IN pin) : SV_Target {
@@ -293,7 +380,7 @@
 
 		float3 toLight = -gDirectionalLightDirection;
 		float lightness = saturate(dot(normal, toLight));
-		lightness *= GetShadow_NoFilter(position, depth);
+		float shadow = GetShadow_NoFilter(position, depth);
 
 		float3 toEye = normalize(gEyePosW - position);
 		float3 halfway = normalize(toEye + toLight);
@@ -307,7 +394,7 @@
 		}
 
 		lightResult += specularLightness * gLightColor;
-		return float4(lightResult, lightness + specularLightness);
+		return float4(lightResult, (lightness + specularLightness) * shadow);
 	}
 
 	float4 ps_DirectionalLight_Split(PS_IN pin) : SV_Target{

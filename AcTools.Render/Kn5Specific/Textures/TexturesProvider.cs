@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
+using JetBrains.Annotations;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public static class TexturesProvider {
         private static List<Kn5> _kn5 = new List<Kn5>();
 
-        public static void Initialize(Kn5 kn5) {
+        public static void SetKn5(Kn5 kn5) {
             _kn5.Add(kn5);
         }
 
@@ -33,7 +35,9 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         private static readonly Dictionary<string, IRenderableTexture> Textures = new Dictionary<string, IRenderableTexture>();
 
-        public static IRenderableTexture GetTexture(string kn5Filename, string textureName, DeviceContextHolder contextHolder) {
+        public static IRenderableTexture GetTexture([NotNull] string kn5Filename, string textureName, DeviceContextHolder contextHolder) {
+            if (kn5Filename == null) throw new ArgumentNullException(nameof(kn5Filename));
+
             var kn5 = _kn5.FirstOrDefault(x => x.OriginalFilename == kn5Filename);
             if (kn5 == null) return new RenderableTexture { Resource = null };
 

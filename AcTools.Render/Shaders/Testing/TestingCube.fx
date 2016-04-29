@@ -13,8 +13,7 @@ cbuffer cbPerObject : register(b0) {
 }
 
 PS_IN vs_main( VS_IN input ){
-    PS_IN output = (PS_IN)0;
-    
+    PS_IN output;
     output.pos = mul(float4(input.pos, 1.0f), gWorldViewProj);
     output.col = input.col;
     
@@ -25,7 +24,7 @@ float4 ps_main( PS_IN input ) : SV_Target {
     return input.col;
 }
 
-technique11 Cube { // PC
+technique10 Cube {
     pass P0 {
         SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
         SetGeometryShader( NULL );

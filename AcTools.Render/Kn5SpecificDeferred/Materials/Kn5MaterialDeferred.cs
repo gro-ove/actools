@@ -5,56 +5,52 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
+using JetBrains.Annotations;
 using SlimDX;
-using SlimDX.Direct3D11;
 
-namespace AcTools.Render.Kn5Specific.Materials {
-    public static class Kn5MaterialExtend {
-        public static float GetPropertyValueAByName(this Kn5Material mat, string name, float defaultValue = 0.0f) {
-            var property = mat.GetPropertyByName(name);
-            return property?.ValueA ?? defaultValue;
-        }
+namespace AcTools.Render.Kn5SpecificDeferred.Materials {
+    public class Kn5MaterialDeferred : IRenderableMaterial, IEmissiveMaterial {
+        public bool IsBlending { get; }
 
-        public static Vector3 GetPropertyValueCByName(this Kn5Material mat, string name, Vector3 defaultValue) {
-            var property = mat.GetPropertyByName(name);
-            return property?.ValueC.ToVector3() ?? defaultValue;
-        }
-
-        public static Vector3 GetPropertyValueCByName(this Kn5Material mat, string name) {
-            return GetPropertyValueCByName(mat, name, Vector3.Zero);
-        }
-
-        public static void SetResource(this EffectResourceVariable variable, IRenderableTexture texture) {
-            variable.SetResource(texture?.Resource);
-        }
-    }
-
-    public class Kn5RenderableMaterial : IRenderableMaterial {
-        public readonly bool IsBlending;
-
+        [CanBeNull]
         private readonly string _kn5Filename;
+
+        [CanBeNull]
         private readonly Kn5Material _kn5Material;
+
         private EffectDeferredGObject.Material _material;
         private EffectDeferredGObject _effect;
 
-        private IRenderableTexture _txDiffuse, _txNormal, _txMaps, _txDetails, 
-            _txDetailsNormal;
+        private IRenderableTexture _txDiffuse, _txNormal, _txMaps, _txDetails,
+                _txDetailsNormal;
 
-        internal Kn5RenderableMaterial(string kn5Filename, Kn5Material material) {
+        internal Kn5MaterialDeferred([NotNull] string kn5Filename, [NotNull] Kn5Material material) {
+            if (kn5Filename == null) throw new ArgumentNullException(nameof(kn5Filename));
+            if (material == null) throw new ArgumentNullException(nameof(material));
+
             _kn5Filename = kn5Filename;
             _kn5Material = material;
 
             IsBlending = _kn5Material.BlendMode == Kn5MaterialBlendMode.AlphaBlend;
         }
 
+        protected Kn5MaterialDeferred(EffectDeferredGObject.Material material, bool isBlending) {
+            _material = material;
+            IsBlending = isBlending;
+        }
+
         private IRenderableTexture GetTexture(string mappingName, DeviceContextHolder contextHolder) {
-            var mapping = _kn5Material.GetMappingByName(mappingName);
-            return mapping == null ? null : TexturesProvider.GetTexture(_kn5Filename, mapping.Texture, contextHolder);
+            var mapping = _kn5Material?.GetMappingByName(mappingName);
+            return mapping == null || _kn5Filename == null ? null :
+                    TexturesProvider.GetTexture(_kn5Filename, mapping.Texture, contextHolder);
         }
 
         public void Initialize(DeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectDeferredGObject>();
+
+            if (_kn5Material == null) return;
 
             _txDiffuse = GetTexture("txDiffuse", contextHolder);
             _txNormal = _kn5Material.ShaderName.Contains("damage") ? null : GetTexture("txNormal", contextHolder);
@@ -88,15 +84,20 @@ namespace AcTools.Render.Kn5Specific.Materials {
                 flags |= EffectDeferredGObject.AlphaBlend;
             }
 
-            if (Math.Abs(_kn5Material.GetPropertyValueAByName("isAdditive") - 2.0f) < 0.01f) {
-                flags |= EffectDeferredGObject.SpecialMapsMode;
+            if (Equals(_kn5Material.GetPropertyValueAByName("isAdditive"), 1.0f)) {
+                flags |= EffectDeferredGObject.IsAdditive;
+            }
+
+            var specularExp = _kn5Material.GetPropertyValueAByName("ksSpecularEXP");
+            if (Equals(_kn5Material.GetPropertyValueAByName("isAdditive"), 2.0f)) {
+                specularExp = 250f;
             }
 
             _material = new EffectDeferredGObject.Material {
                 Ambient = _kn5Material.GetPropertyValueAByName("ksAmbient"),
                 Diffuse = _kn5Material.GetPropertyValueAByName("ksDiffuse"),
                 Specular = _kn5Material.GetPropertyValueAByName("ksSpecular"),
-                SpecularExp = _kn5Material.GetPropertyValueAByName("ksSpecularEXP"),
+                SpecularExp = specularExp,
                 Emissive = _kn5Material.GetPropertyValueCByName("ksEmissive"),
                 FresnelC = _kn5Material.GetPropertyValueAByName("fresnelC"),
                 FresnelExp = _kn5Material.GetPropertyValueAByName("fresnelEXP"),
@@ -107,16 +108,30 @@ namespace AcTools.Render.Kn5Specific.Materials {
             };
         }
 
+        public void SetEmissive(Vector3 value) {
+            SetEmissiveNext(value);
+
+            var material = _material;
+            material.Emissive = value;
+            _material = material;
+        }
+
+        public void SetEmissiveNext(Vector3 value) {
+            var material = _material;
+            material.Emissive = value;
+            _effect.FxMaterial.Set(material);
+        }
+
         public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode == SpecialRenderMode.TransparentMask) return IsBlending;
+            if (mode == SpecialRenderMode.DeferredTransparentMask) return IsBlending;
 
             if (mode == SpecialRenderMode.Reflection) {
                 _effect.FxDiffuseMap.SetResource(_txDiffuse);
                 _effect.FxNormalMap.SetResource(_txNormal);
                 _effect.FxMaterial.Set(_material);
             } else {
-                if ((mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth ||
-                        mode == SpecialRenderMode.TransparentDeferred) && !IsBlending) return false;
+                if ((mode == SpecialRenderMode.DeferredTransparentForw || mode == SpecialRenderMode.DeferredTransparentDepth ||
+                        mode == SpecialRenderMode.DeferredTransparentDef) && !IsBlending) return false;
 
                 _effect.FxMaterial.Set(_material);
                 _effect.FxDiffuseMap.SetResource(_txDiffuse);
@@ -136,28 +151,28 @@ namespace AcTools.Render.Kn5Specific.Materials {
             _effect.FxWorld.SetMatrix(objectTransform);
         }
 
-        public static int Drawed = 0;
+        public static int Drawed;
 
         public void Draw(DeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            if (mode == SpecialRenderMode.TransparentMask || mode == SpecialRenderMode.Shadow) {
+            if (mode == SpecialRenderMode.DeferredTransparentMask || mode == SpecialRenderMode.Shadow) {
                 _effect.TechTransparentMask.DrawAllPasses(contextHolder.DeviceContext, indices);
                 Drawed++;
                 return;
             }
 
             if (IsBlending) {
-                if (mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth) {
+                if (mode == SpecialRenderMode.DeferredTransparentForw || mode == SpecialRenderMode.DeferredTransparentDepth) {
                     _effect.TechTransparentForward.DrawAllPasses(contextHolder.DeviceContext, indices);
                     Drawed++;
-                } else if (mode == SpecialRenderMode.TransparentDeferred) {
+                } else if (mode == SpecialRenderMode.DeferredTransparentDef) {
                     _effect.TechTransparentDeferred.DrawAllPasses(contextHolder.DeviceContext, indices);
                     Drawed++;
                 }
                 return;
             }
 
-            if (mode == SpecialRenderMode.Transparent || mode == SpecialRenderMode.TransparentDepth ||
-                    mode == SpecialRenderMode.TransparentDeferred) return;
+            if (mode == SpecialRenderMode.DeferredTransparentForw || mode == SpecialRenderMode.DeferredTransparentDepth ||
+                    mode == SpecialRenderMode.DeferredTransparentDef) return;
             (mode == SpecialRenderMode.Deferred ? _effect.TechStandardDeferred : _effect.TechStandardForward)
                     .DrawAllPasses(contextHolder.DeviceContext, indices);
             Drawed++;

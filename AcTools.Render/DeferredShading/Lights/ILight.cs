@@ -1,12 +1,9 @@
-﻿using AcTools.Render.Base.Shaders;
-using SlimDX.Direct3D11;
+﻿using System;
+using AcTools.Render.Base;
+using AcTools.Render.Base.Cameras;
 
 namespace AcTools.Render.DeferredShading.Lights {
-    public enum SpecialLightMode {
-        Default, Shadows, ShadowsWithoutFilter, Debug
-    }
-
-    public interface ILight {
-        void Draw(DeviceContext deviceContext, EffectDeferredLight lighting, SpecialLightMode mode);
+    public interface ILight : IDisposable {
+        void Draw(DeviceContextHolder holder, ICamera camera, SpecialLightMode mode);
     }
 }

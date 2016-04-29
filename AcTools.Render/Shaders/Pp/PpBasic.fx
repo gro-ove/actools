@@ -29,35 +29,35 @@
 // one vertex shader for everything
 	PS_IN vs_main(VS_IN vin) {
 		PS_IN vout;
-		vout.PosH = float4(vin.PosL, 1.0f);
+		vout.PosH = float4(vin.PosL, 1.0);
 		vout.Tex = vin.Tex;
 		return vout;
 	}
 
-	float4 ps_Copy(PS_IN pin) : SV_Target{
-		return gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0f);
+	float4 ps_Copy(PS_IN pin) : SV_Target {
+		return gInputMap.SampleLevel(samInputImage, pin.Tex, 0.0);
 	}
 
-	technique11 Copy {
+	technique10 Copy {
 		pass P0 {
-			SetVertexShader(CompileShader(vs_5_0, vs_main()));
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_5_0, ps_Copy()));
+			SetPixelShader(CompileShader(ps_4_0, ps_Copy()));
 		}
 	}
 
 // overlay (gui) mode
-	float4 ps_Overlay(PS_IN pin) : SV_Target{
+	float4 ps_Overlay(PS_IN pin) : SV_Target {
 		float4 b = gInputMap.Sample(samInputImage, pin.Tex);
 		float4 o = gOverlayMap.Sample(samInputImage, pin.Tex);
 		return float4(b.rgb * (1 - o.a) + o.rgb * o.a, 1.0);
 	}
 
-	technique11 Overlay {
+	technique10 Overlay {
 		pass P0 {
-			SetVertexShader(CompileShader(vs_5_0, vs_main()));
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_5_0, ps_Overlay()));
+			SetPixelShader(CompileShader(ps_4_0, ps_Overlay()));
 		}
 	}
 
@@ -78,11 +78,11 @@
 		return float4(tex.rgb, max(b.a, tex.a));;
 	}
 
-	technique11 Shadow {
+	technique10 Shadow {
 		pass P0 {
-			SetVertexShader(CompileShader(vs_5_0, vs_main()));
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_5_0, ps_Shadow()));
+			SetPixelShader(CompileShader(ps_4_0, ps_Shadow()));
 		}
 	}
 
@@ -108,11 +108,11 @@
 		return background;
 	}
 
-	technique11 Depth { // PT
+	technique10 Depth { // PT
 		pass P0 {
-			SetVertexShader(CompileShader(vs_5_0, vs_main()));
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
 			SetGeometryShader(NULL);
-			SetPixelShader(CompileShader(ps_5_0, ps_Depth()));
+			SetPixelShader(CompileShader(ps_4_0, ps_Depth()));
 		}
 	}
 
@@ -126,10 +126,10 @@
 		return float4(aaImage, 1.0f);
 	}
 
-	technique11 Fxaa { // PT
+	technique10 Fxaa { // PT
 		pass P0 {
-			SetVertexShader( CompileShader( vs_5_0, vs_main() ) );
+			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );
-			SetPixelShader( CompileShader( ps_5_0, ps_Fxaa() ) );
+			SetPixelShader( CompileShader( ps_4_0, ps_Fxaa() ) );
 		}
 	}

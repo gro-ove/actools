@@ -11,6 +11,7 @@ struct PS_IN {
 	float3 NormalW    : NORMAL;
 	float2 Tex        : TEXCOORD;
 	float3 TangentW   : TANGENT;
+	float3 BitangentW : BITANGENT;
 };
 
 struct PosOnly_PS_IN {
