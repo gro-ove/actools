@@ -112,7 +112,17 @@
     <Compile Include="DeferredShading\PostEffects\SslrHelper.cs" />
     <Compile Include="DeferredShading\StatsDeferredShadingRenderer.cs" />
     <Compile Include="Forward\ForwardRenderer.cs" />
-    <Compile Include="Kn5Specific\Utils\Kn5CarHelper.cs" />
+    <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAlpha.cs" />
+    <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNmMult.cs" />
+    <Compile Include="Kn5Specific\IKn5ObjectRenderer.cs" />
+    <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAtNm.cs" />
+    <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleBase.cs" />
+    <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleDiffMaps.cs" />
+    <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleGl.cs" />
+    <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleMaps.cs" />
+    <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNm.cs" />
+    <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleReflective.cs" />
+    <Compile Include="Kn5Specific\Utils\CarHelper.cs" />
     <Compile Include="Kn5SpecificForward\ForwardKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificDeferred\Kn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificDeferred\Materials\AmbientShadowMaterialDeferred.cs" />
@@ -138,6 +148,8 @@
     <Compile Include="Kn5Specific\Textures\RenderableTexture.cs" />
     <Compile Include="Kn5Specific\Textures\IRenderableTexture.cs" />
     <Compile Include="Kn5Specific\Textures\TexturesProvider.cs" />
+    <Compile Include="Kn5Specific\Utils\CarLight.cs" />
+    <Compile Include="Kn5Specific\Utils\CarLightType.cs" />
     <Compile Include="Kn5Specific\Utils\Kn5Converter.cs" />
     <Compile Include="Temporary\TestingCube.cs" />
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />

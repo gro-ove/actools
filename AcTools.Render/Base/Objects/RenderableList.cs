@@ -51,6 +51,8 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
+        public int TrianglesCount => this.Aggregate(0, (a, b) => a + b.TrianglesCount);
+
         public BoundingBox? BoundingBox { get; private set; }
 
         public void UpdateBoundingBox() {

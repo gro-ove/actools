@@ -54,12 +54,32 @@ namespace AcTools.Render.Wrapper {
 
             switch (args.KeyCode) {
                 case Keys.Tab:
-                    Renderer.SyncInterval = !Renderer.SyncInterval;
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        Renderer.SyncInterval = !Renderer.SyncInterval;
+                    }
+                    break;
+
+                case Keys.L:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        Kn5ObjectRenderer.CarLightsEnabled = !Kn5ObjectRenderer.CarLightsEnabled;
+                    }
                     break;
 
                 case Keys.Space:
                     if (!args.Control && !args.Alt && !args.Shift) {
                         Kn5ObjectRenderer.AutoRotate = !Kn5ObjectRenderer.AutoRotate;
+                    }
+                    break;
+
+                case Keys.PageUp:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        Kn5ObjectRenderer.SelectPreviousSkin();
+                    }
+                    break;
+
+                case Keys.PageDown:
+                    if (!args.Control && !args.Alt && !args.Shift) {
+                        Kn5ObjectRenderer.SelectNextSkin();
                     }
                     break;
             }

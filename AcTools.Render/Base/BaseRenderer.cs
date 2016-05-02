@@ -29,6 +29,8 @@ namespace AcTools.Render.Base {
 
         public SampleDescription SampleDescription => _sampleDescription;
 
+        public bool IsDirty { get; protected set; }
+
         private int _width;
         private int _height;
         private bool _resized = true;
@@ -212,6 +214,7 @@ namespace AcTools.Render.Base {
 
         public virtual void Draw() {
             Debug.Assert(_initialized);
+            IsDirty = false;
 
             if (_resized) {
                 Resize();

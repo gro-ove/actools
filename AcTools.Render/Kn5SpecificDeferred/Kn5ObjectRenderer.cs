@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
@@ -10,25 +9,19 @@ using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.DeferredShading;
 using AcTools.Render.DeferredShading.Lights;
+using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Render.Kn5SpecificDeferred.Materials;
 using AcTools.Utils.Helpers;
-using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificDeferred {
-    public interface IKn5ObjectRenderer {
-        CameraOrbit CameraOrbit { get; }
-
-        bool AutoRotate { get; set; }
-    }
-
     public class Kn5ObjectRenderer : StatsDeferredShadingRenderer, IKn5ObjectRenderer {
         private readonly Kn5[] _kn5;
-        private readonly Kn5CarHelper _kn5CarHelper;
+        private readonly CarHelper _carHelper;
 
         public bool AutoRotate { get; set; } = true;
 
@@ -52,7 +45,7 @@ namespace AcTools.Render.Kn5SpecificDeferred {
 
         public Kn5ObjectRenderer(string mainKn5Filename, params string[] additionalKn5Filenames) {
             _kn5 = new[] { mainKn5Filename }.Union(additionalKn5Filenames).Where(x => x != null).Select(Kn5.FromFile).ToArray();
-            _kn5CarHelper = new Kn5CarHelper(mainKn5Filename);
+            _carHelper = new CarHelper(_kn5.FirstOrDefault());
 
             AmbientLower = Vector3.Normalize(new Vector3(114f, 124f, 147f));
             AmbientUpper = Vector3.Normalize(new Vector3(85f, 105f, 128f));
@@ -75,29 +68,23 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             }
         }
 
-        public List<CarLight> Headlights; 
-        public List<CarLight> BrakeLights;
+        public List<DeferredCarLight> CarLights; 
 
-        public enum CarLightType {
-            Headlight, Brake
-        }
+        public class DeferredCarLight : CarLight, ILight {
+            private PointLight[] _lights;
 
-        public class CarLight : ILight {
-            public readonly CarLightType Type;
-            public readonly string Name;
-            public readonly Vector3 Emissive;
+            protected override void OnEnabledChanged(bool value) {
+                base.OnEnabledChanged(value);
 
-            public bool IsEnabled {
-                get { return _isEnabled; }
-                set {
-                    if (Equals(_isEnabled, value) || Node == null) return;
+                if (value && _lights == null) {
+                    _lights = CreateLights();
+                }
+            }
 
-                    _isEnabled = value;
-                    Node.SetEmissive(_isEnabled ? Emissive : (Vector3?)null);
-
-                    if (_isEnabled && _lights == null) {
-                        _lights = CreateLights();
-                    }
+            public void Draw(DeviceContextHolder holder, ICamera camera, SpecialLightMode mode) {
+                if (!IsEnabled || _lights == null) return;
+                foreach (var light in _lights) {
+                    light.Draw(holder, camera, mode);
                 }
             }
 
@@ -170,59 +157,37 @@ namespace AcTools.Render.Kn5SpecificDeferred {
                 }).ToArray();
             }
 
-            [CanBeNull]
-            public readonly Kn5RenderableObject Node;
-
-            private PointLight[] _lights;
-            private bool _isEnabled;
-
-            public CarLight(CarLightType type, Kn5RenderableList main, IniFileSection section) {
-                Type = type;
-                Name = section.Get("NAME");
-                Emissive = section.GetVector3("COLOR").Select(y => (float)y).ToArray().ToVector3();
-                Node = main.GetByName(Name);
-            }
-
             public void Dispose() {
                 _lights?.DisposeEverything();
                 _lights = null;
             }
-
-            public void Draw(DeviceContextHolder holder, ICamera camera, SpecialLightMode mode) {
-                if (!_isEnabled || _lights == null) return;
-                foreach (var light in _lights) {
-                    light.Draw(holder, camera, mode);
-                }
-            }
         }
 
         private void LoadLights(Kn5RenderableList node) {
-            if (_kn5CarHelper.Data.IsEmpty) return;
-
-            var lightsIni = _kn5CarHelper.Data.GetIniFile("lights.ini");
-            Headlights = lightsIni.GetSections("LIGHT").Select(x => new CarLight(CarLightType.Headlight, node, x)).ToList();
-            BrakeLights = lightsIni.GetSections("BRAKE").Select(x => new CarLight(CarLightType.Brake, node, x)).ToList();
-
-            Lights.AddRange(Headlights);
-            Lights.AddRange(BrakeLights);
+            CarLights = _carHelper.LoadLights<DeferredCarLight>(node).ToList();
+            Lights.AddRange(CarLights);
         }
 
-        private bool _carLights;
+        private bool _carLightsEnabled;
 
-        public bool CarLights {
-            get { return _carLights; }
+        public bool CarLightsEnabled {
+            get { return _carLightsEnabled; }
             set {
-                if (Equals(_carLights, value)) return;
-                _carLights = value;
+                if (Equals(_carLightsEnabled, value)) return;
+                _carLightsEnabled = value;
 
-                foreach (var light in Headlights) {
-                    light.IsEnabled = value;
-                }
-
-                foreach (var light in BrakeLights) {
+                foreach (var light in CarLights) {
                     light.IsEnabled = value;
                 }
             }
+        }
+
+        public void SelectPreviousSkin() {
+            _carHelper.SelectPreviousSkin(DeviceContextHolder);
+        }
+
+        public void SelectNextSkin() {
+            _carHelper.SelectNextSkin(DeviceContextHolder);
         }
 
         protected override void InitializeInner() {
@@ -233,8 +198,12 @@ namespace AcTools.Render.Kn5SpecificDeferred {
 
             IRenderableObject mainNode = null;
             foreach (var kn5 in _kn5) {
-                Kn5MaterialsProvider.SetKn5(kn5);
-                TexturesProvider.SetKn5(kn5);
+                if (mainNode == null) {
+                    _carHelper.SetKn5(DeviceContextHolder);
+                } else {
+                    Kn5MaterialsProvider.SetKn5(kn5);
+                    TexturesProvider.SetKn5(kn5.OriginalFilename, kn5);
+                }
 
                 var node = Kn5Converter.Convert(kn5.RootNode);
                 Scene.Add(node);
@@ -246,10 +215,10 @@ namespace AcTools.Render.Kn5SpecificDeferred {
 
             var asList = mainNode as Kn5RenderableList;
             if (asList != null) {
-                Scene.AddRange(_kn5CarHelper.LoadAmbientShadows(asList));
+                Scene.AddRange(_carHelper.LoadAmbientShadows(asList));
 
-                _kn5CarHelper.AdjustPosition(asList);
-                _kn5CarHelper.LoadMirrors(asList);
+                _carHelper.AdjustPosition(asList);
+                _carHelper.LoadMirrors(asList);
                 LoadLights(asList);
             }
 
@@ -341,6 +310,7 @@ namespace AcTools.Render.Kn5SpecificDeferred {
 
         public override void Dispose() {
             base.Dispose();
+            _carHelper.Dispose();
             foreach (var kn5 in _kn5) {
                 Kn5MaterialsProvider.DisposeFor(kn5);
                 TexturesProvider.DisposeFor(kn5);

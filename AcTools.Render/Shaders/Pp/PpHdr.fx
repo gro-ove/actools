@@ -18,7 +18,7 @@
 		return saturate(color / 5);
 	}
 
-	technique11 Downsampling {
+	technique10 Downsampling {
 		pass P0 {
 			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );
@@ -33,7 +33,7 @@
 		return (tex(0.5) * 49 + tex(gBrightnessMap, 0.5)) / 50;
 	}
 
-	technique11 Adaptation {
+	technique10 Adaptation {
 		pass P0 {
 			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );
@@ -82,7 +82,7 @@
 		return float4(ToneReinhard(tex(pin.Tex).rgb, currentBrightness, 0.56, 1.2), 1);
 	}
 
-	technique11 Tonemap {
+	technique10 Tonemap {
 		pass P0 {
 			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );
@@ -95,7 +95,7 @@
 		return tex(pin.Tex);
 	}
 
-	technique11 Copy {
+	technique10 Copy {
 		pass P0 {
 			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );
@@ -109,7 +109,7 @@
 		return float4(saturate(value), 1.0);
 	}
 
-	technique11 Combine {
+	technique10 Combine {
 		pass P0 {
 			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );
@@ -119,10 +119,10 @@
 
 // bloom
 	float4 ps_Bloom (PS_IN pin) : SV_Target {
-		return saturate(tex(pin.Tex) - 1.2) * 1;
+		return saturate(tex(pin.Tex) - 1.2);
 	}
 
-	technique11 Bloom {
+	technique10 Bloom {
 		pass P0 {
 			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );

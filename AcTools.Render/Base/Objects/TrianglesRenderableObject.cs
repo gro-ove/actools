@@ -29,6 +29,8 @@ namespace AcTools.Render.Base.Objects {
             }
         }
 
+        public override int TrianglesCount => IndicesCount / 3;
+
         public override void UpdateBoundingBox() {
             BoundingBox = IsEmpty ? (BoundingBox?)null : Vertices.Select(x => Vector3.Transform(x.Position, ParentMatrix).GetXyz()).ToBoundingBox();
         }

@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using JetBrains.Annotations;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public interface IRenderableTexture : IDisposable {
+        [CanBeNull]
         ShaderResourceView Resource { get; }
+
+        [CanBeNull]
+        string Name { get; }
     }
 }

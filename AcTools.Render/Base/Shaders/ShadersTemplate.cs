@@ -1,8 +1,6 @@
 ﻿/* GENERATED AUTOMATICALLY */
 /* DON'T MODIFY */
 
-using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
 using SlimDX;
 using SlimDX.D3DCompiler;
@@ -656,43 +654,78 @@ namespace AcTools.Render.Base.Shaders {
             public float Diffuse;
             public float Specular;
             public float SpecularExp;
-            public float FresnelC;
-            public float FresnelExp;
-            public float FresnelMaxLevel;
-            public float DetailsUvMultipler;
             public Vector3 Emissive;
-            public float DetailsNormalBlend;
             public uint Flags;
             public Vector3 _padding;
 
 			public static readonly int Stride = Marshal.SizeOf(typeof(StandartMaterial));
         }
 
+		[StructLayout(LayoutKind.Sequential)]
+        public struct ReflectiveMaterial {
+            public float FresnelC;
+            public float FresnelExp;
+            public float FresnelMaxLevel;
+
+			public static readonly int Stride = Marshal.SizeOf(typeof(ReflectiveMaterial));
+        }
+
+		[StructLayout(LayoutKind.Sequential)]
+        public struct MapsMaterial {
+            public float DetailsUvMultipler;
+            public float DetailsNormalBlend;
+
+			public static readonly int Stride = Marshal.SizeOf(typeof(MapsMaterial));
+        }
+
+		[StructLayout(LayoutKind.Sequential)]
+        public struct AlphaMaterial {
+            public float Alpha;
+
+			public static readonly int Stride = Marshal.SizeOf(typeof(AlphaMaterial));
+        }
+
+		[StructLayout(LayoutKind.Sequential)]
+        public struct NmUvMultMaterial {
+            public float DiffuseMultipler;
+            public float NormalMultipler;
+
+			public static readonly int Stride = Marshal.SizeOf(typeof(NmUvMultMaterial));
+        }
+
 		public const uint HasNormalMap = 1;
-		public const uint HasDetailsMap = 2;
-		public const uint HasDetailsNormalMap = 4;
-		public const uint HasMaps = 8;
-		public const uint UseDiffuseAlphaAsMap = 16;
-		public const uint AlphaBlend = 32;
-		public const uint IsAdditive = 64;
+		public const uint UseDiffuseAlphaAsMap = 2;
+		public const uint UseNormalAlphaAsAlpha = 64;
+		public const uint AlphaTest = 128;
+		public const uint IsAdditive = 16;
+		public const uint HasDetailsMap = 4;
+		public const uint IsCarpaint = 32;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT, InputSignaturePNTG;
         public InputLayout LayoutPT, LayoutPNTG;
 
-		public EffectTechnique TechStandard, TechAmbientShadow, TechMirror;
+		public EffectTechnique TechStandard, TechAlpha, TechReflective, TechNm, TechNmUvMult, TechAtNm, TechMaps, TechDiffMaps, TechGl, TechAmbientShadow, TechMirror;
 
 		public EffectMatrixVariable FxWorld { get; private set; }
 		public EffectMatrixVariable FxWorldInvTranspose { get; private set; }
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
-		public EffectResourceVariable FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap, FxReflectionCubemap;
+		public EffectResourceVariable FxDiffuseMap, FxNormalMap, FxMapsMap, FxDetailsMap, FxDetailsNormalMap;
 		public EffectVectorVariable FxEyePosW;
-		public EffectVariable FxStandartMaterial;
+		public EffectVariable FxMaterial, FxReflectiveMaterial, FxMapsMaterial, FxAlphaMaterial, FxNmUvMultMaterial;
 
 		public void Initialize(Device device) {
 			E = new Effect(device, EffectUtils.Load("SimpleMaterial"));
 
 			TechStandard = E.GetTechniqueByName("Standard");
+			TechAlpha = E.GetTechniqueByName("Alpha");
+			TechReflective = E.GetTechniqueByName("Reflective");
+			TechNm = E.GetTechniqueByName("Nm");
+			TechNmUvMult = E.GetTechniqueByName("NmUvMult");
+			TechAtNm = E.GetTechniqueByName("AtNm");
+			TechMaps = E.GetTechniqueByName("Maps");
+			TechDiffMaps = E.GetTechniqueByName("DiffMaps");
+			TechGl = E.GetTechniqueByName("Gl");
 			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
 			TechMirror = E.GetTechniqueByName("Mirror");
 
@@ -715,9 +748,12 @@ namespace AcTools.Render.Base.Shaders {
 			FxMapsMap = E.GetVariableByName("gMapsMap").AsResource();
 			FxDetailsMap = E.GetVariableByName("gDetailsMap").AsResource();
 			FxDetailsNormalMap = E.GetVariableByName("gDetailsNormalMap").AsResource();
-			FxReflectionCubemap = E.GetVariableByName("gReflectionCubemap").AsResource();
 			FxEyePosW = E.GetVariableByName("gEyePosW").AsVector();
-			FxStandartMaterial = E.GetVariableByName("gStandartMaterial");
+			FxMaterial = E.GetVariableByName("gMaterial");
+			FxReflectiveMaterial = E.GetVariableByName("gReflectiveMaterial");
+			FxMapsMaterial = E.GetVariableByName("gMapsMaterial");
+			FxAlphaMaterial = E.GetVariableByName("gAlphaMaterial");
+			FxNmUvMultMaterial = E.GetVariableByName("gNmUvMultMaterial");
 		}
 
         public void Dispose() {
@@ -804,6 +840,18 @@ namespace AcTools.Render.Base.Shaders {
         }
         public static void Set(this EffectVariable variable, EffectSimpleMaterial.StandartMaterial o) {
             SlimDxExtension.Set(variable, o, EffectSimpleMaterial.StandartMaterial.Stride);
+        }
+        public static void Set(this EffectVariable variable, EffectSimpleMaterial.ReflectiveMaterial o) {
+            SlimDxExtension.Set(variable, o, EffectSimpleMaterial.ReflectiveMaterial.Stride);
+        }
+        public static void Set(this EffectVariable variable, EffectSimpleMaterial.MapsMaterial o) {
+            SlimDxExtension.Set(variable, o, EffectSimpleMaterial.MapsMaterial.Stride);
+        }
+        public static void Set(this EffectVariable variable, EffectSimpleMaterial.AlphaMaterial o) {
+            SlimDxExtension.Set(variable, o, EffectSimpleMaterial.AlphaMaterial.Stride);
+        }
+        public static void Set(this EffectVariable variable, EffectSimpleMaterial.NmUvMultMaterial o) {
+            SlimDxExtension.Set(variable, o, EffectSimpleMaterial.NmUvMultMaterial.Stride);
         }
 	}
 }

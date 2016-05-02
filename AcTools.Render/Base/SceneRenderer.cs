@@ -13,6 +13,10 @@ namespace AcTools.Render.Base {
             Scene = new RenderableList();
         }
 
+        protected long GetTrianglesCount() {
+            return Scene.TrianglesCount;
+        }
+
         protected override void ResizeInner() {
             Camera.SetLens(AspectRatio);
         }

@@ -3,32 +3,58 @@ using System.Drawing;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
+using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
+using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
-using SlimDX;
 using SlimDX.Direct3D11;
-using SlimDX.DirectWrite;
 using SlimDX.DXGI;
-using SpriteTextRenderer;
-using FontStyle = SlimDX.DirectWrite.FontStyle;
-using TextBlockRenderer = SpriteTextRenderer.SlimDX.TextBlockRenderer;
 
 namespace AcTools.Render.Forward {
     public abstract class ForwardRenderer : SceneRenderer {
+        public int TrianglesCount { get; protected set; }
+
         public bool UseFxaa = true;
         public bool ShowWireframe = false;
         public bool VisibleUi = true;
+
+        private bool _useBloom;
+
+        public bool UseBloom {
+            get { return _useBloom; }
+            set {
+                if (Equals(value, _useBloom)) return;
+
+                _useBloom = value;
+
+                DisposeHelper.Dispose(ref _buffer);
+                DisposeHelper.Dispose(ref _buffer1);
+                DisposeHelper.Dispose(ref _buffer2);
+
+                if (_useBloom) {
+                    _buffer = TargetResourceTexture.Create(Format.R16G16B16A16_Float, SampleDescription);
+                    _buffer1 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm, SampleDescription);
+                    _buffer2 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm, SampleDescription);
+                } else {
+                    _buffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm, SampleDescription);
+                }
+
+                if (!_resized) return;
+                _buffer.Resize(DeviceContextHolder, Width, Height);
+                _buffer1?.Resize(DeviceContextHolder, Width, Height);
+                _buffer2?.Resize(DeviceContextHolder, Width, Height);
+            }
+        }
 
         protected override SampleDescription GetSampleDescription(int msaaQuality) => new SampleDescription(1, 0);
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
-        private TargetResourceTexture _buffer;
-        private TextBlockRenderer _textBlock;
+        private TargetResourceTexture _buffer, _buffer1, _buffer2;
         private RasterizerState _wireframeRasterizerState;
 
         protected override void InitializeInner() {
-            _buffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm, SampleDescription);
+            UseBloom = true;
 
             _wireframeRasterizerState = RasterizerState.FromDescription(Device, new RasterizerStateDescription {
                 FillMode = FillMode.Wireframe,
@@ -38,13 +64,19 @@ namespace AcTools.Render.Forward {
             });
         }
 
+        private bool _resized;
+
         protected override void ResizeInner() {
             base.ResizeInner();
-            _buffer.Resize(DeviceContextHolder, Width, Height);
 
-            if (_textBlock != null) return;
-            _textBlock = new TextBlockRenderer(Sprite, "Consolas", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 24f);
+            _resized = true;
+            _buffer.Resize(DeviceContextHolder, Width, Height);
+            _buffer1?.Resize(DeviceContextHolder, Width, Height);
+            _buffer2?.Resize(DeviceContextHolder, Width, Height);
         }
+
+        private EffectPpHdr _hdr;
+        private BlurHelper _blur;
 
         protected override void DrawInner() {
             DrawPrepare();
@@ -66,11 +98,38 @@ namespace AcTools.Render.Forward {
             DeviceContext.OutputMerger.BlendState = null;
             DeviceContext.Rasterizer.State = null;
 
+            ShaderResourceView result;
+            if (UseBloom) {
+                if (_hdr == null) {
+                    _hdr = DeviceContextHolder.GetEffect<EffectPpHdr>();
+                    _blur = DeviceContextHolder.GetHelper<BlurHelper>();
+                }
+
+                DeviceContext.OutputMerger.SetTargets(_buffer1.TargetView);
+                DeviceContext.ClearRenderTargetView(_buffer1.TargetView, ColorTransparent);
+
+                DeviceContextHolder.PrepareQuad(_hdr.LayoutPT);
+                _hdr.FxInputMap.SetResource(_buffer.View);
+                _hdr.TechBloom.DrawAllPasses(DeviceContext, 6);
+                
+                _blur.Blur(DeviceContextHolder, _buffer1, _buffer2, 1f, 2);
+
+                DeviceContext.OutputMerger.SetTargets(_buffer2.TargetView);
+
+                _hdr.FxInputMap.SetResource(_buffer.View);
+                _hdr.FxBloomMap.SetResource(_buffer1.View);
+                _hdr.TechCombine.DrawAllPasses(DeviceContext, 6);
+
+                result = _buffer2.View;
+            } else {
+                result = _buffer.View;
+            }
+
             DeviceContext.ClearRenderTargetView(RenderTargetView, ColorTransparent);
             if (UseFxaa) {
-                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, _buffer.View, RenderTargetView);
+                DeviceContextHolder.GetHelper<FxaaHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
             } else {
-                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _buffer.View, RenderTargetView);
+                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, result, RenderTargetView);
             }
         }
 
@@ -87,26 +146,23 @@ namespace AcTools.Render.Forward {
 
         protected sealed override void DrawSprites() {
             if (Sprite == null) throw new NotSupportedException();
-            DrawSpritesInner();
+
+            if (VisibleUi) {
+                DrawSpritesInner();
+            }
+
             Sprite.Flush();
         }
 
-        protected void DrawSpritesInner() {
-            if (VisibleUi) {
-                _textBlock.DrawString($@"
-FPS:            {FramesPerSecond:F1}{(SyncInterval ? " (limited)" : "")}
-FXAA:           {(!UseFxaa ? "No" : "Yes")}".Trim(),
-                        new Vector2(Width - 300, 20), 16f, new Color4(1.0f, 1.0f, 1.0f),
-                        CoordinateType.Absolute);
-            }
-        }
+        protected virtual void DrawSpritesInner() {}
 
         public override void Dispose() {
             base.Dispose();
-
-            DisposeHelper.Dispose(ref _textBlock);
+            
             DisposeHelper.Dispose(ref _wireframeRasterizerState);
             DisposeHelper.Dispose(ref _buffer);
+            DisposeHelper.Dispose(ref _buffer1);
+            DisposeHelper.Dispose(ref _buffer2);
         }
     }
 }

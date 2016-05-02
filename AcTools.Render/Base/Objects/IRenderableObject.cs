@@ -10,6 +10,8 @@ namespace AcTools.Render.Base.Objects {
 
         bool IsReflectable { get; set; }
 
+        int TrianglesCount { get; }
+
         BoundingBox? BoundingBox { get; }
 
         void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode = SpecialRenderMode.Deferred);

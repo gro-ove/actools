@@ -14,7 +14,7 @@ namespace AcTools.Render.Base.PostEffects {
 
         public void Draw(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
-            holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
+            holder.PrepareQuad(_effect.LayoutPT);
             _effect.FxInputMap.SetResource(view);
             _effect.TechCopy.DrawAllPasses(holder.DeviceContext, 6);
         }

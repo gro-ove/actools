@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace AcTools.Kn5File {
     internal sealed class Kn5Reader : BinaryReader {
         public Kn5Reader(string filename)
-            : this(File.Open(filename, FileMode.Open, FileAccess.Read)) {
+            : this(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
         }
 
         public Kn5Reader(Stream input, bool withoutHeader = false)
@@ -86,9 +86,9 @@ namespace AcTools.Kn5File {
             var material = new Kn5Material {
                 Name = ReadString(),
                 ShaderName = ReadString(),
-                BlendMode = ReadBlendMode(),
-                AlphaTested = ReadBoolean(),
-                DepthMode = ReadDepthMode(),
+                BlendMode = ReadBlendMode(), // byte
+                AlphaTested = ReadBoolean(), // bool
+                DepthMode = ReadDepthMode(), // int32
                 ShaderProperties = new Kn5Material.ShaderProperty[ReadInt32()]
             };
 

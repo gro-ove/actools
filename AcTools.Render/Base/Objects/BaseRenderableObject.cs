@@ -11,6 +11,8 @@ namespace AcTools.Render.Base.Objects {
 
         public bool IsEnabled { get; set; } = true;
 
+        public abstract int TrianglesCount { get; }
+
         public BoundingBox? BoundingBox { get; protected set; }
 
         public void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {

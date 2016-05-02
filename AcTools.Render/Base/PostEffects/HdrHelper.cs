@@ -94,11 +94,6 @@ namespace AcTools.Render.Base.PostEffects {
 
             // blurring
             _blurHelper.Blur(holder, _bloomTexture, _tempTexture, 1f, 2);
-            /*holder.DeviceContext.OutputMerger.SetTargets(_tempTexture.TargetView);
-            _blurHelper.BlurHorizontally(holder, _bloomTexture.View, 5.0f);
-
-            holder.DeviceContext.OutputMerger.SetTargets(_bloomTexture.TargetView);
-            _blurHelper.BlurHorizontally(holder, _tempTexture.View, 1.0f);*/
         }
 
         public bool BloomDebug = false;

@@ -66,6 +66,18 @@ namespace AcTools.Utils {
             return Directory.GetFiles(carDir, "*.kn5").MaxEntryOrDefault(x => new FileInfo(x).Length);
         }
 
+        public static string GetMainCarFilename(string carDir, DataWrapper data) {
+            var iniFile = data.GetIniFile("lods.ini");
+            if (iniFile.Exists()) {
+                var fromData = iniFile["LOD_0"].Get("FILE");
+                if (fromData != null) {
+                    return Path.Combine(carDir, fromData);
+                }
+            }
+            
+            return Directory.GetFiles(carDir, "*.kn5").MaxEntryOrDefault(x => new FileInfo(x).Length);
+        }
+
         public static string GetMainCarFilename(string acRoot, string carName) {
             return GetMainCarFilename(GetCarDirectory(acRoot, carName));
         }

@@ -23,7 +23,7 @@ cbuffer cbPerFrame : register(b0) {
 		return c;
 	}
 
-	technique11 GaussianBlur {
+	technique10 GaussianBlur {
 		pass P0 {
 			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );
@@ -43,7 +43,7 @@ cbuffer cbPerFrame : register(b0) {
 		return c;
 	}
 
-	technique11 ReflectionGaussianBlur {
+	technique10 ReflectionGaussianBlur {
 		pass P0 {
 			SetVertexShader( CompileShader( vs_4_0, vs_main() ) );
 			SetGeometryShader( NULL );

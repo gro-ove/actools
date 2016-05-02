@@ -101,7 +101,7 @@ namespace AcTools.Render.Wrapper {
         }
 
         private void OnRender() {
-            if (_paused) return;
+            if (_paused && !Renderer.IsDirty) return;
             Form.Text = $"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
             Renderer.Draw();
         }
