@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Data;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
@@ -75,6 +77,16 @@ namespace AcManager.Tools.Lists {
             foreach (var value in values) {
                 AddUnique(value);
             }
+        }
+
+        private ListCollectionView _view;
+
+        public ListCollectionView View => _view ?? (_view = CreateListView());
+
+        private ListCollectionView CreateListView() {
+            var result = (ListCollectionView)CollectionViewSource.GetDefaultView(this);
+            result.SortDescriptions.Add(new SortDescription());
+            return result;
         }
     }
 }

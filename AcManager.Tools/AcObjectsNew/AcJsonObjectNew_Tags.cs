@@ -42,17 +42,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         protected abstract AutocompleteValuesList GetTagsList();
 
-        private static ListCollectionView _tagsListView;
-
-        public ListCollectionView TagsList {
-            get {
-                if (_tagsListView != null) return _tagsListView;
-
-                _tagsListView = (ListCollectionView)CollectionViewSource.GetDefaultView(GetTagsList());
-                _tagsListView.SortDescriptions.Add(new SortDescription());
-                return _tagsListView;
-            }
-        }
+        public ListCollectionView TagsList => GetTagsList().View;
 
         private static ListCollectionView _countiesListView;
 
