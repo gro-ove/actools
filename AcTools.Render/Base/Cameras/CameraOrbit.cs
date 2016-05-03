@@ -30,6 +30,17 @@ namespace AcTools.Render.Base.Cameras {
             Target = _sTarget;
         }
 
+        public override BaseCamera Clone() {
+            return new CameraOrbit(FovY) {
+                Radius = Radius,
+                Alpha = Alpha,
+                Beta = Beta,
+                Up = Up,
+                Target = Target,
+                Position = Position
+            };
+        }
+
         public override void LookAt(Vector3 pos, Vector3 target, Vector3 up) {
             Target = target;
             Position = pos;

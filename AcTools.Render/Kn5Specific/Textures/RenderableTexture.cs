@@ -36,21 +36,21 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         private int _resourceId, _overrideId;
 
-        public async void LoadAsync(string filename, Device device) {
+        public async Task LoadAsync(string filename, Device device) {
             var id = ++_resourceId;
             var resource = await Task.Run(() => ShaderResourceView.FromFile(device, filename));
             if (id != _resourceId) return;
             Resource = resource;
         }
 
-        public async void LoadAsync(byte[] data, Device device) {
+        public async Task LoadAsync(byte[] data, Device device) {
             var id = ++_resourceId;
             var resource = await Task.Run(() => ShaderResourceView.FromMemory(device, data));
             if (id != _resourceId) return;
             Resource = resource;
         }
 
-        public async void LoadOverrideAsync(string filename, Device device) {
+        public async Task LoadOverrideAsync(string filename, Device device) {
             if (!File.Exists(filename)) {
                 Override = null;
                 return;
@@ -60,6 +60,19 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             try {
                 var resource = await Task.Run(() => ShaderResourceView.FromFile(device, filename));
+                if (id != _overrideId) return;
+                Override = resource;
+            } catch (Exception) {
+                if (id != _overrideId) return;
+                Override = null;
+            }
+        }
+
+        public async Task LoadOverrideAsync(byte[] data, Device device) {
+            var id = ++_overrideId;
+
+            try {
+                var resource = await Task.Run(() => ShaderResourceView.FromMemory(device, data));
                 if (id != _overrideId) return;
                 Override = resource;
             } catch (Exception) {

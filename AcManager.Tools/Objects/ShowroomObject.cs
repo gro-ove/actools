@@ -1,15 +1,19 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows.Input;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json.Linq;
 
@@ -76,7 +80,34 @@ namespace AcManager.Tools.Objects {
 
         public override string JsonFilename => Path.Combine(Location, "ui", "ui_showroom.json");
 
-        public string PreviewImage => ImageRefreshing ?? Path.Combine(Location, "preview.jpg");
+        public string PreviewImage => ImageRefreshing ?? GetPreviewImage();
+
+        private bool _previewProcessed = false;
+
+        private string GetPreviewImage() {
+            var path = Path.Combine(Location, "preview.jpg");
+            if (!SettingsHolder.Content.DownloadShowroomPreviews || _previewProcessed) return path;
+
+            _previewProcessed = true;
+            if (!File.Exists(path)) {
+                DownloadPreview();
+            }
+
+            return path;
+        }
+
+        private async void DownloadPreview() {
+            string url;
+            if (!DataProvider.Instance.ShowroomsPreviews.TryGetValue(Id.ToLowerInvariant(), out url)) return;
+
+            try {
+                using (var client = new WebClient()) {
+                    await client.DownloadFileTaskAsync(url, PreviewImage);
+                }
+            } catch (Exception e) {
+                Logging.Warning("Can't download showroom's preview: " + e);
+            }
+        }
 
         public string Kn5Filename => Path.Combine(Location, Id + ".kn5");
 

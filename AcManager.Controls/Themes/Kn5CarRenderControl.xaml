@@ -1,6 +1,6 @@
 ﻿<ContentControl x:Class="AcManager.Controls.Kn5CarRenderControl" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:i="clr-namespace:System.Windows.Interop;assembly=PresentationCore"
-        HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Left" VerticalContentAlignment="Top"
+                HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Left" VerticalContentAlignment="Top"
         SizeChanged="ContentControl_SizeChanged">
     <Image Name="ImageControl" MinWidth="50" MinHeight="50" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None">
         <Image.Source>

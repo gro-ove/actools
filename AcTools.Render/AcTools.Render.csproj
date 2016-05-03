@@ -37,6 +37,10 @@
       <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Magick.NET-x86">
+      <HintPath>..\..\..\Temp\magicknet\6.8\Magick.NET-x86.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="SlimDX">
       <HintPath>..\..\..\Temp\sharp-dx\SlimDX.dll</HintPath>
     </Reference>
@@ -100,6 +104,7 @@
     <Compile Include="Base\TargetTextures\TargetResourceTexture.cs" />
     <Compile Include="Base\Utils\FrameMonitor.cs" />
     <Compile Include="Base\Utils\GeometryGenerator.cs" />
+    <Compile Include="Base\Utils\MagickWrapper.cs" />
     <Compile Include="Base\Utils\MathF.cs" />
     <Compile Include="Base\Utils\MathF_CosTable.cs" />
     <Compile Include="Base\Utils\SlimDxExtension.cs" />
@@ -122,6 +127,8 @@
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleMaps.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNm.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleReflective.cs" />
+    <Compile Include="Kn5Specific\Textures\IOverridedTextureProvider.cs" />
+    <Compile Include="Base\Utils\TaskExtension.cs" />
     <Compile Include="Kn5Specific\Utils\CarHelper.cs" />
     <Compile Include="Kn5SpecificForward\ForwardKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificDeferred\Kn5ObjectRenderer.cs" />
@@ -155,7 +162,9 @@
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wrapper\BaseKn5FormWrapper.cs" />
-    <Compile Include="Wrapper\SimpleFormWrapper.cs" />
+    <Compile Include="Wrapper\BaseFormWrapper.cs" />
+    <Compile Include="Wrapper\FancyShowroomWrapper.cs" />
+    <Compile Include="Wrapper\LiteShowroomWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AcTools\AcTools.csproj">

@@ -152,6 +152,7 @@
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
     <Compile Include="Objects\CarSkinObject_Lists.cs" />
     <Compile Include="Objects\FontObject.cs" />
+    <Compile Include="SemiGui\CustomShowroomWrapper.cs" />
     <Compile Include="SemiGui\DriverName.cs" />
     <Compile Include="SemiGui\GameEndedArgs.cs" />
     <Compile Include="SemiGui\GameFinishedArgs.cs" />
@@ -269,6 +270,10 @@
       <Project>{E1C50BB6-5B63-4917-B5E0-836F38061811}</Project>
       <Name>AcManager.Internal</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
+      <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>
+      <Name>AcTools.Render</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>

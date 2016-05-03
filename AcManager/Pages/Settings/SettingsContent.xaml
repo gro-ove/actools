@@ -19,7 +19,14 @@
                 <TextBox Text="{Binding Holder.LoadingConcurrency}" ToolTip="Smaller value may increase UI responsibleness, but decrease loading times"
                         watermark:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:TextBoxAdvancement.SpecialMode="Positive" />
             </DockPanel>
-            
+
+            <!--showrooms specific-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Showrooms:</TextBlock>
+
+            <CheckBox IsChecked="{Binding Holder.DownloadShowroomPreviews}" ToolTip="I doubt you have time to update all of them">
+                <Label>Download previews of common showrooms</Label>
+            </CheckBox>
+
             <!--fonts specific-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Fonts:</TextBlock>
 

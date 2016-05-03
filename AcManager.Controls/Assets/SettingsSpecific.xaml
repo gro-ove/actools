@@ -50,4 +50,8 @@
     <Style x:Key="SettingsPanel.Heading2" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Heading2}">
         <Setter Property="Margin" Value="0 16 0 8" />
     </Style>
+
+    <Style x:Key="SettingsPanel.Small" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Small}">
+        <Setter Property="Margin" Value="0 8 0 8" />
+    </Style>
 </ResourceDictionary>

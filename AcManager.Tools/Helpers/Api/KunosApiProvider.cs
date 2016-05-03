@@ -17,7 +17,7 @@ namespace AcManager.Tools.Helpers.Api {
         public static bool OptionSaveResponses = false;
         public static bool OptionUseWebClient = false;
         public static bool OptionForceDisabledCache = false;
-        public static bool OptionIgnoreSystemProxy = true;
+        public static bool OptionIgnoreSystemProxy = false;
 
         public static int OptionPingTimeout = 2000;
         public static int OptionWebRequestTimeout = 5000;

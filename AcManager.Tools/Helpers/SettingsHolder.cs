@@ -10,6 +10,8 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
+
 // ReSharper disable RedundantArgumentDefaultValue
 
 namespace AcManager.Tools.Helpers {
@@ -327,6 +329,15 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            public bool DownloadShowroomPreviews {
+                get { return ValuesStorage.GetBool("Settings.ContentSettings.DownloadShowroomPreviews", true); }
+                set {
+                    if (Equals(value, DownloadShowroomPreviews)) return;
+                    ValuesStorage.Set("Settings.ContentSettings.DownloadShowroomPreviews", value);
+                    OnPropertyChanged();
+                }
+            }
+
             public string FontIconCharacter {
                 get { return ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", "A"); }
                 set {
@@ -363,5 +374,74 @@ namespace AcManager.Tools.Helpers {
         }
 
         public static ContentSettings Content = new ContentSettings();
+
+        public class CustomShowroomSettings : NotifyPropertyChanged {
+            internal CustomShowroomSettings() { }
+
+            public string[] ShowroomTypes { get; } = { "Custom", "Lite" };
+
+            public string ShowroomType {
+                get { return LiteByDefault ? ShowroomTypes[1] : ShowroomTypes[0]; }
+                set { LiteByDefault = value == ShowroomTypes[1]; }
+            }
+
+            public bool LiteByDefault {
+                get { return ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteByDefault", true); }
+                set {
+                    if (Equals(value, LiteByDefault)) return;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.LiteByDefault", value);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ShowroomType));
+                }
+            }
+
+            public bool LiteUseFxaa {
+                get { return ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteUseFxaa", true); }
+                set {
+                    if (Equals(value, LiteUseFxaa)) return;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.LiteUseFxaa", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool LiteUseMsaa {
+                get { return ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteUseMsaa", false); }
+                set {
+                    if (Equals(value, LiteUseMsaa)) return;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.LiteUseMsaa", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool LiteUseBloom {
+                get { return ValuesStorage.GetBool("Settings.CustomShowroomSettings.LiteUseBloom", true); }
+                set {
+                    if (Equals(value, LiteUseBloom)) return;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.LiteUseBloom", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            [CanBeNull]
+            public string ShowroomId {
+                get { return ValuesStorage.GetString("Settings.CustomShowroomSettings.ShowroomId", "showroom"); }
+                set {
+                    if (Equals(value, ShowroomId)) return;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.ShowroomId", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool UseFxaa {
+                get { return ValuesStorage.GetBool("Settings.CustomShowroomSettings.UseFxaa", true); }
+                set {
+                    if (Equals(value, UseFxaa)) return;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.UseFxaa", value);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public static CustomShowroomSettings CustomShowroom = new CustomShowroomSettings();
     }
 }

@@ -14,7 +14,7 @@ using AcManager.Pages.Drive;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcTools.Kn5Render.Utils;
+using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -51,8 +51,7 @@ namespace AcManager.Pages.Selected {
             private RelayCommand _openInCustomShowroomCommand;
 
             public RelayCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new RelayCommand(o => {
-                // also in CarBlock.xaml.cs
-                Kn5RenderWrapper.StartBrightRoomPreview(SelectedObject.Location, SelectedObject.SelectedSkin?.Id);
+                CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin);
             }));
 
             private RelayCommand _driveCommand;
@@ -247,7 +246,7 @@ namespace AcManager.Pages.Selected {
             contextMenu.Items.Add(item);
 
             item = new MenuItem { Header = "Open In Custom Showroom", InputGestureText = "Alt+H" };
-            item.Click += (sender, args) => Kn5RenderWrapper.StartBrightRoomPreview(_model.SelectedObject.Location, skin.Id);
+            item.Click += (sender, args) => CustomShowroomWrapper.StartAsync(_model.SelectedObject, skin);
             contextMenu.Items.Add(item);
 
             // TODO
@@ -271,7 +270,8 @@ namespace AcManager.Pages.Selected {
             subItem.Click += (sender, args) => ImageUtils.GenerateLivery(skin.PreviewImage, skin.LiveryImage);
             item.Items.Add(subItem);
             subItem = new MenuItem { Header = "Using Custom Showroom" };
-            subItem.Click += (sender, args) => Kn5RenderWrapper.GenerateLivery(_model.SelectedObject.Location, skin.Id, skin.LiveryImage);
+            subItem.IsEnabled = false;
+            // subItem.Click += (sender, args) => Kn5RenderWrapper.GenerateLivery(_model.SelectedObject.Location, skin.Id, skin.LiveryImage);
             item.Items.Add(subItem);
             contextMenu.Items.Add(item);
 

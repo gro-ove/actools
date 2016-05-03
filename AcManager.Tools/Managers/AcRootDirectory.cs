@@ -186,7 +186,7 @@ namespace AcManager.Tools.Managers {
                 ).FirstOrDefault(Directory.Exists);
                 Logging.Write("- result: {0}", result);
                 return result;
-            } catch (SecurityException exception) {
+            } catch (Exception exception) {
                 Logging.Write("- error: {0}", exception);
                 return null;
             }

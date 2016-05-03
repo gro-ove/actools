@@ -6,7 +6,7 @@ using System.Windows.Markup;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Tools.Objects;
-using AcTools.Kn5Render.Utils;
+using AcManager.Tools.SemiGui;
 
 namespace AcManager.Controls.UserControls {
     [ContentProperty("PreviewContent")]
@@ -74,7 +74,7 @@ namespace AcManager.Controls.UserControls {
         private void ShowroomButton_OnMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left) {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    Kn5RenderWrapper.StartBrightRoomPreview(Car.Location, SelectedSkin?.Id);
+                    CustomShowroomWrapper.StartAsync(Car, SelectedSkin);
                     return;
                 }
 
@@ -104,7 +104,7 @@ namespace AcManager.Controls.UserControls {
                 // TODO: Presets!
 
                 item = new MenuItem { Header = "Open In Custom Showroom", InputGestureText = "Alt" };
-                item.Click += (s, args) => Kn5RenderWrapper.StartBrightRoomPreview(Car.Location, SelectedSkin?.Id);
+                item.Click += (s, args) => CustomShowroomWrapper.StartAsync(Car, SelectedSkin);
                 contextMenu.Items.Add(item);
 
                 contextMenu.IsOpen = true;

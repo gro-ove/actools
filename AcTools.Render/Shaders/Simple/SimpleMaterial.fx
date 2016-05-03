@@ -83,7 +83,7 @@ SamplerState samAnisotropic {
 
 float3 CalcAmbient(float3 normal) {
 	float up = normal.y * 0.5 + 0.5;
-	return gMaterial.Ambient + gMaterial.Diffuse * up;
+	return gMaterial.Ambient * 2.0 + gMaterial.Diffuse * up;
 	//return gAmbientDown + up * gAmbientRange;
 }
 
@@ -182,8 +182,8 @@ void CalculateLighted_Nm(PS_IN pin, out float3 lighted, out float alpha, out flo
 }
 
 void CalculateLighted_NmUvMult(PS_IN pin, out float3 lighted, out float alpha, out float3 normal) {
-	float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * gNmUvMultMaterial.DiffuseMultipler);
-	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * gNmUvMultMaterial.NormalMultipler);
+	float4 diffuseValue = gDiffuseMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.DiffuseMultipler));
+	float4 normalValue = gNormalMap.Sample(samAnisotropic, pin.Tex * (1 + gNmUvMultMaterial.NormalMultipler));
 
 	alpha = diffuseValue.a;
 	normal = normalize(NormalSampleToWorldSpace(normalValue.xyz, pin.NormalW, pin.TangentW, pin.BitangentW));
@@ -243,7 +243,7 @@ float3 CalculateReflection(float3 lighted, float3 posW, float3 normalW) {
 	float rim = pow(1 - rid, gReflectiveMaterial.FresnelExp);
 	float val = gReflectiveMaterial.FresnelC + rim * (gReflectiveMaterial.FresnelMaxLevel - gReflectiveMaterial.FresnelC);
 
-	return lighted - val * 0.5 * GET_FLAG(IS_ADDITIVE) + refl * val;
+	return lighted - val * 0.5 * (1 - GET_FLAG(IS_ADDITIVE)) + refl * val;
 }
 
 //// Standart

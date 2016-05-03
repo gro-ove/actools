@@ -36,6 +36,13 @@ namespace AcTools.Render.Base {
             }
         }
 
+        public long GetDedicatedVideoMemory() {
+            using (var dxgiDevice = new SlimDX.DXGI.Device(Device))
+            using (var adapter = dxgiDevice.Adapter){
+                return adapter.Description.DedicatedVideoMemory;
+            }
+        }
+
         private readonly Dictionary<Type, IEffectWrapper> _effects = new Dictionary<Type, IEffectWrapper>();
 
         /// <summary>

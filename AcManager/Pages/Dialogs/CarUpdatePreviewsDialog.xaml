@@ -7,6 +7,15 @@
         d:DesignWidth="300" Title="Update Previews" MinWidth="540" MinHeight="400" Width="540" Height="400" ResizeMode="CanResize" MaxWidth="1920"
         MaxHeight="1080" Closing="CarUpdatePreviewsDialog_OnClosing" SizeToContent="Manual" Loaded="CarUpdatePreviewsDialog_OnLoaded"
         d:DataContext="{d:DesignInstance dialogs:CarUpdatePreviewsDialog}">
+
+    <mui:ModernDialog.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </mui:ModernDialog.Resources>
+    
     <Grid>
         <DockPanel Name="OptionsPhase" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <!--first two rows-->
@@ -23,7 +32,13 @@
                 <!--first column, showroom & filter-->
                 <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
                     <TextBlock Margin="0 0 0 4" Text="Showroom:" Style="{StaticResource LabelWithPadding}" />
-                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}" />
+                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                                <Setter Property="ToolTip" Value="{StaticResource ShowroomPreviewToolTip}" />
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">

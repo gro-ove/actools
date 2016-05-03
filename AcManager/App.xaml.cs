@@ -29,6 +29,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
+using AcTools.Render.Base.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -80,6 +81,8 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.SmartPresetsChangedHandling, ref UserPresetsControl.OptionSmartChangedHandling);
             AppArguments.Set(AppFlag.EnableRaceIniRestoration, ref Game.OptionEnableRaceIniRestoration);
+
+            AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
 
             if (!Debugger.IsAttached) {
                 SetUnhandledExceptionHandler();
@@ -225,6 +228,7 @@ namespace AcManager {
             try {
                 ImageUtils.LoadImageMagickAssembly(AppAddonsManager.Instance.GetAddonFilename("Magick", "Magick.NET-x86.dll"));
                 Logging.Write("magick test: " + ImageUtils.TestImageMagick());
+                MagickWrapper.ResetIsSupported();
             } catch (Exception e) {
                 Logging.Warning("cannot load magick: " + e);
             }

@@ -81,4 +81,13 @@
             </ContentControl.Resources>
         </ContentControl>
     </DataTemplate>
+    
+    <ToolTip x:Key="ShowroomPreviewToolTip">
+        <Grid Margin="4">
+            <TextBlock Text="Preview is missing" />
+            <Image RenderOptions.BitmapScalingMode="HighQuality" Width="256" Height="144"
+                    Visibility="{Binding PreviewImage, Converter={StaticResource ExistToVisibilityConverter}}"
+                    Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
+        </Grid>
+    </ToolTip>
 </ResourceDictionary>

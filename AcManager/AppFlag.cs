@@ -160,15 +160,21 @@ namespace AcManager {
         /// <summary>
         /// Ignore skipped events (when first event is called “event5” or something like this,
         /// in other words — broken). I don't think it'll work, but anyway.
-        /// Example: --kunos-career-ignore-skipped-events=true
+        /// Example: --kunos-career-ignore-skipped-events
         /// </summary>
         KunosCareerIgnoreSkippedEvents,
 
         /// <summary>
-        /// Ignore system proxy settings (from IE). Enabled by default, could work slower if 
-        /// disabled.
-        /// Example: --ignore-system-proxy=false
+        /// Ignore system proxy settings (from IE). Disabled by default, could work faster if 
+        /// enabled.
+        /// Example: --ignore-system-proxy
         /// </summary>
         IgnoreSystemProxy,
+
+        /// <summary>
+        /// When started using command line args, don't show main window.
+        /// Example: --lite-startup-mode-supported
+        /// </summary>
+        LiteStartupModeSupported
     }
 }

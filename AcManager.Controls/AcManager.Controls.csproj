@@ -303,10 +303,9 @@
       <Name>AcManager.Tools</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\AcTools.Kn5Render\AcTools.Kn5Render.csproj">
-      <Project>{c0bf6044-7cc2-497d-85b9-eb798fe65be2}</Project>
-      <Name>AcTools.Kn5Render</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
+      <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>
+      <Name>AcTools.Render</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>

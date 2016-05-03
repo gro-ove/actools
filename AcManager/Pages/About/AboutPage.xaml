@@ -17,6 +17,6 @@
             <TextBlock>• Custom showroom for skins drawing.</TextBlock>
         </StackPanel>
         <TextBlock Style="{StaticResource Heading2}">Contact us:</TextBlock>
-        <mui:BbCodeBlock Margin="20">If you have any idea or suggestion about this app, or if you want to report some problem, please contact us using [url="https://trello.com/b/MwqpL8Bw"]Trello[/url] (or [url="mailto:smpcsht@yahoo.com"]e-mail[/url]).</mui:BbCodeBlock>
+        <mui:BbCodeBlock Margin="20">If you have any idea or suggestion about this app, or if you want to report some problem, please contact us using [url="https://trello.com/b/MwqpL8Bw"]Trello[/url] (or [url="mailto:cm-support@assettocorsa.club"]e-mail[/url]).</mui:BbCodeBlock>
     </StackPanel>
 </UserControl>

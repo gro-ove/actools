@@ -12,6 +12,15 @@ namespace AcTools.Render.Base.Cameras {
         public override void Restore() {
             throw new System.NotImplementedException();
         }
+        
+        public override BaseCamera Clone() {
+            return new FpsCamera(FovY) {
+                Up = Up,
+                Look = Look,
+                Right = Right,
+                Position = Position
+            };
+        }
 
         public FpsCamera(float fov) : base(fov) {}
         

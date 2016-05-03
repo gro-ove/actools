@@ -89,3 +89,4 @@ AcManager.Tools/Helpers/Api/CmHelpersProvider_Consts.cs
 # RAM Disk trick
 */bin~
 */obj~
+*.tmp_proj

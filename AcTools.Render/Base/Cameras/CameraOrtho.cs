@@ -25,6 +25,16 @@ namespace AcTools.Render.Base.Cameras {
             throw new System.NotImplementedException();
         }
 
+        public override BaseCamera Clone() {
+            return new CameraOrtho {
+                Width = Width,
+                Height = Height,
+                Up = Up,
+                Target = Target,
+                Position = Position
+            };
+        }
+
         public override void SetLens(float aspect) {
             Proj = Matrix.OrthoLH(Width, Height, NearZ, FarZ);
             UpdateViewMatrix();

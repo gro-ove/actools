@@ -135,6 +135,25 @@ namespace AcManager.Tools.Data {
             }
         }
 
+        private Dictionary<string, string> _showroomsPreviews;
+
+        [NotNull]
+        public IReadOnlyDictionary<string, string> ShowroomsPreviews {
+            get {
+                if (_showroomsPreviews != null) return _showroomsPreviews;
+
+                try {
+                    _showroomsPreviews = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                        FilesStorage.Instance.LoadContentFile(ContentCategory.Data, "ShowroomsPreviews.json"));
+                } catch (Exception e) {
+                    Logging.Warning("Cannot load ShowroomsPreviews.json: " + e);
+                    _showroomsPreviews = new Dictionary<string, string>();
+                }
+
+                return _showroomsPreviews;
+            }
+        }
+
         private Dictionary<string, string> _countryByIds;
 
         [NotNull]

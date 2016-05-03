@@ -16,7 +16,6 @@ namespace AcTools.Render.Forward {
 
         public bool UseFxaa = true;
         public bool ShowWireframe = false;
-        public bool VisibleUi = true;
 
         private bool _useBloom;
 
@@ -46,7 +45,9 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        protected override SampleDescription GetSampleDescription(int msaaQuality) => new SampleDescription(1, 0);
+        public bool UseMsaa;
+
+        protected override SampleDescription SampleDescription => UseMsaa ? base.SampleDescription : new SampleDescription(1, 0);
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
@@ -146,11 +147,7 @@ namespace AcTools.Render.Forward {
 
         protected sealed override void DrawSprites() {
             if (Sprite == null) throw new NotSupportedException();
-
-            if (VisibleUi) {
-                DrawSpritesInner();
-            }
-
+            DrawSpritesInner();
             Sprite.Flush();
         }
 

@@ -19,15 +19,12 @@ namespace AcTools.Render.Base {
         private DeviceContextHolder _deviceContextHolder;
         private SwapChainDescription _swapChainDescription;
         private SwapChain _swapChain;
-        private SampleDescription _sampleDescription;
 
         public Device Device => _deviceContextHolder.Device;
 
         public DeviceContext DeviceContext => _deviceContextHolder.DeviceContext;
 
         public DeviceContextHolder DeviceContextHolder => _deviceContextHolder;
-
-        public SampleDescription SampleDescription => _sampleDescription;
 
         public bool IsDirty { get; protected set; }
 
@@ -77,9 +74,9 @@ namespace AcTools.Render.Base {
 
         private bool _initialized;
 
-        protected virtual SampleDescription GetSampleDescription(int msaaQuality) {
-            return new SampleDescription(4, msaaQuality - 1);
-        }
+        protected int MsaaQuality { get; private set; }
+
+        protected virtual SampleDescription SampleDescription => new SampleDescription(4, MsaaQuality - 1);
 
         protected abstract FeatureLevel FeatureLevel { get; }
    
@@ -94,9 +91,7 @@ namespace AcTools.Render.Base {
                 throw new Exception($"Direct3D Feature {FeatureLevel} unsupported");
             }
 
-            var msaaQuality = device.CheckMultisampleQualityLevels(Format.R8G8B8A8_UNorm, 4);
-            _sampleDescription = GetSampleDescription(msaaQuality);
-
+            MsaaQuality = device.CheckMultisampleQualityLevels(Format.R8G8B8A8_UNorm, 4);
             return device;
         }
 
@@ -117,7 +112,7 @@ namespace AcTools.Render.Base {
         /// </summary>
         public void Initialize(IntPtr outputHandle) {
             Debug.Assert(_initialized == false);
-
+            
             InitializeDevice().Dispose();
 
             _swapChainDescription = new SwapChainDescription {
@@ -149,6 +144,9 @@ namespace AcTools.Render.Base {
         private RenderTargetView _renderView;
         private Texture2D _depthBuffer;
         private DepthStencilView _depthView;
+
+        // TODO: clean up?
+        public Texture2D RenderBuffer => _renderBuffer;
 
         protected virtual void Resize() {
             if (_width == 0 || _height == 0) return;

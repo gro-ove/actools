@@ -17,7 +17,6 @@ using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
-using AcTools.Kn5Render.Kn5Render;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -33,6 +32,7 @@ using Path = System.IO.Path;
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener {
         public static bool OptionEnableManagerTabs = true;
+        public static bool OptionLiteModeSupported = false;
 
         private readonly bool _cancelled;
         private readonly string _testGameDialog = null;
@@ -66,17 +66,20 @@ namespace AcManager.Pages.Windows {
         }
 
         private async void ProcessArguments() {
-            Visibility = Visibility.Hidden;
+            if (OptionLiteModeSupported) {
+                Visibility = Visibility.Hidden;
+            }
 
             var cancelled = true;
             foreach (var arg in AppArguments.Values) {
                 Logging.Write("[MAINWINDOW] Input: " + arg);
-                if (!await ProcessArgument(arg)) continue;
-                Visibility = Visibility.Visible;
-                cancelled = false;
+                if (await ProcessArgument(arg)) {
+                    Visibility = Visibility.Visible;
+                    cancelled = false;
+                }
             }
 
-            if (cancelled) {
+            if (OptionLiteModeSupported && cancelled) {
                 Close();
             }
         }
@@ -229,7 +232,7 @@ namespace AcManager.Pages.Windows {
                 return true;
             }
 
-            return ProcessInputFile(argument);
+            return await ProcessInputFile(argument);
         }
 
         /// <summary>
@@ -281,7 +284,7 @@ namespace AcManager.Pages.Windows {
                         return true;
                     }
 
-                    return ProcessInputFile(path);
+                    return await ProcessInputFile(path);
             }
 
             return false;
@@ -291,7 +294,7 @@ namespace AcManager.Pages.Windows {
         /// </summary>
         /// <param name="filename"></param>
         /// <returns>True if form should be shown</returns>
-        private bool ProcessInputFile(string filename) {
+        private async Task<bool> ProcessInputFile(string filename) {
             var isDirectory = FileUtils.IsDirectory(filename);
             if (!isDirectory && filename.EndsWith(".acreplay", StringComparison.OrdinalIgnoreCase) ||
                 Path.GetDirectoryName(filename)?.Equals(FileUtils.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
@@ -300,9 +303,7 @@ namespace AcManager.Pages.Windows {
                             Filename = filename
                         }));
             } else if (!isDirectory && filename.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase)) {
-                using (var render = new Render(filename, 0, Render.VisualMode.BRIGHT_ROOM)) {
-                    render.Form(1280, 720);
-                }
+                await CustomShowroomWrapper.StartAsync(filename);
             } else {
                 try {
                     new InstallAdditionalContentDialog(filename).ShowDialog();

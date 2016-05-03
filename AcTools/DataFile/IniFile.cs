@@ -93,8 +93,7 @@ namespace AcTools.DataFile {
             }
 
             var value = Get(key);
-            if (value == null) return default(T);
-            return (T)Enum.Parse(typeof(T), value, ignoreCase);
+            return (T)Enum.Parse(typeof(T), value ?? "", ignoreCase);
         }
 
         public T? GetEnumOrNull<T>(string key, bool ignoreCase = true) where T : struct, IConvertible {

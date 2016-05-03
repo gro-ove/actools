@@ -17,6 +17,23 @@ using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Utils {
     public class CarHelper : IOverridedTextureProvider, IDisposable {
+        private static readonly string[] MagickExtensions = {
+            ".bmp",
+            ".gif",
+            ".hdr",
+            ".ico",
+            ".jpeg",
+            ".jpg",
+            ".png",
+            ".psb",
+            ".psd",
+            ".svg",
+            ".tga",
+            ".tif",
+            ".tiff",
+            ".xcf"
+        };
+
         public readonly Kn5 MainKn5;
         public readonly string RootDirectory;
         public readonly string SkinsDirectory;
@@ -36,24 +53,26 @@ namespace AcTools.Render.Kn5Specific.Utils {
             ReloadSkins();
         }
 
+        public event EventHandler SkinTextureUpdated;
+
         private FileSystemWatcher _watcher;
         private DeviceContextHolder _holder;
 
         public void SetupWatching(DeviceContextHolder holder) {
-            if (Directory.Exists(SkinsDirectory)) {
-                _watcher = new FileSystemWatcher(SkinsDirectory) {
-                    IncludeSubdirectories = true,
-                    NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime
-                            | NotifyFilters.DirectoryName
-                };
-                _watcher.Changed += Watcher_Changed;
-                _watcher.Created += Watcher_Created;
-                _watcher.Deleted += Watcher_Deleted;
-                _watcher.Renamed += Watcher_Renamed;
-                _watcher.EnableRaisingEvents = true;
+            if (!Directory.Exists(SkinsDirectory)) return;
 
-                _holder = holder;
-            }
+            _watcher = new FileSystemWatcher(SkinsDirectory) {
+                IncludeSubdirectories = true,
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.CreationTime
+                        | NotifyFilters.DirectoryName
+            };
+            _watcher.Changed += Watcher_Changed;
+            _watcher.Created += Watcher_Created;
+            _watcher.Deleted += Watcher_Deleted;
+            _watcher.Renamed += Watcher_Renamed;
+            _watcher.EnableRaisingEvents = true;
+
+            _holder = holder;
         }
 
         private async void UpdateOverrideLater(string filename) {
@@ -66,15 +85,38 @@ namespace AcTools.Render.Kn5Specific.Utils {
 
             var texture = TexturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
                     string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase));
-            if (texture == null) return;
+            if (texture == null) {
+                if (!MagickWrapper.IsSupported) return;
 
-            await Task.Delay(200).ConfigureAwait(false);
-            texture.LoadOverrideAsync(filename, _holder.Device);
+                var ext = MagickExtensions.FirstOrDefault(x => textureName.EndsWith(x, StringComparison.OrdinalIgnoreCase));
+                if (ext != null) {
+                    textureName = textureName.ApartFromLast(ext);
+                    texture = TexturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
+                            string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase)) ??
+                            TexturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
+                                    x.Name?.StartsWith(textureName, StringComparison.OrdinalIgnoreCase) == true &&
+                                            x.Name.ElementAtOrDefault(textureName.Length) == '.');
+                }
+
+                if (texture == null) return;
+
+                await Task.Delay(100);
+                var bytes = await LoadAllBytesAsync(filename);
+                var converted = await Task.Run(() => MagickWrapper.LoadAsSlimDxBuffer(bytes));
+                await texture.LoadOverrideAsync(converted, _holder.Device);
+                SkinTextureUpdated?.Invoke(this, EventArgs.Empty);
+            } else {
+                await Task.Delay(100);
+                await texture.LoadOverrideAsync(filename, _holder.Device);
+                SkinTextureUpdated?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private async void ReloadSkinsLater(string selectSkin = null) {
-            await Task.Delay(200).ConfigureAwait(false);
+            await Task.Delay(100);
             ReloadSkins(selectSkin);
+            await TexturesProvider.UpdateOverridesForAsync(MainKn5, _holder);
+            SkinTextureUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         private void Watcher_Changed(object sender, FileSystemEventArgs e) {
@@ -134,26 +176,60 @@ namespace AcTools.Render.Kn5Specific.Utils {
             if (Skins.Any() != true) return;
 
             var index = Skins.IndexOf(CurrentSkin);
-            SwitchSkinTo(index < 0 || index >= Skins.Count - 1 ? Skins[0] : Skins[index + 1], contextHolder);
+            SelectSkin(index < 0 || index >= Skins.Count - 1 ? Skins[0] : Skins[index + 1], contextHolder);
         }
 
         public void SelectPreviousSkin(DeviceContextHolder contextHolder) {
             if (Skins.Any() != true) return;
 
             var index = Skins.IndexOf(CurrentSkin);
-            SwitchSkinTo(index <= 0 ? Skins[Skins.Count - 1] : Skins[index - 1], contextHolder);
+            SelectSkin(index <= 0 ? Skins[Skins.Count - 1] : Skins[index - 1], contextHolder);
+        }
+
+        public void SelectSkin(string skinId, DeviceContextHolder contextHolder) {
+            CurrentSkin = skinId;
+            TexturesProvider.UpdateOverridesForAsync(MainKn5, contextHolder);
         }
 
         public string GetOverridedFilename(string name) {
             if (CurrentSkin == null) return null;
-            
+
             var filename = Path.Combine(SkinsDirectory, CurrentSkin, name);
             return File.Exists(filename) ? filename : null;
         }
 
-        public void SwitchSkinTo(string skinId, DeviceContextHolder contextHolder) {
-            CurrentSkin = skinId;
-            TexturesProvider.UpdateOverridesFor(MainKn5, contextHolder);
+        private static async Task<byte[]> LoadAllBytesAsync(string filename) {
+            using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var memory = new MemoryStream()) {
+                await stream.CopyToAsync(memory);
+                return memory.ToArray();
+            }
+        }
+
+        async Task<byte[]> IOverridedTextureProvider.GetOverridedData(string name) {
+            var filename = GetOverridedFilename(name);
+            if (filename == null) return null;
+            
+            if (MagickWrapper.IsSupported) {
+                foreach (var ext in MagickExtensions.Where(x => !filename.EndsWith(x, StringComparison.OrdinalIgnoreCase))) {
+                    var candidate = filename + ext;
+                    byte[] bytes = null;
+                    if (File.Exists(candidate)) {
+                        bytes = await LoadAllBytesAsync(candidate);
+                    } else {
+                        candidate = filename.ApartFromLast(Path.GetExtension(filename)) + ext;
+                        if (File.Exists(candidate)) {
+                            bytes = await LoadAllBytesAsync(candidate);
+                        }
+                    }
+
+                    if (bytes != null) {
+                        return await Task.Run(() => MagickWrapper.LoadAsSlimDxBuffer(bytes));
+                    }
+                }
+            }
+
+            return await LoadAllBytesAsync(filename);
         }
 
         private IRenderableObject LoadWheelAmbientShadow(Kn5RenderableList main, string nodeName, string textureName) {

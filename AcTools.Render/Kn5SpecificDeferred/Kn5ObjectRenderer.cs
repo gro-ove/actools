@@ -25,6 +25,13 @@ namespace AcTools.Render.Kn5SpecificDeferred {
 
         public bool AutoRotate { get; set; } = true;
 
+        public bool AutoAdjustTarget { get; set; } = true;
+
+        bool IKn5ObjectRenderer.VisibleUi {
+            get { return VisibleUi; }
+            set { VisibleUi = value; }
+        }
+
         private DirectionalLight _sun;
         public bool Daylight {
             get { return Sun != null; }
@@ -41,7 +48,7 @@ namespace AcTools.Render.Kn5SpecificDeferred {
 
         public CameraOrbit CameraOrbit => Camera as CameraOrbit;
 
-        protected override Vector3 ReflectionCubemapPosition => CameraOrbit.Target;
+        protected override Vector3 ReflectionCubemapPosition => CameraOrbit?.Target ?? Vector3.Zero;
 
         public Kn5ObjectRenderer(string mainKn5Filename, params string[] additionalKn5Filenames) {
             _kn5 = new[] { mainKn5Filename }.Union(additionalKn5Filenames).Where(x => x != null).Select(Kn5.FromFile).ToArray();
@@ -68,7 +75,7 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             }
         }
 
-        public List<DeferredCarLight> CarLights; 
+        public List<DeferredCarLight> CarLights;
 
         public class DeferredCarLight : CarLight, ILight {
             private PointLight[] _lights;
@@ -190,6 +197,10 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             _carHelper.SelectNextSkin(DeviceContextHolder);
         }
 
+        public void SelectSkin(string skinId) {
+            _carHelper.SelectSkin(skinId, DeviceContextHolder);
+        }
+
         protected override void InitializeInner() {
             base.InitializeInner();
 
@@ -224,15 +235,16 @@ namespace AcTools.Render.Kn5SpecificDeferred {
 
             Scene.UpdateBoundingBox();
 
-            var steer = Scene.GetDummyByName("STEER_HR");
             Camera = new CameraOrbit(32) {
-                Alpha = 30.0f,
+                Alpha = 0.9f,
                 Beta = 0.1f,
                 NearZ = 0.2f,
                 FarZ = 500f,
-                Radius = 4.8f,
-                Target = steer == null ? new Vector3(0f, 0.5f, 0f) : steer.Matrix.GetTranslationVector() - Vector3.UnitY * 0.35f
+                Radius = mainNode?.BoundingBox?.GetSize().Length() * 1.2f ?? 4.8f,
+                Target = (mainNode?.BoundingBox?.GetCenter() ?? Vector3.Zero) - new Vector3(0f, 0.05f, 0f)
             };
+
+            _resetCamera = (CameraOrbit)Camera.Clone();
 
             Sun = new DirectionalLight {
                 Color = FixLight(new Vector3(1.2f, 1.0f, 0.9f)) * 5f,
@@ -240,6 +252,14 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             };
 
             _effect = DeviceContextHolder.GetEffect<EffectDeferredGObject>();
+        }
+
+        private float _resetState;
+        private CameraOrbit _resetCamera;
+
+        public void ResetCamera() {
+            AutoRotate = true;
+            _resetState = 1f;
         }
 
         private class PointLightDesc {
@@ -280,15 +300,46 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             Lights.Remove(first.Light);
             _pointLights.Remove(first);
         }
-        
+
         public bool AutoRotateSun = true;
         private float _elapsedCamera, _elapsedSun;
 
         protected override void OnTick(float dt) {
-            if (AutoRotate) {
+            const float threshold = 0.001f;
+            if (_resetState > threshold) {
+                if (!AutoRotate) {
+                    _resetState = 0f;
+                    return;
+                }
+
+                AutoAdjustTarget = true;
+
+                _resetState += (-0f - _resetState) / 10f;
+                if (_resetState <= threshold) {
+                    AutoRotate = false;
+                }
+
+                var cam = CameraOrbit;
+                if (cam != null) {
+                    cam.Alpha += (_resetCamera.Alpha - cam.Alpha) / 10f;
+                    cam.Beta += (_resetCamera.Beta - cam.Beta) / 10f;
+                    cam.Radius += (_resetCamera.Radius - cam.Radius) / 10f;
+                    cam.FovY += (_resetCamera.FovY - cam.FovY) / 10f;
+                    // cam.Target += (_resetCamera.Target - cam.Target) / 10f;
+                }
+
+                _elapsedCamera = 0f;
+
+                IsDirty = true;
+            } else if (AutoRotate && CameraOrbit != null) {
                 CameraOrbit.Alpha += dt * 0.29f;
                 CameraOrbit.Beta += (MathF.Sin(_elapsedCamera * 0.39f) * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
                 _elapsedCamera += dt;
+            }
+
+            if (AutoAdjustTarget && CameraOrbit != null) {
+                var t = _resetCamera.Target + new Vector3(-0.05f * CameraOrbit.Position.X, -0.02f * CameraOrbit.Position.Y, 0f);
+                CameraOrbit.Target += (t - CameraOrbit.Target) / 2f;
             }
 
             if (AutoRotateSun && Sun != null) {

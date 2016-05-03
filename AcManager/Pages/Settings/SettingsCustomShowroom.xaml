@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsCustomShowroom" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsCustomShowroom+CustomShowroomViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <CollectionViewSource x:Key="Showrooms" Source="{Binding Showrooms}" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer>
+        <StackPanel Style="{StaticResource SettingsPanel}">
+            <DockPanel>
+                <Label>Use by default:</Label>
+                <ComboBox ItemsSource="{Binding Holder.ShowroomTypes}" SelectedItem="{Binding Holder.ShowroomType}" />
+            </DockPanel>
+
+            <TextBlock Style="{StaticResource SettingsPanel.Small}">
+                Lite Showroom is DirectX 10-compatible, much simpler and easier for a videocard. Perfect solution for skins drawing.
+            </TextBlock>
+
+            <!--lite specific-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Lite Showroom:</TextBlock>
+
+            <CheckBox IsChecked="{Binding Holder.LiteUseBloom}" ToolTip="Disable if you need maximum performance">
+                <Label>Use _bloom</Label>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.LiteUseMsaa}" ToolTip="Makes picture worse if you asked me">
+                <Label>Use MSAA</Label>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Holder.LiteUseFxaa}" ToolTip="You can toggle it any time by pressing F">
+                <Label>Use _FXAA</Label>
+            </CheckBox>
+
+            <!--fancy specific-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Fancy Showroom:</TextBlock>
+            
+            <DockPanel>
+                <Label>Default showroom:</Label>
+                <ComboBox SelectedItem="{Binding SelectedShowroom}" ItemsSource="{Binding Showrooms}"/>
+            </DockPanel>
+
+            <CheckBox IsChecked="{Binding Holder.UseFxaa}">
+                <Label>Use FXAA</Label>
+            </CheckBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

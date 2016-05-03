@@ -143,6 +143,9 @@
     <Compile Include="Pages\Selected\SelectedFontPage.xaml.cs">
       <DependentUpon>SelectedFontPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\SettingsCustomShowroom.xaml.cs">
+      <DependentUpon>SettingsCustomShowroom.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\SettingsContent.xaml.cs">
       <DependentUpon>SettingsContent.xaml</DependentUpon>
     </Compile>
@@ -399,6 +402,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Settings\SettingsCustomShowroom.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Settings\SettingsDrive.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -645,9 +652,9 @@
       <Project>{b1d477c5-f639-4043-b8a6-82ea950f9890}</Project>
       <Name>AcManager.Controls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AcTools.Kn5Render\AcTools.Kn5Render.csproj">
-      <Project>{C0BF6044-7CC2-497D-85B9-EB798FE65BE2}</Project>
-      <Name>AcTools.Kn5Render</Name>
+    <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
+      <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>
+      <Name>AcTools.Render</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>

@@ -34,19 +34,19 @@ namespace AcManager.Tools.Data {
             OvercastClouds,
 
             Fog,
-            Mist, 
-            
+            Mist,
+
             Smoke, Haze, Sand, Dust, Squalls,
             Tornado, Hurricane, Cold, Hot, Windy, Hail
         }
 
-        public static string GetWeatherTypeName (WeatherType type) {
+        public static string GetWeatherTypeName(WeatherType type) {
             return Regex.Replace(type.ToString(), @"(?=[A-Z])", " ").TrimStart();
         }
-        
+
         [Pure]
         public static WeatherType? FindClosestWeather(IEnumerable<WeatherType> list, WeatherType type) {
-            var weatherTypes = list.ToList();
+            var weatherTypes = list.Select(x => (WeatherType?)x).ToList();
             for (var i = 0; i < 5; i++) {
                 if (weatherTypes.Contains(type)) return type;
 
@@ -54,155 +54,155 @@ namespace AcManager.Tools.Data {
                     case WeatherType.LightThunderstorm:
                     case WeatherType.Thunderstorm:
                     case WeatherType.HeavyThunderstorm:
-                        return new[] {
-                            WeatherType.Thunderstorm, 
-                            WeatherType.HeavyThunderstorm, 
-                            WeatherType.LightThunderstorm, 
-                            
-                            WeatherType.HeavyRain, 
-                            WeatherType.Rain, 
-                            WeatherType.HeavyDrizzle, 
-                            WeatherType.Drizzle, 
-                            WeatherType.LightRain, 
-                            WeatherType.LightDrizzle, 
-                            WeatherType.Hurricane, 
+                        return new WeatherType?[] {
+                            WeatherType.Thunderstorm,
+                            WeatherType.HeavyThunderstorm,
+                            WeatherType.LightThunderstorm,
 
-                            WeatherType.OvercastClouds, 
+                            WeatherType.HeavyRain,
+                            WeatherType.Rain,
+                            WeatherType.HeavyDrizzle,
+                            WeatherType.Drizzle,
+                            WeatherType.LightRain,
+                            WeatherType.LightDrizzle,
+                            WeatherType.Hurricane,
+
+                            WeatherType.OvercastClouds,
                             WeatherType.BrokenClouds,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.LightDrizzle:
                     case WeatherType.HeavyDrizzle:
                     case WeatherType.Drizzle:
-                        return new[] {
+                        return new WeatherType?[] {
                             WeatherType.Drizzle,
-                            WeatherType.HeavyDrizzle, 
+                            WeatherType.HeavyDrizzle,
                             WeatherType.LightDrizzle,
- 
-                            WeatherType.Rain, 
-                            WeatherType.LightRain, 
-                            WeatherType.HeavyRain, 
-                            WeatherType.LightThunderstorm, 
 
-                            WeatherType.OvercastClouds, 
+                            WeatherType.Rain,
+                            WeatherType.LightRain,
+                            WeatherType.HeavyRain,
+                            WeatherType.LightThunderstorm,
+
+                            WeatherType.OvercastClouds,
                             WeatherType.BrokenClouds,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.LightRain:
                     case WeatherType.Rain:
                     case WeatherType.HeavyRain:
-                        return new[] {
-                            WeatherType.Rain, 
+                        return new WeatherType?[] {
+                            WeatherType.Rain,
                             WeatherType.HeavyRain,
-                            WeatherType.LightRain, 
-                            
-                            WeatherType.HeavyDrizzle, 
+                            WeatherType.LightRain,
+
+                            WeatherType.HeavyDrizzle,
                             WeatherType.Drizzle,
-                            WeatherType.LightThunderstorm, 
-                            WeatherType.Thunderstorm, 
-                            WeatherType.HeavyThunderstorm, 
-                            WeatherType.LightDrizzle, 
-                            
-                            WeatherType.OvercastClouds, 
+                            WeatherType.LightThunderstorm,
+                            WeatherType.Thunderstorm,
+                            WeatherType.HeavyThunderstorm,
+                            WeatherType.LightDrizzle,
+
+                            WeatherType.OvercastClouds,
                             WeatherType.BrokenClouds,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.LightSnow:
                     case WeatherType.Snow:
                     case WeatherType.HeavySnow:
-                        return new[] {
-                            WeatherType.Snow, 
+                        return new WeatherType?[] {
+                            WeatherType.Snow,
                             WeatherType.HeavySnow,
-                            WeatherType.LightSnow, 
+                            WeatherType.LightSnow,
 
-                            WeatherType.Sleet, 
-                            WeatherType.HeavySleet, 
-                            WeatherType.LightSleet, 
-                            
-                            WeatherType.OvercastClouds, 
+                            WeatherType.Sleet,
+                            WeatherType.HeavySleet,
+                            WeatherType.LightSleet,
+
+                            WeatherType.OvercastClouds,
                             WeatherType.BrokenClouds,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.LightSleet:
                     case WeatherType.Sleet:
                     case WeatherType.HeavySleet:
-                        return new[] {
-                            WeatherType.Sleet, 
-                            WeatherType.HeavySleet, 
-                            WeatherType.LightSleet, 
-                            
-                            WeatherType.Snow, 
-                            WeatherType.HeavySnow, 
-                            WeatherType.LightSnow, 
-                            
-                            WeatherType.OvercastClouds, 
+                        return new WeatherType?[] {
+                            WeatherType.Sleet,
+                            WeatherType.HeavySleet,
+                            WeatherType.LightSleet,
+
+                            WeatherType.Snow,
+                            WeatherType.HeavySnow,
+                            WeatherType.LightSnow,
+
+                            WeatherType.OvercastClouds,
                             WeatherType.BrokenClouds,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.Clear:
-                        return new[] {
-                            WeatherType.FewClouds, 
+                        return new WeatherType?[] {
+                            WeatherType.FewClouds,
                             WeatherType.ScatteredClouds,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.FewClouds:
-                        return new[] {
-                            WeatherType.Clear, 
+                        return new WeatherType?[] {
+                            WeatherType.Clear,
                             WeatherType.ScatteredClouds,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.ScatteredClouds:
                     case WeatherType.BrokenClouds:
                     case WeatherType.OvercastClouds:
-                        return new[] {
-                            WeatherType.BrokenClouds, 
-                            WeatherType.ScatteredClouds, 
-                            WeatherType.OvercastClouds, 
+                        return new WeatherType?[] {
+                            WeatherType.BrokenClouds,
+                            WeatherType.ScatteredClouds,
+                            WeatherType.OvercastClouds,
                             WeatherType.FewClouds,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.Fog:
                     case WeatherType.Mist:
                     case WeatherType.Smoke:
                     case WeatherType.Haze:
-                        return new[] {
-                            WeatherType.Fog, 
-                            WeatherType.Mist, 
-                            WeatherType.Smoke, 
-                            WeatherType.Haze, 
-                            WeatherType.Sand, 
+                        return new WeatherType?[] {
+                            WeatherType.Fog,
+                            WeatherType.Mist,
+                            WeatherType.Smoke,
+                            WeatherType.Haze,
+                            WeatherType.Sand,
                             WeatherType.Dust,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.Sand:
                     case WeatherType.Dust:
-                        return new[] {
-                            WeatherType.Sand, 
-                            WeatherType.Dust, 
+                        return new WeatherType?[] {
+                            WeatherType.Sand,
+                            WeatherType.Dust,
                             WeatherType.Fog,
-                            WeatherType.Mist, 
-                            WeatherType.Smoke, 
+                            WeatherType.Mist,
+                            WeatherType.Smoke,
                             WeatherType.Haze,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
 
                     case WeatherType.Squalls:
                     case WeatherType.Tornado:
                     case WeatherType.Hurricane:
                     case WeatherType.Hail:
-                        var findClosestWeather = new[] {
-                            WeatherType.Tornado, 
+                        var findClosestWeather = new WeatherType?[] {
+                            WeatherType.Tornado,
                             WeatherType.Hurricane,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
                         if (findClosestWeather != null) return findClosestWeather;
                         type = WeatherType.HeavyThunderstorm;
                         continue;
 
                     case WeatherType.Cold:
                     case WeatherType.Windy:
-                        var firstOrDefault = new[] {
-                            WeatherType.Cold, 
+                        var firstOrDefault = new WeatherType?[] {
+                            WeatherType.Cold,
                             WeatherType.Windy,
-                        }.Intersect(weatherTypes).Cast<WeatherType?>().FirstOrDefault();
+                        }.Intersect(weatherTypes).FirstOrDefault();
                         if (firstOrDefault != null) return firstOrDefault;
                         type = WeatherType.ScatteredClouds;
                         continue;

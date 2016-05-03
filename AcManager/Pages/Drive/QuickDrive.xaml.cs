@@ -556,15 +556,16 @@ namespace AcManager.Pages.Drive {
 
                 _waitingForWeatherList = true;
                 await WeatherManager.Instance.EnsureLoadedAsync();
-                var list = WeatherManager.Instance.LoadedOnly.ToList();
                 _waitingForWeatherList = false;
 
                 try {
-                    var closest = WeatherDescription.FindClosestWeather(list.Select(x => x.WeatherType).Where(x => x.HasValue).Select(x => x.Value), type);
+                    var closest = WeatherDescription.FindClosestWeather(from w in WeatherManager.Instance.LoadedOnly
+                                                                        where w.WeatherType.HasValue
+                                                                        select w.WeatherType.Value, type);
                     if (closest == null) {
                         IsWeatherNotSupported = true;
                     } else {
-                        SelectedWeather = list.Where(x => x.WeatherType == closest).RandomElement();
+                        SelectedWeather = WeatherManager.Instance.LoadedOnly.Where(x => x.WeatherType == closest).RandomElement();
                     }
                 } catch (Exception e) {
                     IsWeatherNotSupported = true;

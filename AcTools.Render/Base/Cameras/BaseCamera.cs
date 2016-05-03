@@ -58,6 +58,7 @@ namespace AcTools.Render.Base.Cameras {
 
         public abstract void Save();
         public abstract void Restore();
+        public abstract BaseCamera Clone();
 
         public virtual void SetLens(float aspect) {
             Aspect = aspect;

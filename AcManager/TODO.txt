@@ -344,6 +344,8 @@ done:
     + send AC's log.txt as well
     + change serverentry to be inherited from acobjectnew?
     + run game or install mods from browser using special acmanager:// protocol?
+    + improve custom showroom
+        + reduce GPU consuming
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -358,6 +360,9 @@ fixme:
 
 todo:
     - lite mode (without main form): overlays, second commands, attempts to open main form?
+    - proper file types description (in explorer)
+    - support e-mail
+    - change report button's label
 
     - errors & fixers for badly make ui_skin.json
 
@@ -367,9 +372,6 @@ todo:
         - Online
         - custom showroom
         - presets
-
-    - improve custom showroom
-        - reduce GPU consuming
 
     - remember all window sizes
     - automatically switch to freshly installed content in some cases (optional)?
@@ -508,6 +510,8 @@ todo:
     - show race params on loading screen?
 
 later:
+    - wpf showroom?
+    
     - option for disabling .acreplay on renaming replays in content tab
     - try to implement some stuff from /r/loadingicon/?
     - description: convert html to bb and back?

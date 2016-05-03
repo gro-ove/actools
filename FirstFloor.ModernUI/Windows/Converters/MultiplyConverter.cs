@@ -17,7 +17,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             if (value != null && parameter != null) {
-                return int.Parse(value.ToString()) * double.Parse(parameter.ToString(), CultureInfo.InvariantCulture);
+                return double.Parse(value.ToString(), CultureInfo.InvariantCulture) * double.Parse(parameter.ToString(), CultureInfo.InvariantCulture);
             }
             return null;
         }
