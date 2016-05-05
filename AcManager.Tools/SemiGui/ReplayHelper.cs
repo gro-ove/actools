@@ -16,14 +16,18 @@ namespace AcManager.Tools.SemiGui {
         public bool IsReplayAvailable { get; }
 
         public readonly string OriginalReplayFilename;
+
+        [CanBeNull]
         public readonly string RenamedReplayFilename;
 
         internal ReplayHelper(Game.StartProperties startProperties, Game.Result result) {
             OriginalReplayFilename = Path.Combine(FileUtils.GetReplaysDirectory(), ReplayObject.PreviousReplayName);
-            RenamedReplayFilename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetReplaysDirectory(), GetReplayName(startProperties, result)));
 
-            IsReplayAvailable = File.Exists(OriginalReplayFilename);
-            if (SettingsHolder.Drive.AutoSaveReplays) {
+            var replayName = GetReplayName(startProperties, result);
+            RenamedReplayFilename = replayName == null ? null : FileUtils.EnsureUnique(Path.Combine(FileUtils.GetReplaysDirectory(), replayName));
+
+            IsReplayAvailable = replayName != null && File.Exists(OriginalReplayFilename);
+            if (IsReplayAvailable && SettingsHolder.Drive.AutoSaveReplays) {
                 IsReplayRenamed = true;
             }
         }
@@ -33,7 +37,7 @@ namespace AcManager.Tools.SemiGui {
         public bool IsReplayRenamed {
             get { return _isReplayRenamed; }
             set {
-                if (!IsReplayAvailable || Equals(_isReplayRenamed, value)) return;
+                if (!IsReplayAvailable || RenamedReplayFilename == null || Equals(_isReplayRenamed, value)) return;
 
                 try {
                     if (value) {
@@ -72,11 +76,11 @@ namespace AcManager.Tools.SemiGui {
                 return "Practice";
             }
 
-            if (result?.Sessions.Length == 1) {
+            if (result?.Sessions?.Length == 1) {
                 return "Race";
             }
 
-            if (result?.Sessions.Length > 1) {
+            if (result?.Sessions?.Length > 1) {
                 return "Weekend";
             }
 
@@ -89,6 +93,8 @@ namespace AcManager.Tools.SemiGui {
 
         [CanBeNull]
         private static string GetValue(Game.StartProperties startProperties, Game.Result result, string key) {
+            if (startProperties.BasicProperties == null || result == null) return null;
+
             switch (key) {
                 case "type":
                     return GetType(startProperties, result);
@@ -114,7 +120,10 @@ namespace AcManager.Tools.SemiGui {
 
         private static readonly Regex ReplayNameRegex = new Regex(@"\{([\w\.]+)(?::(\w*))?\}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        [CanBeNull]
         private static string GetReplayName(Game.StartProperties startProperties, Game.Result result) {
+            if (startProperties == null || result == null) return null;
+
             var s = SettingsHolder.Drive.ReplaysNameFormat;
             if (string.IsNullOrEmpty(s)) {
                 s = SettingsHolder.Drive.DefaultReplaysNameFormat;

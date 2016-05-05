@@ -119,6 +119,9 @@
     <Compile Include="Forward\ForwardRenderer.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAlpha.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNmMult.cs" />
+    <Compile Include="Kn5SpecificSpecial\AmbientShadowKn5ObjectRenderer.cs" />
+    <Compile Include="Kn5SpecificSpecial\DepthMaterialProvider.cs" />
+    <Compile Include="Kn5SpecificSpecial\Kn5MaterialDepth.cs" />
     <Compile Include="Kn5Specific\IKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAtNm.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleBase.cs" />
@@ -195,6 +198,7 @@
     <Content Include="Shaders\Deferred\DeferredGObject.fx" />
     <Content Include="Shaders\Pp\PpBasic.fx" />
     <Content Include="Shaders\Simple\SimpleMaterial.fx" />
+    <Content Include="Shaders\Special\SpecialShadow.fx" />
     <Content Include="Shaders\Testing\TestingPnt.fx" />
     <Content Include="Shaders\Testing\TestingCube.fx" />
   </ItemGroup>

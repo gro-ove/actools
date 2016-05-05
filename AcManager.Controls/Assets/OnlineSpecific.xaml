@@ -194,7 +194,7 @@
                             <ColumnDefinition Width="3*" MaxWidth="120" />
                             <ColumnDefinition Width="90" />
                             <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="24" />
+                            <ColumnDefinition Width="32" />
                             <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="40" />
                         </Grid.ColumnDefinitions>

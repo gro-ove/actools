@@ -105,6 +105,7 @@
     <Compile Include="Data\GameSpecific\SessionResult.cs" />
     <Compile Include="Data\KunosCareerProgress.cs" />
     <Compile Include="Data\AsyncProgressEntry.cs" />
+    <Compile Include="Data\KunosCareerProgressEntry.cs" />
     <Compile Include="Data\WeatherDescription.cs" />
     <Compile Include="Filters\AcCommonObjectTester.cs" />
     <Compile Include="Filters\AcJsonObjectTester.cs" />

@@ -148,6 +148,8 @@ namespace AcTools.Render.Base {
         // TODO: clean up?
         public Texture2D RenderBuffer => _renderBuffer;
 
+        public Texture2D DepthBuffer => _depthBuffer;
+
         protected virtual void Resize() {
             if (_width == 0 || _height == 0) return;
 

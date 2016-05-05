@@ -152,6 +152,8 @@ namespace AcManager.Tools.Managers.Online {
         public override void Load() {
         }
 
+        private string[] _originalCarIds;
+
         private void SetSomeProperties(ServerInformation information) {
             Name = Regex.Replace(information.Name.Trim(), @"\s+", " ");
 
@@ -173,11 +175,12 @@ namespace AcManager.Tools.Managers.Online {
                 Password = ValuesStorage.GetEncryptedString(PasswordStorageKey);
             }
 
-            CarIds = information.CarIds;
-            CarsOrTheirIds = information.CarIds.Select(x => new CarOrOnlyCarIdEntry(x, GetCarWrapper(x))).ToList();
-            TrackId = information.TrackId;
+            _originalCarIds = information.CarIds;
+            CarIds = information.CarIds.Select(x => x.ToLowerInvariant()).ToArray();
+            CarsOrTheirIds = CarIds.Select(x => new CarOrOnlyCarIdEntry(x, GetCarWrapper(x))).ToList();
+            TrackId = information.TrackId.ToLowerInvariant();
             Track = GetTrack(TrackId);
-
+            
             SetMissingCarErrorIfNeeded();
             SetMissingTrackErrorIfNeeded();
 
@@ -196,9 +199,9 @@ namespace AcManager.Tools.Managers.Online {
             var list = CarsOrTheirIds.Where(x => !x.CarExists).Select(x => x.CarId).ToList();
             if (!list.Any()) return;
             Status = ServerStatus.Error;
-            ErrorMessage += list.Count == 1
-                                ? $@"Car {IdToBb(list[0])} is missing."
-                                : $@"Cars {list.Select(x => IdToBb(x)).JoinToString(", ")} are missing." + "\n";
+            ErrorMessage += (list.Count == 1
+                    ? $@"Car {IdToBb(list[0])} is missing."
+                    : $@"Cars {list.Select(x => IdToBb(x)).JoinToString(", ")} are missing.") + "\n";
         }
 
         private void SetMissingTrackErrorIfNeeded() {
@@ -588,10 +591,10 @@ namespace AcManager.Tools.Managers.Online {
                             ErrorMessage += @"Not implemented." + "\n";
                         }
                     }
+                } else {
+                    SetMissingTrackErrorIfNeeded();
+                    SetMissingCarErrorIfNeeded();
                 }
-
-                SetMissingTrackErrorIfNeeded();
-                SetMissingCarErrorIfNeeded();
 
                 if (Status == ServerStatus.Error) {
                     return;
@@ -648,10 +651,10 @@ namespace AcManager.Tools.Managers.Online {
 
                 var cars = (from x in information.Cars
                             where x.IsEntryList // if IsEntryList means that car could be selected
-                            group x by x.CarId
+                            group x by x.CarId.ToLowerInvariant()
                             into g
                             let list = g.ToList()
-                            let carObject = carObjects.FirstOrDefault(y => y.Id == list[0].CarId)
+                            let carObject = carObjects.GetByIdOrDefault(list[0].CarId.ToLowerInvariant())
                             let availableSkinId = list.FirstOrDefault(y => y.IsConnected == false)?.CarSkinId
                             select carObject == null ? null : new CarEntry(carObject) {
                                 Total = list.Count,
@@ -699,12 +702,15 @@ namespace AcManager.Tools.Managers.Online {
         private async Task Join(object o) {
             if (CarsView == null) return;
 
+            var carId = (CarsView.CurrentItem as CarEntry)?.CarObject.Id;
+            var correctId = _originalCarIds.FirstOrDefault(x => string.Equals(x, carId, StringComparison.OrdinalIgnoreCase));
             var properties = new Game.StartProperties(new Game.BasicProperties {
-                CarId = (CarsView.CurrentItem as CarEntry)?.CarObject.Id,
+                CarId = carId,
                 CarSkinId = null,
                 TrackId = Track?.Id,
                 TrackConfigurationId = Track?.LayoutId
             }, null, null, null, new Game.OnlineProperties {
+                RequestedCar = correctId,
                 ServerIp = Ip,
                 ServerPort = PortT,
                 Guid = SteamIdHelper.Instance.Value,

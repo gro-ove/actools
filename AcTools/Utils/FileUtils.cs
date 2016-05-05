@@ -325,7 +325,7 @@ namespace AcTools.Utils {
         }
 
         public static string EnsureFileNameIsValid(string fileName) {
-            return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c, '-'));
+            return Path.GetInvalidFileNameChars().Union("[]").Aggregate(fileName, (current, c) => current.Replace(c, '-'));
         }
 
         public static string EnsureUnique(string filename) {

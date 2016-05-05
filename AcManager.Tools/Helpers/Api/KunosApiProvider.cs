@@ -186,11 +186,8 @@ namespace AcManager.Tools.Helpers.Api {
 
         [CanBeNull]
         public static ServerActualInformation TryToGetCurrentInformation(string ip, int portC) {
-            if (SteamIdHelper.Instance.Value == null) {
-                throw new Exception("Steam ID is missing");
-            }
-            
-            var requestUri = $"http://{ip}:{portC}/JSON|{SteamIdHelper.Instance.Value}";
+            var steamId = SteamIdHelper.Instance.Value ?? "-1";
+            var requestUri = $"http://{ip}:{portC}/JSON|{steamId}";
 
             try {
                 return JsonConvert.DeserializeObject<ServerActualInformation>(Load(requestUri));

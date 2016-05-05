@@ -109,7 +109,7 @@ namespace AcTools.Processes {
         }
 
         public class OnlineProperties : BaseModeProperties {
-            public string ServerIp, Guid, Password;
+            public string ServerIp, Guid, Password, RequestedCar;
             public int ServerPort;
 
             public override void Set(IniFile file) {
@@ -118,7 +118,7 @@ namespace AcTools.Processes {
                 var raceSection = file["REMOTE"];
                 raceSection.Set("SERVER_IP", ServerIp);
                 raceSection.Set("SERVER_PORT", ServerPort);
-                raceSection.Set("REQUESTED_CAR", file["RACE"].Get("MODEL"));
+                raceSection.Set("REQUESTED_CAR", RequestedCar ?? file["RACE"].Get("MODEL"));
                 raceSection.Set("GUID", Guid);
                 raceSection.Set("PASSWORD", Password);
                 raceSection.Set("ACTIVE", true);

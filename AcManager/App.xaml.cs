@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net;
 using System.Security.Permissions;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
@@ -141,6 +143,8 @@ namespace AcManager {
             RecentManager.Initialize();
             Superintendent.Initialize();
 
+            PrepareUi();
+
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
             Toast.SetDefaultIcon(new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/Icon.ico", UriKind.Absolute));
             Toast.SetDefaultAction(() => (Current.MainWindow as ModernWindow)?.BringToFront());
@@ -151,6 +155,15 @@ namespace AcManager {
                     "Pages/Windows/MainWindow.xaml" : "Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
 
             RegisterUriScheme();
+        }
+
+        private void PrepareUi() {
+            try {
+                ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(true));
+                ToolTipService.InitialShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(1000));
+            } catch (Exception e) {
+                Logging.Warning("Can't prepare UI: " + e);
+            }
         }
 
         private async void TestKey() {

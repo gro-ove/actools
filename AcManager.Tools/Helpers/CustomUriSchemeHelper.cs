@@ -8,23 +8,47 @@ namespace AcManager.Tools.Helpers {
         public const string UriScheme = UriSchemeLabel + ":";
 
         private const string ClassName = "acmanager";
+        private const string AppTitle = "AcTools Content Manager";
 
-        private const string Version = "3";
+        private const string Version = "6";
 
         private const string KeyRegisteredLocation = "CustomUriSchemeHelper.RegisteredLocation";
         private const string KeyRegisteredVersion = "CustomUriSchemeHelper.RegisteredVersion";
 
-        private static void RegisterExtension(string ext) {
+        private static void RegisterClass(string className, string title, bool urlProtocol, int iconId) {
+            using (var key = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{className}", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
+                if (key == null) return;
+
+                if (urlProtocol) {
+                    key.SetValue("URL Protocol", "", RegistryValueKind.String);
+                }
+
+                key.SetValue("", title, RegistryValueKind.String);
+
+                using (var iconKey = key.CreateSubKey(@"DefaultIcon", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
+                    iconKey?.SetValue("", $"{MainExecutingFile.Location},{iconId}", RegistryValueKind.String);
+                }
+
+                using (var commandKey = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
+                    commandKey?.SetValue("", $@"{MainExecutingFile.Location} ""%1""", RegistryValueKind.String);
+                }
+            }
+        }
+
+        private static void RegisterExtension(string ext, string description) {
+            var className = $"{ClassName}{ext.ToLowerInvariant()}";
+            RegisterClass(className, description, false, 1);
+
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + ext,
                     RegistryKeyPermissionCheck.ReadWriteSubTree)) {
                 if (key == null) return;
                 using (var progIds = key.CreateSubKey(@"OpenWithProgids", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
-                    progIds?.SetValue(ClassName, new byte[0], RegistryValueKind.None);
+                    progIds?.SetValue(className, new byte[0], RegistryValueKind.None);
                 }
 
                 try {
                     using (var choiceKey = key.CreateSubKey(@"UserChoice", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
-                        choiceKey?.SetValue("Progid", ClassName, RegistryValueKind.String);
+                        choiceKey?.SetValue("Progid", className, RegistryValueKind.String);
                     }
                 } catch (Exception) {
                     // ignored
@@ -39,22 +63,9 @@ namespace AcManager.Tools.Helpers {
                 ValuesStorage.GetString(KeyRegisteredVersion) == Version) return;
 
             try {
-                using (var key = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{ClassName}", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
-                    if (key == null) return;
-                    key.SetValue("URL Protocol", "", RegistryValueKind.String);
-                    key.SetValue("", "AcTools Content Manager", RegistryValueKind.String);
-
-                    using (var iconKey = key.CreateSubKey(@"DefaultIcon", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
-                        iconKey?.SetValue("", $"{MainExecutingFile.Name},0", RegistryValueKind.String);
-                    }
-
-                    using (var commandKey = key.CreateSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadWriteSubTree)) {
-                        commandKey?.SetValue("", $@"{MainExecutingFile.Location} ""%1""", RegistryValueKind.String);
-                    }
-                }
-
-                RegisterExtension(".kn5");
-                RegisterExtension(".acreplay");
+                RegisterClass(ClassName, AppTitle, true, 0);
+                RegisterExtension(".kn5", "KN5 model");
+                RegisterExtension(".acreplay", "AC replay");
 
                 ValuesStorage.Set(KeyRegisteredLocation, MainExecutingFile.Location);
                 ValuesStorage.Set(KeyRegisteredVersion, Version);

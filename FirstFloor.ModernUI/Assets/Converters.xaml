@@ -6,6 +6,7 @@
     <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
     <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+    <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
     <converters:EqualToBooleanConverter x:Key="EqualToBooleanConverter" />
     <converters:ExistToVisibilityConverter x:Key="ExistToVisibilityConverter" />
     <converters:InvertBooleanConverter x:Key="InvertBooleanConverter" />

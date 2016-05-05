@@ -82,6 +82,9 @@ done:
             + conditions to race.ini values
             + autoupdate conditions
             + presets
+            + tracks by countries
+            + select car by brands
+                + brands cache!
         + auto saving replays
     + select something legit as a default weather/car/track/etc
     + fix presets combobox
@@ -346,6 +349,8 @@ done:
     + run game or install mods from browser using special acmanager:// protocol?
     + improve custom showroom
         + reduce GPU consuming
+    + support e-mail
+    + proper file types description (in explorer)
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -353,15 +358,19 @@ fixme:
     - MUI thing with Loaded/Unloaded!
     - one big NLUA bug
     - pastload problem!
-    - tags
     - iconintaskbar for dialogs
     - potential error here:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
+    - replays with "[" or "]" in name
 
 todo:
+    - 0x time multipler
+    - bigger AI diapasone
+    - from-to AI level?
+    - UnauthorizedAccessException special case
+    - figure out what's wrong with updating
+
     - lite mode (without main form): overlays, second commands, attempts to open main form?
-    - proper file types description (in explorer)
-    - support e-mail
     - change report button's label
 
     - errors & fixers for badly make ui_skin.json
@@ -369,9 +378,9 @@ todo:
     - showroom from QD/KunosCareer/Online
         + QD
         + KunosCareer
+        + custom showroom
+        + presets
         - Online
-        - custom showroom
-        - presets
 
     - remember all window sizes
     - automatically switch to freshly installed content in some cases (optional)?
@@ -389,21 +398,18 @@ todo:
 
     + drive feature
         + quick drive
-            + tracks by countries
-            + select car by brands
-                + brands cache!
-                - optional list mode?
+            - optional list mode for brands, countries, etc?
             - weekends
             - drag racing
         + online
+            + custom sorting
+            + flag fitting
             - booking
             - favorites
             - periodic refreshing of all servers 
             - periodic refreshing of selected server
             - list all cars
             - keyboard shortcuts
-            - flag fitting
-            - custom sorting?
         - test and fix for AcManager autoupdating feature
             - handle obsolete!
         - challenges
@@ -510,8 +516,6 @@ todo:
     - show race params on loading screen?
 
 later:
-    - wpf showroom?
-    
     - option for disabling .acreplay on renaming replays in content tab
     - try to implement some stuff from /r/loadingicon/?
     - description: convert html to bb and back?
@@ -528,7 +532,8 @@ later:
         - sorting, grouping
         - find a way to make unavaliable servers visible
 
-    - try that idea with reusing selectedsomethingpage
+    - wpf showroom?
+    - try that idea with reusing selectedsomethingpage?
 
     - records, best laps, stats
         - collect and display driving stats?
@@ -617,7 +622,7 @@ later:
     - url/stuff bb protection
     - check new content version on acclub
     - check new content version on RD?
-    - 3d-viewer in-app
+    - 3d-viewer in-app?
     - warn about stuff like "Mercedes"?
     - fix bb parsing
 

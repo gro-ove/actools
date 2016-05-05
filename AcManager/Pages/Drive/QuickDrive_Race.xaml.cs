@@ -22,6 +22,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using NLua;
 using StringBasedFilter;
@@ -506,7 +507,12 @@ namespace AcManager.Pages.Drive {
                 return script;
             }
 
-            private async Task<CarObject[]> FindAppropriateCars(CarObject car, TrackBaseObject track, GridType type, bool useUserFilter) {
+            private async Task<CarObject[]> FindAppropriateCars([NotNull] CarObject car, [NotNull] TrackBaseObject track, [NotNull] GridType type, 
+                    bool useUserFilter) {
+                if (car == null) throw new ArgumentNullException(nameof(car));
+                if (track == null) throw new ArgumentNullException(nameof(track));
+                if (type == null) throw new ArgumentNullException(nameof(type));
+
                 if (type == GridType.FilteredBy && !useUserFilter) {
                     return CarsManager.Instance.LoadedOnly.Where(x => x.Enabled).ToArray();
                 }

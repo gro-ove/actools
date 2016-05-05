@@ -3,7 +3,7 @@ using SlimDX;
 
 namespace AcTools.Render.Base.Cameras {
     public abstract class BaseCamera : ICamera {
-        public Vector3 Position { get; protected set; }
+        public Vector3 Position { get; set; }
 
         public Vector3 Right;
         public Vector3 Up;

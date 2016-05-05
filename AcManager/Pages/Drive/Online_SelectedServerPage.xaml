@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Loaded="Online_SelectedServerPage_OnLoaded" Unloaded="Online_SelectedServerPage_OnUnloaded"
-        PreviewMouseDown="Online_SelectedServerPage_OnPreviewMouseDown">
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" PreviewMouseDown="Online_SelectedServerPage_OnPreviewMouseDown">
 
     <UserControl.Resources>
         <ResourceDictionary>

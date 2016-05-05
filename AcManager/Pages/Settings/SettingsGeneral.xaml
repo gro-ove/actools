@@ -76,7 +76,7 @@
                     limitedMark:LimitedService.Limited="True" HorizontalAlignment="Left" ClipToBounds="False" Padding="0 0 24 0">
                 <Label>Update to non-tested versions</Label>
             </CheckBox>
-            <Button Command="{Binding SendLogsCommand}">Send Logs to Developers</Button>
+            <Button Command="{Binding SendLogsCommand}">Send Logs to Developers (Use It When There Is a Problem)</Button>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

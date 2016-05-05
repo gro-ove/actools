@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Annotations;
 using AcManager.Controls.ViewModels;
@@ -44,8 +46,12 @@ namespace AcManager.Pages.Drive {
         }
 
         public void Initialize() {
-            InitializeComponent();
             DataContext = new OnlineViewModel(_type, _manager, _filter);
+            InputBindings.AddRange(new[] {
+                new InputBinding(Model.Manager.RefreshListCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
+                new InputBinding(Model.AddNewServerCommand, new KeyGesture(Key.A, ModifierKeys.Control))
+            });
+            InitializeComponent();
 
             ResizingStuff();
         }
@@ -180,6 +186,7 @@ namespace AcManager.Pages.Drive {
             public BaseOnlineManager Manager { get; }
 
             public readonly string KeyQuickFilter;
+            public readonly string KeySorting;
 
             private void LoadQuickFilter() {
                 var loaded = ValuesStorage.GetString(KeyQuickFilter);
@@ -253,7 +260,9 @@ namespace AcManager.Pages.Drive {
                 Manager = manager;
 
                 KeyQuickFilter = "__qf_" + Key;
+                KeySorting = "__Online.Sorting_" + Key;
                 LoadQuickFilter();
+                SortingMode = ValuesStorage.GetString(KeySorting);
                 
                 ServerCombinedFilter.Second = CreateQuickFilter();
             }
@@ -277,6 +286,61 @@ namespace AcManager.Pages.Drive {
 
                 base.Unload();
             }
+
+            private class SortingDriversCount : IComparer {
+                public int Compare(object x, object y) {
+                    var xs = (x as AcItemWrapper)?.Value as ServerEntry;
+                    var ys = (y as AcItemWrapper)?.Value as ServerEntry;
+                    const int def = 0;
+                    return -(xs?.CurrentDriversCount.CompareTo(ys?.CurrentDriversCount ?? def) ??
+                            (ys == null ? 0 : def.CompareTo(ys.CurrentDriversCount)));
+                }
+            }
+
+            private class SortingPing : IComparer {
+                public int Compare(object x, object y) {
+                    var xs = (x as AcItemWrapper)?.Value as ServerEntry;
+                    var ys = (y as AcItemWrapper)?.Value as ServerEntry;
+                    const long def = long.MaxValue;
+                    return xs?.Ping?.CompareTo(ys?.Ping ?? def) ??
+                            (ys == null ? 0 : def.CompareTo(ys.Ping));
+                }
+            }
+
+            private string _sortingMode;
+
+            public string SortingMode {
+                get { return _sortingMode; }
+                set {
+                    if (Equals(value, _sortingMode)) return;
+
+                    switch (value) {
+                        case "drivers":
+                            _sortingMode = value;
+                            MainList.CustomSort = new SortingDriversCount();
+                            break;
+
+                        case "ping":
+                            _sortingMode = value;
+                            MainList.CustomSort = new SortingPing();
+                            break;
+
+                        default:
+                            _sortingMode = null;
+                            MainList.CustomSort = this;
+                            break;
+                    }
+
+                    OnPropertyChanged();
+                    ValuesStorage.Set(KeySorting, _sortingMode);
+                }
+            }
+
+            private RelayCommand _changeSortingCommand;
+
+            public RelayCommand ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new RelayCommand(o => {
+                SortingMode = o as string;
+            }));
 
             private AsyncCommand _addNewServerCommand;
 

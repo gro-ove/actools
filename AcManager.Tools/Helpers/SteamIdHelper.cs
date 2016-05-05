@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Security;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using FirstFloor.ModernUI.Helpers;
 using Microsoft.Win32;
@@ -34,14 +34,17 @@ namespace AcManager.Tools.Helpers {
         private string _value;
         private bool _tried;
 
-        public string Value {
-            get {
-                if (_value != null || _tried) return _value;
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private string Value_GetInner() {
+            if (_value != null || _tried) return _value;
 
-                _value = TryToFind();
-                _tried = true;
-                return _value;
-            }
+            _value = TryToFind();
+            _tried = true;
+            return _value;
+        }
+
+        public string Value {
+            get { return Value_GetInner(); }
             set {
                 if (_value == value) return;
 
@@ -71,7 +74,7 @@ namespace AcManager.Tools.Helpers {
 
                 var match = Regex.Match(config, @"""SteamID""\s+""(\d+)""");
                 return match.Success ? match.Groups[1].Value : null;
-            } catch (SecurityException exception) {
+            } catch (Exception exception) {
                 Logging.Write("- error: {0}", exception);
                 return null;
             }

@@ -101,8 +101,10 @@
 [br]
 [br]Examples:
 [br] [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
-[br] [b][mono][{type:l0}] {car:l} on {track:l}.acreplay[/mono][/b] — something like '[w] bmw m3 e30 on brands hatch.acreplay'.
+[br] [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like '[w] bmw m3 e30 on brands hatch.acreplay'.
 [br]
+[br][b]Warning[/b]:
+[br] Don't use symbols like &quot;[&quot; or &quot;]&quot;!
 [br]If you need some other values, please, contact us and we'll add them." />
                         </StackPanel>
                     </ToolTip>

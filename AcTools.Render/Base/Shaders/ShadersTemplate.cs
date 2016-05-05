@@ -766,6 +766,44 @@ namespace AcTools.Render.Base.Shaders {
         }
 	}
 
+	public class EffectSpecialShadow : IEffectWrapper {
+		public Effect E;
+
+        public ShaderSignature InputSignaturePT;
+        public InputLayout LayoutPT;
+
+		public EffectTechnique TechBase, TechHorizontalShadowBlur, TechVerticalShadowBlur, TechFinal;
+
+		public EffectResourceVariable FxInputMap, FxDepthMap;
+		public EffectVectorVariable FxSize;
+
+		public void Initialize(Device device) {
+			E = new Effect(device, EffectUtils.Load("SpecialShadow"));
+
+			TechBase = E.GetTechniqueByName("Base");
+			TechHorizontalShadowBlur = E.GetTechniqueByName("HorizontalShadowBlur");
+			TechVerticalShadowBlur = E.GetTechniqueByName("VerticalShadowBlur");
+			TechFinal = E.GetTechniqueByName("Final");
+
+			for (var i = 0; i < TechBase.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechBase.GetPassByIndex(i).Description.Signature;
+			}
+			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialShadow, PT, Base) == null");
+			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
+
+			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
+			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
+			FxSize = E.GetVariableByName("gSize").AsVector();
+		}
+
+        public void Dispose() {
+			if (E == null) return;
+			InputSignaturePT.Dispose();
+            LayoutPT.Dispose();
+            E.Dispose();
+        }
+	}
+
 	public class EffectTestingCube : IEffectWrapper {
 		public Effect E;
 

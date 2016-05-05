@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Interop;
 using AcManager.Controls.Helpers;
 using AcManager.Internal;
@@ -58,11 +59,34 @@ namespace AcManager.Pages.Windows {
             }
 
             DataContext = new MainWindowViewModel();
+            InputBindings.AddRange(new[] {
+                new InputBinding(new NavigateCommand(this, "about"), new KeyGesture(Key.F1, ModifierKeys.Alt)),
+                new InputBinding(new NavigateCommand(this, "drive"), new KeyGesture(Key.F1)),
+                new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F2)),
+                new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F3)),
+                new InputBinding(new NavigateCommand(this, "settings"), new KeyGesture(Key.F4))
+            });
             InitializeComponent();
             LoadSize();
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterkey"), Model.EnterKeyCommand);
             AppKeyHolder.ProceedMainWindow(this);
+        }
+
+        private class NavigateCommand : CommandBase {
+            private readonly MainWindow _window;
+            private readonly string _key;
+
+            public NavigateCommand(MainWindow window, string key) {
+                _window = window;
+                _key = key;
+            }
+
+            protected override void OnExecute(object parameter) {
+                var link = _window.TitleLinks.OfType<TitleLink>().FirstOrDefault(x => x.GroupKey == _key);
+                if (link == null || !link.IsEnabled || link.NonSelectable) return;
+                _window.NavigateTo(link.Source);
+            }
         }
 
         private async void ProcessArguments() {
