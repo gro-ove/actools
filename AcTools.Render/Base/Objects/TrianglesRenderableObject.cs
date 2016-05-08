@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
@@ -6,6 +8,7 @@ using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
+using Buffer = SlimDX.Direct3D11.Buffer;
 
 namespace AcTools.Render.Base.Objects {
     public class TrianglesRenderableObject<T> : BaseRenderableObject where T : struct, InputLayouts.ILayout {
@@ -26,6 +29,15 @@ namespace AcTools.Render.Base.Objects {
             IsEmpty = Vertices.Length == 0;
             if (IsEnabled && IsEmpty) {
                 IsEnabled = false;
+            }
+        }
+
+        public IEnumerable<Tuple<Vector3, Vector3, Vector3>> GetTrianglesInWorldSpace() {
+            for (var i = 0; i < Indices.Length / 3; i++) {
+                var v0 = Vector3.TransformCoordinate(Vertices[Indices[i * 3]].Position, ParentMatrix);
+                var v1 = Vector3.TransformCoordinate(Vertices[Indices[i * 3 + 1]].Position, ParentMatrix);
+                var v2 = Vector3.TransformCoordinate(Vertices[Indices[i * 3 + 2]].Position, ParentMatrix);
+                yield return new Tuple<Vector3, Vector3, Vector3>(v0, v1, v2);
             }
         }
 

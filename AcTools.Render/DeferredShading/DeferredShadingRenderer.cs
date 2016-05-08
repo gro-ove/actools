@@ -94,9 +94,9 @@ namespace AcTools.Render.DeferredShading {
                 _reflectionCubemap.DrawScene(DeviceContextHolder, this);
             }
 
-            DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.StencilView, _gBufferBase.TargetView,
+            DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.DepthView, _gBufferBase.TargetView,
                     _gBufferNormal.TargetView, _gBufferMaps.TargetView);
-            DeviceContext.ClearDepthStencilView(_gDepthBuffer.StencilView,
+            DeviceContext.ClearDepthStencilView(_gDepthBuffer.DepthView,
                     DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
             DeviceContext.ClearRenderTargetView(_gBufferBase.TargetView, ColorTransparent);
             DeviceContext.ClearRenderTargetView(_gBufferNormal.TargetView, ColorTransparent);
@@ -126,21 +126,21 @@ namespace AcTools.Render.DeferredShading {
 
             switch (Mode) {
                 case RenderingMode.Result:
-                    DeviceContext.ClearDepthStencilView(_temporaryDepthBuffer.StencilView,
+                    DeviceContext.ClearDepthStencilView(_temporaryDepthBuffer.DepthView,
                             DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
-                    DeviceContext.OutputMerger.SetTargets(_temporaryDepthBuffer.StencilView);
+                    DeviceContext.OutputMerger.SetTargets(_temporaryDepthBuffer.DepthView);
                     DeviceContext.OutputMerger.BlendState = null;
 
                     Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentMask);
-                    DrawLights(_temporaryBuffer0, _temporaryDepthBuffer.StencilView);
+                    DrawLights(_temporaryBuffer0, _temporaryDepthBuffer.DepthView);
 
                     if (UseLocalReflections) {
                         DrawReflections(_temporaryBuffer2, BlurLocalReflections ? _temporaryBuffer1 : null, _temporaryBuffer0,
-                                _temporaryDepthBuffer.StencilView);
+                                _temporaryDepthBuffer.DepthView);
                     }
 
                     CombineResult(_temporaryBuffer1, _temporaryBuffer0, UseLocalReflections ? _temporaryBuffer2 : null, null,
-                            _temporaryDepthBuffer.StencilView);
+                            _temporaryDepthBuffer.DepthView);
 
                     DrawTransparent();
                     ProcessHdr(_temporaryBuffer0, _temporaryBuffer2, _temporaryBuffer3);
@@ -345,7 +345,7 @@ namespace AcTools.Render.DeferredShading {
             effect.FxReflectionCubemap.SetResource(_reflectionCubemap.View);
             effect.FxEyePosW.Set(Camera.Position);
             
-            DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.StencilView, _temporaryBuffer1.TargetView);
+            DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.DepthView, _temporaryBuffer1.TargetView);
             DeviceContext.OutputMerger.BlendState = DeviceContextHolder.TransparentBlendState;
             Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentDepth);
 
@@ -354,7 +354,7 @@ namespace AcTools.Render.DeferredShading {
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;
 
-            DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.StencilView, _gBufferBase.TargetView, _gBufferNormal.TargetView, _gBufferMaps.TargetView);
+            DeviceContext.OutputMerger.SetTargets(_gDepthBuffer.DepthView, _gBufferBase.TargetView, _gBufferNormal.TargetView, _gBufferMaps.TargetView);
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.LessEqualDepthState;
             Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.DeferredTransparentDef);
 

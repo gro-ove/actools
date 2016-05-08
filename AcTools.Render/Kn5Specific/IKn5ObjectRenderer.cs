@@ -21,7 +21,7 @@ namespace AcTools.Render.Kn5Specific {
 
         void SelectNextSkin();
 
-        void SelectSkin(string skinId);
+        void SelectSkin([CanBeNull] string skinId);
 
         void ResetCamera();
     }

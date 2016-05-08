@@ -9,16 +9,18 @@ using AcTools.Render.Base.Utils;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Textures {
-    public static class TexturesProvider {
+    public class TexturesProvider : IDisposable {
+        public static bool OptionOverrideAsync = false;
+
         private class Kn5Entry {
             public string Filename;
             public Kn5 Kn5;
         }
 
-        private static readonly List<Kn5Entry> Kn5Entries = new List<Kn5Entry>();
+        private readonly List<Kn5Entry> _kn5Entries = new List<Kn5Entry>();
 
-        public static void SetKn5(string filename, Kn5 kn5) {
-            Kn5Entries.Add(new Kn5Entry {
+        public void SetKn5(string filename, Kn5 kn5) {
+            _kn5Entries.Add(new Kn5Entry {
                 Filename = filename,
                 Kn5 = kn5
             });
@@ -27,7 +29,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         private static readonly Dictionary<string, IOverridedTextureProvider> OverridedProviders =
                 new Dictionary<string, IOverridedTextureProvider>();
 
-        public static void SetOverridedProvider(string filename, IOverridedTextureProvider provider) {
+        public void SetOverridedProvider(string filename, IOverridedTextureProvider provider) {
             if (provider == null) {
                 OverridedProviders.Remove(filename);
             } else {
@@ -35,63 +37,80 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
         }
 
-        public static IEnumerable<IRenderableTexture> GetFor(Kn5 kn5) {
+        private readonly Dictionary<string, IRenderableTexture> _textures = new Dictionary<string, IRenderableTexture>();
+
+        public IEnumerable<IRenderableTexture> GetFor(Kn5 kn5) {
             var keyPrefix = kn5.OriginalFilename + "//";
-            return Textures.Where(x => x.Key.StartsWith(keyPrefix)).Select(key => key.Value);
+            return _textures.Where(x => x.Key.StartsWith(keyPrefix)).Select(key => key.Value);
         }
 
-        public static Task UpdateOverridesForAsync(Kn5 kn5, string textureName, DeviceContextHolder contextHolder) {
+        public Task UpdateOverridesForAsync(Kn5 kn5, string textureName, DeviceContextHolder contextHolder) {
             IOverridedTextureProvider provider;
             if (!OverridedProviders.TryGetValue(kn5.OriginalFilename, out provider)) return Task.Delay(0);
 
             var keyPrefix = kn5.OriginalFilename + "//";
-            return Task.WhenAll(Textures.Where(x => x.Key.StartsWith(keyPrefix))
-                                        .Select(key => key.Value)
-                                        .Where(x => textureName == null || string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase))
-                                        .OfType<RenderableTexture>().Select(async texture => {
-                                            var overrided = await provider.GetOverridedData(texture.Name);
-                                            if (overrided != null) {
-                                                await texture.LoadOverrideAsync(overrided, contextHolder.Device);
-                                            } else {
-                                                texture.Override = null;
-                                            }
-                                        }));
+            if (OptionOverrideAsync) {
+                return Task.WhenAll(_textures.Where(x => x.Key.StartsWith(keyPrefix))
+                                            .Select(key => key.Value)
+                                            .Where(x => textureName == null || string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase))
+                                            .OfType<RenderableTexture>().Select(async texture => {
+                                                var overrided = await provider.GetOverridedDataAsync(texture.Name);
+                                                if (overrided != null) {
+                                                    await texture.LoadOverrideAsync(overrided, contextHolder.Device);
+                                                } else {
+                                                    texture.Override = null;
+                                                }
+                                            }));
+            }
+
+
+            foreach (var texture in _textures.Where(x => x.Key.StartsWith(keyPrefix))
+                                    .Select(key => key.Value)
+                                    .Where(x => textureName == null || string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase))
+                                    .OfType<RenderableTexture>()) {
+                var overrided = provider.GetOverridedData(texture.Name);
+                if (overrided != null) {
+                    texture.LoadOverride(overrided, contextHolder.Device);
+                } else {
+                    texture.Override = null;
+                }
+            }
+
+            return Task.Delay(0);
         }
 
-        public static Task UpdateOverridesForAsync(Kn5 kn5, DeviceContextHolder contextHolder) {
+        public Task UpdateOverridesForAsync(Kn5 kn5, DeviceContextHolder contextHolder) {
             return UpdateOverridesForAsync(kn5, null, contextHolder);
         }
 
-        public static void DisposeAll() {
-            foreach (var material in Textures.Values) {
+        public void Dispose() {
+            foreach (var material in _textures.Values) {
                 material.Dispose();
             }
-            Textures.Clear();
-            Kn5Entries.Clear();
+            _textures.Clear();
+            _kn5Entries.Clear();
         }
 
-        public static void DisposeFor(Kn5 kn5) {
+        public void DisposeFor(Kn5 kn5) {
             var keyPrefix = kn5.OriginalFilename + "//";
-            var keys = Textures.Keys.Where(x => x.StartsWith(keyPrefix)).ToList();
+            var keys = _textures.Keys.Where(x => x.StartsWith(keyPrefix)).ToList();
             foreach (var key in keys) {
-                Textures[key].Dispose();
-                Textures.Remove(key);
+                _textures[key].Dispose();
+                _textures.Remove(key);
             }
 
-            var entry = Kn5Entries.FirstOrDefault(x => x.Kn5 == kn5);
+            var entry = _kn5Entries.FirstOrDefault(x => x.Kn5 == kn5);
             if (entry == null) return;
-            Kn5Entries.Remove(entry);
+            _kn5Entries.Remove(entry);
         }
 
-        private static readonly Dictionary<string, IRenderableTexture> Textures = new Dictionary<string, IRenderableTexture>();
-
         [NotNull]
-        public static IRenderableTexture GetTexture([NotNull] string kn5Filename, string textureName, DeviceContextHolder contextHolder) {
+        public IRenderableTexture GetTexture([NotNull] string kn5Filename, string textureName, DeviceContextHolder contextHolder) {
             if (kn5Filename == null) throw new ArgumentNullException(nameof(kn5Filename));
 
             var key = kn5Filename + "//" + textureName;
             IRenderableTexture texture;
-            if (Textures.TryGetValue(key, out texture)) return texture;
+            if (_textures.TryGetValue(key, out texture)) return texture;
 
             var result = new RenderableTexture(textureName) { Resource = null };
             IOverridedTextureProvider provider;
@@ -99,34 +118,39 @@ namespace AcTools.Render.Kn5Specific.Textures {
                 LoadOverrideAsync(result, textureName, provider, contextHolder);
             }
 
-            var kn5 = Kn5Entries.Where(x => string.Equals(x.Filename, kn5Filename, StringComparison.OrdinalIgnoreCase))
+            var kn5 = _kn5Entries.Where(x => string.Equals(x.Filename, kn5Filename, StringComparison.OrdinalIgnoreCase))
                           .Select(x => x.Kn5).FirstOrDefault(x => x.TexturesData.ContainsKey(textureName));
             if (kn5 == null) return result;
             
             result.LoadAsync(kn5.TexturesData[textureName], contextHolder.Device).Forget();
-            return Textures[key] = result;
+            return _textures[key] = result;
         }
 
-        private static async void LoadOverrideAsync(RenderableTexture texture, string textureName, IOverridedTextureProvider provider,
+        private async void LoadOverrideAsync(RenderableTexture texture, string textureName, IOverridedTextureProvider provider,
                 DeviceContextHolder contextHolder) {
-            var overrided = await provider.GetOverridedData(textureName);
+            var overrided = await provider.GetOverridedDataAsync(textureName);
             if (overrided != null) {
                 texture.LoadOverrideAsync(overrided, contextHolder.Device).Forget();
             }
         }
 
-        [CanBeNull]
-        public static IRenderableTexture GetTexture(string filename, DeviceContextHolder contextHolder) {
-            if (Textures.ContainsKey(filename)) return Textures[filename];
-
-            // TODO: watching?
-            if (!File.Exists(filename)) {
-                return null;
+        public async Task UpdateTextureAsync(string filename, DeviceContextHolder contextHolder) {
+            foreach (var texture in _textures
+                    .Where(pair => string.Equals(pair.Key, filename, StringComparison.OrdinalIgnoreCase) && !pair.Value.IsDisposed)
+                    .Select(pair => pair.Value).OfType<RenderableTexture>()) {
+                await texture.LoadAsync(filename, contextHolder.Device);
             }
+        }
+
+        [CanBeNull]
+        public IRenderableTexture GetTexture(string filename, DeviceContextHolder contextHolder) {
+            IRenderableTexture cached;
+            if (_textures.TryGetValue(filename, out cached) && !cached.IsDisposed) return cached;
+            if (!File.Exists(filename)) return null;
 
             var result = new RenderableTexture { Resource = null };
             result.LoadAsync(filename, contextHolder.Device).Forget();
-            return Textures[filename] = result;
+            return _textures[filename] = result;
         }
     }
 }

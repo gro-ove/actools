@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -13,7 +15,7 @@ using Resource = SlimDX.Direct3D11.Resource;
 using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Base {
-    public abstract class BaseRenderer : IDisposable {
+    public abstract class BaseRenderer : IDisposable, INotifyPropertyChanged {
         public static readonly Color4 ColorTransparent = new Color4(0f, 0f, 0f, 0f);
 
         private DeviceContextHolder _deviceContextHolder;
@@ -26,7 +28,7 @@ namespace AcTools.Render.Base {
 
         public DeviceContextHolder DeviceContextHolder => _deviceContextHolder;
 
-        public bool IsDirty { get; protected set; }
+        public bool IsDirty { get; set; }
 
         private int _width;
         private int _height;
@@ -45,6 +47,7 @@ namespace AcTools.Render.Base {
                 if (Equals(_width, value)) return;
                 _width = value;
                 _resized = true;
+                OnPropertyChanged();
             }
         }
 
@@ -54,6 +57,7 @@ namespace AcTools.Render.Base {
                 if (Equals(_height, value)) return;
                 _height = value;
                 _resized = true;
+                OnPropertyChanged();
             }
         }
 
@@ -62,7 +66,18 @@ namespace AcTools.Render.Base {
         private readonly FrameMonitor _frameMonitor = new FrameMonitor();
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
-        public float FramesPerSecond => _frameMonitor.FramesPerSecond;
+        private float _previousFramesPerSecond;
+
+        public float FramesPerSecond {
+            get {
+                var current = _frameMonitor.FramesPerSecond;
+                if (Math.Abs(_previousFramesPerSecond - current) > 0.0001f) {
+                    _previousFramesPerSecond = current;
+                    OnPropertyChanged(nameof(FramesPerSecond));
+                }
+                return current;
+            }
+        }
 
         public float Elapsed => _stopwatch.ElapsedMilliseconds / 1000f;
         private float _previousElapsed;
@@ -72,11 +87,11 @@ namespace AcTools.Render.Base {
             Configuration.ThrowOnShaderCompileError = true;
         }
 
-        private bool _initialized;
+        protected bool Initialized { get; private set; }
 
         protected int MsaaQuality { get; private set; }
 
-        protected virtual SampleDescription SampleDescription => new SampleDescription(4, MsaaQuality - 1);
+        protected virtual SampleDescription SampleDescription => new SampleDescription(1, 0);
 
         protected abstract FeatureLevel FeatureLevel { get; }
    
@@ -84,7 +99,7 @@ namespace AcTools.Render.Base {
         /// Get Device (could be temporary, could be not), set proper SampleDescription
         /// </summary>
         private Device InitializeDevice() {
-            Debug.Assert(_initialized == false);
+            Debug.Assert(Initialized == false);
 
             var device = new Device(DriverType.Hardware, DeviceCreationFlags.None);
             if (device.FeatureLevel < FeatureLevel) {
@@ -99,19 +114,34 @@ namespace AcTools.Render.Base {
         /// Initialize for out-screen rendering
         /// </summary>
         public void Initialize() {
-            Debug.Assert(_initialized == false);
+            Debug.Assert(Initialized == false);
 
             _deviceContextHolder = new DeviceContextHolder(InitializeDevice());
             InitializeInner();
 
-            _initialized = true;
+            Initialized = true;
+        }
+
+        private bool _sharedHolder;
+
+        /// <summary>
+        /// Initialize for out-screen rendering using exising holder
+        /// </summary>
+        public void Initialize(DeviceContextHolder existingHolder) {
+            Debug.Assert(Initialized == false);
+
+            _sharedHolder = true;
+            _deviceContextHolder = existingHolder;
+            InitializeInner();
+
+            Initialized = true;
         }
 
         /// <summary>
         /// Initialize for on-screen rendering
         /// </summary>
         public void Initialize(IntPtr outputHandle) {
-            Debug.Assert(_initialized == false);
+            Debug.Assert(Initialized == false);
             
             InitializeDevice().Dispose();
 
@@ -135,7 +165,7 @@ namespace AcTools.Render.Base {
             
             InitializeInner();
 
-            _initialized = true;
+            Initialized = true;
         }
 
         protected abstract void InitializeInner();
@@ -144,8 +174,7 @@ namespace AcTools.Render.Base {
         private RenderTargetView _renderView;
         private Texture2D _depthBuffer;
         private DepthStencilView _depthView;
-
-        // TODO: clean up?
+        
         public Texture2D RenderBuffer => _renderBuffer;
 
         public Texture2D DepthBuffer => _depthBuffer;
@@ -160,7 +189,7 @@ namespace AcTools.Render.Base {
 
             if (_swapChain != null) {
                 _swapChain.ResizeBuffers(_swapChainDescription.BufferCount, _width, _height,
-                                        Format.Unknown, SwapChainFlags.None);
+                        Format.Unknown, SwapChainFlags.None);
                 _renderBuffer = Resource.FromSwapChain<Texture2D>(_swapChain, 0);
             } else {
                 _renderBuffer = new Texture2D(Device, new Texture2DDescription {
@@ -192,7 +221,7 @@ namespace AcTools.Render.Base {
             });
 
             _depthView = new DepthStencilView(Device, _depthBuffer);
-            DeviceContext.Rasterizer.SetViewports(new Viewport(0, 0, _width, _height, 0.0f, 1.0f));
+            DeviceContext.Rasterizer.SetViewports(Viewport);
             ResetTargets();
 
             DeviceContext.OutputMerger.DepthStencilState = null;
@@ -201,6 +230,8 @@ namespace AcTools.Render.Base {
             ResizeInner();
             DeviceContextHolder.OnResize(Width, Height);
         }
+
+        public Viewport Viewport => new Viewport(0, 0, _width, _height, 0.0f, 1.0f);
 
         protected abstract void ResizeInner();
 
@@ -213,7 +244,7 @@ namespace AcTools.Render.Base {
         protected RenderTargetView RenderTargetView => _renderView;
 
         public virtual void Draw() {
-            Debug.Assert(_initialized);
+            Debug.Assert(Initialized);
             IsDirty = false;
 
             if (_resized) {
@@ -230,7 +261,9 @@ namespace AcTools.Render.Base {
             Tick?.Invoke(this, new TickEventArgs(elapsed - _previousElapsed));
             _previousElapsed = elapsed;
 
-            _frameMonitor.Tick();
+            if (_frameMonitor.Tick()) {
+                OnPropertyChanged(nameof(FramesPerSecond));
+            }
 
             DrawInner();
             if (SpriteInitialized) {
@@ -240,7 +273,16 @@ namespace AcTools.Render.Base {
             _swapChain?.Present(SyncInterval ? 1 : 0, PresentFlags.None);
         }
 
-        public bool SyncInterval = true;
+        private bool _syncInterval;
+
+        public bool SyncInterval {
+            get { return _syncInterval; }
+            set {
+                if (Equals(value, _syncInterval)) return;
+                _syncInterval = value;
+                OnPropertyChanged();
+            }
+        }
 
         protected virtual void DrawInner() {
             DeviceContext.ClearDepthStencilView(_depthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
@@ -276,7 +318,11 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _renderView);
             DisposeHelper.Dispose(ref _depthBuffer);
             DisposeHelper.Dispose(ref _depthView);
-            DisposeHelper.Dispose(ref _deviceContextHolder);
+
+            if (!_sharedHolder) {
+                DisposeHelper.Dispose(ref _deviceContextHolder);
+            }
+
             DisposeHelper.Dispose(ref _swapChain);
         }
 
@@ -291,21 +337,17 @@ namespace AcTools.Render.Base {
             Width = width;
             Height = height;
 
-            using (var stream = new System.IO.MemoryStream()) {
-                Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, stream);
-                stream.Position = 0;
-                return Image.FromStream(stream);
-            }
-        }
-    }
-
-    public delegate void TickEventHandler(object sender, TickEventArgs args);
-
-    public class TickEventArgs : EventArgs {
-        public TickEventArgs(float deltaTime) {
-            DeltaTime = deltaTime;
+            var stream = new System.IO.MemoryStream();
+            Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Jpg, stream);
+            stream.Position = 0;
+            return Image.FromStream(stream);
         }
 
-        public float DeltaTime { get; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

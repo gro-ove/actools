@@ -22,17 +22,20 @@ namespace AcTools.Render.Kn5Specific.Objects {
             BaseIndices = new ushort[] { 0, 2, 1, 3, 1, 2 };
         }
 
+        private readonly string _filename;
         private readonly Matrix _transform;
-        private readonly IRenderableMaterial _material;
+        private IRenderableMaterial _material;
 
         public AmbientShadow(string filename, Matrix transform)
                 : base(BaseVertices, BaseIndices) {
+            _filename = filename;
             _transform = transform;
-            _material = Kn5MaterialsProvider.GetAmbientShadowMaterial(filename);
         }
 
         protected override void Initialize(DeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
+
+            _material = contextHolder.Get<Kn5MaterialsProvider>().GetAmbientShadowMaterial(_filename);
             _material.Initialize(contextHolder);
         }
 

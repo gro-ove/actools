@@ -1,5 +1,6 @@
 using System.Windows.Forms;
 using AcTools.Render.Kn5SpecificForward;
+using SlimDX;
 
 namespace AcTools.Render.Wrapper {
     public class LiteShowroomWrapper : BaseKn5FormWrapper {
@@ -9,6 +10,11 @@ namespace AcTools.Render.Wrapper {
 
         public LiteShowroomWrapper(ForwardKn5ObjectRenderer renderer) : base(renderer, "Lite Showroom", 1600, 900) {
             _renderer = renderer;
+            Form.Click += OnClick;
+        }
+
+        private void OnClick(object sender, System.EventArgs e) {
+            _renderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
         }
 
         public void ToogleEditMode() {
@@ -21,7 +27,7 @@ namespace AcTools.Render.Wrapper {
                 Form.TopMost = false;
                 Kn5ObjectRenderer.VisibleUi = true;
             } else {
-                Form.FormBorderStyle = FormBorderStyle.None;
+                Form.FormBorderStyle = FormBorderStyle.SizableToolWindow;
                 Form.Width = 400;
                 Form.Height = 240;
                 Form.Top = Screen.PrimaryScreen.WorkingArea.Height - 300;

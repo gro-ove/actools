@@ -14,8 +14,31 @@ namespace AcTools.Render.Forward {
     public abstract class ForwardRenderer : SceneRenderer {
         public int TrianglesCount { get; protected set; }
 
-        public bool UseFxaa = true;
-        public bool ShowWireframe = false;
+        public int ObjectsCount { get; protected set; }
+
+        private bool _useFxaa = true;
+
+        public bool UseFxaa {
+            get { return _useFxaa; }
+            set {
+                if (Equals(_useFxaa, value)) return;
+                _useFxaa = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _showWireframe = false;
+
+        public bool ShowWireframe {
+            get { return _showWireframe; }
+            set {
+                if (Equals(_showWireframe, value)) return;
+                _showWireframe = value;
+                IsDirty = true;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _useBloom;
 
@@ -42,6 +65,9 @@ namespace AcTools.Render.Forward {
                 _buffer.Resize(DeviceContextHolder, Width, Height);
                 _buffer1?.Resize(DeviceContextHolder, Width, Height);
                 _buffer2?.Resize(DeviceContextHolder, Width, Height);
+
+                IsDirty = true;
+                OnPropertyChanged();
             }
         }
 
@@ -90,6 +116,7 @@ namespace AcTools.Render.Forward {
             DeviceContext.OutputMerger.BlendState = null;
             DeviceContext.Rasterizer.State = ShowWireframe ? _wireframeRasterizerState : null;
 
+            DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.LessEqualDepthState;
             Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.Simple);
 
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.ReadOnlyDepthState;

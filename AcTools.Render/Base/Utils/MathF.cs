@@ -14,12 +14,12 @@ namespace AcTools.Render.Base.Utils {
         public static float Abs(float a) {
             return a < 0.0f ? -a : a;
         }
-        public static float Sin(float a) {
-            return (float)Math.Sin(a);
+        public static float Sin(float rad) {
+            return (float)Math.Sin(rad);
         }
 
-        public static float Cos(float a) {
-            return (float)Math.Cos(a);
+        public static float Cos(float rad) {
+            return (float)Math.Cos(rad);
         }
 
         public static float ToRadians(float degrees) {
@@ -37,11 +37,11 @@ namespace AcTools.Render.Base.Utils {
             return Math.Max(min, Math.Min(value, max));
         }
 
-        public static int Rand() {
-            return RandomObject.Next();
+        public static float Random() {
+            return (float)RandomObject.NextDouble();
         }
 
-        public static float Rand(float min, float max) {
+        public static float Random(float min, float max) {
             return min + (float)RandomObject.NextDouble() * (max - min);
         }
 
@@ -107,10 +107,10 @@ namespace AcTools.Render.Base.Utils {
         }
 
         public static Vector3 RandVector(Vector3 min, Vector3 max) {
-            return new Vector3(Rand(min.X, max.X), Rand(min.Y, max.Y), Rand(min.Z, max.Z));
+            return new Vector3(Random(min.X, max.X), Random(min.Y, max.Y), Random(min.Z, max.Z));
         }
 
-        public static int Rand(int max) { return RandomObject.Next(max); }
+        public static int Random(int max) { return RandomObject.Next(max); }
 
         public static float AngleFromXY(float x, float y) {
             float theta;

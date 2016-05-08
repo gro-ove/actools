@@ -8,6 +8,7 @@ namespace AcTools.Render.Base.TargetTextures {
         public TargetResourceTexture(Texture2DDescription description) : base(description) {}
         
         public override void Resize(DeviceContextHolder holder, int width, int height) {
+            if (width == Width && height == Height) return;
             base.Resize(holder, width, height);
 
             TargetView = new RenderTargetView(holder.Device, Texture);

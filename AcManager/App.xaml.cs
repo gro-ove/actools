@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using AcManager.Controls;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Controls.Presentation;
@@ -143,10 +145,13 @@ namespace AcManager {
             RecentManager.Initialize();
             Superintendent.Initialize();
 
-            PrepareUi();
-
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
-            Toast.SetDefaultIcon(new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/Icon.ico", UriKind.Absolute));
+
+            PrepareUi();
+            var iconUri = new Uri("pack://application:,,,/Content Manager;component/Assets/Icons/Icon.ico",
+                    UriKind.Absolute);
+            CustomShowroomWrapper.SetDefaultIcon(iconUri);
+            Toast.SetDefaultIcon(iconUri);
             Toast.SetDefaultAction(() => (Current.MainWindow as ModernWindow)?.BringToFront());
 
             BbCodeBlock.ImageClicked += BbCodeBlock_ImageClicked;

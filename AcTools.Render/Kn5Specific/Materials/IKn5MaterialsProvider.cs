@@ -13,6 +13,6 @@ namespace AcTools.Render.Kn5Specific.Materials {
         IRenderableMaterial CreateSkyMaterial();
 
         [NotNull]
-        IRenderableMaterial CreateMirrorMaterial();
+        IRenderableMaterial GetMirrorMaterial();
     }
 }

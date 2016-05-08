@@ -8,6 +8,8 @@ namespace AcTools.Render.Kn5Specific.Textures {
     public class RenderableTexture : IRenderableTexture {
         public string Name { get; }
 
+        public bool IsDisposed { get; private set; }
+
         public RenderableTexture(string name = null) {
             Name = name;
         }
@@ -68,6 +70,19 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
         }
 
+        public void LoadOverride(byte[] data, Device device) {
+            var id = ++_overrideId;
+
+            try {
+                var resource = ShaderResourceView.FromMemory(device, data);
+                if (id != _overrideId) return;
+                Override = resource;
+            } catch (Exception) {
+                if (id != _overrideId) return;
+                Override = null;
+            }
+        }
+
         public async Task LoadOverrideAsync(byte[] data, Device device) {
             var id = ++_overrideId;
 
@@ -84,6 +99,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         public void Dispose() {
             DisposeHelper.Dispose(ref _override);
             DisposeHelper.Dispose(ref _resource);
+            IsDisposed = true;
         }
     }
 }

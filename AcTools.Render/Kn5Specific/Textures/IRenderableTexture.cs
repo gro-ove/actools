@@ -9,5 +9,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         [CanBeNull]
         string Name { get; }
+
+        bool IsDisposed { get; }
     }
 }

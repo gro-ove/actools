@@ -1,0 +1,108 @@
+﻿<mui:ModernDialog x:Class="AcManager.Controls.CustomShowroom.LiteShowroomTools" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="{Binding Car.DisplayName}" ShowInTaskbar="False" d:DataContext="{d:DesignInstance customShowroom:LiteShowroomTools+LiteShowroomToolsViewModel}"
+        Width="240" Topmost="True" Loaded="LiteShowroomTools_OnLoaded" Unloaded="LiteShowroomTools_OnUnloaded">
+    <StackPanel Margin="-4 -8 -4 -8">
+        <StackPanel.Resources>
+            <ResourceDictionary>
+                <Style TargetType="{x:Type DockPanel}">
+                    <Setter Property="Margin" Value="0 4 0 0" />
+
+                    <Style.Resources>
+                        <ResourceDictionary>
+                            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
+                                <Setter Property="Width" Value="80" />
+                                <Setter Property="DockPanel.Dock" Value="Left" />
+                            </Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Setter Property="Margin" Value="0 0 0 4" />
+                                <Setter Property="DockPanel.Dock" Value="Top" />
+                            </Style>
+                        </ResourceDictionary>
+                    </Style.Resources>
+                </Style>
+            </ResourceDictionary>
+        </StackPanel.Resources>
+        
+        <TextBlock Text="Selected" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+        
+
+        <TextBlock Text="Stats" Style="{StaticResource Heading2}" />
+        <DockPanel>
+            <Label>FPS:</Label>
+            <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" TextAlignment="Right" />
+        </DockPanel>
+        <DockPanel>
+            <Label>Objects:</Label>
+            <TextBlock Text="{Binding Renderer.ObjectsCount}" TextAlignment="Right" />
+        </DockPanel>
+        <DockPanel>
+            <Label>Triangles:</Label>
+            <TextBlock Text="{Binding Renderer.TrianglesCount}" TextAlignment="Right" />
+        </DockPanel>
+
+        <TextBlock Text="Control" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+        <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarLightsEnabled}">
+            <Label>_Lights</Label>
+        </CheckBox>
+        <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.ShowWireframe}">
+            <Label>_Wireframe</Label>
+        </CheckBox>
+
+        <TextBlock Text="Skin" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+        <ComboBox ItemsSource="{Binding Car.LoadedOnlySkins}" SelectedItem="{Binding Skin}" Margin="0 4 0 0">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel Height="18">
+                        <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="0 0 4 0"
+                                Source="{Binding LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="18" Height="18" />
+                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
+                    </DockPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <CheckBox IsEnabled="False" Margin="0 4 0 0" IsChecked="True">
+            <Label>Use PSD, XCF, etc. instead if exists</Label>
+        </CheckBox>
+
+        <TextBlock Text="Ambient Shadow" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+        <DockPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Diffusion: " Target="{x:Reference DiffuseTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                <TextBox Name="DiffuseTextBox" Text="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}', UpdateSourceTrigger=LostFocus}"
+                        Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                        mui:TextBoxAdvancement.SpecialMode="Number" />
+                <Label Content="%" Target="{x:Reference DiffuseTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+            </StackPanel>
+            <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
+                    IsSnapToTickEnabled="False" />
+        </DockPanel>
+        <DockPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Brightness: " Target="{x:Reference BrightnessTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                <TextBox Name="BrightnessTextBox" Text="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}', UpdateSourceTrigger=LostFocus}"
+                        Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                        mui:TextBoxAdvancement.SpecialMode="Number" />
+                <Label Content="%" Target="{x:Reference BrightnessTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+            </StackPanel>
+            <Slider Minimum="150" Maximum="800" Value="{Binding AmbientShadowBrightness}" TickFrequency="130" TickPlacement="BottomRight"
+                    IsSnapToTickEnabled="False" />
+        </DockPanel>
+        <DockPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Iterations: " Target="{x:Reference IterationsTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                <TextBox Name="IterationsTextBox" Text="{Binding AmbientShadowIterations, UpdateSourceTrigger=LostFocus}"
+                        Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                        mui:TextBoxAdvancement.SpecialMode="Integer" />
+            </StackPanel>
+            <Slider Minimum="400" Maximum="4000" Value="{Binding AmbientShadowIterations}" TickFrequency="720" TickPlacement="BottomRight"
+                    IsSnapToTickEnabled="False" />
+        </DockPanel>
+        <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
+            <Label>Hide wheels</Label>
+        </CheckBox>
+        <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}">Update</Button>
+    </StackPanel>
+</mui:ModernDialog>

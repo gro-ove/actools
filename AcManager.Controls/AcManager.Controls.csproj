@@ -34,6 +34,12 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="D3D10Scene">
+      <HintPath>..\..\..\Temp\wpf-dx10\WPFDXInterop-master\samples\D3DImageTest\bin\Release\D3D10Scene.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.D3DImageEx">
+      <HintPath>..\..\..\Temp\wpf-dx10\WPFDXInterop-master\samples\D3DImageTest\bin\Release\Interop.D3DImageEx.dll</HintPath>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
@@ -72,6 +78,12 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="xZune.Vlc">
+      <HintPath>..\..\..\Temp\xZune.Vlc-master\Release\.NET 4.5\xZune.Vlc.dll</HintPath>
+    </Reference>
+    <Reference Include="xZune.Vlc.Wpf">
+      <HintPath>..\..\..\Temp\xZune.Vlc-master\Release\.NET 4.5\xZune.Vlc.Wpf.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcObjectBase.cs" />
@@ -81,6 +93,11 @@
     <Compile Include="Converters\PlaceToColorConverter.cs" />
     <Compile Include="Converters\RealismLevelToColorConverter.cs" />
     <Compile Include="Converters\CountryIdToImageConverter.cs" />
+    <Compile Include="CustomShowroom\CustomShowroomWrapper.cs" />
+    <Compile Include="CustomShowroom\LiteShowroomTools.xaml.cs">
+      <DependentUpon>LiteShowroomTools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomShowroom\LiteShowroomWrapperWithTools.cs" />
     <Compile Include="Helpers\DelayedPropertyWrapper.cs" />
     <Compile Include="Helpers\ErrorMessage.cs" />
     <Compile Include="Helpers\FancyBackgroundManager.cs" />
@@ -168,6 +185,10 @@
     <Page Include="Assets\SelectedObjectToolBarTray\Fixed.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomShowroom\LiteShowroomTools.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GraphViewer.xaml">
       <SubType>Designer</SubType>
@@ -288,16 +309,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Temp\xZune.Vlc-master\xZune.Vlc.Wpf\xZune.Vlc.Wpf.csproj">
-      <Project>{c53e6715-c8bf-4be4-943d-c003f0f01876}</Project>
-      <Name>xZune.Vlc.Wpf</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Temp\xZune.Vlc-master\xZune.Vlc\xZune.Vlc.csproj">
-      <Project>{174900eb-956f-4435-87f2-677f014dd5db}</Project>
-      <Name>xZune.Vlc</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\AcManager.Tools\AcManager.Tools.csproj">
       <Project>{764afd18-0755-4596-839c-fea3f492303b}</Project>
       <Name>AcManager.Tools</Name>

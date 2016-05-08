@@ -36,10 +36,10 @@ namespace AcTools.Utils.Helpers {
         }
 
         [CanBeNull]
-        public static T MaxOrDefault<T>([NotNull] this IEnumerable<T> source) where T : IComparable<T> {
+        public static T MaxOr<T>([NotNull] this IEnumerable<T> source, T defaultValue) where T : IComparable<T> {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            var result = default(T);
+            var result = defaultValue;
             var first = true;
 
             foreach (var item in source) {
@@ -56,10 +56,15 @@ namespace AcTools.Utils.Helpers {
         }
 
         [CanBeNull]
-        public static T MinOrDefault<T>([NotNull] this IEnumerable<T> source) where T : IComparable<T> {
+        public static T MaxOrDefault<T>([NotNull] this IEnumerable<T> source) where T : IComparable<T> {
+            return MaxOr(source, default(T));
+        }
+
+        [CanBeNull]
+        public static T MinOr<T>([NotNull] this IEnumerable<T> source, T defaultValue) where T : IComparable<T> {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
-            var result = default(T);
+            var result = defaultValue;
             var first = true;
 
             foreach (var item in source) {
@@ -73,6 +78,11 @@ namespace AcTools.Utils.Helpers {
             }
 
             return result;
+        }
+
+        [CanBeNull]
+        public static T MinOrDefault<T>([NotNull] this IEnumerable<T> source) where T : IComparable<T> {
+            return MinOr(source, default(T));
         }
 
         [CanBeNull]

@@ -2,8 +2,8 @@ using AcTools.Kn5File;
 using AcTools.Render.Kn5Specific.Materials;
 
 namespace AcTools.Render.Kn5SpecificDeferred.Materials {
-    public class MaterialsProviderDeferred : IKn5MaterialsProvider {
-        public IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
+    public class MaterialsProviderDeferred : Kn5MaterialsProvider {
+        public override IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
             switch (kn5Material.ShaderName) {
                 case "GL":
                     return new Kn5MaterialGlDeferred();
@@ -16,15 +16,15 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
             }
         }
 
-        public IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
+        public override IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
             return new AmbientShadowMaterialDeferred(filename);
         }
 
-        public IRenderableMaterial CreateSkyMaterial() {
+        public override IRenderableMaterial CreateSkyMaterial() {
             return new SkyMaterialDeferred();
         }
 
-        public IRenderableMaterial CreateMirrorMaterial() {
+        public override IRenderableMaterial CreateMirrorMaterial() {
             return new MirrorMaterialDeferred();
         }
     }

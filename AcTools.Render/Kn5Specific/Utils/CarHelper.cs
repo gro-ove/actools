@@ -13,10 +13,15 @@ using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Utils {
     public class CarHelper : IOverridedTextureProvider, IDisposable {
+        public Vector3 GetWheelShadowSize() {
+            return new Vector3(0.3f, 1.0f, 0.3f);
+        }
+
         private static readonly string[] MagickExtensions = {
             ".bmp",
             ".gif",
@@ -82,8 +87,9 @@ namespace AcTools.Render.Kn5Specific.Utils {
             var skinId = splitted[0];
             var textureName = splitted[1];
             if (!string.Equals(CurrentSkin, skinId, StringComparison.OrdinalIgnoreCase)) return;
-
-            var texture = TexturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
+            
+            var texturesProvider = _holder.Get<TexturesProvider>();
+            var texture = texturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
                     string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase));
             if (texture == null) {
                 if (!MagickWrapper.IsSupported) return;
@@ -91,9 +97,9 @@ namespace AcTools.Render.Kn5Specific.Utils {
                 var ext = MagickExtensions.FirstOrDefault(x => textureName.EndsWith(x, StringComparison.OrdinalIgnoreCase));
                 if (ext != null) {
                     textureName = textureName.ApartFromLast(ext);
-                    texture = TexturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
+                    texture = texturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
                             string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase)) ??
-                            TexturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
+                            texturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
                                     x.Name?.StartsWith(textureName, StringComparison.OrdinalIgnoreCase) == true &&
                                             x.Name.ElementAtOrDefault(textureName.Length) == '.');
                 }
@@ -115,7 +121,9 @@ namespace AcTools.Render.Kn5Specific.Utils {
         private async void ReloadSkinsLater(string selectSkin = null) {
             await Task.Delay(100);
             ReloadSkins(selectSkin);
-            await TexturesProvider.UpdateOverridesForAsync(MainKn5, _holder);
+            
+            var texturesProvider = _holder.Get<TexturesProvider>();
+            await texturesProvider.UpdateOverridesForAsync(MainKn5, _holder);
             SkinTextureUpdated?.Invoke(this, EventArgs.Empty);
         }
 
@@ -161,7 +169,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
             var selectedIndex = Skins?.IndexOf(CurrentSkin);
 
             try {
-                Skins = Directory.GetDirectories(SkinsDirectory).Select(Path.GetFileName).ToList();
+                Skins = Directory.GetDirectories(SkinsDirectory).Select(x => Path.GetFileName(x)?.ToLower()).ToList();
             } catch (Exception) {
                 Skins = null;
             }
@@ -186,9 +194,10 @@ namespace AcTools.Render.Kn5Specific.Utils {
             SelectSkin(index <= 0 ? Skins[Skins.Count - 1] : Skins[index - 1], contextHolder);
         }
 
-        public void SelectSkin(string skinId, DeviceContextHolder contextHolder) {
-            CurrentSkin = skinId;
-            TexturesProvider.UpdateOverridesForAsync(MainKn5, contextHolder);
+        public void SelectSkin([CanBeNull] string skinId, DeviceContextHolder contextHolder) {
+            CurrentSkin = skinId?.ToLower();
+            var texturesProvider = contextHolder.Get<TexturesProvider>();
+            texturesProvider.UpdateOverridesForAsync(MainKn5, contextHolder);
         }
 
         public string GetOverridedFilename(string name) {
@@ -206,7 +215,33 @@ namespace AcTools.Render.Kn5Specific.Utils {
             }
         }
 
-        async Task<byte[]> IOverridedTextureProvider.GetOverridedData(string name) {
+        public byte[] GetOverridedData(string name) {
+            var filename = GetOverridedFilename(name);
+            if (filename == null) return null;
+
+            if (MagickWrapper.IsSupported) {
+                foreach (var ext in MagickExtensions.Where(x => !filename.EndsWith(x, StringComparison.OrdinalIgnoreCase))) {
+                    var candidate = filename + ext;
+                    byte[] bytes = null;
+                    if (File.Exists(candidate)) {
+                        bytes = File.ReadAllBytes(candidate);
+                    } else {
+                        candidate = filename.ApartFromLast(Path.GetExtension(filename)) + ext;
+                        if (File.Exists(candidate)) {
+                            bytes = File.ReadAllBytes(candidate);
+                        }
+                    }
+
+                    if (bytes != null) {
+                        return MagickWrapper.LoadAsSlimDxBuffer(bytes);
+                    }
+                }
+            }
+
+            return File.ReadAllBytes(filename);
+        }
+
+        async Task<byte[]> IOverridedTextureProvider.GetOverridedDataAsync(string name) {
             var filename = GetOverridedFilename(name);
             if (filename == null) return null;
             
@@ -240,7 +275,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
             wheel.Y = 0.01f;
 
             var filename = Path.Combine(RootDirectory, textureName);
-            return new AmbientShadow(filename, Matrix.Scaling(0.3f, 1.0f, 0.3f) * Matrix.RotationY(MathF.PI) *
+            return new AmbientShadow(filename, Matrix.Scaling(GetWheelShadowSize()) * Matrix.RotationY(MathF.PI) *
                     Matrix.Translation(wheel));
         }
         
@@ -301,23 +336,26 @@ namespace AcTools.Render.Kn5Specific.Utils {
             node.LocalMatrix = Matrix.Translation(0, -node.BoundingBox?.Minimum.Y ?? 0f, 0) * node.LocalMatrix;
         }
 
-        public void LoadMirrors(Kn5RenderableList node) {
+        public void LoadMirrors(Kn5RenderableList node, DeviceContextHolder holder) {
             if (Data.IsEmpty) return;
             foreach (var obj in from section in Data.GetIniFile("mirrors.ini").GetSections("MIRROR")
                                 select node.GetByName(section.Get("NAME"))) {
-                obj?.SwitchToMirror();
+                obj?.SwitchToMirror(holder);
             }
         }
 
         public void SetKn5(DeviceContextHolder contextHolder) {
             SetupWatching(contextHolder);
 
-            Kn5MaterialsProvider.SetKn5(MainKn5);
-            TexturesProvider.SetKn5(MainKn5.OriginalFilename, MainKn5);
-            TexturesProvider.SetOverridedProvider(MainKn5.OriginalFilename, this);
+            var materialsProvider = contextHolder.Get<Kn5MaterialsProvider>();
+            var texturesProvider = contextHolder.Get<TexturesProvider>();
+
+            materialsProvider.SetKn5(MainKn5);
+            texturesProvider.SetKn5(MainKn5.OriginalFilename, MainKn5);
+            texturesProvider.SetOverridedProvider(MainKn5.OriginalFilename, this);
 
             if (!string.Equals(MainKn5.OriginalFilename, MainKn5Filename, StringComparison.OrdinalIgnoreCase)) {
-                TexturesProvider.SetKn5(MainKn5.OriginalFilename, Kn5.FromFile(MainKn5Filename));
+                texturesProvider.SetKn5(MainKn5.OriginalFilename, Kn5.FromFile(MainKn5Filename));
             }
         }
 
@@ -328,10 +366,6 @@ namespace AcTools.Render.Kn5Specific.Utils {
             }
 
             _holder = null;
-
-            TexturesProvider.SetOverridedProvider(MainKn5.OriginalFilename, null);
-            TexturesProvider.DisposeFor(MainKn5);
-            Kn5MaterialsProvider.DisposeFor(MainKn5);
         }
     }
 }

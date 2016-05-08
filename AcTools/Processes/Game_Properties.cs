@@ -257,8 +257,8 @@ namespace AcTools.Processes {
 
             public override void Set(IniFile file) {
                 var temperatureSection = file["TEMPERATURE"];
-                temperatureSection.Set("ROAD", RoadTemperature, "F2");
-                temperatureSection.Set("AMBIENT", AmbientTemperature, "F2");
+                temperatureSection.Set("ROAD", RoadTemperature, "F0");
+                temperatureSection.Set("AMBIENT", AmbientTemperature, "F0");
 
                 var lightingSection = file["LIGHTING"];
                 lightingSection.Set("SUN_ANGLE", SunAngle, "F2");

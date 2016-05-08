@@ -15,5 +15,9 @@ namespace AcManager.Tools.Helpers {
 
         public static bool IsInDevelopment => string.Equals(Name, "devenv.exe", StringComparison.OrdinalIgnoreCase) ||
                                               string.Equals(Name, "XDesProc.exe", StringComparison.OrdinalIgnoreCase);
+
+        private const long PackedSizeAtLeast = 2000000;
+
+        public static bool IsPacked => new FileInfo(Location).Length > PackedSizeAtLeast;
     }
 }

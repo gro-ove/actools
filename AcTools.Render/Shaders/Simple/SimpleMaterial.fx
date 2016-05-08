@@ -241,9 +241,25 @@ float3 CalculateReflection(float3 lighted, float3 posW, float3 normalW) {
 
 	float rid = saturate(dot(toEyeW, normalW));
 	float rim = pow(1 - rid, gReflectiveMaterial.FresnelExp);
-	float val = gReflectiveMaterial.FresnelC + rim * (gReflectiveMaterial.FresnelMaxLevel - gReflectiveMaterial.FresnelC);
+	float val = min(gReflectiveMaterial.FresnelC + rim * (gReflectiveMaterial.FresnelMaxLevel - gReflectiveMaterial.FresnelC),
+		gReflectiveMaterial.FresnelMaxLevel);
 
-	return lighted - val * 0.5 * (1 - GET_FLAG(IS_ADDITIVE)) + refl * val;
+	return lighted - val * 0.32 * (1 - GET_FLAG(IS_ADDITIVE)) + refl * val;
+}
+
+float3 CalculateReflection_Maps(float3 lighted, float3 posW, float3 normalW, float specularExpMultipler, 
+		float reflectionMultipler) {
+	float3 toEyeW = normalize(gEyePosW - posW);
+	float3 reflected = reflect(-toEyeW, normalW);
+	float refl = PseudoReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
+
+	float rid = saturate(dot(toEyeW, normalW));
+	float rim = pow(1 - rid, gReflectiveMaterial.FresnelExp);
+
+	float maxLevel = gReflectiveMaterial.FresnelMaxLevel;
+	float val = min(gReflectiveMaterial.FresnelC + rim * (maxLevel - gReflectiveMaterial.FresnelC), maxLevel);
+
+	return lighted - val * 0.32 * (1 - GET_FLAG(IS_ADDITIVE)) + refl * val * reflectionMultipler;
 }
 
 //// Standart
@@ -349,17 +365,7 @@ float4 ps_Maps(PS_IN pin) : SV_Target{
 	CalculateLighted_Maps(pin, lighted, alpha, mask, normal);
 
 	float3 mapsValue = gMapsMap.Sample(samAnisotropic, pin.Tex).rgb;
-
-	float3 toEyeW = normalize(gEyePosW - pin.PosW);
-	float3 reflected = reflect(-toEyeW, normal);
-	float refl = PseudoReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * mapsValue.g);
-
-	float rid = saturate(dot(toEyeW, normal));
-	float rim = pow(1 - rid, gReflectiveMaterial.FresnelExp);
-	float val = gReflectiveMaterial.FresnelC + rim * (gReflectiveMaterial.FresnelMaxLevel - gReflectiveMaterial.FresnelC);
-
-	lighted += -val * 0.32 + refl * val * mapsValue.b;
-	return float4(lighted, alpha);
+	return float4(CalculateReflection_Maps(lighted, pin.PosW, normal, mapsValue.g, mapsValue.b), alpha);
 }
 
 technique10 Maps {
@@ -373,17 +379,7 @@ technique10 Maps {
 float4 ps_DiffMaps(PS_IN pin) : SV_Target{
 	float alpha, mask; float3 lighted, normal;
 	CalculateLighted_AtNm(pin, lighted, alpha, normal);
-
-	float3 toEyeW = normalize(gEyePosW - pin.PosW);
-	float3 reflected = reflect(-toEyeW, normal);
-	float refl = PseudoReflection(reflected, gMaterial.SpecularExp);
-
-	float rid = saturate(dot(toEyeW, normal));
-	float rim = pow(1 - rid, gReflectiveMaterial.FresnelExp);
-	float val = gReflectiveMaterial.FresnelC + rim * (gReflectiveMaterial.FresnelMaxLevel - gReflectiveMaterial.FresnelC);
-
-	lighted += -val * 0.32 + refl * val * alpha;
-	return float4(lighted, 1.0);
+	return float4(CalculateReflection_Maps(lighted, pin.PosW, normal, alpha, alpha), 1.0);
 }
 
 technique10 DiffMaps {

@@ -44,7 +44,7 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
         private IRenderableTexture GetTexture(string mappingName, DeviceContextHolder contextHolder) {
             var mapping = _kn5Material?.GetMappingByName(mappingName);
             return mapping == null || _kn5Filename == null ? null :
-                    TexturesProvider.GetTexture(_kn5Filename, mapping.Texture, contextHolder);
+                    contextHolder.Get<TexturesProvider>().GetTexture(_kn5Filename, mapping.Texture, contextHolder);
         }
 
         public void Initialize(DeviceContextHolder contextHolder) {

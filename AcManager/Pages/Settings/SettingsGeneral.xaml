@@ -20,7 +20,7 @@
 
             <!--versions-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">App:</TextBlock>
-            
+
             <DockPanel>
                 <Label>App key:</Label>
                 <Button Command="{Binding ChangeAppKeyCommand}">Change</Button>
@@ -43,7 +43,7 @@
             <!--app version-->
             <DockPanel>
                 <Label>App version:</Label>
-                <Button Command="{Binding AppUpdater.CheckAndPrepareIfNeededCommand}">Check for Updates</Button>
+                <Button Command="{Binding AppUpdater.CheckAndPrepareIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}">Check for Updates</Button>
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}"
                         Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, Mode=OneTime}" watermark:WatermarkService.Watermark="?" />
             </DockPanel>

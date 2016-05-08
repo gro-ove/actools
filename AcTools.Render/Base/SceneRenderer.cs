@@ -13,7 +13,7 @@ namespace AcTools.Render.Base {
             Scene = new RenderableList();
         }
 
-        protected long GetTrianglesCount() {
+        protected int GetTrianglesCount() {
             return Scene.TrianglesCount;
         }
 

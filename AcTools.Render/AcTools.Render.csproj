@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -102,6 +103,8 @@
     <Compile Include="Base\TargetTextures\BaseTargetResourceTexture.cs" />
     <Compile Include="Base\TargetTextures\TargetResourceDepthTexture.cs" />
     <Compile Include="Base\TargetTextures\TargetResourceTexture.cs" />
+    <Compile Include="Base\TickEventArgs.cs" />
+    <Compile Include="Base\TickEventHandler.cs" />
     <Compile Include="Base\Utils\FrameMonitor.cs" />
     <Compile Include="Base\Utils\GeometryGenerator.cs" />
     <Compile Include="Base\Utils\MagickWrapper.cs" />
@@ -130,6 +133,7 @@
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleMaps.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNm.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleReflective.cs" />
+    <Compile Include="Kn5Specific\Objects\RenderableListExtension.cs" />
     <Compile Include="Kn5Specific\Textures\IOverridedTextureProvider.cs" />
     <Compile Include="Base\Utils\TaskExtension.cs" />
     <Compile Include="Kn5Specific\Utils\CarHelper.cs" />

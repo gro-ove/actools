@@ -19,6 +19,7 @@ namespace AcTools.Render.Base.TargetTextures {
         public ShaderResourceView View { get; protected set; }
 
         public virtual void Resize(DeviceContextHolder holder, int width, int height) {
+            if (width == Width && height == Height) return;
             Dispose();
             
             Description.Width = width;

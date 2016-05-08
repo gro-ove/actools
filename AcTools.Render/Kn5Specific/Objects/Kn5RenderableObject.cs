@@ -6,6 +6,7 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
+using AcTools.Render.Kn5Specific.Textures;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
@@ -39,11 +40,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private readonly bool _isTransparent;
 
-        public Kn5RenderableObject(Kn5Node node)
+        public Kn5RenderableObject(Kn5Node node, DeviceContextHolder holder)
                 : base(Convert(node.Vertices), Convert(node.Indices)) {
             OriginalNode = node;
             IsCastingShadows = node.CastShadows;
-            _material = Kn5MaterialsProvider.GetMaterial(OriginalNode.MaterialId);
+
+            var materialsProvider = holder.Get<Kn5MaterialsProvider>();
+            _material = materialsProvider.GetMaterial(OriginalNode.MaterialId);
 
             if (IsEnabled && (!OriginalNode.Active || !OriginalNode.IsVisible || !OriginalNode.IsRenderable)) {
                 IsEnabled = false;
@@ -52,8 +55,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _isTransparent = OriginalNode.IsTransparent && _material.IsBlending;
         }
 
-        public void SwitchToMirror() {
-            _material = Kn5MaterialsProvider.GetMirrorMaterial();
+        public void SwitchToMirror(DeviceContextHolder holder) {
+            var materialsProvider = holder.Get<Kn5MaterialsProvider>();
+            _material = materialsProvider.GetMirrorMaterial();
         }
 
         public Vector3? Emissive { get; set; }

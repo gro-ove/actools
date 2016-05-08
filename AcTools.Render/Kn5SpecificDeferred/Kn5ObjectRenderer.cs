@@ -201,10 +201,17 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             _carHelper.SelectSkin(skinId, DeviceContextHolder);
         }
 
+        private MaterialsProviderDeferred _materialsProvider;
+        private TexturesProvider _texturesProvider;
+
         protected override void InitializeInner() {
             base.InitializeInner();
 
-            Kn5MaterialsProvider.Initialize(new MaterialsProviderDeferred());
+            _materialsProvider = new MaterialsProviderDeferred();
+            _texturesProvider = new TexturesProvider();
+            DeviceContextHolder.Set(_materialsProvider);
+            DeviceContextHolder.Set(_texturesProvider);
+            
             Scene.Add(SkyObject.Create(500f));
 
             IRenderableObject mainNode = null;
@@ -212,11 +219,11 @@ namespace AcTools.Render.Kn5SpecificDeferred {
                 if (mainNode == null) {
                     _carHelper.SetKn5(DeviceContextHolder);
                 } else {
-                    Kn5MaterialsProvider.SetKn5(kn5);
-                    TexturesProvider.SetKn5(kn5.OriginalFilename, kn5);
+                    _materialsProvider.SetKn5(kn5);
+                    _texturesProvider.SetKn5(kn5.OriginalFilename, kn5);
                 }
 
-                var node = Kn5Converter.Convert(kn5.RootNode);
+                var node = Kn5Converter.Convert(kn5.RootNode, DeviceContextHolder);
                 Scene.Add(node);
 
                 if (mainNode != null) continue;
@@ -229,7 +236,7 @@ namespace AcTools.Render.Kn5SpecificDeferred {
                 Scene.AddRange(_carHelper.LoadAmbientShadows(asList));
 
                 _carHelper.AdjustPosition(asList);
-                _carHelper.LoadMirrors(asList);
+                _carHelper.LoadMirrors(asList, DeviceContextHolder);
                 LoadLights(asList);
             }
 
@@ -363,8 +370,8 @@ namespace AcTools.Render.Kn5SpecificDeferred {
             base.Dispose();
             _carHelper.Dispose();
             foreach (var kn5 in _kn5) {
-                Kn5MaterialsProvider.DisposeFor(kn5);
-                TexturesProvider.DisposeFor(kn5);
+                _materialsProvider.DisposeFor(kn5);
+                _texturesProvider.DisposeFor(kn5);
             }
         }
     }

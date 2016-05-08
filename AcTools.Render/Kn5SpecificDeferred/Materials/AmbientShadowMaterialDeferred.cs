@@ -21,7 +21,9 @@ namespace AcTools.Render.Kn5SpecificDeferred.Materials {
 
         public void Initialize(DeviceContextHolder contextHolder) {
             _effect = contextHolder.GetEffect<EffectDeferredGObject>();
-            _txDiffuse = TexturesProvider.GetTexture(_filename, contextHolder);
+
+            var texturesProvider = contextHolder.Get<TexturesProvider>();
+            _txDiffuse = texturesProvider.GetTexture(_filename, contextHolder);
         }
 
         public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {

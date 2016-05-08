@@ -58,11 +58,11 @@ namespace AcTools.Render.Wrapper {
 
         protected virtual void OnTick(object sender, TickEventArgs args) {}
 
-        private void OnGotFocus(object sender, EventArgs e) {
+        protected virtual void OnGotFocus(object sender, EventArgs e) {
             _paused = false;
         }
 
-        private void OnLostFocus(object sender, EventArgs e) {
+        protected virtual void OnLostFocus(object sender, EventArgs e) {
             _paused = true;
         }
 
@@ -116,8 +116,8 @@ namespace AcTools.Render.Wrapper {
         }
 
         private void OnRender() {
-            if (_paused && !Renderer.IsDirty) return;
             Form.Text = $"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
+            if (_paused && !Renderer.IsDirty) return;
             Renderer.Draw();
         }
 

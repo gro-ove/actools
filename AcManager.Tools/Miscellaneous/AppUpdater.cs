@@ -96,7 +96,24 @@ namespace AcManager.Tools.Miscellaneous {
             }
         }
 
+        private bool _isSupported = true;
+
+        public bool IsSupported {
+            get { return _isSupported; }
+            set {
+                if (Equals(value, _isSupported)) return;
+                _isSupported = value;
+                OnPropertyChanged();
+            }
+        }
+
         public async Task CheckAndUpdateIfNeeded() {
+            if (!MainExecutingFile.IsPacked) {
+                LatestError = "Unpacked version doesn't support auto-updating.";
+                IsSupported = false;
+                return;
+            }
+
             if (CheckingInProcess) return;
 
             CheckingInProcess = true;
@@ -190,6 +207,12 @@ namespace AcManager.Tools.Miscellaneous {
         private bool _isPreparing;
 
         private async Task LoadAndPrepare() {
+            if (!MainExecutingFile.IsPacked) {
+                NonfatalError.Notify(@"Can't update app", "Sadly, unpacked version doesn't support auto-updating.");
+                LatestError = "Unpacked version doesn't support auto-updating.";
+                return;
+            }
+
             if (_isPreparing) return;
             _isPreparing = true;
             UpdateIsReady = null;
@@ -214,9 +237,14 @@ namespace AcManager.Tools.Miscellaneous {
                 });
 
                 UpdateIsReady = preparedVersion;
+            } catch (UnauthorizedAccessException) {
+                NonfatalError.Notify(@"Access is denied",
+                        @"Can't update app due to lack of permissions. Please, update it manually.");
+                LatestError = "Can't update app due to lack of permissions.";
             } catch (Exception e) {
-                NonfatalError.Notify(@"Can't load a new version",
+                NonfatalError.Notify(@"Can't load the new version",
                         @"Make sure internet connection is working and app has write permissions to its folder.", e);
+                LatestError = "Can't load the new version.";
             } finally {
                 _isPreparing = false;
             }

@@ -5,15 +5,15 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
+using AcTools.Render.Kn5Specific.Textures;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public class SkyObject : TrianglesRenderableObject<InputLayouts.VerticeP> {
-        private readonly IRenderableMaterial _material;
+        private IRenderableMaterial _material;
 
         private SkyObject(InputLayouts.VerticeP[] vertices, ushort[] indices) : base(vertices, indices) {
             BoundingBox = new BoundingBox(new Vector3(-9e9f), new Vector3(9e9f));
-            _material = Kn5MaterialsProvider.GetSkyMaterial();
         }
 
         public static SkyObject Create(float radius) {
@@ -24,6 +24,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         protected override void Initialize(DeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
+
+            var materialsProvider = contextHolder.Get<Kn5MaterialsProvider>();
+            _material = materialsProvider.GetSkyMaterial();
             _material.Initialize(contextHolder);
         }
 

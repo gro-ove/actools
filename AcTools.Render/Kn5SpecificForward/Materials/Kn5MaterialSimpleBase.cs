@@ -32,7 +32,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         protected IRenderableTexture GetTexture(string mappingName, DeviceContextHolder contextHolder) {
             var mapping = Kn5Material?.GetMappingByName(mappingName);
             return mapping == null || Kn5Filename == null ? null :
-                    TexturesProvider.GetTexture(Kn5Filename, mapping.Texture, contextHolder);
+                    contextHolder.Get<TexturesProvider>().GetTexture(Kn5Filename, mapping.Texture, contextHolder);
         }
 
         public virtual void Initialize(DeviceContextHolder contextHolder) {

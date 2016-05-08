@@ -3,8 +3,8 @@ using AcTools.Kn5File;
 using AcTools.Render.Kn5Specific.Materials;
 
 namespace AcTools.Render.Kn5SpecificForward.Materials {
-    public class MaterialsProviderSimple : IKn5MaterialsProvider {
-        public IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
+    public class MaterialsProviderSimple : Kn5MaterialsProvider {
+        public override IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material) {
             switch (kn5Material.ShaderName) {
                 case "ksBrokenGlass":
                     return new InvisibleMaterial();
@@ -57,15 +57,15 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             }
         }
 
-        public IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
+        public override IRenderableMaterial CreateAmbientShadowMaterial(string filename) {
             return new AmbientShadowMaterialSimple(filename);
         }
 
-        public IRenderableMaterial CreateSkyMaterial() {
+        public override IRenderableMaterial CreateSkyMaterial() {
             throw new NotSupportedException();
         }
 
-        public IRenderableMaterial CreateMirrorMaterial() {
+        public override IRenderableMaterial CreateMirrorMaterial() {
             return new Kn5MaterialSimpleMirror();
         }
     }

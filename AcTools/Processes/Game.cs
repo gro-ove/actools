@@ -149,13 +149,25 @@ namespace AcTools.Processes {
         }
 
         public class StartProperties {
+            [CanBeNull]
             public IniFile PreparedConfig;
 
+            [CanBeNull]
             public BasicProperties BasicProperties;
+
+            [CanBeNull]
             public AssistsProperties AssistsProperties;
+
+            [CanBeNull]
             public ConditionProperties ConditionProperties;
+
+            [CanBeNull]
             public TrackProperties TrackProperties;
+
+            [CanBeNull]
             public BaseModeProperties ModeProperties;
+
+            [CanBeNull]
             public ReplayProperties ReplayProperties;
 
             public List<object> AdditionalPropertieses = new List<object>();
@@ -176,8 +188,7 @@ namespace AcTools.Processes {
             private List<IDisposable> _disposeLater;
             private List<string> _removeLater;
 
-            public StartProperties() {
-            }
+            public StartProperties() {}
 
             public StartProperties(ReplayProperties replayProperties) {
                 ReplayProperties = replayProperties;
@@ -209,7 +220,7 @@ namespace AcTools.Processes {
                     SetDefaultProperies(iniFile);
 
                     if (BasicProperties != null) {
-                        BasicProperties.Set(iniFile);
+                        BasicProperties?.Set(iniFile);
                         ModeProperties?.Set(iniFile);
                         ConditionProperties?.Set(iniFile);
                         TrackProperties?.Set(iniFile);

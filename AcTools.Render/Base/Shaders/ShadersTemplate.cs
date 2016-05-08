@@ -772,27 +772,32 @@ namespace AcTools.Render.Base.Shaders {
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechBase, TechHorizontalShadowBlur, TechVerticalShadowBlur, TechFinal;
+		public EffectTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechTemp;
 
+		public EffectMatrixVariable FxShadowViewProj { get; private set; }
 		public EffectResourceVariable FxInputMap, FxDepthMap;
+		public EffectScalarVariable FxMultipler, FxCount;
 		public EffectVectorVariable FxSize;
 
 		public void Initialize(Device device) {
 			E = new Effect(device, EffectUtils.Load("SpecialShadow"));
 
-			TechBase = E.GetTechniqueByName("Base");
 			TechHorizontalShadowBlur = E.GetTechniqueByName("HorizontalShadowBlur");
 			TechVerticalShadowBlur = E.GetTechniqueByName("VerticalShadowBlur");
-			TechFinal = E.GetTechniqueByName("Final");
+			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
+			TechTemp = E.GetTechniqueByName("Temp");
 
-			for (var i = 0; i < TechBase.Description.PassCount && InputSignaturePT == null; i++) {
-				InputSignaturePT = TechBase.GetPassByIndex(i).Description.Signature;
+			for (var i = 0; i < TechHorizontalShadowBlur.Description.PassCount && InputSignaturePT == null; i++) {
+				InputSignaturePT = TechHorizontalShadowBlur.GetPassByIndex(i).Description.Signature;
 			}
-			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialShadow, PT, Base) == null");
+			if (InputSignaturePT == null) throw new System.Exception("input signature (SpecialShadow, PT, HorizontalShadowBlur) == null");
 			LayoutPT = new InputLayout(device, InputSignaturePT, InputLayouts.VerticePT.InputElementsValue);
 
+			FxShadowViewProj = E.GetVariableByName("gShadowViewProj").AsMatrix();
 			FxInputMap = E.GetVariableByName("gInputMap").AsResource();
 			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
+			FxMultipler = E.GetVariableByName("gMultipler").AsScalar();
+			FxCount = E.GetVariableByName("gCount").AsScalar();
 			FxSize = E.GetVariableByName("gSize").AsVector();
 		}
 

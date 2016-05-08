@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Helpers;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
@@ -18,11 +19,13 @@ using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
+using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
@@ -294,6 +297,14 @@ namespace AcManager.Pages.Windows {
                     if (!QuickDrive.RunSerializedPreset(preset)) {
                         NonfatalError.Notify("Can't start race", "Make sure required car & track are installed and available.");
                     }
+                    break;
+
+                case "race":
+                    ModernDialog.ShowMessage("Here!");
+                    var raceIni = Convert.FromBase64String(param).ToUtf8String();
+                    await GameWrapper.StartAsync(new Game.StartProperties {
+                        PreparedConfig = IniFile.Parse(raceIni)
+                    });
                     break;
 
                 case "open":

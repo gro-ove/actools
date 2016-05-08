@@ -12,9 +12,13 @@ namespace AcTools.Render.Base.Objects {
 
         int TrianglesCount { get; }
 
+        int ObjectsCount { get; }
+
         BoundingBox? BoundingBox { get; }
 
-        void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode = SpecialRenderMode.Deferred);
+        void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode);
+
+        void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter);
 
         void UpdateBoundingBox();
     }

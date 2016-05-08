@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
@@ -53,6 +54,8 @@ namespace AcTools.Render.Base.Objects {
 
         public int TrianglesCount => this.Aggregate(0, (a, b) => a + b.TrianglesCount);
 
+        public int ObjectsCount => this.Aggregate(0, (a, b) => a + b.ObjectsCount);
+
         public BoundingBox? BoundingBox { get; private set; }
 
         public void UpdateBoundingBox() {
@@ -95,6 +98,15 @@ namespace AcTools.Render.Base.Objects {
             if (BoundingBox == null || !camera.Visible(BoundingBox.Value)) return;
             foreach (var child in this.Where(x => x.IsEnabled)) {
                 child.Draw(contextHolder, camera, mode);
+            }
+        }
+
+        public virtual void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter) {
+            if (!IsEnabled || !filter(this)) return;
+            if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
+            if (BoundingBox == null || !camera.Visible(BoundingBox.Value)) return;
+            foreach (var child in this.Where(x => x.IsEnabled)) {
+                child.Draw(contextHolder, camera, mode, filter);
             }
         }
 

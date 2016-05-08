@@ -68,24 +68,14 @@ namespace AcTools.Render.Base.Cameras {
 
             Proj = Matrix.PerspectiveFovLH(FovY, Aspect, NearZ, FarZ);
         }
-
-        /// <summary>
-        /// Return picking ray from camera through sp on screen, in world-space
-        /// </summary>
-        /// <param name="sp"></param>
-        /// <param name="screenDims"></param>
-        /// <returns></returns>
+        
         public Ray GetPickingRay(Vector2 sp, Vector2 screenDims) {
-            var p = Proj;
             // convert screen pixel to view space
-            var vx = (2.0f * sp.X / screenDims.X - 1.0f) / p.M11;
-            var vy = (-2.0f * sp.Y / screenDims.Y + 1.0f) / p.M22;
+            var vx = (2.0f * sp.X / screenDims.X - 1.0f) / Proj.M11;
+            var vy = (-2.0f * sp.Y / screenDims.Y + 1.0f) / Proj.M22;
 
             var ray = new Ray(new Vector3(), new Vector3(vx, vy, 1.0f));
-
-            var toWorld = ViewInvert;
-            ray = new Ray(Vector3.TransformCoordinate(ray.Position, toWorld), Vector3.TransformNormal(ray.Direction, toWorld));
-
+            ray = new Ray(Vector3.TransformCoordinate(ray.Position, ViewInvert), Vector3.TransformNormal(ray.Direction, ViewInvert));
             ray.Direction.Normalize();
             return ray;
         }

@@ -18,9 +18,12 @@ namespace AcTools.Render.Wrapper {
             Form.MouseWheel += OnMouseWheel;
         }
 
+        public Point MousePosition { get; private set; }
         private Point _lastMousePos;
 
         protected virtual void OnMouseMove(object sender, MouseEventArgs e) {
+            MousePosition = e.Location;
+
             if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Left && IsPressed(Keys.Space)) {
                 var size = 180.0f / Math.Min(Form.Height, Form.Width);
                 var dx = MathF.ToRadians(size * (e.X - _lastMousePos.X));
@@ -31,6 +34,7 @@ namespace AcTools.Render.Wrapper {
                     c.Target += dy * Vector3.Cross(c.Look, c.Right) - dx * c.Right;
                     Kn5ObjectRenderer.AutoRotate = false;
                     Kn5ObjectRenderer.AutoAdjustTarget = false;
+                    Renderer.IsDirty = true;
                 }
             } else if (e.Button == MouseButtons.Left) {
                 if (FormMoving) {
@@ -47,11 +51,13 @@ namespace AcTools.Render.Wrapper {
                 Kn5ObjectRenderer.Camera.Pitch(dy);
                 Kn5ObjectRenderer.Camera.Yaw(-dx);
                 Kn5ObjectRenderer.AutoRotate = false;
+                Renderer.IsDirty = true;
             } else if (e.Button == MouseButtons.Right) {
                 var size = 180.0f / Math.Min(Form.Height, Form.Width);
                 var dy = MathF.ToRadians(size * (e.Y - _lastMousePos.Y));
                 Kn5ObjectRenderer.Camera.Zoom(dy * 3.0f);
                 Kn5ObjectRenderer.AutoRotate = false;
+                Renderer.IsDirty = true;
             }
 
             _lastMousePos = e.Location;
@@ -61,6 +67,7 @@ namespace AcTools.Render.Wrapper {
             Kn5ObjectRenderer.Camera.Zoom(e.Delta > 0 ? -0.4f : 0.4f);
             Kn5ObjectRenderer.AutoRotate = false;
             Kn5ObjectRenderer.AutoAdjustTarget = false;
+            Renderer.IsDirty = true;
         }
 
         protected override void OnTick(object sender, TickEventArgs args) {
@@ -72,24 +79,28 @@ namespace AcTools.Render.Wrapper {
                 Kn5ObjectRenderer.Camera.Walk(0.1f);
                 Kn5ObjectRenderer.AutoRotate = false;
                 Kn5ObjectRenderer.AutoAdjustTarget = false;
+                Renderer.IsDirty = true;
             }
 
             if (IsPressed(Keys.Down)) {
                 Kn5ObjectRenderer.Camera.Walk(-0.1f);
                 Kn5ObjectRenderer.AutoRotate = false;
                 Kn5ObjectRenderer.AutoAdjustTarget = false;
+                Renderer.IsDirty = true;
             }
 
             if (IsPressed(Keys.Left)) {
                 Kn5ObjectRenderer.Camera.Strafe(-0.1f);
                 Kn5ObjectRenderer.AutoRotate = false;
                 Kn5ObjectRenderer.AutoAdjustTarget = false;
+                Renderer.IsDirty = true;
             }
 
             if (IsPressed(Keys.Right)) {
                 Kn5ObjectRenderer.Camera.Strafe(0.1f);
                 Kn5ObjectRenderer.AutoRotate = false;
                 Kn5ObjectRenderer.AutoAdjustTarget = false;
+                Renderer.IsDirty = true;
             }
         }
 
@@ -119,6 +130,7 @@ namespace AcTools.Render.Wrapper {
                 case Keys.L:
                     if (!args.Control && !args.Alt && !args.Shift) {
                         Kn5ObjectRenderer.CarLightsEnabled = !Kn5ObjectRenderer.CarLightsEnabled;
+                        Renderer.IsDirty = true;
                     }
                     break;
 
@@ -131,6 +143,7 @@ namespace AcTools.Render.Wrapper {
                 case Keys.H:
                     if (args.Control && !args.Alt && !args.Shift) {
                         Kn5ObjectRenderer.VisibleUi = !Kn5ObjectRenderer.VisibleUi;
+                        Renderer.IsDirty = true;
                     }
                     break;
 

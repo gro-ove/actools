@@ -1,4 +1,5 @@
-﻿using AcTools.Render.Base.Cameras;
+﻿using System;
+using AcTools.Render.Base.Cameras;
 using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
@@ -13,6 +14,8 @@ namespace AcTools.Render.Base.Objects {
 
         public abstract int TrianglesCount { get; }
 
+        public int ObjectsCount => 1;
+
         public BoundingBox? BoundingBox { get; protected set; }
 
         public void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
@@ -24,6 +27,11 @@ namespace AcTools.Render.Base.Objects {
             }
 
             DrawInner(contextHolder, camera, mode);
+        }
+
+        public void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter) {
+            if (!filter(this)) return;
+            Draw(contextHolder, camera, mode);
         }
 
         public abstract void UpdateBoundingBox();

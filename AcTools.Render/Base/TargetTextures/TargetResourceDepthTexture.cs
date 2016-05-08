@@ -3,14 +3,14 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Base.TargetTextures {
     public class TargetResourceDepthTexture : BaseTargetResourceTexture {
-        public DepthStencilView StencilView { get; private set; }
+        public DepthStencilView DepthView { get; private set; }
 
         private TargetResourceDepthTexture(Texture2DDescription description) : base(description) { }
 
         public override void Resize(DeviceContextHolder holder, int width, int height) {
             base.Resize(holder, width, height);
 
-            StencilView = new DepthStencilView(holder.Device, Texture, new DepthStencilViewDescription {
+            DepthView = new DepthStencilView(holder.Device, Texture, new DepthStencilViewDescription {
                 Flags = DepthStencilViewFlags.None,
                 Format = Format.D24_UNorm_S8_UInt,
                 Dimension = DepthStencilViewDimension.Texture2D,
@@ -28,9 +28,9 @@ namespace AcTools.Render.Base.TargetTextures {
         public override void Dispose() {
             base.Dispose();
 
-            if (StencilView != null) {
-                StencilView.Dispose();
-                StencilView = null;
+            if (DepthView != null) {
+                DepthView.Dispose();
+                DepthView = null;
             }
         }
 

@@ -152,8 +152,8 @@ namespace AcTools.Render.Base.Shadows {
             holder.DeviceContext.Rasterizer.State = _rasterizerState;
 
             foreach (var split in Splits) {
-                holder.DeviceContext.OutputMerger.SetTargets(split.Buffer.StencilView);
-                holder.DeviceContext.ClearDepthStencilView(split.Buffer.StencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
+                holder.DeviceContext.OutputMerger.SetTargets(split.Buffer.DepthView);
+                holder.DeviceContext.ClearDepthStencilView(split.Buffer.DepthView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1f, 0);
                 draw.DrawSceneForShadows(holder, split.Camera);
                 holder.DeviceContext.GenerateMips(split.Buffer.View);
             }

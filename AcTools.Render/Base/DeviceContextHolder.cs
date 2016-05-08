@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
@@ -61,6 +62,36 @@ namespace AcTools.Render.Base {
             return created;
         }
 
+        private readonly Dictionary<Type, object> _something = new Dictionary<Type, object>();
+
+        public void Set<T>(T obj) where T : class {
+            _something[typeof(T)] = obj;
+        }
+
+        public T Get<T>() where T : class {
+            var key = typeof(T);
+            object result;
+
+            if (_something.TryGetValue(key, out result)) {
+                return (T)result;
+            }
+
+            T child = null;
+            foreach (var o in _something) {
+                child = o.Value as T;
+                if (child != null) {
+                    break;
+                }
+            }
+
+            if (child != null) {
+                _something[key] = child;
+                return child;
+            }
+
+            throw new Exception($"Entry with type {key} not found");
+        }
+
         private readonly Dictionary<Type, IRenderHelper> _helpers = new Dictionary<Type, IRenderHelper>();
 
         /// <summary>
@@ -99,6 +130,7 @@ namespace AcTools.Render.Base {
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
                 _lessEqualDepthState, _lessEqualReadOnlyDepthState;
         private BlendState _transparentBlendState, _addBlendState;
+        private RasterizerState _doubleSidedState;
 
         public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState = _normalDepthState =
                 DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
@@ -163,6 +195,14 @@ namespace AcTools.Render.Base {
                     BlendOperationAlpha = BlendOperation.Add,
                     RenderTargetWriteMask = ColorWriteMaskFlags.All,
                 }));
+
+        public RasterizerState DoubleSidedState => _doubleSidedState ?? (_doubleSidedState =
+                RasterizerState.FromDescription(Device, new RasterizerStateDescription {
+                    FillMode = FillMode.Solid,
+                    CullMode = CullMode.None,
+                    IsFrontCounterclockwise = true,
+                    IsDepthClipEnabled = false
+                }));
         #endregion
 
         public void Dispose() {
@@ -173,18 +213,13 @@ namespace AcTools.Render.Base {
             DisposeHelper.Dispose(ref _lessEqualReadOnlyDepthState);
             DisposeHelper.Dispose(ref _transparentBlendState);
             DisposeHelper.Dispose(ref _addBlendState);
-
+            DisposeHelper.Dispose(ref _doubleSidedState);
             DisposeHelper.Dispose(ref _quadBuffers);
 
-            foreach (var effect in _effects.Values) {
-                effect.Dispose();
-            }
-            _effects.Clear();
-
-            foreach (var helper in _helpers.Values) {
-                helper.Dispose();
-            }
-            _helpers.Clear();
+            _effects.DisposeEverything();
+            _helpers.DisposeEverything();
+            _something.Values.OfType<IDisposable>().DisposeEverything();
+            _something.Clear();
 
             DeviceContext.ClearState();
             DeviceContext.Flush();
