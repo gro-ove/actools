@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Materials {
     public abstract class Kn5MaterialsProvider : IDisposable {
@@ -45,7 +46,7 @@ namespace AcTools.Render.Kn5Specific.Materials {
         public IRenderableMaterial GetMirrorMaterial() => GetOrCreate("//mirror",
                 CreateMirrorMaterial);
 
-        public abstract IRenderableMaterial CreateMaterial(string kn5Filename, Kn5Material kn5Material);
+        public abstract IRenderableMaterial CreateMaterial(string kn5Filename, [CanBeNull]Kn5Material kn5Material);
 
         public abstract IRenderableMaterial CreateAmbientShadowMaterial(string filename);
 

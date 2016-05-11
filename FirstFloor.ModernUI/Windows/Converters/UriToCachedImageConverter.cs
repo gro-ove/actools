@@ -30,6 +30,8 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 #endif
 
         public static BitmapSource Convert(object value, bool considerOneTrueDpi = false) {
+            if (value is BitmapSource) return value as BitmapImage;
+
 #if CACHE
             var modifiedTime = DateTime.MinValue;
 #endif
@@ -72,8 +74,6 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 bi.CacheOption = BitmapCacheOption.OnLoad;
                 bi.UriSource = source;
                 bi.EndInit();
-
-                // Logging.Write("[IMAGE] Loaded: " + source);
 
                 if (considerOneTrueDpi && (Math.Abs(bi.DpiX - OneTrueDpi) > 1 || Math.Abs(bi.DpiY - OneTrueDpi) > 1)) {
                     return ConvertBitmapToOneTrueDpi(bi);

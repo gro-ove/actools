@@ -1,7 +1,8 @@
 ﻿using System.Windows;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
-namespace AcManager.Pages.Dialogs {
+namespace AcManager.Controls.Pages.Dialogs {
     public partial class Prompt {
         private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline, bool passwordMode) {
             DataContext = new PromptViewModel(description, defaultValue, watermark, toolTip);
@@ -88,8 +89,10 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
+        [CanBeNull]
         public string Result { get; private set; }
 
+        [CanBeNull]
         public static string Show(string title, string description, string defaultValue = "", string watermark = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false) {
             var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode);

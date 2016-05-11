@@ -23,7 +23,7 @@ namespace AcTools.Render.Wrapper {
             base.OnTick(sender, args);
 
             if (_renderer.Sun == null) return;
-            if (IsPressed(Keys.RControlKey)) {
+            if (IsPressed(Keys.LMenu) || IsPressed(Keys.RMenu)) { 
                 if (IsPressed(Keys.Left)) {
                     _renderer.AutoRotateSun = false;
                     _renderer.Sun.Direction = _renderer.Sun.Direction + new Vector3(-args.DeltaTime, 0f, 0f);
@@ -80,7 +80,6 @@ namespace AcTools.Render.Wrapper {
                     var image = _renderer.Shot(multipler);
                     var filename = Path.Combine(FileUtils.GetDocumentsScreensDirectory(), "__custom_showroom_" + DateTime.Now.ToUnixTimestamp() + ".jpg");
                     image.HighQualityResize(new Size(image.Width / multipler, image.Height / multipler)).Save(filename);
-                    Process.Start(filename);
                     break;
 
                 case Keys.A:

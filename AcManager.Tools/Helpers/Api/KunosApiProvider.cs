@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -155,7 +156,7 @@ namespace AcManager.Tools.Helpers.Api {
                 ip = parsed.Groups[1].Value;
             }
 
-            port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value) : -1;
+            port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
             return true;
         }
 

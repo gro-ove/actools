@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using AcTools.Render.Base;
+using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
@@ -16,6 +17,17 @@ namespace AcTools.Render.Forward {
 
         public int ObjectsCount { get; protected set; }
 
+        private bool _useInterpolationCamera;
+
+        public bool UseInterpolationCamera {
+            get { return _useInterpolationCamera; }
+            set {
+                if (Equals(value, _useInterpolationCamera)) return;
+                _useInterpolationCamera = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _useFxaa = true;
 
         public bool UseFxaa {
@@ -28,7 +40,7 @@ namespace AcTools.Render.Forward {
             }
         }
 
-        private bool _showWireframe = false;
+        private bool _showWireframe;
 
         public bool ShowWireframe {
             get { return _showWireframe; }
@@ -61,7 +73,7 @@ namespace AcTools.Render.Forward {
                     _buffer = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm, SampleDescription);
                 }
 
-                if (!_resized) return;
+                if (!InitiallyResized) return;
                 _buffer.Resize(DeviceContextHolder, Width, Height);
                 _buffer1?.Resize(DeviceContextHolder, Width, Height);
                 _buffer2?.Resize(DeviceContextHolder, Width, Height);
@@ -80,6 +92,8 @@ namespace AcTools.Render.Forward {
         private TargetResourceTexture _buffer, _buffer1, _buffer2;
         private RasterizerState _wireframeRasterizerState;
 
+        protected TargetResourceTexture InnerBuffer => _buffer;
+
         protected override void InitializeInner() {
             UseBloom = true;
 
@@ -87,16 +101,14 @@ namespace AcTools.Render.Forward {
                 FillMode = FillMode.Wireframe,
                 CullMode = CullMode.Back,
                 IsFrontCounterclockwise = false,
+                IsAntialiasedLineEnabled = false,
                 IsDepthClipEnabled = true
             });
         }
 
-        private bool _resized;
-
         protected override void ResizeInner() {
             base.ResizeInner();
-
-            _resized = true;
+            
             _buffer.Resize(DeviceContextHolder, Width, Height);
             _buffer1?.Resize(DeviceContextHolder, Width, Height);
             _buffer2?.Resize(DeviceContextHolder, Width, Height);
@@ -104,6 +116,18 @@ namespace AcTools.Render.Forward {
 
         private EffectPpHdr _hdr;
         private BlurHelper _blur;
+
+        protected virtual void DrawAfter() { }
+
+        protected ICamera ActualCamera => UseInterpolationCamera ? (ICamera)_interpolationCamera : Camera;
+
+        private readonly InterpolationCamera _interpolationCamera = new InterpolationCamera(5f);
+
+        protected override void OnTick(float dt) {
+            if (UseInterpolationCamera) {
+                _interpolationCamera.Update(Camera, dt);
+            }
+        }
 
         protected override void DrawInner() {
             DrawPrepare();
@@ -117,10 +141,12 @@ namespace AcTools.Render.Forward {
             DeviceContext.Rasterizer.State = ShowWireframe ? _wireframeRasterizerState : null;
 
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.LessEqualDepthState;
-            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.Simple);
+            Scene.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.Simple);
 
             DeviceContext.OutputMerger.DepthStencilState = DeviceContextHolder.ReadOnlyDepthState;
-            Scene.Draw(DeviceContextHolder, Camera, SpecialRenderMode.SimpleTransparent);
+            Scene.Draw(DeviceContextHolder, ActualCamera, SpecialRenderMode.SimpleTransparent);
+
+            DrawAfter();
 
             DeviceContext.OutputMerger.DepthStencilState = null;
             DeviceContext.OutputMerger.BlendState = null;

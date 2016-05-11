@@ -93,6 +93,9 @@
     <Compile Include="Converters\PlaceToColorConverter.cs" />
     <Compile Include="Converters\RealismLevelToColorConverter.cs" />
     <Compile Include="Converters\CountryIdToImageConverter.cs" />
+    <Compile Include="CustomShowroom\CarTextureDialog.xaml.cs">
+      <DependentUpon>CarTextureDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomShowroom\CustomShowroomWrapper.cs" />
     <Compile Include="CustomShowroom\LiteShowroomTools.xaml.cs">
       <DependentUpon>LiteShowroomTools.xaml</DependentUpon>
@@ -107,6 +110,9 @@
     </Compile>
     <Compile Include="Pages\Dialogs\KunosCareerIntro.xaml.cs">
       <DependentUpon>KunosCareerIntro.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\Prompt.xaml.cs">
+      <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\VideoViewer.xaml.cs">
       <DependentUpon>VideoViewer.xaml</DependentUpon>
@@ -186,6 +192,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="CustomShowroom\CarTextureDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomShowroom\LiteShowroomTools.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -199,6 +209,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\KunosCareerIntro.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Dialogs\Prompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

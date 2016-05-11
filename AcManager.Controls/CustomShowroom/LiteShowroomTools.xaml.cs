@@ -20,7 +20,8 @@ namespace AcManager.Controls.CustomShowroom {
                 new InputBinding(Model.PreviewSkinCommand, new KeyGesture(Key.PageUp)),
                 new InputBinding(Model.NextSkinCommand, new KeyGesture(Key.PageDown)),
                 new InputBinding(Model.Car.ViewInExplorerCommand, new KeyGesture(Key.F, ModifierKeys.Alt)),
-                new InputBinding(Model.OpenSkinDirectoryCommand, new KeyGesture(Key.F, ModifierKeys.Control))
+                new InputBinding(Model.OpenSkinDirectoryCommand, new KeyGesture(Key.F, ModifierKeys.Control)),
+                new InputBinding(new RelayCommand(o => Model.Renderer.Deselect()), new KeyGesture(Key.D, ModifierKeys.Control))
             });
             InitializeComponent();
             Buttons = new Button[0];
@@ -106,7 +107,7 @@ namespace AcManager.Controls.CustomShowroom {
                     AmbientShadowHideWheels = o.AmbientShadowHideWheels;
                 }, () => {
                     AmbientShadowDiffusion = 40.0;
-                    AmbientShadowBrightness = 400.0;
+                    AmbientShadowBrightness = 350.0;
                     AmbientShadowIterations = 2000;
                     AmbientShadowHideWheels = false;
                 });
@@ -121,11 +122,28 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private void Renderer_Tick(object sender, AcTools.Render.Base.TickEventArgs args) {}
+            private void Renderer_Tick(object sender, AcTools.Render.Base.TickEventArgs args) { }
 
-            public void OnTick() {}
+            public void OnTick() { }
 
             #region Ambient Shadows
+            private bool _ambientShadowsMode;
+
+            public bool AmbientShadowsMode {
+                get { return _ambientShadowsMode; }
+                set {
+                    if (Equals(value, _ambientShadowsMode)) return;
+                    _ambientShadowsMode = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private RelayCommand _toggleAmbientShadowModeCommand;
+
+            public RelayCommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new RelayCommand(o => {
+                AmbientShadowsMode = !AmbientShadowsMode;
+            }));
+
             private double _ambientShadowDiffusion;
 
             public double AmbientShadowDiffusion {
@@ -173,6 +191,7 @@ namespace AcManager.Controls.CustomShowroom {
                     if (Equals(value, _ambientShadowHideWheels)) return;
                     _ambientShadowHideWheels = value;
                     OnPropertyChanged();
+                    SaveLater();
                 }
             }
 
@@ -180,17 +199,17 @@ namespace AcManager.Controls.CustomShowroom {
 
             public AsyncCommand UpdateAmbientShadowCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new AsyncCommand(async o => {
                 await Task.Run(() => {
-                    using (var renderer = new AmbientShadowKn5ObjectRenderer(Renderer.Kn5)) {
+                    using (var renderer = new AmbientShadowKn5ObjectRenderer(Renderer.Kn5, Car.Location)) {
                         renderer.DiffusionLevel = (float)AmbientShadowDiffusion / 100f;
                         renderer.SkyBrightnessLevel = (float)AmbientShadowBrightness / 100f;
                         renderer.Iterations = AmbientShadowIterations;
                         renderer.HideWheels = AmbientShadowHideWheels;
-                        
+
                         renderer.Initialize();
                         renderer.Shot();
                     }
                 });
-                
+
                 foreach (var s in new[] {
                     "body_shadow.png",
                     "tyre_0_shadow.png",
@@ -221,6 +240,14 @@ namespace AcManager.Controls.CustomShowroom {
             public RelayCommand OpenSkinDirectoryCommand => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new RelayCommand(o => {
                 Skin.ViewInExplorer();
             }, o => Skin != null));
+            #endregion
+
+            #region Textures
+            private RelayCommand _viewTextureCommand;
+
+            public RelayCommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new RelayCommand(o => {
+                new CarTextureDialog(Renderer.Kn5, ((ForwardKn5ObjectRenderer.TextureInformation)o).TextureName).ShowDialog();
+            }, o => o is ForwardKn5ObjectRenderer.TextureInformation));
             #endregion
         }
     }

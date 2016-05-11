@@ -119,7 +119,7 @@ namespace AcManager.Pages.Dialogs {
 
             var msg = @"Archive is encrypted. Input password:";
             while (_installator.IsPasswordRequired && !_installator.IsPasswordCorrect) {
-                var password = Prompt.Show(@"Password required", msg, passwordMode: true);
+                var password = Controls.Pages.Dialogs.Prompt.Show(@"Password required", msg, passwordMode: true);
                 if (password == null) {
                     Close();
                     return;

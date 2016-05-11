@@ -5,7 +5,8 @@
         FocusVisualStyle="{x:Null}">
     <StackPanel>
         <TextBlock Style="{StaticResource Heading1}">Content Manager</TextBlock>
-        <TextBlock Margin="20 8 20 0" Style="{StaticResource Label}" Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}}" />
+        <TextBlock Margin="20 8 20 0" Style="{StaticResource Label}" Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}}"
+                   MouseLeftButtonUp="Version_OnMouseLeftButtonUp"/>
         <mui:BbCodeBlock Margin="20">Replacement for default Assetto Corsa launcher and content management app. In development. From authors of [url="http://www.racedepartment.com/downloads/actools-cars-manager.6518/"]Cars Manager[/url].</mui:BbCodeBlock>
         <TextBlock Style="{StaticResource Heading2}">Key features:</TextBlock>
         <StackPanel Margin="20">

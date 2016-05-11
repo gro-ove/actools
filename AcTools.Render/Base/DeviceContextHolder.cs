@@ -5,6 +5,7 @@ using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
 using AcTools.Utils.Helpers;
+using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace AcTools.Render.Base {
@@ -32,8 +33,13 @@ namespace AcTools.Render.Base {
         public void OnResize(int width, int height) {
             Width = width;
             Height = height;
+
             foreach (var helper in _helpers.Values) {
                 helper.OnResize(this);
+            }
+
+            foreach (var effect in _effects.Values.OfType<IEffectScreenSizeWrapper>()) {
+                effect.FxScreenSize.Set(new Vector4(Width, Height, 1f / Width, 1f / Height));
             }
         }
 
@@ -128,7 +134,7 @@ namespace AcTools.Render.Base {
 
         #region Common shared stuff
         private DepthStencilState _normalDepthState, _readOnlyDepthState, _greaterReadOnlyDepthState,
-                _lessEqualDepthState, _lessEqualReadOnlyDepthState;
+                _lessEqualDepthState, _lessEqualReadOnlyDepthState, _disabledDepthState;
         private BlendState _transparentBlendState, _addBlendState;
         private RasterizerState _doubleSidedState;
 
@@ -138,6 +144,14 @@ namespace AcTools.Render.Base {
                     IsStencilEnabled = false,
                     DepthWriteMask = DepthWriteMask.All,
                     DepthComparison = Comparison.Less,
+                }));
+
+        public DepthStencilState DisabledDepthState => _disabledDepthState ?? (_disabledDepthState = _disabledDepthState =
+                DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
+                    IsDepthEnabled = false,
+                    IsStencilEnabled = false,
+                    DepthWriteMask = DepthWriteMask.Zero,
+                    DepthComparison = Comparison.Always,
                 }));
 
         public DepthStencilState ReadOnlyDepthState => _readOnlyDepthState ?? (_readOnlyDepthState =

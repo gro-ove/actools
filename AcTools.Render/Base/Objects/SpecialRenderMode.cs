@@ -1,4 +1,7 @@
+using System;
+
 namespace AcTools.Render.Base.Objects {
+    [Flags]
     public enum SpecialRenderMode {
         Simple,
         SimpleTransparent,

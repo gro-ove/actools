@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Data {
     internal class KunosCareerProgressEntry {
@@ -29,12 +30,12 @@ namespace AcManager.Tools.Data {
         /// <param name="points"></param>
         /// <param name="aiPoints"></param>
         /// <param name="lastSelectedTimestamp">Milliseconds</param>
-        internal KunosCareerProgressEntry(int selectedEvent, IEnumerable<int> eventsResults, int? points, IEnumerable<int> aiPoints,
+        internal KunosCareerProgressEntry(int selectedEvent, [CanBeNull] IEnumerable<int> eventsResults, int? points, [CanBeNull] IEnumerable<int> aiPoints,
                 long? lastSelectedTimestamp = null) {
             SelectedEvent = selectedEvent;
             EventsResults = eventsResults?.ToIReadOnlyListIfItsNot() ?? new int[0];
             Points = points;
-            AiPoints = aiPoints.ToIReadOnlyListIfItsNot() ?? new int[0];
+            AiPoints = aiPoints?.ToIReadOnlyListIfItsNot() ?? new int[0];
             LastSelectedTimestamp = lastSelectedTimestamp ?? DateTime.Now.ToMillisecondsTimestamp();
         }
     }

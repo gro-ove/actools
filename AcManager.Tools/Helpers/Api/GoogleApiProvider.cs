@@ -35,7 +35,7 @@ namespace AcManager.Tools.Helpers.Api {
                             return TimeZoneInfo.FindSystemTimeZoneById(zoneId);
                         } catch (TimeZoneNotFoundException) {
                             var zoneName = xml.GetElementsByTagName("time_zone_name")[0].InnerText;
-                            return TimeZoneInfo.CreateCustomTimeZone(zoneId, TimeSpan.FromSeconds(double.Parse(rawOffset)), zoneName, zoneName);
+                            return TimeZoneInfo.CreateCustomTimeZone(zoneId, TimeSpan.FromSeconds(double.Parse(rawOffset, NumberStyles.Any, CultureInfo.InvariantCulture)), zoneName, zoneName);
                         }
                     }
                 }

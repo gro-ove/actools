@@ -13,6 +13,7 @@ using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5Specific.Utils;
+using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -20,21 +21,17 @@ using SlimDX.DXGI;
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class AmbientShadowKn5ObjectRenderer : BaseRenderer {
         private readonly Kn5 _kn5;
-        private readonly CarHelper _carHelper;
         private readonly RenderableList _scene;
         private Kn5RenderableList _carNode;
+        private CarHelper _carHelper;
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
-        public AmbientShadowKn5ObjectRenderer(string mainKn5Filename) {
-            _kn5 = Kn5.FromFile(mainKn5Filename);
-            _carHelper = new CarHelper(_kn5);
-            _scene = new RenderableList();
-        }
+        public AmbientShadowKn5ObjectRenderer(string mainKn5Filename, string carLocation = null) : this(Kn5.FromFile(mainKn5Filename), carLocation) {}
 
-        public AmbientShadowKn5ObjectRenderer(Kn5 kn5) {
+        public AmbientShadowKn5ObjectRenderer(Kn5 kn5, string carLocation = null) {
             _kn5 = kn5;
-            _carHelper = new CarHelper(_kn5);
+            _carHelper = new CarHelper(_kn5, carLocation);
             _scene = new RenderableList();
         }
 
@@ -57,7 +54,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private TexturesProvider _texturesProvider;
 
         private void LoadAndAdjustKn5() {
-
             _materialsProvider = new DepthMaterialProvider();
             _texturesProvider = new TexturesProvider();
             DeviceContextHolder.Set(_materialsProvider);
@@ -283,7 +279,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             SetWheelShadowCamera();
             _wheelMode = true;
 
-            foreach (var entry in new[] { "WHEEL_LF", "WHEEL_RF", "WHEEL_LR", "WHEEL_RR" }.Select(x => _carNode.GetDummyByName(x)).Select((x, i) => new {
+            var nodes = new[] { "WHEEL_LF", "WHEEL_RF", "WHEEL_LR", "WHEEL_RR" };
+            foreach (var entry in nodes.Select(x => _carNode.GetDummyByName(x)).Select((x, i) => new {
                 Node = x,
                 Matrix = Matrix.Translation(0f, x.Matrix.GetTranslationVector().Y - (x.BoundingBox?.Minimum.Y ?? 0f), 0f),
                 Filename = $"tyre_{i}_shadow.png"
@@ -299,12 +296,17 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public void Shot() {
-            Shot(Path.GetDirectoryName(_kn5.OriginalFilename));
+            Shot(_carHelper.RootDirectory);
         }
 
         protected override void OnTick(float dt) { }
 
         public override void Dispose() {
+            DisposeHelper.Dispose(ref _blendState);
+            DisposeHelper.Dispose(ref _summBuffer);
+            DisposeHelper.Dispose(ref _tempBuffer);
+            DisposeHelper.Dispose(ref _shadowBuffer);
+            DisposeHelper.Dispose(ref _carHelper);
             _materialsProvider?.DisposeFor(_kn5);
             base.Dispose();
         }

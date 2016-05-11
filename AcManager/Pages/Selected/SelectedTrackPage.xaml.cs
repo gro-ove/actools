@@ -122,7 +122,11 @@ namespace AcManager.Pages.Selected {
                 }.ShowDialogInSelectFileMode();
                 if (shot == null) return;
 
-                ImageUtils.ApplyPreview(shot, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
+                try {
+                    ImageUtils.ApplyPreview(shot, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can't update preview", e);
+                }
             }, o => SelectedObject.Enabled));
 
             private RelayCommand _updatePreviewDirectCommand;
@@ -135,7 +139,11 @@ namespace AcManager.Pages.Selected {
                     RestoreDirectory = true
                 };
                 if (dialog.ShowDialog() == true) {
-                    ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
+                    try {
+                        ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can't update preview", e);
+                    }
                 }
             }));
         }

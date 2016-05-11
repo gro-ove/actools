@@ -23,7 +23,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         public void SetEmissiveNext(Vector3 value) {}
 
         public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.Simple) return false;
+            if (!mode.HasFlag(SpecialRenderMode.Simple)) return false;
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPNTG;
             return true;
         }

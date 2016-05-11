@@ -86,6 +86,18 @@ namespace AcTools.Render.Base.Objects {
                 o.ParentMatrix = Matrix;
             }
         }
+        
+        public new void Insert(int index, IRenderableObject obj) {
+            base.Insert(index, obj);
+            obj.ParentMatrix = Matrix;
+        }
+        
+        public new void InsertRange(int index, IEnumerable<IRenderableObject> objs) {
+            foreach (var o in objs) {
+                base.Insert(index++, o);
+                o.ParentMatrix = Matrix;
+            }
+        }
 
         public new void Remove(IRenderableObject obj) {
             base.Remove(obj);
@@ -95,7 +107,7 @@ namespace AcTools.Render.Base.Objects {
         public virtual void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (!IsEnabled) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
-            if (BoundingBox == null || !camera.Visible(BoundingBox.Value)) return;
+            if (camera != null && (BoundingBox == null || !camera.Visible(BoundingBox.Value))) return;
             foreach (var child in this.Where(x => x.IsEnabled)) {
                 child.Draw(contextHolder, camera, mode);
             }
@@ -104,7 +116,7 @@ namespace AcTools.Render.Base.Objects {
         public virtual void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter) {
             if (!IsEnabled || !filter(this)) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
-            if (BoundingBox == null || !camera.Visible(BoundingBox.Value)) return;
+            if (camera != null && (BoundingBox == null || !camera.Visible(BoundingBox.Value))) return;
             foreach (var child in this.Where(x => x.IsEnabled)) {
                 child.Draw(contextHolder, camera, mode, filter);
             }

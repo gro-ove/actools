@@ -9,9 +9,14 @@ namespace AcTools.Render.Kn5Specific {
         [CanBeNull]
         CameraOrbit CameraOrbit { get; }
 
+        [CanBeNull]
+        FpsCamera FpsCamera { get; }
+
         bool AutoRotate { get; set; }
 
         bool AutoAdjustTarget { get; set; }
+
+        bool UseFpsCamera { get; set; }
 
         bool VisibleUi { get; set; }
 

@@ -1,7 +1,5 @@
-﻿using System;
-using AcTools.Kn5File;
+﻿using AcTools.Kn5File;
 using AcTools.Render.Base;
-using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.Utils;
@@ -55,14 +53,12 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         }
 
         public override bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple) return false;
+            if (!mode.HasFlag(SpecialRenderMode.SimpleTransparent) && !mode.HasFlag(SpecialRenderMode.Simple)) return false;
 
             Effect.FxMaterial.Set(_material);
             Effect.FxDiffuseMap.SetResource(_txDiffuse);
 
-            contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTG;
-            contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.TransparentBlendState : null;
-
+            PrepareStates(contextHolder, mode);
             return true;
         }
 

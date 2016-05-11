@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -121,7 +122,7 @@ namespace AcTools.Processes {
             private TimeSpan Convert(object value) {
                 if (value == null) return TimeSpan.Zero;
                 try {
-                    var doubleValue = double.Parse(value.ToString());
+                    var doubleValue = value as double? ?? double.Parse(value.ToString(), CultureInfo.InvariantCulture);
                     return doubleValue < 0 ? TimeSpan.Zero : FromValue(doubleValue);
                 } catch (Exception) {
                     return TimeSpan.Zero;

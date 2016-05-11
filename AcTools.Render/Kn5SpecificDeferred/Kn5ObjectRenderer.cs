@@ -10,7 +10,6 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.DeferredShading;
 using AcTools.Render.DeferredShading.Lights;
 using AcTools.Render.Kn5Specific;
-using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5Specific.Utils;
@@ -23,9 +22,16 @@ namespace AcTools.Render.Kn5SpecificDeferred {
         private readonly Kn5[] _kn5;
         private readonly CarHelper _carHelper;
 
+        public FpsCamera FpsCamera => null;
+
         public bool AutoRotate { get; set; } = true;
 
         public bool AutoAdjustTarget { get; set; } = true;
+
+        public bool UseFpsCamera {
+            get { return false; }
+            set { }
+        }
 
         bool IKn5ObjectRenderer.VisibleUi {
             get { return VisibleUi; }

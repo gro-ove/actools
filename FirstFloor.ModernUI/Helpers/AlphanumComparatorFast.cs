@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Globalization;
 
 namespace FirstFloor.ModernUI.Helpers {
     public class AlphanumComparatorFast : IComparer {
@@ -57,8 +58,8 @@ namespace FirstFloor.ModernUI.Helpers {
                 int result;
 
                 if (char.IsDigit(space1[0]) && char.IsDigit(space2[0])) {
-                    var thisNumericChunk = int.Parse(str1);
-                    var thatNumericChunk = int.Parse(str2);
+                    var thisNumericChunk = int.Parse(str1, CultureInfo.InvariantCulture);
+                    var thatNumericChunk = int.Parse(str2, CultureInfo.InvariantCulture);
                     result = thisNumericChunk.CompareTo(thatNumericChunk);
                 } else {
                     result = string.Compare(str1, str2, StringComparison.Ordinal);

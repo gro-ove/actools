@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
     public partial class Kn5 {
@@ -26,6 +27,11 @@ namespace AcTools.Kn5File {
         public Dictionary<string, byte[]> TexturesData;
 
         public Dictionary<string, Kn5Material> Materials;
+
+        [CanBeNull]
+        public Kn5Material GetMaterial(uint id) {
+            return Materials.Values.ElementAtOrDefault((int)id);
+        }
 
         public Kn5Node RootNode;
         public byte[] NodesBytes;
@@ -59,6 +65,7 @@ namespace AcTools.Kn5File {
             }
         }
 
+        [CanBeNull]
         public Kn5Node FirstByName(string name) {
             return Nodes.FirstOrDefault(node => node.Name == name);
         }
@@ -82,6 +89,7 @@ namespace AcTools.Kn5File {
             return RemoveAllByName(RootNode, name);
         }
 
+        [CanBeNull]
         public Kn5Node FirstFiltered(Func<Kn5Node, bool> filter) {
             return Nodes.FirstOrDefault(filter);
         }

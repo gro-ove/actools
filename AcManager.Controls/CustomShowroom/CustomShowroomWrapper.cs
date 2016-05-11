@@ -6,10 +6,12 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcTools.Render.Kn5SpecificDeferred;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.CustomShowroom {
     public enum CustomShowroomMode {
@@ -34,41 +36,74 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
+        private static BaseFormWrapper _last;
+
         public static async Task StartLiteAsync(string kn5, string skinId = null) {
-            using (var renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(kn5))) {
-                renderer.UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa;
-                renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
-                renderer.UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom;
+            _last?.Stop();
+            _last = null;
 
+            try {
                 var carDirectory = Path.GetDirectoryName(kn5);
-                var carObject = CarsManager.Instance.GetById(Path.GetFileName(carDirectory) ?? "");
-                if (string.Equals(carObject?.Location, carDirectory, StringComparison.OrdinalIgnoreCase)) {
-                    var wrapper = new LiteShowroomWrapperWithTools(renderer, carObject, skinId);
-                    wrapper.Form.Icon = Icon;
-                    wrapper.Run();
-                } else {
-                    if (skinId != null) {
-                        renderer.SelectSkin(skinId);
-                    }
-
-                    var wrapper = new LiteShowroomWrapper(renderer);
-                    wrapper.Form.Icon = Icon;
-                    wrapper.Run();
+                if (Path.GetFileName(Path.GetDirectoryName(carDirectory)) == "..") {
+                    carDirectory = Path.GetDirectoryName(Path.GetDirectoryName(carDirectory));
                 }
+
+                using (var renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(kn5, carDirectory))) {
+                    renderer.UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa;
+                    renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
+                    renderer.UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom;
+
+                    var carObject = CarsManager.Instance.GetById(Path.GetFileName(carDirectory) ?? "");
+                    if (string.Equals(carObject?.Location, carDirectory, StringComparison.OrdinalIgnoreCase)) {
+                        var wrapper = new LiteShowroomWrapperWithTools(renderer, carObject, skinId);
+                        _last = wrapper;
+
+                        wrapper.Form.Icon = Icon;
+                        wrapper.Run();
+                    } else {
+                        Logging.Warning($"Can't find CarObject for “{carDirectory}”");
+                        Logging.Warning($"Found location: “{carObject?.Location ?? "NULL"}”");
+
+                        if (skinId != null) {
+                            renderer.SelectSkin(skinId);
+                        }
+
+                        var wrapper = new LiteShowroomWrapper(renderer);
+                        _last = wrapper;
+
+                        wrapper.Form.Icon = Icon;
+                        wrapper.Run();
+                    }
+                }
+            } catch (Exception e) {
+                NonfatalError.Notify("Can't start Custom Showroom", e);
+            } finally {
+                _last = null;
             }
         }
 
         public static async Task StartFancyAsync(string kn5, string skinId = null, string showroomKn5 = null) {
-            using (var renderer = await Task.Run(() => new Kn5ObjectRenderer(kn5, showroomKn5))) {
-                renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
+            _last?.Stop();
+            _last = null;
 
-                if (skinId != null) {
-                    renderer.SelectSkin(skinId);
+            try {
+                using (var renderer = await Task.Run(() => new Kn5ObjectRenderer(kn5, showroomKn5))) {
+                    renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
+
+                    if (skinId != null) {
+                        renderer.SelectSkin(skinId);
+                    }
+
+                    var wrapper = new FancyShowroomWrapper(renderer);
+                    _last = wrapper;
+
+                    wrapper.Form.Icon = Icon;
+                    wrapper.Run();
                 }
-
-                var wrapper = new FancyShowroomWrapper(renderer);
-                wrapper.Form.Icon = Icon;
-                wrapper.Run();
+            } catch (Exception e) {
+                NonfatalError.Notify("Can't start Custom Showroom", e);
+            } finally {
+                _last = null;
             }
         }
 

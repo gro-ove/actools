@@ -33,7 +33,8 @@ namespace AcTools.Render.Base.Utils {
         public static float Clamp(float value, float min, float max) {
             return Math.Max(min, Math.Min(value, max));
         }
-        public static float Clamp<T>(float value, float min, float max) {
+
+        public static int Clamp(int value, int min, int max) {
             return Math.Max(min, Math.Min(value, max));
         }
 

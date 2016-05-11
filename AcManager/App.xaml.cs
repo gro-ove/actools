@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -201,7 +200,7 @@ namespace AcManager {
                 foreach (var f in from file in Directory.GetFiles(directory)
                                   where file.EndsWith(".txt") || file.EndsWith(".json")
                                   let info = new FileInfo(file)
-                                  where info.CreationTime < DateTime.Now.AddDays(-7)
+                                  where info.CreationTime < DateTime.Now.AddDays(-3)
                                   select info){
                     f.Delete();
                 }

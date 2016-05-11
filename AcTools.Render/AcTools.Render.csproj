@@ -68,6 +68,7 @@
     <Compile Include="Base\Cameras\FrustrumIntersectionType.cs" />
     <Compile Include="Base\Cameras\Frustum.cs" />
     <Compile Include="Base\Cameras\ICamera.cs" />
+    <Compile Include="Base\Cameras\InterpolationCamera.cs" />
     <Compile Include="Base\Objects\BaseRenderableObject.cs" />
     <Compile Include="Base\Objects\IRenderableObject.cs" />
     <Compile Include="Base\Objects\RenderableList.cs" />
@@ -122,6 +123,9 @@
     <Compile Include="Forward\ForwardRenderer.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAlpha.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNmMult.cs" />
+    <Compile Include="Kn5SpecificSpecial\Kn5MaterialUv.cs" />
+    <Compile Include="Kn5SpecificSpecial\UvMaterialProvider.cs" />
+    <Compile Include="Kn5SpecificSpecial\UvRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\AmbientShadowKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\DepthMaterialProvider.cs" />
     <Compile Include="Kn5SpecificSpecial\Kn5MaterialDepth.cs" />
@@ -193,6 +197,7 @@
     <Content Include="Shaders\Includes\FXAA_311.fx" />
     <Content Include="Shaders\Includes\FXAA.fx" />
     <Content Include="Shaders\Includes\SMAA.fx" />
+    <Content Include="Shaders\Pp\PpOutline.fx" />
     <Content Include="Shaders\Pp\PpSmaa.fx" />
     <Content Include="Shaders\Pp\PpFxaa311.fx" />
     <Content Include="Shaders\Pp\PpBlur.fx" />
@@ -205,6 +210,7 @@
     <Content Include="Shaders\Special\SpecialShadow.fx" />
     <Content Include="Shaders\Testing\TestingPnt.fx" />
     <Content Include="Shaders\Testing\TestingCube.fx" />
+    <Content Include="Shaders\Special\SpecialUv.fx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Base\Shaders\ShadersTemplate.tt">

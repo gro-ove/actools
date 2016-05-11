@@ -73,7 +73,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (_isTransparent &&
-                    mode != SpecialRenderMode.SimpleTransparent &&
+                    !mode.HasFlag(SpecialRenderMode.SimpleTransparent) &&
                     mode != SpecialRenderMode.DeferredTransparentForw &&
                     mode != SpecialRenderMode.DeferredTransparentDef &&
                     mode != SpecialRenderMode.DeferredTransparentMask) return;

@@ -46,7 +46,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public string Prompt(string message, string defaultValue) {
-                return Dialogs.Prompt.Show("Webpage says", message, defaultValue);
+                return Controls.Pages.Dialogs.Prompt.Show("Webpage says", message, defaultValue);
             }
 
             public void Update(double lat, double lng) {

@@ -39,11 +39,32 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             Effect = contextHolder.GetEffect<EffectSimpleMaterial>();
         }
 
-        public virtual bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple) return false;
-
+        protected void PrepareStates(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
             contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTG;
             contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.TransparentBlendState : null;
+
+            if (mode == SpecialRenderMode.SimpleTransparent) return;
+            switch (Kn5Material.DepthMode) {
+                case Kn5MaterialDepthMode.DepthNormal:
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
+                    break;
+
+                case Kn5MaterialDepthMode.DepthNoWrite:
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.ReadOnlyDepthState;
+                    break;
+
+                case Kn5MaterialDepthMode.DepthOff:
+                    contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.DisabledDepthState;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public virtual bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
+            if (!mode.HasFlag(SpecialRenderMode.SimpleTransparent) && !mode.HasFlag(SpecialRenderMode.Simple)) return false;
+            PrepareStates(contextHolder, mode);
             return true;
         }
 
@@ -57,6 +78,6 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             Effect.TechStandard.DrawAllPasses(contextHolder.DeviceContext, indices);
         }
 
-        public void Dispose() { }
+        public void Dispose() {}
     }
 }

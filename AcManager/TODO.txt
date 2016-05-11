@@ -351,6 +351,12 @@ done:
         + reduce GPU consuming
     + support e-mail
     + proper file types description (in explorer)
+    + UnauthorizedAccessException special case
+    + store new builds in History folder just for in case
+    + change report button's label
+    + 0x time multipler
+    + wider AI diapasone
+    + from-to AI level
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -364,16 +370,34 @@ fixme:
     - replays with "[" or "]" in name
 
 todo:
-    - 0x time multipler
-    - bigger AI diapasone
-    - from-to AI level?
-    - UnauthorizedAccessException special case
-    - figure out what's wrong with updating
+    - upload Content to Trello for those who doesn't have Internet connection
+    - custom showroom: proper wpf-based errors handling for invalid dx and stuff
+
+    - add NVIDIA copyrights and stuff
 
     - lite mode (without main form): overlays, second commands, attempts to open main form?
-    - change report button's label
 
     - errors & fixers for badly make ui_skin.json
+
+    - developer mode
+    + lite custom showroom
+        + selecting objects
+            + highlight
+            + view textures
+            + view stats
+            + textures in ImageViewer
+            + export textures
+                + only in developer mode
+            + uvw viewer/exporter
+            - materials information
+            - hide everything else?
+        + properly fixed tool window
+        + collapsing
+        + Ctrl+D to remove selection
+        - Esc to deselect/exit special mode
+        - fix name fitting
+        - fix selection
+        - fix memory leaks
 
     - showroom from QD/KunosCareer/Online
         + QD
@@ -410,7 +434,8 @@ todo:
             - periodic refreshing of selected server
             - list all cars
             - keyboard shortcuts
-        - test and fix for AcManager autoupdating feature
+            - login as admin
+        - test and fix for AcManager content autoupdating feature
             - handle obsolete!
         - challenges
         + handle cars without previews
@@ -516,6 +541,8 @@ todo:
     - show race params on loading screen?
 
 later:
+    - find a way to deal with AVs
+
     - option for disabling .acreplay on renaming replays in content tab
     - try to implement some stuff from /r/loadingicon/?
     - description: convert html to bb and back?

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -39,7 +40,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             try {
                 var totalSizeMatch = Regex.Match(downloadPage, @"</a> \((\d+(?:\.\d+)?)([KMGT])\)</span> ");
                 if (totalSizeMatch.Success) {
-                    var value = double.Parse(totalSizeMatch.Groups[1].Value);
+                    var value = double.Parse(totalSizeMatch.Groups[1].Value, CultureInfo.InvariantCulture);
                     var unit = totalSizeMatch.Groups[2].Value;
 
                     switch (unit.ToLowerInvariant()) {

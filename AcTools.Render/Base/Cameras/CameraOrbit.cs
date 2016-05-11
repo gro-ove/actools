@@ -13,21 +13,21 @@ namespace AcTools.Render.Base.Cameras {
 
         public Vector3 Target { get; set; }
 
-        private float _sRadius, _sAlpha, _sBeta;
-        private Vector3 _sTarget;
+        private float _radius, _alpha, _beta;
+        private Vector3 _target;
 
         public override void Save() {
-            _sRadius = Radius;
-            _sAlpha = Alpha;
-            _sBeta = Beta;
-            _sTarget = Target;
+            _radius = Radius;
+            _alpha = Alpha;
+            _beta = Beta;
+            _target = Target;
         }
 
         public override void Restore() {
-            Radius = _sRadius;
-            Alpha = _sAlpha;
-            Beta = _sBeta;
-            Target = _sTarget;
+            Radius = _radius;
+            Alpha = _alpha;
+            Beta = _beta;
+            Target = _target;
         }
 
         public override BaseCamera Clone() {
@@ -69,8 +69,7 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void Zoom(float dr) {
-            Radius += dr;
-            Radius = MathF.Clamp(Radius, 1.2f, 150.0f);
+            Radius = MathF.Clamp(Radius + dr, 1.2f, 150.0f);
         }
 
         public override void UpdateViewMatrix() {

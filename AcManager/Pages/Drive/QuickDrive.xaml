@@ -67,10 +67,10 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 16" Grid.Row="0" Grid.Column="0">
-                    <Grid Margin="0 0 0 5">
+                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="0">
+                    <Grid Margin="0 0 0 4">
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Time: " Target="{x:Reference TimeTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" Padding="10 0 0 0" />
+                            <Label Content="Time: " Target="{x:Reference TimeTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" Padding="8 0 0 0" />
                             <TextBox Name="TimeTextBox" Text="{Binding DisplayTime, UpdateSourceTrigger=PropertyChanged}"
                                     Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
                                     mui:TextBoxAdvancement.SpecialMode="Time"
@@ -80,11 +80,11 @@
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="Actual time is out of range, closest value is used" HorizontalAlignment="Right" />
                     </Grid>
-                    <Slider Minimum="{Binding TimeMinimum}" Maximum="{Binding TimeMaximum}" Value="{Binding Time}" Margin="0 0 0 5" Name="TimeSlider"
+                    <Slider Minimum="{Binding TimeMinimum}" Maximum="{Binding TimeMaximum}" Value="{Binding Time}" Margin="0 0 0 4" Name="TimeSlider"
                             TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
 
-                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding RealConditions}" Margin="10 0 0 0" ToolTip="{Binding RealWeather.FullDescription}">
+                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding RealConditions}" Margin="8 0 0 0" ToolTip="{Binding RealWeather.FullDescription}">
                     <Label>_Real conditions</Label>
                     <CheckBox.ContextMenu>
                         <ContextMenu>
@@ -94,8 +94,8 @@
                     </CheckBox.ContextMenu>
                 </CheckBox>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 16" Grid.Row="0" Grid.Column="1">
-                    <Grid Margin="0 0 0 5">
+                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="1">
+                    <Grid Margin="0 0 0 4">
                         <TextBlock Text="Weather:" Style="{StaticResource LabelWithPadding}" />
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -105,18 +105,18 @@
                             </Path.ToolTip>
                         </Path>
                     </Grid>
-                    <ComboBox Margin="5 0 5 0" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}"
+                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}"
                             IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}" />
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 0" Grid.Row="1" Grid.Column="1">
-                    <Grid Margin="0 0 0 5">
+                <StackPanel Orientation="Vertical" Margin="0 0 8 0" Grid.Row="1" Grid.Column="1">
+                    <Grid Margin="0 0 0 4">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel.ToolTip>
                                 <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="Road temperature: {0:F1}°" />
                             </StackPanel.ToolTip>
 
-                            <Label Content="Temperature: " Target="{x:Reference TemperatureTextBox}" Padding="10 0 0 0"
+                            <Label Content="Temperature: " Target="{x:Reference TemperatureTextBox}" Padding="8 0 0 0"
                                     MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                             <TextBox Name="TemperatureTextBox" Text="{Binding Temperature, StringFormat='\{0:F1\}', UpdateSourceTrigger=PropertyChanged}"
                                     Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
@@ -125,7 +125,7 @@
                             <Label Content="°" Target="{x:Reference TemperatureTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                         </StackPanel>
                     </Grid>
-                    <Grid Margin="0 0 0 5">
+                    <Grid Margin="0 0 0 4">
                         <Grid.ToolTip>
                             <Grid>
                                 <StackPanel
@@ -168,23 +168,23 @@
                     </Grid>
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 10 16" Grid.Row="0" Grid.Column="2">
-                    <TextBlock Text="Track:" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 5" />
-                    <ComboBox Margin="5 0 5 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />
+                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
+                    <TextBlock Text="Track:" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2">
-                    <Grid Margin="0 0 0 5">
+                    <Grid Margin="0 0 0 4">
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Time Multipler: " Target="{x:Reference TimeMultiplerTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
-                                    Padding="10 0 0 0" />
+                                    Padding="8 0 0 0" />
                             <TextBox Name="TimeMultiplerTextBox" Text="{Binding TimeMultipler, UpdateSourceTrigger=PropertyChanged}"
                                     Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
                                     mui:TextBoxAdvancement.SpecialMode="Integer" />
                             <Label Content="x" Target="{x:Reference TimeMultiplerTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                         </StackPanel>
                     </Grid>
-                    <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximum}" Value="{Binding TimeMultipler}" Margin="0 0 0 5"
+                    <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximum}" Value="{Binding TimeMultipler}" Margin="0 0 0 4"
                             Name="TimeMultiplerSlider" TickFrequency="60" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
             </Grid>

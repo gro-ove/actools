@@ -142,6 +142,15 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            public bool DeveloperMode {
+                get { return ValuesStorage.GetBool("Settings.CommonSettings.DeveloperMode", false); }
+                set {
+                    if (Equals(value, DeveloperMode)) return;
+                    ValuesStorage.Set("Settings.CommonSettings.DeveloperMode", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public static CommonSettings Common { get; } = new CommonSettings();
@@ -239,7 +248,7 @@ namespace AcManager.Tools.Helpers {
             public string ReplaysNameFormat {
                 get { return ValuesStorage.GetString("Settings.DriveSettings.ReplaysNameFormat", "_autosave_{car.id}_{track.id}_{date_ac}.acreplay"); }
                 set {
-                    value = value.Trim();
+                    value = value?.Trim();
                     if (Equals(value, ReplaysNameFormat)) return;
                     ValuesStorage.Set("Settings.DriveSettings.ReplaysNameFormat", value);
                     OnPropertyChanged();
@@ -258,7 +267,7 @@ namespace AcManager.Tools.Helpers {
             public string PlayerName {
                 get { return ValuesStorage.GetString("Settings.DriveSettings.PlayerName", null); }
                 set {
-                    value = value.Trim();
+                    value = value?.Trim();
                     if (Equals(value, PlayerName)) return;
                     ValuesStorage.Set("Settings.DriveSettings.PlayerName", value);
                     OnPropertyChanged();
@@ -269,7 +278,7 @@ namespace AcManager.Tools.Helpers {
             public string PlayerNationality {
                 get { return ValuesStorage.GetString("Settings.DriveSettings.PlayerNationality", null); }
                 set {
-                    value = value.Trim();
+                    value = value?.Trim();
                     if (Equals(value, PlayerNationality)) return;
                     ValuesStorage.Set("Settings.DriveSettings.PlayerNationality", value);
                     OnPropertyChanged();

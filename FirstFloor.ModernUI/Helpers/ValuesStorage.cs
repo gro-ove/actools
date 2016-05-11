@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Timers;
+using System.Windows;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -155,7 +156,7 @@ namespace FirstFloor.ModernUI.Helpers {
             try {
                 var splitted = DecodeBytes(File.ReadAllBytes(_filename))
                     .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-                Load(int.Parse(splitted[0].Split(new[] { "version:" }, StringSplitOptions.None)[1].Trim()), splitted.Skip(1));
+                Load(int.Parse(splitted[0].Split(new[] { "version:" }, StringSplitOptions.None)[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture), splitted.Skip(1));
             } catch (Exception e) {
                 Logging.Warning("Cannot load data: " + e);
                 _storage.Clear();
@@ -216,45 +217,78 @@ namespace FirstFloor.ModernUI.Helpers {
         [CanBeNull]
         public static string GetString([NotNull] string key, string defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            return Instance._storage.ContainsKey(key) ? Instance._storage[key] : defaultValue;
+            string value;
+            return Instance._storage.TryGetValue(key, out value) ? value : defaultValue;
         }
 
         public static int GetInt([NotNull] string key, int defaultValue = 0) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             int result;
-            return Instance._storage.ContainsKey(key) &&
-                int.TryParse(Instance._storage[key], NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : defaultValue;
+            string value;
+            return Instance._storage.TryGetValue(key, out value) &&
+                int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : defaultValue;
         }
 
         public static int? GetIntNullable([NotNull] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             int result;
-            return Instance._storage.ContainsKey(key) &&
-                int.TryParse(Instance._storage[key], NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : (int?)null;
+            string value;
+            return Instance._storage.TryGetValue(key, out value) &&
+                int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : (int?)null;
         }
 
         public static double GetDouble([NotNull] string key, double defaultValue = 0) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             double result;
-            return Instance._storage.ContainsKey(key) &&
-                double.TryParse(Instance._storage[key], NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : defaultValue;
+            string value;
+            return Instance._storage.TryGetValue(key, out value) &&
+                double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : defaultValue;
         }
 
         public static double? GetDoubleNullable([NotNull] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             double result;
-            return Instance._storage.ContainsKey(key) &&
-                double.TryParse(Instance._storage[key], NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : (double?)null;
+            string value;
+            return Instance._storage.TryGetValue(key, out value) &&
+                double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : (double?)null;
+        }
+
+        public static Point GetPoint([NotNull] string key, Point defaultValue = default(Point)) {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            try {
+                string value;
+                if (Instance._storage.TryGetValue(key, out value)) {
+                    return Point.Parse(value);
+                }
+            } catch (Exception) {
+                // ignored
+            }
+            return defaultValue;
+        }
+
+        public static Point? GetPointNullable([NotNull] string key) {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            try {
+                string value;
+                if (Instance._storage.TryGetValue(key, out value)) {
+                    return Point.Parse(value);
+                }
+            } catch (Exception) {
+                // ignored
+            }
+            return null;
         }
 
         public static bool GetBool([NotNull] string key, bool defaultValue = false) {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            return Instance._storage.ContainsKey(key) ? Instance._storage[key] == "1" : defaultValue;
+            string value;
+            return Instance._storage.TryGetValue(key, out value) ? value == "1" : defaultValue;
         }
 
         public static bool? GetBoolNullable([NotNull] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            return Instance._storage.ContainsKey(key) ? Instance._storage[key] == "1" : (bool?)null;
+            string value;
+            return Instance._storage.TryGetValue(key, out value) ? value == "1" : (bool?)null;
         }
 
         /// <summary>
@@ -266,8 +300,9 @@ namespace FirstFloor.ModernUI.Helpers {
         [NotNull]
         public static IEnumerable<string> GetStringList([NotNull] string key, IEnumerable<string> defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            return Instance._storage.ContainsKey(key) && !string.IsNullOrEmpty(Instance._storage[key])
-                    ? Instance._storage[key].Split('\n').Select(Decode) : defaultValue ?? new string[] { };
+            string value;
+            return Instance._storage.TryGetValue(key, out value) && !string.IsNullOrEmpty(value)
+                    ? value.Split('\n').Select(Decode) : defaultValue ?? new string[] { };
         }
 
         [NotNull]
@@ -337,8 +372,7 @@ namespace FirstFloor.ModernUI.Helpers {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
                 var value = GetString(key);
-                if (value == null) return null;
-                return TimeZoneInfo.FromSerializedString(value);
+                return value == null ? null : TimeZoneInfo.FromSerializedString(value);
             } catch (Exception) {
                 return null;
             }
@@ -408,6 +442,10 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public static void Set(string key, bool value) {
             Set(key, value ? "1" : "0");
+        }
+
+        public static void Set(string key, Point value) {
+            Set(key, value.ToString(CultureInfo.InvariantCulture));
         }
 
         public static void Set(string key, [NotNull] IEnumerable<string> value) {

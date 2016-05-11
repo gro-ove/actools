@@ -97,6 +97,8 @@ namespace AcTools.Utils {
                         image.Save(destination, encoder, parameters);
                     }
                 }
+
+                GC.Collect();
             }
 
             try {

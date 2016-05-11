@@ -1,0 +1,85 @@
+﻿<mui:ModernDialog x:Class="AcManager.Controls.CustomShowroom.CarTextureDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom"
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="Car Texture" d:DataContext="{d:DesignInstance customShowroom:CarTextureDialog+CarTextureDialogViewModel}" Loaded="CarTextureDialog_OnLoaded"
+        Unloaded="CarTextureDialog_OnUnloaded" WindowStartupLocation="CenterScreen" MaxWidth="999">
+    <mui:ModernDialog.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </mui:ModernDialog.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="320" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid Width="240" Height="240" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="0 0 12 -36">
+            <!-- TODO -->
+            <Image Source="{Binding PreviewImage}" MouseLeftButtonDown="Preview_OnMouseLeftButtonDown"
+                    Visibility="{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+            <mui:ModernProgressRing Width="80" Height="80" VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Visibility="{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </Grid>
+
+        <TextBlock Text="{Binding TextureName}" Style="{StaticResource Heading2}" Grid.Column="1" Grid.Row="0" Margin="0 0 0 12" />
+
+        <DockPanel Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}}" Grid.Column="1" Grid.Row="1">
+            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Right" />
+            <TextBlock Text="Texture is missing!" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
+        </DockPanel>
+
+        <Grid Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Grid.Column="1" Grid.Row="1">
+            <StackPanel VerticalAlignment="Top">
+                <DockPanel>
+                    <Label DockPanel.Dock="Left" Width="100">Type:</Label>
+                    <TextBlock Text="{Binding TextureFormat}" watermark:WatermarkService.Watermark="?" />
+                </DockPanel>
+                <DockPanel>
+                    <Label DockPanel.Dock="Left" Width="100">Format:</Label>
+                    <TextBlock Text="{Binding TextureFormatDescription}" watermark:WatermarkService.Watermark="?" />
+                </DockPanel>
+                <DockPanel>
+                    <Label DockPanel.Dock="Left" Width="100">Dimensions:</Label>
+                    <TextBlock Text="{Binding TextureDimensions}" watermark:WatermarkService.Watermark="?" />
+                </DockPanel>
+                <DockPanel>
+                    <Label DockPanel.Dock="Left" Width="100">Size:</Label>
+                    <TextBlock Text="{Binding Data.Length, Converter={StaticResource FileSizeConverter}}" />
+                </DockPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+    <mui:ModernDialog.ButtonsRowContent>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+            <Button Command="{Binding UvCommand}" CommandParameter="2048" ToolTip="View in 2048×2048">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding UvCommand}" CommandParameter="512" Header="View in 512×512" />
+                        <MenuItem Command="{Binding UvCommand}" CommandParameter="1024" Header="View in 1024×1024" />
+                        <MenuItem Command="{Binding UvCommand}" CommandParameter="2048" Header="View in 2048×2048" />
+                        <MenuItem Command="{Binding UvCommand}" CommandParameter="4096" Header="View in 4096×4096" />
+                        <MenuItem Command="{Binding UvCommand}" CommandParameter="custom" Header="View in custom resolution" />
+                    </ContextMenu>
+                </Button.ContextMenu>
+                View Mapping
+            </Button>
+            <Button Command="{Binding ExportCommand}" Margin="4 0 0 0"
+                    Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">Export</Button>
+        </StackPanel>
+    </mui:ModernDialog.ButtonsRowContent>
+</mui:ModernDialog>

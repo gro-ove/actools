@@ -18,6 +18,11 @@
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
             </DockPanel>
 
+            <CheckBox IsChecked="{Binding CommonSettings.DeveloperMode}"
+                    Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}">
+                <Label>Developer mode</Label>
+            </CheckBox>
+
             <!--versions-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">App:</TextBlock>
 

@@ -36,15 +36,28 @@ namespace AcTools.Render.Base.Utils {
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static byte[] LoadFromFileAsSlimDxBuffer(string filename) {
+        public static byte[] LoadFromFileAsConventionalBuffer(string filename) {
             using (var image = new MagickImage(filename)) {
                 return image.ToByteArray(MagickFormat.Bmp);
             }
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static byte[] LoadAsSlimDxBuffer(byte[] data) {
+        public static byte[] LoadAsConventionalBuffer(byte[] data) {
             using (var image = new MagickImage(data)) {
+                return image.ToByteArray(MagickFormat.Bmp);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static byte[] LoadAsConventionalBuffer(byte[] data, bool noAlpha, out string formatDescription) {
+            using (var image = new MagickImage(data)) {
+                formatDescription = image.CompressionMethod.ToString();
+
+                if (noAlpha) {
+                    image.HasAlpha = false;
+                }
+
                 return image.ToByteArray(MagickFormat.Bmp);
             }
         }

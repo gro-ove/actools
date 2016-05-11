@@ -502,10 +502,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Dialogs\Prompt.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\Dialogs\UpgradeIconEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -555,9 +551,6 @@
     </Compile>
     <Compile Include="Pages\Dialogs\ImageEditor.xaml.cs">
       <DependentUpon>ImageEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Dialogs\Prompt.xaml.cs">
-      <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\UpgradeIconEditor.xaml.cs">
       <DependentUpon>UpgradeIconEditor.xaml</DependentUpon>

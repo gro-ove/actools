@@ -145,5 +145,17 @@ namespace AcTools.Render.Wrapper {
             Form.Text = _title;
             _toastTimer.Enabled = false;
         }
+
+        private bool _closed;
+
+        public void Stop() {
+            if (_closed) return;
+            _closed = true;
+            try {
+                Form.Close();
+            } catch (Exception) {
+                // ignored
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using Prompt = AcManager.Controls.Pages.Dialogs.Prompt;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsGeneral {
@@ -19,12 +20,9 @@ namespace AcManager.Pages.Settings {
             DataContext = new GeneralViewModel();
         }
 
-
         public class GeneralViewModel
             : NotifyPropertyChanged {
-            internal GeneralViewModel() {
-                // SimpleSkinsMode = 
-            }
+            internal GeneralViewModel() {}
 
             public string AcRootDirectoryValue => AcRootDirectory.Instance.Value;
 

@@ -22,6 +22,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using StringBasedFilter;
+using Prompt = AcManager.Controls.Pages.Dialogs.Prompt;
 
 namespace AcManager.Pages.Drive {
     public partial class Online : ILoadableContent, IParametrizedUriContent {

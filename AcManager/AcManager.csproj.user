@@ -14,6 +14,7 @@
     <StartArguments>--disable-values-compression --manager-mode</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>"D:\Games\Steam\SteamApps\common\assettocorsa\content\cars\bmw_m3_e92\bmw_m3_e92.kn5"</StartArguments>
+    <StartArguments>
+    </StartArguments>
   </PropertyGroup>
 </Project>

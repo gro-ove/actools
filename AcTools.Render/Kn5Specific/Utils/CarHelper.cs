@@ -47,10 +47,10 @@ namespace AcTools.Render.Kn5Specific.Utils {
 
         public List<string> Skins { get; private set; }
 
-        public CarHelper(Kn5 kn5) {
+        public CarHelper(Kn5 kn5, string rootDirectory = null) {
             MainKn5 = kn5;
 
-            RootDirectory = Path.GetDirectoryName(kn5.OriginalFilename);
+            RootDirectory = rootDirectory ?? Path.GetDirectoryName(kn5.OriginalFilename);
             SkinsDirectory = FileUtils.GetCarSkinsDirectory(RootDirectory);
             Data = DataWrapper.FromFile(RootDirectory);
 
@@ -92,7 +92,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
             var texture = texturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
                     string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase));
             if (texture == null) {
-                if (!MagickWrapper.IsSupported) return;
+                if (!MagickWrapper.IsSupported || !LiveReload) return;
 
                 var ext = MagickExtensions.FirstOrDefault(x => textureName.EndsWith(x, StringComparison.OrdinalIgnoreCase));
                 if (ext != null) {
@@ -108,7 +108,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
 
                 await Task.Delay(100);
                 var bytes = await LoadAllBytesAsync(filename);
-                var converted = await Task.Run(() => MagickWrapper.LoadAsSlimDxBuffer(bytes));
+                var converted = await Task.Run(() => MagickWrapper.LoadAsConventionalBuffer(bytes));
                 await texture.LoadOverrideAsync(converted, _holder.Device);
                 SkinTextureUpdated?.Invoke(this, EventArgs.Empty);
             } else {
@@ -128,10 +128,13 @@ namespace AcTools.Render.Kn5Specific.Utils {
         }
 
         private void Watcher_Changed(object sender, FileSystemEventArgs e) {
+            if (!LiveReload) return;
             UpdateOverrideLater(e.FullPath);
         }
 
         private void Watcher_Created(object sender, FileSystemEventArgs e) {
+            if (!LiveReload) return; 
+
             var splitted = FileUtils.GetRelativePath(e.FullPath, SkinsDirectory).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             if (splitted.Length == 1) {
                 ReloadSkinsLater();
@@ -141,6 +144,8 @@ namespace AcTools.Render.Kn5Specific.Utils {
         }
 
         private void Watcher_Deleted(object sender, FileSystemEventArgs e) {
+            if (!LiveReload) return;
+
             var splitted = FileUtils.GetRelativePath(e.FullPath, SkinsDirectory).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             if (splitted.Length == 1) {
                 ReloadSkinsLater();
@@ -150,6 +155,8 @@ namespace AcTools.Render.Kn5Specific.Utils {
         }
 
         private void Watcher_Renamed(object sender, RenamedEventArgs e) {
+            if (!LiveReload) return;
+
             var splittedOld = FileUtils.GetRelativePath(e.OldFullPath, SkinsDirectory).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             var splittedNew = FileUtils.GetRelativePath(e.FullPath, SkinsDirectory).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             if (splittedOld.Length == 1 && splittedNew.Length == 1) {
@@ -160,6 +167,17 @@ namespace AcTools.Render.Kn5Specific.Utils {
             } else if (splittedOld.Length == 1 && splittedNew.Length == 2) {
                 ReloadSkinsLater();
                 UpdateOverrideLater(e.FullPath);
+            }
+        }
+
+        private bool _liveReload;
+
+        public bool LiveReload {
+            get { return _liveReload; }
+            set {
+                if (Equals(value, _liveReload)) return;
+                _liveReload = value;
+                ReloadSkinsLater();
             }
         }
 
@@ -233,7 +251,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
                     }
 
                     if (bytes != null) {
-                        return MagickWrapper.LoadAsSlimDxBuffer(bytes);
+                        return MagickWrapper.LoadAsConventionalBuffer(bytes);
                     }
                 }
             }
@@ -259,7 +277,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
                     }
 
                     if (bytes != null) {
-                        return await Task.Run(() => MagickWrapper.LoadAsSlimDxBuffer(bytes));
+                        return await Task.Run(() => MagickWrapper.LoadAsConventionalBuffer(bytes));
                     }
                 }
             }
@@ -267,19 +285,19 @@ namespace AcTools.Render.Kn5Specific.Utils {
             return await LoadAllBytesAsync(filename);
         }
 
-        private IRenderableObject LoadWheelAmbientShadow(Kn5RenderableList main, string nodeName, string textureName) {
+        private IRenderableObject LoadWheelAmbientShadow(Kn5RenderableList main, string nodeName, string textureName, float shadowsHeight) {
             var node = main.GetDummyByName(nodeName);
             if (node == null) return null;
 
             var wheel = node.Matrix.GetTranslationVector();
-            wheel.Y = 0.01f;
+            wheel.Y = shadowsHeight;
 
             var filename = Path.Combine(RootDirectory, textureName);
             return new AmbientShadow(filename, Matrix.Scaling(GetWheelShadowSize()) * Matrix.RotationY(MathF.PI) *
                     Matrix.Translation(wheel));
         }
         
-        private IRenderableObject LoadBodyAmbientShadow() {
+        private IRenderableObject LoadBodyAmbientShadow(float shadowsHeight) {
             var iniFile = Data.GetIniFile("ambient_shadows.ini");
             var ambientBodyShadowSize = new Vector3(
                     (float)iniFile["SETTINGS"].GetDouble("WIDTH", 1d), 1.0f,
@@ -287,17 +305,17 @@ namespace AcTools.Render.Kn5Specific.Utils {
 
             var filename = Path.Combine(RootDirectory, "body_shadow.png");
             return new AmbientShadow(filename, Matrix.Scaling(ambientBodyShadowSize) * Matrix.RotationY(MathF.PI) *
-                    Matrix.Translation(0f, 0.01f, 0f));
+                    Matrix.Translation(0f, shadowsHeight, 0f));
         }
 
-        public IEnumerable<IRenderableObject> LoadAmbientShadows(Kn5RenderableList node) {
+        public IEnumerable<IRenderableObject> LoadAmbientShadows(Kn5RenderableList node, float shadowsHeight = 0.01f) {
             if (Data.IsEmpty) return new IRenderableObject[0];
             return new[] {
-                LoadBodyAmbientShadow(),
-                LoadWheelAmbientShadow(node, "WHEEL_LF", "tyre_0_shadow.png"),
-                LoadWheelAmbientShadow(node, "WHEEL_RF", "tyre_1_shadow.png"),
-                LoadWheelAmbientShadow(node, "WHEEL_LR", "tyre_2_shadow.png"),
-                LoadWheelAmbientShadow(node, "WHEEL_RR", "tyre_3_shadow.png")
+                LoadBodyAmbientShadow(shadowsHeight),
+                LoadWheelAmbientShadow(node, "WHEEL_LF", "tyre_0_shadow.png", shadowsHeight),
+                LoadWheelAmbientShadow(node, "WHEEL_RF", "tyre_1_shadow.png", shadowsHeight),
+                LoadWheelAmbientShadow(node, "WHEEL_LR", "tyre_2_shadow.png", shadowsHeight),
+                LoadWheelAmbientShadow(node, "WHEEL_RR", "tyre_3_shadow.png", shadowsHeight)
             }.Where(x => x != null);
         }
 

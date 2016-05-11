@@ -60,7 +60,7 @@ namespace AcTools.Utils {
 
         public static int Random(int maxValue) => RandomInstance.Next(maxValue);
 
-        public static int Random(int minValue, int maxValue) => RandomInstance.Next(minValue, maxValue);
+        public static int Random(int minValueInclusive, int maxValueExclusive) => RandomInstance.Next(minValueInclusive, maxValueExclusive);
 
         public static double Random() => RandomInstance.NextDouble();
 

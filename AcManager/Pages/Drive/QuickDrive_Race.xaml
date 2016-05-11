@@ -26,28 +26,48 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
-            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 5" Text="{Binding LapsNumberString, StringFormat='Race duration: \{0\}'}" />
+            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" Text="{Binding LapsNumberString, StringFormat='Race duration: \{0\}'}" />
             <Slider Minimum="1" Maximum="40" Value="{Binding LapsNumber}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0">
-            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 5" Text="{Binding AiLevel, StringFormat='Opponents strength: \{0\}%'}" />
-            <Slider Minimum="75" Maximum="100" Value="{Binding AiLevel}" />
+            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" Text="{Binding AiLevel, StringFormat='Opponents strength (max): \{0\}%'}" />
+            <Slider Minimum="50" Maximum="100" Value="{Binding AiLevel}" />
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">
-            <CheckBox Margin="10 0 0 0" IsChecked="{Binding Penalties}">
+        <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0"
+                IsEnabled="{Binding AiLevelFixed, Converter={StaticResource InvertBooleanConverter}}">
+            <StackPanel.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Arrange randomly" IsCheckable="True" IsChecked="{Binding AiLevelArrangeRandomly, Mode=TwoWay}" />
+                    <MenuItem Header="Arrange in reverse order" IsCheckable="True" ToolTip="The strongest opponent will be the last at the start line"
+                            IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
+                </ContextMenu>
+            </StackPanel.ContextMenu>
+            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" Text="{Binding AiLevelMin, StringFormat='Opponents strength (min): \{0\}%'}" />
+            <Slider Minimum="50" Maximum="100" Value="{Binding AiLevelMin}" />
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="0">
+            <CheckBox Margin="8 0 0 0" IsChecked="{Binding AiLevelFixed}">
+                <Label>_Fixed opponents strength</Label>
+            </CheckBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="1">
+            <CheckBox Margin="8 0 0 0" IsChecked="{Binding Penalties}">
                 <Label>_Penalties</Label>
             </CheckBox>
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
-            <TextBlock Style="{StaticResource LabelWithPadding}" Text="Grid type:" Margin="0 0 0 5" />
-            <ComboBox Margin="5 0 5 0" ItemsSource="{Binding GridTypes}" SelectedItem="{Binding SelectedGridType}" DisplayMemberPath="DisplayName" />
+            <TextBlock Style="{StaticResource LabelWithPadding}" Text="Grid type:" Margin="0 0 0 4" />
+            <ComboBox Margin="4 0 4 0" ItemsSource="{Binding GridTypes}" SelectedItem="{Binding SelectedGridType}" DisplayMemberPath="DisplayName" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
@@ -55,17 +75,18 @@
                 <ToolTip Content="{Binding TrackPitsNumber}" ContentStringFormat="Limited by number of pits available ({0})" />
             </StackPanel.ToolTip>
 
-            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 5" Text="{Binding OpponentsNumberString, StringFormat='\{0\}'}" />
+            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" Text="{Binding OpponentsNumberString, StringFormat='\{0\}'}" />
             <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
-            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 5" Text="{Binding DisplayStartingPosition, StringFormat='Starting position: \{0\}'}" />
+            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4"
+                    Text="{Binding DisplayStartingPosition, StringFormat='Starting position: \{0\}'}" />
             <Slider Minimum="0" Maximum="{Binding StartingPositionLimit}" Value="{Binding StartingPosition}" />
         </StackPanel>
 
-        <Grid Grid.Row="0" Grid.RowSpan="4" Grid.Column="2">
-            <mui:ModernProgressRing Margin="10" IsActive="True" Width="80" Height="80"
+        <Grid Grid.Row="0" Grid.RowSpan="5" Grid.Column="2">
+            <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80"
                     Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <DockPanel Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                 <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8" Text="Possible opponents list:">

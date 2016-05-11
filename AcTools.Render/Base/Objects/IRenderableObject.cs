@@ -1,5 +1,6 @@
 ﻿using System;
 using AcTools.Render.Base.Cameras;
+using JetBrains.Annotations;
 using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
@@ -16,9 +17,9 @@ namespace AcTools.Render.Base.Objects {
 
         BoundingBox? BoundingBox { get; }
 
-        void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode);
+        void Draw(DeviceContextHolder contextHolder, [CanBeNull] ICamera camera, SpecialRenderMode mode);
 
-        void Draw(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter);
+        void Draw(DeviceContextHolder contextHolder, [CanBeNull] ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter);
 
         void UpdateBoundingBox();
     }

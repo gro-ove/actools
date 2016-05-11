@@ -7,11 +7,11 @@ SamplerState samInputImage {
 Texture2D gInputMap;
 
 float4 tex(float2 uv){
-	return gInputMap.SampleLevel(samInputImage, uv, 0.0);
+	return gInputMap.Sample(samInputImage, uv);
 }
 
 float4 tex(Texture2D t, float2 uv){
-	return t.SampleLevel(samInputImage, uv, 0.0);
+	return t.Sample(samInputImage, uv);
 }
 
 struct VS_IN {

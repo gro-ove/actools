@@ -144,6 +144,7 @@ namespace AcTools.Utils.Helpers {
             return -1;
         }
 
+        [NotNull]
         public static IEnumerable<IEnumerable<T>> Chunk<T>([NotNull] this IEnumerable<T> source, int chunksize) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             var list = source as IList<T> ?? source.ToList();
@@ -205,16 +206,19 @@ namespace AcTools.Utils.Helpers {
             return sb.ToString();
         }
 
+        [NotNull]
         public static List<T> ToListIfItsNot<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             return enumerable as List<T> ?? enumerable.ToList();
         }
 
+        [NotNull]
         public static IList<T> ToIListIfItsNot<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             return enumerable as IList<T> ?? enumerable.ToList();
         }
 
+        [NotNull]
         public static IReadOnlyList<T> ToIReadOnlyListIfItsNot<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             return enumerable as IReadOnlyList<T> ?? enumerable.ToList();

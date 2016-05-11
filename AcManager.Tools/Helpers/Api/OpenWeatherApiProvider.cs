@@ -258,7 +258,7 @@ namespace AcManager.Tools.Helpers.Api {
                         var weatherNode = xml.GetElementsByTagName("weather")[0];
 
                         var temperature = double.Parse(temperatureNode.Attributes["value"].Value, CultureInfo.InvariantCulture);
-                        var type = OpenWeatherTypeToCommonType((OpenWeatherType)int.Parse(weatherNode.Attributes["number"].Value));
+                        var type = OpenWeatherTypeToCommonType((OpenWeatherType)int.Parse(weatherNode.Attributes["number"].Value, NumberStyles.Any, CultureInfo.InvariantCulture));
                         var description = weatherNode.Attributes["value"].Value;
                         var iconAttribute = weatherNode.Attributes["icon"];
                         var iconUri = iconAttribute == null ? null : string.Format(IconUri, iconAttribute.Value);

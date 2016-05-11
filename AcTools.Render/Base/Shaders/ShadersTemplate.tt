@@ -25,10 +25,14 @@ namespace AcTools.Render.Base.Shaders {
 		void Initialize(Device device);
 	}
 
-	public interface IEffectMatricesWrapper : IEffectWrapper {
+	public interface IEffectMatricesWrapper {
 		EffectMatrixVariable FxWorld { get; }
 		EffectMatrixVariable FxWorldInvTranspose { get; }
 		EffectMatrixVariable FxWorldViewProj { get; }
+	}
+
+	public interface IEffectScreenSizeWrapper {
+		EffectVectorVariable FxScreenSize { get; }
 	}
 
 <#
@@ -97,7 +101,9 @@ namespace AcTools.Render.Base.Shaders {
 
 /* FUNCTIONS */
 	Func<string,string> ConvertFxName = s => {
-		return "Fx" + (s[0] == 'g' ? s.Substring(1) : s);
+		var t = s[0] == 'g' ? s.Substring(1) : s;
+		t = t.Substring(0, 1).ToUpperInvariant() + t.Substring(1);
+		return "Fx" + t;
 	};
 	Func<string,string> ConvertConstName = s => 
 		Regex.Replace(s.ToLower(), @"^\w|_\w", x => x.Value.Replace("_", "").ToUpper());
@@ -217,8 +223,13 @@ namespace AcTools.Render.Base.Shaders {
 	/* IF SHADER CONTAINS ALL OBJECTS MATRICES */
 		var matricesNames = vms.Select(x => x.Groups[1].Value.Substring(1)).ToList();
 		var matricesMode = matricesNames.Contains("World") && matricesNames.Contains("WorldInvTranspose") && matricesNames.Contains("WorldViewProj");
+		var screenSizeMode = vvs.Select(x => x.Groups[1].Value).Contains("gScreenSize");
 		#>
-	public class Effect<#= name #> : <#= matricesMode ? "IEffectMatricesWrapper" : "IEffectWrapper" #> {
+	public class Effect<#= name #> : <#= string.Join(", ", new[]{
+			"IEffectWrapper",
+			matricesMode ? "IEffectMatricesWrapper" : null,
+			screenSizeMode ? "IEffectScreenSizeWrapper" : null,
+	}.Where(x => x != null)) #> {
 		<#= string.Join("", structs) #><#= string.Join("", consts) #>public Effect E;
 
         public ShaderSignature <#= string.Join(", ", tls.Select(x => "InputSignature" + x.Type)) #>;
@@ -226,7 +237,7 @@ namespace AcTools.Render.Base.Shaders {
 
 		public EffectTechnique <#= string.Join(", ", ts.Select(x => "Tech" + x)) #>;
 
-<# foreach (var matriceFieldName in vms.Select(x => "Fx" + x.Groups[1].Value.Substring(1))){ #>
+<# foreach (var matriceFieldName in vms.Select(x => ConvertFxName(x.Groups[1].Value))){ #>
 		public EffectMatrixVariable <#= matriceFieldName #> { get; private set; }
 <# } #>
 <# if (vrs.Any()){ #>
@@ -235,8 +246,8 @@ namespace AcTools.Render.Base.Shaders {
 <# if (vss.Any()){ #>
 		public EffectScalarVariable <#= string.Join(", ", vss.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
 <# } #>
-<# if (vvs.Any()){ #>
-		public EffectVectorVariable <#= string.Join(", ", vvs.Select(x => ConvertFxName(x.Groups[1].Value))) #>;
+<# foreach (var vectorFieldName in vvs.Select(x => ConvertFxName(x.Groups[1].Value))){ #>
+		public EffectVectorVariable <#= vectorFieldName #> { get; private set; }
 <# } #>
 <# if (vs.Any()){ #>
 		public EffectVariable <#= string.Join(", ", vs.Select(x => ConvertFxName(x.Groups[1].Value))) #>;

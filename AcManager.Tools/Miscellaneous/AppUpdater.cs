@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -263,18 +264,29 @@ namespace AcManager.Tools.Miscellaneous {
         public static string UpdateLocation => MainExecutingFile.Location.ApartFromLast(ExecutableExtension, StringComparison.OrdinalIgnoreCase) + UpdatePostfix;
 
         public static bool OnStartup(string[] args) {
-            if (args.Contains("--freshly-updated")) {
-                CleanUpUpdateExeAsync().Forget();
-            } else if (File.Exists(UpdateLocation)) {
-                Thread.Sleep(500);
-                RunUpdateExeAndExitIfExists();
-                return true;
-            } else if (MainExecutingFile.Location.EndsWith(UpdatePostfix)) {
-                InstallAndRunNewVersion();
-                return true;
-            }
+            try {
+                if (MainExecutingFile.Location.EndsWith(UpdatePostfix)) {
+                    InstallAndRunNewVersion();
+                    return true;
+                }
 
-            return false;
+                if (File.Exists(UpdateLocation)) {
+                    if (FileVersionInfo.GetVersionInfo(UpdateLocation).FileVersion.IsVersionNewerThan(BuildInformation.AppVersion)) {
+                        Thread.Sleep(200);
+                        RunUpdateExeAndExitIfExists();
+                        return true;
+                    }
+
+                    CleanUpUpdateExeAsync().Forget();
+                }
+
+                return false;
+            } catch (Exception e) {
+                MessageBox.Show($"Can't process update: {e.Message}. " +
+                        $"Try to install a new version manually, sorry.", "Update failed", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                return false;
+            }
         }
 
         private static void RunUpdateExeAndExitIfExists() {
@@ -313,8 +325,12 @@ namespace AcManager.Tools.Miscellaneous {
 
                 /* if we couldn't delete file normally, let's kill any process with this name */
                 if (File.Exists(originalFilename)) {
-                    foreach (var process in Process.GetProcessesByName(Path.GetFileName(originalFilename))) {
-                        process.Kill();
+                    try {
+                        foreach (var process in Process.GetProcessesByName(Path.GetFileName(originalFilename))) {
+                            process.Kill();
+                        }
+                    } catch (Exception) {
+                        // ignored
                     }
 
                     /* four attempts, two seconds */
@@ -336,7 +352,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             File.Copy(MainExecutingFile.Location, originalFilename);
-            ProcessExtension.Start(originalFilename, Environment.GetCommandLineArgs().Skip(1).Prepend("--freshly-updated"));
+            ProcessExtension.Start(originalFilename, Environment.GetCommandLineArgs().Skip(1));
             Environment.Exit(0);
         }
     }

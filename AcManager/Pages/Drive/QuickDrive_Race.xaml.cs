@@ -68,6 +68,7 @@ namespace AcManager.Pages.Drive {
 
             private int _opponentsNumber;
             private int _unclampedOpponentsNumber;
+            private int? _unclampedStartingPosition;
 
             public int OpponentsNumber {
                 get { return _opponentsNumber; }
@@ -82,10 +83,21 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged(nameof(StartingPositionLimit));
 
                     if (_last || StartingPosition > StartingPositionLimit) {
+                        var val = StartingPosition;
                         StartingPosition = StartingPositionLimit;
-                    } else if (StartingPosition == StartingPositionLimit) {
-                        _last = true;
-                        OnPropertyChanged(nameof(DisplayStartingPosition));
+                        if (_unclampedStartingPosition == null && val > StartingPositionLimit) {
+                            _unclampedStartingPosition = val;
+                        }
+                    } else {
+                        if (_unclampedStartingPosition != null) {
+                            StartingPosition = _unclampedStartingPosition.Value;
+                            _unclampedStartingPosition = null;
+                        }
+
+                        if (StartingPosition == StartingPositionLimit && StartingPositionLimit != 0) {
+                            _last = true;
+                            OnPropertyChanged(nameof(DisplayStartingPosition));
+                        }
                     }
 
                     SaveLater();
@@ -99,10 +111,84 @@ namespace AcManager.Pages.Drive {
             public int AiLevel {
                 get { return _aiLevel; }
                 set {
+                    value = MathUtils.Clamp(value, 50, 100);
                     if (Equals(value, _aiLevel)) return;
-                    _aiLevel = MathUtils.Clamp(value, 75, 100);
+                    _aiLevel = value;
                     OnPropertyChanged();
                     SaveLater();
+
+                    if (!AiLevelFixed && value >= AiLevelMin) return;
+                    _aiLevelMin = value;
+                    OnPropertyChanged(nameof(AiLevelMin));
+                }
+            }
+
+            private int _aiLevelMin;
+
+            public int AiLevelMin {
+                get { return _aiLevelMin; }
+                set {
+                    if (AiLevelFixed) return;
+
+                    value = MathUtils.Clamp(value, 50, 100);
+                    if (Equals(value, _aiLevelMin)) return;
+                    _aiLevelMin = value;
+                    OnPropertyChanged();
+                    SaveLater();
+
+                    if (value > AiLevel) {
+                        _aiLevel = value;
+                        OnPropertyChanged(nameof(AiLevel));
+                    }
+                }
+            }
+
+            private bool _aiLevelFixed;
+
+            public bool AiLevelFixed {
+                get { return _aiLevelFixed; }
+                set {
+                    if (Equals(value, _aiLevelFixed)) return;
+                    _aiLevelFixed = value;
+                    OnPropertyChanged();
+                    SaveLater();
+
+                    if (value && _aiLevelMin != _aiLevel) {
+                        _aiLevelMin = _aiLevel;
+                        OnPropertyChanged(nameof(AiLevelMin));
+                    }
+                }
+            }
+
+            private bool _aiLevelArrangeRandomly;
+
+            public bool AiLevelArrangeRandomly {
+                get { return _aiLevelArrangeRandomly; }
+                set {
+                    if (Equals(value, _aiLevelArrangeRandomly)) return;
+                    _aiLevelArrangeRandomly = value;
+                    OnPropertyChanged();
+                    SaveLater();
+
+                    if (value) {
+                        AiLevelArrangeReverse = false;
+                    }
+                }
+            }
+
+            private bool _aiLevelArrangeReverse;
+
+            public bool AiLevelArrangeReverse {
+                get { return _aiLevelArrangeReverse; }
+                set {
+                    if (Equals(value, _aiLevelArrangeReverse)) return;
+                    _aiLevelArrangeReverse = value;
+                    OnPropertyChanged();
+                    SaveLater();
+
+                    if (value) {
+                        AiLevelArrangeRandomly = false;
+                    }
                 }
             }
 
@@ -113,9 +199,13 @@ namespace AcManager.Pages.Drive {
                 get { return _startingPosition; }
                 set {
                     if (Equals(value, _startingPosition)) return;
-                    _startingPosition = value;
 
-                    _last = value == StartingPositionLimit;
+                    _startingPosition = value;
+                    if (_unclampedStartingPosition != null) {
+                        _unclampedStartingPosition = value;
+                    }
+
+                    _last = value == StartingPositionLimit && StartingPositionLimit != 0;
 
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayStartingPosition));
@@ -148,8 +238,8 @@ namespace AcManager.Pages.Drive {
             public int OpponentsNumberLimit => TrackPitsNumber - 1;
 
             private class SaveableData {
-                public bool? Penalties;
-                public int? AiLevel, LapsNumber, OpponentsNumber, StartingPosition;
+                public bool? Penalties, AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse;
+                public int? AiLevel, AiLevelMin, LapsNumber, OpponentsNumber, StartingPosition;
                 public string GridTypeId, OpponentsCarsFilter;
                 public string[] ManualList;
             }
@@ -160,7 +250,11 @@ namespace AcManager.Pages.Drive {
 
                 Saveable = new SaveHelper<SaveableData>("__QuickDrive_Race", () => new SaveableData {
                     Penalties = Penalties,
+                    AiLevelFixed = AiLevelFixed,
+                    AiLevelArrangeRandomly = AiLevelArrangeRandomly,
+                    AiLevelArrangeReverse = AiLevelArrangeReverse,
                     AiLevel = AiLevel,
+                    AiLevelMin = AiLevelMin,
                     LapsNumber = LapsNumber,
                     OpponentsNumber = OpponentsNumber,
                     StartingPosition = StartingPosition,
@@ -169,7 +263,11 @@ namespace AcManager.Pages.Drive {
                     ManualList = _opponentsCarsIds ?? (SelectedGridType == GridType.Manual ? OpponentsCars.Select(x => x.Id).ToArray() : null)
                 }, o => {
                     Penalties = o.Penalties ?? true;
+                    AiLevelFixed = o.AiLevelFixed ?? true;
+                    AiLevelArrangeRandomly = o.AiLevelArrangeRandomly ?? true;
+                    AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? false;
                     AiLevel = o.AiLevel ?? 92;
+                    AiLevelMin = o.AiLevelMin ?? 92;
                     LapsNumber = o.LapsNumber ?? 2;
                     OpponentsNumber = o.OpponentsNumber ?? 3;
                     StartingPosition = o.StartingPosition ?? 4;
@@ -181,7 +279,11 @@ namespace AcManager.Pages.Drive {
                     OpponentsCarsFilter = o.OpponentsCarsFilter;
                 }, () => {
                     Penalties = true;
+                    AiLevelFixed = true;
+                    AiLevelArrangeRandomly = true;
+                    AiLevelArrangeReverse = false;
                     AiLevel = 92;
+                    AiLevelMin = 92;
                     LapsNumber = 2;
                     OpponentsNumber = 3;
                     StartingPosition = 4;
@@ -190,7 +292,8 @@ namespace AcManager.Pages.Drive {
                 });
 
                 if (initialize) {
-                    Saveable.Init();
+                    // because load is basically reset
+                    Saveable.Load();
                 } else {
                     Saveable.Reset();
                 }
@@ -487,9 +590,9 @@ namespace AcManager.Pages.Drive {
                     ConditionProperties = conditionProperties,
                     TrackProperties = trackProperties,
                     ModeProperties = new Game.RaceProperties {
-                        AiLevel = AiLevel,
+                        AiLevel = AiLevelFixed ? AiLevel : 100,
                         Penalties = Penalties,
-                        StartingPosition = StartingPosition,
+                        StartingPosition = StartingPosition == 0 ? MathUtils.Random(1, OpponentsNumber + 2) : StartingPosition,
                         RaceLaps = LapsNumber,
                         BotCars = botCars
                     }
@@ -585,10 +688,10 @@ namespace AcManager.Pages.Drive {
                 }
 
                 var opponentsCarsEntries = (from x in opponentsCars
-                                    select new {
-                                        Car = x,
-                                        Skins = GoodShuffle.Get(x.SkinsManager.LoadedOnlyCollection)
-                                    }).ToList();
+                                            select new {
+                                                Car = x,
+                                                Skins = GoodShuffle.Get(x.SkinsManager.LoadedOnlyCollection)
+                                            }).ToList();
                 var opponentsCarsShuffled = GoodShuffle.Get(opponentsCarsEntries);
 
                 var playerCarEntry = opponentsCarsEntries.FirstOrDefault(x => x.Car == selectedCar);
@@ -597,10 +700,19 @@ namespace AcManager.Pages.Drive {
                     playerCarEntry.Skins.IgnoreOnce(selectedCar.SelectedSkin);
                 }
 
+                var aiLevels = from i in Enumerable.Range(0, opponentsNumber)
+                               select AiLevelMin + (int)((opponentsNumber < 2 ? 1f : (float)i / (opponentsNumber - 1)) * (AiLevel - AiLevelMin));
+                if (AiLevelArrangeRandomly) {
+                    aiLevels = GoodShuffle.Get(aiLevels);
+                } else if (!AiLevelArrangeReverse) {
+                    aiLevels = aiLevels.Reverse();
+                }
+
+                var list = aiLevels.Take(opponentsNumber).ToList();
                 return from i in Enumerable.Range(0, opponentsNumber)
                        let entry = opponentsCarsShuffled.Next
                        select new Game.AiCar {
-                           AiLevel = 100,
+                           AiLevel = AiLevelFixed ? 100 : list[i],
                            CarId = entry.Car.Id,
                            DriverName = nameNationalities?[i].Name ?? "AI #" + i,
                            Nationality = nameNationalities?[i].Nationality ?? trackCountry,

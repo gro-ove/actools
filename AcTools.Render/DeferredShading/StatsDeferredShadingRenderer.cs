@@ -1,5 +1,4 @@
 using System.Drawing;
-using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5SpecificDeferred.Materials;
 using AcTools.Utils.Helpers;
 using SlimDX;
@@ -18,20 +17,20 @@ namespace AcTools.Render.DeferredShading {
             base.ResizeInner();
 
             if (_textBlock != null) return;
-            _textBlock = new TextBlockRenderer(Sprite, "Consolas", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 24f);
+            _textBlock = new TextBlockRenderer(Sprite, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 24f);
         }
 
         protected override void DrawSpritesInner() {
             if (VisibleUi) {
                 _textBlock.DrawString($@"
-FPS:            {FramesPerSecond:F1}{(SyncInterval ? " (limited)" : "")}
-Mode:           {Mode}
-KN5 objs.:      {Kn5MaterialDeferred.Drawed}
-SSLR:           {(!UseLocalReflections ? "No" : BlurLocalReflections ? "Yes, blurred" : "Yes")}
-Cubemap refl.:  {(UseCubemapReflections ? "Yes" : "No")}
-Shadows:        {(!UseShadows ? "No" : UseDebugShadows ? "Debug" : UseShadowsFilter ? "With Filtering" : "Yes")}
-FXAA:           {(!UseFxaa ? "No" : UseExperimentalSmaa ? "No, SMAA" : UseExperimentalFxaa ? "Experim." : "Yes")}
-Lights:         {(Lights.Count > 0 ? Lights.Count.ToString() : "")}".Trim(),
+FPS: {FramesPerSecond:F1}{(SyncInterval ? " (limited)" : "")}
+Mode: {Mode}
+KN5 objs.: {Kn5MaterialDeferred.Drawed}
+SSLR: {(!UseLocalReflections ? "No" : BlurLocalReflections ? "Yes, blurred" : "Yes")}
+Cubemap refl.: {(UseCubemapReflections ? "Yes" : "No")}
+Shadows: {(!UseShadows ? "No" : UseDebugShadows ? "Debug" : UseShadowsFilter ? "With Filtering" : "Yes")}
+FXAA: {(!UseFxaa ? "No" : UseExperimentalSmaa ? "No, SMAA" : UseExperimentalFxaa ? "Experim." : "Yes")}
+Lights: {(Lights.Count > 0 ? Lights.Count.ToString() : "")}".Trim(),
                         new Vector2(Width - 300, 20), 16f, new Color4(1.0f, 1.0f, 1.0f),
                         CoordinateType.Absolute);
             }

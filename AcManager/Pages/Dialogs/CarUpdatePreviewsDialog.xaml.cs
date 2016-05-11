@@ -18,6 +18,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Addons;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
@@ -501,11 +502,18 @@ namespace AcManager.Pages.Dialogs {
             _saveable.FromSerializedString(data);
         }
 
-        private void CarUpdatePreviewsDialog_OnClosing(object sender, CancelEventArgs e) {
+        private void CarUpdatePreviewsDialog_OnClosing(object sender, CancelEventArgs args) {
             if (CurrentPhase == Phase.Waiting) {
                 _cancellationTokenSource.Cancel(false);
             } else if (CurrentPhase == Phase.Result && IsResultOk) {
-                ImageUtils.ApplyPreviews(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews);
+                try {
+                    ImageUtils.ApplyPreviews(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews);
+                } catch (OutOfMemoryException e) {
+                    NonfatalError.Notify("Can't save previews", AppAddonsManager.Instance.IsAddonEnabled("Magick")
+                            ? "Please, report this bug to developers." : "I recommend to enable Magick.NET addon.", e);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can't save previews", e);
+                }
             }
         }
 

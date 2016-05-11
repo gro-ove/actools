@@ -5,6 +5,8 @@ namespace AcTools.Render.Base.Cameras {
     public delegate float HeightFunc(float x, float y);
 
     public class FpsCamera : BaseCamera {
+        public FpsCamera(float fov) : base(fov) {}
+
         public override void Save() {
             throw new System.NotImplementedException();
         }
@@ -12,18 +14,11 @@ namespace AcTools.Render.Base.Cameras {
         public override void Restore() {
             throw new System.NotImplementedException();
         }
-        
+
         public override BaseCamera Clone() {
-            return new FpsCamera(FovY) {
-                Up = Up,
-                Look = Look,
-                Right = Right,
-                Position = Position
-            };
+            throw new System.NotImplementedException();
         }
 
-        public FpsCamera(float fov) : base(fov) {}
-        
         public override void LookAt(Vector3 pos, Vector3 target, Vector3 up) {
             Position = pos;
             Look = Vector3.Normalize(target - pos);
@@ -53,41 +48,18 @@ namespace AcTools.Render.Base.Cameras {
         }
 
         public override void Zoom(float dr) {
-            FovY = MathF.Clamp(FovY + dr, 0.1f, MathF.PI / 2);
+            FovY = MathF.Clamp(FovY + dr, MathF.PI * 0.05f, MathF.PI * 0.8f);
             SetLens(Aspect);
         }
 
         public override void UpdateViewMatrix() {
-            var p = Position;
-            var l = Vector3.Normalize(Look);
-            var u = Vector3.Normalize(Vector3.Cross(l, Right));
-            var r = Vector3.Cross(u, l);
+            View = Matrix.LookAtLH(Position, Position + Look, Vector3.UnitY);
 
-            var x = -Vector3.Dot(p, r);
-            var y = -Vector3.Dot(p, u);
-            var z = -Vector3.Dot(p, l);
+            Right = new Vector3(View.M11, View.M21, View.M31);
+            Right.Normalize();
 
-            Right = r;
-            Up = u;
-            Look = l;
-            View = new Matrix {
-                [0, 0] = Right.X,
-                [1, 0] = Right.Y,
-                [2, 0] = Right.Z,
-                [3, 0] = x,
-                [0, 1] = Up.X,
-                [1, 1] = Up.Y,
-                [2, 1] = Up.Z,
-                [3, 1] = y,
-                [0, 2] = Look.X,
-                [1, 2] = Look.Y,
-                [2, 2] = Look.Z,
-                [3, 2] = z,
-                [0, 3] = 0,
-                [1, 3] = 0,
-                [2, 3] = 0,
-                [3, 3] = 1
-            };
+            Look = new Vector3(View.M13, View.M23, View.M33);
+            Look.Normalize();
 
             Frustum = Frustum.FromViewProj(ViewProj);
         }

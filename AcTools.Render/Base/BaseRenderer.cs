@@ -229,7 +229,11 @@ namespace AcTools.Render.Base {
 
             ResizeInner();
             DeviceContextHolder.OnResize(Width, Height);
+
+            InitiallyResized = true;
         }
+
+        protected bool InitiallyResized { get; private set; }
 
         public Viewport Viewport => new Viewport(0, 0, _width, _height, 0.0f, 1.0f);
 
@@ -273,7 +277,7 @@ namespace AcTools.Render.Base {
             _swapChain?.Present(SyncInterval ? 1 : 0, PresentFlags.None);
         }
 
-        private bool _syncInterval;
+        private bool _syncInterval = true;
 
         public bool SyncInterval {
             get { return _syncInterval; }

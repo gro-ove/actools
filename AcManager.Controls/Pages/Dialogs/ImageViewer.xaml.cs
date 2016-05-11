@@ -1,17 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcTools.Utils.Helpers;
+using System.Windows.Media;
+using AcManager.Tools.SemiGui;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 using Path = System.IO.Path;
 
 namespace AcManager.Controls.Pages.Dialogs {
     public partial class ImageViewer { 
+        public ImageViewer(ImageSource imageSource) : this(new[] { imageSource }) { }
+
         public ImageViewer(string image) : this(new[] { image }) { }
 
-        public ImageViewer(IEnumerable<string> images, int position = 0) {
+        public ImageViewer(IEnumerable<object> images, int position = 0) {
             DataContext = new ImageViewerViewModel(images, position);
             InitializeComponent();
             Buttons = new Button[] { };
@@ -49,7 +58,7 @@ namespace AcManager.Controls.Pages.Dialogs {
         public string ShowDialogInSelectFileMode() {
             Model.SelectionMode = true;
             ShowDialog();
-            return IsSelected ? Model.CurrentImage : null;
+            return IsSelected ? Model.CurrentImage as string : null;
         }
 
         private void ApplyButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
@@ -61,12 +70,22 @@ namespace AcManager.Controls.Pages.Dialogs {
             Close();
         }
 
+        private void ImageViewer_OnLoaded(object sender, RoutedEventArgs e) {
+            if (double.IsInfinity(Model.MaxImageHeight)) {
+                Model.MaxImageHeight = Wrapper.Height;
+            }
+
+            if (double.IsInfinity(Model.MaxImageWidth)) {
+                Model.MaxImageWidth = Wrapper.Width;
+            }
+        }
+
         public ImageViewerViewModel Model => (ImageViewerViewModel)DataContext;
 
         public class ImageViewerViewModel : NotifyPropertyChanged {
             /* TODO: cache & preload for better UX? */
 
-            private readonly IReadOnlyList<string> _images;
+            private readonly IReadOnlyList<object> _images;
 
             private int _currentPosition;
 
@@ -90,6 +109,30 @@ namespace AcManager.Controls.Pages.Dialogs {
                 }
             }
 
+            private bool _saveable;
+
+            public bool Saveable {
+                get { return _saveable; }
+                set {
+                    if (Equals(value, _saveable)) return;
+                    _saveable = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _saveDirectory;
+
+            public string SaveDirectory {
+                get { return _saveDirectory; }
+                set {
+                    if (Equals(value, _saveDirectory)) return;
+                    _saveDirectory = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private double _maxImageWidth = double.MaxValue;
+
             public double MaxImageWidth {
                 get { return _maxImageWidth; }
                 set {
@@ -98,6 +141,8 @@ namespace AcManager.Controls.Pages.Dialogs {
                     OnPropertyChanged();
                 }
             }
+
+            private double _maxImageHeight = double.MaxValue;
 
             public double MaxImageHeight {
                 get { return _maxImageHeight; }
@@ -108,9 +153,9 @@ namespace AcManager.Controls.Pages.Dialogs {
                 }
             }
 
-            public string CurrentImage => _images[_currentPosition];
+            public object CurrentImage => _images[_currentPosition];
 
-            public string CurrentImageName => Path.GetFileName(CurrentImage);
+            public string CurrentImageName => Path.GetFileName(CurrentImage as string ?? "Image");
 
             private bool _selectionMode;
 
@@ -123,7 +168,7 @@ namespace AcManager.Controls.Pages.Dialogs {
                 }
             }
 
-            public ImageViewerViewModel(IEnumerable<string> images, int position) {
+            public ImageViewerViewModel(IEnumerable<object> images, int position) {
                 _images = images.ToList();
                 CurrentPosition = position;
             }
@@ -135,12 +180,37 @@ namespace AcManager.Controls.Pages.Dialogs {
             }, o => CurrentPosition > 0));
 
             private RelayCommand _nextCommand;
-            private double _maxImageWidth = double.MaxValue;
-            private double _maxImageHeight = double.MaxValue;
 
             public RelayCommand NextCommand => _nextCommand ?? (_nextCommand = new RelayCommand(o => {
                 CurrentPosition++;
             }, o => CurrentPosition < _images.Count - 1));
+
+            private AsyncCommand _saveCommand;
+
+            public AsyncCommand SaveCommand => _saveCommand ?? (_saveCommand = new AsyncCommand(async o => {
+                var origin = CurrentImage as string;
+                if (origin == null) {
+                    throw new NotSupportedException();
+                }
+
+                var dialog = new SaveFileDialog {
+                    Filter = FileDialogFilters.ImagesFilter,
+                    Title = "Export Texture Mapping",
+                    DefaultExt = Path.GetExtension(origin)
+                };
+
+                if (SaveDirectory != null) {
+                    dialog.InitialDirectory = SaveDirectory;
+                }
+
+                if (dialog.ShowDialog() != true) return;
+
+                try {
+                    await Task.Run(() => File.Copy(origin, dialog.FileName));
+                } catch (Exception ex) {
+                    NonfatalError.Notify("Can't export texture", ex);
+                }
+            }, o => CurrentImage is string));
         }
     }
 }

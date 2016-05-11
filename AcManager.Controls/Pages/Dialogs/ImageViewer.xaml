@@ -2,13 +2,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Controls.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="{Binding CurrentImageName}" MouseDown="ImageViewer_OnMouseDown" KeyUp="ImageViewer_OnKeyUp"
-        d:DataContext="{d:DesignInstance dialogs:ImageViewer}">
+        Title="{Binding CurrentImageName}" MouseDown="ImageViewer_OnMouseDown" KeyUp="ImageViewer_OnKeyUp" Loaded="ImageViewer_OnLoaded"
+        d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FullscreenDialog.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+                <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </mui:ModernDialog.Resources>
@@ -52,6 +53,10 @@
                                                 Visibility="{Binding SelectionMode, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <Path Data="{StaticResource CheckIconData}" />
                                         </Button>
+                                        <Button Grid.Row="2" Height="{StaticResource FullscreenDialog.ButtonSize}" Command="{Binding SaveCommand}"
+                                                Visibility="{Binding Saveable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Path Data="{StaticResource SaveIconData}" />
+                                        </Button>
                                     </Grid>
                                 </Grid>
                             </AdornerDecorator>
@@ -62,8 +67,8 @@
         </Style>
     </mui:ModernDialog.Style>
 
-    <Grid d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}">
-        <Image RenderOptions.BitmapScalingMode="HighQuality" Stretch="UniformToFill"
+    <Grid d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}" Name="Wrapper">
+        <Image RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform"
                 Source="{Binding CurrentImage, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter=oneTrueDpi}" StretchDirection="DownOnly"
                 MaxWidth="{Binding MaxImageWidth}" MaxHeight="{Binding MaxImageHeight}" />
     </Grid>
