@@ -61,8 +61,6 @@ namespace AcTools.Render.DeferredShading {
             _sunShadows.Initialize(DeviceContextHolder);
         }
 
-        protected override SampleDescription SampleDescription => new SampleDescription(1, 0);
-
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_11_0;
 
         protected override void ResizeInner() {

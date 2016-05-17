@@ -58,7 +58,12 @@ Temporary Items
 *.dll
 *.zip
 
+*.fx.o
+
 Packages
+
+# Tests output
+AcTools.Tests/test/kn5/*
 
 # Some way too meaningless or dead projects
 AcStarter/*
@@ -75,8 +80,7 @@ Kn5Unpack/*
 # Specific unnecessary source files
 AcManager/Assets/Data/ShowroomPreviewSphere/*
 AcManager/Assets/Data/TrackPreviewNothing/*
-AcTools.marker.tss
-AcTools.tss
+*.tss
 
 # Some files with private values (you can always add your own)
 FirstFloor.ModernUI/Helpers/ValuesStorage_EncryptionKey.cs

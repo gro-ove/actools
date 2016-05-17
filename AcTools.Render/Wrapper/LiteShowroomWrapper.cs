@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using SlimDX;
 
 namespace AcTools.Render.Wrapper {
     public class LiteShowroomWrapper : BaseKn5FormWrapper {
@@ -27,17 +26,13 @@ namespace AcTools.Render.Wrapper {
             }
         }
 
-        public LiteShowroomWrapper(ForwardKn5ObjectRenderer renderer) : base(renderer, "Lite Showroom", 1600, 900) {
+        public LiteShowroomWrapper(ForwardKn5ObjectRenderer renderer, string title = "Lite Showroom", int width = 1600, int height = 900) : base(renderer, title, width, height) {
             _renderer = renderer;
             Form.MouseDoubleClick += OnMouseDoubleClick;
         }
 
         private void OnMouseDoubleClick(object sender, MouseEventArgs e) {
             _renderer.AutoAdjustTarget = true;
-        }
-
-        protected override void OnClick() {
-            _renderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
         }
 
         protected virtual void GoToNormalMode() {

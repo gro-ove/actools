@@ -32,6 +32,7 @@ using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using DragDropEffects = System.Windows.DragDropEffects;
 using Path = System.IO.Path;
+using WaitingDialog = AcManager.Controls.Pages.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener {

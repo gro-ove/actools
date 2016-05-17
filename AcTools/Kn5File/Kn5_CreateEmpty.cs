@@ -13,7 +13,6 @@ namespace AcTools.Kn5File {
             var bytes = File.ReadAllBytes(filename);
             Textures[textureName] = new Kn5Texture {
                 Active = true,
-                Filename = textureName,
                 Name = textureName,
                 Length = bytes.Length
             };

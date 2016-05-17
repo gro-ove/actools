@@ -53,7 +53,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         }
 
         public override bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (!mode.HasFlag(SpecialRenderMode.SimpleTransparent) && !mode.HasFlag(SpecialRenderMode.Simple)) return false;
+            if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
 
             Effect.FxMaterial.Set(_material);
             Effect.FxDiffuseMap.SetResource(_txDiffuse);

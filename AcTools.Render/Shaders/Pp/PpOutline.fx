@@ -6,17 +6,16 @@ cbuffer cbPerObject : register(b0) {
 	float4 gScreenSize;
 }
 
+#define THRESHOLD 0.99999
+
 float4 ps_Outline(PS_IN pin) : SV_Target {
 	float val = tex(gDepthMap, pin.Tex);
-	
-	if (val < 0.99) {
-		return 0.0;
-	}
+	if (val < THRESHOLD) return 0.0;
 
 	float result = 0;
 	for (float x = -3.5; x <= 3.5; x++) {
 		for (float y = -3.5; y <= 3.5; y++) {
-			result += tex(gDepthMap, pin.Tex + float2(x, y) * gScreenSize.zw) < 0.99;
+			result += tex(gDepthMap, pin.Tex + float2(x, y) * gScreenSize.zw) < THRESHOLD;
 		}
 	}
 

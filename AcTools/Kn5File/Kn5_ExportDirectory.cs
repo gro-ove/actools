@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace AcTools.Kn5File {
     public partial class Kn5 {
+        [Obsolete]
         public void ExportDirectory(string dir, bool nodesJson = false) {
             Directory.CreateDirectory(dir);
             ExportDirectory_Header(dir);
@@ -21,7 +23,7 @@ namespace AcTools.Kn5File {
             Directory.CreateDirectory(Path.Combine(dir, "texture"));
 
             foreach (var texture in Textures.Values) {
-                File.WriteAllBytes(Path.Combine(dir, "texture", texture.Filename), TexturesData[texture.Filename]);
+                File.WriteAllBytes(Path.Combine(dir, "texture", texture.Name), TexturesData[texture.Name]);
             }
 
             ExportTexturesJson(Path.Combine(dir, "textures.json"));

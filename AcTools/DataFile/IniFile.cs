@@ -12,7 +12,6 @@ using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public class IniFileSection : Dictionary<string, string> {
-        // can I use dynamic here?
         public new dynamic this[string key] {
             get { return ContainsKey(key) ? base[key] : null; }
             set {
@@ -123,9 +122,9 @@ namespace AcTools.DataFile {
             base[key] = value;
         }
 
-        public void Set(string key, IEnumerable<string> value) {
+        public void Set<T>(string key, IEnumerable<T> value) {
             if (value == null) return;
-            Set(key, value.JoinToString(','));
+            Set(key, value.Select(x => x.ToInvariantString()).JoinToString(','));
         }
 
         public void SetId(string key, string value) {
@@ -138,21 +137,21 @@ namespace AcTools.DataFile {
         }
 
         public void Set(string key, int value) {
-            base[key] = value.ToString();
+            base[key] = value.ToString(CultureInfo.InvariantCulture);
         }
 
         public void Set(string key, int? value) {
             if (!value.HasValue) return;
-            base[key] = value.Value.ToString();
+            base[key] = value.Value.ToString(CultureInfo.InvariantCulture);
         }
 
         public void Set(string key, long value) {
-            base[key] = value.ToString();
+            base[key] = value.ToString(CultureInfo.InvariantCulture);
         }
 
         public void Set(string key, long? value) {
             if (!value.HasValue) return;
-            base[key] = value.Value.ToString();
+            base[key] = value.Value.ToString(CultureInfo.InvariantCulture);
         }
 
         public void Set(string key, double value) {

@@ -186,9 +186,9 @@ namespace AcManager.Controls.CustomShowroom {
 
                 try {
                     string formatDescription = null;
-                    if (MagickWrapper.IsSupported) {
+                    if (ImageUtils.IsMagickSupported) {
                         var data = imageData;
-                        imageData = await Task.Run(() => MagickWrapper.LoadAsConventionalBuffer(data, true, out formatDescription));
+                        imageData = await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(data, true, out formatDescription));
                     }
 
                     var image = new BitmapImage();

@@ -196,7 +196,7 @@ namespace AcManager.Pages.Dialogs {
         private AsyncCommand _installCommand;
 
         public AsyncCommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(async o => {
-            using (var waiting = new WaitingDialog()) {
+            using (var waiting = new Controls.Pages.Dialogs.WaitingDialog()) {
                 foreach (var wrapper in Entries.Where(entry => entry.InstallEntry)) {
                     waiting.Title = $@"Installing {wrapper.Entry.Name}…";
                     if (waiting.CancellationToken.IsCancellationRequested) return;

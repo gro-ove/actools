@@ -21,6 +21,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using WaitingDialog = AcManager.Controls.Pages.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedFontPage : ILoadableContent, IParametrizedUriContent {

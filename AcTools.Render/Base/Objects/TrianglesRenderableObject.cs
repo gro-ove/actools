@@ -9,15 +9,17 @@ using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using Buffer = SlimDX.Direct3D11.Buffer;
+using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Base.Objects {
     public class TrianglesRenderableObject<T> : BaseRenderableObject where T : struct, InputLayouts.ILayout {
-        protected bool IsEmpty { get; }
+        protected bool IsEmpty { get; private set; }
+        
+        public T[] Vertices { get; private set; }
 
-        public readonly T[] Vertices;
-        public readonly ushort[] Indices;
+        public ushort[] Indices { get; private set; }
 
-        public int IndicesCount => Indices.Length;
+        public int IndicesCount { get; private set; }
 
         private Buffer _verticesBuffer, _indicesBuffer;
         private VertexBufferBinding _verticesBufferBinding;
@@ -25,8 +27,9 @@ namespace AcTools.Render.Base.Objects {
         public TrianglesRenderableObject(T[] vertices, ushort[] indices) {
             Vertices = vertices;
             Indices = indices;
+            IndicesCount = Indices.Length;
+            IsEmpty = IndicesCount == 0;
 
-            IsEmpty = Vertices.Length == 0;
             if (IsEnabled && IsEmpty) {
                 IsEnabled = false;
             }
@@ -67,7 +70,13 @@ namespace AcTools.Render.Base.Objects {
         }
 
         public override void Dispose() {
-            if (IsEmpty) return;
+            Debug.WriteLine("Disposing: " + TrianglesCount + " triangles");
+
+            Vertices = new T[0];
+            Indices = new ushort[0];
+            IndicesCount = 0;
+            IsEmpty = true;
+            
             DisposeHelper.Dispose(ref _verticesBuffer);
             DisposeHelper.Dispose(ref _indicesBuffer);
         }

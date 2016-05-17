@@ -4,21 +4,22 @@ using System.IO;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class Logging {
-        private static string _filename;
+        public static string Filename { get; private set; }
+
         private static int _entries;
 
         // just for in case
         private const int EntriesLimit = 2000;
 
         public static void Initialize(string filename) {
-            _filename = filename;
-            using (var file = new StreamWriter(_filename, false)) {
+            Filename = filename;
+            using (var file = new StreamWriter(Filename, false)) {
                 file.WriteLine(DateTime.Now + ": " + "initialized");
             }
         }
 
         public static bool IsInitialized() {
-            return _filename != null;
+            return Filename != null;
         }
 
         private static readonly object Locker = new object();
@@ -31,7 +32,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
             try {
                 lock (Locker) {
-                    using (var writer = new StreamWriter(_filename, true)) {
+                    using (var writer = new StreamWriter(Filename, true)) {
                         writer.WriteLine(DateTime.Now + ": " + s);
                     }
                 }

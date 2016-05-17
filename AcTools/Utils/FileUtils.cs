@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -75,7 +76,7 @@ namespace AcTools.Utils {
                                     FileOperationFlags.FOF_WANTNUKEWARNING);
         }
 
-        public static bool MoveToRecycleBin([CanBeNull] params string[] path) {
+        public static bool RecycleSilent([CanBeNull] params string[] path) {
             return DeleteFile(path, FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMATION |
                                     FileOperationFlags.FOF_NOERRORUI | FileOperationFlags.FOF_SILENT);
         }

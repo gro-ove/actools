@@ -51,6 +51,7 @@ namespace AcTools.Render.Base.Shaders {
 		public const uint UseDiffuseAlphaAsMap = 16;
 		public const uint AlphaBlend = 32;
 		public const uint IsAdditive = 64;
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePNTG, InputSignaturePT;
@@ -70,7 +71,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVariable FxMaterial;
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("DeferredGObject"));
+			_b = EffectUtils.Load("DeferredGObject");
+			E = new Effect(device, _b);
 
 			TechStandardDeferred = E.GetTechniqueByName("StandardDeferred");
 			TechStandardForward = E.GetTechniqueByName("StandardForward");
@@ -114,10 +116,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectDeferredGObjectSpecial : IEffectWrapper, IEffectMatricesWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePNTG;
@@ -130,7 +134,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("DeferredGObjectSpecial"));
+			_b = EffectUtils.Load("DeferredGObjectSpecial");
+			E = new Effect(device, _b);
 
 			TechSpecialGlDeferred = E.GetTechniqueByName("SpecialGlDeferred");
 			TechSpecialGlForward = E.GetTechniqueByName("SpecialGlForward");
@@ -152,10 +157,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePNTG.Dispose();
             LayoutPNTG.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectDeferredGSky : IEffectWrapper, IEffectMatricesWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignatureP;
@@ -170,7 +177,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxSkyRange { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("DeferredGSky"));
+			_b = EffectUtils.Load("DeferredGSky");
+			E = new Effect(device, _b);
 
 			TechSkyDeferred = E.GetTechniqueByName("SkyDeferred");
 			TechSkyForward = E.GetTechniqueByName("SkyForward");
@@ -193,6 +201,7 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignatureP.Dispose();
             LayoutP.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
@@ -200,6 +209,7 @@ namespace AcTools.Render.Base.Shaders {
 		public const int NumSplits = 4;
 		public const float SmapSize = 2048.0f;
 		public const float SmapDx = 1.0f / 2048.0f;
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -222,7 +232,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxEyePosW { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("DeferredLight"));
+			_b = EffectUtils.Load("DeferredLight");
+			E = new Effect(device, _b);
 
 			TechPointLight = E.GetTechniqueByName("PointLight");
 			TechPointLight_NoSpec = E.GetTechniqueByName("PointLight_NoSpec");
@@ -262,10 +273,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectDeferredPpSslr : IEffectWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -279,7 +292,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxEyePosW { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("DeferredPpSslr"));
+			_b = EffectUtils.Load("DeferredPpSslr");
+			E = new Effect(device, _b);
 
 			TechHabrahabrVersion = E.GetTechniqueByName("HabrahabrVersion");
 
@@ -304,10 +318,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectDeferredResult : IEffectWrapper, IEffectScreenSizeWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -321,7 +337,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("DeferredResult"));
+			_b = EffectUtils.Load("DeferredResult");
+			E = new Effect(device, _b);
 
 			TechDebug = E.GetTechniqueByName("Debug");
 			TechDebugPost = E.GetTechniqueByName("DebugPost");
@@ -353,10 +370,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectDeferredTransparent : IEffectWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -371,7 +390,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxEyePosW { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("DeferredTransparent"));
+			_b = EffectUtils.Load("DeferredTransparent");
+			E = new Effect(device, _b);
 
 			TechDebug = E.GetTechniqueByName("Debug");
 			TechDebugPost = E.GetTechniqueByName("DebugPost");
@@ -403,6 +423,7 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
@@ -418,6 +439,7 @@ namespace AcTools.Render.Base.Shaders {
 			public static readonly int Stride = Marshal.SizeOf(typeof(Material));
         }
 
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePNT;
@@ -433,7 +455,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVariable FxMaterial;
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("KunosShader"));
+			_b = EffectUtils.Load("KunosShader");
+			E = new Effect(device, _b);
 
 			TechPerPixel = E.GetTechniqueByName("PerPixel");
 
@@ -456,10 +479,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePNT.Dispose();
             LayoutPNT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectPpBasic : IEffectWrapper, IEffectScreenSizeWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -472,7 +497,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("PpBasic"));
+			_b = EffectUtils.Load("PpBasic");
+			E = new Effect(device, _b);
 
 			TechCopy = E.GetTechniqueByName("Copy");
 			TechOverlay = E.GetTechniqueByName("Overlay");
@@ -498,11 +524,13 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectPpBlur : IEffectWrapper {
 		public const int SampleCount = 15;
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -515,7 +543,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxSampleOffsets { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("PpBlur"));
+			_b = EffectUtils.Load("PpBlur");
+			E = new Effect(device, _b);
 
 			TechGaussianBlur = E.GetTechniqueByName("GaussianBlur");
 			TechReflectionGaussianBlur = E.GetTechniqueByName("ReflectionGaussianBlur");
@@ -538,10 +567,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectPpFxaa311 : IEffectWrapper, IEffectScreenSizeWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -554,7 +585,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("PpFxaa311"));
+			_b = EffectUtils.Load("PpFxaa311");
+			E = new Effect(device, _b);
 
 			TechLuma = E.GetTechniqueByName("Luma");
 			TechFxaa = E.GetTechniqueByName("Fxaa");
@@ -576,11 +608,13 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectPpHdr : IEffectWrapper {
 		public static readonly Vector3 LumConvert = new Vector3(0.299f, 0.587f, 0.114f);
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -593,7 +627,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxCropImage { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("PpHdr"));
+			_b = EffectUtils.Load("PpHdr");
+			E = new Effect(device, _b);
 
 			TechDownsampling = E.GetTechniqueByName("Downsampling");
 			TechAdaptation = E.GetTechniqueByName("Adaptation");
@@ -620,10 +655,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectPpOutline : IEffectWrapper, IEffectScreenSizeWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -635,7 +672,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSize { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("PpOutline"));
+			_b = EffectUtils.Load("PpOutline");
+			E = new Effect(device, _b);
 
 			TechOutline = E.GetTechniqueByName("Outline");
 
@@ -655,10 +693,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectPpSmaa : IEffectWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
@@ -671,7 +711,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxScreenSizeSpec { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("PpSmaa"));
+			_b = EffectUtils.Load("PpSmaa");
+			E = new Effect(device, _b);
 
 			TechSmaa = E.GetTechniqueByName("Smaa");
 			TechSmaaB = E.GetTechniqueByName("SmaaB");
@@ -697,6 +738,7 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
@@ -753,6 +795,7 @@ namespace AcTools.Render.Base.Shaders {
 		public const uint IsAdditive = 16;
 		public const uint HasDetailsMap = 4;
 		public const uint IsCarpaint = 32;
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT, InputSignaturePNTG;
@@ -768,7 +811,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVariable FxMaterial, FxReflectiveMaterial, FxMapsMaterial, FxAlphaMaterial, FxNmUvMultMaterial;
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("SimpleMaterial"));
+			_b = EffectUtils.Load("SimpleMaterial");
+			E = new Effect(device, _b);
 
 			TechStandard = E.GetTechniqueByName("Standard");
 			TechAlpha = E.GetTechniqueByName("Alpha");
@@ -816,29 +860,33 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePNTG.Dispose();
             LayoutPNTG.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectSpecialShadow : IEffectWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePT;
         public InputLayout LayoutPT;
 
-		public EffectTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechTemp;
+		public EffectTechnique TechHorizontalShadowBlur, TechVerticalShadowBlur, TechAmbientShadow, TechResult;
 
 		public EffectMatrixVariable FxShadowViewProj { get; private set; }
 		public EffectResourceVariable FxInputMap, FxDepthMap;
-		public EffectScalarVariable FxMultipler, FxCount;
+		public EffectScalarVariable FxMultipler, FxCount, FxPadding;
 		public EffectVectorVariable FxSize { get; private set; }
+		public EffectVectorVariable FxShadowSize { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("SpecialShadow"));
+			_b = EffectUtils.Load("SpecialShadow");
+			E = new Effect(device, _b);
 
 			TechHorizontalShadowBlur = E.GetTechniqueByName("HorizontalShadowBlur");
 			TechVerticalShadowBlur = E.GetTechniqueByName("VerticalShadowBlur");
 			TechAmbientShadow = E.GetTechniqueByName("AmbientShadow");
-			TechTemp = E.GetTechniqueByName("Temp");
+			TechResult = E.GetTechniqueByName("Result");
 
 			for (var i = 0; i < TechHorizontalShadowBlur.Description.PassCount && InputSignaturePT == null; i++) {
 				InputSignaturePT = TechHorizontalShadowBlur.GetPassByIndex(i).Description.Signature;
@@ -851,7 +899,9 @@ namespace AcTools.Render.Base.Shaders {
 			FxDepthMap = E.GetVariableByName("gDepthMap").AsResource();
 			FxMultipler = E.GetVariableByName("gMultipler").AsScalar();
 			FxCount = E.GetVariableByName("gCount").AsScalar();
+			FxPadding = E.GetVariableByName("gPadding").AsScalar();
 			FxSize = E.GetVariableByName("gSize").AsVector();
+			FxShadowSize = E.GetVariableByName("gShadowSize").AsVector();
 		}
 
         public void Dispose() {
@@ -859,10 +909,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePT.Dispose();
             LayoutPT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectSpecialUv : IEffectWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePNTG;
@@ -873,7 +925,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectVectorVariable FxOffset { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("SpecialUv"));
+			_b = EffectUtils.Load("SpecialUv");
+			E = new Effect(device, _b);
 
 			TechMain = E.GetTechniqueByName("Main");
 
@@ -891,10 +944,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePNTG.Dispose();
             LayoutPNTG.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectTestingCube : IEffectWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePC;
@@ -905,7 +960,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("TestingCube"));
+			_b = EffectUtils.Load("TestingCube");
+			E = new Effect(device, _b);
 
 			TechCube = E.GetTechniqueByName("Cube");
 
@@ -923,10 +979,12 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePC.Dispose();
             LayoutPC.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 
 	public class EffectTestingPnt : IEffectWrapper {
+		private ShaderBytecode _b;
 		public Effect E;
 
         public ShaderSignature InputSignaturePNT;
@@ -937,7 +995,8 @@ namespace AcTools.Render.Base.Shaders {
 		public EffectMatrixVariable FxWorldViewProj { get; private set; }
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("TestingPnt"));
+			_b = EffectUtils.Load("TestingPnt");
+			E = new Effect(device, _b);
 
 			TechCube = E.GetTechniqueByName("Cube");
 
@@ -955,6 +1014,7 @@ namespace AcTools.Render.Base.Shaders {
 			InputSignaturePNT.Dispose();
             LayoutPNT.Dispose();
             E.Dispose();
+            _b.Dispose();
         }
 	}
 

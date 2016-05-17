@@ -13,6 +13,7 @@ using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5Specific.Utils;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
@@ -37,6 +38,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public float DiffusionLevel = 0.35f;
         public float SkyBrightnessLevel = 4.0f;
+        public float BodyMultipler = 0.8f;
+        public float WheelMultipler = 0.69f;
+        public float ClippingCoefficient = 10f;
         public float UpDelta = 0.1f;
         public int Iterations = 2000;
         public bool HideWheels = true;
@@ -107,6 +111,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         private void PrepareBuffers(int size, int shadowResolution) {
             Width = size;
             Height = size;
+            Resize();
 
             _shadowBuffer.Resize(DeviceContextHolder, shadowResolution, shadowResolution);
             _shadowViewport = new Viewport(0, 0, _shadowBuffer.Width, _shadowBuffer.Height, 0, 1.0f);
@@ -116,7 +121,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, new Color4(0f, 0f, 0f, 0f));
         }
 
-        private Vector3 _ambientBodyShadowSize;
+        private Vector3 _ambientBodyShadowSize, _shadowSize;
         private Viewport _shadowViewport;
         private TargetResourceDepthTexture _shadowBuffer;
         private CameraOrtho _shadowCamera;
@@ -170,7 +175,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _effect.TechAmbientShadow.DrawAllPasses(DeviceContext, 6);
         }
 
-        protected override void DrawInner() {
+        private void Draw(float multipler, int size, int padding, bool fade) {
             DeviceContext.ClearRenderTargetView(_summBuffer.TargetView, Color.Transparent);
 
             // draw
@@ -215,30 +220,41 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DeviceContext.OutputMerger.SetTargets(RenderTargetView);
             _effect.FxInputMap.SetResource(_summBuffer.View);
             _effect.FxCount.Set(iter / SkyBrightnessLevel);
-            _effect.TechTemp.DrawAllPasses(DeviceContext, 6);
+            _effect.FxMultipler.Set(multipler);
+            _effect.FxPadding.Set(fade ? (float)padding / size : 0f);
+            _effect.FxShadowSize.Set(new Vector2(_shadowSize.X, _shadowSize.Z) * ClippingCoefficient);
+            _effect.TechResult.DrawAllPasses(DeviceContext, 6);
         }
 
         private void SaveResultAs(string outputDirectory, string name, int size, int padding) {
             using (var stream = new MemoryStream()) {
                 Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
                 stream.Position = 0;
-                var image = Image.FromStream(stream);
 
-                var cropRect = new Rectangle(padding, padding, size, size);
-                var target = new Bitmap(size, size);
+                using (var image = Image.FromStream(stream))
+                using (var target = new Bitmap(size, size))
                 using (var g = Graphics.FromImage(target)) {
+                    var cropRect = new Rectangle(padding, padding, size, size);
                     g.DrawImage(image, new Rectangle(0, 0, target.Width, target.Height),
-                            cropRect,
-                            GraphicsUnit.Pixel);
-                }
+                            cropRect, GraphicsUnit.Pixel);
 
-                target.Save(Path.Combine(outputDirectory, name));
+                    var output = Path.Combine(outputDirectory, name);
+                    try {
+                        if (File.Exists(output)) {
+                            FileUtils.Recycle(output);
+                        }
+                    } catch (Exception) {
+                        // ignored
+                    }
+
+                    target.Save(output);
+                }
             }
         }
 
         private void SetBodyShadowCamera() {
-            var shadowSize = _ambientBodyShadowSize * (1f + 2f * BodyPadding / BodySize);
-            var size = Math.Max(shadowSize.X, shadowSize.Z) * 2f;
+            _shadowSize = _ambientBodyShadowSize * (1f + 2f * BodyPadding / BodySize);
+            var size = Math.Max(_shadowSize.X, _shadowSize.Z) * 2f;
             _shadowCamera = new CameraOrtho {
                 Width = size,
                 Height = size,
@@ -246,12 +262,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 FarZ = size + 20f
             };
             _shadowCamera.SetLens(1f);
-            _shadowDestinationTransform = Matrix.Scaling(new Vector3(-shadowSize.X, shadowSize.Y, shadowSize.Z)) * Matrix.RotationY(MathF.PI);
+            _shadowDestinationTransform = Matrix.Scaling(new Vector3(-_shadowSize.X, _shadowSize.Y, _shadowSize.Z)) * Matrix.RotationY(MathF.PI);
         }
 
         private void SetWheelShadowCamera() {
-            var vec = _carHelper.GetWheelShadowSize() * (1f + 2f * WheelPadding / WheelSize);
-            var size = Math.Max(vec.X, vec.Z) * 2f;
+            _shadowSize = _carHelper.GetWheelShadowSize() * (1f + 2f * WheelPadding / WheelSize);
+            var size = Math.Max(_shadowSize.X, _shadowSize.Z) * 2f;
             _shadowCamera = new CameraOrtho {
                 Width = size,
                 Height = size,
@@ -259,7 +275,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 FarZ = size + 20f
             };
             _shadowCamera.SetLens(1f);
-            _shadowDestinationTransform = Matrix.Scaling(new Vector3(-vec.X, vec.Y, vec.Z)) * Matrix.RotationY(MathF.PI);
+            _shadowDestinationTransform = Matrix.Scaling(new Vector3(-_shadowSize.X, _shadowSize.Y, _shadowSize.Z)) * Matrix.RotationY(MathF.PI);
         }
 
         public void Shot(string outputDirectory) {
@@ -270,12 +286,13 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             // body shadow
             PrepareBuffers(BodySize + BodyPadding * 2, 1024);
             SetBodyShadowCamera();
-            Draw();
+            Draw(BodyMultipler, BodySize, BodyPadding, true);
+
+            // return;
             SaveResultAs(outputDirectory, "body_shadow.png", BodySize, BodyPadding);
 
             // wheels shadows
             PrepareBuffers(WheelSize + WheelPadding * 2, 128);
-
             SetWheelShadowCamera();
             _wheelMode = true;
 
@@ -290,7 +307,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 entry.Node.LocalMatrix = entry.Matrix;
                 _scene.UpdateBoundingBox();
 
-                Draw();
+                Draw(WheelMultipler, WheelSize, WheelPadding, false);
                 SaveResultAs(outputDirectory, entry.Filename, WheelSize, WheelPadding);
             }
         }
@@ -307,7 +324,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             DisposeHelper.Dispose(ref _tempBuffer);
             DisposeHelper.Dispose(ref _shadowBuffer);
             DisposeHelper.Dispose(ref _carHelper);
-            _materialsProvider?.DisposeFor(_kn5);
+            DisposeHelper.Dispose(ref _materialsProvider);
+            DisposeHelper.Dispose(ref _texturesProvider);
+            _carNode.Dispose();
+            _scene.Dispose();
             base.Dispose();
         }
     }

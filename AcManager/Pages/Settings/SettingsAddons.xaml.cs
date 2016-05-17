@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Addons;
 using FirstFloor.ModernUI.Presentation;
 
@@ -12,8 +10,8 @@ namespace AcManager.Pages.Settings {
         }
 
         public class AddonsViewModel
-            : NotifyPropertyChanged {
-            public AddonsViewModel (){
+                : NotifyPropertyChanged {
+            public AddonsViewModel() {
                 AppAddonsManager.Instance.UpdateList();
             }
 

@@ -27,8 +27,7 @@ namespace AcTools.Tests {
 
         [TestMethod]
         public void EnsureUniqueTest() {
-            var baseDir = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))) ?? "";
-            var testDir = Path.Combine(baseDir, "test");
+            var testDir = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))) ?? "", "test");
 
             var a = Path.Combine(testDir, "a");
             Assert.AreEqual(a, FileUtils.EnsureUnique(a));

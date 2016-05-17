@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace AcTools.Kn5File {
     internal sealed class Kn5Reader : BinaryReader {
@@ -31,19 +30,19 @@ namespace AcTools.Kn5File {
         }
 
         public float[] ReadSingle2D() {
-            return new []{
+            return new[] {
                 ReadSingle(), ReadSingle()
             };
         }
 
         public float[] ReadSingle3D() {
-            return new []{
+            return new[] {
                 ReadSingle(), ReadSingle(), ReadSingle()
             };
         }
 
         public float[] ReadSingle4D() {
-            return new []{
+            return new[] {
                 ReadSingle(), ReadSingle(),
                 ReadSingle(), ReadSingle()
             };
@@ -52,9 +51,13 @@ namespace AcTools.Kn5File {
         public Kn5NodeClass ReadNodeClass() {
             return (Kn5NodeClass)ReadInt32();
         }
-
+        
+        /// <summary>
+        /// Read 64 bytes as 16 floats.
+        /// </summary>
+        /// <returns></returns>
         public float[] ReadMatrix() {
-            return new []{
+            return new[] {
                 ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
                 ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
                 ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle(),
@@ -72,14 +75,11 @@ namespace AcTools.Kn5File {
         }
 
         public Kn5Texture ReadTexture() {
-            var texture = new Kn5Texture {
+            return new Kn5Texture {
                 Active = ReadInt32() == 1,
                 Name = ReadString(),
                 Length = (int)ReadUInt32()
             };
-
-            texture.Filename = Regex.IsMatch(texture.Name, @"\.\w{3,4}$") ? texture.Name : texture.Name + ".dds";
-            return texture;
         }
 
         public Kn5Material ReadMaterial() {
@@ -126,8 +126,6 @@ namespace AcTools.Kn5File {
                 Children = new List<Kn5Node>(nodeChildren),
                 Active = nodeActive
             };
-            
-            System.Diagnostics.Debug.WriteLine("NODE: {0}, {1} (CHILDREN: {2})", node.Name, BaseStream.Position, node.Children.Capacity);
 
             switch (node.NodeClass) {
                 case Kn5NodeClass.Base:
@@ -141,6 +139,7 @@ namespace AcTools.Kn5File {
             
                     node.Vertices = new Kn5Node.Vertice[ReadUInt32()];
                     for (var i = 0; i < node.Vertices.Length; i++) {
+                        // 44 bytes per vertice
                         node.Vertices[i] = new Kn5Node.Vertice {
                             Co = ReadSingle3D(),
                             Normal = ReadSingle3D(),
@@ -175,30 +174,37 @@ namespace AcTools.Kn5File {
                     for (var i = 0; i < node.Bones.Length; i++) {
                         node.Bones[i] = new Kn5Node.Bone {
                             Name = ReadString(),
-                            BinaryPart = ReadBytes(64)
+                            Transform = ReadMatrix()
                         };
                     }
             
                     node.Vertices = new Kn5Node.Vertice[ReadUInt32()];
+                    node.VerticeWeights = new Kn5Node.VerticeWeight[node.Vertices.Length];
                     for (var i = 0; i < node.Vertices.Length; i++) {
-                        ReadBytes(4); // 1x4(bone id?)
+                        // 76 bytes per vertice
                         node.Vertices[i] = new Kn5Node.Vertice {
                             Co = ReadSingle3D(),
                             Normal = ReadSingle3D(),
                             Uv = ReadSingle2D(),
                             Tangent = ReadSingle3D()
                         };
-                        ReadBytes(28); // 4x4(int?)  3f(bone offset?)
+
+                        node.VerticeWeights[i] = new Kn5Node.VerticeWeight {
+                            Weights = ReadSingle4D(),
+                            Indices = ReadSingle4D()
+                        };
                     }
             
                     node.Indices = new ushort[ReadUInt32()];
                     for (var i = 0; i < node.Indices.Length; i++) {
                         node.Indices[i] = ReadUInt16();
                     }
-            
+
                     node.MaterialId = ReadUInt32();
                     node.Layer = ReadUInt32();
-                    ReadBytes(8); // 2x4(int?)
+                    
+                    ReadBytes(8); // the only mistery left?
+                    node.IsRenderable = true;
                     break;
             }
 
@@ -207,10 +213,9 @@ namespace AcTools.Kn5File {
 
         public void Extract(int length, string filename) {
             var bytes = ReadBytes(length);
-            if (filename != null) {
-                using (var output = File.Create(filename)) {
-                    output.Write(bytes, 0, length);
-                }
+            if (filename == null) return;
+            using (var output = File.Create(filename)) {
+                output.Write(bytes, 0, length);
             }
         }
     }

@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcTools.Utils;
@@ -85,6 +86,8 @@ namespace AcManager.Tools.Managers.Addons {
 
             foreach (var addon in list) {
                 var local = GetById(addon.Id);
+                if (addon.IsHidden && !SettingsHolder.Common.DeveloperMode) continue;
+
                 if (local != null) {
                     List.Remove(local);
                     addon.InstalledVersion = local.InstalledVersion;

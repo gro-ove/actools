@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -94,6 +93,7 @@ namespace AcTools.Kn5File {
             return Nodes.FirstOrDefault(filter);
         }
 
+        [Obsolete]
         public void Export(ExportType type, string filename) {
             switch (type) {
                 case ExportType.Collada:
@@ -109,8 +109,7 @@ namespace AcTools.Kn5File {
                     break;
 
                 case ExportType.FbxWithIni:
-                    ExportFbx(filename);
-                    ExportIni(filename + ".ini", Path.GetFileName(filename));
+                    ExportFbxWithIni(filename);
                     break;
 
                 case ExportType.Directory:
@@ -118,10 +117,11 @@ namespace AcTools.Kn5File {
                     break;
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException();
             }
         }
 
+        [Obsolete]
         public void PrintDebugInformation() {
             Console.WriteLine(@"Version: {0}", Header.Version);
             if (Header.Extra != 0) {

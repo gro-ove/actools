@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Utils;
+using AcTools.Render.Temporary;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Textures {
@@ -26,14 +28,14 @@ namespace AcTools.Render.Kn5Specific.Textures {
             });
         }
 
-        private static readonly Dictionary<string, IOverridedTextureProvider> OverridedProviders =
+        private readonly Dictionary<string, IOverridedTextureProvider> _overridedProviders =
                 new Dictionary<string, IOverridedTextureProvider>();
 
         public void SetOverridedProvider(string filename, IOverridedTextureProvider provider) {
             if (provider == null) {
-                OverridedProviders.Remove(filename);
+                _overridedProviders.Remove(filename);
             } else {
-                OverridedProviders[filename] = provider;
+                _overridedProviders[filename] = provider;
             }
         }
 
@@ -46,7 +48,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         public Task UpdateOverridesForAsync(Kn5 kn5, string textureName, DeviceContextHolder contextHolder) {
             IOverridedTextureProvider provider;
-            if (!OverridedProviders.TryGetValue(kn5.OriginalFilename, out provider)) return Task.Delay(0);
+            if (!_overridedProviders.TryGetValue(kn5.OriginalFilename, out provider)) return Task.Delay(0);
 
             var keyPrefix = kn5.OriginalFilename + "//";
             if (OptionOverrideAsync) {
@@ -68,10 +70,15 @@ namespace AcTools.Render.Kn5Specific.Textures {
                                     .Select(key => key.Value)
                                     .Where(x => textureName == null || string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase))
                                     .OfType<RenderableTexture>()) {
-                var overrided = provider.GetOverridedData(texture.Name);
-                if (overrided != null) {
-                    texture.LoadOverride(overrided, contextHolder.Device);
-                } else {
+                try {
+                    var overrided = provider.GetOverridedData(texture.Name);
+                    if (overrided != null) {
+                        texture.LoadOverride(overrided, contextHolder.Device);
+                    } else {
+                        texture.Override = null;
+                    }
+                } catch (Exception e) {
+                    Logging.Warning("Can't load override texture: " + e);
                     texture.Override = null;
                 }
             }
@@ -84,11 +91,9 @@ namespace AcTools.Render.Kn5Specific.Textures {
         }
 
         public void Dispose() {
-            foreach (var material in _textures.Values) {
-                material.Dispose();
-            }
-            _textures.Clear();
+            _textures.DisposeEverything();
             _kn5Entries.Clear();
+            _overridedProviders.Clear();
         }
 
         public void DisposeFor(Kn5 kn5) {
@@ -114,7 +119,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
             var result = new RenderableTexture(textureName) { Resource = null };
             IOverridedTextureProvider provider;
-            if (OverridedProviders.TryGetValue(kn5Filename, out provider)) {
+            if (_overridedProviders.TryGetValue(kn5Filename, out provider)) {
                 LoadOverrideAsync(result, textureName, provider, contextHolder);
             }
 

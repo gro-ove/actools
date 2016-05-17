@@ -7,7 +7,7 @@ using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Pages.Dialogs {
+namespace AcManager.Controls.Pages.Dialogs {
     public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<AsyncProgressEntry>, IDisposable {
         public static WaitingDialog Create(string reportValue) {
             var w = new WaitingDialog();

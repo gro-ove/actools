@@ -61,13 +61,6 @@ namespace AcManager.Pages.Drive {
             _model.SelectedModeViewModel = (ModeTab.Frame.Content as IQuickDriveModeControl)?.Model;
         }
 
-        private void Label_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            if (e.ClickCount != 1) return;
-
-            var label = (Label)sender;
-            Keyboard.Focus(label.Target);
-        }
-
         private void AssistsMore_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             new AssistsDialog(_model.AssistsViewModel).ShowDialog();
         }
@@ -298,7 +291,11 @@ namespace AcManager.Pages.Drive {
             }
 
             public int TimeMultiplerMinimum => 0;
+
             public int TimeMultiplerMaximum => 360;
+
+            public int TimeMultiplerMaximumLimited => 60;
+
             public int TimeMultipler {
                 get { return _timeMultipler; }
                 set {

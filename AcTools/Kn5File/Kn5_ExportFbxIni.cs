@@ -1,7 +1,7 @@
-﻿using AcTools.Utils;
-using System;
-using System.Globalization;
-using System.Linq;
+﻿using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using AcTools.DataFile;
 
 namespace AcTools.Kn5File {
@@ -18,8 +18,30 @@ namespace AcTools.Kn5File {
             iniFile.Save();
         }
 
-        private void ExportIni_Header(IniFile iniFile) {
-            iniFile["HEADER"]["VERSION"] = "3";
+        public void ExportFbxWithIni(string fbxFilename) {
+            var colladaFilename = fbxFilename + ".dae";
+            ExportCollada(colladaFilename);
+            ConvertColladaToFbx(colladaFilename, fbxFilename);
+            ExportIni(fbxFilename + ".ini", Path.GetFileName(fbxFilename));
+        }
+
+        public async Task ExportFbxWithIniAsync(string fbxFilename, IProgress<string> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+            var colladaFilename = fbxFilename + ".dae";
+
+            progress?.Report("Exporting to Collada format…");
+            await Task.Run(() => ExportCollada(colladaFilename), cancellation);
+            if (cancellation.IsCancellationRequested) return;
+
+            progress?.Report("Convert Collada to FBX…");
+            await Task.Run(() => ConvertColladaToFbx(colladaFilename, fbxFilename), cancellation);
+            if (cancellation.IsCancellationRequested) return;
+
+            progress?.Report("Saving INI-file…");
+            await Task.Run(() => ExportIni(fbxFilename + ".ini", Path.GetFileName(fbxFilename)), cancellation);
+        }
+
+        public void ExportIni_Header(IniFile iniFile) {
+            iniFile["HEADER"].Set("VERSION", 3);
         }
 
         private void ExportIni_Materials(IniFile iniFile) {
@@ -28,27 +50,26 @@ namespace AcTools.Kn5File {
             var materialId = 0;
             foreach (var material in Materials.Values) {
                 var section = iniFile["MATERIAL_" + materialId++];
-                section["NAME"] = material.Name;
-                section["SHADER"] = material.ShaderName;
-                section["ALPHABLEND"] = Convert.ToString((int)material.BlendMode);
-                section["ALPHATEST"] = material.AlphaTested ? "1" : "0";
-                section["DEPTHMODE"] = Convert.ToString((int)material.DepthMode);
-                section["VARCOUNT"] = Convert.ToString(material.ShaderProperties.Length);
+                section.Set("NAME", material.Name);
+                section.Set("SHADER", material.ShaderName);
+                section.Set("ALPHABLEND", (int)material.BlendMode);
+                section.Set("ALPHATEST", material.AlphaTested);
+                section.Set("DEPTHMODE", (int)material.DepthMode);
 
+                section.Set("VARCOUNT", material.ShaderProperties.Length);
                 for (var i = 0; i < material.ShaderProperties.Length; i++) {
-                    section["VAR_" + i + "_NAME"] = material.ShaderProperties[i].Name;
-                    section["VAR_" + i + "_FLOAT1"] = material.ShaderProperties[i].ValueA.ToString(CultureInfo.InvariantCulture);
-                    section["VAR_" + i + "_FLOAT2"] = string.Join(",", material.ShaderProperties[i].ValueB.Select(x => x.ToString(CultureInfo.InvariantCulture)));
-                    section["VAR_" + i + "_FLOAT3"] = string.Join(",", material.ShaderProperties[i].ValueC.Select(x => x.ToString(CultureInfo.InvariantCulture)));
-                    section["VAR_" + i + "_FLOAT4"] = string.Join(",", material.ShaderProperties[i].ValueD.Select(x => x.ToString(CultureInfo.InvariantCulture)));
+                    section.Set("VAR_" + i + "_NAME", material.ShaderProperties[i].Name);
+                    section.Set("VAR_" + i + "_FLOAT1", material.ShaderProperties[i].ValueA);
+                    section.Set("VAR_" + i + "_FLOAT2", material.ShaderProperties[i].ValueB);
+                    section.Set("VAR_" + i + "_FLOAT3", material.ShaderProperties[i].ValueC);
+                    section.Set("VAR_" + i + "_FLOAT4", material.ShaderProperties[i].ValueD);
                 }
                 
-                section["RESCOUNT"] = Convert.ToString(material.TextureMappings.Length);
-
+                section.Set("RESCOUNT", material.TextureMappings.Length);
                 for (var i = 0; i < material.TextureMappings.Length; i++) {
-                    section["RES_" + i + "_NAME"] = material.TextureMappings[i].Name;
-                    section["RES_" + i + "_SLOT"] = Convert.ToString(material.TextureMappings[i].Slot);
-                    section["RES_" + i + "_TEXTURE"] = material.TextureMappings[i].Texture;
+                    section.Set("RES_" + i + "_NAME", material.TextureMappings[i].Name);
+                    section.Set("RES_" + i + "_SLOT", material.TextureMappings[i].Slot);
+                    section.Set("RES_" + i + "_TEXTURE", material.TextureMappings[i].Texture);
                 }
             }
         }
@@ -57,28 +78,35 @@ namespace AcTools.Kn5File {
             ExportIni_Node(iniFile, fbxName, RootNode);
         }
 
-        private void ExportIni_Node(IniFile iniFile, string parentName, Kn5Node node) {
+        private void ExportIni_Node(IniFile iniFile, string parentName, Kn5Node node, int priority = 0) {
             var name = node == RootNode ? parentName : parentName + "_" + node.Name;
 
             var section = iniFile["model_FBX: " + name];
-            section["ACTIVE"] = node.Active ? "1" : "0";
-            section["PRIORITY"] = "0";
+            section.Set("ACTIVE", node.Active);
+            section.Set("PRIORITY", priority);
 
             if (node.NodeClass == Kn5NodeClass.Base) {
-                foreach (var child in node.Children) {
-                    if (node == RootNode && child.NodeClass == Kn5NodeClass.Mesh) { 
-                        ExportIni_TrackNode(iniFile, name, child);
-                    } else { 
-                        ExportIni_Node(iniFile, name, child);
+                if (IsMultiMaterial(node)) {
+                    var p = node.Children.Count;
+                    foreach (var child in node.Children) {
+                        ExportIni_Node(iniFile, name, child, --p);
+                    }
+                } else {
+                    foreach (var child in node.Children) {
+                        if (node == RootNode && child.NodeClass == Kn5NodeClass.Mesh) {
+                            ExportIni_TrackNode(iniFile, name, child);
+                        } else {
+                            ExportIni_Node(iniFile, name, child);
+                        }
                     }
                 }
             } else {
-                section["VISIBLE"] = node.IsVisible ? "1" : "0";
-                section["TRANSPARENT"] = node.IsTransparent ? "1" : "0";
-                section["CAST_SHADOWS"] = node.CastShadows ? "1" : "0";
-                section["LOD_IN"] = node.LodIn.ToString(CultureInfo.InvariantCulture);
-                section["LOD_OUT"] = node.LodOut.ToString(CultureInfo.InvariantCulture);
-                section["RENDERABLE"] = node.IsRenderable ? "1" : "0";
+                section.Set("VISIBLE", node.IsVisible);
+                section.Set("TRANSPARENT", node.IsTransparent);
+                section.Set("CAST_SHADOWS", node.CastShadows);
+                section.Set("LOD_IN", node.LodIn);
+                section.Set("LOD_OUT", node.LodOut);
+                section.Set("RENDERABLE", node.IsRenderable);
             }
         }
 
@@ -86,18 +114,18 @@ namespace AcTools.Kn5File {
             var name = node == RootNode ? parentName : parentName + "_" + node.Name;
 
             var section = iniFile["model_FBX: " + name];
-            section["ACTIVE"] = node.Active ? "1" : "0";
-            section["PRIORITY"] = "0";
+            section.Set("ACTIVE", node.Active);
+            section.Set("PRIORITY", 0);
 
             section = iniFile["model_FBX: " + name + "_" + node.Name];
-            section["ACTIVE"] = "1";
-            section["PRIORITY"] = "0";
-            section["VISIBLE"] = node.IsVisible ? "1" : "0";
-            section["TRANSPARENT"] = node.IsTransparent ? "1" : "0";
-            section["CAST_SHADOWS"] = node.CastShadows ? "1" : "0";
-            section["LOD_IN"] = node.LodIn.ToString(CultureInfo.InvariantCulture);
-            section["LOD_OUT"] = node.LodOut.ToString(CultureInfo.InvariantCulture);
-            section["RENDERABLE"] = node.IsRenderable ? "1" : "0";
+            section.Set("ACTIVE", true);
+            section.Set("PRIORITY", 0);
+            section.Set("VISIBLE", node.IsVisible);
+            section.Set("TRANSPARENT", node.IsTransparent);
+            section.Set("CAST_SHADOWS", node.CastShadows);
+            section.Set("LOD_IN", node.LodIn);
+            section.Set("LOD_OUT", node.LodOut);
+            section.Set("RENDERABLE", node.IsRenderable);
         }
     }
 }

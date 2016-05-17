@@ -20,6 +20,13 @@
                         watermark:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:TextBoxAdvancement.SpecialMode="Positive" />
             </DockPanel>
 
+            <!--cars specific-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Cars:</TextBlock>
+
+            <CheckBox IsChecked="{Binding Holder.ChangeBrandIconAutomatically}">
+                <Label>Change brand's icon automatically</Label>
+            </CheckBox>
+
             <!--showrooms specific-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Showrooms:</TextBlock>
 

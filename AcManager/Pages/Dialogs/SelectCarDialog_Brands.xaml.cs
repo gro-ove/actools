@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -69,17 +70,24 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
+        private class DistinctHelper : IEqualityComparer<CarBrandInformation> {
+            public bool Equals(CarBrandInformation x, CarBrandInformation y) {
+                return string.Equals(x.Name, y.Name, StringComparison.Ordinal);
+            }
+
+            public int GetHashCode(CarBrandInformation obj) {
+                return obj.Name.GetHashCode();
+            }
+        }
+
         private static void InitializeOnce() {
             _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>(
-                SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x))
+                SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x)).Union(from name in ValuesStorage.GetStringList(KeyBrandsCache)
+                                                                                            where _carBrandsInformationList.All(x => x.Name != name)
+                                                                                            select new CarBrandInformation(name)).Distinct(new DistinctHelper())
             );
 
-            _carBrandsInformationList.AddRange(from name in ValuesStorage.GetStringList(KeyBrandsCache)
-                                               where _carBrandsInformationList.All(x => x.Name != name)
-                                               select new CarBrandInformation(name));
-
             SuggestionLists.CarBrandsList.CollectionChanged += CarBrandsList_CollectionChanged;
-
             _brands = (ListCollectionView)CollectionViewSource.GetDefaultView(_carBrandsInformationList);
             _brands.SortDescriptions.Add(new SortDescription());
 

@@ -9,6 +9,8 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
                 return new InvisibleMaterial();
             }
 
+            // return new Kn5MaterialSimpleGl(kn5Filename, kn5Material);
+
             switch (kn5Material.ShaderName) {
                 case "ksBrokenGlass":
                     return new InvisibleMaterial();
@@ -55,6 +57,10 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
 
                 case "ksPerPixelAlpha":
                     return new Kn5MaterialSimpleAlpha(kn5Filename, kn5Material);
+
+                case "ksSkinnedMesh":
+                    // TODO
+                    return new Kn5MaterialSimpleMaps(kn5Filename, kn5Material);
 
                 default:
                     return new Kn5MaterialSimple(kn5Filename, kn5Material);

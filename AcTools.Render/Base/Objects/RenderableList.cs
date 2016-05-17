@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils.Helpers;
 using SlimDX;
 
 namespace AcTools.Render.Base.Objects {
@@ -108,8 +109,12 @@ namespace AcTools.Render.Base.Objects {
             if (!IsEnabled) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
             if (camera != null && (BoundingBox == null || !camera.Visible(BoundingBox.Value))) return;
-            foreach (var child in this.Where(x => x.IsEnabled)) {
-                child.Draw(contextHolder, camera, mode);
+
+            for (var i = 0; i < Count; i++) {
+                var child = this[i];
+                if (child.IsEnabled) {
+                    child.Draw(contextHolder, camera, mode);
+                }
             }
         }
 
@@ -117,16 +122,17 @@ namespace AcTools.Render.Base.Objects {
             if (!IsEnabled || !filter(this)) return;
             if (mode == SpecialRenderMode.Reflection && !IsReflectable) return;
             if (camera != null && (BoundingBox == null || !camera.Visible(BoundingBox.Value))) return;
-            foreach (var child in this.Where(x => x.IsEnabled)) {
-                child.Draw(contextHolder, camera, mode, filter);
+
+            for (var i = 0; i < Count; i++) {
+                var child = this[i];
+                if (child.IsEnabled) {
+                    child.Draw(contextHolder, camera, mode, filter);
+                }
             }
         }
 
         public void Dispose() {
-            foreach (var child in this) {
-                child.Dispose();
-            }
-            Clear();
+            this.DisposeEverything();
         }
     }
 }

@@ -36,7 +36,7 @@ namespace AcTools.Render.Base {
         private SpriteRenderer _sprite;
 
         [CanBeNull]
-        protected SpriteRenderer Sprite => _sprite != null || FeatureLevel < FeatureLevel.Level_10_0 ? _sprite :
+        protected SpriteRenderer Sprite => !UseSprite || _sprite != null || FeatureLevel < FeatureLevel.Level_10_0 ? _sprite :
                 (_sprite = new SpriteRenderer(Device));
 
         public bool SpriteInitialized => _sprite != null;
@@ -83,15 +83,18 @@ namespace AcTools.Render.Base {
         private float _previousElapsed;
 
         protected BaseRenderer() {
+#if DEBUG
             Configuration.EnableObjectTracking = false;
-            Configuration.ThrowOnShaderCompileError = true;
+#endif
         }
+
+        public bool UseMsaa { get; set; }
+
+        public bool UseSprite { get; set; } = true;
 
         protected bool Initialized { get; private set; }
 
-        protected int MsaaQuality { get; private set; }
-
-        protected virtual SampleDescription SampleDescription => new SampleDescription(1, 0);
+        public SampleDescription SampleDescription { get; private set; } = new SampleDescription(1, 0);
 
         protected abstract FeatureLevel FeatureLevel { get; }
    
@@ -106,7 +109,11 @@ namespace AcTools.Render.Base {
                 throw new Exception($"Direct3D Feature {FeatureLevel} unsupported");
             }
 
-            MsaaQuality = device.CheckMultisampleQualityLevels(Format.R8G8B8A8_UNorm, 4);
+            if (UseMsaa) {
+                var msaaQuality = device.CheckMultisampleQualityLevels(Format.R8G8B8A8_UNorm, 4);
+                SampleDescription = new SampleDescription(4, msaaQuality - 1);
+            }
+
             return device;
         }
 
@@ -118,7 +125,6 @@ namespace AcTools.Render.Base {
 
             _deviceContextHolder = new DeviceContextHolder(InitializeDevice());
             InitializeInner();
-
             Initialized = true;
         }
 
@@ -133,7 +139,6 @@ namespace AcTools.Render.Base {
             _sharedHolder = true;
             _deviceContextHolder = existingHolder;
             InitializeInner();
-
             Initialized = true;
         }
 
@@ -142,8 +147,10 @@ namespace AcTools.Render.Base {
         /// </summary>
         public void Initialize(IntPtr outputHandle) {
             Debug.Assert(Initialized == false);
-            
-            InitializeDevice().Dispose();
+
+            if (UseMsaa) {
+                InitializeDevice().Dispose();
+            }
 
             _swapChainDescription = new SwapChainDescription {
                 BufferCount = 2,

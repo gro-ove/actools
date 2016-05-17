@@ -1,13 +1,21 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 
 namespace AcTools.Kn5File {
     public class Kn5Material {
-        public string Name, ShaderName;
-        public Kn5MaterialBlendMode BlendMode;
-        public bool AlphaTested;
-        public Kn5MaterialDepthMode DepthMode;
-        public ShaderProperty[] ShaderProperties;
-        public TextureMapping[] TextureMappings;
+        public string Name { get; set; }
+
+        public string ShaderName { get; set; }
+        
+        public Kn5MaterialBlendMode BlendMode { get; set; }
+
+        public bool AlphaTested { get; set; }
+
+        public Kn5MaterialDepthMode DepthMode { get; set; }
+
+        public ShaderProperty[] ShaderProperties { get; set; }
+
+        public TextureMapping[] TextureMappings { get; set; }
 
         public class ShaderProperty {
             public string Name;
@@ -32,14 +40,24 @@ namespace AcTools.Kn5File {
     }
 
     public enum Kn5MaterialBlendMode {
+        [Description("Opaque")]
         Opaque = 0,
+
+        [Description("Alpha Blend")]
         AlphaBlend = 1,
+
+        [Description("Alpha To Coverage")]
         AlphaToCoverage = 2
     }
 
     public enum Kn5MaterialDepthMode {
+        [Description("Normal")]
         DepthNormal = 0,
+
+        [Description("Read Only")]
         DepthNoWrite = 1,
+
+        [Description("Off")]
         DepthOff = 2
     }
 }

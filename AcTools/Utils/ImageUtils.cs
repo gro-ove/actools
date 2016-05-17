@@ -5,20 +5,36 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using ImageMagick;
 
 namespace AcTools.Utils {
     public static partial class ImageUtils {
+        private static bool? _isMagickSupported;
+
+        public static bool IsMagickSupported => _isMagickSupported ?? (_isMagickSupported = CheckIfMagickSupported()).Value;
+
+        private static bool CheckIfMagickSupported() {
+            try {
+                TestImageMagick();
+                return true;
+            } catch (Exception) {
+                return false;
+            }
+        }
+
         private static string _imageMagickAssemblyFilename;
 
         public static bool IsMagickAsseblyLoaded => _imageMagickAssemblyFilename != null;
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static string TestImageMagick() {
             return "loaded, version: " + MagickNET.Version;
         }
 
         public static void LoadImageMagickAssembly(string dllFilename) {
             if (IsMagickAsseblyLoaded) return;
+            _isMagickSupported = null;
 
             try {
                 _imageMagickAssemblyFilename = dllFilename;
@@ -30,12 +46,50 @@ namespace AcTools.Utils {
         }
 
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
-            return args.Name.Contains("Magick.NET") ? Assembly.LoadFrom(_imageMagickAssemblyFilename) : null;
+            return args.Name.Contains("Magick.NET") && _imageMagickAssemblyFilename != null ? Assembly.LoadFrom(_imageMagickAssemblyFilename) : null;
         }
 
         public static void UnloadImageMagickAssembly() {
             if (!IsMagickAsseblyLoaded) return;
+
+            _isMagickSupported = null;
             AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static Image LoadFromFileAsImage(string filename) {
+            using (var image = new MagickImage(filename)) {
+                return image.ToBitmap();
+            }
+        }
+
+        private const MagickFormat CommonFormat = MagickFormat.Bmp;
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static byte[] LoadFromFileAsConventionalBuffer(string filename) {
+            using (var image = new MagickImage(filename)) {
+                return image.ToByteArray(CommonFormat);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static byte[] LoadAsConventionalBuffer(byte[] data) {
+            using (var image = new MagickImage(data)) {
+                return image.ToByteArray(CommonFormat);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public static byte[] LoadAsConventionalBuffer(byte[] data, bool noAlpha, out string formatDescription) {
+            using (var image = new MagickImage(data)) {
+                formatDescription = image.CompressionMethod.ToString();
+
+                if (noAlpha) {
+                    image.HasAlpha = false;
+                }
+
+                return image.ToByteArray(CommonFormat);
+            }
         }
 
         private const int ApplyPreviewsWidth = 1022;

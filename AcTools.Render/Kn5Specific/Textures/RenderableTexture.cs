@@ -2,7 +2,9 @@
 using System.IO;
 using System.Threading.Tasks;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using SlimDX.Direct3D11;
+using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public class RenderableTexture : IRenderableTexture {
@@ -12,6 +14,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
 
         public RenderableTexture(string name = null) {
             Name = name;
+            Debug.WriteLine("[RenderableTexture] CREATED: " + name);
         }
 
         private ShaderResourceView _resource;
@@ -83,11 +86,11 @@ namespace AcTools.Render.Kn5Specific.Textures {
             }
         }
 
-        public async Task LoadOverrideAsync(byte[] data, Device device) {
+        public async Task LoadOverrideAsync([CanBeNull] byte[] data, Device device) {
             var id = ++_overrideId;
 
             try {
-                var resource = await Task.Run(() => ShaderResourceView.FromMemory(device, data));
+                var resource = data == null ? null : await Task.Run(() => ShaderResourceView.FromMemory(device, data));
                 if (id != _overrideId) return;
                 Override = resource;
             } catch (Exception) {
@@ -99,6 +102,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         public void Dispose() {
             DisposeHelper.Dispose(ref _override);
             DisposeHelper.Dispose(ref _resource);
+            Debug.WriteLine("[RenderableTexture] DISPOSED: " + Name);
             IsDisposed = true;
         }
     }

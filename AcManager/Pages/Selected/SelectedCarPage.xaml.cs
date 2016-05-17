@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +15,7 @@ using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -26,7 +29,23 @@ using MenuItem = System.Windows.Controls.MenuItem;
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarPage : ILoadableContent, IParametrizedUriContent {
         public class SelectedCarPageViewModel : SelectedAcObjectViewModel<CarObject> {
-            public SelectedCarPageViewModel([NotNull] CarObject acObject) : base(acObject) { }
+            public SelectedCarPageViewModel([NotNull] CarObject acObject) : base(acObject) {
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);
+            }
+
+            private void Handler(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+                if (propertyChangedEventArgs.PropertyName == nameof(CarObject.Brand) && SettingsHolder.Content.ChangeBrandIconAutomatically) {
+                    var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, SelectedObject.Brand + ".png");
+                    if (entry.Exists) {
+                        try {
+                            FileUtils.RecycleSilent(SelectedObject.BrandBadge);
+                            File.Copy(entry.Filename, SelectedObject.BrandBadge);
+                        } catch (Exception e) {
+                            Logging.Warning("Can't change brand badge: " + e);
+                        }
+                    }
+                }
+            }
 
             #region Open In Showroom
             private RelayCommand _openInShowroomCommand;
@@ -161,7 +180,9 @@ namespace AcManager.Pages.Selected {
             private RelayCommand _manageSkinsCommand;
 
             public RelayCommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new RelayCommand(o => {
-                new CarSkinsDialog(SelectedObject).ShowDialogWithoutBlocking();
+                new CarSkinsDialog(SelectedObject) {
+                    ShowInTaskbar = false
+                }.ShowDialogWithoutBlocking();
             }));
         }
 

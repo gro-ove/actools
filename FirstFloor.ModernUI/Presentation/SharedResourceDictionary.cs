@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class SharedResourceDictionary : ResourceDictionary {
@@ -12,7 +8,7 @@ namespace FirstFloor.ModernUI.Presentation {
         /// Internal cache of loaded dictionaries 
         /// </summary>
         public static Dictionary<Uri, ResourceDictionary> SharedDictionaries =
-            new Dictionary<Uri, ResourceDictionary>();
+                new Dictionary<Uri, ResourceDictionary>();
 
         /// <summary>
         /// Local member of the source uri
@@ -27,16 +23,17 @@ namespace FirstFloor.ModernUI.Presentation {
             set {
                 _sourceUri = value;
 
-                if (!SharedDictionaries.ContainsKey(value)) {
+                ResourceDictionary result;
+                if (SharedDictionaries.TryGetValue(value, out result)) {
+                    // If the dictionary is already loaded, get it from the cache
+                    MergedDictionaries.Add(result);
+                } else {
                     // If the dictionary is not yet loaded, load it by setting
                     // the source of the base class
                     base.Source = value;
 
                     // add it to the cache
                     SharedDictionaries.Add(value, this);
-                } else {
-                    // If the dictionary is already loaded, get it from the cache
-                    MergedDictionaries.Add(SharedDictionaries[value]);
                 }
             }
         }

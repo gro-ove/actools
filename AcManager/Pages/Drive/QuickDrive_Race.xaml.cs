@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
@@ -26,6 +27,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using NLua;
 using StringBasedFilter;
+using WaitingDialog = AcManager.Controls.Pages.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Race : IQuickDriveModeControl {
@@ -51,20 +53,25 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            public int LapsNumberMaximum => SettingsHolder.Drive.QuickDriveExpandBounds ? 999 : 40;
+
+            public int LapsNumberMaximumLimited => Math.Min(LapsNumberMaximum, 50);
+
+            public int AiLevelMinimum => SettingsHolder.Drive.QuickDriveExpandBounds ? 30 : 70;
+
+            public int AiLevelMinimumLimited => Math.Max(AiLevelMinimum, 50);
+
             private int _lapsNumber;
 
             public int LapsNumber {
                 get { return _lapsNumber; }
                 set {
                     if (Equals(value, _lapsNumber)) return;
-                    _lapsNumber = MathUtils.Clamp(value, 1, 40);
+                    _lapsNumber = MathUtils.Clamp(value, 1, LapsNumberMaximum);
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(LapsNumberString));
                     SaveLater();
                 }
             }
-
-            public string LapsNumberString => LapsNumber + LocalizationHelper.MultiplyForm(LapsNumber, @" lap", @" laps");
 
             private int _opponentsNumber;
             private int _unclampedOpponentsNumber;
@@ -79,7 +86,6 @@ namespace AcManager.Pages.Drive {
                     _opponentsNumber = MathUtils.Clamp(value, 1, OpponentsNumberLimit);
 
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(OpponentsNumberString));
                     OnPropertyChanged(nameof(StartingPositionLimit));
 
                     if (_last || StartingPosition > StartingPositionLimit) {
@@ -104,14 +110,12 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public string OpponentsNumberString => OpponentsNumber + LocalizationHelper.MultiplyForm(OpponentsNumber, @" opponent", @" opponents");
-
             private int _aiLevel;
 
             public int AiLevel {
                 get { return _aiLevel; }
                 set {
-                    value = MathUtils.Clamp(value, 50, 100);
+                    value = MathUtils.Clamp(value, AiLevelMinimum, 100);
                     if (Equals(value, _aiLevel)) return;
                     _aiLevel = value;
                     OnPropertyChanged();
@@ -130,7 +134,7 @@ namespace AcManager.Pages.Drive {
                 set {
                     if (AiLevelFixed) return;
 
-                    value = MathUtils.Clamp(value, 50, 100);
+                    value = MathUtils.Clamp(value, AiLevelMinimum, 100);
                     if (Equals(value, _aiLevelMin)) return;
                     _aiLevelMin = value;
                     OnPropertyChanged();

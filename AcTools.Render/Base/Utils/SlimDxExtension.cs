@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using SlimDX;
 using SlimDX.Direct3D11;
+using Debug = System.Diagnostics.Debug;
 
 namespace AcTools.Render.Base.Utils {
     public static class SlimDxExtension {
@@ -169,7 +170,7 @@ namespace AcTools.Render.Base.Utils {
             }
         }
 
-        public static void SetOld(EffectVariable variable, object o, int len) {
+        public static void Set_(EffectVariable variable, object o, int len) {
             var arr = new byte[len];
             var ptr = Marshal.AllocHGlobal(len);
             Marshal.StructureToPtr(o, ptr, true);
@@ -182,7 +183,13 @@ namespace AcTools.Render.Base.Utils {
             if (o == null) {
                 // TODO (?)
             } else {
-                var cobj = Cache.ContainsKey(len) ? Cache[len] : (Cache[len] = new CacheObject(len));
+                CacheObject cobj;
+                if (!Cache.TryGetValue(len, out cobj)) {
+                    cobj = new CacheObject(len);
+                    Cache[len] = cobj;
+                    Debug.WriteLine("CACHED MEMORY AREA CREATED: " + len);
+                }
+
                 Marshal.StructureToPtr(o, cobj.Pointer, true);
                 Marshal.Copy(cobj.Pointer, CacheObject.Array, 0, len);
                 variable.SetRawValue(cobj.Data, len);

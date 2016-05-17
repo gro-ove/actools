@@ -17,6 +17,9 @@ namespace AcManager.Tools.Filters {
                 case "errors":
                 case "haserrors":
                     return nameof(AcCommonObject.HasErrors);
+
+                case "changed":
+                    return nameof(AcCommonObject.Changed);
             }
 
             return null;
@@ -38,6 +41,9 @@ namespace AcManager.Tools.Filters {
                 case "errors":
                 case "haserrors":
                     return value.Test(obj.HasErrors);
+
+                case "changed":
+                    return value.Test(obj.Changed);
             }
 
             return AcObjectTester.Instance.Test(obj, key, value);

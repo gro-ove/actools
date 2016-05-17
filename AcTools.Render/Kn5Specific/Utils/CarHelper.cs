@@ -11,6 +11,7 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
+using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -87,15 +88,21 @@ namespace AcTools.Render.Kn5Specific.Utils {
             var skinId = splitted[0];
             var textureName = splitted[1];
             if (!string.Equals(CurrentSkin, skinId, StringComparison.OrdinalIgnoreCase)) return;
-            
+
             var texturesProvider = _holder.Get<TexturesProvider>();
             var texture = texturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
                     string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase));
-            if (texture == null) {
-                if (!MagickWrapper.IsSupported || !LiveReload) return;
+
+            var i = 5;
+            byte[] bytes = null;
+            var magickMode = texture == null;
+            if (magickMode) {
+                if (!ImageUtils.IsMagickSupported) return;
+                Logging.Write("UpdateOverrideLater(): " + filename);
 
                 var ext = MagickExtensions.FirstOrDefault(x => textureName.EndsWith(x, StringComparison.OrdinalIgnoreCase));
                 if (ext != null) {
+                    Logging.Write("UpdateOverrideLater(): ext: " + ext);
                     textureName = textureName.ApartFromLast(ext);
                     texture = texturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
                             string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase)) ??
@@ -103,28 +110,45 @@ namespace AcTools.Render.Kn5Specific.Utils {
                                     x.Name?.StartsWith(textureName, StringComparison.OrdinalIgnoreCase) == true &&
                                             x.Name.ElementAtOrDefault(textureName.Length) == '.');
                 }
-
-                if (texture == null) return;
-
-                await Task.Delay(100);
-                var bytes = await LoadAllBytesAsync(filename);
-                var converted = await Task.Run(() => MagickWrapper.LoadAsConventionalBuffer(bytes));
-                await texture.LoadOverrideAsync(converted, _holder.Device);
-                SkinTextureUpdated?.Invoke(this, EventArgs.Empty);
-            } else {
-                await Task.Delay(100);
-                await texture.LoadOverrideAsync(filename, _holder.Device);
-                SkinTextureUpdated?.Invoke(this, EventArgs.Empty);
             }
+
+            if (texture == null) return;
+
+            while (i-- > 0) {
+                try {
+                    await Task.Delay(200);
+                    bytes = await FileUtils.ReadAllBytesAsync(filename);
+
+                    Logging.Write("UpdateOverrideLater(): loaded " + bytes?.Length + " bytes");
+
+                    if (magickMode) {
+                        var b = bytes;
+                        bytes = await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(b));
+                        Logging.Write("UpdateOverrideLater(): converted " + bytes?.Length + " bytes");
+                    }
+                } catch (Exception e) {
+                    Logging.Warning("UpdateOverrideLater(): " + e);
+                }
+            }
+
+            await texture.LoadOverrideAsync(bytes, _holder.Device);
+            SkinTextureUpdated?.Invoke(this, EventArgs.Empty);
         }
 
+        private bool _reloading;
+
         private async void ReloadSkinsLater(string selectSkin = null) {
+            if (_reloading) return;
+            _reloading = true;
+
             await Task.Delay(100);
             ReloadSkins(selectSkin);
-            
+
             var texturesProvider = _holder.Get<TexturesProvider>();
             await texturesProvider.UpdateOverridesForAsync(MainKn5, _holder);
             SkinTextureUpdated?.Invoke(this, EventArgs.Empty);
+
+            _reloading = false;
         }
 
         private void Watcher_Changed(object sender, FileSystemEventArgs e) {
@@ -133,7 +157,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
         }
 
         private void Watcher_Created(object sender, FileSystemEventArgs e) {
-            if (!LiveReload) return; 
+            if (!LiveReload) return;
 
             var splitted = FileUtils.GetRelativePath(e.FullPath, SkinsDirectory).Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             if (splitted.Length == 1) {
@@ -170,7 +194,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
             }
         }
 
-        private bool _liveReload;
+        private bool _liveReload = true;
 
         public bool LiveReload {
             get { return _liveReload; }
@@ -218,26 +242,16 @@ namespace AcTools.Render.Kn5Specific.Utils {
             texturesProvider.UpdateOverridesForAsync(MainKn5, contextHolder);
         }
 
-        public string GetOverridedFilename(string name) {
-            if (CurrentSkin == null) return null;
-
-            var filename = Path.Combine(SkinsDirectory, CurrentSkin, name);
-            return File.Exists(filename) ? filename : null;
-        }
-
-        private static async Task<byte[]> LoadAllBytesAsync(string filename) {
-            using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (var memory = new MemoryStream()) {
-                await stream.CopyToAsync(memory);
-                return memory.ToArray();
-            }
+        private string GetOverridedFilename(string name) {
+            return CurrentSkin == null ? null : Path.Combine(SkinsDirectory, CurrentSkin, name);
         }
 
         public byte[] GetOverridedData(string name) {
+            Logging.Write("GetOverridedData(): " + name);
             var filename = GetOverridedFilename(name);
             if (filename == null) return null;
 
-            if (MagickWrapper.IsSupported) {
+            if (ImageUtils.IsMagickSupported && LiveReload) {
                 foreach (var ext in MagickExtensions.Where(x => !filename.EndsWith(x, StringComparison.OrdinalIgnoreCase))) {
                     var candidate = filename + ext;
                     byte[] bytes = null;
@@ -251,71 +265,104 @@ namespace AcTools.Render.Kn5Specific.Utils {
                     }
 
                     if (bytes != null) {
-                        return MagickWrapper.LoadAsConventionalBuffer(bytes);
+                        Logging.Write("  candidate: " + candidate);
+                        Logging.Write("  found: " + bytes.Length + " bytes");
+                        return ImageUtils.LoadAsConventionalBuffer(bytes);
                     }
                 }
             }
 
-            return File.ReadAllBytes(filename);
+            return File.Exists(filename) ? File.ReadAllBytes(filename) : null;
         }
 
         async Task<byte[]> IOverridedTextureProvider.GetOverridedDataAsync(string name) {
             var filename = GetOverridedFilename(name);
             if (filename == null) return null;
-            
-            if (MagickWrapper.IsSupported) {
+
+            Logging.Write("GetOverridedDataAsync(): " + name);
+            if (ImageUtils.IsMagickSupported && LiveReload) {
                 foreach (var ext in MagickExtensions.Where(x => !filename.EndsWith(x, StringComparison.OrdinalIgnoreCase))) {
                     var candidate = filename + ext;
                     byte[] bytes = null;
                     if (File.Exists(candidate)) {
-                        bytes = await LoadAllBytesAsync(candidate);
+                        bytes = await FileUtils.ReadAllBytesAsync(candidate);
                     } else {
                         candidate = filename.ApartFromLast(Path.GetExtension(filename)) + ext;
                         if (File.Exists(candidate)) {
-                            bytes = await LoadAllBytesAsync(candidate);
+                            bytes = await FileUtils.ReadAllBytesAsync(candidate);
                         }
                     }
 
                     if (bytes != null) {
-                        return await Task.Run(() => MagickWrapper.LoadAsConventionalBuffer(bytes));
+                        Logging.Write("  candidate: " + candidate);
+                        Logging.Write("  found: " + bytes.Length + " bytes");
+                        return await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(bytes));
                     }
                 }
             }
 
-            return await LoadAllBytesAsync(filename);
+            return File.Exists(filename) ? await FileUtils.ReadAllBytesAsync(filename) : null;
         }
 
-        private IRenderableObject LoadWheelAmbientShadow(Kn5RenderableList main, string nodeName, string textureName, float shadowsHeight) {
+        private IRenderableObject LoadWheelAmbientShadow(Kn5RenderableList main, string nodeName, string textureName) {
             var node = main.GetDummyByName(nodeName);
             if (node == null) return null;
 
             var wheel = node.Matrix.GetTranslationVector();
-            wheel.Y = shadowsHeight;
+            wheel.Y = _shadowsHeight;
 
             var filename = Path.Combine(RootDirectory, textureName);
             return new AmbientShadow(filename, Matrix.Scaling(GetWheelShadowSize()) * Matrix.RotationY(MathF.PI) *
                     Matrix.Translation(wheel));
         }
-        
-        private IRenderableObject LoadBodyAmbientShadow(float shadowsHeight) {
+
+        private Vector3 _ambientShadowSize;
+
+        public Vector3 AmbientShadowSize {
+            get { return _ambientShadowSize; }
+            set {
+                if (Equals(value, _ambientShadowSize)) return;
+                _ambientShadowSize = value;
+
+                if (AmbientShadowNode != null) {
+                    AmbientShadowNode.Transform = Matrix.Scaling(AmbientShadowSize) * Matrix.RotationY(MathF.PI) *
+                            Matrix.Translation(0f, _shadowsHeight, 0f);
+                }
+            }
+        }
+
+        public void FitAmbientShadowSize(Kn5RenderableList node) {
+            if (!node.BoundingBox.HasValue) return;
+            var size = node.BoundingBox.Value;
+            AmbientShadowSize = new Vector3(Math.Max(-size.Minimum.X, size.Maximum.X) * 1.1f, 1.0f, Math.Max(-size.Minimum.Z, size.Maximum.Z) * 1.1f);
+        }
+
+        public void ResetAmbientShadowSize() {
             var iniFile = Data.GetIniFile("ambient_shadows.ini");
-            var ambientBodyShadowSize = new Vector3(
+            AmbientShadowSize = new Vector3(
                     (float)iniFile["SETTINGS"].GetDouble("WIDTH", 1d), 1.0f,
                     (float)iniFile["SETTINGS"].GetDouble("LENGTH", 1d));
+        }
 
+        public AmbientShadow AmbientShadowNode { get; private set; }
+
+        private float _shadowsHeight;
+
+        private IRenderableObject LoadBodyAmbientShadow() {
             var filename = Path.Combine(RootDirectory, "body_shadow.png");
-            return new AmbientShadow(filename, Matrix.Scaling(ambientBodyShadowSize) * Matrix.RotationY(MathF.PI) *
-                    Matrix.Translation(0f, shadowsHeight, 0f));
+            AmbientShadowNode = new AmbientShadow(filename, Matrix.Identity);
+            ResetAmbientShadowSize();
+            return AmbientShadowNode;
         }
 
         public IEnumerable<IRenderableObject> LoadAmbientShadows(Kn5RenderableList node, float shadowsHeight = 0.01f) {
-            if (Data.IsEmpty) return new IRenderableObject[0];
-            return new[] {
-                LoadBodyAmbientShadow(shadowsHeight),
-                LoadWheelAmbientShadow(node, "WHEEL_LF", "tyre_0_shadow.png", shadowsHeight),
-                LoadWheelAmbientShadow(node, "WHEEL_RF", "tyre_1_shadow.png", shadowsHeight),
-                LoadWheelAmbientShadow(node, "WHEEL_LR", "tyre_2_shadow.png", shadowsHeight),
-                LoadWheelAmbientShadow(node, "WHEEL_RR", "tyre_3_shadow.png", shadowsHeight)
+            _shadowsHeight = 0.01f;
+            return Data.IsEmpty ? new IRenderableObject[0] : new[] {
+                LoadBodyAmbientShadow(),
+                LoadWheelAmbientShadow(node, "WHEEL_LF", "tyre_0_shadow.png"),
+                LoadWheelAmbientShadow(node, "WHEEL_RF", "tyre_1_shadow.png"),
+                LoadWheelAmbientShadow(node, "WHEEL_LR", "tyre_2_shadow.png"),
+                LoadWheelAmbientShadow(node, "WHEEL_RR", "tyre_3_shadow.png")
             }.Where(x => x != null);
         }
 

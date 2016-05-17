@@ -52,7 +52,6 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             Effect.FxDetailsMap.SetResource(_txDetails);
             Effect.FxDetailsNormalMap.SetResource(_txDetailsNormal);
             Effect.FxMapsMap.SetResource(_txMaps);
-
             return true;
         }
 

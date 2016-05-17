@@ -1,4 +1,5 @@
-﻿using AcTools.Render.Base;
+﻿using System.Diagnostics;
+using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Shaders;
@@ -27,12 +28,16 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         }
 
         public bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.Simple) return false;
+            if (mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
 
             _effect.FxDiffuseMap.SetResource(_txDiffuse);
             contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutPT;
-            contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.TransparentBlendState;
-            contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.LessEqualReadOnlyDepthState;
+
+            if (mode != SpecialRenderMode.Outline) {
+                contextHolder.DeviceContext.OutputMerger.BlendState = contextHolder.TransparentBlendState;
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.LessEqualReadOnlyDepthState;
+            }
+
             return true;
         }
 
@@ -50,6 +55,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         public bool IsBlending => false;
 
         public void Dispose() {
+            Debug.WriteLine("AMBIENT SHADOW MATERIAL DISPOSED");
             DisposeHelper.Dispose(ref _txDiffuse);
         }
     }

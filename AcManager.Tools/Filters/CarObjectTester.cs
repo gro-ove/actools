@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 
@@ -10,6 +12,7 @@ namespace AcManager.Tools.Filters {
             switch (key) {
                 case "b":
                 case "brand":
+                case "newbrand":
                     return nameof(CarObject.Brand);
 
                 case "class":
@@ -53,11 +56,19 @@ namespace AcManager.Tools.Filters {
             return InnerParameterFromKey(key) ?? AcJsonObjectTester.InnerParameterFromKey(key);
         }
 
+        private List<string> _list;
+
         public bool Test(CarObject obj, string key, ITestEntry value) {
             switch (key) {
                 case "b":
                 case "brand":
                     return obj.Brand != null && value.Test(obj.Brand);
+
+                case "newbrand":
+                    if (_list == null) {
+                        _list = FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges).Select(x => x.Name).ToList();
+                    }
+                    return obj.Brand != null && value.Test(!_list.Contains(obj.Brand));
 
                 case "class":
                     return obj.CarClass != null && value.Test(obj.CarClass);

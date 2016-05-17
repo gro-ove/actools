@@ -43,6 +43,10 @@ namespace AcTools.Utils {
             return value < minimum ? minimum : value > maximum ? maximum : value;
         }
 
+        public static float[] MatrixInverse(float[] matrix) {
+            return Matrix.Create(matrix).Invert().ToArray();
+        }
+
         /// <summary>
         /// Round(0.342, 0.05) → 0.35
         /// </summary>

@@ -12,12 +12,10 @@
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
                 <Label>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock>
-                            <Run>Game starter</Run><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                    Command="{Binding NavigateCommand}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run>:</Run>
-                        </TextBlock>
-                    </StackPanel>
+                    <TextBlock>
+                        <Run>Game starter</Run><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
+                            Command="{Binding NavigateCommand}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run>:</Run>
+                    </TextBlock>
                 </Label>
                 <ComboBox ItemsSource="{Binding Holder.StarterTypes}" SelectedItem="{Binding Holder.SelectedStarterType}" DisplayMemberPath="DisplayName">
                     <ComboBox.ItemContainerStyle>
@@ -112,6 +110,12 @@
                 <Label>Replays name format</Label>
                 <TextBox Text="{Binding Holder.ReplaysNameFormat}" watermark:WatermarkService.Watermark="{Binding Holder.DefaultReplaysNameFormat}" />
             </DockPanel>
+
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Quick Drive:</TextBlock>
+
+            <CheckBox IsChecked="{Binding Holder.QuickDriveExpandBounds}" ToolTip="Allows to set up to 999 laps and stuff, use on your own risk.">
+                <Label>Expand bounds</Label>
+            </CheckBox>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Kunos career:</TextBlock>
 

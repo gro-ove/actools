@@ -29,7 +29,7 @@ namespace AcTools.Render.Wrapper {
         public readonly BaseRenderer Renderer;
         public readonly RenderForm Form;
 
-        private bool _paused;
+        protected bool Paused { get; private set; }
 
         public BaseFormWrapper(BaseRenderer renderer, string title, int width, int height) {
             _title = title;
@@ -59,11 +59,11 @@ namespace AcTools.Render.Wrapper {
         protected virtual void OnTick(object sender, TickEventArgs args) {}
 
         protected virtual void OnGotFocus(object sender, EventArgs e) {
-            _paused = false;
+            Paused = false;
         }
 
         protected virtual void OnLostFocus(object sender, EventArgs e) {
-            _paused = true;
+            Paused = true;
         }
 
         public void Run() {
@@ -100,14 +100,17 @@ namespace AcTools.Render.Wrapper {
             set {
                 if (Equals(value, _fullscreenEnabled)) return;
                 _fullscreenEnabled = value;
+                OnFullscreenChanged();
+            }
+        }
 
-                if (_fullscreenEnabled) {
-                    Form.FormBorderStyle = FormBorderStyle.None;
-                    Form.WindowState = FormWindowState.Maximized;
-                } else {
-                    Form.FormBorderStyle = FormBorderStyle.Sizable;
-                    Form.WindowState = FormWindowState.Normal;
-                }
+        protected virtual void OnFullscreenChanged() {
+            if (_fullscreenEnabled) {
+                Form.FormBorderStyle = FormBorderStyle.None;
+                Form.WindowState = FormWindowState.Maximized;
+            } else {
+                Form.FormBorderStyle = FormBorderStyle.Sizable;
+                Form.WindowState = FormWindowState.Normal;
             }
         }
 
@@ -115,9 +118,9 @@ namespace AcTools.Render.Wrapper {
             FullscreenEnabled = !FullscreenEnabled;
         }
 
-        private void OnRender() {
+        protected virtual void OnRender() {
             Form.Text = $"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
-            if (_paused && !Renderer.IsDirty) return;
+            if (Paused && !Renderer.IsDirty) return;
             Renderer.Draw();
         }
 

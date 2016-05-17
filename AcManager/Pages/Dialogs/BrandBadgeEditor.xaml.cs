@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -10,6 +9,7 @@ using System.Windows.Input;
 using AcManager.Annotations;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Lists;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils;
@@ -18,18 +18,10 @@ using Microsoft.Win32;
 
 namespace AcManager.Pages.Dialogs {
     public partial class BrandBadgeEditor : INotifyPropertyChanged {
-        private ObservableCollection<FilesStorage.ContentEntry> _icons;
         private FilesStorage.ContentEntry _selected;
         public CarObject Car { get; }
 
-        public ObservableCollection<FilesStorage.ContentEntry> Icons {
-            get { return _icons; }
-            private set {
-                if (Equals(value, _icons)) return;
-                _icons = value;
-                OnPropertyChanged();
-            }
-        }
+        public BetterObservableCollection<FilesStorage.ContentEntry> Icons { get; }
 
         public FilesStorage.ContentEntry Selected {
             get { return _selected; }
@@ -55,7 +47,8 @@ namespace AcManager.Pages.Dialogs {
             Closing += BrandBadgeEditor_Closing;
 
             FilesStorage.Instance.Watcher(ContentCategory.BrandBadges).Update += BrandBadgeEditor_Update;
-            UpdateIcons();
+            Icons = new BetterObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges));
+            UpdateSelected();
         }
 
         private void BrandBadgeEditor_Closing(object sender, CancelEventArgs e) {
@@ -76,12 +69,11 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void BrandBadgeEditor_Update(object sender, EventArgs e) {
-            UpdateIcons();
+            Icons.ReplaceEverythingBy(FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges));
+            UpdateSelected();
         }
 
-        private void UpdateIcons() {
-            Icons = new ObservableCollection<FilesStorage.ContentEntry>(FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges));
-
+        private void UpdateSelected() {
             if (Icons.Contains(Selected)) return;
             var brandLower = Car.Brand?.ToLower(); // TODO: Weird bug?
             Selected = Icons.FirstOrDefault(x => x.Name.ToLower() == brandLower) ?? (Icons.Count > 0 ? Icons[0] : null);

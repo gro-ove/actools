@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
@@ -36,11 +37,25 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
+        private static bool IsSameDirectories(string a, string b) {
+            try {
+                var f = Directory.GetFiles(a);
+                var r = Directory.GetFiles(b).Select(Path.GetFileName).ToList();
+                return f.Length == r.Count && f.Select(Path.GetFileName).All(x => r.Contains(x));
+            } catch (Exception) {
+                return false;
+            }
+        }
+
         private static BaseFormWrapper _last;
 
         public static async Task StartLiteAsync(string kn5, string skinId = null) {
             _last?.Stop();
             _last = null;
+
+            ForwardKn5ObjectRenderer renderer = null;
+            Logging.Write("Custom Showroom: Magick.NET IsSupported=" + ImageUtils.IsMagickSupported);
+            AcTools.Render.Temporary.Logging.Initialize(Logging.Filename, true);
 
             try {
                 var carDirectory = Path.GetDirectoryName(kn5);
@@ -48,36 +63,40 @@ namespace AcManager.Controls.CustomShowroom {
                     carDirectory = Path.GetDirectoryName(Path.GetDirectoryName(carDirectory));
                 }
 
-                using (var renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(kn5, carDirectory))) {
-                    renderer.UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa;
-                    renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
-                    renderer.UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom;
+                var carObject = CarsManager.Instance.GetById(Path.GetFileName(carDirectory) ?? "");
+                var toolboxMode = IsSameDirectories(carObject?.Location, carDirectory);
 
-                    var carObject = CarsManager.Instance.GetById(Path.GetFileName(carDirectory) ?? "");
-                    if (string.Equals(carObject?.Location, carDirectory, StringComparison.OrdinalIgnoreCase)) {
-                        var wrapper = new LiteShowroomWrapperWithTools(renderer, carObject, skinId);
-                        _last = wrapper;
+                LiteShowroomWrapper wrapper;
 
-                        wrapper.Form.Icon = Icon;
-                        wrapper.Run();
-                    } else {
-                        Logging.Warning($"Can't find CarObject for “{carDirectory}”");
-                        Logging.Warning($"Found location: “{carObject?.Location ?? "NULL"}”");
+                if (toolboxMode) {
+                    renderer = await Task.Run(() => new ToolsKn5ObjectRenderer(kn5, carDirectory));
+                    wrapper = new LiteShowroomWrapperWithTools((ToolsKn5ObjectRenderer)renderer, carObject, skinId);
+                } else {
+                    Logging.Warning($"Can't find CarObject for “{carDirectory}”");
+                    Logging.Warning($"Found location: “{carObject?.Location ?? "NULL"}”");
 
-                        if (skinId != null) {
-                            renderer.SelectSkin(skinId);
-                        }
+                    renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(kn5, carDirectory));
+                    wrapper = new LiteShowroomWrapper(renderer);
 
-                        var wrapper = new LiteShowroomWrapper(renderer);
-                        _last = wrapper;
-
-                        wrapper.Form.Icon = Icon;
-                        wrapper.Run();
+                    if (skinId != null) {
+                        renderer.SelectSkin(skinId);
                     }
                 }
+
+                renderer.UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa;
+                renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
+                renderer.UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom;
+
+                _last = wrapper;
+
+                wrapper.Form.Icon = Icon;
+                wrapper.Run();
+                
+                GC.Collect();
             } catch (Exception e) {
                 NonfatalError.Notify("Can't start Custom Showroom", e);
             } finally {
+                renderer?.Dispose();
                 _last = null;
             }
         }

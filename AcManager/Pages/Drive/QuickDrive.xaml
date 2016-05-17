@@ -67,15 +67,10 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="0">
+                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="0"
+                        IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Time: " Target="{x:Reference TimeTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" Padding="8 0 0 0" />
-                            <TextBox Name="TimeTextBox" Text="{Binding DisplayTime, UpdateSourceTrigger=PropertyChanged}"
-                                    Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                    mui:TextBoxAdvancement.SpecialMode="Time"
-                                    IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}" />
-                        </StackPanel>
+                        <controls:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0">Time</controls:ValueLabel>
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="Actual time is out of range, closest value is used" HorizontalAlignment="Right" />
@@ -94,37 +89,28 @@
                     </CheckBox.ContextMenu>
                 </CheckBox>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="1">
+                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="1"
+                        IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
                         <TextBlock Text="Weather:" Style="{StaticResource LabelWithPadding}" />
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 HorizontalAlignment="Right">
                             <Path.ToolTip>
-                                <ToolTip Content="{Binding RealWeather.Description}" ContentStringFormat="Actual weather ({0}) isn't supported" />
+                                <ToolTip Content="{Binding RealWeather.Description}" ContentStringFormat="{}Actual weather ({0}) isn't supported" />
                             </Path.ToolTip>
                         </Path>
                     </Grid>
-                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}"
-                            IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}" />
+                    <ComboBox Margin="4 0 4 0" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}" />
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 0" Grid.Row="1" Grid.Column="1">
-                    <Grid Margin="0 0 0 4">
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel.ToolTip>
-                                <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="Road temperature: {0:F1}°" />
-                            </StackPanel.ToolTip>
-
-                            <Label Content="Temperature: " Target="{x:Reference TemperatureTextBox}" Padding="8 0 0 0"
-                                    MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                            <TextBox Name="TemperatureTextBox" Text="{Binding Temperature, StringFormat='\{0:F1\}', UpdateSourceTrigger=PropertyChanged}"
-                                    Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                    IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}"
-                                    mui:TextBoxAdvancement.SpecialMode="Number" />
-                            <Label Content="°" Target="{x:Reference TemperatureTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        </StackPanel>
-                    </Grid>
+                <StackPanel Orientation="Vertical" Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
+                        IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
+                    <controls:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number" Postfix=" °C">Temperature
+                        <controls:ValueLabel.ToolTip>
+                            <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{}Road temperature: {0:F1} °C" />
+                        </controls:ValueLabel.ToolTip>
+                    </controls:ValueLabel>
                     <Grid Margin="0 0 0 4">
                         <Grid.ToolTip>
                             <Grid>
@@ -147,7 +133,7 @@
                                     <TextBlock Style="{StaticResource Small}" Text="Actual temperature:" Margin="0 0 0 12" />
                                     <TextBlock Grid.Row="1" Style="{StaticResource Heading2}"
                                             Text="{Binding RealWeather.Description, Converter={StaticResource ToTitleConverter}}" />
-                                    <TextBlock Grid.Row="2" Style="{StaticResource Heading1}" Text="{Binding RealWeather.Temperature, StringFormat='\{0\} °C'}"
+                                    <TextBlock Grid.Row="2" Style="{StaticResource Heading1}" Text="{Binding RealWeather.Temperature, StringFormat='{}{0} °C'}"
                                             Margin="8" />
 
                                     <Image Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Source="{Binding RealWeather.Icon, IsAsync=True}" MaxWidth="36"
@@ -158,8 +144,7 @@
                         </Grid.ToolTip>
 
                         <Slider Minimum="{Binding TemperatureMinimum}" Maximum="{Binding TemperatureMaximum}" Value="{Binding Temperature}"
-                                Name="TemperatureSlider" IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}"
-                                TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" />
+                                Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 -8" Height="16">
                             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                     Visibility="{Binding IsTemperatureClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -174,17 +159,8 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2">
-                    <Grid Margin="0 0 0 4">
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Time Multipler: " Target="{x:Reference TimeMultiplerTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
-                                    Padding="8 0 0 0" />
-                            <TextBox Name="TimeMultiplerTextBox" Text="{Binding TimeMultipler, UpdateSourceTrigger=PropertyChanged}"
-                                    Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                    mui:TextBoxAdvancement.SpecialMode="Integer" />
-                            <Label Content="x" Target="{x:Reference TimeMultiplerTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        </StackPanel>
-                    </Grid>
-                    <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximum}" Value="{Binding TimeMultipler}" Margin="0 0 0 4"
+                    <controls:ValueLabel Value="{Binding TimeMultipler}" Postfix="×">Time multipler</controls:ValueLabel>
+                    <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}" Margin="0 0 0 4"
                             Name="TimeMultiplerSlider" TickFrequency="60" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
             </Grid>

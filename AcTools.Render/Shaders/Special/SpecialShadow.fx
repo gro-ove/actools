@@ -6,6 +6,9 @@ cbuffer cbPerFrame {
 	float4 gSize;
 	float gMultipler;
 	float gCount;
+
+	float gPadding;
+	float2 gShadowSize;
 	
 	matrix gShadowViewProj;
 };
@@ -97,15 +100,19 @@ technique10 AmbientShadow {
 	}
 }
 
-float4 ps_Temp(PS_IN pin) : SV_Target{
-	float v = 0.8 * (1 - saturate(tex(pin.Tex).x / gCount));
+float4 ps_Result(PS_IN pin) : SV_Target {
+	float dx = saturate(((pin.Tex.x < 0.5 ? pin.Tex.x : 1 - pin.Tex.x) - gPadding) * gShadowSize.x);
+	float dy = saturate(((pin.Tex.y < 0.5 ? pin.Tex.y : 1 - pin.Tex.y) - gPadding) * gShadowSize.y);
+
+	float c = 1 - saturate(tex(pin.Tex).x / gCount);
+	float v = gMultipler * c * dx * dy;
 	return float4(v, v, v, 1.0);
 }
 
-technique10 Temp {
+technique10 Result {
 	pass P0 {
 		SetVertexShader(CompileShader(vs_4_0, vs_main()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_4_0, ps_Temp()));
+		SetPixelShader(CompileShader(ps_4_0, ps_Result()));
 	}
 }

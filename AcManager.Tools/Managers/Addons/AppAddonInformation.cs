@@ -17,6 +17,9 @@ namespace AcManager.Tools.Managers.Addons {
         [JsonProperty(PropertyName = "name")]
         private string _name;
 
+        [JsonProperty(PropertyName = "hidden")]
+        private bool _hidden;
+
         [JsonProperty(PropertyName = "description")]
         private string _description;
 
@@ -91,6 +94,15 @@ namespace AcManager.Tools.Managers.Addons {
             set {
                 if (value == _description) return;
                 _description = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsHidden {
+            get { return _hidden; }
+            set {
+                if (Equals(value, _hidden)) return;
+                _hidden = value;
                 OnPropertyChanged();
             }
         }

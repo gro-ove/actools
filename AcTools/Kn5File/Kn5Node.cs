@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -16,6 +17,7 @@ namespace AcTools.Kn5File {
         public bool CastShadows, IsVisible, IsTransparent, IsRenderable;
         public Bone[] Bones;
         public Vertice[] Vertices;
+        public VerticeWeight[] VerticeWeights;
         public ushort[] Indices;
         public uint MaterialId, Layer;
         public float LodIn, LodOut;
@@ -24,14 +26,23 @@ namespace AcTools.Kn5File {
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Vertice {
-            public float[] Co, Normal, Uv;
-            public float[] Tangent;
+            public float[] Co, Normal, Uv, Tangent;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct VerticeWeight {
+            public float[] Weights;
+
+            /// <summary>
+            /// IDs of bones. "-1" if there is no binding!
+            /// </summary>
+            public float[] Indices;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Bone {
             public string Name;
-            public byte[] BinaryPart;
+            public float[] Transform;
         }
 
         internal Kn5Node() { }
@@ -56,7 +67,7 @@ namespace AcTools.Kn5File {
                 Name = name,
                 Active = true,
                 Children = new List<Kn5Node>(),
-                Transform = new [] { 
+                Transform = new [] {
                     1.0f, 0.0f, 0.0f, 0.0f,
                     0.0f, 1.0f, 0.0f, 0.0f,
                     0.0f, 0.0f, 1.0f, 0.0f,
@@ -71,8 +82,13 @@ namespace AcTools.Kn5File {
     }
 
     public enum Kn5NodeClass {
+        [Description("Dummy")]
         Base = 1,
+
+        [Description("Mesh")]
         Mesh = 2,
+
+        [Description("Skinned Mesh")]
         SkinnedMesh = 3
     }
 }

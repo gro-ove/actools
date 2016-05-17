@@ -304,6 +304,15 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            public bool QuickDriveExpandBounds {
+                get { return ValuesStorage.GetBool("Settings.DriveSettings.ExpandBounds", false); }
+                set {
+                    if (Equals(value, QuickDriveExpandBounds)) return;
+                    ValuesStorage.Set("Settings.DriveSettings.ExpandBounds", value);
+                    OnPropertyChanged();
+                }
+            }
+
             public bool KunosCareerUserAiLevel {
                 get { return ValuesStorage.GetBool("Settings.DriveSettings.KunosCareerUserAiLevel", false); }
                 set {
@@ -334,6 +343,15 @@ namespace AcManager.Tools.Helpers {
                     value = value < 1 ? 1 : value;
                     if (Equals(value, LoadingConcurrency)) return;
                     ValuesStorage.Set("Settings.ContentSettings.LoadingConcurrency", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool ChangeBrandIconAutomatically {
+                get { return ValuesStorage.GetBool("Settings.ContentSettings.ChangeBrandIconAutomatically", true); }
+                set {
+                    if (Equals(value, ChangeBrandIconAutomatically)) return;
+                    ValuesStorage.Set("Settings.ContentSettings.ChangeBrandIconAutomatically", value);
                     OnPropertyChanged();
                 }
             }

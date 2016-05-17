@@ -30,11 +30,11 @@ namespace AcTools.Kn5File {
             TexturesData = new Dictionary<string,byte[]>(array.Length);
 
             foreach (var texture in array) {
-                var data = File.ReadAllBytes(Path.Combine(dir, "texture", texture.Filename));
+                var data = File.ReadAllBytes(Path.Combine(dir, "texture", texture.Name));
                 texture.Length = data.Length;
 
                 Textures[texture.Name] = texture;
-                TexturesData[texture.Filename] = data;
+                TexturesData[texture.Name] = data;
             }
         }
 

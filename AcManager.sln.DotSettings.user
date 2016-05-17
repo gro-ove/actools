@@ -1,0 +1,14 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=36F3CF0E_002D1754_002D4853_002D95F6_002D6C9FBD2C0D05_002Fd_003APages_002Fd_003ADrive_002Ff_003AOnline_002Examl/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=36F3CF0E_002D1754_002D4853_002D95F6_002D6C9FBD2C0D05_002Fd_003APages_002Fd_003ADrive_002Ff_003AOnline_005FSelectedServerPage_002Examl/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=36F3CF0E_002D1754_002D4853_002D95F6_002D6C9FBD2C0D05_002Fd_003APages_002Fd_003ADrive_002Ff_003AQuickDrive_002Examl/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=36F3CF0E_002D1754_002D4853_002D95F6_002D6C9FBD2C0D05_002Fd_003APages_002Fd_003ASettings_002Ff_003ASettingsDrive_002Examl/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=B1D477C5_002DF639_002D4043_002DB8A6_002D82EA950F9890_002Fd_003AAssets_002Ff_003ASettingsSpecific_002Examl/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=B1D477C5_002DF639_002D4043_002DB8A6_002D82EA950F9890_002Fd_003AThemes_002Ff_003AUserPresetsControl_002Examl/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=B1D477C5_002DF639_002D4043_002DB8A6_002D82EA950F9890_002Fd_003AThemes_002Ff_003AUserPresetsControl_005FMenuAsComboBox_002Examl/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/AnalysisEnabled/@EntryValue">VISIBLE_FILES</s:String>
+	<s:Boolean x:Key="/Default/Housekeeping/Bookmarks/NumberedBookmarks/=Bookmark9/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Housekeeping/Bookmarks/NumberedBookmarks/=Bookmark9/Coords/@EntryValue">(Doc Ln 25 Col 19)</s:String>
+	<s:String x:Key="/Default/Housekeeping/Bookmarks/NumberedBookmarks/=Bookmark9/FileId/@EntryValue">55B65FB4-92CB-42EF-B4BF-F287810986E1/d:Processes/f:Game_StartProperties.cs</s:String>
+	<s:String x:Key="/Default/Housekeeping/Bookmarks/NumberedBookmarks/=Bookmark9/Owner/@EntryValue">NumberedBookmarkManager</s:String>
+	<s:String x:Key="/Default/Profiling/ConfigurationKey/@EntryValue">Sampling</s:String></wpf:ResourceDictionary>

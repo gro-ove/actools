@@ -130,6 +130,10 @@ namespace AcManager.Controls.ViewModels {
             if (_userChange) {
                 SaveCurrentKey(obj.Value.Id);
             }
+
+            if (_testMeLater != null) {
+                RefreshFilter(_testMeLater);
+            }
         }
 
         protected bool FilterTest(AcPlaceholderNew o) {
@@ -156,7 +160,16 @@ namespace AcManager.Controls.ViewModels {
             _oldNumber = newNumber;
         }
 
+        private AcItemWrapper _testMeLater;
+
         private void RefreshFilter(AcPlaceholderNew obj) {
+            if (CurrentItem.Value == obj) {
+                _testMeLater = CurrentItem;
+                return;
+            }
+
+            _testMeLater = null;
+
             var contains = MainList.OfType<AcItemWrapper>().Any(x => x.Value == obj);
             var newValue = FilterTest(obj);
 
@@ -166,6 +179,13 @@ namespace AcManager.Controls.ViewModels {
         }
 
         private void RefreshFilter(AcItemWrapper obj) {
+            if (CurrentItem == obj) {
+                _testMeLater = CurrentItem;
+                return;
+            }
+
+            _testMeLater = null;
+
             var contains = MainList.OfType<AcItemWrapper>().Contains(obj);
             var newValue = FilterTest(obj);
 

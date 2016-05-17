@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
@@ -82,10 +81,6 @@ namespace AcTools.Render.Forward {
                 OnPropertyChanged();
             }
         }
-
-        public bool UseMsaa;
-
-        protected override SampleDescription SampleDescription => UseMsaa ? base.SampleDescription : new SampleDescription(1, 0);
 
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
@@ -199,7 +194,7 @@ namespace AcTools.Render.Forward {
         }
 
         protected sealed override void DrawSprites() {
-            if (Sprite == null) throw new NotSupportedException();
+            if (Sprite == null) return;
             DrawSpritesInner();
             Sprite.Flush();
         }
@@ -207,12 +202,11 @@ namespace AcTools.Render.Forward {
         protected virtual void DrawSpritesInner() {}
 
         public override void Dispose() {
-            base.Dispose();
-            
             DisposeHelper.Dispose(ref _wireframeRasterizerState);
             DisposeHelper.Dispose(ref _buffer);
             DisposeHelper.Dispose(ref _buffer1);
             DisposeHelper.Dispose(ref _buffer2);
+            base.Dispose();
         }
     }
 }

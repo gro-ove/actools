@@ -10,7 +10,7 @@
                 
                 writer.Write(Textures.Count);
                 foreach (var texture in Textures.Values) {
-                    var data = TexturesData[texture.Filename];
+                    var data = TexturesData[texture.Name];
                     texture.Length = data.Length;
                     writer.Write(texture);
                     writer.Write(data);

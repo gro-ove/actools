@@ -3,12 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using AcManager.Tools.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Wrapper;
 using FirstFloor.ModernUI.Helpers;
+using SlimDX;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
 namespace AcManager.Controls.CustomShowroom {
@@ -16,9 +18,9 @@ namespace AcManager.Controls.CustomShowroom {
         private LiteShowroomTools _tools;
         private bool _visibleTools = true;
 
-        public new ForwardKn5ObjectRenderer Kn5ObjectRenderer => (ForwardKn5ObjectRenderer)Renderer;
+        public new ToolsKn5ObjectRenderer Kn5ObjectRenderer => (ToolsKn5ObjectRenderer)Renderer;
 
-        public LiteShowroomWrapperWithTools(ForwardKn5ObjectRenderer renderer, CarObject car, string skinId) : base(renderer) {
+        public LiteShowroomWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId) : base(renderer, car.DisplayName) {
             GoToNormalMode();
 
             Form.Closed += OnClosed;
@@ -27,6 +29,7 @@ namespace AcManager.Controls.CustomShowroom {
             Form.Move += OnMove;
 
             _tools = new LiteShowroomTools(renderer, car, skinId) { Owner = null };
+            ElementHost.EnableModelessKeyboardInterop(_tools);
             _tools.Show();
 
             UpdatePosition();
@@ -41,57 +44,93 @@ namespace AcManager.Controls.CustomShowroom {
             Form.Load += OnLoad;
         }
 
+        protected override void OnClick() {
+            base.OnClick();
+            Kn5ObjectRenderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
+        }
+
+        private bool _switchingInProgress;
+
+        private const string KeyNormalMaximized = "_LiteShowroomWrapperWithTools.NormalMaximized";
+        private const string KeyNormalFullscreen = "_LiteShowroomWrapperWithTools.NormalFullscreen";
         private const string KeyNormalSize = "_LiteShowroomWrapperWithTools.NormalSize";
         private const string KeyNormalPos = "_LiteShowroomWrapperWithTools.NormalPos";
 
         protected sealed override void GoToNormalMode() {
-            var area = Screen.PrimaryScreen.WorkingArea;
-            var size = ValuesStorage.GetPoint(KeyNormalSize, new Point(1600, 900));
-            var pos = ValuesStorage.GetPoint(KeyNormalPos, new Point((area.Width - size.X) / 2, (area.Height - size.Y) / 2));
+            _switchingInProgress = true;
 
-            Form.Width = MathF.Clamp((int)size.X, 320, area.Width);
-            Form.Height = MathF.Clamp((int)size.Y, 200, area.Height);
-            Form.Top = MathF.Clamp((int)pos.Y, 0, area.Height - Form.Height);
-            Form.Left = MathF.Clamp((int)pos.X, 0, area.Width - Form.Width);
+            try {
+                var area = Screen.PrimaryScreen.WorkingArea;
+                var size = ValuesStorage.GetPoint(KeyNormalSize, new Point(1600, 900));
+                var pos = ValuesStorage.GetPoint(KeyNormalPos, new Point((area.Width - size.X) / 2, (area.Height - size.Y) / 2));
 
-            Form.FormBorderStyle = FormBorderStyle.Sizable;
-            Form.TopMost = false;
+                Form.Width = MathF.Clamp((int)size.X, 320, area.Width);
+                Form.Height = MathF.Clamp((int)size.Y, 200, area.Height);
+                Form.Top = MathF.Clamp((int)pos.Y, 0, area.Height - Form.Height);
+                Form.Left = MathF.Clamp((int)pos.X, 0, area.Width - Form.Width);
 
-            Renderer.Width = Form.ClientSize.Width;
-            Renderer.Height = Form.ClientSize.Height;
+                Form.WindowState = ValuesStorage.GetBool(KeyNormalMaximized) ? FormWindowState.Maximized : FormWindowState.Normal;
+                Form.FormBorderStyle = FormBorderStyle.Sizable;
+                Form.TopMost = false;
+                FullscreenEnabled = ValuesStorage.GetBool(KeyNormalFullscreen);
 
-            UpdateVisibility(true);
+                Renderer.Width = Form.ClientSize.Width;
+                Renderer.Height = Form.ClientSize.Height;
+
+                UpdateVisibility(true);
+            } finally {
+                _switchingInProgress = false;
+            }
         }
 
         private const string KeyToolSize = "_LiteShowroomWrapperWithTools.ToolSize";
         private const string KeyToolPos = "_LiteShowroomWrapperWithTools.ToolPos";
 
         protected override void GoToToolMode() {
-            var area = Screen.PrimaryScreen.WorkingArea;
-            var size = ValuesStorage.GetPoint(KeyToolSize, new Point(400, 240));
-            var pos = ValuesStorage.GetPoint(KeyToolPos, new Point(80, Screen.PrimaryScreen.WorkingArea.Height - 300));
+            _switchingInProgress = true;
 
-            Form.Width = MathF.Clamp((int)size.X, 320, area.Width);
-            Form.Height = MathF.Clamp((int)size.Y, 200, area.Height);
-            Form.Top = MathF.Clamp((int)pos.Y, 0, area.Height - Form.Height);
-            Form.Left = MathF.Clamp((int)pos.X, 0, area.Width - Form.Width);
+            try {
+                var area = Screen.PrimaryScreen.WorkingArea;
+                var size = ValuesStorage.GetPoint(KeyToolSize, new Point(400, 240));
+                var pos = ValuesStorage.GetPoint(KeyToolPos, new Point(80, Screen.PrimaryScreen.WorkingArea.Height - 300));
 
-            Form.FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Form.TopMost = true;
+                FullscreenEnabled = false;
+                Form.WindowState = FormWindowState.Normal;
+                Form.Width = MathF.Clamp((int)size.X, 320, area.Width);
+                Form.Height = MathF.Clamp((int)size.Y, 200, area.Height);
+                Form.Top = MathF.Clamp((int)pos.Y, 0, area.Height - Form.Height);
+                Form.Left = MathF.Clamp((int)pos.X, 0, area.Width - Form.Width);
 
-            Renderer.Width = Form.ClientSize.Width;
-            Renderer.Height = Form.ClientSize.Height;
+                Form.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+                Form.TopMost = true;
 
-            UpdateVisibility(true);
+                Renderer.Width = Form.ClientSize.Width;
+                Renderer.Height = Form.ClientSize.Height;
+
+                UpdateVisibility(true);
+            } finally {
+                _switchingInProgress = false;
+            }
         }
 
         private void Save() {
+            if (_switchingInProgress) return;
+
             if (EditMode) {
                 ValuesStorage.Set(KeyToolSize, new Point(Form.Width, Form.Height));
                 ValuesStorage.Set(KeyToolPos, new Point(Form.Left, Form.Top));
             } else {
-                ValuesStorage.Set(KeyNormalSize, new Point(Form.Width, Form.Height));
-                ValuesStorage.Set(KeyNormalPos, new Point(Form.Left, Form.Top));
+                ValuesStorage.Set(KeyNormalFullscreen, FullscreenEnabled);
+
+                if (FullscreenEnabled) {
+                    ValuesStorage.Set(KeyNormalMaximized, false);
+                } else {
+                    ValuesStorage.Set(KeyNormalMaximized, Form.WindowState == FormWindowState.Maximized);
+                    if (Form.WindowState == FormWindowState.Normal) {
+                        ValuesStorage.Set(KeyNormalSize, new Point(Form.Width, Form.Height));
+                        ValuesStorage.Set(KeyNormalPos, new Point(Form.Left, Form.Top));
+                    }
+                }
             }
         }
 
@@ -207,6 +246,17 @@ namespace AcManager.Controls.CustomShowroom {
             Save();
         }
 
+        protected override void OnFullscreenChanged() {
+            base.OnFullscreenChanged();
+            UpdatePosition();
+            Save();
+        }
+
+        protected override void OnRender() {
+            if (Paused && !_tools.IsActive && !Renderer.IsDirty) return;
+            Renderer.Draw();
+        }
+
         private void Tools_Activated(object sender, EventArgs e) {
             UpdateVisibility(Form.Focused);
         }
@@ -238,6 +288,7 @@ namespace AcManager.Controls.CustomShowroom {
                 var val = !EditMode && _visibleTools && (Form.Focused || _tools.IsActive) ? Visibility.Visible : Visibility.Hidden;
                 if (val != _tools.Visibility) {
                     _tools.Visibility = val;
+
                     if (val == Visibility.Visible) {
                         _tools.Topmost = false;
                         _tools.Topmost = true;

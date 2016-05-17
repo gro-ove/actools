@@ -76,6 +76,7 @@
     <Compile Include="DataFile\AbstractDataFile.cs" />
     <Compile Include="DataFile\IniFile.cs" />
     <Compile Include="Kn5File\Kn5_CreateEmpty.cs" />
+    <Compile Include="Kn5File\Kn5_ExportTextures.cs" />
     <Compile Include="Kn5File\Kn5_Stats.cs" />
     <Compile Include="Kn5File\Kn5_ExportFbxIni.cs" />
     <Compile Include="Kn5File\Kn5_ExportFbx.cs" />
@@ -101,6 +102,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utils\AcFixer.cs" />
+    <Compile Include="Utils\FileUtils_Async.cs" />
     <Compile Include="Utils\FileUtils_Paths.cs" />
     <Compile Include="Utils\FileUtils_Load.cs" />
     <Compile Include="Utils\FileUtils_FindRenamed.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Utils\Helpers\LinqExtension.cs" />
     <Compile Include="Utils\Helpers\JsonExtension.cs" />
     <Compile Include="Utils\Helpers\DictionaryExtension.cs" />
+    <Compile Include="Utils\Helpers\ObjectExtension.cs" />
     <Compile Include="Utils\Helpers\StreamExtension.cs" />
     <Compile Include="Utils\Helpers\StringExtension.cs" />
     <Compile Include="Utils\Helpers\ZipFileExtension.cs" />
@@ -138,7 +141,9 @@
     <Compile Include="Utils\DataFixer.cs" />
     <Compile Include="Utils\Kn5Fixer.cs" />
     <Compile Include="Utils\LogWatcher.cs" />
+    <Compile Include="Utils\MathException.cs" />
     <Compile Include="Utils\MathUtils.cs" />
+    <Compile Include="Utils\Matrix.cs" />
     <Compile Include="Utils\Physics\TorquePhysicUtils.cs" />
     <Compile Include="Utils\Helpers\ProcessExtension.cs" />
     <Compile Include="Windows\Input\IInputDeviceStateAdaptor.cs" />

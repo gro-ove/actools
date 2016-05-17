@@ -230,7 +230,8 @@ namespace AcTools.Render.Base.Shaders {
 			matricesMode ? "IEffectMatricesWrapper" : null,
 			screenSizeMode ? "IEffectScreenSizeWrapper" : null,
 	}.Where(x => x != null)) #> {
-		<#= string.Join("", structs) #><#= string.Join("", consts) #>public Effect E;
+		<#= string.Join("", structs) #><#= string.Join("", consts) #>private ShaderBytecode _b;
+		public Effect E;
 
         public ShaderSignature <#= string.Join(", ", tls.Select(x => "InputSignature" + x.Type)) #>;
         public InputLayout <#= string.Join(", ", tls.Select(x => "Layout" + x.Type)) #>;
@@ -254,7 +255,8 @@ namespace AcTools.Render.Base.Shaders {
 <# } #>
 
 		public void Initialize(Device device) {
-			E = new Effect(device, EffectUtils.Load("<#= name #>"));
+			_b = EffectUtils.Load("<#= name #>");
+			E = new Effect(device, _b);
 
 <# foreach (var x in ts){ #>
 			Tech<#= x #> = E.GetTechniqueByName("<#= x #>");
@@ -292,6 +294,7 @@ namespace AcTools.Render.Base.Shaders {
             Layout<#= t #>.Dispose();
 <# } #>
             E.Dispose();
+            _b.Dispose();
         }
 	}
 

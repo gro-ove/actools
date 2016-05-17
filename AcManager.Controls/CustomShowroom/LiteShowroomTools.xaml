@@ -2,9 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:modernui="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{Binding Car.DisplayName}" ShowInTaskbar="False"
-        d:DataContext="{d:DesignInstance customShowroom:LiteShowroomTools+LiteShowroomToolsViewModel}" Topmost="True" Loaded="LiteShowroomTools_OnLoaded"
-        Unloaded="LiteShowroomTools_OnUnloaded">
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="Tools" ShowInTaskbar="False" d:DataContext="{d:DesignInstance customShowroom:LiteShowroomTools+LiteShowroomToolsViewModel}"
+        Topmost="True" Loaded="LiteShowroomTools_OnLoaded" Unloaded="LiteShowroomTools_OnUnloaded" Width="250" SizeToContent="Height">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,7 +17,7 @@
         </ResourceDictionary>
     </mui:ModernDialog.Resources>
 
-    <StackPanel Margin="-4 -8 -4 -20" Width="240">
+    <StackPanel Margin="-4 -8 -4 -20">
         <StackPanel.Resources>
             <ResourceDictionary>
                 <Style TargetType="{x:Type DockPanel}">
@@ -42,16 +42,18 @@
         <StackPanel Visibility="{Binding Renderer.SelectedName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
             <TextBlock Text="Selected" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
             <DockPanel>
+                <DockPanel.InputBindings>
+                    <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
+                </DockPanel.InputBindings>
                 <Label>Name:</Label>
                 <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" />
             </DockPanel>
             <DockPanel>
+                <DockPanel.InputBindings>
+                    <MouseBinding Command="{Binding ViewMaterialCommand}" MouseAction="LeftClick" />
+                </DockPanel.InputBindings>
                 <Label>Material:</Label>
-                <TextBlock Text="{Binding Renderer.SelectedMaterialName}" TextTrimming="CharacterEllipsis" />
-            </DockPanel>
-            <DockPanel>
-                <Label>Shader:</Label>
-                <TextBlock Text="{Binding Renderer.SelectedShaderName}" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" />
             </DockPanel>
             <DockPanel>
                 <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left">Textures:</Label>
@@ -121,6 +123,12 @@
                 </CheckBox>
 
                 <Button Margin="0 12 0 0" Command="{Binding ToggleAmbientShadowModeCommand}">Update Ambient Shadows</Button>
+
+                <StackPanel
+                        Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="Developer Tools" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                    <Button Margin="0 12 0 0" Command="{Binding UnpackKn5Command}">Unpack KN5</Button>
+                </StackPanel>
             </StackPanel>
 
             <StackPanel Visibility="{Binding AmbientShadowsMode, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -134,7 +142,7 @@
                 <DockPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Diffusion: " Target="{x:Reference DiffuseTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        <TextBox Name="DiffuseTextBox" Text="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}', UpdateSourceTrigger=LostFocus}"
+                        <TextBox Name="DiffuseTextBox" Text="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}', UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
                                 mui:TextBoxAdvancement.SpecialMode="Number" />
                         <Label Content="%" Target="{x:Reference DiffuseTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
@@ -145,7 +153,7 @@
                 <DockPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Brightness: " Target="{x:Reference BrightnessTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        <TextBox Name="BrightnessTextBox" Text="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}', UpdateSourceTrigger=LostFocus}"
+                        <TextBox Name="BrightnessTextBox" Text="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}', UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
                                 mui:TextBoxAdvancement.SpecialMode="Number" />
                         <Label Content="%" Target="{x:Reference BrightnessTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
@@ -156,7 +164,7 @@
                 <DockPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Iterations: " Target="{x:Reference IterationsTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        <TextBox Name="IterationsTextBox" Text="{Binding AmbientShadowIterations, UpdateSourceTrigger=LostFocus}"
+                        <TextBox Name="IterationsTextBox" Text="{Binding AmbientShadowIterations, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
                                 mui:TextBoxAdvancement.SpecialMode="Integer" />
                     </StackPanel>
@@ -167,6 +175,52 @@
                     <Label>Hide wheels</Label>
                 </CheckBox>
                 <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}">Update</Button>
+
+                <StackPanel>
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Reset" Command="{Binding AmbientShadowSizeResetCommand}" />
+                            <MenuItem Header="Fit" Command="{Binding AmbientShadowSizeFitCommand}" />
+                            <MenuItem Header="Save" Command="{Binding AmbientShadowSizeSaveCommand}" />
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
+
+                    <TextBlock Text="Size" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Width: " Target="{x:Reference BrightnessTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                            <TextBox Name="ShadowWidthTextBox"
+                                    Text="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}', UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                                    mui:TextBoxAdvancement.SpecialMode="Number" />
+                            <Label Content="m" Target="{x:Reference ShadowWidthTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                        </StackPanel>
+                        <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Length: " Target="{x:Reference BrightnessTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                            <TextBox Name="ShadowLengthTextBox"
+                                    Text="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}', UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                                    mui:TextBoxAdvancement.SpecialMode="Number" />
+                            <Label Content="m" Target="{x:Reference ShadowLengthTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
+                        </StackPanel>
+                        <Slider Minimum="0" Maximum="6" Value="{Binding Renderer.AmbientShadowLength}" TickFrequency="1" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.AmbientShadowHighlight}">
+                        <Label>Highlight size</Label>
+                    </CheckBox>
+
+                    <DockPanel>
+                        <Button Width="60" Margin="0 0 4 0" DockPanel.Dock="Left" Command="{Binding AmbientShadowSizeFitCommand}">Fit</Button>
+                        <Button Command="{Binding AmbientShadowSizeSaveCommand}"
+                                FontStyle="{Binding Renderer.AmbientShadowSizeChanged, Converter={StaticResource BooleanToFontStyleConverter}}">Save</Button>
+                    </DockPanel>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </StackPanel>

@@ -178,9 +178,6 @@
     <Compile Include="Pages\Dialogs\KunosCareerIntroDialog.xaml.cs">
       <DependentUpon>KunosCareerIntroDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\WaitingDialog.xaml.cs">
-      <DependentUpon>WaitingDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Drive\KunosCareer_SelectedPage.xaml.cs">
       <DependentUpon>KunosCareer_SelectedPage.xaml</DependentUpon>
     </Compile>
@@ -285,10 +282,6 @@
     <Page Include="Pages\Dialogs\KunosCareerIntroDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Pages\Dialogs\WaitingDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Drive\KunosCareer_SelectedPage.xaml">
       <Generator>MSBuild:Compile</Generator>

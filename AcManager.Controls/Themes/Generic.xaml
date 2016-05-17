@@ -8,6 +8,7 @@
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcObjectListBox.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/AcToolBar.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl.xaml" />
+        <ResourceDictionary Source="/AcManager.Controls;component/Themes/ValueLabel.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="ac:OxyPlotGraphViewer" BasedOn="{StaticResource {x:Type oxy:PlotView}}">

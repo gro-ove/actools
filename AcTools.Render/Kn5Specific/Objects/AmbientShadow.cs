@@ -23,13 +23,14 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private readonly string _filename;
-        private readonly Matrix _transform;
         private IRenderableMaterial _material;
+
+        public Matrix Transform;
 
         public AmbientShadow(string filename, Matrix transform)
                 : base(BaseVertices, BaseIndices) {
             _filename = filename;
-            _transform = transform;
+            Transform = transform;
         }
 
         protected override void Initialize(DeviceContextHolder contextHolder) {
@@ -40,18 +41,16 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.Deferred && mode != SpecialRenderMode.Simple) return;
-
             if (!_material.Prepare(contextHolder, mode)) return;
             base.DrawInner(contextHolder, camera, mode);
 
-            _material.SetMatrices(_transform * ParentMatrix, camera);
+            _material.SetMatrices(Transform * ParentMatrix, camera);
             _material.Draw(contextHolder, Indices.Length, mode);
         }
 
         public override void Dispose() {
             base.Dispose();
-            _material.Dispose();
+            _material?.Dispose();
         }
     }
 }

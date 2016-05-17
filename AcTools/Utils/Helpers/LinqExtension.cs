@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
@@ -165,6 +166,31 @@ namespace AcTools.Utils.Helpers {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var list = enumerable as IList<T> ?? enumerable.ToList();
             return list.ElementAt(new Random().Next(0, list.Count));
+        }
+
+        [NotNull]
+        public static string JoinToString([NotNull] this IEnumerable<uint> enumerable, string s) {
+            return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
+        }
+
+        [NotNull]
+        public static string JoinToString([NotNull] this IEnumerable<ushort> enumerable, string s) {
+            return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
+        }
+
+        [NotNull]
+        public static string JoinToString([NotNull] this IEnumerable<float> enumerable, string s) {
+            return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
+        }
+
+        [NotNull]
+        public static string JoinToString([NotNull] this IEnumerable<double> enumerable, string s) {
+            return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
+        }
+
+        [NotNull]
+        public static string JoinToString([NotNull] this IEnumerable<int> enumerable, string s) {
+            return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
         [NotNull]

@@ -43,7 +43,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
             contextHolder.DeviceContext.InputAssembler.InputLayout = Effect.LayoutPNTG;
             contextHolder.DeviceContext.OutputMerger.BlendState = IsBlending ? contextHolder.TransparentBlendState : null;
 
-            if (mode == SpecialRenderMode.SimpleTransparent) return;
+            if (mode == SpecialRenderMode.SimpleTransparent || mode == SpecialRenderMode.Outline) return;
             switch (Kn5Material.DepthMode) {
                 case Kn5MaterialDepthMode.DepthNormal:
                     contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
@@ -63,7 +63,7 @@ namespace AcTools.Render.Kn5SpecificForward.Materials {
         }
 
         public virtual bool Prepare(DeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (!mode.HasFlag(SpecialRenderMode.SimpleTransparent) && !mode.HasFlag(SpecialRenderMode.Simple)) return false;
+            if (mode != SpecialRenderMode.SimpleTransparent && mode != SpecialRenderMode.Simple && mode != SpecialRenderMode.Outline) return false;
             PrepareStates(contextHolder, mode);
             return true;
         }

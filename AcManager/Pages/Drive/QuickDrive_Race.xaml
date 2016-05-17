@@ -2,9 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_Race+QuickDrive_RaceViewModel}"
-        Loaded="QuickDrive_Race_OnLoaded" Unloaded="QuickDrive_Race_OnUnloaded">
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_Race+QuickDrive_RaceViewModel}" Loaded="QuickDrive_Race_OnLoaded"
+        Unloaded="QuickDrive_Race_OnUnloaded">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -31,13 +32,14 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
-            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" Text="{Binding LapsNumberString, StringFormat='Race duration: \{0\}'}" />
-            <Slider Minimum="1" Maximum="40" Value="{Binding LapsNumber}" />
+            <controls:ValueLabel Value="{Binding LapsNumber}"
+                    Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter=' lap'}">Race duration</controls:ValueLabel>
+            <Slider Minimum="1" Maximum="{Binding LapsNumberMaximumLimited}" Value="{Binding LapsNumber}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0">
-            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" Text="{Binding AiLevel, StringFormat='Opponents strength (max): \{0\}%'}" />
-            <Slider Minimum="50" Maximum="100" Value="{Binding AiLevel}" />
+            <controls:ValueLabel Value="{Binding AiLevel}" Postfix='%'>Opponents strength</controls:ValueLabel>
+            <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevel}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0"
@@ -49,8 +51,8 @@
                             IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
                 </ContextMenu>
             </StackPanel.ContextMenu>
-            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" Text="{Binding AiLevelMin, StringFormat='Opponents strength (min): \{0\}%'}" />
-            <Slider Minimum="50" Maximum="100" Value="{Binding AiLevelMin}" />
+            <controls:ValueLabel Value="{Binding AiLevelMin}" Postfix='%'>Opponents strength (min)</controls:ValueLabel>
+            <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevelMin}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="0">
@@ -75,13 +77,14 @@
                 <ToolTip Content="{Binding TrackPitsNumber}" ContentStringFormat="Limited by number of pits available ({0})" />
             </StackPanel.ToolTip>
 
-            <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" Text="{Binding OpponentsNumberString, StringFormat='\{0\}'}" />
+            <controls:ValueLabel Value="{Binding OpponentsNumber}"
+                    Postfix="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter=' opponent'}" />
             <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
             <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4"
-                    Text="{Binding DisplayStartingPosition, StringFormat='Starting position: \{0\}'}" />
+                    Text="{Binding DisplayStartingPosition, StringFormat='{}Starting position: {0}'}" />
             <Slider Minimum="0" Maximum="{Binding StartingPositionLimit}" Value="{Binding StartingPosition}" />
         </StackPanel>
 

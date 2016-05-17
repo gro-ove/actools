@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
@@ -6,7 +7,6 @@ using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Structs;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Materials;
-using AcTools.Render.Kn5Specific.Textures;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
@@ -18,20 +18,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public readonly Kn5Node OriginalNode;
         private IRenderableMaterial _material;
 
-        private static InputLayouts.VerticePNTG[] Convert(Kn5Node.Vertice[] vertices) {
-            if (FlipByX) {
-                return vertices.Select(x => new InputLayouts.VerticePNTG(
-                        x.Co.ToVector3FixX(),
-                        x.Normal.ToVector3FixX(),
-                        x.Uv.ToVector2(),
-                        x.Tangent.ToVector3Tangent())).ToArray();
-            }
-
-            return vertices.Select(x => new InputLayouts.VerticePNTG(
-                    x.Co.ToVector3(),
-                    x.Normal.ToVector3(),
-                    x.Uv.ToVector2(),
-                    x.Tangent.ToVector3())).ToArray();
+        private static InputLayouts.VerticePNTG[] Convert(IEnumerable<Kn5Node.Vertice> vertices) {
+            return FlipByX ?
+                    vertices.Select(x => new InputLayouts.VerticePNTG(
+                            x.Co.ToVector3FixX(),
+                            x.Normal.ToVector3FixX(),
+                            x.Uv.ToVector2(),
+                            x.Tangent.ToVector3Tangent())).ToArray() :
+                    vertices.Select(x => new InputLayouts.VerticePNTG(
+                            x.Co.ToVector3(),
+                            x.Normal.ToVector3(),
+                            x.Uv.ToVector2(),
+                            x.Tangent.ToVector3())).ToArray();
         }
 
         private static ushort[] Convert(ushort[] indices) {
@@ -68,15 +66,18 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         protected override void Initialize(DeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
+            //return;
             _material.Initialize(contextHolder);
         }
 
         protected override void DrawInner(DeviceContextHolder contextHolder, ICamera camera, SpecialRenderMode mode) {
             if (_isTransparent &&
-                    !mode.HasFlag(SpecialRenderMode.SimpleTransparent) &&
+                    mode != SpecialRenderMode.Outline &&
+                    mode != SpecialRenderMode.SimpleTransparent &&
                     mode != SpecialRenderMode.DeferredTransparentForw &&
                     mode != SpecialRenderMode.DeferredTransparentDef &&
                     mode != SpecialRenderMode.DeferredTransparentMask) return;
+            //return;
 
             if (mode == SpecialRenderMode.Shadow && !IsCastingShadows) return;
             if (!_material.Prepare(contextHolder, mode)) return;
@@ -92,8 +93,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public override void Dispose() {
-            base.Dispose();
             _material.Dispose();
+            base.Dispose();
         }
     }
 }

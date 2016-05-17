@@ -245,7 +245,6 @@ namespace AcManager {
             try {
                 ImageUtils.LoadImageMagickAssembly(AppAddonsManager.Instance.GetAddonFilename("Magick", "Magick.NET-x86.dll"));
                 Logging.Write("magick test: " + ImageUtils.TestImageMagick());
-                MagickWrapper.ResetIsSupported();
             } catch (Exception e) {
                 Logging.Warning("cannot load magick: " + e);
             }

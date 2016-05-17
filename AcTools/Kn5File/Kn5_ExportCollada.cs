@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
-    public static class XmlWriterSafeExtend {
+    internal static class XmlWriterExtension {
         private static readonly Regex InvalidXmlChars = new Regex(
             @"(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFEFF\uFFFE\uFFFF]",
             RegexOptions.Compiled);
@@ -20,13 +23,68 @@ namespace AcTools.Kn5File {
             xml.WriteAttributeString(key, RemoveInvalidXmlChars(value));
         }
 
+        public static void WriteAttributeString(this XmlWriter xml, string key, int value){
+            xml.WriteAttributeString(key, value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public static void WriteAttributeString(this XmlWriter xml, string key, float value){
+            xml.WriteAttributeString(key, value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public static void WriteAttributeString(this XmlWriter xml, string key, double value){
+            xml.WriteAttributeString(key, value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public static void WriteString(this XmlWriter xml, int value) {
+            xml.WriteString(value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public static void WriteString(this XmlWriter xml, float value) {
+            xml.WriteString(value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public static void WriteString(this XmlWriter xml, double value) {
+            xml.WriteString(value.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public static string MatrixToCollada(float[] matrix) {
+            var sb = new StringBuilder();
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                    if (i > 0 || j > 0) {
+                        sb.Append(" ");
+                    }
+
+                    sb.Append(matrix[j * 4 + i].ToString(CultureInfo.InvariantCulture));
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public static void WriteMatrixAsString(this XmlWriter xml, float[] matrix){
+            xml.WriteString(MatrixToCollada(matrix));
+        }
+
         public static void WriteElementStringSafe(this XmlWriter xml, string key, string value){
             xml.WriteElementString(key, RemoveInvalidXmlChars(value));
+        }
+
+        public static void WriteElement(this XmlWriter xml, [NotNull] string localName, [NotNull] params object[] attributes) {
+            xml.WriteStartElement(localName);
+            int i;
+            for (i = 0; i < attributes.Length - 1; i += 2) {
+                xml.WriteAttributeStringSafe(attributes[i].ToInvariantString(), attributes[i + 1].ToInvariantString());
+            }
+            if (i < attributes.Length) {
+                xml.WriteString(attributes[i].ToInvariantString());
+            }
+            xml.WriteEndElement();
         }
     }
 
     public partial class Kn5 {
-        private void ExportCollada(string filename) {
+        public void ExportCollada(string filename) {
             using (var xml = XmlWriter.Create(filename, new XmlWriterSettings {
                 Indent = true,
                 Encoding = Encoding.UTF8
@@ -42,18 +100,14 @@ namespace AcTools.Kn5File {
                 xml.WriteEndElement();
                 xml.WriteElementStringSafe("created", new FileInfo(OriginalFilename).CreationTime.ToString(CultureInfo.InvariantCulture));
                 xml.WriteElementStringSafe("modified", new FileInfo(OriginalFilename).LastWriteTime.ToString(CultureInfo.InvariantCulture));
-                xml.WriteStartElement("unit");
-                xml.WriteAttributeString("name", "meter");
-                xml.WriteAttributeString("meter", "1");
-                xml.WriteEndElement();
+                xml.WriteElement("unit",
+                        "name", "meter",
+                        "meter", 1);
                 xml.WriteElementString("up_axis", "Y_UP");
                 xml.WriteEndElement();
 
-                xml.WriteStartElement("library_cameras");
-                xml.WriteEndElement();
-
-                xml.WriteStartElement("library_lights");
-                xml.WriteEndElement();
+                xml.WriteElement("library_cameras");
+                xml.WriteElement("library_lights");
 
                 xml.WriteStartElement("library_images");
                 foreach (var texture in Textures.Values) {
@@ -74,24 +128,20 @@ namespace AcTools.Kn5File {
                 xml.WriteEndElement();
 
                 xml.WriteStartElement("library_geometries");
-                ExportCollada_Mesh(xml, RootNode);
+                ExportCollada_MeshWrapper(xml, RootNode);
                 xml.WriteEndElement();
 
                 xml.WriteStartElement("library_controllers");
+                ExportCollada_Skinned(xml, RootNode);
                 xml.WriteEndElement();
 
                 xml.WriteStartElement("library_visual_scenes");
-                xml.WriteStartElement("visual_scene");
-                xml.WriteAttributeString("id", "Scene");
-                xml.WriteAttributeString("name", "Scene");
-                ExportCollada_Node(xml, RootNode);
-                xml.WriteEndElement();
+                ExportCollada_Scene(xml);
                 xml.WriteEndElement();
 
                 xml.WriteStartElement("scene");
-                xml.WriteStartElement("instance_visual_scene");
-                xml.WriteAttributeString("url", "#Scene");
-                xml.WriteEndElement();
+                xml.WriteElement("instance_visual_scene",
+                        "url", "#Scene");
                 xml.WriteEndElement();
 
                 xml.WriteEndElement();
@@ -101,7 +151,7 @@ namespace AcTools.Kn5File {
 
         private void ExportCollada_Texture(XmlWriter xml, Kn5Texture texture) {
             xml.WriteStartElement("image");
-            xml.WriteAttributeStringSafe("id", texture.Name + "-image");
+            xml.WriteAttributeStringSafe("id", $"{texture.Name}-image");
             xml.WriteAttributeStringSafe("name", texture.Name);
             
             xml.WriteStartElement("init_from");
@@ -111,9 +161,38 @@ namespace AcTools.Kn5File {
             xml.WriteEndElement();
         }
 
+        private void ExportCollada_MaterialEffectTexture(XmlWriter xml, Kn5Material.TextureMapping tex) {
+            xml.WriteStartElement("texture");
+            xml.WriteAttributeStringSafe("texture", $"{tex.Texture}-image");
+            xml.WriteAttributeString("texcoord", "CHANNEL0");
+
+            xml.WriteStartElement("extra");
+            xml.WriteStartElement("technique");
+            xml.WriteAttributeString("profile", "MAYA");
+
+            xml.WriteStartElement("wrapV");
+            xml.WriteAttributeString("sid", "wrapV0");
+            xml.WriteString("TRUE");
+            xml.WriteEndElement();
+
+            xml.WriteStartElement("wrapU");
+            xml.WriteAttributeString("sid", "wrapU0");
+            xml.WriteString("TRUE");
+            xml.WriteEndElement();
+
+            xml.WriteStartElement("blend_mode");
+            xml.WriteString("ADD");
+            xml.WriteEndElement();
+
+            xml.WriteEndElement();
+            xml.WriteEndElement();
+
+            xml.WriteEndElement();
+        }
+
         private void ExportCollada_MaterialEffect(XmlWriter xml, Kn5Material material) {
             xml.WriteStartElement("effect");
-            xml.WriteAttributeStringSafe("id", material.Name + "-effect");
+            xml.WriteAttributeStringSafe("id", $"{material.Name}-effect");
             xml.WriteStartElement("profile_COMMON");
             xml.WriteStartElement("technique");
             xml.WriteAttributeString("sid", "common");
@@ -123,8 +202,8 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("color");
             xml.WriteAttributeString("sid", "emission");
             var ksEmissive = material.GetPropertyByName("ksEmissive");
-            xml.WriteString(ksEmissive == null ? "0 0 0 1" : string.Format("{0} {1} {2} 1", ksEmissive.ValueC[0].ToString(CultureInfo.InvariantCulture), 
-                ksEmissive.ValueC[1].ToString(CultureInfo.InvariantCulture), ksEmissive.ValueC[2].ToString(CultureInfo.InvariantCulture)));
+            xml.WriteString(ksEmissive == null ? "0 0 0 1" :
+                    $"{ksEmissive.ValueC[0].ToString(CultureInfo.InvariantCulture)} {ksEmissive.ValueC[1].ToString(CultureInfo.InvariantCulture)} {ksEmissive.ValueC[2].ToString(CultureInfo.InvariantCulture)} 1");
             xml.WriteEndElement();
             xml.WriteEndElement();
             
@@ -132,45 +211,20 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("color");
             xml.WriteAttributeString("sid", "ambient");
             var ksAmbient = material.GetPropertyByName("ksAmbient");
-            xml.WriteString(ksAmbient == null ? "0 0 0 1" : string.Format("{0} {0} {0} 1", ksAmbient.ValueA.ToString(CultureInfo.InvariantCulture)));
+            xml.WriteString(ksAmbient == null ? "0.4 0.4 0.4 1" : string.Format("{0} {0} {0} 1", ksAmbient.ValueA.ToString(CultureInfo.InvariantCulture)));
             xml.WriteEndElement();
             xml.WriteEndElement();
             
             xml.WriteStartElement("diffuse");
             var txDiffuse = material.GetMappingByName("txDiffuse");
             if (txDiffuse != null) {
-                xml.WriteStartElement("texture");
-                xml.WriteAttributeStringSafe("texture", txDiffuse.Texture + "-image");
-                xml.WriteAttributeString("texcoord", "CHANNEL0");
-                
-                xml.WriteStartElement("extra");
-                xml.WriteStartElement("technique");
-                xml.WriteAttributeString("profile", "MAYA");
-
-                xml.WriteStartElement("wrapV");
-                xml.WriteAttributeString("sid", "wrapV0");
-                xml.WriteString("TRUE");
-                xml.WriteEndElement();
-
-                xml.WriteStartElement("wrapU");
-                xml.WriteAttributeString("sid", "wrapU0");
-                xml.WriteString("TRUE");
-                xml.WriteEndElement();
-
-                xml.WriteStartElement("blend_mode");
-                xml.WriteString("ADD");
-                xml.WriteEndElement();
-
-                xml.WriteEndElement();
-                xml.WriteEndElement();
-
-                xml.WriteEndElement();
+                ExportCollada_MaterialEffectTexture(xml, txDiffuse);
             }
 
             xml.WriteStartElement("color");
             xml.WriteAttributeString("sid", "diffuse");
             var ksDiffuse = material.GetPropertyByName("ksDiffuse");
-            xml.WriteString(ksDiffuse == null ? "0.64 0.64 0.64 1" : string.Format("{0} {0} {0} 1", ksDiffuse.ValueA.ToString(CultureInfo.InvariantCulture)));
+            xml.WriteString(ksDiffuse == null ? "0.6 0.6 0.6 1" : string.Format("{0} {0} {0} 1", ksDiffuse.ValueA.ToString(CultureInfo.InvariantCulture)));
             xml.WriteEndElement();
             xml.WriteEndElement();
             
@@ -185,17 +239,52 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("shininess");
             xml.WriteStartElement("float");
             xml.WriteAttributeString("sid", "shininess");
-            var ksSpecularExp = material.GetPropertyByName("ksSpecularEXP");
-            xml.WriteString(ksSpecularExp == null ? "50" : string.Format("{0}", ksSpecularExp.ValueA.ToString(CultureInfo.InvariantCulture)));
+            xml.WriteString(material.GetPropertyByName("ksSpecularEXP")?.ValueA ?? 50);
             xml.WriteEndElement();
             xml.WriteEndElement();
             
             xml.WriteStartElement("index_of_refraction");
             xml.WriteStartElement("float");
             xml.WriteAttributeString("sid", "index_of_refraction");
-            xml.WriteString("1");
+            xml.WriteString(1f);
             xml.WriteEndElement();
             xml.WriteEndElement();
+
+            if (material.BlendMode == Kn5MaterialBlendMode.AlphaBlend) {
+                xml.WriteStartElement("transparent");
+                xml.WriteAttributeString("opaque", "RGB_ZERO");
+
+                if (material.ShaderName == "ksPerPixelNM" || material.ShaderName == "ksPerPixelNM_UV2" ||
+                        material.ShaderName == "ksPerPixelMultiMap_AT" || material.ShaderName == "ksPerPixelMultiMap_AT_NMDetail") {
+                    var txNormal = material.GetMappingByName("txNormal");
+                    if (txNormal != null) {
+                        ExportCollada_MaterialEffectTexture(xml, txNormal);
+                    }
+                } else if (txDiffuse != null) {
+                    ExportCollada_MaterialEffectTexture(xml, txDiffuse);
+                }
+                
+                xml.WriteEndElement(); // transparent
+            }
+
+            var alpha = 1.0f;
+            switch (material.ShaderName) {
+                case "ksBrokenGlass":
+                    alpha = 0f;
+                    break;
+                case "ksPerPixelAlpha":
+                    alpha = material.GetPropertyByName("alpha")?.ValueA ?? 1f;
+                    break;
+            }
+
+            if (!Equals(alpha, 1f)) {
+                xml.WriteStartElement("transparency");
+                xml.WriteStartElement("float");
+                xml.WriteAttributeString("sid", "transparency");
+                xml.WriteString(alpha);
+                xml.WriteEndElement(); // float
+                xml.WriteEndElement(); // transparency
+            }
 
             xml.WriteEndElement();
             xml.WriteEndElement();
@@ -205,270 +294,407 @@ namespace AcTools.Kn5File {
 
         private void ExportCollada_Material(XmlWriter xml, Kn5Material material) {
             xml.WriteStartElement("material");
-            xml.WriteAttributeStringSafe("id", material.Name + "-material");
+            xml.WriteAttributeStringSafe("id", $"{material.Name}-material");
             xml.WriteAttributeStringSafe("name", material.Name);
             
             xml.WriteStartElement("instance_effect");
-            xml.WriteAttributeStringSafe("url", "#" + material.Name + "-effect");
+            xml.WriteAttributeStringSafe("url", $"#{material.Name}-effect");
             xml.WriteEndElement();
             
             xml.WriteEndElement();
         }
 
-        private void ExportCollada_Mesh(XmlWriter xml, Kn5Node node) {
+        private void ExportCollada_Skinned(XmlWriter xml, Kn5Node node) {
             switch (node.NodeClass) {
                 case Kn5NodeClass.Base:
                     foreach (var child in node.Children) {
-                        ExportCollada_Mesh(xml, child);
+                        ExportCollada_Skinned(xml, child);
+                    }
+                    break;
+
+                case Kn5NodeClass.Mesh:
+                    return;
+
+                case Kn5NodeClass.SkinnedMesh:
+                    xml.WriteStartElement("controller");
+                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller");
+
+                    xml.WriteStartElement("skin");
+                    xml.WriteAttributeStringSafe("source", $"#{node.Name}-mesh");
+
+                    // xml.WriteElementString("bind_shape_matrix", "1 0 0 0 0 0 1 0 0 -1 0 0 0 0 0 1");
+                    xml.WriteElementString("bind_shape_matrix", "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1");
+
+                    // Joints
+                    xml.WriteStartElement("source");
+                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Joints");
+
+                    xml.WriteStartElement("Name_array");
+                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Joints-array");
+                    xml.WriteAttributeString("count", node.Bones.Length);
+                    xml.WriteString(node.Bones.Select(x => x.Name).JoinToString(" "));
+                    xml.WriteEndElement(); // Name_array
+
+                    xml.WriteStartElement("technique_common");
+                    xml.WriteStartElement("accessor");
+                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Joints-array");
+                    xml.WriteAttributeString("count", node.Bones.Length);
+                    xml.WriteAttributeString("stride", 1);
+                    xml.WriteStartElement("param");
+                    xml.WriteAttributeString("name", "JOINT");
+                    xml.WriteAttributeString("type", "name");
+                    xml.WriteEndElement(); // param
+                    xml.WriteEndElement(); // accessor
+                    xml.WriteEndElement(); // technique_common
+                    xml.WriteEndElement(); // source (Joints)
+
+                    // Matrices
+                    xml.WriteStartElement("source");
+                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Matrices");
+
+                    xml.WriteStartElement("float_array");
+                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Matrices-array");
+                    xml.WriteAttributeString("count", node.Bones.Length * 16);
+                    xml.WriteString(node.Bones.Select(x => XmlWriterExtension.MatrixToCollada(x.Transform))
+                                        .JoinToString(" "));
+                    xml.WriteEndElement(); // float_array
+
+                    xml.WriteStartElement("technique_common");
+                    xml.WriteStartElement("accessor");
+                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Matrices-array");
+                    xml.WriteAttributeString("count", node.Bones.Length);
+                    xml.WriteAttributeString("stride", 16);
+                    xml.WriteStartElement("param");
+                    xml.WriteAttributeString("name", "TRANSFORM");
+                    xml.WriteAttributeString("type", "float4x4");
+                    xml.WriteEndElement(); // param
+                    xml.WriteEndElement(); // accessor
+                    xml.WriteEndElement(); // technique_common
+                    xml.WriteEndElement(); // source (Matrices)
+
+                    // Weights
+                    xml.WriteStartElement("source");
+                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Weights");
+
+                    xml.WriteStartElement("float_array");
+                    xml.WriteAttributeStringSafe("id", $"{node.Name}Controller-Weights-array");
+
+                    var weights = node.VerticeWeights.SelectMany(x => x.Weights.Where((y, i) => !Equals(x.Indices[i], -1f))).ToList();
+                    xml.WriteAttributeString("count", weights.Count);
+                    xml.WriteString(weights.JoinToString(" "));
+                    xml.WriteEndElement(); // float_array
+
+                    xml.WriteStartElement("technique_common");
+                    xml.WriteStartElement("accessor");
+                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Weights-array");
+                    xml.WriteAttributeString("count", weights.Count);
+                    xml.WriteAttributeString("stride", 1);
+                    xml.WriteStartElement("param");
+                    xml.WriteAttributeString("name", "WEIGHT");
+                    xml.WriteAttributeString("type", "float");
+                    xml.WriteEndElement(); // param
+                    xml.WriteEndElement(); // accessor
+                    xml.WriteEndElement(); // technique_common
+                    xml.WriteEndElement(); // source (Matrices)
+                    
+                    xml.WriteStartElement("joints");
+                    xml.WriteStartElement("input");
+                    xml.WriteAttributeString("semantic", "JOINT");
+                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Joints");
+                    xml.WriteEndElement(); // input
+                    xml.WriteStartElement("input");
+                    xml.WriteAttributeString("semantic", "INV_BIND_MATRIX");
+                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Matrices");
+                    xml.WriteEndElement(); // input
+                    xml.WriteEndElement(); // joints
+
+                    xml.WriteStartElement("vertex_weights");
+                    xml.WriteAttributeString("count", node.Vertices.Length);
+
+                    xml.WriteStartElement("input");
+                    xml.WriteAttributeString("semantic", "JOINT");
+                    xml.WriteAttributeString("offset", 0);
+                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Joints");
+                    xml.WriteEndElement(); // input
+                    xml.WriteStartElement("input");
+                    xml.WriteAttributeString("semantic", "WEIGHT");
+                    xml.WriteAttributeString("offset", 1);
+                    xml.WriteAttributeStringSafe("source", $"#{node.Name}Controller-Weights");
+                    xml.WriteEndElement(); // input
+
+                    xml.WriteElementString("vcount", node.VerticeWeights.Select(x => x.Weights.Where(y => !Equals(y, 0f)).Count()).JoinToString(" "));
+                    var k = 0;
+                    xml.WriteElementString("v", node.VerticeWeights.SelectMany(x =>
+                            x.Indices.Where(y => !Equals(y, -1f)).SelectMany((y, i) => new[] { y, k++ })).JoinToString(" "));
+
+                    xml.WriteEndElement(); // vertex_weights
+
+                    xml.WriteEndElement(); // skin
+                    xml.WriteEndElement(); // controller
+                    break;
+            }
+
+        }
+
+        private void ExportCollada_Mesh(XmlWriter xml, string name, IReadOnlyList<Kn5Node> unsorted) {
+            xml.WriteStartElement("geometry");
+            xml.WriteAttributeStringSafe("id", $"{name}-mesh");
+            xml.WriteAttributeStringSafe("name", name);
+
+            xml.WriteStartElement("mesh");
+
+            var nodes = unsorted.Count == 1 ? unsorted :
+                    unsorted.OrderBy(x => int.Parse(x.Name.Split(new[] { "_SUB" }, StringSplitOptions.None).Last())).ToList();
+
+            /* coordinates */
+            var vertexCount = nodes.Sum(x => x.Vertices.Length);
+            xml.WriteStartElement("source");
+            xml.WriteAttributeStringSafe("id", $"{name}-mesh-positions");
+            xml.WriteStartElement("float_array");
+            xml.WriteAttributeStringSafe("id", $"{name}-mesh-positions-array");
+            xml.WriteAttributeString("count", vertexCount * 3);
+            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => x.Co).JoinToString(" "));
+            xml.WriteEndElement(); // float_array
+
+            xml.WriteStartElement("technique_common");
+            xml.WriteStartElement("accessor");
+            xml.WriteAttributeStringSafe("source", $"#{name}-mesh-positions-array");
+            xml.WriteAttributeString("count", vertexCount);
+            xml.WriteAttributeString("stride", 3);
+
+            xml.WriteElement("param",
+                    "name", "X",
+                    "type", "float");
+            xml.WriteElement("param",
+                    "name", "Y",
+                    "type", "float");
+            xml.WriteElement("param",
+                    "name", "Z",
+                    "type", "float");
+
+            xml.WriteEndElement(); // accessor
+            xml.WriteEndElement(); // technique_common
+            xml.WriteEndElement(); // source
+
+            /* normals */
+            xml.WriteStartElement("source");
+            xml.WriteAttributeStringSafe("id", $"{name}-mesh-normals");
+            xml.WriteStartElement("float_array");
+            xml.WriteAttributeStringSafe("id", $"{name}-mesh-normals-array");
+            xml.WriteAttributeString("count", vertexCount * 3);
+            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => x.Normal).JoinToString(" "));
+            xml.WriteEndElement(); // float_array
+
+            xml.WriteStartElement("technique_common");
+            xml.WriteStartElement("accessor");
+            xml.WriteAttributeStringSafe("source", $"#{name}-mesh-normals-array");
+            xml.WriteAttributeString("count", vertexCount);
+            xml.WriteAttributeString("stride", "3");
+            
+            xml.WriteElement("param",
+                    "name", "X",
+                    "type", "float");
+            xml.WriteElement("param",
+                    "name", "Y",
+                    "type", "float");
+            xml.WriteElement("param",
+                    "name", "Z",
+                    "type", "float");
+
+            xml.WriteEndElement(); // accessor
+            xml.WriteEndElement(); // technique_common
+            xml.WriteEndElement(); // source
+
+            /* uv */
+            xml.WriteStartElement("source");
+            xml.WriteAttributeStringSafe("id", $"{name}-mesh-map-0");
+            xml.WriteStartElement("float_array");
+            xml.WriteAttributeStringSafe("id", $"{name}-mesh-map-0-array");
+            xml.WriteAttributeString("count", vertexCount * 2);
+            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => new[] { x.Uv[0], -x.Uv[1] }).JoinToString(" "));
+            xml.WriteEndElement(); // float_array
+
+            xml.WriteStartElement("technique_common");
+            xml.WriteStartElement("accessor");
+            xml.WriteAttributeStringSafe("source", $"#{name}-mesh-map-0-array");
+            xml.WriteAttributeString("count", vertexCount);
+            xml.WriteAttributeString("stride", 2);
+
+            xml.WriteElement("param",
+                    "name", "S",
+                    "type", "float");
+            xml.WriteElement("param",
+                    "name", "T",
+                    "type", "float");
+
+            xml.WriteEndElement(); // accessor
+            xml.WriteEndElement(); // technique_common
+            xml.WriteEndElement(); // source
+
+            /* vertices */
+            xml.WriteStartElement("vertices");
+            xml.WriteAttributeStringSafe("id", $"{name}-mesh-vertices");
+            xml.WriteElement("input",
+                    "semantic", "POSITION",
+                    "source", $"#{name}-mesh-positions");
+            xml.WriteEndElement();
+
+            /* triangles */
+            var offset = 0;
+            foreach (var node in nodes) {
+                xml.WriteStartElement("triangles");
+                xml.WriteAttributeStringSafe("original_node", $"{node.Name}");
+                xml.WriteAttributeStringSafe("material", $"{Materials.Values.ElementAt((int)node.MaterialId).Name}-material");
+                xml.WriteAttributeString("count", node.Indices.Length / 3);
+
+                xml.WriteElement("input",
+                        "semantic", "VERTEX",
+                        "source", $"#{name}-mesh-vertices",
+                        "offset", 0);
+                xml.WriteElement("input",
+                        "semantic", "NORMAL",
+                        "source", $"#{name}-mesh-normals",
+                        "offset", 1);
+                xml.WriteElement("input",
+                        "semantic", "TEXCOORD",
+                        "source", $"#{name}-mesh-map-0",
+                        "offset", 2,
+                        "set", 0);
+
+                var inner = offset;
+                xml.WriteElementString("p", node.Indices.SelectMany(x => new[] { x + inner, x + inner, x + inner }).JoinToString(" "));
+                xml.WriteEndElement(); // triangles
+
+                offset += node.Vertices.Length;
+            }
+            
+            xml.WriteEndElement(); // mesh
+            xml.WriteEndElement(); // geometry
+        }
+
+        private static bool IsMultiMaterial(Kn5Node node) {
+            return node.NodeClass == Kn5NodeClass.Base &&
+                    node.Children.Any() &&
+                    node.Children.All(x => x.NodeClass == Kn5NodeClass.Mesh) &&
+                    Enumerable.Range(0, node.Children.Count).All(x => node.Children.Any(y => y.Name == node.Name + "_SUB" + x));
+        }
+
+        private void ExportCollada_MeshWrapper(XmlWriter xml, Kn5Node node) {
+            switch (node.NodeClass) {
+                case Kn5NodeClass.Base:
+                    if (IsMultiMaterial(node)) {
+                        ExportCollada_Mesh(xml, node.Name, node.Children);
+                    } else {
+                        foreach (var child in node.Children) {
+                            ExportCollada_MeshWrapper(xml, child);
+                        }
                     }
                     break;
 
                 case Kn5NodeClass.Mesh:
                 case Kn5NodeClass.SkinnedMesh:
-
-                    xml.WriteStartElement("geometry");
-                    xml.WriteAttributeStringSafe("id", node.Name + "-mesh");
-                    xml.WriteAttributeStringSafe("name", node.Name);
-
-                    xml.WriteStartElement("mesh");
-
-                    /* coordinates */
-                    xml.WriteStartElement("source");
-                    xml.WriteAttributeStringSafe("id", node.Name + "-mesh-positions");
-                    xml.WriteStartElement("float_array");
-                    xml.WriteAttributeStringSafe("id", node.Name + "-mesh-positions-array");
-                    xml.WriteAttributeString("count", (node.Vertices.Length * 3).ToString(CultureInfo.InvariantCulture));
-
-                    var builder = new StringBuilder();
-                    for (var j = 0; j < node.Vertices.Length; j++) {
-                        builder.Append(node.Vertices[j].Co[0].ToString(CultureInfo.InvariantCulture));
-                        builder.Append(" ");
-                        builder.Append(node.Vertices[j].Co[1].ToString(CultureInfo.InvariantCulture));
-                        builder.Append(" ");
-                        builder.Append(node.Vertices[j].Co[2].ToString(CultureInfo.InvariantCulture));
-                        builder.Append(" ");
-                    }
-                    xml.WriteString(builder.ToString());
-                    xml.WriteEndElement();
-
-                    xml.WriteStartElement("technique_common");
-                    xml.WriteStartElement("accessor");
-                    xml.WriteAttributeStringSafe("source", "#" + node.Name + "-mesh-positions-array");
-                    xml.WriteAttributeString("count", node.Vertices.Length.ToString(CultureInfo.InvariantCulture));
-                    xml.WriteAttributeString("stride", "3");
-
-                    xml.WriteStartElement("param");
-                    xml.WriteAttributeString("name", "X");
-                    xml.WriteAttributeString("type", "float");
-                    xml.WriteEndElement();
-                    xml.WriteStartElement("param");
-                    xml.WriteAttributeString("name", "Y");
-                    xml.WriteAttributeString("type", "float");
-                    xml.WriteEndElement();
-                    xml.WriteStartElement("param");
-                    xml.WriteAttributeString("name", "Z");
-                    xml.WriteAttributeString("type", "float");
-                    xml.WriteEndElement();
-
-                    xml.WriteEndElement();
-                    xml.WriteEndElement();
-                    xml.WriteEndElement();
-
-                    /* normals */
-                    xml.WriteStartElement("source");
-                    xml.WriteAttributeStringSafe("id", node.Name + "-mesh-normals");
-                    xml.WriteStartElement("float_array");
-                    xml.WriteAttributeStringSafe("id", node.Name + "-mesh-normals-array");
-                    xml.WriteAttributeString("count", (node.Vertices.Length * 3).ToString(CultureInfo.InvariantCulture));
-
-                    builder = new StringBuilder();
-                    for (var j = 0; j < node.Vertices.Length; j++) {
-                        builder.Append(node.Vertices[j].Normal[0].ToString(CultureInfo.InvariantCulture));
-                        builder.Append(" ");
-                        builder.Append(node.Vertices[j].Normal[1].ToString(CultureInfo.InvariantCulture));
-                        builder.Append(" ");
-                        builder.Append(node.Vertices[j].Normal[2].ToString(CultureInfo.InvariantCulture));
-                        builder.Append(" ");
-                    }
-                    xml.WriteString(builder.ToString());
-                    xml.WriteEndElement();
-
-                    xml.WriteStartElement("technique_common");
-                    xml.WriteStartElement("accessor");
-                    xml.WriteAttributeStringSafe("source", "#" + node.Name + "-mesh-normals-array");
-                    xml.WriteAttributeString("count", node.Vertices.Length.ToString(CultureInfo.InvariantCulture));
-                    xml.WriteAttributeString("stride", "3");
-
-                    xml.WriteStartElement("param");
-                    xml.WriteAttributeString("name", "X");
-                    xml.WriteAttributeString("type", "float");
-                    xml.WriteEndElement();
-                    xml.WriteStartElement("param");
-                    xml.WriteAttributeString("name", "Y");
-                    xml.WriteAttributeString("type", "float");
-                    xml.WriteEndElement();
-                    xml.WriteStartElement("param");
-                    xml.WriteAttributeString("name", "Z");
-                    xml.WriteAttributeString("type", "float");
-                    xml.WriteEndElement();
-
-                    xml.WriteEndElement();
-                    xml.WriteEndElement();
-                    xml.WriteEndElement();
-
-                    /* uv */
-                    xml.WriteStartElement("source");
-                    xml.WriteAttributeStringSafe("id", node.Name + "-mesh-map-0");
-                    xml.WriteStartElement("float_array");
-                    xml.WriteAttributeStringSafe("id", node.Name + "-mesh-map-0-array");
-                    xml.WriteAttributeString("count", (node.Vertices.Length * 2).ToString(CultureInfo.InvariantCulture));
-
-                    builder = new StringBuilder();
-                    for (var j = 0; j < node.Vertices.Length; j++) {
-                        builder.Append(node.Vertices[j].Uv[0].ToString(CultureInfo.InvariantCulture));
-                        builder.Append(" ");
-                        builder.Append((-node.Vertices[j].Uv[1]).ToString(CultureInfo.InvariantCulture));
-                        builder.Append(" ");
-                    }
-                    xml.WriteString(builder.ToString());
-                    xml.WriteEndElement();
-
-                    xml.WriteStartElement("technique_common");
-                    xml.WriteStartElement("accessor");
-                    xml.WriteAttributeStringSafe("source", "#" + node.Name + "-mesh-map-0-array");
-                    xml.WriteAttributeString("count", node.Vertices.Length.ToString(CultureInfo.InvariantCulture));
-                    xml.WriteAttributeString("stride", "2");
-
-                    xml.WriteStartElement("param");
-                    xml.WriteAttributeString("name", "S");
-                    xml.WriteAttributeString("type", "float");
-                    xml.WriteEndElement();
-                    xml.WriteStartElement("param");
-                    xml.WriteAttributeString("name", "T");
-                    xml.WriteAttributeString("type", "float");
-                    xml.WriteEndElement();
-
-                    xml.WriteEndElement();
-                    xml.WriteEndElement();
-                    xml.WriteEndElement();
-
-                    /* vertices */
-                    xml.WriteStartElement("vertices");
-                    xml.WriteAttributeStringSafe("id", node.Name + "-mesh-vertices");
-                    xml.WriteStartElement("input");
-                    xml.WriteAttributeString("semantic", "POSITION");
-                    xml.WriteAttributeStringSafe("source", "#" + node.Name + "-mesh-positions");
-                    xml.WriteEndElement();
-                    xml.WriteEndElement();
-
-                    /* triangles */
-                    xml.WriteStartElement("polylist");
-                    xml.WriteAttributeStringSafe("material", Materials.Values.ElementAt((int)node.MaterialId).Name + "-material");
-                    xml.WriteAttributeString("count", (node.Indices.Length / 3).ToString(CultureInfo.InvariantCulture));
-
-                    xml.WriteStartElement("input");
-                    xml.WriteAttributeString("semantic", "VERTEX");
-                    xml.WriteAttributeStringSafe("source", "#" + node.Name + "-mesh-vertices");
-                    xml.WriteAttributeString("offset", "0");
-                    xml.WriteEndElement();
-                    xml.WriteStartElement("input");
-                    xml.WriteAttributeString("semantic", "NORMAL");
-                    xml.WriteAttributeStringSafe("source", "#" + node.Name + "-mesh-normals");
-                    xml.WriteAttributeString("offset", "1");
-                    xml.WriteEndElement();
-                    xml.WriteStartElement("input");
-                    xml.WriteAttributeString("semantic", "TEXCOORD");
-                    xml.WriteAttributeStringSafe("source", "#" + node.Name + "-mesh-map-0");
-                    xml.WriteAttributeString("offset", "2");
-                    xml.WriteAttributeString("set", "0");
-                    xml.WriteEndElement();
-
-                    builder = new StringBuilder();
-                    for (var j = 0; j < node.Indices.Length; j += 3) {
-                        builder.Append("3 ");
-                    }
-                    xml.WriteElementString("vcount", builder.ToString());
-
-                    builder = new StringBuilder();
-                    foreach (var s in node.Indices.Select(j => j.ToString(CultureInfo.InvariantCulture))) {
-                        builder.Append(s);
-                        builder.Append(" ");
-                        builder.Append(s);
-                        builder.Append(" ");
-                        builder.Append(s);
-                        builder.Append(" ");
-                    }
-                    xml.WriteElementString("p", builder.ToString());
-
-                    xml.WriteEndElement();
-                    xml.WriteEndElement();
-                    xml.WriteEndElement();
+                    ExportCollada_Mesh(xml, node.Name, new [] { node });
                     break;
-
-                //case Kn5NodeClass.SkinnedMesh:
-                //    throw new NotImplementedException();
             }
+        }
+
+        private void ExportCollada_Scene(XmlWriter xml) {
+            xml.WriteStartElement("visual_scene");
+            xml.WriteAttributeString("id", "Scene");
+            xml.WriteAttributeString("name", "Scene");
+            ExportCollada_Node(xml, RootNode);
+
+            xml.WriteStartElement("evaluate_scene");
+            xml.WriteStartElement("render");
+            xml.WriteElementString("layer", "Visible");
+            xml.WriteEndElement(); // render
+            xml.WriteEndElement(); // evaluate_scene
+
+            xml.WriteEndElement(); // visual_scene
         }
 
         private void ExportCollada_Node(XmlWriter xml, Kn5Node node) {
+            var boneNames = node.Children.SelectManyRecursive(x => x.Children)
+                                .Where(x => x.NodeClass == Kn5NodeClass.SkinnedMesh)
+                                .SelectMany(x => x.Bones.Select(y => y.Name))
+                                .ToList();
             foreach (var t in node.Children) {
-                ExportCollada_NodeSub(xml, t, false);
+                ExportCollada_NodeSub(xml, boneNames, t);
             }
         }
 
-        private void ExportCollada_NodeSub(XmlWriter xml, Kn5Node node, bool onlyChild) {
-            if (node.NodeClass == Kn5NodeClass.Base || !onlyChild) {
-                xml.WriteStartElement("node");
-                xml.WriteAttributeStringSafe("id", node.Name);
-                xml.WriteAttributeStringSafe("name", node.Name);
-                xml.WriteAttributeString("type", "NODE");
+        private void ExportCollada_NodeSub_BindMaterial(XmlWriter xml, params uint[] materialId) {
+            xml.WriteStartElement("bind_material");
+            xml.WriteStartElement("technique_common");
 
-                xml.WriteStartElement("matrix");
-                xml.WriteAttributeString("sid", "transform");
+            foreach (var materialName in materialId.Select(u => Materials.Values.ElementAt((int)u).Name)) {
+                xml.WriteElement("instance_material",
+                        "symbol", $"{materialName}-material",
+                        "target", $"#{materialName}-material");
+            }
+            
+            xml.WriteEndElement(); // technique_common
+            xml.WriteEndElement(); // bind_material
+        }
 
-                if (node.NodeClass == Kn5NodeClass.Base) {
-                    var sb = new StringBuilder();
-                    for (var i = 0; i < 4; i++) {
-                        for (var j = 0; j < 4; j++) {
-                            sb.Append(node.Transform[j * 4 + i].ToString(CultureInfo.InvariantCulture));
-                            sb.Append(" ");
+        private void ExportCollada_NodeSub_Inner(XmlWriter xml, IReadOnlyList<string> boneNames, Kn5Node node) {
+            switch (node.NodeClass) {
+                case Kn5NodeClass.Base:
+                    if (node.Children.Count == 1 && node.Children[0].NodeClass != Kn5NodeClass.Base) {
+                        ExportCollada_NodeSub_Inner(xml, boneNames, node.Children[0]);
+                    } else {
+                        foreach (var t in node.Children) {
+                            ExportCollada_NodeSub(xml, boneNames, t);
                         }
                     }
-                    xml.WriteString(sb.ToString());
-                } else {
-                    xml.WriteString("1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0");
-                }
+                    break;
 
-                xml.WriteEndElement();
+                case Kn5NodeClass.Mesh:
+                    xml.WriteStartElement("instance_geometry");
+                    xml.WriteAttributeStringSafe("url", $"#{node.Name}-mesh");
+                    ExportCollada_NodeSub_BindMaterial(xml, node.MaterialId);
+                    xml.WriteEndElement();
+                    break;
+
+                case Kn5NodeClass.SkinnedMesh:
+                    xml.WriteStartElement("instance_controller");
+                    xml.WriteAttributeStringSafe("url", $"#{node.Name}Controller");
+                    ExportCollada_NodeSub_BindMaterial(xml, node.MaterialId);
+
+                    foreach (var bone in node.Bones) {
+                        xml.WriteElementString("skeleton", $"#{bone.Name}");
+                    }
+
+                    xml.WriteEndElement(); // instance_controller
+                    break;
+            }
+        }
+
+        private void ExportCollada_NodeSub(XmlWriter xml, IReadOnlyList<string> boneNames, Kn5Node node) {
+            xml.WriteStartElement("node");
+            xml.WriteAttributeStringSafe("id", node.Name);
+            xml.WriteAttributeStringSafe("sid", node.Name);
+            xml.WriteAttributeStringSafe("name", node.Name);
+
+            xml.WriteAttributeString("layer", node.Active ? "Visible" : "Hidden");
+            xml.WriteAttributeString("type", node.NodeClass == Kn5NodeClass.Base && boneNames.Contains(node.Name) ? "JOINT" : "NODE");
+
+            if (node.Children?.FirstOrDefault()?.NodeClass != Kn5NodeClass.SkinnedMesh) {
+                xml.WriteElement("matrix",
+                        "sid", "transform",
+                        node.NodeClass == Kn5NodeClass.Base ? XmlWriterExtension.MatrixToCollada(node.Transform) : "1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0");
             }
 
-            if (node.NodeClass == Kn5NodeClass.Base) {
-                foreach (var t in node.Children) {
-                    var onlyOneChild = node.Children.Count == 1;
-                    ExportCollada_NodeSub(xml, t, onlyOneChild);
-                }
-            } else {
+            if (IsMultiMaterial(node) && node.Children != null) {
                 xml.WriteStartElement("instance_geometry");
-                xml.WriteAttributeStringSafe("url", "#" + node.Name + "-mesh");
-
-                xml.WriteStartElement("bind_material");
-                xml.WriteStartElement("technique_common");
-                xml.WriteStartElement("instance_material");
-
-                var materialName = Materials.Values.ElementAt((int)node.MaterialId).Name;
-                xml.WriteAttributeStringSafe("symbol", materialName + "-material");
-                xml.WriteAttributeStringSafe("target", "#" + materialName + "-material");
-
+                xml.WriteAttributeStringSafe("url", $"#{node.Name}-mesh");
+                ExportCollada_NodeSub_BindMaterial(xml, node.Children.Select(x => x.MaterialId).ToArray());
                 xml.WriteEndElement();
-                xml.WriteEndElement();
-                xml.WriteEndElement();
-
-                xml.WriteEndElement();
+            } else {
+                ExportCollada_NodeSub_Inner(xml, boneNames, node);
             }
 
-            if (node.NodeClass == Kn5NodeClass.Base || !onlyChild) {
-                xml.WriteEndElement();
-            }
+            xml.WriteEndElement(); // node
         }
     }
 }

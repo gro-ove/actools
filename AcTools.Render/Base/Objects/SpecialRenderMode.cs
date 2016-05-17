@@ -6,6 +6,8 @@ namespace AcTools.Render.Base.Objects {
         Simple,
         SimpleTransparent,
 
+        Outline,
+
         Deferred,
         DeferredTransparentMask,    // draw depth of transparent surfaces for filtering stuff under
         DeferredTransparentDepth,   // ?

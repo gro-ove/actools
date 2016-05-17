@@ -78,6 +78,7 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
     <Reference Include="xZune.Vlc">
       <HintPath>..\..\..\Temp\xZune.Vlc-master\Release\.NET 4.5\xZune.Vlc.dll</HintPath>
     </Reference>
@@ -89,6 +90,7 @@
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
+    <Compile Include="ValueLabel.cs" />
     <Compile Include="Converters\KunosCareerTypeToIconConverter.cs" />
     <Compile Include="Converters\PlaceToColorConverter.cs" />
     <Compile Include="Converters\RealismLevelToColorConverter.cs" />
@@ -123,6 +125,9 @@
     <Compile Include="Pages\Dialogs\UserPresetsControl_SaveDialog.xaml.cs">
       <DependentUpon>UserPresetsControl_SaveDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\WaitingDialog.xaml.cs">
+      <DependentUpon>WaitingDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\AppAppearanceManager.cs" />
     <Compile Include="AcToolBar.cs" />
     <Compile Include="Services\ImageViewerService.cs" />
@@ -145,8 +150,6 @@
     <Compile Include="GraphViewer.xaml.cs">
       <DependentUpon>GraphViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Kn5CarRenderControl.cs" />
-    <Compile Include="SlimDxControl.cs" />
     <Compile Include="Helpers\FinishableControl.cs" />
     <Compile Include="ViewModels\AcListPageViewModel.cs" />
     <Compile Include="ViewModels\AcObjectListCollectionViewWrapper.cs" />
@@ -228,6 +231,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Dialogs\WaitingDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\AcObjectBase.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -237,6 +244,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\AcObjectErrorsSection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ValueLabel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -253,14 +264,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\AcObjectListBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Kn5CarRenderControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\SlimDxControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

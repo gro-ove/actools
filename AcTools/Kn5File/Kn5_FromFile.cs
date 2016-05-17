@@ -69,7 +69,7 @@ namespace AcTools.Kn5File {
                     var texture = reader.ReadTexture();
                     if (!Textures.ContainsKey(texture.Name)) {
                         Textures[texture.Name] = texture;
-                        TexturesData[texture.Filename] = reader.ReadBytes(texture.Length);
+                        TexturesData[texture.Name] = reader.ReadBytes(texture.Length);
                     } else {
                         reader.BaseStream.Seek(texture.Length, SeekOrigin.Current);
                     }
@@ -91,7 +91,7 @@ namespace AcTools.Kn5File {
                     var texture = reader.ReadTexture();
 
                     Textures[texture.Name] = texture;
-                    TexturesData[texture.Filename] = new byte[]{};
+                    TexturesData[texture.Name] = new byte[]{};
                     reader.BaseStream.Seek(texture.Length, SeekOrigin.Current);
                 }
             } catch (NotImplementedException) {

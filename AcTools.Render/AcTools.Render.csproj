@@ -108,7 +108,6 @@
     <Compile Include="Base\TickEventHandler.cs" />
     <Compile Include="Base\Utils\FrameMonitor.cs" />
     <Compile Include="Base\Utils\GeometryGenerator.cs" />
-    <Compile Include="Base\Utils\MagickWrapper.cs" />
     <Compile Include="Base\Utils\MathF.cs" />
     <Compile Include="Base\Utils\MathF_CosTable.cs" />
     <Compile Include="Base\Utils\SlimDxExtension.cs" />
@@ -123,6 +122,7 @@
     <Compile Include="Forward\ForwardRenderer.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleAlpha.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNmMult.cs" />
+    <Compile Include="Kn5SpecificForward\ToolsKn5ObjectRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\Kn5MaterialUv.cs" />
     <Compile Include="Kn5SpecificSpecial\UvMaterialProvider.cs" />
     <Compile Include="Kn5SpecificSpecial\UvRenderer.cs" />
@@ -137,6 +137,7 @@
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleMaps.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleNm.cs" />
     <Compile Include="Kn5SpecificForward\Materials\Kn5MaterialSimpleReflective.cs" />
+    <Compile Include="Kn5Specific\Materials\Kn5MaterialExtend.cs" />
     <Compile Include="Kn5Specific\Objects\RenderableListExtension.cs" />
     <Compile Include="Kn5Specific\Textures\IOverridedTextureProvider.cs" />
     <Compile Include="Base\Utils\TaskExtension.cs" />
@@ -151,7 +152,6 @@
     <Compile Include="Kn5Specific\Materials\IObjectMaterialDeferred.cs" />
     <Compile Include="Kn5Specific\Materials\IKn5MaterialsProvider.cs" />
     <Compile Include="Kn5Specific\Materials\InvisibleMaterial.cs" />
-    <Compile Include="Kn5Specific\Materials\Kn5MaterialExtend.cs" />
     <Compile Include="Kn5SpecificDeferred\Materials\Kn5MaterialGlDeferred.cs" />
     <Compile Include="Kn5SpecificDeferred\Materials\Kn5MaterialDeferred.cs" />
     <Compile Include="Kn5Specific\Materials\IRenderableMaterial.cs" />
@@ -169,6 +169,7 @@
     <Compile Include="Kn5Specific\Utils\CarLight.cs" />
     <Compile Include="Kn5Specific\Utils\CarLightType.cs" />
     <Compile Include="Kn5Specific\Utils\Kn5Converter.cs" />
+    <Compile Include="Temporary\Logging.cs" />
     <Compile Include="Temporary\TestingCube.cs" />
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

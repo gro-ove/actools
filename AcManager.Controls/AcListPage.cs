@@ -126,8 +126,7 @@ namespace AcManager.Controls {
         #endregion
     }
 
-    public class AcObjectEventArgs
-        : EventArgs {
+    public class AcObjectEventArgs : EventArgs {
         public AcObjectEventArgs(AcObjectNew obj) {
             AcObject = obj;
         }
