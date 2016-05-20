@@ -1,4 +1,6 @@
-﻿namespace AcManager.Tools.About {
+﻿using AcManager.Tools.About;
+
+namespace AcManager.About {
     public sealed class ImportantTips : PieceOfInformation {
         private ImportantTips(string displayName, string description, string id = null)
                 : base(displayName, description, id) {}
@@ -47,6 +49,7 @@ Quite questionable solution. I won't spread about it too much, just basics:
   + Tested: surprisingly solid, works without Internet;
   − Steam-unfriendly: doesn't work for archievments & stuff.
   − Obsoletable: you can miss some updates for AC using it.
+  − Not supported: doesn't work with AC 1.6.
 
  • [b]Naive Starter[/b]
 CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you're using original Steam version — won't work at all.", "starters"),
@@ -62,7 +65,12 @@ Hints:
 
  [img=""http://i.imgur.com/LzLLjAw.png|355""]Example[/img]
 
-Good luck!", "trackPreviews")
+Good luck!", "trackPreviews"),
+
+            new ImportantTips(@"I Need Your Help!",
+                    @"Since AC 1.6 SSE stoped working, and other two (Tricky and Starter+) require write-access to root AC folder, which could be unavailable. Also, both of them require the default launcher (AssettoCorsa.exe) to be replaced, and it could cause some troubles.
+
+So, I'm asking Kunos to add some official support for custom launchers. [url=""http://www.assettocorsa.net/forum/index.php?threads/alternative-launchers-official-support.32894/""]Please, show that you're interested in it![/url]", "iNeedYourHelp")
         };
     }
 }

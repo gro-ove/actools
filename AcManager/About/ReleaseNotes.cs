@@ -1,4 +1,6 @@
-﻿namespace AcManager.Tools.About {
+﻿using AcManager.Tools.About;
+
+namespace AcManager.About {
     public sealed class ReleaseNotes : PieceOfInformation {
         public string Version { get; }
 

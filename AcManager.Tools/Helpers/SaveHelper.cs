@@ -5,11 +5,13 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers {
     public interface ISaveHelper {
-        void Init();
+        void Initialize();
+
+        void LoadOrReset();
 
         void Reset();
 
-        void Load();
+        bool Load();
 
         bool HasSavedData { get; }
 
@@ -38,9 +40,15 @@ namespace AcManager.Tools.Helpers {
             _reset = reset;
         }
 
-        public void Init() {
+        public void Initialize() {
             Reset();
             Load();
+        }
+
+        public void LoadOrReset() {
+            if (!Load()) {
+                Reset();
+            }
         }
 
         public void Reset() {
@@ -49,18 +57,21 @@ namespace AcManager.Tools.Helpers {
             _disableSaving = false;
         }
 
-        public void Load() {
+        public bool Load() {
             var data = ValuesStorage.GetString(_key);
-            if (data == null) return;
+            if (data == null) return false;
 
             try {
                 _disableSaving = true;
                 _load(JsonConvert.DeserializeObject<T>(data));
+                return true;
             } catch (Exception e) {
                 Logging.Warning("cannot load data: " + e);
             } finally {
                 _disableSaving = false;
             }
+
+            return false;
         }
 
         public bool HasSavedData => ValuesStorage.Contains(_key);

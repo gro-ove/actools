@@ -338,7 +338,7 @@ namespace AcManager.Controls.ViewModels {
         /// later (only with this constuctor).
         /// </summary>
         public BaseAssistsViewModel() : this(false) {
-            Saveable.Init();
+            Saveable.Initialize();
         }
 
         /// <summary>

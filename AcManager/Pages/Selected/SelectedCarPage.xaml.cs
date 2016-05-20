@@ -18,7 +18,6 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;

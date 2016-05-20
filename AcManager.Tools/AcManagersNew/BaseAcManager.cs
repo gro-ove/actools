@@ -207,8 +207,8 @@ namespace AcManager.Tools.AcManagersNew {
                 var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
                 if (x.IsLoaded) return;
 
-                loaded.PastLoad();
                 x.Value = loaded;
+                loaded.PastLoad();
             }), SettingsHolder.Content.LoadingConcurrency);
 
             IsLoaded = true;

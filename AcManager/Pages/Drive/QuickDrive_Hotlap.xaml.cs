@@ -62,7 +62,7 @@ namespace AcManager.Pages.Drive {
                 });
 
                 if (initialize) {
-                    Saveable.Init();
+                    Saveable.Initialize();
                 } else {
                     Saveable.Reset();
                 }

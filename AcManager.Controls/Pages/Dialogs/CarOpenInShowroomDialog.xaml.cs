@@ -59,7 +59,7 @@ namespace AcManager.Controls.Pages.Dialogs {
                 });
 
                 if (string.IsNullOrEmpty(serializedPreset)) {
-                    _saveable.Init();
+                    _saveable.Initialize();
                 } else {
                     _saveable.Reset();
                     _saveable.FromSerializedString(serializedPreset);

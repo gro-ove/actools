@@ -50,10 +50,7 @@ namespace AcManager.Pages.Dialogs {
         private static string GetBrandIcon(string brand, out bool builtInIcon) {
             var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, brand + ".png");
             builtInIcon = entry != null && File.Exists(entry.Filename);
-            if (builtInIcon) return entry.Filename;
-
-            var fromList = CarsManager.Instance.LoadedOnly.FirstOrDefault(x => x.Brand == brand);
-            return fromList?.BrandBadge;
+            return builtInIcon ? entry.Filename : CarsManager.Instance.LoadedOnly.FirstOrDefault(x => x.Brand == brand)?.BrandBadge;
         }
 
         public ListCollectionView Brands => _brands;
@@ -71,19 +68,14 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private class DistinctHelper : IEqualityComparer<CarBrandInformation> {
-            public bool Equals(CarBrandInformation x, CarBrandInformation y) {
-                return string.Equals(x.Name, y.Name, StringComparison.Ordinal);
-            }
+            public bool Equals(CarBrandInformation x, CarBrandInformation y) => string.Equals(x.Name, y.Name, StringComparison.Ordinal);
 
-            public int GetHashCode(CarBrandInformation obj) {
-                return obj.Name.GetHashCode();
-            }
+            public int GetHashCode(CarBrandInformation obj) => obj.Name.GetHashCode();
         }
 
         private static void InitializeOnce() {
             _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>(
                 SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x)).Union(from name in ValuesStorage.GetStringList(KeyBrandsCache)
-                                                                                            where _carBrandsInformationList.All(x => x.Name != name)
                                                                                             select new CarBrandInformation(name)).Distinct(new DistinctHelper())
             );
 
@@ -97,7 +89,9 @@ namespace AcManager.Pages.Dialogs {
         private static void CarBrandsList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             switch (e.Action) {
                 case NotifyCollectionChangedAction.Add:
-                    _carBrandsInformationList.AddRange(e.NewItems.OfType<string>().Where(x => _carBrandsInformationList.Any(y => y.Name == x))
+                    _carBrandsInformationList.AddRange(e.NewItems.OfType<string>()
+                                                        .Where(x => _carBrandsInformationList.All(y => !string.Equals(y.Name, x,
+                                                                StringComparison.OrdinalIgnoreCase)))
                                                         .Select(x => new CarBrandInformation(x)));
                     break;
 
@@ -115,12 +109,12 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
             DataContext = this;
 
-            if (!CarsManager.Instance.IsLoaded) {
-                EnsureLoaded();
-            }
-
             if (_carBrandsInformationList == null) {
                 InitializeOnce();
+            }
+
+            if (!CarsManager.Instance.IsLoaded) {
+                EnsureLoaded();
             }
 
             UpdateSelected();

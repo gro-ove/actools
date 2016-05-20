@@ -216,7 +216,7 @@
                     <mui:Link DisplayName="Hotlap" Source="/Pages/Drive/QuickDrive_Hotlap.xaml" />
                     <mui:Link DisplayName="Time Attack" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
                     <mui:Link DisplayName="Race" Source="/Pages/Drive/QuickDrive_Race.xaml" />
-                    <mui:Link DisplayName="Weekend" Source="/Pages/Miscellaneous/WorkInProgress.xaml?race-weekend" />
+                    <mui:Link DisplayName="Weekend" Source="/Pages/Drive/QuickDrive_Weekend.xaml" />
                     <mui:Link DisplayName="Drag" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drag-race" />
                     <mui:Link DisplayName="Drift" Source="/Pages/Drive/QuickDrive_Drift.xaml" />
                 </mui:ModernTab.Links>

@@ -134,6 +134,9 @@
     <Compile Include="Pages\Dialogs\SelectTrackDialog_Countries.xaml.cs">
       <DependentUpon>SelectTrackDialog_Countries.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\QuickDrive_Weekend.xaml.cs">
+      <DependentUpon>QuickDrive_Weekend.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\FontsListPage.xaml.cs">
       <DependentUpon>FontsListPage.xaml</DependentUpon>
     </Compile>
@@ -149,8 +152,8 @@
     <Compile Include="Pages\Settings\SettingsContent.xaml.cs">
       <DependentUpon>SettingsContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="About\ImportantTips.cs" />
     <Compile Include="Tools\About\AboutHelper.cs" />
-    <Compile Include="Tools\About\ImportantTips.cs" />
     <Compile Include="Tools\About\PieceOfInformation.cs" />
     <Compile Include="Tools\NonfatalErrorNotifier.cs" />
     <Compile Include="Tools\GameWrapperUiFactory.cs" />
@@ -218,7 +221,7 @@
     </Compile>
     <Compile Include="Tools\AcErrors\Solver\CarSolvers.cs" />
     <Compile Include="Tools\AcErrors\UiSolversFactory.cs" />
-    <Compile Include="Tools\About\ReleaseNotes.cs" />
+    <Compile Include="About\ReleaseNotes.cs" />
     <Compile Include="Tools\UriProvider.cs" />
     <Compile Include="Tools\ShellLink.cs" />
     <Compile Include="Tools\Toast.cs" />
@@ -304,6 +307,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Drive\QuickDrive_Drift.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Drive\QuickDrive_Weekend.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

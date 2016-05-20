@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
@@ -34,6 +34,20 @@ namespace AcManager.Pages.Drive {
         public QuickDrive_Race() {
             InitializeComponent();
             DataContext = new QuickDrive_RaceViewModel();
+        }
+
+        private bool _loaded;
+
+        private void QuickDrive_Race_OnLoaded(object sender, RoutedEventArgs e) {
+            if (_loaded) return;
+            _loaded = true;
+            ActualModel.Load();
+        }
+
+        private void QuickDrive_Race_OnUnloaded(object sender, RoutedEventArgs e) {
+            if (!_loaded) return;
+            _loaded = false;
+            ActualModel.Unload();
         }
 
         public QuickDriveModeViewModel Model => (QuickDrive_RaceViewModel)DataContext;
@@ -88,22 +102,17 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(StartingPositionLimit));
 
-                    if (_last || StartingPosition > StartingPositionLimit) {
-                        var val = StartingPosition;
-                        StartingPosition = StartingPositionLimit;
-                        if (_unclampedStartingPosition == null && val > StartingPositionLimit) {
-                            _unclampedStartingPosition = val;
-                        }
-                    } else {
-                        if (_unclampedStartingPosition != null) {
-                            StartingPosition = _unclampedStartingPosition.Value;
-                            _unclampedStartingPosition = null;
-                        }
+                    if (_unclampedStartingPosition.HasValue && _unclampedStartingPosition != StartingPosition) {
+                        StartingPosition = _unclampedStartingPosition.Value;
+                    }
 
-                        if (StartingPosition == StartingPositionLimit && StartingPositionLimit != 0) {
-                            _last = true;
-                            OnPropertyChanged(nameof(DisplayStartingPosition));
-                        }
+                    if (_last || StartingPosition > StartingPositionLimit) {
+                        _innerChange = true;
+                        StartingPosition = StartingPositionLimit;
+                        _innerChange = false;
+                    } else if (StartingPosition == StartingPositionLimit && StartingPositionLimit != 0) {
+                        _last = true;
+                        OnPropertyChanged(nameof(DisplayStartingPosition));
                     }
 
                     SaveLater();
@@ -198,17 +207,19 @@ namespace AcManager.Pages.Drive {
 
             private bool _last;
             private int _startingPosition;
+            private bool _innerChange;
 
             public int StartingPosition {
                 get { return _startingPosition; }
                 set {
+                    if (!_innerChange) {
+                        _unclampedStartingPosition = Math.Max(value, 0);
+                    }
+
+                    value = MathUtils.Clamp(value, 0, StartingPositionLimit);
                     if (Equals(value, _startingPosition)) return;
 
                     _startingPosition = value;
-                    if (_unclampedStartingPosition != null) {
-                        _unclampedStartingPosition = value;
-                    }
-
                     _last = value == StartingPositionLimit && StartingPositionLimit != 0;
 
                     OnPropertyChanged();
@@ -241,63 +252,80 @@ namespace AcManager.Pages.Drive {
 
             public int OpponentsNumberLimit => TrackPitsNumber - 1;
 
-            private class SaveableData {
+            protected class SaveableData {
                 public bool? Penalties, AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse;
                 public int? AiLevel, AiLevelMin, LapsNumber, OpponentsNumber, StartingPosition;
                 public string GridTypeId, OpponentsCarsFilter;
                 public string[] ManualList;
             }
 
+            protected virtual void Save(SaveableData result) {
+                result.Penalties = Penalties;
+                result.AiLevelFixed = AiLevelFixed;
+                result.AiLevelArrangeRandomly = AiLevelArrangeRandomly;
+                result.AiLevelArrangeReverse = AiLevelArrangeReverse;
+                result.AiLevel = AiLevel;
+                result.AiLevelMin = AiLevelMin;
+                result.LapsNumber = LapsNumber;
+                result.OpponentsNumber = OpponentsNumber;
+                result.StartingPosition = StartingPosition;
+                result.GridTypeId = SelectedGridType?.Id;
+                result.OpponentsCarsFilter = OpponentsCarsFilter;
+                result.ManualList = _opponentsCarsIds ?? (SelectedGridType == GridType.Manual ? OpponentsCars.Select(x => x.Id).ToArray() : null);
+            }
+
+            protected virtual void Load(SaveableData o) {
+                Penalties = o.Penalties ?? true;
+                AiLevelFixed = o.AiLevelFixed ?? true;
+                AiLevelArrangeRandomly = o.AiLevelArrangeRandomly ?? true;
+                AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? false;
+                AiLevel = o.AiLevel ?? 92;
+                AiLevelMin = o.AiLevelMin ?? 92;
+                LapsNumber = o.LapsNumber ?? 2;
+                OpponentsNumber = o.OpponentsNumber ?? 3;
+                StartingPosition = o.StartingPosition ?? 4;
+
+                UpdateGridTypes();
+                SelectedGridType = GridTypes.GetByIdOrDefault(o.GridTypeId) ?? GridType.SameCar;
+
+                _opponentsCarsIds = SelectedGridType == GridType.Manual ? o.ManualList : null;
+                OpponentsCarsFilter = o.OpponentsCarsFilter;
+            }
+
+            protected virtual void Reset() {
+                Penalties = true;
+                AiLevelFixed = true;
+                AiLevelArrangeRandomly = true;
+                AiLevelArrangeReverse = false;
+                AiLevel = 92;
+                AiLevelMin = 92;
+                LapsNumber = 2;
+                OpponentsNumber = 3;
+                StartingPosition = 4;
+                SelectedGridType = GridType.SameCar;
+                OpponentsCarsFilter = string.Empty;
+            }
+
+            /// <summary>
+            /// Will be called in constuctor!
+            /// </summary>
+            protected virtual void InitializeSaveable() {
+                Saveable = new SaveHelper<SaveableData>("__QuickDrive_Race", () => {
+                    var r = new SaveableData();
+                    Save(r);
+                    return r;
+                }, Load, Reset);
+            }
+
             public QuickDrive_RaceViewModel(bool initialize = true) {
                 OpponentsCars = new BetterObservableCollection<CarObject>();
                 OpponentsCarsView = new BetterListCollectionView(OpponentsCars) { CustomSort = this };
 
-                Saveable = new SaveHelper<SaveableData>("__QuickDrive_Race", () => new SaveableData {
-                    Penalties = Penalties,
-                    AiLevelFixed = AiLevelFixed,
-                    AiLevelArrangeRandomly = AiLevelArrangeRandomly,
-                    AiLevelArrangeReverse = AiLevelArrangeReverse,
-                    AiLevel = AiLevel,
-                    AiLevelMin = AiLevelMin,
-                    LapsNumber = LapsNumber,
-                    OpponentsNumber = OpponentsNumber,
-                    StartingPosition = StartingPosition,
-                    GridTypeId = SelectedGridType?.Id,
-                    OpponentsCarsFilter = OpponentsCarsFilter,
-                    ManualList = _opponentsCarsIds ?? (SelectedGridType == GridType.Manual ? OpponentsCars.Select(x => x.Id).ToArray() : null)
-                }, o => {
-                    Penalties = o.Penalties ?? true;
-                    AiLevelFixed = o.AiLevelFixed ?? true;
-                    AiLevelArrangeRandomly = o.AiLevelArrangeRandomly ?? true;
-                    AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? false;
-                    AiLevel = o.AiLevel ?? 92;
-                    AiLevelMin = o.AiLevelMin ?? 92;
-                    LapsNumber = o.LapsNumber ?? 2;
-                    OpponentsNumber = o.OpponentsNumber ?? 3;
-                    StartingPosition = o.StartingPosition ?? 4;
-
-                    UpdateGridTypes();
-                    SelectedGridType = GridTypes.GetByIdOrDefault(o.GridTypeId) ?? GridType.SameCar;
-
-                    _opponentsCarsIds = SelectedGridType == GridType.Manual ? o.ManualList : null;
-                    OpponentsCarsFilter = o.OpponentsCarsFilter;
-                }, () => {
-                    Penalties = true;
-                    AiLevelFixed = true;
-                    AiLevelArrangeRandomly = true;
-                    AiLevelArrangeReverse = false;
-                    AiLevel = 92;
-                    AiLevelMin = 92;
-                    LapsNumber = 2;
-                    OpponentsNumber = 3;
-                    StartingPosition = 4;
-                    SelectedGridType = GridType.SameCar;
-                    OpponentsCarsFilter = string.Empty;
-                });
+                // ReSharper disable once VirtualMemberCallInContructor
+                InitializeSaveable();
 
                 if (initialize) {
-                    // because load is basically reset
-                    Saveable.Load();
+                    Saveable.LoadOrReset();
                 } else {
                     Saveable.Reset();
                 }
@@ -528,61 +556,60 @@ namespace AcManager.Pages.Drive {
 
             public override async Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
+                IEnumerable<Game.AiCar> botCars;
+
                 using (var waiting = new WaitingDialog()) {
-                    await Drive(selectedCar, selectedTrack, assistsProperties, conditionProperties, trackProperties, waiting);
-                }
-            }
-
-            public async Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack, Game.AssistsProperties assistsProperties,
-                    Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties, IProgress<string> progress) {
-                if (selectedCar == null || !selectedCar.Enabled) {
-                    ModernDialog.ShowMessage("Please, select some non-disabled car.", "Can't start race", MessageBoxButton.OK);
-                    return;
-                }
-
-                if (selectedTrack == null) {
-                    ModernDialog.ShowMessage("Please, select a track.", "Can't start race", MessageBoxButton.OK);
-                    return;
-                }
-
-                if (OpponentsNumber < 1) {
-                    ModernDialog.ShowMessage("Please, set at least one opponent.", "Can't start race", MessageBoxButton.OK);
-                    return;
-                }
-
-                CarObject[] cars;
-
-                if (SelectedGridType == null || SelectedGridType == GridType.SameCar) {
-                    cars = new[] { selectedCar };
-                } else {
-                    if (!CarsManager.Instance.IsLoaded) {
-                        progress.Report("Grid building…");
-                        await CarsManager.Instance.EnsureLoadedAsync();
+                    if (selectedCar == null || !selectedCar.Enabled) {
+                        ModernDialog.ShowMessage("Please, select some non-disabled car.", "Can't start race", MessageBoxButton.OK);
+                        return;
                     }
 
-                    try {
-                        progress.Report("AI cars filtering…");
-                        cars = await FindAppropriateCars(selectedCar, selectedTrack, SelectedGridType, true);
-                        Logging.Write("Appropriate cars: " + cars.JoinToString(", "));
-                        if (SelectedGridType.Test) {
+                    if (selectedTrack == null) {
+                        ModernDialog.ShowMessage("Please, select a track.", "Can't start race", MessageBoxButton.OK);
+                        return;
+                    }
+
+                    if (OpponentsNumber < 1) {
+                        ModernDialog.ShowMessage("Please, set at least one opponent.", "Can't start race", MessageBoxButton.OK);
+                        return;
+                    }
+
+                    CarObject[] cars;
+                    var cancellation = waiting.CancellationToken;
+
+                    if (SelectedGridType == null || SelectedGridType == GridType.SameCar) {
+                        cars = new[] { selectedCar };
+                    } else {
+                        if (!CarsManager.Instance.IsLoaded) {
+                            waiting.Report("Grid building…");
+                            await CarsManager.Instance.EnsureLoadedAsync();
+                            if (cancellation.IsCancellationRequested) return;
+                        }
+
+                        try {
+                            waiting.Report("AI cars filtering…");
+                            cars = await FindAppropriateCars(selectedCar, selectedTrack, SelectedGridType, true);
+                            if (cancellation.IsCancellationRequested) return;
+
+                            Logging.Write("Appropriate cars: " + cars.JoinToString(", "));
+                            if (SelectedGridType.Test) return;
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Can't filter appropriate cars for starting grid",
+                                    "If you made any changes to GridTypes.json, make sure they're all right.", e);
                             return;
                         }
-                    } catch (Exception e) {
-                        NonfatalError.Notify("Can't filter appropriate cars for starting grid",
-                                "If you made any changes to GridTypes.json, make sure they're all right.", e);
-                        return;
+
+                        if (cars.Length == 0) {
+                            ModernDialog.ShowMessage("Attempt to find any car fitting selected grid type is failed.", "Can't start race", MessageBoxButton.OK);
+                            return;
+                        }
                     }
 
-                    if (cars.Length == 0) {
-                        ModernDialog.ShowMessage("Attempt to find any car fitting selected grid type is failed.", "Can't start race", MessageBoxButton.OK);
-                        return;
-                    }
+                    waiting.Report("AI cars loading…");
+                    botCars = await GenerateAiCars(selectedCar, selectedTrack, OpponentsNumber, cars);
+                    if (cancellation.IsCancellationRequested) return;
                 }
 
-                progress.Report("AI cars loading…");
-                var botCars = await GenerateAiCars(selectedCar, selectedTrack, OpponentsNumber, cars);
-
-                progress.Report(null);
                 await StartAsync(new Game.StartProperties {
                     BasicProperties = new Game.BasicProperties {
                         CarId = selectedCar.Id,
@@ -593,14 +620,18 @@ namespace AcManager.Pages.Drive {
                     AssistsProperties = assistsProperties,
                     ConditionProperties = conditionProperties,
                     TrackProperties = trackProperties,
-                    ModeProperties = new Game.RaceProperties {
-                        AiLevel = AiLevelFixed ? AiLevel : 100,
-                        Penalties = Penalties,
-                        StartingPosition = StartingPosition == 0 ? MathUtils.Random(1, OpponentsNumber + 2) : StartingPosition,
-                        RaceLaps = LapsNumber,
-                        BotCars = botCars
-                    }
+                    ModeProperties = GetModeProperties(botCars)
                 });
+            }
+
+            protected virtual Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
+                return new Game.RaceProperties {
+                    AiLevel = AiLevelFixed ? AiLevel : 100,
+                    Penalties = Penalties,
+                    StartingPosition = StartingPosition == 0 ? MathUtils.Random(1, OpponentsNumber + 2) : StartingPosition,
+                    RaceLaps = LapsNumber,
+                    BotCars = botCars
+                };
             }
 
             private static string PrepareScript(string script) {
@@ -615,7 +646,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private async Task<CarObject[]> FindAppropriateCars([NotNull] CarObject car, [NotNull] TrackBaseObject track, [NotNull] GridType type, 
-                    bool useUserFilter) {
+                    bool useUserFilter, CancellationToken cancellation = default(CancellationToken)) {
                 if (car == null) throw new ArgumentNullException(nameof(car));
                 if (track == null) throw new ArgumentNullException(nameof(track));
                 if (type == null) throw new ArgumentNullException(nameof(type));
@@ -624,7 +655,7 @@ namespace AcManager.Pages.Drive {
                     return CarsManager.Instance.LoadedOnly.Where(x => x.Enabled).ToArray();
                 }
 
-                await Task.Delay(200);
+                await Task.Delay(200, cancellation);
                 return await Task.Run(() => {
                     IEnumerable<CarObject> carsEnumerable;
 
@@ -665,7 +696,7 @@ namespace AcManager.Pages.Drive {
                     }
 
                     return carsEnumerable.ToArray();
-                });
+                }, cancellation);
             }
 
             private async Task<IEnumerable<Game.AiCar>> GenerateAiCars(CarObject selectedCar, AcJsonObjectNew selectedTrack, int opponentsNumber, params CarObject[] opponentsCars) {
@@ -751,14 +782,6 @@ namespace AcManager.Pages.Drive {
             int IComparer.Compare(object x, object y) {
                 return (x as AcObjectNew)?.CompareTo(y as AcObjectNew) ?? 0;
             }
-        }
-
-        private void QuickDrive_Race_OnLoaded(object sender, RoutedEventArgs e) {
-            ActualModel.Load();
-        }
-
-        private void QuickDrive_Race_OnUnloaded(object sender, RoutedEventArgs e) {
-            ActualModel.Unload();
         }
     }
 }

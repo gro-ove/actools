@@ -460,7 +460,7 @@ namespace AcManager.Pages.Dialogs {
         private void CarUpdatePreviewsDialog_OnLoaded(object sender, RoutedEventArgs e) {
             if (_loadPreset == null) {
                 if (_saveable.HasSavedData || UserPresetsControl.CurrentUserPreset != null) {
-                    _saveable.Init();
+                    _saveable.Initialize();
                 } else {
                     _saveable.Reset();
                     UserPresetsControl.CurrentUserPreset =

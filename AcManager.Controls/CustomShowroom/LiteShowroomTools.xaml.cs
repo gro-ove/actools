@@ -139,7 +139,7 @@ namespace AcManager.Controls.CustomShowroom {
                     AmbientShadowHideWheels = false;
                     Renderer.LiveReload = false;
                 });
-                Saveable.Init();
+                Saveable.Initialize();
             }
 
             private void Renderer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

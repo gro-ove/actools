@@ -59,19 +59,21 @@ namespace AcTools.Processes {
             public string TrackId, TrackConfigurationId;
 
             public override void Set(IniFile file) {
-                var raceSection = file["RACE"];
-                raceSection.SetId("MODEL", CarId);
-                raceSection.SetId("SKIN", CarSkinId);
-                raceSection.SetId("TRACK", TrackId);
-                raceSection.Set("CONFIG_TRACK", TrackConfigurationId ?? "");
+                file["RACE"] = new IniFileSection {
+                    ["MODEL"] = CarId?.ToLowerInvariant(),
+                    ["SKIN"] = CarSkinId?.ToLowerInvariant(),
+                    ["TRACK"] = TrackId?.ToLowerInvariant(),
+                    ["CONFIG_TRACK"] = TrackConfigurationId?.ToLowerInvariant() ?? ""
+                };
 
-                var playerCarSection = file["CAR_0"];
-                playerCarSection.SetId("SETUP", CarSetupId ?? "");
-                playerCarSection.SetId("SKIN", CarSkinId);
-                playerCarSection.Set("MODEL", "-");
-                playerCarSection.Set("MODEL_CONFIG", "");
-                playerCarSection.Set("DRIVER_NAME", DriverName);
-                playerCarSection.Set("NATIONALITY", DriverNationality);
+                file["CAR_0"] = new IniFileSection {
+                    ["SETUP"] = CarSetupId?.ToLowerInvariant() ?? "",
+                    ["SKIN"] = CarSkinId?.ToLowerInvariant(),
+                    ["MODEL"] = "-",
+                    ["MODEL_CONFIG"] = "",
+                    ["DRIVER_NAME"] = DriverName,
+                    ["NATIONALITY"] = DriverNationality
+                };
             }
         }
 
@@ -106,6 +108,14 @@ namespace AcTools.Processes {
                 ghostSection.Set("FILE", "");
                 ghostSection.Set("ENABLED", false);
             }
+
+            protected virtual void SetGroove(IniFile file, int virtualLaps = 10, int maxLaps = 1, int startingLaps = 1) {
+                file["GROOVE"] = new IniFileSection {
+                    ["VIRTUAL_LAPS"] = virtualLaps,
+                    ["MAX_LAPS"] = maxLaps,
+                    ["STARTING_LAPS"] = startingLaps
+                };
+            }
         }
 
         public class OnlineProperties : BaseModeProperties {
@@ -130,12 +140,9 @@ namespace AcTools.Processes {
 
             public override void Set(IniFile file) {
                 SetGhostCar(file, false);
-                base.Set(file);
+                SetGroove(file, 10, 30, 0);
 
-                var grooveSection = file["GROOVE"];
-                grooveSection.Set("VIRTUAL_LAPS", 10);
-                grooveSection.Set("MAX_LAPS", 30);
-                grooveSection.Set("STARTING_LAPS", 0);
+                base.Set(file);
 
                 var sessionSection = file["SESSION_0"];
                 sessionSection.Set("NAME", "Practice");
@@ -155,12 +162,9 @@ namespace AcTools.Processes {
 
             public override void Set(IniFile file) {
                 SetGhostCar(file, GhostCar, GhostCarAdvantage);
-                base.Set(file);
+                SetGroove(file);
 
-                var grooveSection = file["GROOVE"];
-                grooveSection.Set("VIRTUAL_LAPS", 10);
-                grooveSection.Set("MAX_LAPS", 1);
-                grooveSection.Set("STARTING_LAPS", 1);
+                base.Set(file);
 
                 var sessionSection = file["SESSION_0"];
                 sessionSection.Set("NAME", "Hotlap");
@@ -173,12 +177,9 @@ namespace AcTools.Processes {
         public class TimeAttackProperties : BaseModeProperties {
             public override void Set(IniFile file) {
                 SetGhostCar(file, false);
-                base.Set(file);
+                SetGroove(file);
 
-                var grooveSection = file["GROOVE"];
-                grooveSection.Set("VIRTUAL_LAPS", 10);
-                grooveSection.Set("MAX_LAPS", 1);
-                grooveSection.Set("STARTING_LAPS", 1);
+                base.Set(file);
 
                 var sessionSection = file["SESSION_0"];
                 sessionSection.Set("NAME", "Time Attack");
@@ -193,12 +194,9 @@ namespace AcTools.Processes {
 
             public override void Set(IniFile file) {
                 SetGhostCar(file, false);
-                base.Set(file);
+                SetGroove(file);
 
-                var grooveSection = file["GROOVE"];
-                grooveSection.Set("VIRTUAL_LAPS", 10);
-                grooveSection.Set("MAX_LAPS", 1);
-                grooveSection.Set("STARTING_LAPS", 1);
+                base.Set(file);
 
                 var sessionSection = file["SESSION_0"];
                 sessionSection.Set("NAME", "Drift Session");
@@ -214,39 +212,84 @@ namespace AcTools.Processes {
 
             public override void Set(IniFile file) {
                 SetGhostCar(file, false);
+                SetGroove(file, 10, 30, 0);
+                SetRace(file);
+                SetSessions(file);
+                SetBots(file);
+            }
 
-                var grooveSection = file["GROOVE"];
-                grooveSection.Set("VIRTUAL_LAPS", 10);
-                grooveSection.Set("MAX_LAPS", 30);
-                grooveSection.Set("STARTING_LAPS", 0);
+            protected virtual void SetRace(IniFile file) {
+                var section = file["RACE"];
+                section.Set("CARS", BotCars.Count() + 1);
+                section.Set("AI_LEVEL", AiLevel);
+                section.Set("DRIFT_MODE", false);
+                section.Set("RACE_LAPS", RaceLaps);
+                section.Set("FIXED_SETUP", FixedSetup);
+                section.Set("PENALTIES", Penalties);
+            }
 
-                var raceSection = file["RACE"];
-                raceSection.Set("CARS", BotCars.Count() + 1);
-                raceSection.Set("AI_LEVEL", AiLevel);
-                raceSection.Set("DRIFT_MODE", false);
-                raceSection.Set("RACE_LAPS", RaceLaps);
-                raceSection.Set("FIXED_SETUP", FixedSetup);
-                raceSection.Set("PENALTIES", Penalties);
+            protected virtual void SetSessions(IniFile file) {
+                file["SESSION_0"] = new IniFileSection {
+                    ["NAME"] = "Quick Race",
+                    ["DURATION_MINUTES"] = Duration,
+                    ["SPAWN_SET"] = StartType.RegularStart.Value,
+                    ["TYPE"] = SessionType.Race,
+                    ["LAPS"] = RaceLaps,
+                    ["STARTING_POSITION"] = StartingPosition
+                };
+            }
 
-                var sessionSection = file["SESSION_0"];
-                sessionSection.Set("NAME", "Quick Race");
-                sessionSection.Set("TYPE", SessionType.Race);
-                sessionSection.Set("LAPS", RaceLaps);
-                sessionSection.Set("STARTING_POSITION", StartingPosition);
-                sessionSection.Set("DURATION_MINUTES", Duration);
-                sessionSection.Set("SPAWN_SET", "START");
-
+            protected virtual void SetBots(IniFile file) {
                 var j = 0;
                 foreach (var botCar in BotCars) {
-                    var botSection = file["CAR_" + ++j];
-                    botSection.SetId("MODEL", botCar.CarId);
-                    botSection.SetId("SKIN", botCar.SkinId);
-                    botSection.SetId("SETUP", botCar.Setup);
-                    botSection.Set("MODEL_CONFIG", "");
-                    botSection.Set("AI_LEVEL", botCar.AiLevel);
-                    botSection.Set("DRIVER_NAME", botCar.DriverName);
-                    botSection.Set("NATIONALITY", botCar.Nationality);
+                    file["CAR_" + ++j] = new IniFileSection {
+                        ["MODEL"] = botCar.CarId?.ToLowerInvariant(),
+                        ["SKIN"] = botCar.SkinId?.ToLowerInvariant(),
+                        ["SETUP"] = botCar.Setup?.ToLowerInvariant(),
+                        ["MODEL_CONFIG"] = "",
+                        ["AI_LEVEL"] = botCar.AiLevel,
+                        ["DRIVER_NAME"] = botCar.DriverName,
+                        ["NATIONALITY"] = botCar.Nationality
+                    };
                 }
+            }
+        }
+
+        public class WeekendProperties : RaceProperties {
+            public int PracticeDuration = 10,
+                    QualificationDuration = 15;
+
+            public StartType PracticeStartType = StartType.Pit,
+                    QualificationStartType = StartType.Pit;
+
+            protected override void SetSessions(IniFile file) {
+                var i = 0;
+
+                if (PracticeDuration > 0) {
+                    file["SESSION_" + i++] = new IniFileSection {
+                        ["NAME"] = "Practice",
+                        ["DURATION_MINUTES"] = PracticeDuration,
+                        ["SPAWN_SET"] = PracticeStartType.Value,
+                        ["TYPE"] = SessionType.Practice
+                    };
+                }
+
+                if (QualificationDuration > 0) {
+                    file["SESSION_" + i++] = new IniFileSection {
+                        ["NAME"] = "Qualifying",
+                        ["DURATION_MINUTES"] = QualificationDuration,
+                        ["SPAWN_SET"] = QualificationStartType.Value,
+                        ["TYPE"] = SessionType.Qualification
+                    };
+                }
+
+                file["SESSION_" + i] = new IniFileSection {
+                    ["NAME"] = "Race",
+                    ["DURATION_MINUTES"] = Duration,
+                    ["SPAWN_SET"] = StartType.RegularStart.Value,
+                    ["TYPE"] = SessionType.Race,
+                    ["LAPS"] = RaceLaps,
+                };
             }
         }
 

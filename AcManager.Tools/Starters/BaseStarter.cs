@@ -26,7 +26,7 @@ namespace AcManager.Tools.Starters {
             for (var i = 0; i < 100; i++) {
                 GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (GameProcess != null) break;
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
             }
 
             Thread.Sleep(1000);

@@ -35,14 +35,6 @@ namespace AcTools.Kn5File {
         public Kn5Node RootNode;
         public byte[] NodesBytes;
 
-        public enum ExportType {
-            Collada,
-            Fbx,
-            FbxIni,
-            FbxWithIni,
-            Directory
-        }
-
         public IEnumerable<Kn5Node> Nodes {
             get {
                 var queue = new Queue<Kn5Node>();
@@ -91,61 +83,6 @@ namespace AcTools.Kn5File {
         [CanBeNull]
         public Kn5Node FirstFiltered(Func<Kn5Node, bool> filter) {
             return Nodes.FirstOrDefault(filter);
-        }
-
-        [Obsolete]
-        public void Export(ExportType type, string filename) {
-            switch (type) {
-                case ExportType.Collada:
-                    ExportCollada(filename);
-                    break;
-
-                case ExportType.Fbx:
-                    ExportFbx(filename);
-                    break;
-
-                case ExportType.FbxIni:
-                    ExportIni(filename);
-                    break;
-
-                case ExportType.FbxWithIni:
-                    ExportFbxWithIni(filename);
-                    break;
-
-                case ExportType.Directory:
-                    ExportDirectory(filename);
-                    break;
-
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        [Obsolete]
-        public void PrintDebugInformation() {
-            Console.WriteLine(@"Version: {0}", Header.Version);
-            if (Header.Extra != 0) {
-                Console.WriteLine(@"Extra: {0}", Header.Extra);
-                Console.ReadKey();
-            }
-
-            if (Textures != null) {
-                Console.WriteLine(@"Textures: {0}", Textures.Count);
-            } else {
-                Console.Error.WriteLine("Cannot read textures");
-            }
-
-            if (Materials != null) {
-                Console.WriteLine(@"Materials: {0}", Materials.Count);
-            } else {
-                Console.Error.WriteLine("Cannot read materials");
-            }
-
-            if (RootNode != null) {
-                Console.WriteLine(@"Root node: {0}", RootNode.Name);
-            } else {
-                Console.Error.WriteLine("Cannot read nodes");
-            }
         }
     }
 }

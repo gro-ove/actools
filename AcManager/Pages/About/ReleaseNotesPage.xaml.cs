@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows.Data;
-using AcManager.Tools;
-using AcManager.Tools.About;
+using AcManager.About;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 

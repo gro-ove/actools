@@ -43,9 +43,8 @@
       <HintPath>..\..\..\Temp\magicknet\6.8\Magick.NET-x86.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -80,7 +79,6 @@
     <Compile Include="Kn5File\Kn5_Stats.cs" />
     <Compile Include="Kn5File\Kn5_ExportFbxIni.cs" />
     <Compile Include="Kn5File\Kn5_ExportFbx.cs" />
-    <Compile Include="Kn5File\Kn5_ExportJson.cs" />
     <Compile Include="Kn5File\Kn5_FromJson.cs" />
     <Compile Include="Processes\AssistState.cs" />
     <Compile Include="Processes\Game.cs" />
@@ -125,7 +123,6 @@
     <Compile Include="Kn5File\Kn5Header.cs" />
     <Compile Include="Kn5File\Kn5.cs" />
     <Compile Include="Kn5File\Kn5_ExportCollada.cs" />
-    <Compile Include="Kn5File\Kn5_ExportDirectory.cs" />
     <Compile Include="Kn5File\Kn5_FromDirectory.cs" />
     <Compile Include="Kn5File\Kn5_Save.cs" />
     <Compile Include="Kn5File\Kn5_FromFile.cs" />

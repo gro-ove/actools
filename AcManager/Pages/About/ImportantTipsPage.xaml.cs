@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Data;
-using AcManager.Tools.About;
+using AcManager.About;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;

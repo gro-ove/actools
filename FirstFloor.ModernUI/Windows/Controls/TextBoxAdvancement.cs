@@ -59,7 +59,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public enum SpecialMode {
-            None, Number, Integer, Positive, Time
+            None, Number, Integer, IntegerOrSkip, Positive, Time
         }
 
         public static SpecialMode GetSpecialMode(DependencyObject obj) {
@@ -133,6 +133,30 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     return FlexibleParser.ReplaceDouble(text, value);
                 }
+
+                case SpecialMode.IntegerOrSkip: {
+                        var skip = string.Equals(text, "Skip", StringComparison.OrdinalIgnoreCase);
+
+                        int value;
+                        if (skip) {
+                            value = 0;
+                        } else if (!FlexibleParser.TryParseInt(text, out value)) return null;
+
+                        if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
+                            delta *= 10.0;
+                        }
+
+                        if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
+                            delta *= 2.0;
+                        }
+
+                        value = (int)(value + delta);
+                        if (mode == SpecialMode.Positive && value < 1) {
+                            value = 1;
+                        }
+
+                        return skip ? value.ToString(CultureInfo.InvariantCulture) : FlexibleParser.ReplaceDouble(text, value);
+                    }
 
                 case SpecialMode.Time: {
                     var splitted = text.Split(':');

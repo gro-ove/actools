@@ -1,4 +1,5 @@
 using System.Linq;
+using AcManager.About;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.About {

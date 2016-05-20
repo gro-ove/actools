@@ -380,6 +380,9 @@ todo:
     - errors & fixers for badly make ui_skin.json
     - smooth previews applying
 
+    - replace int.TryParse in converters to something better
+        - including the ones from QuickDrive_Weekend
+
     + lite custom showroom
         + selecting objects
             + highlight

@@ -2,18 +2,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Content Manager"
-        ShowInTaskbar="True" d:DataContext="{d:DesignInstance dialogs:AcRootDirectorySelector+AcRootDirectorySelectorViewModel}">
-
-    <StackPanel>
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" Title="Content Manager" ShowInTaskbar="True"
+        d:DataContext="{d:DesignInstance dialogs:AcRootDirectorySelector+AcRootDirectorySelectorViewModel}">
+    <StackPanel Width="480">
         <mui:BbCodeBlock BbCode="Welcome to Content Manager and thanks for using it! You have only one thing left to do before launch:" Margin="0 0 0 8"
                 Visibility="{Binding FirstRun, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
         <TextBlock Text="Specify Assetto Corsa root folder:" Style="{StaticResource Heading2}" />
 
-        <DockPanel Margin="0 8 0 0" Width="480">
-            <Button Content="…" Click="Button_OnClick" DockPanel.Dock="Right" />
+        <DockPanel Margin="0 8 0 0">
+            <Button Content="…" Click="Button_OnClick" DockPanel.Dock="Right" Margin="4 0 0 0" />
             <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" watermark:WatermarkService.Watermark="?"
                     mui:FocusAdvancement.AdvancesByEnterKey="True" />
         </DockPanel>

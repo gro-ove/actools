@@ -22,12 +22,22 @@ namespace AcManager.Tools.Starters {
             _filename = addon.GetFilename(ConfigName);
 
             new IniFile {
-                ["Launcher"] = { ["Target"] = Path.Combine(acRoot, AcsName) },
-                ["Launcher"] = { ["StartIn"] = acRoot },
-                ["Launcher"] = { ["SteamClientPath"] = addon.GetFilename("sse86.dll") },
-                ["Launcher"] = { ["SteamClientPath64"] = addon.GetFilename("sse64.dll") },
-                ["Achievements"] = { ["UnlockAll"] = true },
-                ["SmartSteamEmu"] = { ["AppId"] = AcSteamId }
+                ["Launcher"] = {
+                    ["Target"] = Path.Combine(acRoot, AcsName),
+                    ["StartIn"] = acRoot,
+                    ["SteamClientPath"] = addon.GetFilename("sse86.dll"),
+                    ["SteamClientPath64"] = addon.GetFilename("sse64.dll")
+                },
+                ["Achievements"] = {
+                    ["UnlockAll"] = true
+                },
+                ["SSEOverlay"] = {
+                    ["DisableOverlay"] = true
+                },
+                ["SmartSteamEmu"] = {
+                    ["AppId"] = AcSteamId,
+                    ["Offline"] = true,
+                }
             }.Save(_filename);
 
             LauncherProcess = Process.Start(new ProcessStartInfo {
