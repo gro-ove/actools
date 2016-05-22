@@ -1,6 +1,6 @@
 # AcTools (and Content Manager)
 
-Set of utils and apps designed for Assetto Corsa. If you have any interest in them, please, let me know. If you want to rebuild projects, you can take some missing DLLs [here](https://trello.com/c/JoXMYzwx/47-about-avs).
+Set of utils and apps designed for Assetto Corsa. If you have any interest in them, please, let me know. If you want to rebuild some projects, you can take some missing DLLs [here](https://trello.com/c/JoXMYzwx/47-about-avs).
 
 ## Common libraries
 
