@@ -4,6 +4,7 @@ using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using AcTools.Render.Base;
+using AcTools.Render.Temporary;
 using SlimDX.Windows;
 
 namespace AcTools.Render.Wrapper {
@@ -66,8 +67,15 @@ namespace AcTools.Render.Wrapper {
             Paused = true;
         }
 
-        public void Run() {
-            MessagePump.Run(Form, OnRender);
+        private Action _firstFrame;
+
+        public void Run(Action firstFrame = null) {
+            try {
+                _firstFrame = firstFrame;
+                MessagePump.Run(Form, OnRender);
+            } catch (InvalidOperationException e) {
+                Logging.Warning("MessagePump exception: " + e);
+            }
         }
 
         protected virtual void OnResize(object sender, EventArgs eventArgs) {
@@ -122,6 +130,11 @@ namespace AcTools.Render.Wrapper {
             Form.Text = $"{_title} (FPS: {Renderer.FramesPerSecond:F0})";
             if (Paused && !Renderer.IsDirty) return;
             Renderer.Draw();
+
+            if (_firstFrame != null) {
+                _firstFrame.Invoke();
+                _firstFrame = null;
+            }
         }
 
         private Timer _toastTimer;

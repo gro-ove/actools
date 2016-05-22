@@ -20,7 +20,7 @@ using SlimDX;
 namespace AcTools.Render.Kn5SpecificDeferred {
     public class Kn5ObjectRenderer : StatsDeferredShadingRenderer, IKn5ObjectRenderer {
         private readonly Kn5[] _kn5;
-        private readonly CarHelper _carHelper;
+        private CarHelper _carHelper;
 
         public FpsCamera FpsCamera => null;
 
@@ -374,11 +374,9 @@ namespace AcTools.Render.Kn5SpecificDeferred {
 
         public override void Dispose() {
             base.Dispose();
-            _carHelper.Dispose();
-            foreach (var kn5 in _kn5) {
-                _materialsProvider.DisposeFor(kn5);
-                _texturesProvider.DisposeFor(kn5);
-            }
+            DisposeHelper.Dispose(ref _carHelper);
+            DisposeHelper.Dispose(ref _materialsProvider);
+            DisposeHelper.Dispose(ref _texturesProvider);
         }
     }
 }

@@ -48,8 +48,12 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         private static BaseFormWrapper _last;
+        private static bool _starting;
 
         public static async Task StartLiteAsync(string kn5, string skinId = null) {
+            if (_starting) return;
+            _starting = true;
+
             _last?.Stop();
             _last = null;
 
@@ -90,9 +94,40 @@ namespace AcManager.Controls.CustomShowroom {
                 _last = wrapper;
 
                 wrapper.Form.Icon = Icon;
-                wrapper.Run();
+                wrapper.Run(() => _starting = false);
                 
                 GC.Collect();
+            } catch (Exception e) {
+                NonfatalError.Notify("Can't start Custom Showroom", e);
+            } finally {
+                renderer?.Dispose();
+                _last = null;
+                _starting = false;
+            }
+        }
+
+        public static async Task StartFancyAsync(string kn5, string skinId = null, string showroomKn5 = null) {
+            if (_starting) return;
+            _starting = true;
+
+            _last?.Stop();
+            _last = null;
+
+            Kn5ObjectRenderer renderer = null;
+
+            try {
+                renderer = await Task.Run(() => new Kn5ObjectRenderer(kn5, showroomKn5));
+                renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
+
+                var wrapper = new FancyShowroomWrapper(renderer);
+                if (skinId != null) {
+                    renderer.SelectSkin(skinId);
+                }
+
+                _last = wrapper;
+
+                wrapper.Form.Icon = Icon;
+                wrapper.Run(() => _starting = false);
             } catch (Exception e) {
                 NonfatalError.Notify("Can't start Custom Showroom", e);
             } finally {
@@ -101,38 +136,15 @@ namespace AcManager.Controls.CustomShowroom {
             }
         }
 
-        public static async Task StartFancyAsync(string kn5, string skinId = null, string showroomKn5 = null) {
-            _last?.Stop();
-            _last = null;
-
-            try {
-                using (var renderer = await Task.Run(() => new Kn5ObjectRenderer(kn5, showroomKn5))) {
-                    renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
-
-                    if (skinId != null) {
-                        renderer.SelectSkin(skinId);
-                    }
-
-                    var wrapper = new FancyShowroomWrapper(renderer);
-                    _last = wrapper;
-
-                    wrapper.Form.Icon = Icon;
-                    wrapper.Run();
-                }
-            } catch (Exception e) {
-                NonfatalError.Notify("Can't start Custom Showroom", e);
-            } finally {
-                _last = null;
-            }
-        }
-
         public static Task StartAsync(CustomShowroomMode mode, string kn5, string skinId = null) {
             switch (mode) {
                 case CustomShowroomMode.Lite:
                     return StartLiteAsync(kn5, skinId);
+
                 case CustomShowroomMode.Fancy:
                     var showroomId = SettingsHolder.CustomShowroom.ShowroomId;
                     return StartFancyAsync(kn5, skinId, showroomId == null ? null : ShowroomsManager.Instance.GetById(showroomId)?.Kn5Filename);
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
             }

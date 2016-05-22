@@ -9,7 +9,7 @@ namespace AcTools.AcdFile {
 
         private Acd(string filename) {
             OriginalFilename = filename;
-            Entries = new Dictionary<string,AcdEntry>(60);
+            Entries = new Dictionary<string, AcdEntry>(60);
         }
 
         public Dictionary<string, AcdEntry> Entries;
@@ -31,7 +31,6 @@ namespace AcTools.AcdFile {
             }
 
             var acd = new Acd(filename);
-
             using (var reader = new AcdReader(filename)) {
                 acd.FromFile_Entries(reader);
             }
@@ -40,13 +39,9 @@ namespace AcTools.AcdFile {
         }
 
         private void FromFile_Entries(AcdReader reader) {
-            try {
-                while (reader.BaseStream.Position < reader.BaseStream.Length) {
-                    var entry = reader.ReadEntry();
-                    Entries[entry.Name] = entry;
-                }
-            } catch (NotImplementedException) {
-                Entries = null;
+            while (reader.BaseStream.Position < reader.BaseStream.Length) {
+                var entry = reader.ReadEntry();
+                Entries[entry.Name] = entry;
             }
         }
 
@@ -67,7 +62,7 @@ namespace AcTools.AcdFile {
             foreach (var file in Directory.GetFiles(dir)) {
                 acd.SetEntry(Path.GetFileName(file), File.ReadAllBytes(file));
             }
-            
+
             return acd;
         }
 

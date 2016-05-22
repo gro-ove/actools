@@ -98,11 +98,9 @@ namespace AcTools.Render.Kn5Specific.Utils {
             var magickMode = texture == null;
             if (magickMode) {
                 if (!ImageUtils.IsMagickSupported) return;
-                Logging.Write("UpdateOverrideLater(): " + filename);
 
                 var ext = MagickExtensions.FirstOrDefault(x => textureName.EndsWith(x, StringComparison.OrdinalIgnoreCase));
                 if (ext != null) {
-                    Logging.Write("UpdateOverrideLater(): ext: " + ext);
                     textureName = textureName.ApartFromLast(ext);
                     texture = texturesProvider.GetFor(MainKn5).OfType<RenderableTexture>().FirstOrDefault(x =>
                             string.Equals(x.Name, textureName, StringComparison.OrdinalIgnoreCase)) ??
@@ -119,12 +117,9 @@ namespace AcTools.Render.Kn5Specific.Utils {
                     await Task.Delay(200);
                     bytes = await FileUtils.ReadAllBytesAsync(filename);
 
-                    Logging.Write("UpdateOverrideLater(): loaded " + bytes?.Length + " bytes");
-
                     if (magickMode) {
                         var b = bytes;
                         bytes = await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(b));
-                        Logging.Write("UpdateOverrideLater(): converted " + bytes?.Length + " bytes");
                     }
                 } catch (Exception e) {
                     Logging.Warning("UpdateOverrideLater(): " + e);
@@ -247,7 +242,6 @@ namespace AcTools.Render.Kn5Specific.Utils {
         }
 
         public byte[] GetOverridedData(string name) {
-            Logging.Write("GetOverridedData(): " + name);
             var filename = GetOverridedFilename(name);
             if (filename == null) return null;
 
@@ -265,8 +259,6 @@ namespace AcTools.Render.Kn5Specific.Utils {
                     }
 
                     if (bytes != null) {
-                        Logging.Write("  candidate: " + candidate);
-                        Logging.Write("  found: " + bytes.Length + " bytes");
                         return ImageUtils.LoadAsConventionalBuffer(bytes);
                     }
                 }
@@ -278,8 +270,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
         async Task<byte[]> IOverridedTextureProvider.GetOverridedDataAsync(string name) {
             var filename = GetOverridedFilename(name);
             if (filename == null) return null;
-
-            Logging.Write("GetOverridedDataAsync(): " + name);
+            
             if (ImageUtils.IsMagickSupported && LiveReload) {
                 foreach (var ext in MagickExtensions.Where(x => !filename.EndsWith(x, StringComparison.OrdinalIgnoreCase))) {
                     var candidate = filename + ext;
@@ -294,8 +285,6 @@ namespace AcTools.Render.Kn5Specific.Utils {
                     }
 
                     if (bytes != null) {
-                        Logging.Write("  candidate: " + candidate);
-                        Logging.Write("  found: " + bytes.Length + " bytes");
                         return await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(bytes));
                     }
                 }

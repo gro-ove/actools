@@ -116,6 +116,7 @@
     <Compile Include="AppArguments.cs" />
     <Compile Include="AppFlag.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="PackedHelper.cs" />
     <Compile Include="Pages\About\PieceOfInformationBlock.xaml.cs">
       <DependentUpon>PieceOfInformationBlock.xaml</DependentUpon>
     </Compile>
@@ -624,11 +625,11 @@
     <Content Include="Libs\Lua52.dll" />
     <Content Include="Libs\NLua.dll" />
     <Resource Include="Assets\Img\ShowroomPanoramaExample.jpg" />
-    <Content Include="Assets\Libs\7z.dll">
+    <None Include="Assets\Libs\7z.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <Resource Include="Assets\Img\Upgrade.png" />
-    <Content Include="Assets\Icons\AcIcon.ico" />
+    <None Include="Assets\Icons\AcIcon.ico" />
     <Resource Include="Assets\Icons\Icon.ico" />
     <Resource Include="Assets\Img\UpgradeStd.png" />
   </ItemGroup>
@@ -693,7 +694,10 @@
     <PreBuildEvent>cd $(ProjectDir)\Properties
 copy AssemblyInfo.cs AssemblyInfo.cs~
 perl -0pe 's/(?:\d+\.){3}\K(\d+)/$1+1/ge' AssemblyInfo.cs~ &gt; AssemblyInfo.cs
-del AssemblyInfo.cs~</PreBuildEvent>
+del AssemblyInfo.cs~
+
+rem "$(ProjectDir)\Assets\Libs\7z.dll" 
+if $(ConfigurationName) == Release packedhelper "$(ProjectPath)" "$(ProjectDir)\bin\Release\Confused\AcManager.Tools.dll" "$(ProjectDir)\bin\Release\Confused\AcManager.Internal.dll" --ignore AcManager.Internal.dll AcManager.Tools.dll Magick.NET-x86.dll System.Windows.Interactivity.dll Windows.winmd</PreBuildEvent>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -703,4 +707,7 @@ del AssemblyInfo.cs~</PreBuildEvent>
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <EmbeddedResource Include="References.resources" />
+  </ItemGroup>
 </Project>

@@ -5,13 +5,11 @@ namespace AcTools.AcdFile {
     internal sealed class AcdReader : BinaryReader {
         private readonly AcdEncryption _enc;
 
-        public AcdReader(string filename)
-            : this(File.Open(filename, FileMode.Open)) {
+        public AcdReader(string filename) : this(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
             _enc = AcdEncryption.FromAcdFilename(filename);
         }
 
-        public AcdReader(Stream input)
-            : base(input) {
+        public AcdReader(Stream input) : base(input) {
             if (ReadInt32() == -1111){
                 ReadInt32();
             } else {
@@ -19,7 +17,7 @@ namespace AcTools.AcdFile {
             }
         }
 
-        override public string ReadString() {
+        public override string ReadString() {
             var length = ReadInt32();
             return Encoding.ASCII.GetString(ReadBytes(length));
         }
@@ -37,7 +35,7 @@ namespace AcTools.AcdFile {
         }
 
         public AcdEntry ReadEntry() {
-            return new AcdEntry() {
+            return new AcdEntry {
                 Name = ReadString(),
                 Data = ReadData()
             };

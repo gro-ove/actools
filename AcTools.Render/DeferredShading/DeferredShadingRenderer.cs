@@ -459,18 +459,19 @@ namespace AcTools.Render.DeferredShading {
 
             Lights.DisposeEverything();
 
-            _gBufferBase.Dispose();
-            _gBufferNormal.Dispose();
-            _gBufferMaps.Dispose();
-            _gDepthBuffer.Dispose();
-            _temporaryDepthBuffer.Dispose();
-            _temporaryBuffer0.Dispose();
-            _temporaryBuffer1.Dispose();
-            _temporaryBuffer2.Dispose();
-            _temporaryBuffer3.Dispose();
-            
-            _reflectionCubemap.Dispose();
-            _sunShadows.Dispose();
+            DisposeHelper.Dispose(ref _gBufferBase);
+            DisposeHelper.Dispose(ref _gBufferNormal);
+            DisposeHelper.Dispose(ref _gBufferMaps);
+            DisposeHelper.Dispose(ref _gDepthBuffer);
+
+            DisposeHelper.Dispose(ref _temporaryDepthBuffer);
+            DisposeHelper.Dispose(ref _temporaryBuffer0);
+            DisposeHelper.Dispose(ref _temporaryBuffer1);
+            DisposeHelper.Dispose(ref _temporaryBuffer2);
+            DisposeHelper.Dispose(ref _temporaryBuffer3);
+
+            DisposeHelper.Dispose(ref _reflectionCubemap);
+            DisposeHelper.Dispose(ref _sunShadows);
         }
     }
 }

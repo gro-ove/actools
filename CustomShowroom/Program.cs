@@ -1,5 +1,5 @@
 ﻿// ReSharper disable RedundantUsingDirective
-// #define PACKED_MODE
+#define PACKED_MODE
 
 using System;
 using System.Collections.Generic;
@@ -82,69 +82,37 @@ namespace CustomShowroom {
 
         [STAThread]
         private static int Main(string[] a) {
-#if PACKED_MODE
-            Log(null);
-
-            var references = new ResourceManager("CustomShowroom.References", Assembly.GetExecutingAssembly());
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => {
-                var name = args.Name.Split(new [] { "," }, StringSplitOptions.None)[0];
-                // Log(args.Name + " → " + name);
-                if (name == "CustomShowroom" || name.Contains(".resources")) return null;
-                Log(args.Name + " → " + name);
-
-                try {
-                    var bytes = references.GetObject(name) as byte[];
-                    if (bytes == null) {
-                        Log("missing!");
-                        return null;
-                    }
-
-                    Log("loaded: " + bytes.Length);
-                    return Assembly.Load(bytes);
-
-                    using (var memory = new MemoryStream(bytes))
-                    using (var output = new MemoryStream()) {
-                        using (var decomp = new DeflateStream(memory, CompressionMode.Decompress)) {
-                            decomp.CopyTo(output);
-                        }
-
-                        var res = output.ToArray();
-                        Log("loaded: " + res.Length);
-                        return Assembly.Load(res);
-                    }
-                } catch (Exception e) {
-                    Log("error: " + e);
-                    return null;
-                }
-            };
-#endif
-
-            return MainInner(a);
-        }
-
-        private static void InitializeLogging() {
-            var log = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? "", "Log.txt");
-            try {
-                File.WriteAllBytes(log, new byte[0]);
-                Logging.Initialize(log);
-            } catch (Exception e) {
-                MessageBox.Show("Can't setup logging: " + e, @"Oops!", MessageBoxButtons.OK);
-            }
-        }
-        
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static int MainInner(string[] args) {
             if (!Debugger.IsAttached) {
                 SetUnhandledExceptionHandler();
             }
 
+#if PACKED_MODE
+            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_CustomShowroom", "CustomShowroom.References", false).Handler;
+#endif
+            return MainInner(a);
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
+        public static void SetUnhandledExceptionHandler() {
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += UnhandledExceptionHandler;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static int MainInner(string[] args) {
             var options = new Options();
             if (!Parser.Default.ParseArguments(args, options)) return 1;
 
             var filename = Assembly.GetEntryAssembly().Location;
             if (options.Verbose || filename.IndexOf("log", StringComparison.OrdinalIgnoreCase) != -1
                     || filename.IndexOf("debug", StringComparison.OrdinalIgnoreCase) != -1) {
-                InitializeLogging();
+                var log = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? "", "Log.txt");
+                try {
+                    File.WriteAllBytes(log, new byte[0]);
+                    Logging.Initialize(log);
+                } catch (Exception e) {
+                    MessageBox.Show("Can't setup logging: " + e, @"Oops!", MessageBoxButtons.OK);
+                }
             }
 
             var inputItems = options.Items;
@@ -209,12 +177,6 @@ namespace CustomShowroom {
             GC.Collect();
             GC.WaitForPendingFinalizers();
             return 0;
-        }
-
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
-        public static void SetUnhandledExceptionHandler() {
-            var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += UnhandledExceptionHandler;
         }
 
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using AcManager.Tools.Helpers;
@@ -16,7 +17,13 @@ namespace AcManager {
         public static uint SecondInstanceMessage { get; private set; }
 
         [STAThread]
-        public static void Main(string[] args) {
+        private static void Main(string[] a) {
+            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References", false).Handler;
+            MainInner(a);
+        }
+        
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void MainInner(string[] args) {
             if (AppUpdater.OnStartup(args)) {
                 return;
             }

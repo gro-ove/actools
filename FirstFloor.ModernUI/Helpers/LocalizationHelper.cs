@@ -81,7 +81,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return result.Any() ? string.Join(" ", result.Take(2)) : "0 seconds";
         }
 
-        public static string ReadableSize(long i, int round = 2) {
+        public static string ReadableSize(this long i, int round = 2) {
             var absoluteI = i < 0 ? -i : i;
 
             string suffix;

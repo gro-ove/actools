@@ -5,16 +5,13 @@ namespace AcTools.AcdFile {
     internal class AcdWriter : BinaryWriter {
         private readonly AcdEncryption _enc;
 
-        public AcdWriter(string filename)
-            : this(File.Open(filename, FileMode.CreateNew)) {
+        public AcdWriter(string filename) : this(File.Open(filename, FileMode.CreateNew)) {
             _enc = AcdEncryption.FromAcdFilename(filename);
         }
 
-        public AcdWriter(Stream output)
-            : base(output) {
-        }
+        public AcdWriter(Stream output) : base(output) {}
 
-        override public void Write(string value) {
+        public override void Write(string value) {
             Write(value.Length);
             Write(Encoding.ASCII.GetBytes(value));
         }
