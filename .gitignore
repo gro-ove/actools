@@ -68,13 +68,7 @@ AcTools.Tests/test/kn5/*
 # Some way too meaningless or dead projects
 AcStarter/*
 AcTemp/*
-AiOptimizer/*
-CustomShowroom/*
 DataAcdUnpack/*
-DataAnalyzer/*
-DataCollector/*
-Kn5Pack/*
-Kn5Unpack/*
 *.suo
 
 # Specific unnecessary source files
