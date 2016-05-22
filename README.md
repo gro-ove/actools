@@ -13,11 +13,16 @@ Set of utils and apps designed for Assetto Corsa. If you have any interest in th
     [![AcTools Showroom](https://ascobash.files.wordpress.com/2015/10/uzmhnps.png?w=320)](https://ascobash.files.wordpress.com/2015/10/uzmhnps.png)
     
 - ### [AcTools.Render](https://github.com/gro-ove/actools/tree/master/AcTools.Render)
-    A replacement for AcTools.Kn5Render. Development went in a wrong direction (deferred rendering & lighting, SSLR, HDR, bloom), but overall architecture is pretty good (at least it's much better than previous library), so regular forward rendering is coming soon.
+    A replacement for AcTools.Kn5Render. Has a much more thoughtful architecture and thereby contains two different renderers: Lite (simple skins-editing DX10-compatible version) and Deferred (deferred rendering & lighting, SSLR, HDR, dynamic shadows).
 
-    Main problem with those two projects, of course, is to make shaders as close as possible to Kunos ones. I have no idea how at the moment, my knowledge of shaders in common and DX11 in particular is too weak.
+    Lite renderer supports a lot of different Kunos materials with a lot of properties, so it should be pretty close.
+    
+    [![Lite Showroom](http://i.imgur.com/neffgq2.png)](http://i.imgur.com/neffgq2.png)
 
-    [![Custom Showroom](https://ascobash.files.wordpress.com/2016/01/vas7al2.png?w=320)](https://ascobash.files.wordpress.com/2016/01/vas7al2.png)
+    [![Custom Showroom](https://trello-attachments.s3.amazonaws.com/5717c5d2feb66091a673f1e8/1920x1080/237d1513a35509f5c48d969bdf4abd02/__custom_showroom_1461797524.jpg)](https://trello-attachments.s3.amazonaws.com/5717c5d2feb66091a673f1e8/1920x1080/237d1513a35509f5c48d969bdf4abd02/__custom_showroom_1461797524.jpg)
+
+- ### [StringBasedFilter](https://github.com/gro-ove/actools/tree/master/StringBasedFilter)
+    Small library for filtering objects by queries like `*ca & !(country:c* | year<1990)`.
     
 ## Other projects
 
