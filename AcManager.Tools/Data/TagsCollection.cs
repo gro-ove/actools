@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
 using JetBrains.Annotations;
+using MoonSharp.Interpreter;
 
 namespace AcManager.Tools.Data {
     public class TagsComparer : IComparer<string> {
@@ -66,12 +67,17 @@ namespace AcManager.Tools.Data {
         }
     }
 
+    [MoonSharpUserData]
     public class TagsCollection : ObservableCollection<string> {
         public TagsCollection() {}
         public TagsCollection(IEnumerable<string> list) : base(list) { }
 
         public string FirstOrDefault(Func<string, bool> fn) {
             return Enumerable.FirstOrDefault(this, fn);
+        }
+
+        public string FirstOrDefault(Closure fn) {
+            return Enumerable.FirstOrDefault(this, x => fn.Call(x).Boolean);
         }
 
         public bool ContainsIgnoringCase(string tag) {

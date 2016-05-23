@@ -10,9 +10,11 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
+    [MoonSharpUserData]
     public abstract partial class TrackBaseObject : AcJsonObjectNew {
         protected TrackBaseObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) { }

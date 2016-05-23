@@ -11,9 +11,11 @@ using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
+    [MoonSharpUserData]
     public partial class CarObject : AcJsonObjectNew {
         public static int OptionSkinsLoadingConcurrency = 5;
         

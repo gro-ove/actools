@@ -24,8 +24,8 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using MoonSharp.Interpreter;
 using Newtonsoft.Json;
-using NLua;
 using StringBasedFilter;
 using WaitingDialog = AcManager.Controls.Pages.Dialogs.WaitingDialog;
 
@@ -679,15 +679,16 @@ namespace AcManager.Pages.Drive {
                         var state = LuaHelper.GetExtended();
                         if (state == null) throw new Exception("Can't initialize Lua");
 
-                        state["selected"] = car;
-                        state["track"] = track;
+                        state.Globals["selected"] = car;
+                        state.Globals["track"] = track;
 
-                        var result = state.DoString(PrepareScript(type.Script)).FirstOrDefault();
-                        if (result as bool? == false) return new CarObject[0];
+                        var result = state.DoString(PrepareScript(type.Script));
+                        if (result.Type == DataType.Boolean && !result.Boolean) return new CarObject[0];
 
-                        var fn = result as LuaFunction;
+                        var fn = result.Function;
                         if (fn == null) throw new Exception("Invalid script");
-                        carsEnumerable = carsEnumerable.Where(x => fn.Call(x).FirstOrDefault() as bool? == true);
+
+                        carsEnumerable = carsEnumerable.Where(x => fn.Call(x).Boolean);
                     }
 
                     if (useUserFilter && !string.IsNullOrEmpty(OpponentsCarsFilter)) {

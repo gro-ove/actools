@@ -59,13 +59,13 @@
       <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="MoonSharp.Interpreter, Version=1.6.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
+      <HintPath>..\packages\MoonSharp.1.6.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\NLua.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot, Version=2014.1.546.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.2014.1.546\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
@@ -704,7 +704,7 @@ perl -0pe 's/(?:\d+\.){3}\K(\d+)/$1+1/ge' AssemblyInfo.cs~ &gt; AssemblyInfo.cs
 del AssemblyInfo.cs~
 
 rem "$(ProjectDir)\Assets\Libs\7z.dll" 
-if $(ConfigurationName) == Release packedhelper "$(ProjectPath)" "$(ProjectDir)\bin\Release\Confused\AcManager.Tools.dll" "$(ProjectDir)\bin\Release\Confused\AcManager.Internal.dll" "$(ProjectDir)\bin\Release\Lua52.dll" --ignore AcManager.Internal.dll AcManager.Tools.dll Magick.NET-x86.dll System.Windows.Interactivity.dll Windows.winmd</PreBuildEvent>
+if $(ConfigurationName) == Release packedhelper "$(ProjectPath)" "$(ProjectDir)\bin\Release\Confused\AcManager.Tools.dll" "$(ProjectDir)\bin\Release\Confused\AcManager.Internal.dll" "$(ProjectDir)\bin\Release\Lua52.dll" --ignore AcManager.Internal.dll AcManager.Tools.dll Magick.NET-x86.dll Windows.winmd</PreBuildEvent>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
