@@ -8,7 +8,7 @@ using FirstFloor.ModernUI.Presentation;
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcCommonObject {
         private ICommand _viewInExplorerCommand;
-        public ICommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new RelayCommand(o => {
+        public virtual ICommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new RelayCommand(o => {
             ViewInExplorer();
         }));
 
@@ -34,7 +34,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }));
 
         private ICommand _reloadCommand;
-        public ICommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new RelayCommand(o => {
+        public virtual ICommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new RelayCommand(o => {
             if (o as string == "full") {
                 Manager.Reload(Id);
             } else {
@@ -43,7 +43,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }));
 
         private ICommand _saveCommand;
-        public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
+        public virtual ICommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
             Save();
         }, o => Changed));
     }

@@ -20,6 +20,19 @@
                         watermark:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:TextBoxAdvancement.SpecialMode="Positive" />
             </DockPanel>
 
+            <!--find information specific-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Information Search:</TextBlock>
+            
+            <DockPanel>
+                <Label>Search Engine:</Label>
+                <ComboBox ItemsSource="{Binding Holder.SearchEngines}" SelectedItem="{Binding Holder.SearchEngine}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <CheckBox IsChecked="{Binding Holder.SearchWithWikipedia}">
+                <CheckBox.ToolTip>Add “site:wikipedia.org” by default</CheckBox.ToolTip>
+                <Label>Look at Wikipedia by default</Label>
+            </CheckBox>
+
             <!--cars specific-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Cars:</TextBlock>
 

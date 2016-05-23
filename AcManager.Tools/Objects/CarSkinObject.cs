@@ -147,6 +147,10 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        protected override void SaveCountry(JObject json) {
+            json["country"] = Country ?? string.Empty;
+        }
+
         public override void PastLoad() {
             base.PastLoad();
             if (!Enabled) return;

@@ -87,10 +87,6 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
 
-            if (!Debugger.IsAttached) {
-                SetUnhandledExceptionHandler();
-            }
-
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
@@ -276,37 +272,6 @@ namespace AcManager {
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {
             ValuesStorage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
-        }
-
-        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
-        public static void SetUnhandledExceptionHandler() {
-            var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += UnhandledExceptionHandler;
-        }
-
-        private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-            var e = args.ExceptionObject as Exception;
-
-            var text = "Unhandled exception:\n\n" + (e?.ToString() ?? "?");
-            try {
-                // ErrorMessage.ShowWithoutLogging("Unhandled exception", "Please, send MainLog.txt to developer.", e);
-                MessageBox.Show(text, @"Oops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } catch (Exception) {
-                // ignored
-            }
-
-            if (Logging.IsInitialized()) {
-                Logging.Error(text);
-            } else {
-                try {
-                    var logFilename = AppDomain.CurrentDomain.BaseDirectory + "/content_manager_crash_" + DateTime.Now.Ticks + ".txt";
-                    File.WriteAllText(logFilename, text);
-                } catch (Exception) {
-                    // ignored
-                }
-            }
-
-            Environment.Exit(1);
         }
     }
 }

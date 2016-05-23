@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -22,13 +21,17 @@ namespace AcTools.Utils.Helpers {
             }
 
             public bool IsMultiline => Type == FieldType.StringMultiline || Type == FieldType.StringsArray ||
-                                       Type == FieldType.PairsArray;
+                    Type == FieldType.PairsArray;
         }
 
         public enum FieldType {
-            String, StringMultiline,
-            Number, Boolean,
-            StringsArray, PairsArray
+            String,
+            NonNullString,
+            StringMultiline,
+            Number,
+            Boolean,
+            StringsArray,
+            PairsArray
         }
 
         public readonly Field[] Fields;
@@ -112,6 +115,7 @@ namespace AcTools.Utils.Helpers {
                 } else {
                     switch (field.Type) {
                         case JObjectRestorationScheme.FieldType.String:
+                        case JObjectRestorationScheme.FieldType.NonNullString:
                         case JObjectRestorationScheme.FieldType.StringMultiline:
                             processedValue = DequoteString(value);
                             break;
@@ -162,6 +166,20 @@ namespace AcTools.Utils.Helpers {
                     obj[field.Name] = processedValue;
                 } else {
                     result[field.Name] = processedValue;
+                }
+            }
+
+            JToken temp;
+            foreach (var field in scheme.Fields.Where(x => x.Type == JObjectRestorationScheme.FieldType.NonNullString && !result.TryGetValue(x.Name, out temp))) {
+                if (field.ParentName != null) {
+                    var obj = result[field.ParentName] as JObject;
+                    if (obj == null) {
+                        result[field.ParentName] = obj = new JObject();
+                    }
+
+                    obj[field.Name] = "";
+                } else {
+                    result[field.Name] = "";
                 }
             }
 

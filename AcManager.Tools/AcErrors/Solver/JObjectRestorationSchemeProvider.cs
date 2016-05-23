@@ -71,10 +71,10 @@ namespace AcManager.Tools.AcErrors.Solver {
             if (target is CarSkinObject) {
                 return new JObjectRestorationScheme(
                     new JObjectRestorationScheme.Field("skinname", JObjectRestorationScheme.FieldType.String),
-                    new JObjectRestorationScheme.Field("drivername", JObjectRestorationScheme.FieldType.String),
-                    new JObjectRestorationScheme.Field("country", JObjectRestorationScheme.FieldType.String),
-                    new JObjectRestorationScheme.Field("team", JObjectRestorationScheme.FieldType.String),
-                    new JObjectRestorationScheme.Field("number", JObjectRestorationScheme.FieldType.String),
+                    new JObjectRestorationScheme.Field("drivername", JObjectRestorationScheme.FieldType.NonNullString),
+                    new JObjectRestorationScheme.Field("country", JObjectRestorationScheme.FieldType.NonNullString),
+                    new JObjectRestorationScheme.Field("team", JObjectRestorationScheme.FieldType.NonNullString),
+                    new JObjectRestorationScheme.Field("number", JObjectRestorationScheme.FieldType.NonNullString),
                     new JObjectRestorationScheme.Field("priority", JObjectRestorationScheme.FieldType.Number),
 
                     new JObjectRestorationScheme.Field("year", JObjectRestorationScheme.FieldType.Number),

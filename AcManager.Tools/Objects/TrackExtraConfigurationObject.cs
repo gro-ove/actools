@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers;
 
@@ -45,5 +46,13 @@ namespace AcManager.Tools.Objects {
         public override string PreviewImage => ImageRefreshing ?? ImageRefreshing ?? Path.Combine(Location, "preview.png");
 
         public override string OutlineImage => ImageRefreshing ?? ImageRefreshing ?? Path.Combine(Location, "outline.png");
+
+        public override ICommand ToggleCommand => MainTrackObject.ToggleCommand;
+
+        public override ICommand DeleteCommand => MainTrackObject.DeleteCommand;
+
+        public override ICommand SaveCommand => MainTrackObject.SaveCommand;
+
+        public override ICommand ViewInExplorerCommand => MainTrackObject.ViewInExplorerCommand;
     }
 }

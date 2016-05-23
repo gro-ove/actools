@@ -22,6 +22,20 @@ namespace AcManager.Tools.Helpers {
             public TimeSpan TimeSpan { get; internal set; }
         }
 
+        public class SearchEngineEntry {
+            public string DisplayName { get; internal set; }
+
+            public string Value { get; internal set; }
+
+            public string GetUri(string s) {
+                if (Content.SearchWithWikipedia) {
+                    s = "site:wikipedia.org " + s;
+                }
+
+                return string.Format(Value, Uri.EscapeDataString(s).Replace("%20", "+"));
+            }
+        }
+
         public class OnlineServerEntry {
             private string _displayName;
 
@@ -395,6 +409,38 @@ namespace AcManager.Tools.Helpers {
                 set {
                     if (Equals(value, NewContentPeriod)) return;
                     ValuesStorage.Set("Settings.ContentSettings.NewContentPeriod", value.TimeSpan);
+                    OnPropertyChanged();
+                }
+            }
+
+            private SearchEngineEntry[] _searchEngines;
+
+            public SearchEngineEntry[] SearchEngines => _searchEngines ?? (_searchEngines = new[] {
+                new SearchEngineEntry { DisplayName = "DuckDuckGo", Value = "https://duckduckgo.com/?q={0}&ia=web" },
+                new SearchEngineEntry { DisplayName = "Bing", Value = "http://www.bing.com/search?q={0}" },
+                new SearchEngineEntry { DisplayName = "Google", Value = "https://www.google.ru/search?q={0}&ie=UTF-8" },
+                new SearchEngineEntry { DisplayName = "Yandex", Value = "https://yandex.ru/search/?text={0}" },
+                new SearchEngineEntry { DisplayName = "Baidu", Value = "http://www.baidu.com/s?ie=utf-8&wd={0}" }
+            });
+
+            public SearchEngineEntry SearchEngine {
+                get {
+                    return SearchEngines.FirstOrDefault(x =>
+                            x.DisplayName == ValuesStorage.GetString("Settings.ContentSettings.SearchEngine")) ??
+                            SearchEngines.FirstOrDefault();
+                }
+                set {
+                    if (Equals(value, SearchEngine)) return;
+                    ValuesStorage.Set("Settings.ContentSettings.SearchEngine", value.DisplayName);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool SearchWithWikipedia {
+                get { return ValuesStorage.GetBool("Settings.ContentSettings.SearchWithWikipedia", true); }
+                set {
+                    if (Equals(value, SearchWithWikipedia)) return;
+                    ValuesStorage.Set("Settings.ContentSettings.SearchWithWikipedia", value);
                     OnPropertyChanged();
                 }
             }

@@ -12,6 +12,8 @@ namespace AcManager.Pages.Selected {
         void Load();
 
         void Unload();
+
+        RelayCommand FindInformationCommand { get; }
     }
 
     public class SelectedAcObjectViewModel<T> : NotifyPropertyChanged, ISelectedAcObjectViewModel where T : AcCommonObject {
@@ -27,6 +29,12 @@ namespace AcManager.Pages.Selected {
         public virtual void Load() { }
 
         public virtual void Unload() { }
+
+        private RelayCommand _findInformationCommand;
+
+        public RelayCommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new RelayCommand(o => {
+            new FindInformationDialog((AcJsonObjectNew)SelectedAcObject).ShowDialog();
+        }, o => SelectedAcObject is AcJsonObjectNew));
     }
 
     public abstract class SelectedAcObjectPage : UserControl {
@@ -39,6 +47,7 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(SelectedAcObject.ReloadCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
                 new InputBinding(SelectedAcObject.ToggleCommand, new KeyGesture(Key.D, ModifierKeys.Control)),
                 new InputBinding(SelectedAcObject.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)),
+                new InputBinding(model.FindInformationCommand, new KeyGesture(Key.I, ModifierKeys.Control)),
                 new InputBinding(SelectedAcObject.DeleteCommand, new KeyGesture(Key.Delete, ModifierKeys.Control))
             });
             DataContext = model;
@@ -74,7 +83,7 @@ namespace AcManager.Pages.Selected {
             });
         }
 
-        protected void VersionInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        protected virtual void VersionInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
                 new VersionInfoEditor(SelectedAcJsonObject).ShowDialog();

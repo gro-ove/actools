@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Threading;
+using System.Windows.Forms;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
@@ -18,6 +21,10 @@ namespace AcManager {
 
         [STAThread]
         private static void Main(string[] a) {
+            if (!Debugger.IsAttached) {
+                SetUnhandledExceptionHandler();
+            }
+
             AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References", false).Handler;
             MainInner(a);
         }
@@ -92,6 +99,53 @@ namespace AcManager {
         private static void PassArgsToRunningInstance(IEnumerable<string> args) {
             PassSomeData(args);
             User32.PostMessage(User32.HWND_BROADCAST, SecondInstanceMessage, 0, 0);
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
+        public static void SetUnhandledExceptionHandler() {
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += UnhandledExceptionHandler;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static bool LoggingIsAvailable() {
+            return Logging.IsInitialized();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static bool LogError(string text) {
+            try {
+                if (!LoggingIsAvailable()) return false;
+
+                Logging.Error(text);
+                return true;
+            } catch (Exception) {
+                return false;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
+            var e = args.ExceptionObject as Exception;
+
+            var text = "Unhandled exception:\n\n" + (e?.ToString() ?? "?");
+            try {
+                // ErrorMessage.ShowWithoutLogging("Unhandled exception", "Please, send MainLog.txt to developer.", e);
+                MessageBox.Show(text, @"Oops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } catch (Exception) {
+                // ignored
+            }
+
+            if (!LogError(text)) {
+                try {
+                    var logFilename = AppDomain.CurrentDomain.BaseDirectory + "/content_manager_crash_" + DateTime.Now.Ticks + ".txt";
+                    File.WriteAllText(logFilename, text);
+                } catch (Exception) {
+                    // ignored
+                }
+            }
+
+            Environment.Exit(1);
         }
     }
 }

@@ -174,7 +174,7 @@ namespace AcManager.Tools.AcObjectsNew {
             json["tags"] = new JArray(Tags.Select(x => (object)x).ToArray());
         }
 
-        protected void SaveCountry(JObject json) {
+        protected virtual void SaveCountry(JObject json) {
             json["country"] = Country;
         }
 

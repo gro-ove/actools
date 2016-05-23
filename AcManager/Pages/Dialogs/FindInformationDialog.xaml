@@ -1,0 +1,33 @@
+﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.FindInformationDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" xmlns:modernui="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" Title="{Binding SelectedObject.DisplayName, Mode=OneTime}" MaxWidth="1200" MaxHeight="900"
+        d:DataContext="{d:DesignInstance dialogs:FindInformationDialog+FindInformationViewModel}">
+    <mui:ModernDialog.ButtonsRowContent>
+        <Button Command="{Binding SaveCommand}" Content="{Binding SaveLabel}" />
+    </mui:ModernDialog.ButtonsRowContent>
+    <mui:ModernDialog.CommandBindings>
+        <CommandBinding Command="NavigationCommands.BrowseBack" CanExecute="BrowseBack_CanExecute" Executed="BrowseBack_Executed" />
+        <CommandBinding Command="NavigationCommands.BrowseForward" CanExecute="BrowseForward_CanExecute" Executed="BrowseForward_Executed" />
+        <CommandBinding Command="NavigationCommands.GoToPage" CanExecute="GoToPage_CanExecute" Executed="GoToPage_Executed" />
+    </mui:ModernDialog.CommandBindings>
+
+    <StackPanel Margin="0 0 0 -36">
+        <DockPanel Height="26" Margin="0 0 0 8">
+            <mui:ModernButton Margin="0 0 8 0" HorizontalAlignment="Left" VerticalAlignment="Center" EllipseDiameter="24" IconWidth="12" IconHeight="12"
+                    IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
+                    ToolTip="{x:Static modernui:Resources.Back}" DockPanel.Dock="Left" Command="NavigationCommands.BrowseBack" />
+            <mui:ModernButton Margin="0 0 8 0" HorizontalAlignment="Left" VerticalAlignment="Center" EllipseDiameter="24" IconWidth="12" IconHeight="12"
+                    IconData="F1 M 19.0002,34L 19.0002,42L 43.7502,42L 33.7502,52L 44.2502,52L 58.2502,38L 44.2502,24L 33.7502,24L 43.7502,34L 19.0002,34 Z"
+                    ToolTip="{x:Static modernui:Resources.Forward}" DockPanel.Dock="Left" Command="NavigationCommands.BrowseForward" />
+            <mui:ModernButton Margin="8 0 0 0" HorizontalAlignment="Right" VerticalAlignment="Center" EllipseDiameter="24" IconWidth="12" IconHeight="12"
+                    IconData="F1 M 22,30L 47.75,30L 36.75,19L 48.25,19L 62.25,33L 47.25,48L 36.75,48L 47.75,37L 29,37L 29,59L 22,59L 22,30 Z"
+                    ToolTip="{x:Static modernui:Resources.Go}" DockPanel.Dock="Right" Command="NavigationCommands.GoToPage" />
+            <TextBox Name="UrlTextBox" PreviewKeyDown="UrlTextBox_OnPreviewKeyDown" PreviewKeyUp="UrlTextBox_KeyUp" />
+        </DockPanel>
+
+        <WebBrowser Name="WebBrowser" Width="1080" Height="640" Navigated="WebBrowser_OnNavigated" />
+        <TextBlock FontStyle="Italic" Margin="8">Select year or description and press OK; hold Ctrl to extend description instead of replacing it.</TextBlock>
+    </StackPanel>
+</mui:ModernDialog>

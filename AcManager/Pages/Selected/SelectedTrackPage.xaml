@@ -11,7 +11,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <controls:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
+    <controls:AcObjectBase AcObject="{Binding SelectedTrackConfiguration}" ShowIcon="False">
         <controls:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open track's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
@@ -36,7 +36,7 @@
                 <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed json-file (Ctrl+S)" />
                 <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
                 <Separator />
-                <Button Content="Find Information" IsEnabled="False" />
+                <Button Content="Find Information" Command="{Binding FindInformationCommand}" ToolTip="Find information about track (Ctrl+I)" />
                 <Button Content="Copy Values" ToolTip="Copy values to other layouts" IsEnabled="False"
                         Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Separator />

@@ -135,6 +135,9 @@
     <Compile Include="Pages\Dialogs\SelectTrackDialog_Countries.xaml.cs">
       <DependentUpon>SelectTrackDialog_Countries.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\FindInformationDialog.xaml.cs">
+      <DependentUpon>FindInformationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\QuickDrive_Weekend.xaml.cs">
       <DependentUpon>QuickDrive_Weekend.xaml</DependentUpon>
     </Compile>
@@ -284,6 +287,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dialogs\KunosCareerIntroDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Dialogs\FindInformationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -697,7 +704,7 @@ perl -0pe 's/(?:\d+\.){3}\K(\d+)/$1+1/ge' AssemblyInfo.cs~ &gt; AssemblyInfo.cs
 del AssemblyInfo.cs~
 
 rem "$(ProjectDir)\Assets\Libs\7z.dll" 
-if $(ConfigurationName) == Release packedhelper "$(ProjectPath)" "$(ProjectDir)\bin\Release\Confused\AcManager.Tools.dll" "$(ProjectDir)\bin\Release\Confused\AcManager.Internal.dll" --ignore AcManager.Internal.dll AcManager.Tools.dll Magick.NET-x86.dll System.Windows.Interactivity.dll Windows.winmd</PreBuildEvent>
+if $(ConfigurationName) == Release packedhelper "$(ProjectPath)" "$(ProjectDir)\bin\Release\Confused\AcManager.Tools.dll" "$(ProjectDir)\bin\Release\Confused\AcManager.Internal.dll" "$(ProjectDir)\bin\Release\Lua52.dll" --ignore AcManager.Internal.dll AcManager.Tools.dll Magick.NET-x86.dll System.Windows.Interactivity.dll Windows.winmd</PreBuildEvent>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
