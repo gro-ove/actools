@@ -7,6 +7,8 @@ using System.Windows.Forms;
 
 namespace AcTools.Windows {
     public static class User32 {
+        public const int HC_ACTION = 0;
+
         public static readonly IntPtr HWND_BROADCAST = new IntPtr(0xffff);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]

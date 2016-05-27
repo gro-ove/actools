@@ -85,6 +85,7 @@
     <Compile Include="Processes\Game_Result.cs" />
     <Compile Include="Processes\Game_Properties.cs" />
     <Compile Include="Processes\Game_Obsolete.cs" />
+    <Compile Include="Processes\ShotingCancelledException.cs" />
     <Compile Include="Processes\TrickyStarter.cs" />
     <Compile Include="Processes\IAcsStarter.cs" />
     <Compile Include="Processes\Showroom_Obsolete.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Windows\Input\IMouseSimulator.cs" />
     <Compile Include="Windows\Input\InputBuilder.cs" />
     <Compile Include="Windows\Input\InputSimulator.cs" />
+    <Compile Include="Windows\Input\KeyboardManager.cs" />
     <Compile Include="Windows\Input\KeyboardSimulator.cs" />
     <Compile Include="Windows\Input\MouseButton.cs" />
     <Compile Include="Windows\Input\MouseSimulator.cs" />

@@ -9,6 +9,7 @@ namespace AcTools.Processes {
         public class KunosShotter : BaseIterableShooter {
             private Process _process;
             private string _originalShowroomFile;
+            private bool _terminated;
 
             public void SetCamera(string cameraPosition, string cameraLookAt, double cameraFov, double cameraExposure) {
                 var iniFilename = FileUtils.GetCfgShowroomFilename();
@@ -70,11 +71,23 @@ namespace AcTools.Processes {
 
                 var filename = Path.Combine(FileUtils.GetCarSkinDirectory(AcRoot, CarId, skinId),
                         "preview_original.jpg");
+                if (_terminated) {
+                    throw new ShotingCancelledException();
+                }
+
                 if (!File.Exists(filename)) {
                     throw new Exception("Process exited");
                 }
 
                 File.Move(filename, Path.Combine(OutputDirectory, skinId + ".bmp"));
+            }
+
+            protected override void Terminate() {
+                _terminated = true;
+                if (_process != null) {
+                    _process.Kill();
+                    _process = null;
+                }
             }
 
             public override void Dispose() {

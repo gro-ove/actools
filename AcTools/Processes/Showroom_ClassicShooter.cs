@@ -69,6 +69,7 @@ namespace AcTools.Processes {
 
             private IDisposable _distanceChange, _logActivateChange;
 
+            private bool _terminated;
             private Process _process;
             private readonly InputSimulator _inputSimulator;
 
@@ -122,6 +123,14 @@ namespace AcTools.Processes {
                 _logActivateChange = new LogActivateChange(AcRoot);
                 _skins = Directory.GetDirectories(FileUtils.GetCarSkinsDirectory(AcRoot, CarId))
                     .Select(Path.GetFileName).ToArray();
+            }
+
+            protected override void Terminate() {
+                _terminated = true;
+                if (_process != null) {
+                    _process.Kill();
+                    _process = null;
+                }
             }
 
             public override void ShotAll() {
@@ -275,7 +284,13 @@ namespace AcTools.Processes {
 
             private void Wait(int delay) {
                 Thread.Sleep(delay);
-                if (_process.HasExited) throw new Exception("Process exited");
+                if (_terminated) {
+                    throw new ShotingCancelledException();
+                }
+
+                if (_process.HasExited) {
+                    throw new Exception("Process exited");
+                }
             }
         }
 

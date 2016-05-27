@@ -96,6 +96,8 @@ namespace AcTools.Processes {
                 if (!File.Exists(_acLogoBackup)) {
                     File.Move(_acLogo, _acLogoBackup);
                 }
+            } else if (!Directory.Exists(Path.GetDirectoryName(_acLogo) ?? "")) {
+                return;
             }
 
             if (!File.Exists(_acLogo)) {

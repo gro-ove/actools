@@ -80,9 +80,22 @@ namespace AcTools.Processes {
 
         [CanBeNull]
         public static string Shot(ShotProperties properties) {
-            using (var shooter = CreateShooter(properties)) {
+            BaseShotter shooter = null;
+
+            try {
+                shooter = CreateShooter(properties);
                 shooter.ShotAll();
-                return shooter.OutputDirectory;
+                var result = shooter.OutputDirectory;
+                shooter.Dispose();
+                return result;
+            } catch(Exception) {
+                try {
+                    shooter?.Dispose();
+                } catch (Exception) {
+                    // ignored
+                }
+
+                throw;
             }
         }
 
@@ -90,7 +103,7 @@ namespace AcTools.Processes {
             public string SkinId;
             public int SkinNumber, TotalSkins;
 
-            public double Progress => (double) SkinNumber/TotalSkins;
+            public double Progress => (double)SkinNumber / TotalSkins;
         }
 
         [ItemCanBeNull]

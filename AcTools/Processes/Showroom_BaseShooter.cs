@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AcTools.Utils;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.Processes {
@@ -19,6 +20,7 @@ namespace AcTools.Processes {
             private bool _prepared;
 
             private readonly List<IDisposable> _changes = new List<IDisposable>();
+            private KeyboardManager _keyboardManager;
 
             protected virtual void Prepare() {
                 if (_prepared) return;
@@ -29,7 +31,7 @@ namespace AcTools.Processes {
                 if (ShowroomId == null) throw new Exception("ShowroomId is null");
 
                 if (!Directory.Exists(FileUtils.GetShowroomDirectory(AcRoot, ShowroomId))) {
-                    throw new Exception("Showroom not found");
+                    throw new ShotingCancelledException("Showroom not found");
                 }
 
                 if (UseBmp) {
@@ -52,7 +54,23 @@ namespace AcTools.Processes {
 
                 OutputDirectory = Path.Combine(TemporaryDirectory, "AcToolsShot_" + CarId + "_" + DateTime.Now.Ticks);
                 Directory.CreateDirectory(OutputDirectory);
+
+                _keyboardManager = new KeyboardManager();
+                try {
+                    _keyboardManager.KeyUp += KeyboardManager_KeyUp;
+                    _keyboardManager.Subscribe();
+                } catch (Exception) {
+                    // ignored
+                }
             }
+
+            private void KeyboardManager_KeyUp(object sender, KeyEventArgs e) {
+                if (e.KeyCode == Keys.Escape) {
+                    Terminate();
+                }
+            }
+
+            protected abstract void Terminate();
 
             public IEnumerable<string> CarSkins {
                 get {
@@ -69,6 +87,7 @@ namespace AcTools.Processes {
 
             public virtual void Dispose() {
                 _changes.DisposeEverything();
+                _keyboardManager.Dispose();
             }
         }
 
