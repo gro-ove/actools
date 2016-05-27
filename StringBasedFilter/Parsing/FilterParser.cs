@@ -74,7 +74,7 @@ namespace StringBasedFilter.Parsing {
             for (; _pos < _filter.Length; _pos++) {
                 var c = _filter[_pos];
                 if (c == '\\') continue;
-                if (c == ')' || c == '&' || c == '|' || c == '^' || c == '!') break;
+                if (c == ')' || c == '&' || c == '|' || c == ',' || c == '^' || c == '!') break;
 
                 if (c == '(') {
                     var value = buffer.ToString().Trim();
