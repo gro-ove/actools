@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Media;
@@ -36,6 +37,17 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public int Count => _storage.Count;
+
+        private TimeSpan? _previosSaveTime;
+
+        public TimeSpan? PreviosSaveTime {
+            get { return _previosSaveTime; }
+            set {
+                if (Equals(value, _previosSaveTime)) return;
+                _previosSaveTime = value;
+                OnPropertyChanged();
+            }
+        }
 
         private const byte DeflateFlag = 0;
 
@@ -202,7 +214,9 @@ namespace FirstFloor.ModernUI.Helpers {
 
             var data = GetData();
             try {
+                var sw = Stopwatch.StartNew();
                 File.WriteAllBytes(_filename, EncodeBytes(data));
+                PreviosSaveTime = sw.Elapsed;
             } catch (Exception e) {
                 Logging.Write("cannot save values: " + e);
             }
@@ -211,6 +225,20 @@ namespace FirstFloor.ModernUI.Helpers {
         public static void SaveBeforeExit() {
             if (_dirty) {
                 Instance.Save();
+            }
+        }
+        
+        private static bool _dirty;
+
+        private static async void Dirty() {
+            if (_dirty) return;
+
+            try {
+                _dirty = true;
+                await Task.Delay(5000);
+                Instance.Save();
+            } finally {
+                _dirty = false;
             }
         }
 
@@ -404,25 +432,6 @@ namespace FirstFloor.ModernUI.Helpers {
         public static bool Contains([NotNull] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             return Instance._storage.ContainsKey(key);
-        }
-
-        private static Timer _timer;
-        private static bool _dirty;
-
-        private static void Dirty() {
-            _dirty = true;
-            if (_timer != null) return;
-            _timer = new Timer(5000) {
-                Enabled = true,
-                AutoReset = true
-            };
-            _timer.Elapsed += Timer_Elapsed;
-        }
-
-        static void Timer_Elapsed(object sender, ElapsedEventArgs e) {
-            if (!_dirty) return;
-            Instance.Save();
-            _dirty = false;
         }
 
         public static void Set(string key, string value) {
