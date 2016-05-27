@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -232,7 +231,6 @@ namespace AcManager.Tools.Miscellaneous {
                         preparedVersion = VersionFromData(archive.GetEntry("Manifest.json").Open().ReadAsStringAndDispose());
 
                         archive.GetEntry("Content Manager.exe").ExtractToFile(UpdateLocation);
-                        File.SetAttributes(UpdateLocation, FileAttributes.Hidden);
                         Logging.Write($"[APPUPDATED] New version {preparedVersion} was extracted to “{UpdateLocation}”");
                     }
                 });
@@ -282,8 +280,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 return false;
             } catch (Exception e) {
-                MessageBox.Show($"Can't process update: {e.Message}. " +
-                        $"Try to install a new version manually, sorry.", "Update failed", MessageBoxButton.OK,
+                MessageBox.Show($"Can't process update: {e.Message}. Try to install a new version manually, sorry.", "Update failed", MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 return false;
             }

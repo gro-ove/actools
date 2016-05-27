@@ -402,6 +402,7 @@ namespace AcManager.Pages.Drive {
                 UpdateGridTypes();
             }
 
+            [CanBeNull]
             public GridType SelectedGridType {
                 get { return _selectedGridType; }
                 set {
@@ -416,6 +417,7 @@ namespace AcManager.Pages.Drive {
 
             private CarObject _selectedCar;
 
+            [CanBeNull]
             public CarObject SelectedCar {
                 get { return _selectedCar; }
                 set {
@@ -477,6 +479,30 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            public void AddOpponentsCarsFilter() {
+                if (string.IsNullOrEmpty(OpponentsCarsFilter)) return;
+                OpponentsCarsFilterHistory.ReplaceEverythingBy(OpponentsCarsFilterHistory.Where(x =>
+                        !string.Equals(x, OpponentsCarsFilter, StringComparison.OrdinalIgnoreCase)).Take(10).Prepend(OpponentsCarsFilter));
+            }
+
+            private const string KeyOpponentsCarsFilterHistory = "QuickDrive_Race.OpponentsCarsFilterHistory";
+
+            private static BetterObservableCollection<string> _opponentsCarsFilterHistory;
+
+            public BetterObservableCollection<string> OpponentsCarsFilterHistory {
+                get {
+                    if (_opponentsCarsFilterHistory != null) return _opponentsCarsFilterHistory;
+
+                    _opponentsCarsFilterHistory = new BetterObservableCollection<string>(ValuesStorage.GetStringList(KeyOpponentsCarsFilterHistory));
+                    _opponentsCarsFilterHistory.CollectionChanged += OpponentsCarsFilterHistory_CollectionChanged;
+                    return _opponentsCarsFilterHistory;
+                }
+            }
+
+            private void OpponentsCarsFilterHistory_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+                ValuesStorage.Set(KeyOpponentsCarsFilterHistory, _opponentsCarsFilterHistory);
+            }
+
             private RelayCommand _addOpponentCarCommand;
 
             public RelayCommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new RelayCommand(o => {
@@ -532,8 +558,10 @@ namespace AcManager.Pages.Drive {
 
                 _opponentsCarsIds = null;
 
-                if (SelectedGridType == null || SelectedGridType == GridType.SameCar) {
-                    OpponentsCars.ReplaceEverythingBy(new[] { SelectedCar }.NonNull());
+                if (SelectedCar == null || _selectedTrack == null) {
+                    OpponentsCars.Clear();
+                } else if (SelectedGridType == null || SelectedGridType == GridType.SameCar) {
+                    OpponentsCars.ReplaceEverythingBy(new[] { SelectedCar });
                 } else {
                     OpponentsCarsLoading = true;
 
@@ -588,7 +616,7 @@ namespace AcManager.Pages.Drive {
 
                         try {
                             waiting.Report("AI cars filtering…");
-                            cars = await FindAppropriateCars(selectedCar, selectedTrack, SelectedGridType, true);
+                            cars = await FindAppropriateCars(selectedCar, selectedTrack, SelectedGridType, true, cancellation);
                             if (cancellation.IsCancellationRequested) return;
 
                             Logging.Write("Appropriate cars: " + cars.JoinToString(", "));
@@ -661,7 +689,7 @@ namespace AcManager.Pages.Drive {
 
                     if (type == GridType.SameGroup) {
                         var parent = car.Parent ?? car;
-                        carsEnumerable = new[] { parent }.Union(parent.Children);
+                        carsEnumerable = parent.Children.Prepend(parent);
                     } else if (type == GridType.Manual) {
                         carsEnumerable = OpponentsCars;
                     } else {
@@ -757,6 +785,7 @@ namespace AcManager.Pages.Drive {
                        };
             }
 
+            [CanBeNull]
             private TrackBaseObject _selectedTrack;
             private GridType _selectedGridType;
 
@@ -775,7 +804,7 @@ namespace AcManager.Pages.Drive {
             }
 
             void SelectedTrack_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-                if (e.PropertyName == "SpecsPitboxes") {
+                if (_selectedTrack != null && e.PropertyName == nameof(_selectedTrack.SpecsPitboxes)) {
                     TrackPitsNumber = FlexibleParser.ParseInt(_selectedTrack.SpecsPitboxes, 2);
                 }
             }
@@ -783,6 +812,10 @@ namespace AcManager.Pages.Drive {
             int IComparer.Compare(object x, object y) {
                 return (x as AcObjectNew)?.CompareTo(y as AcObjectNew) ?? 0;
             }
+        }
+
+        private void OpponentsCarsFilterTextBox_OnLostFocus(object sender, RoutedEventArgs e) {
+            ((QuickDrive_RaceViewModel)Model).AddOpponentsCarsFilter();
         }
     }
 }

@@ -93,7 +93,7 @@ namespace AcManager.Tools.Managers.Online {
 
                             scanned++;
                             if (progress == null) return;
-                            progress.Report($"Scanning ({scanned}/{total}), {PluralizingConverter.Pluralize(found, "{0} server")} found…");
+                            progress.Report($"Scanning ({scanned}/{total}), {found} {PluralizingConverter.Pluralize(found, "server")} found…");
                         }), OptionConcurrentThreadsNumber);
 
                 if (found == 0) {

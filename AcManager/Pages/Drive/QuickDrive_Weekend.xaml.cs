@@ -121,7 +121,7 @@ namespace AcManager.Pages.Drive {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null || parameter == null) return null;
                 int number;
-                return int.TryParse(value.ToString(), out number) && number != 0 ? PluralizingConverter.Pluralize(number, parameter.ToString()) : "";
+                return int.TryParse(value.ToString(), out number) && number != 0 ? PluralizingConverter.PluralizeExt(number, parameter.ToString()) : "";
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

@@ -92,18 +92,8 @@
             <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80"
                     Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <DockPanel Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8" Text="Possible opponents list:">
-                    <TextBlock.ToolTip>
-                        <ToolTip>
-                            <TextBlock>
-                                <Run Text="App will take" />
-                                <Run Text="{Binding OpponentsNumber}" />
-                                <Run Text="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter='opponent'}" />
-                                <Run Text="from this list" />
-                            </TextBlock>
-                        </ToolTip>
-                    </TextBlock.ToolTip>
-                </TextBlock>
+                <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8" Text="Possible opponents list:"
+                        ToolTip="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}App will take {0} {opponent} from this list'}" />
 
                 <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Error}" Text="{Binding OpponentsCarsError}"
                         Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -116,8 +106,10 @@
                     <DockPanel Margin="0 0 0 8" HorizontalAlignment="Stretch"
                             Visibility="{Binding SelectedGridType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠same_car'}">
                         <TextBlock Text="Filter:" Width="60" DockPanel.Dock="Left" />
-                        <TextBox Style="{StaticResource TextBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                watermark:WatermarkService.Watermark="*" Text="{Binding OpponentsCarsFilter, UpdateSourceTrigger=PropertyChanged}" />
+                        <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                                watermark:WatermarkService.Watermark="*" Text="{Binding OpponentsCarsFilter, UpdateSourceTrigger=PropertyChanged}"
+                                IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding OpponentsCarsFilterHistory}"
+                                LostFocus="OpponentsCarsFilterTextBox_OnLostFocus" />
                     </DockPanel>
 
                     <ListBox Name="ListBox" ItemsSource="{Binding OpponentsCarsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"

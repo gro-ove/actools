@@ -1,15 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using AcManager.Controls;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Helpers;
@@ -32,13 +29,11 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
-using AcTools.Render.Base.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace AcManager {
     public partial class App {
@@ -160,7 +155,8 @@ namespace AcManager {
         private void PrepareUi() {
             try {
                 ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(true));
-                ToolTipService.InitialShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(1000));
+                ToolTipService.InitialShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(700));
+                ComboBox.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
             } catch (Exception e) {
                 Logging.Warning("Can't prepare UI: " + e);
             }

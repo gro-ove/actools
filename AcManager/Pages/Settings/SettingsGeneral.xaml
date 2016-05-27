@@ -75,6 +75,12 @@
                 <TextBlock Text="{Binding ValuesStorage.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} entry', Mode=OneWay}" />
             </DockPanel>
 
+            <DockPanel>
+                <Label>Saving time:</Label>
+                <TextBlock Text="{Binding ValuesStorage.PreviosSaveTime.TotalMilliseconds, StringFormat='{}{0:F2} ms', Mode=OneWay}"
+                           watermark:WatermarkService.Watermark="?" />
+            </DockPanel>
+
             <!--beta access-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Testing Access:</TextBlock>
             <CheckBox IsChecked="{Binding CommonSettings.UpdateToNontestedVersions}" IsEnabled="{x:Static internal:AppKeyHolder.IsAllRight}"

@@ -69,7 +69,7 @@ namespace AcManager.Pages.Lists {
             }
 
             protected override string GetStatus() {
-                return PluralizingConverter.Pluralize(MainList.Count, @"{0} skin");
+                return PluralizingConverter.PluralizeExt(MainList.Count, @"{0} skin");
             }
         }
     }

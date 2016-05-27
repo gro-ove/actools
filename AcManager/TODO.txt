@@ -85,6 +85,8 @@ done:
             + tracks by countries
             + select car by brands
                 + brands cache!
+            + weekends
+            + increase maximum laps number
         + auto saving replays
     + select something legit as a default weather/car/track/etc
     + fix presets combobox
@@ -358,12 +360,39 @@ done:
     + wider AI diapasone
     + from-to AI level
     + developer mode
+    + lite custom showroom
+        + selecting objects
+            + highlight
+            + view textures
+            + view stats
+            + textures in ImageViewer
+            + export textures
+                + only in developer mode
+            + uvw viewer/exporter
+            + materials information
+            × hide everything else
+        + properly fixed tool window
+        + collapsing
+        + Ctrl+D to remove selection
+        + fix selection
+        + fbx/fbx.ini/textures export
+        + fix keyboard
+    + detect country label by country/nationality name
+    + additional section “stuff”
+        + weather
+        + fonts
+            + detect what car uses what font
+    + built-in browser
+        + some communication system
+        + track geotags editing
+        + find car description
+        + find track description
+    + auto-update body shadows
 
 fixme:
     - previews loading (could be a much more serious problem)
     - notifypropertychanged for commands
     - MUI thing with Loaded/Unloaded!
-    - one big NLUA bug
     - pastload problem!
     - iconintaskbar for dialogs
     - potential error here:
@@ -384,22 +413,6 @@ todo:
         - including the ones from QuickDrive_Weekend
 
     + lite custom showroom
-        + selecting objects
-            + highlight
-            + view textures
-            + view stats
-            + textures in ImageViewer
-            + export textures
-                + only in developer mode
-            + uvw viewer/exporter
-            + materials information
-            × hide everything else
-        + properly fixed tool window
-        + collapsing
-        + Ctrl+D to remove selection
-        + fix selection
-        + fbx/fbx.ini/textures export
-        + fix keyboard
         - Esc to deselect/exit special mode
         - fix memory leaks!
         - fix fresnelMaxLevel
@@ -413,14 +426,14 @@ todo:
         - Online
 
     - remember all window sizes
-    - automatically switch to freshly installed content in some cases (optional)?
 
-    - drivers installation
-    - skins installation
-    - pp-filter, app, weather installation
-
-    - remove old data before installing the new one, etc
-    - define installation modes in lua-scripts in content
+    - content installation
+        - automatically switch to freshly installed content in some cases (optional)?
+        - drivers installation
+        - skins installation
+        - pp-filter, app, weather installation
+        - remove old data before installing the new one, etc
+        - define installation modes in lua-scripts in content
 
     + new much better acobject/acmanager system
         - add brand/car class/etc to suggestion lists on editing
@@ -429,9 +442,7 @@ todo:
     + drive feature
         + quick drive
             - optional list mode for brands, countries, etc?
-            - weekends
             - drag racing
-            - increase maximum laps number
         + online
             + custom sorting
             + flag fitting
@@ -454,20 +465,20 @@ todo:
             - hud configuration
             - quickly switchable controls configs?
     - car setups management
-    - detect country label by country/nationality name
     - Change ID function (especially for skins)
 
     - go buttons keyboard shortcut
         - special case for try again button in drive window
 
-    - copy track ui properties to other configurations
-        - context menu
-        - button in toolbar
-        - special auto-sync mode
-        - warning for differences
+    - cm: tracks
+        - copy track ui properties to other configurations
+            - context menu
+            - button in toolbar
+            - special auto-sync mode
+            - warning for differences
+        - tracks specs editor
 
     - autoadd country on tags cleaning
-    - tracks specs editor
     - remove double spaces, trim strings
     - car skins errors raising
     - detect invalid symbols in IDs
@@ -487,7 +498,6 @@ todo:
             + missing name error
         - CarSkins_SkinsAreMissing
 
-    - auto-update body shadows
     - auto-update track's map
     - copy sound from another car?
     - checkboxes
@@ -512,18 +522,11 @@ todo:
         - brand/upgrade icon!
         - auto-update previews
 
-    + built-in browser
-        + some communication system
-        + track geotags editing
-        - find car description
-        - find track description
-
     - favorites
 
     + additional section “stuff”
         + weather
-        + fonts
-            + detect what car uses what font
+            - base properties?
         + replays
             + warning for cr (will be lost without renaming)
             - filtering

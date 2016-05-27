@@ -30,7 +30,7 @@ namespace AcManager.Pages.Lists {
             public ReplaysListPageViewModel(IFilter<ReplayObject> listFilter)
                     : base(ReplaysManager.Instance, listFilter) {}
 
-            protected override string GetStatus() => PluralizingConverter.Pluralize(MainList.Count, "{0} replay");
+            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, "{0} replay");
         }
     }
 }

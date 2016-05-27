@@ -93,11 +93,13 @@ namespace AcManager.Pages.Selected {
         protected void TagsList_OnMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton != MouseButton.Right) return;
 
-            new ContextMenu { Items = {
-                new MenuItem { Header = "Clean Up Tags", Command = SelectedAcJsonObject.TagsCleanUpCommand },
-                new MenuItem { Header = "Sort Tags", Command = SelectedAcJsonObject.TagsSortCommand },
-                new MenuItem { Header = "Clean Up & Sort Tags", Command = SelectedAcJsonObject.TagsCleanUpAndSortCommand, InputGestureText = "Ctrl+Alt+T" }
-            } }.IsOpen = true;
+            new ContextMenu {
+                Items = {
+                    new MenuItem { Header = "Clean Up Tags", Command = SelectedAcJsonObject.TagsCleanUpCommand },
+                    new MenuItem { Header = "Sort Tags", Command = SelectedAcJsonObject.TagsSortCommand },
+                    new MenuItem { Header = "Clean Up & Sort Tags", Command = SelectedAcJsonObject.TagsCleanUpAndSortCommand, InputGestureText = "Ctrl+Alt+T" }
+                }
+            }.IsOpen = true;
             e.Handled = true;
         }
     }

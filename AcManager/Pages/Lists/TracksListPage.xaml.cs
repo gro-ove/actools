@@ -30,7 +30,7 @@ namespace AcManager.Pages.Lists {
                 : base(TracksManager.Instance, listFilter) {
             }
 
-            protected override string GetStatus() => PluralizingConverter.Pluralize(MainList.Count, "{0} track");
+            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, "{0} track");
         }
     }
 }
