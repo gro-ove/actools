@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using ImageMagick;
 
 namespace AcTools.Utils {
@@ -128,7 +130,7 @@ namespace AcTools.Utils {
                 ApplyPreviewImageMagick(source, destination, maxWidth, maxHeight);
             } else {
                 var encoder = ImageCodecInfo.GetImageDecoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
-                var parameters = new EncoderParameters(1) {Param = {[0] = new EncoderParameter(Encoder.Quality, 100L)}};
+                var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, 100L) } };
 
                 if (maxWidth > 0d || maxHeight > 0d) {
                     using (var bitmap = new Bitmap(ApplyPreviewsWidth, ApplyPreviewsHeight))
@@ -139,9 +141,9 @@ namespace AcTools.Utils {
 
                         using (var image = Image.FromFile(source)) {
                             var k = Math.Max(maxHeight / image.Height, maxWidth / image.Width);
-                            graphics.DrawImage(image, (int) (0.5*(ApplyPreviewsWidth - k*image.Width)),
-                                               (int) (0.5*(ApplyPreviewsHeight - k*image.Height)),
-                                               (int) (k*image.Width), (int) (k*image.Height));
+                            graphics.DrawImage(image, (int)(0.5 * (ApplyPreviewsWidth - k * image.Width)),
+                                               (int)(0.5 * (ApplyPreviewsHeight - k * image.Height)),
+                                               (int)(k * image.Width), (int)(k * image.Height));
                         }
 
                         bitmap.Save(destination, encoder, parameters);
@@ -165,9 +167,24 @@ namespace AcTools.Utils {
         public static void ApplyPreviews(string acRoot, string carName, string source, bool resize) {
             foreach (var file in Directory.GetFiles(source, "*.bmp")) {
                 var skinDirectory = FileUtils.GetCarSkinDirectory(acRoot, carName,
-                                                               Path.GetFileNameWithoutExtension(file));
+                        Path.GetFileNameWithoutExtension(file));
                 if (!Directory.Exists(skinDirectory)) continue;
                 ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize);
+            }
+        }
+
+        public static async Task ApplyPreviewsAsync(string acRoot, string carName, string source, bool resize, IProgress<Tuple<string, double?>> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            var files = Directory.GetFiles(source, "*.bmp");
+            for (var i = 0; i < files.Length; i++) {
+                var file = files[i];
+                var id = Path.GetFileNameWithoutExtension(file);
+                var skinDirectory = FileUtils.GetCarSkinDirectory(acRoot, carName, id);
+                if (!Directory.Exists(skinDirectory)) continue;
+
+                progress?.Report(new Tuple<string, double?>(id, (double)i / files.Length));
+                await Task.Run(() => { ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize); }, cancellation);
+                if (cancellation.IsCancellationRequested) return;
             }
         }
 

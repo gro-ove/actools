@@ -22,6 +22,16 @@ namespace AcTools.Processes {
             private readonly List<IDisposable> _changes = new List<IDisposable>();
             private KeyboardManager _keyboardManager;
 
+            protected BaseShotter() {
+                _keyboardManager = new KeyboardManager();
+                try {
+                    _keyboardManager.KeyUp += KeyboardManager_KeyUp;
+                    _keyboardManager.Subscribe();
+                } catch (Exception) {
+                    // ignored
+                }
+            }
+
             protected virtual void Prepare() {
                 if (_prepared) return;
                 _prepared = true;
@@ -54,14 +64,6 @@ namespace AcTools.Processes {
 
                 OutputDirectory = Path.Combine(TemporaryDirectory, "AcToolsShot_" + CarId + "_" + DateTime.Now.Ticks);
                 Directory.CreateDirectory(OutputDirectory);
-
-                _keyboardManager = new KeyboardManager();
-                try {
-                    _keyboardManager.KeyUp += KeyboardManager_KeyUp;
-                    _keyboardManager.Subscribe();
-                } catch (Exception) {
-                    // ignored
-                }
             }
 
             private void KeyboardManager_KeyUp(object sender, KeyEventArgs e) {

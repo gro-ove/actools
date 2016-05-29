@@ -126,6 +126,18 @@
     <Compile Include="Pages\About\ReleaseNotesPage.xaml.cs">
       <DependentUpon>ReleaseNotesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsAudio.xaml.cs">
+      <DependentUpon>AcSettingsAudio.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsVideo.xaml.cs">
+      <DependentUpon>AcSettingsVideo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsPage.xaml.cs">
+      <DependentUpon>AcSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsGeneral.xaml.cs">
+      <DependentUpon>AcSettingsGeneral.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
@@ -157,8 +169,14 @@
       <DependentUpon>SettingsContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="About\ImportantTips.cs" />
+    <Compile Include="Properties\BinaryResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BinaryResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Tools\About\AboutHelper.cs" />
     <Compile Include="Tools\About\PieceOfInformation.cs" />
+    <Compile Include="Tools\AcErrors\Solver\CarSkinSolvers.cs" />
     <Compile Include="Tools\NonfatalErrorNotifier.cs" />
     <Compile Include="Tools\GameWrapperUiFactory.cs" />
     <Compile Include="Pages\Dialogs\AssistsDialog.xaml.cs">
@@ -218,11 +236,6 @@
     <Compile Include="Pages\Settings\SettingsOnline.xaml.cs">
       <DependentUpon>SettingsOnline.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Properties\BinaryResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>BinaryResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Tools\AcErrors\Solver\CarSolvers.cs" />
     <Compile Include="Tools\AcErrors\UiSolversFactory.cs" />
     <Compile Include="About\ReleaseNotes.cs" />
@@ -241,6 +254,22 @@
     <Page Include="Pages\About\ReleaseNotesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsAudio.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsVideo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsGeneral.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\AcErrorSolutionSelector.xaml">
       <SubType>Designer</SubType>
@@ -619,8 +648,8 @@
     <None Include="app.config" />
     <None Include="Assets\Data\AssistsGamer.cmpreset" />
     <None Include="Assets\Data\AssistsIntermediate.cmpreset" />
-    <None Include="Assets\Data\AT-Previews Special %281.5%29.ini" />
-    <None Include="Assets\Data\Kunos %281.5%29.cmpreset" />
+    <None Include="Assets\Data\AT-Previews Special %281.6%29.ini" />
+    <None Include="Assets\Data\Kunos %281.6%29.cmpreset" />
     <None Include="Assets\Data\AssistsPro.cmpreset" />
     <None Include="Assets\Data\ShowroomPanoramaTemplate.zip" />
     <None Include="Assets\Data\ShowroomPreviewSphere.zip" />
@@ -628,9 +657,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Img\Showroom.png" />
-    <Content Include="Libs\KeraLua.dll" />
-    <Content Include="Libs\Lua52.dll" />
-    <Content Include="Libs\NLua.dll" />
     <Resource Include="Assets\Img\ShowroomPanoramaExample.jpg" />
     <None Include="Assets\Libs\7z.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -701,11 +727,12 @@
     <PreBuildEvent>cd $(ProjectDir)\Properties
 copy AssemblyInfo.cs AssemblyInfo.cs~
 perl -0pe 's/(?:\d+\.){3}\K(\d+)/$1+1/ge' AssemblyInfo.cs~ &gt; AssemblyInfo.cs
-del AssemblyInfo.cs~
-
-rem "$(ProjectDir)\Assets\Libs\7z.dll" 
-if $(ConfigurationName) == Release packedhelper "$(ProjectPath)" "$(ProjectDir)\bin\Release\Confused\AcManager.Tools.dll" "$(ProjectDir)\bin\Release\Confused\AcManager.Internal.dll" "$(ProjectDir)\bin\Release\Lua52.dll" --ignore AcManager.Internal.dll AcManager.Tools.dll Magick.NET-x86.dll Windows.winmd</PreBuildEvent>
+del AssemblyInfo.cs~</PreBuildEvent>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>rem "$(ProjectDir)\Assets\Libs\7z.dll" 
+rem if $(ConfigurationName) == Release packedhelper "$(ProjectPath)" "$(ProjectDir)\bin\Release\Confused\AcManager.Tools.dll" "$(ProjectDir)\bin\Release\Confused\AcManager.Internal.dll" "$(ProjectDir)\bin\Release\Lua52.dll" --ignore AcManager.Internal.dll AcManager.Tools.dll Magick.NET-x86.dll Windows.winmd</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -714,7 +741,4 @@ if $(ConfigurationName) == Release packedhelper "$(ProjectPath)" "$(ProjectDir)\
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <EmbeddedResource Include="References.resources" />
-  </ItemGroup>
 </Project>

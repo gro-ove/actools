@@ -37,28 +37,28 @@ namespace AcTools.Processes {
 
             switch (properties.Mode) {
                 case ShotMode.Classic: {
-                    var classicShooter = new ClassicShooter();
-                    classicShooter.SetRotate(properties.ClassicCameraDx, properties.ClassicCameraDy);
-                    classicShooter.SetDistance(properties.ClassicCameraDistance);
-                    shooter = classicShooter;
-                    break;
-                }
+                        var classicShooter = new ClassicShooter();
+                        classicShooter.SetRotate(properties.ClassicCameraDx, properties.ClassicCameraDy);
+                        classicShooter.SetDistance(properties.ClassicCameraDistance);
+                        shooter = classicShooter;
+                        break;
+                    }
 
                 case ShotMode.ClassicManual: {
-                    var classicShooter = new ClassisManualShooter();
-                    classicShooter.SetRotate(properties.ClassicCameraDx, properties.ClassicCameraDy);
-                    classicShooter.SetDistance(properties.ClassicCameraDistance);
-                    shooter = classicShooter;
-                    break;
-                }
+                        var classicShooter = new ClassisManualShooter();
+                        classicShooter.SetRotate(properties.ClassicCameraDx, properties.ClassicCameraDy);
+                        classicShooter.SetDistance(properties.ClassicCameraDistance);
+                        shooter = classicShooter;
+                        break;
+                    }
 
                 case ShotMode.Fixed: {
-                    var kunosShooter = new KunosShotter();
-                    kunosShooter.SetCamera(properties.FixedCameraPosition, properties.FixedCameraLookAt,
-                                           properties.FixedCameraFov, properties.FixedCameraExposure);
-                    shooter = kunosShooter;
-                    break;
-                }
+                        var kunosShooter = new KunosShotter();
+                        kunosShooter.SetCamera(properties.FixedCameraPosition, properties.FixedCameraLookAt,
+                                               properties.FixedCameraFov, properties.FixedCameraExposure);
+                        shooter = kunosShooter;
+                        break;
+                    }
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -88,7 +88,7 @@ namespace AcTools.Processes {
                 var result = shooter.OutputDirectory;
                 shooter.Dispose();
                 return result;
-            } catch(Exception) {
+            } catch (Exception) {
                 try {
                     shooter?.Dispose();
                 } catch (Exception) {
@@ -109,31 +109,34 @@ namespace AcTools.Processes {
         [ItemCanBeNull]
         public static async Task<string> ShotAsync(ShotProperties properties, IProgress<ShootingProgress> progress,
                                                    CancellationToken cancellationToken) {
-            return await Task.Run(() => {
-                using (var shooter = CreateShooter(properties)) {
-                    var iterableShooter = shooter as BaseIterableShooter;
-                    if (iterableShooter == null) {
+            using (var shooter = CreateShooter(properties)) {
+                var iterableShooter = shooter as BaseIterableShooter;
+                if (iterableShooter == null) {
+                    await Task.Run(() => {
                         shooter.ShotAll();
-                    } else {
-                        var skins = iterableShooter.CarSkins.ToIReadOnlyListIfItsNot();
-                        var position = 0;
-                        foreach (var carSkin in skins) {
-                            if (cancellationToken.IsCancellationRequested) {
-                                return null;
-                            }
-
-                            progress.Report(new ShootingProgress {
-                                SkinId = carSkin,
-                                SkinNumber = position++,
-                                TotalSkins = skins.Count
-                            });
-                            iterableShooter.Shot(carSkin);
+                    }, cancellationToken);
+                } else {
+                    var skins = iterableShooter.CarSkins.ToIReadOnlyListIfItsNot();
+                    var position = 0;
+                    foreach (var carSkin in skins) {
+                        if (cancellationToken.IsCancellationRequested) {
+                            return null;
                         }
-                    }
 
-                    return shooter.OutputDirectory;
+                        progress.Report(new ShootingProgress {
+                            SkinId = carSkin,
+                            SkinNumber = position++,
+                            TotalSkins = skins.Count
+                        });
+
+                        await Task.Run(() => {
+                            iterableShooter.Shot(carSkin);
+                        }, cancellationToken);
+                    }
                 }
-            }, cancellationToken);
+
+                return shooter.OutputDirectory;
+            }
         }
     }
 }

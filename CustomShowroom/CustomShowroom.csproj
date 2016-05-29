@@ -85,15 +85,16 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <EmbeddedResource Include="References.resources" />
-  </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)\Properties
 copy AssemblyInfo.cs AssemblyInfo.cs~
 perl -0pe 's/(?:\d+\.){3}\K(\d+)/$1+1/ge' AssemblyInfo.cs~ &gt; AssemblyInfo.cs
-del AssemblyInfo.cs~
-
-packedhelper $(ProjectPath)</PreBuildEvent>
+del AssemblyInfo.cs~</PreBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Release packedhelper "$(ProjectPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="References.resources" />
+  </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Annotations;
 using AcManager.Controls;
@@ -27,6 +28,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;
+using Application = System.Windows.Application;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarUpdatePreviewsDialog : INotifyPropertyChanged, IProgress<Showroom.ShootingProgress>, IUserPresetable {
@@ -188,7 +190,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public BuiltInPpFilter DefaultPpFilter { get; } = new BuiltInPpFilter {
-            Name = "AT-Previews Special (Obsolete)",
+            Name = "AT-Previews Special",
             Filename = "AT-Previews Special.ini",
             Content = Properties.BinaryResources.PpFilterAtPreviewsSpecial
         };
@@ -414,7 +416,7 @@ namespace AcManager.Pages.Dialogs {
                 if (o.FilterId != null) {
                     SelectedFilter = Filters.GetByIdOrDefault(o.FilterId) ?? SelectedFilter;
                 } else {
-                    SelectedFilter = PpFiltersManager.Instance.GetDefault();
+                    SelectedFilter = DefaultPpFilter;
                 }
 
                 CameraPosition = o.CameraPosition;
@@ -429,7 +431,7 @@ namespace AcManager.Pages.Dialogs {
                 UseSpecialResolution = o.UseSpecialResolution;
             }, () => {
                 SelectedShowroom = null;
-                SelectedFilter = PpFiltersManager.Instance.GetDefault();
+                SelectedFilter = (IWithId)PpFiltersManager.Instance.GetDefault() ?? DefaultPpFilter;
                 CameraPosition = "-3.867643, 1.423590, 4.70381";
                 CameraLookAt = "0.0, 0.7, 0.5";
                 CameraFov = 30;
@@ -506,8 +508,16 @@ namespace AcManager.Pages.Dialogs {
             if (CurrentPhase == Phase.Waiting) {
                 _cancellationTokenSource.Cancel(false);
             } else if (CurrentPhase == Phase.Result && IsResultOk) {
+                Apply();
+            }
+        }
+
+        private async void Apply() {
+            using (var waiting = new WaitingDialog {
+                Owner = Application.Current.MainWindow
+            }) {
                 try {
-                    ImageUtils.ApplyPreviews(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews);
+                    await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews, waiting, waiting.CancellationToken);
                 } catch (OutOfMemoryException e) {
                     NonfatalError.Notify("Can't save previews", AppAddonsManager.Instance.IsAddonEnabled("Magick")
                             ? "Please, report this bug to developers." : "I recommend to enable Magick.NET addon.", e);
@@ -531,6 +541,48 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged();
             }
         }
+        
+        private const string KeySize = "_CarUpdatePreviewsDialog.Size";
+
+        private void Resize(double? width, double? height, bool resizeable) {
+            var oldWidth = Width;
+            var oldHeight = Height;
+            var area = Screen.PrimaryScreen.WorkingArea;
+
+            if (width.HasValue && height.HasValue) {
+                double w, h;
+
+                if (resizeable) {
+                    var p = ValuesStorage.GetPoint(KeySize, new Point(width.Value, height.Value));
+                    w = Math.Min(p.X, area.Width);
+                    h = Math.Min(p.Y, area.Height);
+                } else {
+                    w = Math.Min(width.Value, area.Width);
+                    h = Math.Min(height.Value, area.Height);
+                }
+
+                Width = w;
+                Height = h;
+                MinWidth = Math.Min(width.Value, area.Width);
+                MinHeight = Math.Min(height.Value, area.Height);
+                SizeToContent = SizeToContent.Manual;
+                ResizeMode = resizeable ? ResizeMode.CanResizeWithGrip : ResizeMode.NoResize;
+            } else {
+                MinWidth = 240d;
+                MinHeight = 120d;
+                SizeToContent = SizeToContent.WidthAndHeight;
+                ResizeMode = ResizeMode.NoResize;
+            }
+
+            Left = Math.Max(area.Left, Left + (oldWidth - Width) / 2d);
+            Top = Math.Max(area.Top, Top + (oldHeight - Height) / 2d);
+        }
+
+        private void CarUpdatePreviewsDialog_OnSizeChanged(object sender, SizeChangedEventArgs e) {
+            if (ResizeMode == ResizeMode.CanResizeWithGrip) {
+                ValuesStorage.Set(KeySize, new Point(Width, Height));
+            }
+        }
 
         private void SelectPhase(Phase phase) {
             CurrentPhase = phase;
@@ -541,7 +593,7 @@ namespace AcManager.Pages.Dialogs {
                     WaitingPhase.Visibility = Visibility.Collapsed;
                     ResultPhase.Visibility = Visibility.Collapsed;
                     ErrorPhase.Visibility = Visibility.Collapsed;
-
+                    Resize(540d, 400d, false);
                     var manual = CreateExtraDialogButton("Manual", o => RunShootingProcess(true), o => CanBeSaved);
                     manual.ToolTip = "Set camera position manually and then press F8 to start shooting";
                     Buttons = new[] {
@@ -556,6 +608,7 @@ namespace AcManager.Pages.Dialogs {
                     WaitingPhase.Visibility = Visibility.Visible;
                     ResultPhase.Visibility = Visibility.Collapsed;
                     ErrorPhase.Visibility = Visibility.Collapsed;
+                    Resize(540d, 400d, false);
                     Buttons = new[] { CancelButton };
                     break;
 
@@ -564,6 +617,7 @@ namespace AcManager.Pages.Dialogs {
                     WaitingPhase.Visibility = Visibility.Collapsed;
                     ResultPhase.Visibility = Visibility.Visible;
                     ErrorPhase.Visibility = Visibility.Collapsed;
+                    Resize(540d, 400d, true);
                     Buttons = new[] { OkButton, CancelButton };
                     break;
 
@@ -572,6 +626,7 @@ namespace AcManager.Pages.Dialogs {
                     WaitingPhase.Visibility = Visibility.Collapsed;
                     ResultPhase.Visibility = Visibility.Collapsed;
                     ErrorPhase.Visibility = Visibility.Visible;
+                    Resize(null, null, false);
                     Buttons = new[] { OkButton };
                     break;
             }
@@ -681,6 +736,13 @@ namespace AcManager.Pages.Dialogs {
                 );
 
                 SelectPhase(Phase.Result);
+            } catch (ShotingCancelledException e) {
+                ErrorMessage = e.UserCancelled ? "Cancelled" : e.Message + ".";
+                SelectPhase(Phase.Error);
+
+                if (!e.UserCancelled) {
+                    Logging.Warning("cannot update previews: " + e);
+                }
             } catch (Exception e) {
                 ErrorMessage = e.Message + ".";
                 SelectPhase(Phase.Error);

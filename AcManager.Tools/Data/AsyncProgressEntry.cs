@@ -14,10 +14,10 @@ namespace AcManager.Tools.Data {
 
         public static AsyncProgressEntry CreateDownloading(long receivedBytes, long totalBytes) {
             if (totalBytes == -1) {
-                return new AsyncProgressEntry($@"Loaded {LocalizationHelper.ReadableSize(receivedBytes, 1)}", null);
+                return new AsyncProgressEntry($@"Loaded {receivedBytes.ReadableSize(1)}", null);
             }
 
-            return new AsyncProgressEntry($@"Loaded {LocalizationHelper.ReadableSize(receivedBytes, 1)} of {LocalizationHelper.ReadableSize(totalBytes, 1)}",
+            return new AsyncProgressEntry($@"Loaded {receivedBytes.ReadableSize(1)} of {totalBytes.ReadableSize(1)}",
                     (double)receivedBytes / totalBytes);
         }
     }

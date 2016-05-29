@@ -8,7 +8,7 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.Pages.Dialogs {
-    public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<AsyncProgressEntry>, IDisposable {
+    public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<Tuple<String, Double?>>, IProgress<AsyncProgressEntry>, IDisposable {
         public static WaitingDialog Create(string reportValue) {
             var w = new WaitingDialog();
             w.Report(reportValue);
@@ -128,6 +128,24 @@ namespace AcManager.Controls.Pages.Dialogs {
                     Message = value.Message;
                     Progress = value.Progress;
                     ProgressIndetermitate = value.Progress == 0d;
+                } else if (IsVisible && !_closed) {
+                    Close();
+                    _closed = true;
+                }
+            });
+        }
+
+        public void Report(Tuple<string, double?> value) {
+            Dispatcher.Invoke(() => {
+                if (value.Item1 != null) {
+                    if (!IsVisible && !_shown) {
+                        _shown = true;
+                        ShowDialogWithoutBlocking();
+                    }
+
+                    Message = value.Item1;
+                    Progress = value.Item2;
+                    ProgressIndetermitate = value.Item2 == 0d;
                 } else if (IsVisible && !_closed) {
                     Close();
                     _closed = true;
