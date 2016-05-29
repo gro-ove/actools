@@ -1,7 +1,9 @@
-﻿namespace AcManager.Tools.Helpers.Api {
-    public partial class CmHelpersProvider {
+﻿using AcManager.Internal;
+
+namespace AcManager.Tools.Helpers.Api {
+    public class CmHelpersProvider {
         public static string GetAddress(string path) {
-            return ServerAddress + path;
+            return InternalUtils.CmGetAddress(path);
         }
     }
 }

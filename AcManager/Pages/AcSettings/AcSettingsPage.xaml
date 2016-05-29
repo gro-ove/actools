@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:internal="clr-namespace:AcManager.Internal;assembly=AcManager.Internal" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        FocusVisualStyle="{x:Null}">
+    <Grid Style="{StaticResource ContentRoot}">
+        <mui:ModernTab Layout="List" SelectedSource="/Pages/AcSettings/AcSettingsGeneral.xaml" SaveKey="__AcSettingsPage.SelectedPage">
+            <mui:ModernTab.Links>
+                <mui:Link DisplayName="audio" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />
+                <mui:Link DisplayName="general" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
+                <mui:Link DisplayName="controls" Source="/Pages/Miscellaneous/WorkInProgress.xaml?controls" />
+                <mui:Link DisplayName="video" Source="/Pages/AcSettings/AcSettingsVideo.xaml" />
+            </mui:ModernTab.Links>
+        </mui:ModernTab>
+    </Grid>
+</UserControl>

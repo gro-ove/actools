@@ -7,7 +7,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Presentation;
@@ -180,33 +179,37 @@ namespace FirstFloor.ModernUI.Helpers {
         private const int ActualVersion = 2;
 
         private void Load(int version, IEnumerable<string> data) {
-            _storage.Clear();
-            switch (version) {
-                case 2:
-                    foreach (var split in data
-                            .Select(line => line.Split(new[] { '\t' }, 2))
-                            .Where(split => split.Length == 2)) {
-                        _storage[Decode(split[0])] = Decode(split[1]);
-                    }
-                    break;
+            lock (_storage) {
+                _storage.Clear();
+                switch (version) {
+                    case 2:
+                        foreach (var split in data
+                                .Select(line => line.Split(new[] { '\t' }, 2))
+                                .Where(split => split.Length == 2)) {
+                            _storage[Decode(split[0])] = Decode(split[1]);
+                        }
+                        break;
 
-                case 1:
-                    foreach (var split in data
-                            .Select(line => line.Split(new[] { '\t' }, 2))
-                            .Where(split => split.Length == 2)) {
-                        _storage[split[0]] = DecodeBase64(split[1]);
-                    }
-                    break;
+                    case 1:
+                        foreach (var split in data
+                                .Select(line => line.Split(new[] { '\t' }, 2))
+                                .Where(split => split.Length == 2)) {
+                            _storage[split[0]] = DecodeBase64(split[1]);
+                        }
+                        break;
 
-                default:
-                    throw new InvalidDataException("Invalid version: " + version);
+                    default:
+                        throw new InvalidDataException("Invalid version: " + version);
+                }
             }
         }
 
         public string GetData() {
-            return "version: " + ActualVersion + "\n" + string.Join("\n", from x in _storage
-                                                                          where x.Key != null && x.Value != null
-                                                                          select Encode(x.Key) + '\t' + Encode(x.Value));
+            lock (_storage) {
+                return "version: " + ActualVersion + "\n" + string.Join("\n", from x in _storage
+                                                                              where x.Key != null && x.Value != null
+                                                                              select Encode(x.Key) + '\t' + Encode(x.Value));
+            }
         }
 
         private void Save() {
@@ -435,10 +438,12 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static void Set(string key, string value) {
-            if (Instance._storage.ContainsKey(key) && Instance._storage[key] == value) return;
-            Instance._storage[key] = value;
-            Dirty();
-            Instance.OnPropertyChanged(nameof(Count));
+            lock (Instance._storage) {
+                if (Instance._storage.ContainsKey(key) && Instance._storage[key] == value) return;
+                Instance._storage[key] = value;
+                Dirty();
+                Instance.OnPropertyChanged(nameof(Count));
+            }
         }
 
         public static void Set(string key, int value) {
@@ -519,21 +524,25 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static void Remove(string key) {
-            if (Instance._storage.ContainsKey(key)) {
-                Instance._storage.Remove(key);
-                Dirty();
-                Instance.OnPropertyChanged(nameof(Count));
+            lock (Instance._storage) {
+                if (Instance._storage.ContainsKey(key)) {
+                    Instance._storage.Remove(key);
+                    Dirty();
+                    Instance.OnPropertyChanged(nameof(Count));
+                }
             }
         }
 
         public static void CleanUp(Func<string, bool> predicate) {
-            var keys = Instance._storage.Keys.ToList();
-            foreach (var key in keys.Where(predicate)) {
-                Instance._storage.Remove(key);
-            }
+            lock (Instance._storage) {
+                var keys = Instance._storage.Keys.ToList();
+                foreach (var key in keys.Where(predicate)) {
+                    Instance._storage.Remove(key);
+                }
 
-            Dirty();
-            Instance.OnPropertyChanged(nameof(Count));
+                Dirty();
+                Instance.OnPropertyChanged(nameof(Count));
+            }
         }
     }
 }

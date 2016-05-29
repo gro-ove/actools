@@ -44,10 +44,26 @@ namespace AcManager.Controls {
             set { SetValue(PostfixProperty, value); }
         }
 
+        public static readonly DependencyProperty ShowZeroAsOffProperty = DependencyProperty.Register(nameof(ShowZeroAsOff), typeof(bool),
+                typeof(ValueLabel));
+
+        public bool ShowZeroAsOff {
+            get { return (bool)GetValue(ShowZeroAsOffProperty); }
+            set { SetValue(ShowZeroAsOffProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowPostfixProperty = DependencyProperty.Register(nameof(ShowPostfix), typeof(bool),
+                typeof(ValueLabel), new PropertyMetadata(true));
+
+        public bool ShowPostfix {
+            get { return (bool)GetValue(ShowPostfixProperty); }
+            set { SetValue(ShowPostfixProperty, value); }
+        }
+
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
             base.OnMouseLeftButtonUp(e);
 
-            var t = GetTemplateChild("TextBox") as TextBox;
+            var t = GetTemplateChild("PART_TextBox") as TextBox;
             if (t != null && !t.IsFocused) {
                 Keyboard.Focus(t);
             }

@@ -65,8 +65,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.LanPollTimeout, ref KunosApiProvider.OptionLanPollTimeout);
             AppArguments.Set(AppFlag.WebRequestTimeout, ref KunosApiProvider.OptionWebRequestTimeout);
 
-            AppArguments.Set(AppFlag.DisableChecksumChecking, ref CmApiProvider.OptionDisableChecksumChecking);
-
             AppArguments.Set(AppFlag.PingConcurrency, ref BaseOnlineManager.OptionConcurrentThreadsNumber);
             AppArguments.Set(AppFlag.AlwaysGetInformationDirectly, ref ServerEntry.OptionAlwaysGetInformationDirectly);
 
@@ -156,7 +154,7 @@ namespace AcManager {
             try {
                 ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(true));
                 ToolTipService.InitialShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(700));
-                ComboBox.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
+                ItemsControl.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
             } catch (Exception e) {
                 Logging.Warning("Can't prepare UI: " + e);
             }
@@ -167,9 +165,8 @@ namespace AcManager {
             var revoked = AppKeyHolder.IsAllRight ? null : AppKeyHolder.Instance.Revoked;
 
             await Task.Delay(500);
-
-            AppKeyTester.UserAgent = CmApiProvider.UserAgent;
-            if (revoked != null || AppKeyHolder.IsAllRight && await AppKeyTester.CheckKeyAsync(AppKeyHolder.Key) == false) {
+            
+            if (revoked != null || AppKeyHolder.IsAllRight && await InternalUtils.CheckKeyAsync(AppKeyHolder.Key, CmApiProvider.UserAgent) == false) {
                 ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, revoked ?? AppKeyHolder.Key);
                 AppKeyHolder.Instance.SetKey(null);
 

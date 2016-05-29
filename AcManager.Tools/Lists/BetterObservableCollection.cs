@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -31,6 +30,12 @@ namespace AcManager.Tools.Lists {
                 foreach (var item in list) {
                     Add(item);
                 }
+            }
+        }
+
+        public virtual void RemoveRange(IEnumerable<T> items) {
+            foreach (var item in items) {
+                Remove(item);
             }
         }
 

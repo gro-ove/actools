@@ -116,6 +116,13 @@ namespace AcManager.Tools.AcErrors {
         CarSkins_DirectoryIsUnavailable,
 
 
+        [Description("Skin's livery ({0}/livery.png) is missing")]
+        CarSkin_LiveryIsMissing,
+
+        [Description("Skin's preview ({0}/preview.jpg) is missing")]
+        CarSkin_PreviewIsMissing,
+
+
         [Description("Model (kn5-file) is missing")]
         Showroom_Kn5IsMissing,
 

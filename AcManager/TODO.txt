@@ -388,6 +388,17 @@ done:
         + find car description
         + find track description
     + auto-update body shadows
+    + smooth previews applying
+    + skins editor
+        + uv extractor
+    + car skins errors raising
+    + showroom from QD/KunosCareer
+        + QD
+        + KunosCareer
+        + custom showroom
+        + presets
+    + wpf showroom
+    + find a way to deal with AVs
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -407,7 +418,6 @@ todo:
     - lite mode (without main form): overlays, second commands, attempts to open main form?
 
     - errors & fixers for badly make ui_skin.json
-    - smooth previews applying
 
     - replace int.TryParse in converters to something better
         - including the ones from QuickDrive_Weekend
@@ -418,13 +428,7 @@ todo:
         - fix fresnelMaxLevel
         - anitrosopic filtration?
 
-    - showroom from QD/KunosCareer/Online
-        + QD
-        + KunosCareer
-        + custom showroom
-        + presets
-        - Online
-
+    - showroom from Online
     - remember all window sizes
 
     - content installation
@@ -465,7 +469,7 @@ todo:
             - hud configuration
             - quickly switchable controls configs?
     - car setups management
-    - Change ID function (especially for skins)
+    - change IDs (especially for skins)
 
     - go buttons keyboard shortcut
         - special case for try again button in drive window
@@ -480,7 +484,6 @@ todo:
 
     - autoadd country on tags cleaning
     - remove double spaces, trim strings
-    - car skins errors raising
     - detect invalid symbols in IDs
 
     - some livery.png editor
@@ -491,6 +494,8 @@ todo:
 
     + error fixer
         + showroom missing kn5 error detection
+        + missing skin preview
+        - missing skin livery
         - track missing kn5 error detection
         - missing sound detection
         - missing collider.kn5 detection
@@ -499,7 +504,7 @@ todo:
         - CarSkins_SkinsAreMissing
 
     - auto-update track's map
-    - copy sound from another car?
+    - copy sounds from other car?
     - checkboxes
         - custom lists?
     - progress in taskbar
@@ -552,9 +557,8 @@ todo:
             - font
     - show race params on loading screen?
 
-later:
+later:    
     - add NVIDIA copyrights and stuff
-    - find a way to deal with AVs
 
     - option for disabling .acreplay on renaming replays in content tab
     - try to implement some stuff from /r/loadingicon/?
@@ -572,7 +576,6 @@ later:
         - sorting, grouping
         - find a way to make unavaliable servers visible
 
-    - wpf showroom?
     - try that idea with reusing selectedsomethingpage?
 
     - records, best laps, stats
@@ -582,7 +585,7 @@ later:
         - mark new records in gamedialog
         - sqlite support
             - move values to sqlite?
-    - gamedialog: separately show drivers (wrekfest-style):
+    - gamedialog: separately show drivers (wreckfest-style):
         - best laptime
 
     - show flags for nationalities
@@ -639,8 +642,6 @@ later:
     - optional brand-in-name (and optional brand-out-name)?
 
     - hud configuration editor (apps tab?)
-    + skins editor
-        - uv extractor
     + special flags
         - define disabled files location
         - define temporary files location

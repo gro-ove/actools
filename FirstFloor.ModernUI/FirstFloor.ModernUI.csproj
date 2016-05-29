@@ -405,6 +405,7 @@
     <Resource Include="Fonts\Segoe Condensed Bold.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\BrokenImage.bin" />
     <Content Include="Effects\Shaders\GrayscaleEffect.fx" />
     <Resource Include="Effects\Shaders\GrayscaleEffect.ps" />
     <None Include="packages.config" />

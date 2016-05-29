@@ -36,7 +36,7 @@ namespace PreviewUpdater {
         [Option('e', "exposure", DefaultValue = 0.0, HelpText = "Exposure (looks like doesn't work).")]
         public double Exposure { get; set; }
 
-        [Option('f', "filter", DefaultValue = "default", HelpText = "PP filter.")]
+        [Option('f', "filter", DefaultValue = "S1-Showroom", HelpText = "PP filter.")]
         public string Filter { get; set; }
 
         [Option('a', "fxaa", DefaultValue = PseudoBool.True, HelpText = "Enable FXAA.")]

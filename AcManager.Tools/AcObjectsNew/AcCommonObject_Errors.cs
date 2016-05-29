@@ -1,19 +1,24 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections;
+using System.Collections.ObjectModel;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcCommonObject {
         private readonly BetterObservableCollection<IAcError> _errors = new BetterObservableCollection<IAcError>();
 
-        public ObservableCollection<IAcError> Errors => _errors;
+        public ObservableCollection<IAcError> InnerErrors => _errors;
+
+        [NotNull]
+        public virtual ObservableCollection<IAcError> Errors => _errors;
 
         public bool HasErrors => Errors.Count > 0;
 
         public void AddError(AcErrorType type, params object[] args) {
-            AddError(new AcError(type, args));
+            AddError(new AcError(this, type, args));
         }
 
         /// <summary>
@@ -24,7 +29,7 @@ namespace AcManager.Tools.AcObjectsNew {
         /// <param name="args"></param>
         public void ErrorIf(bool condition, AcErrorType type, params object[] args) {
             if (condition) {
-                AddError(new AcError(type, args));
+                AddError(new AcError(this, type, args));
             } else {
                 RemoveError(type);
             }
@@ -45,7 +50,7 @@ namespace AcManager.Tools.AcObjectsNew {
         public void RemoveError(AcErrorType type) {
             if (!HasError(type)) return;
             _errors.Remove(_errors.FirstOrDefault(x => x.Type == type));
-            if (!_errors.Any()) {
+            if (Errors.Count == 0) {
                 OnPropertyChanged(nameof(HasErrors));
             }
         }
@@ -53,23 +58,28 @@ namespace AcManager.Tools.AcObjectsNew {
         public void RemoveError(IAcError error) {
             if (!_errors.Contains(error)) return;
             _errors.Remove(error);
-            if (!_errors.Any()) {
+            if (Errors.Count == 0) {
                 OnPropertyChanged(nameof(HasErrors));
             }
         }
 
         public void ClearErrors() {
-            if (!_errors.Any()) return;
+            if (_errors.Count == 0) return;
             _errors.Clear();
-            OnPropertyChanged(nameof(HasErrors));
+
+            if (Errors.Count == 0) {
+                OnPropertyChanged(nameof(HasErrors));
+            }
         }
 
         public void ClearErrors(AcErrorCategory category) {
-            if (!_errors.Any()) return;
+            if (_errors.Count == 0) return;
+
             for (int i; (i = _errors.FindIndex(x => x.Category == category)) != -1;) {
                 _errors.RemoveAt(i);
             }
-            if (!_errors.Any()) {
+
+            if (Errors.Count == 0) {
                 OnPropertyChanged(nameof(HasErrors));
             }
         }

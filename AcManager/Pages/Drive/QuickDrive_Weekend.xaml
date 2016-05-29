@@ -138,7 +138,7 @@
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="1">
             <controls:ValueLabel Value="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialSessionConverter}}"
                     Postfix="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialPluralizingConverter}, ConverterParameter=' minute'}"
-                    Mode="IntegerOrSkip">Practice</controls:ValueLabel>
+                    Mode="IntegerOrZeroLabel">Practice</controls:ValueLabel>
             <Slider Minimum="0" Maximum="90" Value="{Binding PracticeDuration}" />
         </StackPanel>
 

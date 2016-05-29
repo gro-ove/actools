@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Navigation;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public interface ITitleable {
@@ -64,7 +66,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public ModernFrame Frame { get; private set; }
 
         private static void OnLinksChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((ModernTab)o).UpdateSelection();
+            ((ModernTab)o).UpdateSelection(false);
         }
 
         private static void OnSelectedSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
@@ -72,16 +74,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnSelectedSourceChanged(Uri newValue) {
-            UpdateSelection();
+            UpdateSelection(true);
             SelectedSourceChanged?.Invoke(this, new SourceEventArgs(newValue));
         }
 
-        private void UpdateSelection() {
+        private void UpdateSelection(bool skipLoading) {
             if (_linkList == null || Links == null) {
                 return;
             }
 
-            _linkList.SelectedItem = Links.FirstOrDefault(l => l.Source == SelectedSource);
+            var saved = skipLoading || SaveKey == null ? null : ValuesStorage.GetString(SaveKey);
+            _linkList.SelectedItem = (saved == null ? null : Links.FirstOrDefault(l => l.Source.OriginalString == saved))
+                    ?? Links.FirstOrDefault(l => l.Source == SelectedSource);
         }
 
         public override void OnApplyTemplate() {
@@ -106,13 +110,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Frame.Navigated += Frame_Navigated;
             }
 
-            UpdateSelection();
+            UpdateSelection(false);
         }
 
         private void OnLinkListSelectionChanged(object sender, SelectionChangedEventArgs e) {
             var link = _linkList.SelectedItem as Link;
             if (link != null && link.Source != SelectedSource) {
                 SetCurrentValue(SelectedSourceProperty, link.Source);
+
+                if (SaveKey != null) {
+                    ValuesStorage.Set(SaveKey, link.Source.OriginalString);
+                }
             }
         }
 
@@ -158,6 +166,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public string Title {
             get { return (string) GetValue(TitleProperty); }
             set { SetValue(TitleProperty, value); }
+        }
+
+        // saving and loading uri
+        public static readonly DependencyProperty SaveKeyProperty = DependencyProperty.Register(nameof(SaveKey), typeof(string),
+                typeof(ModernTab), new PropertyMetadata(OnSaveKeyChanged));
+
+        [CanBeNull]
+        public string SaveKey {
+            get { return (string)GetValue(SaveKeyProperty); }
+            set { SetValue(SaveKeyProperty, value); }
+        }
+
+        private static void OnSaveKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((ModernTab)o).OnSaveKeyChanged((string)e.OldValue, (string)e.NewValue);
+        }
+
+        private void OnSaveKeyChanged(string oldValue, string newValue) {
+            UpdateSelection(false);
         }
     }
 }

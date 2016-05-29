@@ -59,7 +59,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public enum SpecialMode {
-            None, Number, Integer, IntegerOrSkip, Positive, Time
+            None, Number, Integer, IntegerOrZeroLabel, Positive, Time
         }
 
         public static SpecialMode GetSpecialMode(DependencyObject obj) {
@@ -134,36 +134,32 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     return FlexibleParser.ReplaceDouble(text, value);
                 }
 
-                case SpecialMode.IntegerOrSkip: {
-                        var skip = string.Equals(text, "Skip", StringComparison.OrdinalIgnoreCase);
+                case SpecialMode.IntegerOrZeroLabel: {
+                    int value;
+                    var skip = !FlexibleParser.TryParseInt(text, out value);
 
-                        int value;
-                        if (skip) {
-                            value = 0;
-                        } else if (!FlexibleParser.TryParseInt(text, out value)) return null;
-
-                        if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
-                            delta *= 10.0;
-                        }
-
-                        if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
-                            delta *= 2.0;
-                        }
-
-                        value = (int)(value + delta);
-                        if (mode == SpecialMode.Positive && value < 1) {
-                            value = 1;
-                        }
-
-                        return skip ? value.ToString(CultureInfo.InvariantCulture) : FlexibleParser.ReplaceDouble(text, value);
+                    if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
+                        delta *= 10.0;
                     }
+
+                    if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
+                        delta *= 2.0;
+                    }
+
+                    value = (int)(value + delta);
+                    if (mode == SpecialMode.Positive && value < 1) {
+                        value = 1;
+                    }
+
+                    return skip ? value.ToString(CultureInfo.InvariantCulture) : FlexibleParser.ReplaceDouble(text, value);
+                }
 
                 case SpecialMode.Time: {
                     var splitted = text.Split(':');
                     int hours, minutes;
 
                     if (splitted.Length != 2 || !FlexibleParser.TryParseInt(splitted[0], out hours) ||
-                        !FlexibleParser.TryParseInt(splitted[1], out minutes)) return null;
+                            !FlexibleParser.TryParseInt(splitted[1], out minutes)) return null;
 
                     var totalMinutes = hours * 60 + minutes;
 

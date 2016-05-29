@@ -119,13 +119,6 @@ namespace AcManager {
         AlwaysGetInformationDirectly,
 
         /// <summary>
-        /// Disable checksum checking for CM API (app's content, new versions, etc). Use on
-        /// your own risk.
-        /// Example: --disable-checksum-checking
-        /// </summary>
-        DisableChecksumChecking,
-
-        /// <summary>
         /// Less responsible UI, but could be a little bit faster.
         /// Example: --sync-navigation
         /// </summary>

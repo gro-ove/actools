@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Data;
 using System.Globalization;
+using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Helpers;
 
@@ -28,6 +30,20 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
         private static readonly Dictionary<string, CacheEntry> Cache = new Dictionary<string, CacheEntry>(50); 
 #endif
+
+        private static BitmapSource _brokenImageSource;
+
+        private static BitmapSource LoadBrokenImageSource() {
+            Logging.Warning("LoadBrokenImageSource()");
+
+            var bi = new BitmapImage();
+            bi.BeginInit();
+            bi.CacheOption = BitmapCacheOption.OnLoad;
+            bi.StreamSource = new MemoryStream(Resources.BrokenImage);
+            bi.EndInit();
+
+            return bi;
+        }
 
         public static BitmapSource Convert(object value, bool considerOneTrueDpi = false) {
             if (value is BitmapSource) return value as BitmapImage;
@@ -65,6 +81,9 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 return entry.Image;
             }
 #endif
+            //if (!File.Exists(source.OriginalString)) {
+            //    return _brokenImageSource ?? (_brokenImageSource = LoadBrokenImageSource());
+            //}
 
             try {
                 var bi = new BitmapImage();

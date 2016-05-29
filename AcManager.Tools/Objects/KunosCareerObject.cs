@@ -132,7 +132,7 @@ namespace AcManager.Tools.Objects {
             }
 
             foreach (var er in Events.Append((KunosCareerEventObject)sender)
-                    .SelectMany(x => x.Errors.Select(y => new AcEventError(x, y)))) {
+                    .SelectMany(x => x.InnerErrors.Select(y => new AcEventError(x, y)))) {
                 AddError(er);
             }
         }
@@ -148,13 +148,24 @@ namespace AcManager.Tools.Objects {
 
             var ini = new IniFile(OpponentsIniFilename);
             var drivers = LinqExtension.RangeFrom(1).Select(x => $"AI{x}").TakeWhile(ini.ContainsKey).Select(x => ini[x]).Select((section, id) => {
-                var car = CarsManager.Instance.GetById(section.Get("MODEL"));
+                var model = section.Get("MODEL");
+                if (model == null) {
+                    Logging.Error($"Section AI{id + 1}: MODEL is required, fallback to default");
+                    model = CarsManager.Instance.GetDefault()?.Id ?? "";
+                }
+
+                var skin = section.Get("SKIN");
+                if (skin == null) {
+                    Logging.Error($"Section AI{id + 1}: SKIN is required, fallback to default");
+                }
+
+                var car = CarsManager.Instance.GetById(model);
                 CarSkinObject carSkin;
                 if (car == null) {
                     AddError(AcErrorType.Data_KunosCareerCarIsMissing, section.Get("MODEL"));
                     carSkin = null;
                 } else {
-                    carSkin = car.GetSkinByIdFromConfig(section.Get("SKIN"));
+                    carSkin = skin == null ? car.GetFirstSkinOrNull() : car.GetSkinByIdFromConfig(skin);
                     if (carSkin == null) {
                         AddError(AcErrorType.Data_KunosCareerCarSkinIsMissing, car.DisplayName, section.Get("SKIN"));
                         carSkin = car.GetFirstSkinOrNull();
@@ -165,7 +176,7 @@ namespace AcManager.Tools.Objects {
                     Id = id,
                     Name = section.Get("DRIVER_NAME"),
                     Nationality = section.Get("NATIONALITY"),
-                    AiLevel = section.GetInt("AI_LEVEL"),
+                    AiLevel = section.GetInt("AI_LEVEL", 100),
                     SetupId = section.Get("SETUP"),
                     Car = car,
                     CarSkin = carSkin
@@ -525,15 +536,15 @@ namespace AcManager.Tools.Objects {
             Code = ini["SERIES"].Get("CODE");
             Description = AcStringValues.DecodeDescription(ini["SERIES"].Get("DESCRIPTION"));
 
-            PointsForPlace = ini["SERIES"].Get("POINTS").Split(',').Select(x => FlexibleParser.TryParseInt(x)).OfType<int>().ToArray();
+            PointsForPlace = ini["SERIES"].Get("POINTS")?.Split(',').Select(x => FlexibleParser.TryParseInt(x)).OfType<int>().ToArray();
             ChampionshipPointsGoal = ini["GOALS"].GetIntNullable("POINTS") ?? 0;
             ThirdPlacesGoal = ini["GOALS"].GetIntNullable("TIER1") ?? 0;
             SecondPlacesGoal = ini["GOALS"].GetIntNullable("TIER2") ?? 0;
             FirstPlacesGoal = ini["GOALS"].GetIntNullable("TIER3") ?? 0;
-            Type = ChampionshipPointsGoal == 0 || PointsForPlace.Sum() == 0 ? KunosCareerObjectType.SingleEvents : KunosCareerObjectType.Championship;
+            Type = ChampionshipPointsGoal == 0 || PointsForPlace?.Sum() == 0 ? KunosCareerObjectType.SingleEvents : KunosCareerObjectType.Championship;
 
             RequiredSeries = ini["SERIES"].GetStrings("REQUIRES").ToArray();
-            RequiredAnySeries = ini["SERIES"].GetBool("REQUIRESANY");
+            RequiredAnySeries = ini["SERIES"].GetBool("REQUIRESANY", false);
 
             ChampionshipPointsPerPlace = ini["SERIES"].GetStrings("POINTS").Select(x => FlexibleParser.TryParseInt(x)).OfType<int>().ToArray();
 

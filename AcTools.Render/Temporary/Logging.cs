@@ -3,14 +3,20 @@ using System.Diagnostics;
 using System.IO;
 
 namespace AcTools.Render.Temporary {
-    public static class Logging {
+    public static class RenderLogging {
+        public static void Initialize(string filename, bool appendMode = false) {
+            Logging.Initialize(filename, appendMode);
+        }
+    }
+
+    internal static class Logging {
         private static string _filename;
         private static int _entries;
 
         // just for in case
         private const int EntriesLimit = 2000;
 
-        public static void Initialize(string filename, bool appendMode = false) {
+        internal static void Initialize(string filename, bool appendMode = false) {
             _filename = filename;
             if (!appendMode) {
                 using (var file = new StreamWriter(_filename, false)) {

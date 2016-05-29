@@ -3,8 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
         xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDrive+SettingsDriveViewModel}">
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
+        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDrive+SettingsDriveViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
@@ -14,10 +15,10 @@
                 <Label>
                     <TextBlock>
                         <Run>Game starter</Run><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                            Command="{Binding NavigateCommand}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run>:</Run>
+                                Command="{Binding NavigateCommand}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run>:</Run>
                     </TextBlock>
                 </Label>
-                <ComboBox ItemsSource="{Binding Holder.StarterTypes}" SelectedItem="{Binding Holder.SelectedStarterType}" DisplayMemberPath="DisplayName">
+                <ComboBox ItemsSource="{Binding Drive.StarterTypes}" SelectedItem="{Binding Drive.SelectedStarterType}" DisplayMemberPath="DisplayName">
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                             <Setter Property="IsEnabled" Value="{Binding IsAvailable}" />
@@ -27,15 +28,15 @@
                 </ComboBox>
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding Holder.Use32BitVersion}">
+            <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
                 <Label>Use 32-bit version</Label>
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.ImmediateStart}">
+            <CheckBox IsChecked="{Binding Drive.ImmediateStart}">
                 <Label>Start race immediately</Label>
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.SkipPracticeResults}">
+            <CheckBox IsChecked="{Binding Drive.SkipPracticeResults}">
                 <Label>Don't show results of Practice session</Label>
             </CheckBox>
 
@@ -43,20 +44,19 @@
 
             <DockPanel>
                 <Label>Name:</Label>
-                <TextBox Text="{Binding Holder.PlayerName}" watermark:WatermarkService.Watermark="?" />
+                <TextBox Text="{Binding Drive.PlayerName}" watermark:WatermarkService.Watermark="?" />
             </DockPanel>
 
             <DockPanel>
                 <Label>Nationality:</Label>
-                <TextBox Text="{Binding Holder.PlayerNationality}" watermark:WatermarkService.Watermark="?" />
+                <TextBox Text="{Binding Drive.PlayerNationality}" watermark:WatermarkService.Watermark="?" />
             </DockPanel>
 
             <DockPanel>
                 <Label>Online name:</Label>
-                <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Holder.DifferentPlayerNameOnline}" ToolTip="Use different name online"
+                <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" ToolTip="Use different name online"
                         VerticalAlignment="Center" />
-                <TextBox Text="{Binding Holder.PlayerNameOnline}" watermark:WatermarkService.Watermark="?"
-                        IsEnabled="{Binding Holder.DifferentPlayerNameOnline}" />
+                <TextBox Text="{Binding Drive.PlayerNameOnline}" watermark:WatermarkService.Watermark="?" IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
             </DockPanel>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Replays:</TextBlock>
@@ -66,13 +66,13 @@
                     <Button.ToolTip>Add “.acreplay” extension to all existing replays.</Button.ToolTip>
                     Add to Existing
                 </Button>
-                <CheckBox IsChecked="{Binding Holder.AutoAddReplaysExtension}">
+                <CheckBox IsChecked="{Binding Drive.AutoAddReplaysExtension}">
                     <CheckBox.ToolTip>Automatically add “.acreplay” extension to new replays made by game</CheckBox.ToolTip>
                     <Label>Automatically add “.acreplay” to new replays</Label>
                 </CheckBox>
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding Holder.AutoSaveReplays}">
+            <CheckBox IsChecked="{Binding Drive.AutoSaveReplays}">
                 <CheckBox.ToolTip>Usual “cr” will be renamed automatically.</CheckBox.ToolTip>
                 <Label>Autosave replays</Label>
             </CheckBox>
@@ -108,22 +108,38 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label>Replays name format</Label>
-                <TextBox Text="{Binding Holder.ReplaysNameFormat}" watermark:WatermarkService.Watermark="{Binding Holder.DefaultReplaysNameFormat}" />
+                <TextBox Text="{Binding Drive.ReplaysNameFormat}" watermark:WatermarkService.Watermark="{Binding Drive.DefaultReplaysNameFormat}" />
+            </DockPanel>
+
+            <DockPanel>
+                <Label>Quality:</Label>
+                <ComboBox ItemsSource="{Binding Replay.Qualities}" SelectedItem="{Binding Replay.Quality}" />
+            </DockPanel>
+
+            <DockPanel>
+                <DockPanel.ToolTip>
+                    <ToolTip>
+                        <TextBlock
+                                Text="{Binding Replay.RecommendedSize, StringFormat='{}Maximum size (recommended): {0} MB', TargetNullValue='?', FallbackValue='?'}" />
+                    </ToolTip>
+                </DockPanel.ToolTip>
+                <controls:ValueLabel Value="{Binding Replay.MaxSize}" Mode="Positive" Postfix=" MB">Maximum size</controls:ValueLabel>
+                <Slider Minimum="10" Maximum="1000" Value="{Binding Replay.MaxSize}" TickFrequency="99" TickPlacement="BottomRight" />
             </DockPanel>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Quick Drive:</TextBlock>
 
-            <CheckBox IsChecked="{Binding Holder.QuickDriveExpandBounds}" ToolTip="Allows to set up to 999 laps and stuff, use on your own risk.">
+            <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="Allows to set up to 999 laps and stuff, use on your own risk.">
                 <Label>Expand bounds</Label>
             </CheckBox>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Kunos career:</TextBlock>
 
-            <CheckBox IsChecked="{Binding Holder.KunosCareerUserAiLevel}">
+            <CheckBox IsChecked="{Binding Drive.KunosCareerUserAiLevel}">
                 <Label>Allow to change AI level</Label>
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.KunosCareerUserSkin}">
+            <CheckBox IsChecked="{Binding Drive.KunosCareerUserSkin}">
                 <Label>Allow to change car's skin</Label>
             </CheckBox>
         </StackPanel>

@@ -10,6 +10,7 @@ using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class FindInformationDialog {
@@ -50,7 +51,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public void Update(string selected) {
-                _model.SelectedText = selected;
+                _model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim();
             }
 
             public object CmTest() {
@@ -61,12 +62,12 @@ namespace AcManager.Pages.Dialogs {
         public class FindInformationViewModel : NotifyPropertyChanged {
             public AcJsonObjectNew SelectedObject { get; }
 
-            private string _selectedText;
+            private string _selectedText = "";
 
+            [NotNull]
             public string SelectedText {
                 get { return _selectedText; }
                 set {
-                    value = value.Trim();
                     if (Equals(value, _selectedText)) return;
                     _selectedText = value;
                     OnPropertyChanged();
@@ -88,7 +89,6 @@ namespace AcManager.Pages.Dialogs {
 
             public FindInformationViewModel(AcJsonObjectNew selectedObject) {
                 SelectedObject = selectedObject;
-                SelectedText = "";
             }
 
             private void UpdateSaveLabel() {
@@ -102,7 +102,7 @@ namespace AcManager.Pages.Dialogs {
                     return;
                 }
 
-                var key = SelectedText.Trim().ToLower();
+                var key = SelectedText.ToLower();
                 if (DataProvider.Instance.TagCountries.GetValueOrDefault(key) != null || DataProvider.Instance.Countries.GetValueOrDefault(key) != null) {
                     SaveLabel = "Save as Country";
                     return;
@@ -118,7 +118,7 @@ namespace AcManager.Pages.Dialogs {
                     return;
                 }
 
-                var key = SelectedText.Trim().ToLower();
+                var key = SelectedText.ToLower();
                 var country = DataProvider.Instance.TagCountries.GetValueOrDefault(key) ?? DataProvider.Instance.Countries.GetValueOrDefault(key);
                 if (country != null) {
                     SelectedObject.Country = country;

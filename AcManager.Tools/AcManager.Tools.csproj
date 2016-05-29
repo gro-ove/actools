@@ -70,6 +70,8 @@
   <ItemGroup>
     <Compile Include="AcErrors\AcErrorCategory.cs" />
     <Compile Include="AcErrors\AcErrorType.cs" />
+    <Compile Include="AcErrors\AcErrorWrapper.cs" />
+    <Compile Include="AcErrors\IAcError.cs" />
     <Compile Include="AcErrors\Solver\FontSolvers.cs" />
     <Compile Include="AcErrors\Solver\ShowroomSolvers.cs" />
     <Compile Include="AcErrors\Solver\CarSolvers.cs" />
@@ -93,6 +95,8 @@
     <Compile Include="AcObjectsNew\AcJsonObjectNew_Tags.cs" />
     <Compile Include="AcObjectsNew\AcJsonObjectNew.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject_Lists.cs" />
+    <Compile Include="AcObjectsNew\AcObjectEventArgs.cs" />
+    <Compile Include="AcObjectsNew\AcObjectEventHandler.cs" />
     <Compile Include="AcObjectsNew\AcPlaceholderNew.cs" />
     <Compile Include="AcObjectsNew\IAcObjectNew.cs" />
     <Compile Include="AcManagersNew\AcManagerNew.cs" />
@@ -118,6 +122,8 @@
     <Compile Include="Filters\UniqueAcObjectTester.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Helpers\AcSettingsHolder_Video.cs" />
+    <Compile Include="Helpers\AcSettingsHolder_Inner.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentType.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\BaseAdditionalContentInstallator.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\DirectoryContentInstallator.cs" />
@@ -131,6 +137,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Helpers\CustomUriSchemeHelper.cs" />
+    <Compile Include="Helpers\IniFileExtension.cs" />
     <Compile Include="Helpers\Loaders\AcClubLoader.cs" />
     <Compile Include="Helpers\Loaders\AssettoDbLoader.cs" />
     <Compile Include="Helpers\Loaders\DirectLoader.cs" />
@@ -138,7 +145,10 @@
     <Compile Include="Helpers\Loaders\GoogleDriveLoader.cs" />
     <Compile Include="Helpers\Loaders\ILoader.cs" />
     <Compile Include="Helpers\Loaders\RaceDepartmentLoader.cs" />
+    <Compile Include="Helpers\AcSettingsHolder.cs" />
+    <Compile Include="Helpers\SettingEntry.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
+    <Compile Include="Lists\CompositeObservableCollection.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
     <Compile Include="Managers\Directories\NonListeningAcDirectories.cs" />

@@ -8,33 +8,9 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.AcErrors {
-    public interface IAcError {
-        AcErrorCategory Category { get; }
-
-        AcErrorType Type { get; }
-
-        string Message { get; }
-
-        ICommand StartErrorFixerCommand { get; }
-    }
-
-    public abstract class AcErrorWrapper : IAcError {
-        protected AcErrorWrapper(IAcError baseError) {
-            Category = baseError.Category;
-            Type = baseError.Type;
-            Message = baseError.Message;
-        }
-
-        public AcErrorCategory Category { get; }
-
-        public AcErrorType Type { get; }
-
-        public string Message { get; }
-
-        public abstract ICommand StartErrorFixerCommand { get; }
-    }
-
     public class AcError : IAcError {
+        public IAcObjectNew Target { get; }
+
         public AcErrorCategory Category { get; }
 
         public AcErrorType Type { get; }
@@ -43,9 +19,10 @@ namespace AcManager.Tools.AcErrors {
 
         public Exception BaseException { get; private set; }
 
-        public AcError(AcErrorType type, params object[] args) {
-            Category = CategoryFromType(type);
+        public AcError(IAcObjectNew target, AcErrorType type, params object[] args) {
+            Target = target;
             Type = type;
+            Category = CategoryFromType(type);
 
             try {
                 Message = string.Format(MessageFromType(type), args.Select(x => (x as Exception)?.Message ?? x).ToArray());
@@ -87,7 +64,7 @@ namespace AcManager.Tools.AcErrors {
         private ICommand _startErrorFixerCommand;
 
         public ICommand StartErrorFixerCommand => _startErrorFixerCommand ?? (_startErrorFixerCommand = new RelayCommand(o => {
-            _uiAcErrorFixer?.Run((AcObjectNew)o, this);
+            _uiAcErrorFixer?.Run((AcObjectNew)Target, this);
         }, o => _uiAcErrorFixer != null));
     }
 

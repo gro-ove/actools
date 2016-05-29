@@ -59,7 +59,7 @@ namespace CustomShowroom {
                 var log = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? "", "Log.txt");
                 try {
                     File.WriteAllBytes(log, new byte[0]);
-                    Logging.Initialize(log);
+                    RenderLogging.Initialize(log);
                 } catch (Exception e) {
                     MessageBox.Show("Can't setup logging: " + e, @"Oops!", MessageBoxButtons.OK);
                 }

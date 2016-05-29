@@ -15,11 +15,13 @@ namespace AcManager.Pages.Settings {
         }
 
         public class SettingsDriveViewModel : NotifyPropertyChanged {
-            public SettingsHolder.DriveSettings Holder => SettingsHolder.Drive;
+            public AcSettingsHolder.ReplaySettings Replay => AcSettingsHolder.Replay;
+
+            public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 
             public SettingsDriveViewModel() {
-                if (!Holder.SelectedStarterType.IsAvailable) {
-                    Holder.SelectedStarterType = SettingsHolder.DriveSettings.TrickyStarterType;
+                if (!Drive.SelectedStarterType.IsAvailable) {
+                    Drive.SelectedStarterType = SettingsHolder.DriveSettings.TrickyStarterType;
                 }
             }
 

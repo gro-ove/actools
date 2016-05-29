@@ -85,6 +85,30 @@ namespace AcTools.Utils.Helpers {
         public static T MinOrDefault<T>([NotNull] this IEnumerable<T> source) where T : IComparable<T> {
             return MinOr(source, default(T));
         }
+        
+        public static T MaxEntry<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector) where TResult : IComparable<TResult> {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
+
+            var en = source.GetEnumerator();
+            if (!en.MoveNext()) {
+                throw new InvalidOperationException("Sequence contains no elements");
+            }
+
+            var result = en.Current;
+            var maxValue = selector(result);
+
+            while (en.MoveNext()) {
+                var item = en.Current;
+                var value = selector(item);
+                if (value.CompareTo(maxValue) > 0) {
+                    result = item;
+                    maxValue = value;
+                }
+            }
+
+            return result;
+        }
 
         [CanBeNull]
         public static T MaxEntryOrDefault<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector) where TResult : IComparable<TResult> {
@@ -103,6 +127,31 @@ namespace AcTools.Utils.Helpers {
                     first = false;
                 } else if (value.CompareTo(maxValue) > 0) {
                     result = item;
+                    maxValue = value;
+                }
+            }
+
+            return result;
+        }
+        
+        public static T MinEntry<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector) where TResult : IComparable<TResult> {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
+
+            var en = source.GetEnumerator();
+            if (!en.MoveNext()) {
+                throw new InvalidOperationException("Sequence contains no elements");
+            }
+
+            var result = en.Current;
+            var minValue = selector(result);
+
+            while (en.MoveNext()) {
+                var item = en.Current;
+                var value = selector(item);
+                if (value.CompareTo(minValue) < 0) {
+                    result = item;
+                    minValue = value;
                 }
             }
 
@@ -126,6 +175,7 @@ namespace AcTools.Utils.Helpers {
                     first = false;
                 } else if (value.CompareTo(minValue) < 0) {
                     result = item;
+                    minValue = value;
                 }
             }
 

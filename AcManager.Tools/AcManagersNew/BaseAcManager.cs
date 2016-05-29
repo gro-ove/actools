@@ -27,7 +27,7 @@ namespace AcManager.Tools.AcManagersNew {
     public abstract class BaseAcManager<T> : BaseAcManagerNew, IAcManagerNew, IAcWrapperLoader where T : AcObjectNew {
         protected readonly AcWrapperObservableCollection InnerWrappersList;
         protected bool IsScanning;
-        private bool _loadingReset;
+        protected bool LoadingReset;
         private bool _isScanned;
         private bool _isLoaded;
 
@@ -196,13 +196,13 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         protected void ResetLoading() {
-            _loadingReset = true;
+            LoadingReset = true;
         }
 
-        private async Task LoadAsync() {
+        protected virtual async Task LoadAsync() {
             var start = Stopwatch.StartNew();
 
-            _loadingReset = false;
+            LoadingReset = false;
             await TaskExtension.WhenAll(WrappersList.Where(x => !x.IsLoaded).Select(async x => {
                 var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
                 if (x.IsLoaded) return;
@@ -214,12 +214,9 @@ namespace AcManager.Tools.AcManagersNew {
             IsLoaded = true;
             ListReady();
 
-            // TODO: fixme
-            if (!(this is CarSkinsManager)) {
-                Logging.Write($"{{0}}, async loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms", GetType());
-            }
+            Logging.Write($"{{0}}, async loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms", GetType());
 
-            if (_loadingReset) {
+            if (LoadingReset) {
                 Load();
             }
         }
@@ -358,12 +355,13 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         [NotNull]
-        protected T CreateAndLoadAcObject([NotNull]string id, bool enabled, bool withPastLoad = true) {
+        protected virtual T CreateAndLoadAcObject([NotNull]string id, bool enabled, bool withPastLoad = true) {
             var result = CreateAcObject(id, enabled);
             result.Load();
             if (withPastLoad) {
                 result.PastLoad();
             }
+            
             return result;
         }
 

@@ -2,52 +2,17 @@
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
+using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Miscellaneous {
-    public partial class AppReporter {
-        private static void Send(string url, byte[] data) {
-            if (ServerAddress == null) return;
-
-            try {
-                using (var client = new WebClient { Headers = {
-                    [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent,
-                    [CmApiProvider.ChecksumHeader] = GetChecksum(data)
-                } }) {
-                    client.UploadData(ServerAddress + url, data);
-                }
-
-                Logging.Write($"[APPREPORTER] Sent {data.Length} byte(s)");
-            } catch (Exception e) {
-                Logging.Warning($"[APPREPORTER] Cannot upload {url}: " + e);
-                throw;
-            }
-        }
-
-        private static string GetChecksum(byte[] data) {
-            if (ChecksumSalt == null) return null;
-            using (var sha1 = SHA1.Create()) {
-                return sha1.ComputeHash(
-                    Encoding.UTF8.GetBytes(sha1.ComputeHash(data).ToHexString() + ChecksumSalt)
-                ).ToHexString();
-            }
-        }
-
+    public class AppReporter {
         public static void SendLogs(string message = null) {
-            if (ChecksumSalt == null || EncryptionKey == null || ServerAddress == null) {
-                NonfatalError.Notify("Can't send logs", "Server parameters are missing.");
-                return;
-            }
-
             var tempFilename = FilesStorage.Instance.GetTemporaryFilename("Logs.zip");
             var logsDirectory = FilesStorage.Instance.GetDirectory("Logs");
             using (var zip = ZipFile.Open(tempFilename, ZipArchiveMode.Create)) {
@@ -105,8 +70,7 @@ namespace AcManager.Tools.Miscellaneous {
             var zipBytes = File.ReadAllBytes(tempFilename);
             File.Delete(tempFilename);
 
-            var encryptedBytes = StringCipher.Encrypt(zipBytes, EncryptionKey);
-            Send("logs", encryptedBytes);
+            InternalUtils.SendAppReport(zipBytes, CmApiProvider.UserAgent);
         }
     }
 }

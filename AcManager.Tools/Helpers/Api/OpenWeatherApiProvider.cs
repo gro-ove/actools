@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net;
 using System.Xml;
+using AcManager.Internal;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -237,9 +238,7 @@ namespace AcManager.Tools.Helpers.Api {
         private const string IconUri = "http://openweathermap.org/img/w/{0}.png";
 
         public WeatherDescription TryToGetWeather(GeoTagsEntry geoTags) {
-            if (ApiCodes.Length == 0) return null;
-
-            var requestUri = string.Format(RequestWeatherUri, geoTags.LatitudeValue, geoTags.LongitudeValue, ApiCodes[0]);
+            var requestUri = string.Format(RequestWeatherUri, geoTags.LatitudeValue, geoTags.LongitudeValue, InternalUtils.GetOpenWeatherApiCode());
 
             try {
                 var httpRequest = WebRequest.Create(requestUri);

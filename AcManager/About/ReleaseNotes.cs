@@ -94,7 +94,33 @@ No more those terrible bugs with normals, very different shaders and poor optimi
 
  [img=""http://i.imgur.com/3RJrHsV.png|360""]Night (dynamic lighting!)[/img]
 
-Other features such as Ambient Shadow or Track Map renderers will be ported soon.")
+Other features such as Ambient Shadow or Track Map renderers will be ported soon."),
+
+            new ReleaseNotes("0.5.207", @"Default previews preset updated (again)", @"[i]Honestly, it's starting to get on my nerves.[/i]
+
+Kunos previews preset changed again, now they returned to using S1-Showroom. Please, open Auto-Update Previews settings and reset to Kunos preset if you're using their style.
+
+Some of other changes since the recent notes:
+
+ • [b]Information Finder[/b]
+That old thing from Cars Manager, I think it's quite useful one. Now you can select from a range of search engines (if you need some which not in the list, please, [url=""https://trello.com/c/1HrHi37u/32-other-suggestions""]tell[/url]).
+
+ • [b]Weekends[/b]
+If future I'm planning to add fully customizable grids. Also, if you need Drag-races, please, tell (I'm not sure if anybody ever used them).
+
+ • [b]New packing system[/b]
+As a replacement for [url=""http://enigmaprotector.com/en/aboutvb.html""]Enigma VB[/url] since almost all AVs (even Windows Defender) are getting angry at it. Transition still may cause some troubles (but most of them are fixed). Please, [url=""https://trello.com/c/6PLhkQXe/33-other-bugs""]tell us if there is something wrong[/url].
+
+ • [b]Online sorting[/b]
+Of course, UI will be reworked, but for now like this, sorry.
+ [img=""https://trello-attachments.s3.amazonaws.com/5717c1b396f7190255bdc6e5/1013x783/2f4c6a0f652172b06c01249cd3805a6a/VvPUX9V.png""]It's better to see[/img]
+
+ • [b]Lite Showroom improvements[/b]
+Now it has some new features such as texture/materials viewing, UV exporting or ambients shadows updating (using much better algorithm than before). [url=""https://www.youtube.com/watch?v=g-ar6rcNP0s""]Video demonstration[/url].
+
+About current plans, right now missing features from Cars Manager are being moved to Content Manager.
+
+Thanks for support, by the way, it really inspires us! :)")
         };
     }
 }

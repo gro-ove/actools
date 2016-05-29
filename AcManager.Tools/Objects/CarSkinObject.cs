@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -62,11 +63,13 @@ namespace AcManager.Tools.Objects {
 
             if (FileUtils.IsAffected(filename, PreviewImage)) {
                 OnImageChanged(nameof(PreviewImage));
+                CheckPreview();
                 return true;
             }
 
             if (FileUtils.IsAffected(filename, LiveryImage)) {
                 OnImageChanged(nameof(LiveryImage));
+                CheckLivery();
                 return true;
             }
             
@@ -78,6 +81,20 @@ namespace AcManager.Tools.Objects {
         public string LiveryImage => Path.Combine(Location, "livery.png");
 
         public string PreviewImage => Path.Combine(Location, "preview.jpg");
+
+        protected override void LoadOrThrow() {
+            base.LoadOrThrow();
+            CheckLivery();
+            CheckPreview();
+        }
+
+        private void CheckLivery() {
+            ErrorIf(!File.Exists(LiveryImage), AcErrorType.CarSkin_LiveryIsMissing, Id);
+        }
+
+        private void CheckPreview() {
+            ErrorIf(!File.Exists(PreviewImage), AcErrorType.CarSkin_PreviewIsMissing, Id);
+        }
 
         public override string JsonFilename => Path.Combine(Location, "ui_skin.json");
 

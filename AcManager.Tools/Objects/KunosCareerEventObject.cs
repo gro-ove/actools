@@ -426,7 +426,7 @@ namespace AcManager.Tools.Objects {
                         .Select(x => $"CONDITION_{x}")
                         .TakeWhile(ini.ContainsKey)
                         .Select(x => new {
-                            Type = ini[x].GetEnumOrNull<PlaceConditionsType>("TYPE"),
+                            Type = ini[x].GetEnumNullable<PlaceConditionsType>("TYPE"),
                             Value = ini[x].GetIntNullable("OBJECTIVE")
                         })
                         .ToList();
@@ -521,7 +521,7 @@ namespace AcManager.Tools.Objects {
             iniFile["CAR_0"].Set("NATIONALITY", SettingsHolder.Drive.PlayerNationality);
 
             IniFile opponentsIniFile = null;
-            foreach (var i in Enumerable.Range(0, iniFile["RACE"].GetInt("CARS")).Skip(1)) {
+            foreach (var i in Enumerable.Range(0, iniFile["RACE"].GetInt("CARS", 0)).Skip(1)) {
                 var sectionKey = "CAR_" + i;
                 if (!iniFile.ContainsKey(sectionKey) || string.IsNullOrWhiteSpace(iniFile[sectionKey].Get("DRIVER_NAME"))) {
                     if (opponentsIniFile == null) {

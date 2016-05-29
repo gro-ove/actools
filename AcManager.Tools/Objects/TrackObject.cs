@@ -58,7 +58,7 @@ namespace AcManager.Tools.Objects {
         /// <returns></returns>
         private List<string> GetMultiLayouts() {
             var uiDirectory = Path.Combine(Location, "ui");
-            if (!Directory.Exists(uiDirectory)) throw new AcErrorException(AcErrorType.Data_UiDirectoryIsMissing);
+            if (!Directory.Exists(uiDirectory)) throw new AcErrorException(this, AcErrorType.Data_UiDirectoryIsMissing);
             return Directory.GetDirectories(uiDirectory).Where(x => File.Exists(Path.Combine(x, "ui_track.json"))).ToList();
         }
 

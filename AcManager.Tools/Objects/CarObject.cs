@@ -1,15 +1,21 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
@@ -18,21 +24,49 @@ namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
     public partial class CarObject : AcJsonObjectNew {
         public static int OptionSkinsLoadingConcurrency = 5;
-        
-        public CarObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {
+
+        public CarObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
             SkinsManager = new CarSkinsManager(Id, new InheritingAcDirectories(manager.Directories, SkinsDirectory)) {
                 ScanWrapper = this
             };
+            SkinsManager.Created += SkinsManager_Created;
+        }
+
+        private CompositeObservableCollection<IAcError> _errors;
+
+        public override ObservableCollection<IAcError> Errors => _errors;
+
+        private void SkinsManager_Created(object sender, AcObjectEventArgs<CarSkinObject> args) {
+            if (!Application.Current.Dispatcher.CheckAccess()) {
+                throw new InvalidOperationException(Resources.UIThreadRequired);
+            }
+
+            _errors.Add(args.AcObject.Errors);
+            args.AcObject.AcObjectOutdated += AcObject_AcObjectOutdated;
+        }
+
+        private void AcObject_AcObjectOutdated(object sender, EventArgs e) {
+            var ac = (AcCommonObject)sender;
+            ac.AcObjectOutdated -= AcObject_AcObjectOutdated;
+            _errors.Remove(ac.Errors);
         }
 
         public override void PastLoad() {
             base.PastLoad();
+
+            _errors = new CompositeObservableCollection<IAcError>();
+            _errors.CollectionChanged += CarObject_CollectionChanged;
+            _errors.Add(InnerErrors);
+
             if (!Enabled) return;
 
             SuggestionLists.CarBrandsList.AddUnique(Brand);
             SuggestionLists.CarClassesList.AddUnique(CarClass);
             UpdateParentValues();
+        }
+
+        private void CarObject_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            OnPropertyChanged(nameof(HasErrors));
         }
 
         protected override void OnAcObjectOutdated() {
@@ -57,7 +91,7 @@ namespace AcManager.Tools.Objects {
             SpecsTopSpeed = null;
             SpecsAcceleration = null;
             SpecsPwRatio = null;
-            
+
             SpecsTorqueCurve = null;
             SpecsPowerCurve = null;
         }
@@ -324,7 +358,7 @@ namespace AcManager.Tools.Objects {
             SpecsTopSpeed = specsObj?.GetStringValueOnly("topspeed");
             SpecsAcceleration = specsObj?.GetStringValueOnly("acceleration");
             SpecsPwRatio = specsObj?.GetStringValueOnly("pwratio");
-            
+
             SpecsTorqueCurve = new GraphData(json["torqueCurve"] as JArray);
             SpecsPowerCurve = new GraphData(json["powerCurve"] as JArray);
         }

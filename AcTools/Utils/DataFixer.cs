@@ -50,7 +50,7 @@ namespace AcTools.Utils {
 
         public static double GetWeight(string carDir) {
             var carIni = new IniFile(carDir, "car.ini");
-            return carIni["BASIC"].GetDouble("TOTALMASS") - 75.0;
+            return carIni["BASIC"].GetDouble("TOTALMASS", 0d) - 75.0;
         }
 
         public static void SetWeight(string carDir, double newValue) {

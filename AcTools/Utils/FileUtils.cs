@@ -294,12 +294,12 @@ namespace AcTools.Utils {
             return result;
         }
 
-        public static bool IsAffected([NotNull] string directory, [NotNull] string filename) {
-            if (directory == null) throw new ArgumentNullException(nameof(directory));
+        public static bool IsAffected([NotNull] string directoryOrFilename, [NotNull] string filename) {
+            if (directoryOrFilename == null) throw new ArgumentNullException(nameof(directoryOrFilename));
             if (filename == null) throw new ArgumentNullException(nameof(filename));
-            if (string.Equals(directory, filename, StringComparison.OrdinalIgnoreCase)) return true;
+            if (string.Equals(directoryOrFilename, filename, StringComparison.OrdinalIgnoreCase)) return true;
 
-            var s = filename.SubstringExt(directory.Length);
+            var s = filename.SubstringExt(directoryOrFilename.Length);
             return s.Length > 0 && (s[0] == Path.DirectorySeparatorChar || s[0] == Path.AltDirectorySeparatorChar);
         }
 

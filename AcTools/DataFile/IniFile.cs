@@ -28,7 +28,17 @@ namespace AcTools.DataFile {
             return ContainsKey(key) ? base[key] : null;
         }
 
-        public bool GetBool(string key, bool defaultValue = false) {
+        /// <summary>
+        /// Warning! Throws exception if value is missing!
+        /// </summary>
+        [Obsolete]
+        public bool GetBool(string key) {
+            if (!ContainsKey(key)) throw new Exception("Value is missing!");
+            var value = Get(key);
+            return value == "1";
+        }
+
+        public bool GetBool(string key, bool defaultValue) {
             if (!ContainsKey(key)) return defaultValue;
             var value = Get(key);
             return value == "1";
@@ -50,6 +60,10 @@ namespace AcTools.DataFile {
             return result.Length == 3 ? result : new double[3];
         }
 
+        /// <summary>
+        /// Warning! Throws exception if value is missing!
+        /// </summary>
+        [Obsolete]
         public double GetDouble(string key) {
             return FlexibleParser.ParseDouble(Get(key));
         }
@@ -62,6 +76,10 @@ namespace AcTools.DataFile {
             return FlexibleParser.ParseDouble(Get(key), defaultValue);
         }
 
+        /// <summary>
+        /// Warning! Throws exception if value is missing!
+        /// </summary>
+        [Obsolete]
         public int GetInt(string key) {
             return FlexibleParser.ParseInt(Get(key));
         }
@@ -74,6 +92,10 @@ namespace AcTools.DataFile {
             return FlexibleParser.TryParseInt(Get(key)) ?? defaultValue;
         }
 
+        /// <summary>
+        /// Warning! Throws exception if value is missing!
+        /// </summary>
+        [Obsolete]
         public long GetLong(string key) {
             return FlexibleParser.ParseLong(Get(key));
         }
@@ -86,6 +108,10 @@ namespace AcTools.DataFile {
             return FlexibleParser.TryParseLong(Get(key)) ?? defaultValue;
         }
 
+        /// <summary>
+        /// Warning! Throws exception if value is missing!
+        /// </summary>
+        [Obsolete]
         public T GetEnum<T>(string key, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
@@ -95,7 +121,7 @@ namespace AcTools.DataFile {
             return (T)Enum.Parse(typeof(T), value ?? "", ignoreCase);
         }
 
-        public T? GetEnumOrNull<T>(string key, bool ignoreCase = true) where T : struct, IConvertible {
+        public T? GetEnumNullable<T>(string key, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
             }

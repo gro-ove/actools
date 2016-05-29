@@ -8,6 +8,7 @@ using System.Net.Cache;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using AcManager.Internal;
 using AcManager.Tools.Helpers.Api.Kunos;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -23,15 +24,13 @@ namespace AcManager.Tools.Helpers.Api {
         public static int OptionPingTimeout = 2000;
         public static int OptionWebRequestTimeout = 5000;
 
-        private static int _currentServerUri;
-
-        public static int ServersNumber => ServerUris.Length;
+        public static int ServersNumber => InternalUtils.KunosServersNumber;
 
         [CanBeNull]
-        private static string ServerUri => ServerUris.ElementAtOrDefault((_currentServerUri + SettingsHolder.Online.OnlineServerId) % ServersNumber);
+        private static string ServerUri => InternalUtils.GetKunosServerUri(SettingsHolder.Online.OnlineServerId);
 
         private static void NextServer() {
-            _currentServerUri++;
+            InternalUtils.MoveToNextKunosServer();
             Logging.Warning("[KUNOSAPIPROVIDER] Fallback to: " + (ServerUri ?? "NULL"));
         }
 
@@ -44,7 +43,7 @@ namespace AcManager.Tools.Helpers.Api {
         private static string LoadUsingClient(string uri) {
             using (var client = new WebClient {
                 Headers = {
-                    [HttpRequestHeader.UserAgent] = UserAgent
+                    [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent()
                 }
             }) {
                 return client.DownloadString(uri);
@@ -54,7 +53,7 @@ namespace AcManager.Tools.Helpers.Api {
         private static string LoadUsingRequest(string uri) {
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
-            request.UserAgent = UserAgent;
+            request.UserAgent = InternalUtils.GetKunosUserAgent();
 
             if (OptionIgnoreSystemProxy) {
                 request.Proxy = null;
