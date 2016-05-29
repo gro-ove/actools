@@ -43,6 +43,7 @@ namespace AcManager.Tools.SemiGui {
 
             if (_factory == null) {
                 using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
+                    properties.SetAdditional(new GameCommandExecutor(properties));
                     return await Game.StartAsync(AcsStarterFactory.Create(), properties, null, CancellationToken.None);
                 }
             }
@@ -54,6 +55,7 @@ namespace AcManager.Tools.SemiGui {
                 try {
                     Game.Result result;
                     using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
+                        properties.SetAdditional(new GameCommandExecutor(properties));
                         result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
                     }
 

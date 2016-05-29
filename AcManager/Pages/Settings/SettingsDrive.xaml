@@ -27,6 +27,52 @@
                     </ComboBox.ItemContainerStyle>
                 </ComboBox>
             </DockPanel>
+            
+            <DockPanel>
+                <DockPanel.ToolTip>
+                    <ToolTip>
+                        <StackPanel Margin="4">
+                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="This command will be executed before starting acs.exe, but after setting all ini-files.
+[br]
+[br]Values for replacement:
+[br] [b][mono]{type}[/mono][/b] — type of race;
+[br] [b][mono]{car}[/mono][/b] — car's name;
+[br] [b][mono]{car.id}[/mono][/b] — car's id;
+[br] [b][mono]{track}[/mono][/b] — track's name;
+[br] [b][mono]{track.id}[/mono][/b] — track's id.
+[br]
+[br]If you need some other values, please, contact us and we'll add them.
+[br]
+[br]Working directory will be set to Assetto Corsa folder in Documents." />
+                        </StackPanel>
+                    </ToolTip>
+                </DockPanel.ToolTip>
+                <Label>Pre-race event command:</Label>
+                <TextBox Text="{Binding Drive.PreCommand}" watermark:WatermarkService.Watermark="None" />
+            </DockPanel>
+
+            <DockPanel>
+                <DockPanel.ToolTip>
+                    <ToolTip>
+                        <StackPanel Margin="4">
+                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="This command will be executed after acs.exe finished, but before reading all result json-files.
+[br]
+[br]Values for replacement:
+[br] [b][mono]{type}[/mono][/b] — type of race;
+[br] [b][mono]{car}[/mono][/b] — car's name;
+[br] [b][mono]{car.id}[/mono][/b] — car's id;
+[br] [b][mono]{track}[/mono][/b] — track's name;
+[br] [b][mono]{track.id}[/mono][/b] — track's id.
+[br]
+[br]If you need some other values, please, contact us and we'll add them.
+[br]
+[br]Working directory will be set to Assetto Corsa folder in Documents." />
+                        </StackPanel>
+                    </ToolTip>
+                </DockPanel.ToolTip>
+                <Label>Post-race event command:</Label>
+                <TextBox Text="{Binding Drive.PostCommand}" watermark:WatermarkService.Watermark="None" />
+            </DockPanel>
 
             <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
                 <Label>Use 32-bit version</Label>
@@ -40,7 +86,8 @@
                 <Label>Don't show results of Practice session</Label>
             </CheckBox>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Player's name:</TextBlock>
+            <!--player's name-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Player’s name:</TextBlock>
 
             <DockPanel>
                 <Label>Name:</Label>
@@ -101,9 +148,10 @@
 [br] [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
 [br] [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like '[w] bmw m3 e30 on brands hatch.acreplay'.
 [br]
+[br]If you need some other values, please, contact us and we'll add them.
+[br]
 [br][b]Warning[/b]:
-[br] Don't use symbols like &quot;[&quot; or &quot;]&quot;!
-[br]If you need some other values, please, contact us and we'll add them." />
+[br] Don't use symbols like &quot;[&quot; or &quot;]&quot;!" />
                         </StackPanel>
                     </ToolTip>
                 </DockPanel.ToolTip>

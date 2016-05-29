@@ -130,9 +130,7 @@
     <Compile Include="Helpers\AdditionalContentInstallation\SharpCompressExtension.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\ZipContentInstallator.cs" />
-    <Compile Include="Helpers\Api\CmHelpersProvider_Consts.cs" />
     <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
-    <Compile Include="Helpers\Api\KunosApiProvider_Consts.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -163,19 +161,19 @@
     <Compile Include="Objects\CarSkinObject_Lists.cs" />
     <Compile Include="Objects\FontObject.cs" />
     <Compile Include="SemiGui\DriverName.cs" />
+    <Compile Include="SemiGui\GameCommandExecutor.cs" />
     <Compile Include="SemiGui\GameEndedArgs.cs" />
     <Compile Include="SemiGui\GameFinishedArgs.cs" />
     <Compile Include="SemiGui\ReplayHelper.cs" />
     <Compile Include="SemiGui\IGameUi.cs" />
     <Compile Include="SemiGui\IGameUiFactory.cs" />
+    <Compile Include="SemiGui\VariablesReplacement.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />
-    <Compile Include="Helpers\Api\CmApiProvider_Consts.cs" />
     <Compile Include="Helpers\Api\CmApiProvider.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider_Lan.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerActualCarInformation.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerActualInformation.cs" />
-    <Compile Include="Helpers\Api\OpenWeatherApiProvider_ApiCodes.cs" />
     <Compile Include="Helpers\BuildInformation.cs" />
     <Compile Include="Helpers\MainExecutingFile.cs" />
     <Compile Include="Lists\SortedAcWrapperObservableCollection.cs" />
@@ -193,7 +191,6 @@
     <Compile Include="Helpers\FilesStorage.cs" />
     <Compile Include="Helpers\SaveHelper.cs" />
     <Compile Include="Helpers\StringComparer.cs" />
-    <Compile Include="Miscellaneous\AppReporter_Consts.cs" />
     <Compile Include="Miscellaneous\AppReporter.cs" />
     <Compile Include="SemiGui\GameWrapper.cs" />
     <Compile Include="SemiGui\ImmediateStart.cs" />

@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.Internal;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -151,7 +152,7 @@ namespace AcManager.Pages.Dialogs {
                 await Task.Delay(50);
                 if (testN != _testN) return;
 
-                var value = await AppKeyTester.CheckKeyAsync(Value);
+                var value = await InternalUtils.CheckKeyAsync(Value, CmApiProvider.UserAgent);
                 if (testN != _testN) return;
 
                 CheckingInProgress = false;

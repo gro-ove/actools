@@ -62,14 +62,16 @@ namespace AcManager.Tools.Helpers {
             public SettingEntry[] AntiAliasingLevels { get; } = {
                 new SettingEntry("1", "Off"),
                 new SettingEntry("2", "2x"),
-                new SettingEntry("4", "4x")
+                new SettingEntry("4", "4x"),
+                new SettingEntry("8", "8x (experimental)")
             };
 
             public SettingEntry[] ShadowMapSizes { get; } = {
                 new SettingEntry("512", "512×512"),
                 new SettingEntry("1024", "1024×1024"),
                 new SettingEntry("2048", "2048×2048"),
-                new SettingEntry("4096", "4096×4096")
+                new SettingEntry("4096", "4096×4096"),
+                //new SettingEntry("8196", "8196×8196 (for crazy lads)"),
             };
 
             public SettingEntry[] WorldDetailLevels { get; } = {

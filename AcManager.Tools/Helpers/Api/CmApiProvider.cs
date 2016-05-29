@@ -54,5 +54,9 @@ namespace AcManager.Tools.Helpers.Api {
                 return default(T);
             }
         }
+
+        public static Task<byte[]> GetDataAsync(string url) {
+            return InternalUtils.CmGetDataAsync(url, UserAgent);
+        }
     }
 }

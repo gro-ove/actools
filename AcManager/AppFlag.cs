@@ -49,6 +49,12 @@ namespace AcManager {
         ScanPingTimeout,
 
         /// <summary>
+        /// Command timeout in milliseconds. Default value: 3000.
+        /// Example: --command-timeout=5000.
+        /// </summary>
+        CommandTimeout,
+
+        /// <summary>
         /// Testing option.
         /// Example: --force-steam-id=0.
         /// </summary>

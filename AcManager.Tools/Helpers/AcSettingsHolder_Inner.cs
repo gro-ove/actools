@@ -7,7 +7,6 @@ using System.Windows.Data;
 using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;

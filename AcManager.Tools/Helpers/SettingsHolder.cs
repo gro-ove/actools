@@ -221,6 +221,26 @@ namespace AcManager.Tools.Helpers {
                 TrickyStarterType, StarterPlusType, SseStarterType, NaiveStarterType
             });
 
+            public string PreCommand {
+                get { return ValuesStorage.GetString("Settings.DriveSettings.PreCommand", ""); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, PreCommand)) return;
+                    ValuesStorage.Set("Settings.DriveSettings.PreCommand", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public string PostCommand {
+                get { return ValuesStorage.GetString("Settings.DriveSettings.PostCommand", ""); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, PostCommand)) return;
+                    ValuesStorage.Set("Settings.DriveSettings.PostCommand", value);
+                    OnPropertyChanged();
+                }
+            }
+
             public bool ImmediateStart {
                 get { return ValuesStorage.GetBool("Settings.DriveSettings.ImmediateLaunch", false); }
                 set {
