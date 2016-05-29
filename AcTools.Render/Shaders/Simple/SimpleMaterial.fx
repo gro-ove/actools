@@ -75,7 +75,7 @@ cbuffer cbPerFrame {
 
 SamplerState samAnisotropic {
 	Filter = ANISOTROPIC;
-	MaxAnisotropy = 4;
+	MaxAnisotropy = 16;
 
 	AddressU = WRAP;
 	AddressV = WRAP;
@@ -148,7 +148,7 @@ float PseudoReflection(float3 reflected, float specularExp) {
 	return (
 		saturate((0.3 - abs(0.6 - val)) * edge) +
 		saturate((0.1 - abs(0.1 - val)) * edge)
-	) * 1.5;
+	);
 }
 
 #define HAS_FLAG(x) ((gMaterial.Flags & x) == x)
@@ -239,10 +239,9 @@ float3 CalculateReflection(float3 lighted, float3 posW, float3 normalW) {
 	float3 reflected = reflect(-toEyeW, normalW);
 	float refl = PseudoReflection(reflected, gMaterial.SpecularExp);
 
-	float rid = saturate(dot(toEyeW, normalW));
-	float rim = pow(1 - rid, gReflectiveMaterial.FresnelExp);
-	float val = min(gReflectiveMaterial.FresnelC + rim * (gReflectiveMaterial.FresnelMaxLevel - gReflectiveMaterial.FresnelC),
-		gReflectiveMaterial.FresnelMaxLevel);
+	float rid = 1 - saturate(dot(toEyeW, normalW) - gReflectiveMaterial.FresnelC);
+	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
+	float val = min(rim, gReflectiveMaterial.FresnelMaxLevel);
 
 	return lighted - val * 0.32 * (1 - GET_FLAG(IS_ADDITIVE)) + refl * val;
 }
@@ -253,11 +252,9 @@ float3 CalculateReflection_Maps(float3 lighted, float3 posW, float3 normalW, flo
 	float3 reflected = reflect(-toEyeW, normalW);
 	float refl = PseudoReflection(reflected, (gMaterial.SpecularExp + 400 * GET_FLAG(IS_CARPAINT)) * specularExpMultipler);
 
-	float rid = saturate(dot(toEyeW, normalW));
-	float rim = pow(1 - rid, gReflectiveMaterial.FresnelExp);
-
-	float maxLevel = gReflectiveMaterial.FresnelMaxLevel;
-	float val = min(gReflectiveMaterial.FresnelC + rim * (maxLevel - gReflectiveMaterial.FresnelC), maxLevel);
+	float rid = 1 - saturate(dot(toEyeW, normalW) - gReflectiveMaterial.FresnelC);
+	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
+	float val = min(rim, gReflectiveMaterial.FresnelMaxLevel);
 
 	return lighted - val * 0.32 * (1 - GET_FLAG(IS_ADDITIVE)) + refl * val * reflectionMultipler;
 }

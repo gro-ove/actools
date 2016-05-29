@@ -5,7 +5,8 @@
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{Binding SelectedTrackConfiguration.Name}" d:DataContext="{d:DesignInstance dialogs:SelectTrackDialog+SelectTrackDialogViewModel}"
-        SizeToContent="Manual" ResizeMode="CanResize" Width="960" MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600">
+        SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600"
+        LocationAndSizeKey="SelectTrackDialog_LS">
     <mui:ModernDialog.BackgroundContent>
         <Rectangle>
             <Rectangle.Fill>

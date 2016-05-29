@@ -71,7 +71,6 @@ namespace AcManager.Pages.Windows {
                 new InputBinding(new NavigateCommand(this, "settings"), new KeyGesture(Key.F4))
             });
             InitializeComponent();
-            LoadSize();
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterkey"), Model.EnterKeyCommand);
             AppKeyHolder.ProceedMainWindow(this);
@@ -212,23 +211,6 @@ namespace AcManager.Pages.Windows {
                 await ProcessArgument(filename);
                 await Task.Delay(1);
             }
-        }
-
-        private void LoadSize() {
-            Top = MathUtils.Clamp(ValuesStorage.GetDouble("MainWindow.Top", Top), 0.0, Screen.PrimaryScreen.Bounds.Height);
-            Left = MathUtils.Clamp(ValuesStorage.GetDouble("MainWindow.Left", Top), 0.0, Screen.PrimaryScreen.Bounds.Width);
-            Height = MathUtils.Clamp(ValuesStorage.GetDouble("MainWindow.Height", Top), MinHeight, Screen.PrimaryScreen.Bounds.Height);
-            Width = MathUtils.Clamp(ValuesStorage.GetDouble("MainWindow.Width", Top), MinWidth, Screen.PrimaryScreen.Bounds.Width);
-            WindowState = ValuesStorage.GetBool("MainWindow.Maximized") ? WindowState.Maximized : WindowState.Normal;
-        }
-
-        private void SaveSize() {
-            if (WindowState == WindowState.Minimized) return;
-            ValuesStorage.Set("MainWindow.Top", Top);
-            ValuesStorage.Set("MainWindow.Left", Left);
-            ValuesStorage.Set("MainWindow.Height", Height);
-            ValuesStorage.Set("MainWindow.Width", Width);
-            ValuesStorage.Set("MainWindow.Maximized", WindowState == WindowState.Maximized);
         }
 
         private async Task<string> LoadRemoveFile(string argument, string name) {
@@ -376,14 +358,6 @@ namespace AcManager.Pages.Windows {
             foreach (var filename in files) {
                 await ProcessArgument(filename);
             }
-        }
-
-        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e) {
-            SaveSize();
-        }
-
-        private void MainWindow_OnStateChanged(object sender, EventArgs e) {
-            SaveSize();
         }
 
         private void MainWindow_OnClosed(object sender, EventArgs e) {

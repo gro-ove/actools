@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Win32;
 using Microsoft.Win32;
+using Application = System.Windows.Application;
+
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// A window instance that is capable of per-monitor DPI awareness when supported.
     /// </summary>
-    public abstract class DpiAwareWindow
-        : Window {
+    public abstract class DpiAwareWindow : Window {
         /// <summary>
         /// Occurs when the system or monitor DPI for this window has changed.
         /// </summary>
@@ -27,6 +29,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         protected DpiAwareWindow() {
             SourceInitialized += OnSourceInitialized;
+            SizeChanged += OnSizeChanged;
+            StateChanged += OnStateChanged;
 
             // WM_DPICHANGED is not send when window is minimized, do listen to global display setting changes
             SystemEvents.DisplaySettingsChanged += OnSystemEventsDisplaySettingsChanged;
@@ -54,6 +58,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (owner != null) {
                 owner.IsDimmed = false;
             }
+        }
+
+        protected override void OnInitialized(EventArgs e) {
+            base.OnInitialized(e);
+            LoadLocationAndSize();
+        }
+
+        protected override void OnLocationChanged(EventArgs e) {
+            base.OnLocationChanged(e);
+            SaveLocationAndSize();
+        }
+
+        protected virtual void OnSizeChanged(object sender, SizeChangedEventArgs e) {
+            SaveLocationAndSize();
+        }
+
+        protected virtual void OnStateChanged(object sender, EventArgs e) {
+            SaveLocationAndSize();
         }
 
         /// <summary>
@@ -247,6 +269,67 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 SetWindowLong(handle, GwlStyle, GetWindowLong(handle, GwlStyle) &
                     ~WsDisabled | (value ? 0 : WsDisabled));
             }
+        }
+
+        public static readonly DependencyProperty LocationAndSizeKeyProperty = DependencyProperty.Register(nameof(LocationAndSizeKey), typeof(string),
+                typeof(DpiAwareWindow), new PropertyMetadata(OnLocationAndSizeKeyChanged));
+
+        public string LocationAndSizeKey {
+            get { return (string)GetValue(LocationAndSizeKeyProperty); }
+            set { SetValue(LocationAndSizeKeyProperty, value); }
+        }
+
+        private static void OnLocationAndSizeKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((DpiAwareWindow)o).OnLocationAndSizeKeyChanged((string)e.OldValue, (string)e.NewValue);
+        }
+
+        private bool _skipLoading;
+
+        public void SetLocationAndSizeKeyAndSave(string key) {
+            _skipLoading = true;
+            try {
+                LocationAndSizeKey = key;
+                SaveLocationAndSize();
+            } finally {
+                _skipLoading = false;
+            }
+        }
+
+        private void OnLocationAndSizeKeyChanged(string oldValue, string newValue) {
+            if (_skipLoading) return;
+            LoadLocationAndSize();
+        }
+
+        private void LoadLocationAndSize() {
+            var key = LocationAndSizeKey;
+            if (key == null) return;
+
+            var locationKey = key + ".l";
+            var sizeKey = key + ".s";
+            var maximizedKey = key + ".m";
+
+            var area = Screen.PrimaryScreen.WorkingArea;
+            var location = ValuesStorage.GetPoint(locationKey, new Point(Left, Top));
+            var size = ValuesStorage.GetPoint(sizeKey, new Point(Width, Height));
+
+            Left = Math.Min(Math.Max(location.X, 0), area.Width - 64);
+            Top = Math.Min(Math.Max(location.Y, 0), area.Height - 64);
+            Width = Math.Min(Math.Max(size.X, MinWidth), area.Width);
+            Height = Math.Min(Math.Max(size.Y, MinHeight), area.Height);
+            WindowState = ValuesStorage.GetBool(maximizedKey) ? WindowState.Maximized : WindowState.Normal;
+        }
+
+        private void SaveLocationAndSize() {
+            var key = LocationAndSizeKey;
+            if (key == null || WindowState == WindowState.Minimized) return;
+
+            var locationKey = key + ".l";
+            var sizeKey = key + ".s";
+            var maximizedKey = key + ".m";
+
+            ValuesStorage.Set(locationKey, new Point(Left, Top));
+            ValuesStorage.Set(sizeKey, new Point(Width, Height));
+            ValuesStorage.Set(maximizedKey, WindowState == WindowState.Maximized);
         }
     }
 }

@@ -6,8 +6,8 @@
         xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{Binding SelectedCar.DisplayName}" IconSource="{Binding SelectedCar.LogoIcon}" Loaded="SelectAndSetupCarDialog_OnLoaded"
-        Unloaded="SelectAndSetupCarDialog_OnUnloaded" d:DataContext="{d:DesignInstance dialogs:SelectCarDialog}" SizeToContent="Manual" ResizeMode="CanResize"
-        Width="960" MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="540" Height="640">
+        Unloaded="SelectAndSetupCarDialog_OnUnloaded" d:DataContext="{d:DesignInstance dialogs:SelectCarDialog}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip"
+        Width="960" MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="540" Height="640" LocationAndSizeKey="SelectCarDialog_LS">
     <mui:ModernDialog.Resources>
         <Style x:Key="TunableVersions.ComboBox" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
             <Setter Property="Background" Value="Transparent" />

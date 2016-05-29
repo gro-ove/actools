@@ -27,52 +27,6 @@
                     </ComboBox.ItemContainerStyle>
                 </ComboBox>
             </DockPanel>
-            
-            <DockPanel>
-                <DockPanel.ToolTip>
-                    <ToolTip>
-                        <StackPanel Margin="4">
-                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="This command will be executed before starting acs.exe, but after setting all ini-files.
-[br]
-[br]Values for replacement:
-[br] [b][mono]{type}[/mono][/b] — type of race;
-[br] [b][mono]{car}[/mono][/b] — car's name;
-[br] [b][mono]{car.id}[/mono][/b] — car's id;
-[br] [b][mono]{track}[/mono][/b] — track's name;
-[br] [b][mono]{track.id}[/mono][/b] — track's id.
-[br]
-[br]If you need some other values, please, contact us and we'll add them.
-[br]
-[br]Working directory will be set to Assetto Corsa folder in Documents." />
-                        </StackPanel>
-                    </ToolTip>
-                </DockPanel.ToolTip>
-                <Label>Pre-race event command:</Label>
-                <TextBox Text="{Binding Drive.PreCommand}" watermark:WatermarkService.Watermark="None" />
-            </DockPanel>
-
-            <DockPanel>
-                <DockPanel.ToolTip>
-                    <ToolTip>
-                        <StackPanel Margin="4">
-                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="This command will be executed after acs.exe finished, but before reading all result json-files.
-[br]
-[br]Values for replacement:
-[br] [b][mono]{type}[/mono][/b] — type of race;
-[br] [b][mono]{car}[/mono][/b] — car's name;
-[br] [b][mono]{car.id}[/mono][/b] — car's id;
-[br] [b][mono]{track}[/mono][/b] — track's name;
-[br] [b][mono]{track.id}[/mono][/b] — track's id.
-[br]
-[br]If you need some other values, please, contact us and we'll add them.
-[br]
-[br]Working directory will be set to Assetto Corsa folder in Documents." />
-                        </StackPanel>
-                    </ToolTip>
-                </DockPanel.ToolTip>
-                <Label>Post-race event command:</Label>
-                <TextBox Text="{Binding Drive.PostCommand}" watermark:WatermarkService.Watermark="None" />
-            </DockPanel>
 
             <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
                 <Label>Use 32-bit version</Label>
@@ -106,6 +60,7 @@
                 <TextBox Text="{Binding Drive.PlayerNameOnline}" watermark:WatermarkService.Watermark="?" IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
             </DockPanel>
 
+            <!--replays-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Replays:</TextBlock>
 
             <DockPanel>
@@ -175,12 +130,14 @@
                 <Slider Minimum="10" Maximum="1000" Value="{Binding Replay.MaxSize}" TickFrequency="99" TickPlacement="BottomRight" />
             </DockPanel>
 
+            <!--quick drive-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Quick Drive:</TextBlock>
 
             <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="Allows to set up to 999 laps and stuff, use on your own risk.">
                 <Label>Expand bounds</Label>
             </CheckBox>
 
+            <!--kunos career-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Kunos career:</TextBlock>
 
             <CheckBox IsChecked="{Binding Drive.KunosCareerUserAiLevel}">
@@ -190,6 +147,54 @@
             <CheckBox IsChecked="{Binding Drive.KunosCareerUserSkin}">
                 <Label>Allow to change car's skin</Label>
             </CheckBox>
+
+            <!--game-related events-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Game-related events:</TextBlock>
+            <DockPanel>
+                <DockPanel.ToolTip>
+                    <ToolTip>
+                        <StackPanel Margin="4">
+                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="This command will be executed before starting acs.exe, but after setting all ini-files.
+[br]
+[br]Values for replacement:
+[br] [b][mono]{type}[/mono][/b] — type of race;
+[br] [b][mono]{car}[/mono][/b] — car's name;
+[br] [b][mono]{car.id}[/mono][/b] — car's id;
+[br] [b][mono]{track}[/mono][/b] — track's name;
+[br] [b][mono]{track.id}[/mono][/b] — track's id.
+[br]
+[br]If you need some other values, please, contact us and we'll add them.
+[br]
+[br]Working directory will be set to Assetto Corsa folder in Documents." />
+                        </StackPanel>
+                    </ToolTip>
+                </DockPanel.ToolTip>
+                <Label>Pre-race event command:</Label>
+                <TextBox Text="{Binding Drive.PreCommand}" watermark:WatermarkService.Watermark="None" />
+            </DockPanel>
+
+            <DockPanel>
+                <DockPanel.ToolTip>
+                    <ToolTip>
+                        <StackPanel Margin="4">
+                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="This command will be executed after acs.exe finished, but before reading all result json-files.
+[br]
+[br]Values for replacement:
+[br] [b][mono]{type}[/mono][/b] — type of race;
+[br] [b][mono]{car}[/mono][/b] — car's name;
+[br] [b][mono]{car.id}[/mono][/b] — car's id;
+[br] [b][mono]{track}[/mono][/b] — track's name;
+[br] [b][mono]{track.id}[/mono][/b] — track's id.
+[br]
+[br]If you need some other values, please, contact us and we'll add them.
+[br]
+[br]Working directory will be set to Assetto Corsa folder in Documents." />
+                        </StackPanel>
+                    </ToolTip>
+                </DockPanel.ToolTip>
+                <Label>Post-race event command:</Label>
+                <TextBox Text="{Binding Drive.PostCommand}" watermark:WatermarkService.Watermark="None" />
+            </DockPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

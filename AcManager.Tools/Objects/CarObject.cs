@@ -32,15 +32,11 @@ namespace AcManager.Tools.Objects {
             SkinsManager.Created += SkinsManager_Created;
         }
 
-        private CompositeObservableCollection<IAcError> _errors;
+        private readonly CompositeObservableCollection<IAcError> _errors = new CompositeObservableCollection<IAcError>();
 
         public override ObservableCollection<IAcError> Errors => _errors;
 
         private void SkinsManager_Created(object sender, AcObjectEventArgs<CarSkinObject> args) {
-            if (!Application.Current.Dispatcher.CheckAccess()) {
-                throw new InvalidOperationException(Resources.UIThreadRequired);
-            }
-
             _errors.Add(args.AcObject.Errors);
             args.AcObject.AcObjectOutdated += AcObject_AcObjectOutdated;
         }
@@ -53,8 +49,7 @@ namespace AcManager.Tools.Objects {
 
         public override void PastLoad() {
             base.PastLoad();
-
-            _errors = new CompositeObservableCollection<IAcError>();
+            
             _errors.CollectionChanged += CarObject_CollectionChanged;
             _errors.Add(InnerErrors);
 

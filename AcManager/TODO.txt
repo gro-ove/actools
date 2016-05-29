@@ -377,6 +377,7 @@ done:
         + fix selection
         + fbx/fbx.ini/textures export
         + fix keyboard
+        + fix fresnelMaxLevel
     + detect country label by country/nationality name
     + additional section “stuff”
         + weather
@@ -399,6 +400,8 @@ done:
         + presets
     + wpf showroom
     + find a way to deal with AVs
+    + remember all window sizes
+    + anitrosopic filtration
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -417,6 +420,16 @@ todo:
 
     - lite mode (without main form): overlays, second commands, attempts to open main form?
 
+    - ac options
+        + switching for auto-update previews
+        + audio
+        + video
+        + gameplay
+        - controls
+        - presets?
+        - quick switching?
+        × wrong resolution warning
+
     - errors & fixers for badly make ui_skin.json
 
     - replace int.TryParse in converters to something better
@@ -425,11 +438,8 @@ todo:
     + lite custom showroom
         - Esc to deselect/exit special mode
         - fix memory leaks!
-        - fix fresnelMaxLevel
-        - anitrosopic filtration?
 
     - showroom from Online
-    - remember all window sizes
 
     - content installation
         - automatically switch to freshly installed content in some cases (optional)?
@@ -446,6 +456,7 @@ todo:
     + drive feature
         + quick drive
             - optional list mode for brands, countries, etc?
+        -customizable- fully customizable grids
             - drag racing
         + online
             + custom sorting
@@ -457,7 +468,6 @@ todo:
             - list all cars
             - keyboard shortcuts
             - login as admin
-        - fully customizable mode
         - test and fix for AcManager content autoupdating feature
             - handle obsolete!
         - challenges
@@ -594,12 +604,6 @@ later:
         - or show some message about them?
 
     - update fonts on-fly
-
-    - ac options
-        - presets
-        - quick switching
-        - switching for auto-update previews
-        - wrong resolution warning
 
     - some 100%-customizable mode?
         > skins, names, AI level, etc

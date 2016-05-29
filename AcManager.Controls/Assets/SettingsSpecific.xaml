@@ -30,10 +30,6 @@
 
                     <Style TargetType="{x:Type controls:ValueLabel}" BasedOn="{StaticResource {x:Type controls:ValueLabel}}">
                         <Setter Property="Padding" Value="0" />
-                        
-                        <!--<Setter Property="Margin" Value="0 0 0 8" />
-                        <Setter Property="DockPanel.Dock" Value="Top" />-->
-                        
                         <Setter Property="Margin" Value="0 0 16 0" />
                         <Setter Property="Width" Value="140" />
                         <Setter Property="VerticalAlignment" Value="Center" />
