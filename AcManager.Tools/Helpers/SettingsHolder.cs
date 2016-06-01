@@ -39,7 +39,7 @@ namespace AcManager.Tools.Helpers {
         public class OnlineServerEntry {
             private string _displayName;
 
-            public string DisplayName => _displayName ?? (_displayName = LocalizationHelper.GetOrdinalReadable(Id + 1));
+            public string DisplayName => _displayName ?? (_displayName = (Id + 1).GetOrdinalReadable());
 
             public int Id { get; internal set; }
         }
@@ -110,7 +110,9 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static OnlineSettings Online { get; } = new OnlineSettings();
+        private static OnlineSettings _online;
+
+        public static OnlineSettings Online => _online ?? (_online = new OnlineSettings());
 
         public class CommonSettings : NotifyPropertyChanged {
             internal CommonSettings() { }
@@ -167,7 +169,9 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static CommonSettings Common { get; } = new CommonSettings();
+        private static CommonSettings _common;
+
+        public static CommonSettings Common => _common ?? (_common = new CommonSettings());
 
         public class DriveSettings : NotifyPropertyChanged {
             internal DriveSettings() {
@@ -366,7 +370,9 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static DriveSettings Drive { get; } = new DriveSettings();
+        private static DriveSettings _drive;
+
+        public static DriveSettings Drive => _drive ?? (_drive = new DriveSettings());
 
         public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
@@ -466,7 +472,9 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static ContentSettings Content = new ContentSettings();
+        private static ContentSettings _content;
+
+        public static ContentSettings Content => _content ?? (_content = new ContentSettings());
 
         public class CustomShowroomSettings : NotifyPropertyChanged {
             internal CustomShowroomSettings() { }
@@ -535,6 +543,8 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static CustomShowroomSettings CustomShowroom = new CustomShowroomSettings();
+        private static CustomShowroomSettings _customShowroom;
+
+        public static CustomShowroomSettings CustomShowroom => _customShowroom ?? (_customShowroom = new CustomShowroomSettings());
     }
 }

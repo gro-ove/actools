@@ -132,6 +132,9 @@
     <Compile Include="Pages\AcSettings\AcSettingsControls.xaml.cs">
       <DependentUpon>AcSettingsControls.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsControls_Keyboard.xaml.cs">
+      <DependentUpon>AcSettingsControls_Keyboard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsControls_Wheel.xaml.cs">
       <DependentUpon>AcSettingsControls_Wheel.xaml</DependentUpon>
     </Compile>
@@ -143,6 +146,12 @@
     </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsControls_Wheel_Buttons.xaml.cs">
       <DependentUpon>AcSettingsControls_Wheel_Buttons.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsSystem.xaml.cs">
+      <DependentUpon>AcSettingsSystem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsView.xaml.cs">
+      <DependentUpon>AcSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsVideo.xaml.cs">
       <DependentUpon>AcSettingsVideo.xaml</DependentUpon>
@@ -278,6 +287,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\AcSettings\AcSettingsControls_Keyboard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\AcSettings\AcSettingsControls_Wheel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -293,6 +306,14 @@
     <Page Include="Pages\AcSettings\AcSettingsControls_Wheel_Buttons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsSystem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\AcSettings\AcSettingsVideo.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -594,6 +594,8 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static VideoSettings Video = new VideoSettings();
+        private static VideoSettings _video;
+
+        public static VideoSettings Video => _video ?? (_video = new VideoSettings());
     }
 }

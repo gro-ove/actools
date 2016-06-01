@@ -204,8 +204,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 }
 
                 DegressOfRotation = section.GetInt("LOCK", 900);
-                Filter = (int)(section.GetDouble("STEER_FILTER", 0d) * 100);
-                SpeedSensitivity = (int)(section.GetDouble("SPEED_SENSITIVITY", 0d) * 100);
+                Filter = section.GetDouble("STEER_FILTER", 0d).ToIntPercentage();
+                SpeedSensitivity = section.GetDouble("SPEED_SENSITIVITY", 0d).ToIntPercentage();
             }
         }
 
@@ -213,6 +213,26 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             var section = ini[Id];
             section.Set("JOY", Input?.Device.IniId ?? -1);
             section.Set("AXLE", Input?.Id ?? -1);
+
+            if (RangeMode) {
+                if (GammaMode) {
+                    section.Set("GAMMA", Gamma);
+                }
+
+                var min = 0.02 * RangeFrom - 1.0;
+                var max = 0.02 * RangeTo - 1.0;
+
+                section.Set("MIN", Invert ? -min : min);
+                section.Set("MAX", Invert ? -max : max);
+            } else {
+                if (GammaMode) {
+                    section.Set("STEER_GAMMA", Gamma);
+                }
+
+                section.Set("LOCK", DegressOfRotation);
+                section.Set("STEER_FILTER", Filter.ToDoublePercentage());
+                section.Set("SPEED_SENSITIVITY", SpeedSensitivity.ToDoublePercentage());
+            }
         }
     }
 }

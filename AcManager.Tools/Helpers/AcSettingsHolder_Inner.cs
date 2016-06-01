@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -13,38 +15,43 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
-        private static FileSystemWatcher _watcher;
+        private static Dictionary<string, FileSystemWatcher> _watcher = new Dictionary<string, FileSystemWatcher>();
 
-        private static void InitializeWatcher() {
-            if (_watcher != null) return;
-
-            var directory = FileUtils.GetDocumentsCfgDirectory();
+        private static FileSystemWatcher GetWatcher(string directory) {
+            FileSystemWatcher result;
+            if (_watcher.TryGetValue(directory, out result)) return result;
+            
             Directory.CreateDirectory(directory);
-
-            _watcher = new FileSystemWatcher {
+            result = new FileSystemWatcher {
                 Path = directory,
                 NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
                 Filter = "*",
                 EnableRaisingEvents = true,
                 IncludeSubdirectories = true
             };
+
+            _watcher[directory] = result;
+            return result;
         }
 
         public abstract class IniSettings : NotifyPropertyChanged {
             public string Filename { get; }
 
-            protected IniSettings(string name, bool reload = true) {
+            protected IniSettings(string name, bool reload = true, bool systemConfig = false) {
                 try {
-                    Filename = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), name + ".ini");
+                    var directory = systemConfig ? FileUtils.GetSystemCfgDirectory(AcRootDirectory.Instance.RequireValue) :
+                            FileUtils.GetDocumentsCfgDirectory();
+
+                    Filename = Path.Combine(directory, name + ".ini");
                     if (reload) {
                         Reload();
                     }
 
-                    InitializeWatcher();
-                    _watcher.Changed += OnChanged;
-                    _watcher.Created += OnChanged;
-                    _watcher.Deleted += OnChanged;
-                    _watcher.Renamed += OnRenamed;
+                    var watcher = GetWatcher(directory);
+                    watcher.Changed += OnChanged;
+                    watcher.Created += OnChanged;
+                    watcher.Deleted += OnChanged;
+                    watcher.Renamed += OnRenamed;
                 } catch (Exception e) {
                     Logging.Warning("IniSettings exception: " + e);
                 }

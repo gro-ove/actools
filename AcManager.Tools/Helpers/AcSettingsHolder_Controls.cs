@@ -24,17 +24,6 @@ using Key = System.Windows.Input.Key;
 using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace AcManager.Tools.Helpers {
-    public enum AcControlsConflictSolution {
-        Cancel,
-        KeepEverything,
-        Flip,
-        ClearPrevious
-    }
-
-    public interface IAcControlsConflictResolver {
-        AcControlsConflictSolution Resolve(string inputDisplayName, IEnumerable<string> existingAssignments);
-    }
-
     public partial class AcSettingsHolder {
         public class ControlsSettings : IniSettings, IDisposable {
             public IAcControlsConflictResolver ConflictResolver { get; set; }
@@ -42,6 +31,12 @@ namespace AcManager.Tools.Helpers {
             internal ControlsSettings() : base("controls", false) {
                 try {
                     KeyboardButtonEntries = WheelButtonEntries.Select(x => x.KeyboardButton).ToArray();
+                    KeyboardSpecificButtonEntries = new[] {
+                        new KeyboardSpecificButtonEntry("GAS", "Throttle"),
+                        new KeyboardSpecificButtonEntry("BRAKE", "Brakes"),
+                        new KeyboardSpecificButtonEntry("RIGHT", "Steer right"),
+                        new KeyboardSpecificButtonEntry("LEFT", "Steer left")
+                    }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
                     _directInput = new SlimDX.DirectInput.DirectInput();
                     _keyboardInput = new Dictionary<int, KeyboardInputButton>();
@@ -430,8 +425,176 @@ namespace AcManager.Tools.Helpers {
                         .Union(WheelGesturesButtonEntries);
             #endregion
 
+            #region Wheel FFB
+            private bool _wheelFfbInvert;
+
+            public bool WheelFfbInvert {
+                get { return _wheelFfbInvert; }
+                set {
+                    if (Equals(value, _wheelFfbInvert)) return;
+                    _wheelFfbInvert = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _wheelFfbGain;
+
+            public int WheelFfbGain {
+                get { return _wheelFfbGain; }
+                set {
+                    value = value.Clamp(0, 300);
+                    if (Equals(value, _wheelFfbGain)) return;
+                    _wheelFfbGain = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _wheelFfbFilter;
+
+            public int WheelFfbFilter {
+                get { return _wheelFfbFilter; }
+                set {
+                    value = value.Clamp(0, 99);
+                    if (Equals(value, _wheelFfbFilter)) return;
+                    _wheelFfbFilter = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private double _wheelFfbMinForce;
+
+            public double WheelFfbMinForce {
+                get { return _wheelFfbMinForce; }
+                set {
+                    value = value.Clamp(0, 50);
+                    if (Equals(value, _wheelFfbMinForce)) return;
+                    _wheelFfbMinForce = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _wheelFfbKerbEffect;
+
+            public int WheelFfbKerbEffect {
+                get { return _wheelFfbKerbEffect; }
+                set {
+                    value = value.Clamp(0, 200);
+                    if (Equals(value, _wheelFfbKerbEffect)) return;
+                    _wheelFfbKerbEffect = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _wheelFfbRoadEffect;
+
+            public int WheelFfbRoadEffect {
+                get { return _wheelFfbRoadEffect; }
+                set {
+                    value = value.Clamp(0, 200);
+                    if (Equals(value, _wheelFfbRoadEffect)) return;
+                    _wheelFfbRoadEffect = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _wheelFfbSlipEffect;
+
+            public int WheelFfbSlipEffect {
+                get { return _wheelFfbSlipEffect; }
+                set {
+                    value = value.Clamp(0, 200);
+                    if (Equals(value, _wheelFfbSlipEffect)) return;
+                    _wheelFfbSlipEffect = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _wheelFfbEnhancedUndersteer;
+
+            public bool WheelFfbEnhancedUndersteer {
+                get { return _wheelFfbEnhancedUndersteer; }
+                set {
+                    if (Equals(value, _wheelFfbEnhancedUndersteer)) return;
+                    _wheelFfbEnhancedUndersteer = value;
+                    OnPropertyChanged();
+                }
+            }
+            #endregion
+
             #region Keyboard
+            private double _keyboardSteeringSpeed;
+
+            public double KeyboardSteeringSpeed {
+                get { return _keyboardSteeringSpeed; }
+                set {
+                    value = value.Clamp(0.4, 3.0);
+                    if (Equals(value, _keyboardSteeringSpeed)) return;
+                    _keyboardSteeringSpeed = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private double _keyboardOppositeLockSpeed;
+
+            public double KeyboardOppositeLockSpeed {
+                get { return _keyboardOppositeLockSpeed; }
+                set {
+                    value = value.Clamp(1.0, 5.0);
+                    if (Equals(value, _keyboardOppositeLockSpeed)) return;
+                    _keyboardOppositeLockSpeed = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private double _keyboardReturnRate;
+
+            public double KeyboardReturnRate {
+                get { return _keyboardReturnRate; }
+                set {
+                    value = value.Clamp(1.0, 5.0);
+                    if (Equals(value, _keyboardReturnRate)) return;
+                    _keyboardReturnRate = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _keyboardMouseSteering;
+
+            public bool KeyboardMouseSteering {
+                get { return _keyboardMouseSteering; }
+                set {
+                    if (Equals(value, _keyboardMouseSteering)) return;
+                    _keyboardMouseSteering = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _keyboardMouseButtons;
+
+            public bool KeyboardMouseButtons {
+                get { return _keyboardMouseButtons; }
+                set {
+                    if (Equals(value, _keyboardMouseButtons)) return;
+                    _keyboardMouseButtons = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private double _keyboardMouseSteeringSpeed;
+
+            public double KeyboardMouseSteeringSpeed {
+                get { return _keyboardMouseSteeringSpeed; }
+                set {
+                    value = value.Clamp(0.1, 1.0);
+                    if (Equals(value, _keyboardMouseSteeringSpeed)) return;
+                    _keyboardMouseSteeringSpeed = value;
+                    OnPropertyChanged();
+                }
+            }
+
             public KeyboardButtonEntry[] KeyboardButtonEntries { get; }
+
+            public KeyboardButtonEntry[] KeyboardSpecificButtonEntries { get; }
             #endregion
 
             private IEnumerable<IEntry> Entries
@@ -439,7 +602,8 @@ namespace AcManager.Tools.Helpers {
                         .Select(x => (IEntry)x)
                         .Union(WheelButtonEntries.Select(x => x.KeyboardButton))
                         .Union(WheelButtonEntries.Select(x => x.WheelButton))
-                        .Union(WheelHShifterButtonEntries);
+                        .Union(WheelHShifterButtonEntries)
+                        .Union(KeyboardSpecificButtonEntries);
 
             private void EntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 if (e.PropertyName == nameof(WheelHShifterButtonEntry.Input) && sender is WheelHShifterButtonEntry) {
@@ -461,6 +625,12 @@ namespace AcManager.Tools.Helpers {
 
                 b.Waiting = !b.Waiting;
             }, o => o is IEntry));
+
+            private RelayCommand _saveCommand;
+
+            public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
+                // TODO
+            }, o => false));
 
             [CanBeNull]
             public IEntry GetWaiting() {
@@ -492,7 +662,7 @@ namespace AcManager.Tools.Helpers {
 
                 var waiting = GetWaiting() as KeyboardButtonEntry;
                 if (waiting == null) return false;
-                
+
                 AssignInput(GetKeyboardInputButton(KeyInterop.VirtualKeyFromKey(key)));
                 return true;
             }
@@ -519,6 +689,31 @@ namespace AcManager.Tools.Helpers {
                 foreach (var entry in Entries) {
                     entry.Load(Ini, devices);
                 }
+
+                section = Ini["STEER"];
+                var ffbGain = section.GetDouble("FF_GAIN", 1d);
+                WheelFfbInvert = ffbGain < 0;
+                WheelFfbGain = ffbGain.Abs().ToIntPercentage();
+                WheelFfbFilter = section.GetDouble("FILTER_FF", 0d).ToIntPercentage();
+
+                section = Ini["FF_TWEAKS"];
+                WheelFfbMinForce = section.GetDouble("MIN_FF", 0.05) * 100d;
+
+                section = Ini["FF_ENHANCEMENT"];
+                WheelFfbKerbEffect = section.GetDouble("CURBS", 0.4).ToIntPercentage();
+                WheelFfbRoadEffect = section.GetDouble("ROAD", 0.5).ToIntPercentage();
+                WheelFfbSlipEffect = section.GetDouble("SLIPS", 0.0).ToIntPercentage();
+
+                section = Ini["FF_ENHANCEMENT_2"];
+                WheelFfbEnhancedUndersteer = section.GetBool("UNDERSTEER", false);
+
+                section = Ini["KEYBOARD"];
+                KeyboardSteeringSpeed = section.GetDouble("STEERING_SPEED", 1.75);
+                KeyboardOppositeLockSpeed = section.GetDouble("STEERING_OPPOSITE_DIRECTION_SPEED", 2.5);
+                KeyboardReturnRate = section.GetDouble("STEER_RESET_SPEED", 1.8);
+                KeyboardMouseSteering = section.GetBool("MOUSE_STEER", false);
+                KeyboardMouseButtons = section.GetBool("MOUSE_ACCELERATOR_BRAKE", false);
+                KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
             }
 
             protected override void SetToIni() {
@@ -536,13 +731,26 @@ namespace AcManager.Tools.Helpers {
                 foreach (var entry in Entries) {
                     entry.Save(Ini);
                 }
+
+                var section = Ini["KEYBOARD"];
+                section.Set("STEERING_SPEED", KeyboardSteeringSpeed);
+                section.Set("STEERING_OPPOSITE_DIRECTION_SPEED", KeyboardOppositeLockSpeed);
+                section.Set("STEER_RESET_SPEED", KeyboardReturnRate);
+                section.Set("MOUSE_STEER", KeyboardMouseSteering);
+                section.Set("MOUSE_ACCELERATOR_BRAKE", KeyboardMouseButtons);
+                section.Set("MOUSE_SPEED", KeyboardMouseSteeringSpeed);
             }
         }
 
-        public static ControlsSettings Controls = new ControlsSettings();
+        private static ControlsSettings _controls;
 
-        static AcSettingsHolder() {
-            Controls.FinishInitialization();
+        public static ControlsSettings Controls {
+            get {
+                if (_controls != null) return _controls;
+                _controls = new ControlsSettings();
+                _controls.FinishInitialization();
+                return _controls;
+            }
         }
     }
 }

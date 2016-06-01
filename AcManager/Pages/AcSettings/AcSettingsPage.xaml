@@ -6,10 +6,12 @@
     <Grid Style="{StaticResource ContentRoot}">
         <mui:ModernTab Layout="List" SelectedSource="/Pages/AcSettings/AcSettingsGeneral.xaml" SaveKey="__AcSettingsPage.SelectedPage">
             <mui:ModernTab.Links>
-                <mui:Link DisplayName="audio" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />
-                <mui:Link DisplayName="general" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
-                <mui:Link DisplayName="controls" Source="/Pages/AcSettings/AcSettingsControls.xaml" />
                 <mui:Link DisplayName="video" Source="/Pages/AcSettings/AcSettingsVideo.xaml" />
+                <mui:Link DisplayName="view &amp; ui" Source="/Pages/AcSettings/AcSettingsView.xaml" />
+                <mui:Link DisplayName="audio" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />
+                <mui:Link DisplayName="controls" Source="/Pages/AcSettings/AcSettingsControls.xaml" />
+                <mui:Link DisplayName="miscellaneous" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
+                <mui:Link DisplayName="system" Source="/Pages/AcSettings/AcSettingsSystem.xaml" />
             </mui:ModernTab.Links>
         </mui:ModernTab>
     </Grid>

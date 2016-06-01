@@ -29,6 +29,8 @@ namespace AcManager.Pages.AcSettings {
             internal AcControlsViewModel() { }
 
             public AcSettingsHolder.ControlsSettings Controls => AcSettingsHolder.Controls;
+
+            public AcSettingsHolder.SystemSettings System => AcSettingsHolder.System;
         }
 
         private void AcSettingsControls_OnSizeChanged(object sender, SizeChangedEventArgs e) {
@@ -48,8 +50,7 @@ namespace AcManager.Pages.AcSettings {
                         return new Uri("/Pages/Miscellaneous/WorkInProgress.xaml?xbox360", UriKind.Relative);
 
                     case "KEYBOARD":
-                        // TODO
-                        return new Uri("/Pages/Miscellaneous/WorkInProgress.xaml?keyboard", UriKind.Relative);
+                        return new Uri("/Pages/AcSettings/AcSettingsControls_Keyboard.xaml", UriKind.Relative);
 
                     default:
                         return null;

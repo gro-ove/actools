@@ -45,6 +45,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 _input = value;
                 Waiting = false;
                 OnPropertyChanged();
+                ClearCommand.OnCanExecuteChanged();
             }
         }
 
@@ -58,5 +59,11 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             Waiting = false;
             Input = null;
         }
+
+        private RelayCommand _clearCommand;
+
+        public RelayCommand ClearCommand => _clearCommand ?? (_clearCommand = new RelayCommand(o => {
+            Clear();
+        }, o => Input != null));
     }
 }

@@ -27,13 +27,8 @@
             <StackPanel Background="{DynamicResource WindowBackground}" Margin="20 0 20 20" IsEnabled="{Binding WheelUseHShifter}">
                 <TextBlock Text="{Binding WheelHShifterDevice.DisplayName, StringFormat='{}Device: {0}', FallbackValue='?'}" Style="{StaticResource Small}"
                         HorizontalAlignment="Left" Margin="2" />
-                <ItemsControl ItemsSource="{Binding WheelHShifterButtonEntries}" Margin="2" ItemTemplate="{StaticResource HShifterButtonEntryTemplate}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="2" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding WheelHShifterButtonEntries}" Margin="2" ItemTemplate="{StaticResource HShifterButtonEntryTemplate}"
+                        ItemsPanel="{StaticResource TwoColumnsPanel}" />
             </StackPanel>
 
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Miscellaneous:</TextBlock>

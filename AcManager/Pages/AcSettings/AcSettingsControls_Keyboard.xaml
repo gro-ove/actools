@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsControls_Keyboard" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance acSettings:AcSettingsControls+AcControlsViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer>
+        <StackPanel>
+            <ItemsControl ItemsSource="{Binding Controls.KeyboardSpecificButtonEntries}" ItemTemplate="{StaticResource KeyboardButtonEntryTemplate}"
+                    ItemsPanel="{StaticResource TwoColumnsPanel}" />
+
+            <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Keyboard steering:</TextBlock>
+
+                <DockPanel>
+                    <controls:ValueLabel Value="{Binding Controls.KeyboardSteeringSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Steering speed</controls:ValueLabel>
+                    <Slider Minimum="0.4" Maximum="3" Value="{Binding Controls.KeyboardSteeringSpeed}" TickFrequency="0.26" TickPlacement="BottomRight" />
+                </DockPanel>
+
+                <DockPanel>
+                    <controls:ValueLabel Value="{Binding Controls.KeyboardOppositeLockSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Opposite lock speed</controls:ValueLabel>
+                    <Slider Minimum="1" Maximum="5" Value="{Binding Controls.KeyboardOppositeLockSpeed}" TickFrequency="0.4" TickPlacement="BottomRight" />
+                </DockPanel>
+
+                <DockPanel>
+                    <controls:ValueLabel Value="{Binding Controls.KeyboardReturnRate, StringFormat='{}{0:F2}'}" Mode="Number">Return rate</controls:ValueLabel>
+                    <Slider Minimum="1" Maximum="5" Value="{Binding Controls.KeyboardReturnRate}" TickFrequency="0.4" TickPlacement="BottomRight" />
+                </DockPanel>
+
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Mouse steering:</TextBlock>
+
+                <CheckBox IsChecked="{Binding Controls.KeyboardMouseSteering}">
+                    <Label>Enable _mouse steering</Label>
+                </CheckBox>
+
+                <CheckBox IsChecked="{Binding Controls.KeyboardMouseButtons}">
+                    <Label>Use mouse _buttons for throttle and brakes</Label>
+                </CheckBox>
+
+                <DockPanel>
+                    <controls:ValueLabel Value="{Binding Controls.KeyboardMouseSteeringSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Steering speed</controls:ValueLabel>
+                    <Slider Minimum="0.1" Maximum="1" Value="{Binding Controls.KeyboardMouseSteeringSpeed}" TickFrequency="0.09" TickPlacement="BottomRight" />
+                </DockPanel>
+
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Additional bindings:</TextBlock>
+            </StackPanel>
+
+            <ItemsControl ItemsSource="{Binding Controls.KeyboardButtonEntries}" Margin="0 0 0 20" ItemTemplate="{StaticResource KeyboardButtonEntryTemplate}"
+                    ItemsPanel="{StaticResource TwoColumnsPanel}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
