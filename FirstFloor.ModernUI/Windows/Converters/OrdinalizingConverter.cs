@@ -5,7 +5,7 @@ using FirstFloor.ModernUI.Helpers;
 namespace FirstFloor.ModernUI.Windows.Converters {
     public class OrdinalizingConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            var result = LocalizationHelper.GetOrdinalReadable(value.AsInt());
+            var result = value.AsInt().GetOrdinalReadable();
             return (parameter as string)?.Contains("lower") == true ? result.ToLowerInvariant() : result;
         }
 

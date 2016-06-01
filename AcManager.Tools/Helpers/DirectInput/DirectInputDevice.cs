@@ -13,6 +13,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public string Id { get; }
 
+        public int IniId { get; }
+
         public DirectInputButton[] Buttons { get; } 
 
         public DirectInputAxle[] Axles { get; } 
@@ -20,10 +22,12 @@ namespace AcManager.Tools.Helpers.DirectInput {
         private Joystick _joystick;
         private readonly int _buttonsCount;
 
-        public DirectInputDevice(SlimDX.DirectInput.DirectInput directInput, DeviceInstance device) {
+        public DirectInputDevice(SlimDX.DirectInput.DirectInput directInput, DeviceInstance device, int iniId) {
             Device = device;
             DisplayName = device.InstanceName;
+
             Id = device.ProductGuid.ToString().ToUpperInvariant();
+            IniId = iniId;
 
             _joystick = new Joystick(directInput, Device.InstanceGuid);
 

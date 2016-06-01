@@ -69,6 +69,7 @@
     <Compile Include="DataAnalyzer\HashStorage.cs" />
     <Compile Include="DataAnalyzer\RulesSet.cs" />
     <Compile Include="DataAnalyzer\RulesSet_Test.cs" />
+    <Compile Include="DataFile\IniFileSection.cs" />
     <Compile Include="DataFile\LutDataFile.cs" />
     <Compile Include="DataFile\RawDataFile.cs" />
     <Compile Include="DataFile\DataWrapper.cs" />

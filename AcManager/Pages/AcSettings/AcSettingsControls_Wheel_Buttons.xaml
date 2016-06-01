@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-             Unloaded="AcSettingsControls_Wheel_Buttons_OnUnloaded">
+        Unloaded="AcSettingsControls_Wheel_Buttons_OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,20 +18,32 @@
             </CheckBox>
 
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Shifters:</TextBlock>
-            <ItemsControl ItemsSource="{Binding WheelButtonGearsEntries}" Margin="0 0 20 4" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+            <ItemsControl ItemsSource="{Binding WheelGearsButtonEntries}" Margin="0 0 20 4" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <CheckBox IsChecked="{Binding WheelUseHShifter}" Margin="0 0 0 20">
+            <CheckBox IsChecked="{Binding WheelUseHShifter}" Margin="0 0 0 4">
                 <Label>Use _H-shifter</Label>
             </CheckBox>
 
+            <StackPanel Background="{DynamicResource WindowBackground}" Margin="20 0 20 20" IsEnabled="{Binding WheelUseHShifter}">
+                <TextBlock Text="{Binding WheelHShifterDevice.DisplayName, StringFormat='{}Device: {0}', FallbackValue='?'}" Style="{StaticResource Small}"
+                        HorizontalAlignment="Left" Margin="2" />
+                <ItemsControl ItemsSource="{Binding WheelHShifterButtonEntries}" Margin="2" ItemTemplate="{StaticResource HShifterButtonEntryTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="2" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Miscellaneous:</TextBlock>
-            <ItemsControl ItemsSource="{Binding WheelButtonCarEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+            <ItemsControl ItemsSource="{Binding WheelCarButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">View:</TextBlock>
-            <ItemsControl ItemsSource="{Binding WheelButtonViewEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+            <ItemsControl ItemsSource="{Binding WheelViewButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Gestures:</TextBlock>
-            <ItemsControl ItemsSource="{Binding WheelButtonGesturesEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+            <ItemsControl ItemsSource="{Binding WheelGesturesButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

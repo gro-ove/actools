@@ -127,7 +127,7 @@
         <Grid Margin="0 0 0 4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="160" />
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1.5*" MinWidth="160" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
 
@@ -156,8 +156,7 @@
                     Style="{StaticResource WaitingButton}">
                 <Grid HorizontalAlignment="Stretch">
                     <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
-                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
-                                VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <TextBlock Text="Click to assign" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center"
                                 FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
@@ -168,5 +167,26 @@
                 </Grid>
             </Button>
         </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="HShifterButtonEntryTemplate" DataType="{x:Type acSettingsControls:WheelHShifterButtonEntry}">
+        <DockPanel Margin="2">
+            <TextBlock Text="{Binding ShortName, StringFormat='{}{0}:'}" Style="{StaticResource Label}" DockPanel.Dock="Left" Margin="0 0 8 0" Width="20"
+                    TextAlignment="Right" />
+            <Button Command="{Binding ToggleWaitingCommand, Source={x:Static helpers:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
+                    Style="{StaticResource WaitingButton}">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" />
+                        <TextBlock Text="Click to assign" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" />
+                        <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
+                                Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+                    </Grid>
+                    <TextBlock Text="Waiting for input" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                            FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </Grid>
+            </Button>
+        </DockPanel>
     </DataTemplate>
 </ResourceDictionary>

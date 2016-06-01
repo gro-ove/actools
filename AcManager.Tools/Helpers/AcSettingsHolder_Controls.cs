@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using AcManager.Tools.Helpers.AcSettingsControls;
 using AcManager.Tools.Helpers.DirectInput;
 using AcManager.Tools.Lists;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -39,20 +40,30 @@ namespace AcManager.Tools.Helpers {
             public IAcControlsConflictResolver ConflictResolver { get; set; }
 
             internal ControlsSettings() : base("controls", false) {
-                KeyboardButtonEntries = WheelButtonEntries.Select(x => x.KeyboardButton).ToArray();
+                try {
+                    KeyboardButtonEntries = WheelButtonEntries.Select(x => x.KeyboardButton).ToArray();
 
-                _directInput = new SlimDX.DirectInput.DirectInput();
-                _keyboardInput = new Dictionary<int, KeyboardInputButton>();
-                _presetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
-                ReloadPresets();
+                    _directInput = new SlimDX.DirectInput.DirectInput();
+                    _keyboardInput = new Dictionary<int, KeyboardInputButton>();
+                    _presetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
+                    ReloadPresets();
 
-                _timer = new DispatcherTimer {
-                    Interval = TimeSpan.FromMilliseconds(20),
-                    IsEnabled = true
-                };
+                    _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
+                } catch (Exception e) {
+                    Logging.Warning("ControlsSettings exception: " + e);
+                }
+            }
 
-                _timer.Tick += OnTick;
+            internal void FinishInitialization() {
                 Reload();
+                foreach (var entry in Entries) {
+                    entry.PropertyChanged += EntryPropertyChanged;
+                }
+
+                UpdateWheelHShifterDevice();
+
+                _timer.IsEnabled = true;
+                _timer.Tick += OnTick;
             }
 
             #region Devices
@@ -100,7 +111,7 @@ namespace AcManager.Tools.Helpers {
             private void RescanDevices() {
                 Devices.DisposeEverything();
                 Devices.ReplaceEverythingBy(_directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly)
-                                                        .Select(x => new DirectInputDevice(_directInput, x)));
+                                                        .Select((x, i) => new DirectInputDevice(_directInput, x, i)));
 
                 foreach (var device in Devices) {
                     foreach (var button in device.Buttons) {
@@ -345,7 +356,7 @@ namespace AcManager.Tools.Helpers {
                 public KeyboardButtonEntry KeyboardButton { get; }
             }
 
-            public WheelButtonCombined[] WheelButtonGearsEntries { get; } = {
+            public WheelButtonCombined[] WheelGearsButtonEntries { get; } = {
                 new WheelButtonCombined("GEARUP", "Next gear"),
                 new WheelButtonCombined("GEARDN", "Previous gear")
             };
@@ -361,18 +372,36 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            public WheelHShifterButtonEntry[] WheelButtonHShifterEntries { get; } = {
-                new WheelHShifterButtonEntry("GEAR_1", "1"),
-                new WheelHShifterButtonEntry("GEAR_2", "2"),
-                new WheelHShifterButtonEntry("GEAR_3", "3"),
-                new WheelHShifterButtonEntry("GEAR_4", "4"),
-                new WheelHShifterButtonEntry("GEAR_5", "5"),
-                new WheelHShifterButtonEntry("GEAR_6", "6"),
-                new WheelHShifterButtonEntry("GEAR_7", "7"),
-                new WheelHShifterButtonEntry("GEAR_R", "R")
+            private DirectInputDevice _wheelHShifterDevice;
+
+            public DirectInputDevice WheelHShifterDevice {
+                get { return _wheelHShifterDevice; }
+                set {
+                    if (Equals(value, _wheelHShifterDevice)) return;
+                    _wheelHShifterDevice = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private void UpdateWheelHShifterDevice() {
+                WheelHShifterDevice = WheelHShifterButtonEntries.Select(x => x.Input?.Device).FirstOrDefault(x => x != null);
+                foreach (var entry in WheelHShifterButtonEntries.Where(x => x.Input != null && x.Input.Device != WheelHShifterDevice)) {
+                    entry.Clear();
+                }
+            }
+
+            public WheelHShifterButtonEntry[] WheelHShifterButtonEntries { get; } = {
+                new WheelHShifterButtonEntry("GEAR_1", "First gear", "1"),
+                new WheelHShifterButtonEntry("GEAR_2", "Second gear", "2"),
+                new WheelHShifterButtonEntry("GEAR_3", "Third gear", "3"),
+                new WheelHShifterButtonEntry("GEAR_4", "Fourth gear", "4"),
+                new WheelHShifterButtonEntry("GEAR_5", "Fifth gear", "5"),
+                new WheelHShifterButtonEntry("GEAR_6", "Sixth gear", "6"),
+                new WheelHShifterButtonEntry("GEAR_7", "Seventh gear", "7"),
+                new WheelHShifterButtonEntry("GEAR_R", "Rear gear", "R")
             };
 
-            public WheelButtonCombined[] WheelButtonCarEntries { get; } = {
+            public WheelButtonCombined[] WheelCarButtonEntries { get; } = {
                 new WheelButtonCombined("BALANCEUP", "Brake balance to front"),
                 new WheelButtonCombined("BALANCEDN", "Brake balance to rear"),
                 new WheelButtonCombined("KERS", "KERS activation"),
@@ -382,23 +411,23 @@ namespace AcManager.Tools.Helpers {
                 new WheelButtonCombined("ACTION_HORN", "Horn")
             };
 
-            public WheelButtonCombined[] WheelButtonViewEntries { get; } = {
+            public WheelButtonCombined[] WheelViewButtonEntries { get; } = {
                 new WheelButtonCombined("GLANCELEFT", "Glance left"),
                 new WheelButtonCombined("GLANCERIGHT", "Glance right"),
                 new WheelButtonCombined("GLANCEBACK", "Glance back"),
                 new WheelButtonCombined("ACTION_CHANGE_CAMERA", "Change camera")
             };
 
-            public WheelButtonCombined[] WheelButtonGesturesEntries { get; } = {
+            public WheelButtonCombined[] WheelGesturesButtonEntries { get; } = {
                 new WheelButtonCombined("ACTION_CELEBRATE", "Celebrate"),
                 new WheelButtonCombined("ACTION_CLAIM", "Complain")
             };
 
             private IEnumerable<WheelButtonCombined> WheelButtonEntries
-                => WheelButtonGearsEntries
-                        .Union(WheelButtonCarEntries)
-                        .Union(WheelButtonViewEntries)
-                        .Union(WheelButtonGesturesEntries);
+                => WheelGearsButtonEntries
+                        .Union(WheelCarButtonEntries)
+                        .Union(WheelViewButtonEntries)
+                        .Union(WheelGesturesButtonEntries);
             #endregion
 
             #region Keyboard
@@ -410,7 +439,15 @@ namespace AcManager.Tools.Helpers {
                         .Select(x => (IEntry)x)
                         .Union(WheelButtonEntries.Select(x => x.KeyboardButton))
                         .Union(WheelButtonEntries.Select(x => x.WheelButton))
-                        .Union(WheelButtonHShifterEntries);
+                        .Union(WheelHShifterButtonEntries);
+
+            private void EntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(WheelHShifterButtonEntry.Input) && sender is WheelHShifterButtonEntry) {
+                    UpdateWheelHShifterDevice();
+                }
+
+                Save();
+            }
 
             private RelayCommand _toggleWaitingCommand;
 
@@ -466,6 +503,8 @@ namespace AcManager.Tools.Helpers {
                 }
 
                 InputMethod = Ini["HEADER"].GetEntry("INPUT_METHOD", InputMethods);
+                CombineWithKeyboardInput = Ini["ADVANCED"].GetBool("COMBINE_WITH_KEYBOARD_CONTROL", false);
+                WheelUseHShifter = Ini["SHIFTER"].GetBool("ACTIVE", false);
 
                 var section = Ini["CONTROLLERS"];
                 var devices = LinqExtension.RangeFrom().Select(x => section.Get($"PGUID{x}")).TakeWhile(x => x != null).Select(x => {
@@ -477,37 +516,33 @@ namespace AcManager.Tools.Helpers {
                     return device;
                 }).ToList();
 
-                foreach (var entry in WheelAxleEntries) {
-                    section = Ini[entry.Id];
-
-                    var device = devices.ElementAtOrDefault(section.GetInt("JOY", -1));
-                    var axle = device?.Axles.ElementAtOrDefault(section.GetInt("AXLE", -1));
-                    entry.Set(Ini, axle);
+                foreach (var entry in Entries) {
+                    entry.Load(Ini, devices);
                 }
-
-                CombineWithKeyboardInput = Ini["ADVANCED"].GetBool("COMBINE_WITH_KEYBOARD_CONTROL", false);
-
-                foreach (var pair in WheelButtonEntries) {
-                    var id = pair.WheelButton.Id;
-                    section = Ini[id];
-
-                    var device = devices.ElementAtOrDefault(section.GetInt("JOY", -1));
-                    var button = device?.Buttons.ElementAtOrDefault(section.GetInt("BUTTON", -1));
-                    pair.WheelButton.Set(Ini, button);
-
-                    var keyCode = section.GetInt("KEY", -1);
-                    pair.KeyboardButton.Set(Ini, GetKeyboardInputButton(keyCode));
-                }
-
-                var hShifter = Ini["SHIFTER"];
-                WheelUseHShifter = hShifter.GetBool("ACTIVE", false);
             }
 
             protected override void SetToIni() {
                 Ini["HEADER"].Set("INPUT_METHOD", InputMethod);
+                Ini["ADVANCED"].Set("COMBINE_WITH_KEYBOARD_CONTROL", CombineWithKeyboardInput);
+                Ini["SHIFTER"].Set("ACTIVE", WheelUseHShifter);
+                Ini["SHIFTER"].Set("JOY", WheelHShifterButtonEntries.FirstOrDefault(x => x.Input != null)?.Input?.Device.IniId);
+
+                Ini["CONTROLLERS"] = Devices.Aggregate(new IniFileSection(), (s, d, i) => {
+                    s.Set("CON" + i, d.DisplayName);
+                    s.Set("PGUID" + i, d.Id);
+                    return s;
+                });
+
+                foreach (var entry in Entries) {
+                    entry.Save(Ini);
+                }
             }
         }
 
         public static ControlsSettings Controls = new ControlsSettings();
+
+        static AcSettingsHolder() {
+            Controls.FinishInitialization();
+        }
     }
 }

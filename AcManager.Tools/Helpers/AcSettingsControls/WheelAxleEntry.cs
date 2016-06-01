@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -171,8 +173,12 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         }
         #endregion
 
-        protected override void LoadFromIni(IniFile ini) {
+        public override void Load(IniFile ini, IReadOnlyList<DirectInputDevice> devices) {
             var section = ini[Id];
+
+            Input = devices.ElementAtOrDefault(section.GetInt("JOY", -1))?
+                           .Axles.ElementAtOrDefault(section.GetInt("AXLE", -1));
+
             if (RangeMode) {
                 if (GammaMode) {
                     Gamma = section.GetDouble("GAMMA", 1d);
@@ -201,6 +207,12 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 Filter = (int)(section.GetDouble("STEER_FILTER", 0d) * 100);
                 SpeedSensitivity = (int)(section.GetDouble("SPEED_SENSITIVITY", 0d) * 100);
             }
+        }
+
+        public override void Save(IniFile ini) {
+            var section = ini[Id];
+            section.Set("JOY", Input?.Device.IniId ?? -1);
+            section.Set("AXLE", Input?.Id ?? -1);
         }
     }
 }

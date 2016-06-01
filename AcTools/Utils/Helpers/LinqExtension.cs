@@ -499,6 +499,13 @@ namespace AcTools.Utils.Helpers {
             return source.Where(x => !additionalItems.Contains(x));
         }
 
+        [Pure]
+        public static TValue Aggregate<T, TValue>([NotNull] this IEnumerable<T> source, TValue seed, Func<TValue, T, int, TValue> func) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            var j = 0;
+            return source.Aggregate(seed, (c, i) => func(c, i, j++));
+        }
+
         private class FuncBasedComparer<T> : IComparer<T> {
             private readonly Func<T, T, int> _fn;
 

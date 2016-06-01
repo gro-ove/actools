@@ -7,8 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.AcSettingsControls;
-using AcManager.Tools.Helpers.DirectInput;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -24,7 +22,7 @@ namespace AcManager.Pages.AcSettings {
         }
 
         private void ResizingStuff() {
-            DetectedControllers.Visibility = ActualWidth > 600 ? Visibility.Visible : Visibility.Collapsed;
+            DetectedControllers.Visibility = ActualWidth > 720 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public class AcControlsViewModel : NotifyPropertyChanged {

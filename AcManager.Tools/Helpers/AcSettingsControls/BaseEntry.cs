@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
     public abstract class BaseEntry<T> : Displayable, IEntry where T : class, IInputProvider {
@@ -24,8 +26,10 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             }
         }
 
+        [CanBeNull]
         private T _input;
 
+        [CanBeNull]
         public T Input {
             get { return _input; }
             set {
@@ -44,14 +48,11 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             }
         }
 
-        protected virtual void OnInputChanged(T oldValue, T newValue) {}
+        protected virtual void OnInputChanged([CanBeNull] T oldValue, [CanBeNull] T newValue) {}
 
-        public void Set(IniFile ini, T input) {
-            Input = input;
-            LoadFromIni(ini);
-        }
+        public abstract void Save(IniFile ini);
 
-        protected virtual void LoadFromIni(IniFile ini) {}
+        public abstract void Load(IniFile ini, IReadOnlyList<DirectInputDevice> devices);
 
         public void Clear() {
             Waiting = false;
