@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Windows.Data;
 using System.Globalization;
-using System.Windows;
+using System.Windows.Data;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
-    public class EnumToVisibilityConverter : IValueConverter {
+    public class EnumToBooleanConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (parameter == null) {
-                return value == null ? Visibility.Visible : Visibility.Collapsed;
+                return value == null;
             }
 
             var s = parameter.ToString();
@@ -17,7 +16,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 f = !f;
             }
 
-            return f ? Visibility.Visible : Visibility.Collapsed;
+            return f;
         }
         
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

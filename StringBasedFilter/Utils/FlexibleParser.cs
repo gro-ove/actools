@@ -6,7 +6,9 @@ namespace StringBasedFilter.Utils {
         private static Regex _parseDouble;
 
         public static bool TryParseDouble(string s, out double value) {
-            if (double.TryParse(s, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out value)) return true;
+            if (double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                return true;
+            }
 
             if (_parseDouble == null) {
                 _parseDouble = new Regex(@"-? *\d+([\.,]\d*)?", RegexOptions.Compiled);

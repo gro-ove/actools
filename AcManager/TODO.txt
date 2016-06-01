@@ -413,6 +413,7 @@ fixme:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
     - replays with "[" or "]" in name
     - online: tracks with "-" (trento-bondone)
+    - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
 
 todo:
     - upload Content to Trello for those who doesn't have Internet connection

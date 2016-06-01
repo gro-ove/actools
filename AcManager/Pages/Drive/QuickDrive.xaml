@@ -235,7 +235,6 @@
             </Grid.RowDefinitions>
 
             <controls:UserPresetsControl Grid.Column="1" Margin="0 0 4 0" UserPresetable="{Binding}" />
-
             <Button Grid.Column="2" Command="{Binding GoCommand}" Style="{StaticResource Go.Button}">Go!</Button>
         </Grid>
     </Grid>

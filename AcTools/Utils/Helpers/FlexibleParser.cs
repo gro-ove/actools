@@ -1,22 +1,30 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class FlexibleParser {
         private static Regex _parseDouble, _parseInt;
 
-        public static bool TryParseDouble(string s, out double value) {
+        public static bool TryParseDouble([CanBeNull] string s, out double value) {
+            if (s == null) {
+                value = 0d;
+                return false;
+            }
+
+            if (double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                return true;
+            }
+
             if (_parseDouble == null) {
                 _parseDouble = new Regex(@"-? *\d+([\.,]\d*)?");
             }
 
-            if (s != null) {
-                var match = _parseDouble.Match(s);
-                if (match.Success) {
-                    return double.TryParse(match.Value.Replace(',', '.').Replace(" ", ""), NumberStyles.Any,
-                                           CultureInfo.InvariantCulture, out value);
-                }
+            var match = _parseDouble.Match(s);
+            if (match.Success) {
+                return double.TryParse(match.Value.Replace(',', '.').Replace(" ", ""), NumberStyles.Any,
+                                       CultureInfo.InvariantCulture, out value);
             }
 
             value = 0.0;
@@ -25,20 +33,29 @@ namespace AcTools.Utils.Helpers {
 
         public static double? TryParseDouble(string s) {
             double result;
-            return TryParseDouble(s, out result) ? result : (double?) null;
+            return TryParseDouble(s, out result) ? result : (double?)null;
         }
 
-        public static bool TryParseInt(string s, out int value) {
+        public static bool TryParseInt([CanBeNull] string s, out int value) {
+            if (s == null) {
+                value = 0;
+                return false;
+            }
+
+            if (s.StartsWith("0x", StringComparison.OrdinalIgnoreCase) &&
+                    int.TryParse(s.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value) ||
+                    int.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+                return true;
+            }
+
             if (_parseInt == null) {
                 _parseInt = new Regex(@"-? *\d+");
             }
 
-            if (s != null) {
-                var match = _parseInt.Match(s);
-                if (match.Success) {
-                    return int.TryParse(match.Value.Replace(" ", ""), NumberStyles.Any,
-                                        CultureInfo.InvariantCulture, out value);
-                }
+            var match = _parseInt.Match(s);
+            if (match.Success) {
+                return int.TryParse(match.Value.Replace(" ", ""), NumberStyles.Any,
+                                    CultureInfo.InvariantCulture, out value);
             }
 
             value = 0;
@@ -78,20 +95,25 @@ namespace AcTools.Utils.Helpers {
         /// <param name="value">Value in “12:34” (or “12:34:56”) format.</param>
         /// <param name="totalSeconds">Seconds from “00:00”.</param>
         /// <returns></returns>
-        public static bool TryParseTime(string value, out int totalSeconds) {
+        public static bool TryParseTime([CanBeNull] string value, out int totalSeconds) {
+            if (value == null) {
+                totalSeconds = 0;
+                return false;
+            }
+
             var splitted = value.Split(':');
             if (splitted.Length == 2) {
                 int hours, minutes;
 
                 if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes)) {
-                    totalSeconds = hours*60*60 + minutes*60;
+                    totalSeconds = hours * 60 * 60 + minutes * 60;
                     return true;
                 }
             } else if (splitted.Length == 3) {
                 int hours, minutes, seconds;
 
                 if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes) && TryParseInt(splitted[2], out seconds)) {
-                    totalSeconds = hours*60*60 + minutes*60 + seconds;
+                    totalSeconds = hours * 60 * 60 + minutes * 60 + seconds;
                     return true;
                 }
             }
@@ -100,7 +122,12 @@ namespace AcTools.Utils.Helpers {
             return false;
         }
 
-        public static string ReplaceDouble(string s, double value) {
+        [CanBeNull]
+        public static string ReplaceDouble([CanBeNull] string s, double value) {
+            if (s == null) {
+                return null;
+            }
+
             if (_parseDouble == null) {
                 _parseDouble = new Regex(@"-? *\d+([\.,]\d*)?");
             }

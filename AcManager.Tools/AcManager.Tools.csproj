@@ -51,6 +51,10 @@
       <HintPath>..\..\sharpcompress\bin\SharpCompress.Unsigned.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SlimDX.4.0.13.44\lib\NET40\SlimDX.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -122,6 +126,10 @@
     <Compile Include="Filters\UniqueAcObjectTester.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Helpers\AcSettingsControls\BaseEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\WheelButtonEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\WheelHShifterButtonEntry.cs" />
+    <Compile Include="Helpers\AcSettingsHolder_Controls.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Video.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Inner.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentType.cs" />
@@ -135,6 +143,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Helpers\CustomUriSchemeHelper.cs" />
+    <Compile Include="Helpers\DirectInput\DirectInputAxle.cs" />
+    <Compile Include="Helpers\DirectInput\DirectInputButton.cs" />
+    <Compile Include="Helpers\DirectInput\DirectInputDevice.cs" />
+    <Compile Include="Helpers\DirectInput\BaseInputProvider.cs" />
+    <Compile Include="Helpers\DirectInput\KeyboardInputButton.cs" />
     <Compile Include="Helpers\IniFileExtension.cs" />
     <Compile Include="Helpers\Loaders\AcClubLoader.cs" />
     <Compile Include="Helpers\Loaders\AssettoDbLoader.cs" />
@@ -146,6 +159,7 @@
     <Compile Include="Helpers\AcSettingsHolder.cs" />
     <Compile Include="Helpers\SettingEntry.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
+    <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Lists\CompositeObservableCollection.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />

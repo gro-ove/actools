@@ -31,37 +31,39 @@ namespace AcManager.Tools.Helpers {
         }
 
         public abstract class IniSettings : NotifyPropertyChanged {
-            private readonly string _filename;
+            public string Filename { get; }
 
-            protected IniSettings(string name) {
+            protected IniSettings(string name, bool reload = true) {
                 try {
-                    _filename = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), name + ".ini");
-                    Reload();
+                    Filename = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), name + ".ini");
+                    if (reload) {
+                        Reload();
+                    }
 
                     InitializeWatcher();
-                    _watcher.Changed += InnerWatcher_Changed;
-                    _watcher.Created += InnerWatcher_Changed;
-                    _watcher.Deleted += InnerWatcher_Changed;
-                    _watcher.Renamed += InnerWatcher_Renamed;
+                    _watcher.Changed += OnChanged;
+                    _watcher.Created += OnChanged;
+                    _watcher.Deleted += OnChanged;
+                    _watcher.Renamed += OnRenamed;
                 } catch (Exception e) {
                     Logging.Warning("IniSettings exception: " + e);
                 }
             }
 
-            private void InnerWatcher_Renamed(object sender, RenamedEventArgs e) {
-                if (FileUtils.IsAffected(e.OldFullPath, _filename) || FileUtils.IsAffected(e.FullPath, _filename)) {
+            protected virtual void OnRenamed(object sender, RenamedEventArgs e) {
+                if (FileUtils.IsAffected(e.OldFullPath, Filename) || FileUtils.IsAffected(e.FullPath, Filename)) {
                     ReloadLater();
                 }
             }
 
-            private void InnerWatcher_Changed(object sender, FileSystemEventArgs e) {
-                if (FileUtils.IsAffected(e.FullPath, _filename)) {
+            protected virtual void OnChanged(object sender, FileSystemEventArgs e) {
+                if (FileUtils.IsAffected(e.FullPath, Filename)) {
                     ReloadLater();
                 }
             }
 
             protected void Reload() {
-                Ini = new IniFile(_filename);
+                Ini = new IniFile(Filename);
                 _loading = true;
                 LoadFromIni();
                 _loading = false;
@@ -78,7 +80,21 @@ namespace AcManager.Tools.Helpers {
                 await Task.Delay(200);
 
                 try {
-                    Ini = new IniFile(_filename);
+                    int i;
+                    for (i = 0; i < 5; i++) {
+                        try {
+                            Ini = new IniFile(Filename);
+                            break;
+                        } catch (Exception) {
+                            await Task.Delay(100);
+                        }
+                    }
+
+                    if (i == 5) {
+                        Logging.Warning("Can't load config file: " + Path.GetFileName(Filename));
+                        return;
+                    }
+
                     _loading = true;
                     LoadFromIni();
                     _loading = false;
@@ -97,7 +113,7 @@ namespace AcManager.Tools.Helpers {
 
                 try {
                     SetToIni();
-                    Ini.Save(_filename);
+                    Ini.Save(Filename);
                     _lastSaved = DateTime.Now;
                 } catch (Exception e) {
                     NonfatalError.Notify("Can't save AC settings", "Make sure app has access to cfg folder.", e);

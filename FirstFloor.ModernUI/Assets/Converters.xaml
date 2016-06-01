@@ -14,7 +14,9 @@
     <converters:MoreConverter x:Key="MoreConverter" />
     <converters:MoreToVisibilityConverter x:Key="MoreToVisibilityConverter" />
     <converters:MultiplyConverter x:Key="MultiplyConverter" />
+    <converters:MultiMultiplyConverter x:Key="MultiMultiplyConverter" />
     <converters:NullOrEmptyStringToVisibilityConverter x:Key="NullOrEmptyStringToVisibilityConverter" />
+    <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     <converters:OrdinalizingConverter x:Key="OrdinalizingConverter" />
     <converters:FileSizeConverter x:Key="FileSizeConverter" />

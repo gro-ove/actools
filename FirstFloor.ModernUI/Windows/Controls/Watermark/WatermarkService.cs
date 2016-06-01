@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls.Watermark {
     public static class WatermarkService {
@@ -152,14 +153,17 @@ namespace FirstFloor.ModernUI.Windows.Controls.Watermark {
             if (comboBox != null) {
                 return comboBox.SelectedItem == null && string.IsNullOrEmpty(comboBox.Text);
             }
+
             var textBlock = c as TextBlock;
             if (textBlock != null) {
                 return string.IsNullOrEmpty(textBlock.Text);
             }
+
             var textBox = c as TextBox;
             if (textBox != null) {
                 return string.IsNullOrEmpty(textBox.Text);
             }
+
             var passwordBox = c as PasswordBox;
             if (passwordBox != null) {
                 return string.IsNullOrEmpty(passwordBox.Password);

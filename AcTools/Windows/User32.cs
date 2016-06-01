@@ -7,6 +7,15 @@ using System.Windows.Forms;
 
 namespace AcTools.Windows {
     public static class User32 {
+        public static bool IsKeyPressed(int keyCode) => (GetAsyncKeyState((Keys)keyCode) & 0x8000) != 0;
+
+        public static bool IsKeyPressed(Keys vKey) => (GetAsyncKeyState(vKey) & 0x8000) != 0;
+
+        public static short GetAsyncKeyState(int keyCode) => GetAsyncKeyState((Keys)keyCode);
+
+        [DllImport("user32.dll")]
+        public static extern short GetAsyncKeyState(Keys vKey);
+
         public const int HC_ACTION = 0;
 
         public static readonly IntPtr HWND_BROADCAST = new IntPtr(0xffff);

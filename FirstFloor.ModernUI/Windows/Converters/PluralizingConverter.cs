@@ -90,9 +90,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            int number;
-            return value == null || parameter == null ? null :
-                    PluralizeExt(int.TryParse(value.ToString(), out number) ? number : 0, parameter.ToString());
+            return parameter == null ? null : PluralizeExt(value.AsInt(), parameter.ToString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {

@@ -2,50 +2,33 @@
 
 namespace AcTools.Utils {
     public static class MathUtils {
-        public static float SqrtF(float v) {
-            return (float)Math.Sqrt(v);
-        }
+        public static double Pow(this double v, double p) => Math.Pow(v, p);
+        public static float Pow(this float v, float p) => (float)Math.Pow(v, p);
 
-        public static float AcosF(float v) {
-            return (float)Math.Acos(v);
-        }
+        public static double Sqrt(this double v) => Math.Sqrt(v);
+        public static float Sqrt(this float v) => (float)Math.Sqrt(v);
 
-        public static float SinF(float v) {
-            return (float)Math.Sin(v);
-        }
+        public static double Acos(this double v) => Math.Acos(v);
+        public static float Acos(this float v) => (float)Math.Acos(v);
 
-        public static float CosF(float v) {
-            return (float)Math.Cos(v);
-        }
+        public static double Sin(this double v) => Math.Sin(v);
+        public static float Sin(this float v) => (float)Math.Sin(v);
 
-        public static float AbsF(float v) {
-            return v < 0.0 ? -v : v;
-        }
+        public static double Cos(this double v) => Math.Cos(v);
+        public static float Cos(this float v) => (float)Math.Cos(v);
 
-        public static bool IsFinite(float v) {
-            return !float.IsInfinity(v) && !float.IsNaN(v);
-        }
+        public static double Abs(this double v) => v < 0d ? -v : v;
+        public static float Abs(this float v) => v < 0f ? -v : v;
 
-        public static bool IsFloatsAreEqual(float af, float bf, float maxDiff) {
-            var d = af - bf;
-            return d < maxDiff && d > -maxDiff;
-        }
+        public static bool IsFinite(this double v) => !double.IsInfinity(v) && !double.IsNaN(v);
+        public static bool IsFinite(this float v) => !float.IsInfinity(v) && !float.IsNaN(v);
 
-        public static bool IsFinite(double v) {
-            return !double.IsInfinity(v) && !double.IsNaN(v);
-        }
+        public static int Clamp(this int v, int min, int max) => v < min ? min : v > max ? max : v;
+        public static float Clamp(this float v, float min, float max) => v < min ? min : v > max ? max : v;
+        public static double Clamp(this double v, double min, double max) => v < min ? min : v > max ? max : v;
 
-        public static int Clamp(int value, int minimum, int maximum) {
-            return value < minimum ? minimum : value > maximum ? maximum : value;
-        }
-
-        public static double Clamp(double value, double minimum, double maximum) {
-            return value < minimum ? minimum : value > maximum ? maximum : value;
-        }
-
-        public static float[] MatrixInverse(float[] matrix) {
-            return Matrix.Create(matrix).Invert().ToArray();
-        }
+        public static float Saturate(this float value) => value < 0f ? 0f : value > 1f ? 1f : value;
+        public static double Saturate(this double value) => value < 0d ? 0d : value > 1d ? 1d : value;
 
         /// <summary>
         /// Round(0.342, 0.05) → 0.35
@@ -53,8 +36,12 @@ namespace AcTools.Utils {
         /// <param name="value"></param>
         /// <param name="precision"></param>
         /// <returns></returns>
-        public static double Round(double value, double precision) {
+        public static double Round(this double value, double precision) {
             return Math.Round(value / precision) * precision;
+        }
+
+        public static float[] MatrixInverse(this float[] matrix) {
+            return Matrix.Create(matrix).Invert().ToArray();
         }
 
         [ThreadStatic]

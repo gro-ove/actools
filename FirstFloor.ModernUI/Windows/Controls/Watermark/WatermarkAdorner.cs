@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls.Watermark {
     /// <summary>
@@ -29,8 +30,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.Watermark {
         /// </summary>
         /// <param name="adornedElement"><see cref="UIElement"/> to be adorned</param>
         /// <param name="watermark">The watermark</param>
-        public WatermarkAdorner(UIElement adornedElement, object watermark) :
-            base(adornedElement) {
+        public WatermarkAdorner(UIElement adornedElement, object watermark) : base(adornedElement) {
             IsHitTestVisible = false;
 
             var stringWatermark = watermark as string;

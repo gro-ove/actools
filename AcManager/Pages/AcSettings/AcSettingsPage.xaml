@@ -8,7 +8,7 @@
             <mui:ModernTab.Links>
                 <mui:Link DisplayName="audio" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />
                 <mui:Link DisplayName="general" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
-                <mui:Link DisplayName="controls" Source="/Pages/Miscellaneous/WorkInProgress.xaml?controls" />
+                <mui:Link DisplayName="controls" Source="/Pages/AcSettings/AcSettingsControls.xaml" />
                 <mui:Link DisplayName="video" Source="/Pages/AcSettings/AcSettingsVideo.xaml" />
             </mui:ModernTab.Links>
         </mui:ModernTab>

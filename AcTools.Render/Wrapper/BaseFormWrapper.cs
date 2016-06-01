@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using AcTools.Render.Base;
 using AcTools.Render.Temporary;
+using AcTools.Windows;
 using SlimDX.Windows;
 
 namespace AcTools.Render.Wrapper {
@@ -85,11 +86,8 @@ namespace AcTools.Render.Wrapper {
 
         protected virtual void OnKeyDown(object sender, KeyEventArgs args) {}
 
-        [DllImport("user32.dll")]
-        private static extern short GetAsyncKeyState(Keys vKey);
-
         public bool IsPressed(Keys key) {
-            return Form.Focused && (GetAsyncKeyState(key) & 0x8000) != 0;
+            return Form.Focused && User32.IsKeyPressed(key);
         }
 
         protected virtual void OnKeyUp(object sender, KeyEventArgs args) {

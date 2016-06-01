@@ -14,6 +14,8 @@ namespace AcManager.Tools.Lists {
 
         public BetterObservableCollection([NotNull] IEnumerable<T> collection) : base(collection) {}
 
+        public static BetterObservableCollection<T> Create([NotNull] IEnumerable<T> collection) => new BetterObservableCollection<T>(collection);
+
         public virtual void AddRange([NotNull] IEnumerable<T> range) {
             if (range == null) throw new ArgumentNullException(nameof(range));
 
