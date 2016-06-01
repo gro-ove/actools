@@ -11,11 +11,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// Represents a Modern UI styled dialog window.
     /// </summary>
     public class ModernDialog
-        : DpiAwareWindow {
+            : DpiAwareWindow {
         /// <summary>
         /// Identifies the BackgroundContent dependency property.
         /// </summary>
-        public static readonly DependencyProperty BackgroundContentProperty = DependencyProperty.Register("BackgroundContent", typeof(object), typeof(ModernDialog));
+        public static readonly DependencyProperty BackgroundContentProperty = DependencyProperty.Register("BackgroundContent", typeof(object),
+                typeof(ModernDialog));
+
         /// <summary>
         /// Identifies the Buttons dependency property.
         /// </summary>
@@ -73,7 +75,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Close();
         }
 
-        protected static Button CreateExtraDialogButton(string content, ICommand command) {
+        public static Button CreateExtraDialogButton(string content, ICommand command) {
             return new Button {
                 Content = content /*.ToLower()*/,
                 MinHeight = 21,
@@ -83,15 +85,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
-        protected static Button CreateExtraDialogButton(string content, Action<object> action, Func<object, bool> canExecute = null) {
+        public static Button CreateExtraDialogButton(string content, Action<object> action, Func<object, bool> canExecute = null) {
             return CreateExtraDialogButton(content, new RelayCommand(action, canExecute));
         }
 
-        protected static Button CreateExtraDialogButton(string content, Action action) {
+        public static Button CreateExtraDialogButton(string content, Action action) {
             return CreateExtraDialogButton(content, new RelayCommand(o => action()));
         }
 
-        protected Button CreateExtraStyledDialogButton(string styleKey, string content, ICommand command) {
+        public Button CreateExtraStyledDialogButton(string styleKey, string content, ICommand command) {
             return new Button {
                 Content = content /*.ToLower()*/,
                 MinHeight = 21,
@@ -102,11 +104,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
-        protected Button CreateExtraStyledDialogButton(string styleKey, string content, Action<object> action, Func<object, bool> canExecute = null) {
+        public Button CreateExtraStyledDialogButton(string styleKey, string content, Action<object> action, Func<object, bool> canExecute = null) {
             return CreateExtraStyledDialogButton(styleKey, content, new RelayCommand(action, canExecute));
         }
 
-        private Button CreateCloseDialogButton(string content, bool isDefault, bool isCancel, MessageBoxResult result) {
+        public Button CreateCloseDialogButton(string content, bool isDefault, bool isCancel, MessageBoxResult result) {
             return new Button {
                 Content = content,
                 Command = CloseCommand,
@@ -119,7 +121,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
-        private Button CreateStyledCloseDialogButton(string styleKey, string content, bool isDefault, bool isCancel, MessageBoxResult result) {
+        public Button CreateStyledCloseDialogButton(string styleKey, string content, bool isDefault, bool isCancel, MessageBoxResult result) {
             return new Button {
                 Content = content,
                 Command = CloseCommand,
@@ -130,7 +132,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 MinWidth = 65,
                 Margin = new Thickness(4, 0, 0, 0),
                 Style = FindResource(styleKey) as Style
-        };
+            };
         }
 
         /// <summary>
@@ -142,39 +144,39 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Gets the Ok button.
         /// </summary>
         public Button OkButton => _okButton ??
-                                  (_okButton = CreateCloseDialogButton(ModernUI.Resources.Ok, true, false, MessageBoxResult.OK));
+                (_okButton = CreateCloseDialogButton(ModernUI.Resources.Ok, true, false, MessageBoxResult.OK));
 
         /// <summary>
         /// Gets the Go button (result is MessageBoxResult.OK).
         /// </summary>
         public Button GoButton => _goButton ??
-                                      (_goButton =
-                                       CreateStyledCloseDialogButton("Go.Button", ModernUI.Resources.Go, true, false, MessageBoxResult.OK));
+                (_goButton =
+                        CreateStyledCloseDialogButton("Go.Button", ModernUI.Resources.Go, true, false, MessageBoxResult.OK));
 
         /// <summary>
         /// Gets the Cancel button.
         /// </summary>
         public Button CancelButton => _cancelButton ??
-                                      (_cancelButton = CreateCloseDialogButton(ModernUI.Resources.Cancel, false, true, MessageBoxResult.Cancel));
+                (_cancelButton = CreateCloseDialogButton(ModernUI.Resources.Cancel, false, true, MessageBoxResult.Cancel));
 
         /// <summary>
         /// Gets the Yes button.
         /// </summary>
         public Button YesButton => _yesButton ??
-                                   (_yesButton = CreateCloseDialogButton(ModernUI.Resources.Yes, true, false, MessageBoxResult.Yes));
+                (_yesButton = CreateCloseDialogButton(ModernUI.Resources.Yes, true, false, MessageBoxResult.Yes));
 
         /// <summary>
         /// Gets the No button.
         /// </summary>
         public Button NoButton => _noButton ??
-                                  (_noButton = CreateCloseDialogButton(ModernUI.Resources.No, false, true, MessageBoxResult.No));
+                (_noButton = CreateCloseDialogButton(ModernUI.Resources.No, false, true, MessageBoxResult.No));
 
         /// <summary>
         /// Gets the Close button.
         /// </summary>
         public Button CloseButton => _closeButton ??
-                                     (_closeButton =
-                                      CreateCloseDialogButton(ModernUI.Resources.Close, true, false, MessageBoxResult.None));
+                (_closeButton =
+                        CreateCloseDialogButton(ModernUI.Resources.Close, true, false, MessageBoxResult.None));
 
         /// <summary>
         /// Gets or sets the background content of this window instance.

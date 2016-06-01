@@ -13,9 +13,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public string Id { get; }
 
-        public BetterObservableCollection<DirectInputButton> Buttons { get; } 
+        public DirectInputButton[] Buttons { get; } 
 
-        public BetterObservableCollection<DirectInputAxle> Axles { get; } 
+        public DirectInputAxle[] Axles { get; } 
 
         private Joystick _joystick;
         private readonly int _buttonsCount;
@@ -30,8 +30,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
             var capabilities = _joystick.Capabilities;
             _buttonsCount = capabilities.ButtonCount;
 
-            Buttons = new BetterObservableCollection<DirectInputButton>(Enumerable.Range(0, _buttonsCount).Select(x => new DirectInputButton(this, x)));
-            Axles = new BetterObservableCollection<DirectInputAxle>(Enumerable.Range(0, 8).Select(x => new DirectInputAxle(this, x)));
+            Buttons = Enumerable.Range(0, _buttonsCount).Select(x => new DirectInputButton(this, x)).ToArray();
+            Axles = Enumerable.Range(0, 8).Select(x => new DirectInputAxle(this, x)).ToArray();
         }
 
         public void OnTick() {

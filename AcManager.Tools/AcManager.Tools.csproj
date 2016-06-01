@@ -127,6 +127,8 @@
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcSettingsControls\BaseEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\IEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\KeyboardButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelHShifterButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Controls.cs" />
@@ -144,9 +146,13 @@
     </Compile>
     <Compile Include="Helpers\CustomUriSchemeHelper.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputAxle.cs" />
+    <Compile Include="Helpers\DirectInput\DirectInputAxleEventArgs.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputButton.cs" />
+    <Compile Include="Helpers\DirectInput\DirectInputButtonEventArgs.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputDevice.cs" />
     <Compile Include="Helpers\DirectInput\BaseInputProvider.cs" />
+    <Compile Include="Helpers\DirectInput\IDirectInputProvider.cs" />
+    <Compile Include="Helpers\DirectInput\IInputProvider.cs" />
     <Compile Include="Helpers\DirectInput\KeyboardInputButton.cs" />
     <Compile Include="Helpers\IniFileExtension.cs" />
     <Compile Include="Helpers\Loaders\AcClubLoader.cs" />

@@ -4,9 +4,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
     public interface IEntry : IWithId {
         string DisplayName { get; }
 
-        WaitingFor WaitingFor { get; }
-
-        bool Waiting { get; }
+        bool Waiting { get; set; }
 
         void Clear();
     }

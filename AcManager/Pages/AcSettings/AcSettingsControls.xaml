@@ -4,7 +4,8 @@
         xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
         xmlns:directInput="clr-namespace:AcManager.Tools.Helpers.DirectInput;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsControls+AcControlsViewModel}"
-        SizeChanged="AcSettingsControls_OnSizeChanged" Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded" PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown">
+        SizeChanged="AcSettingsControls_OnSizeChanged" Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded"
+        PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

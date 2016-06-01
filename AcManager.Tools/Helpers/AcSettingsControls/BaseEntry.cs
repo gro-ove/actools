@@ -13,28 +13,33 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public sealed override string DisplayName { get; set; }
 
-        private WaitingFor _waitingFor;
+        private bool _waiting;
 
-        public WaitingFor WaitingFor {
-            get { return _waitingFor; }
+        public bool Waiting {
+            get { return _waiting; }
             set {
-                if (Equals(value, _waitingFor)) return;
-                _waitingFor = value;
+                if (Equals(value, _waiting)) return;
+                _waiting = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(Waiting));
             }
         }
-
-        public bool Waiting => _waitingFor != WaitingFor.None;
 
         private T _input;
 
         public T Input {
             get { return _input; }
             set {
-                if (Equals(value, _input)) return;
+                if (Equals(value, _input)) {
+                    if (Waiting) {
+                        Waiting = false;
+                    }
+
+                    return;
+                }
+
                 OnInputChanged(_input, value);
                 _input = value;
+                Waiting = false;
                 OnPropertyChanged();
             }
         }
@@ -49,7 +54,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         protected virtual void LoadFromIni(IniFile ini) {}
 
         public void Clear() {
-            WaitingFor = WaitingFor.None;
+            Waiting = false;
             Input = null;
         }
     }

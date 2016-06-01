@@ -18,7 +18,10 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 if (Equals(value, _value)) return;
                 _value = value;
                 OnPropertyChanged();
+                OnValueChanged();
             }
         }
+
+        protected virtual void OnValueChanged() {}
     }
 }

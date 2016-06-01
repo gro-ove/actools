@@ -169,6 +169,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\AcSettingsSpecific.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\SettingsSpecific.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

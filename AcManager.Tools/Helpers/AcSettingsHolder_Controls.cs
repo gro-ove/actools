@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers.AcSettingsControls;
 using AcManager.Tools.Helpers.DirectInput;
@@ -17,11 +19,25 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using SlimDX.DirectInput;
+using Key = System.Windows.Input.Key;
 using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace AcManager.Tools.Helpers {
+    public enum AcControlsConflictSolution {
+        Cancel,
+        KeepEverything,
+        Flip,
+        ClearPrevious
+    }
+
+    public interface IAcControlsConflictResolver {
+        AcControlsConflictSolution Resolve(string inputDisplayName, IEnumerable<string> existingAssignments);
+    }
+
     public partial class AcSettingsHolder {
         public class ControlsSettings : IniSettings, IDisposable {
+            public IAcControlsConflictResolver ConflictResolver { get; set; }
+
             internal ControlsSettings() : base("controls", false) {
                 KeyboardButtonEntries = WheelButtonEntries.Select(x => x.KeyboardButton).ToArray();
 
@@ -56,8 +72,11 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            public event EventHandler<DirectInputAxleEventArgs> AxleEventHandler;
+            public event EventHandler<DirectInputButtonEventArgs> ButtonEventHandler;
+
             private void UpdateInputs() {
-                if (Used == 0) return;
+                if (Used == 0 && AxleEventHandler == null && ButtonEventHandler == null) return;
 
                 foreach (var device in Devices) {
                     device.OnTick();
@@ -82,12 +101,77 @@ namespace AcManager.Tools.Helpers {
                 Devices.DisposeEverything();
                 Devices.ReplaceEverythingBy(_directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly)
                                                         .Select(x => new DirectInputDevice(_directInput, x)));
+
+                foreach (var device in Devices) {
+                    foreach (var button in device.Buttons) {
+                        button.PropertyChanged += DeviceButtonEventHandler;
+                    }
+
+                    foreach (var axle in device.Axles) {
+                        axle.PropertyChanged += DeviceAxleEventHandler;
+                    }
+                }
+            }
+
+            private void AssignInput<T>(T provider) where T : class, IInputProvider {
+                var waiting = GetWaiting() as BaseEntry<T>;
+                if (waiting == null) return;
+
+                if (waiting.Input == provider) {
+                    waiting.Waiting = false;
+                    return;
+                }
+
+                var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider).ToList();
+                if (existing.Any()) {
+                    var solution = ConflictResolver?.Resolve(provider.DisplayName, existing.Select(x => x.DisplayName));
+                    switch (solution) {
+                        case AcControlsConflictSolution.Cancel:
+                            return;
+
+                        case AcControlsConflictSolution.Flip:
+                            foreach (var entry in existing) {
+                                entry.Input = waiting.Input;
+                            }
+                            break;
+
+                        case AcControlsConflictSolution.ClearPrevious:
+                            foreach (var entry in existing) {
+                                entry.Clear();
+                            }
+                            break;
+                    }
+                }
+
+                waiting.Input = provider;
+            }
+
+            private void DeviceAxleEventHandler(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName != nameof(DirectInputAxle.RoundedValue)) return;
+
+                var axle = sender as DirectInputAxle;
+                if (axle == null) return;
+                AxleEventHandler?.Invoke(this, new DirectInputAxleEventArgs(axle, axle.Delta));
+
+                AssignInput(axle);
+            }
+
+            private void DeviceButtonEventHandler(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName != nameof(DirectInputButton.Value)) return;
+
+                var button = sender as DirectInputButton;
+                if (button == null) return;
+                ButtonEventHandler?.Invoke(this, new DirectInputButtonEventArgs(button));
+
+                AssignInput(button);
             }
 
             public BetterObservableCollection<DirectInputDevice> Devices { get; } = new BetterObservableCollection<DirectInputDevice>();
 
             [CanBeNull]
             public KeyboardInputButton GetKeyboardInputButton(int keyCode) {
+                if (keyCode == -1) return null;
+
                 KeyboardInputButton result;
                 if (_keyboardInput.TryGetValue(keyCode, out result)) return result;
                 if (!Enum.IsDefined(typeof(Keys), keyCode)) {
@@ -102,7 +186,7 @@ namespace AcManager.Tools.Helpers {
             #endregion
 
             #region Presets
-            private string _presetsDirectory;
+            private readonly string _presetsDirectory;
 
             protected override void OnRenamed(object sender, RenamedEventArgs e) {
                 if (FileUtils.IsAffected(e.OldFullPath, _presetsDirectory) || FileUtils.IsAffected(e.FullPath, _presetsDirectory)) {
@@ -335,37 +419,45 @@ namespace AcManager.Tools.Helpers {
                 if (b == null) return;
 
                 foreach (var entry in Entries.ApartFrom(b)) {
-                    entry.WaitingFor = WaitingFor.None;
+                    entry.Waiting = false;
                 }
 
-                b.WaitingFor = b.WaitingFor != WaitingFor.Wheel ? WaitingFor.Wheel : WaitingFor.None;
+                b.Waiting = !b.Waiting;
             }, o => o is IEntry));
 
-            private RelayCommand _toggleWaitingKeyboardCommand;
-
-            public RelayCommand ToggleWaitingKeyboardCommand => _toggleWaitingKeyboardCommand ?? (_toggleWaitingKeyboardCommand = new RelayCommand(o => {
-                var b = o as BaseEntry;
-                if (b == null) return;
-
-                foreach (var entry in Entries.ApartFrom(b)) {
-                    entry.WaitingFor = WaitingFor.None;
-                }
-
-                b.WaitingFor = b.WaitingFor != WaitingFor.Keyboard ? WaitingFor.Keyboard : WaitingFor.None;
-            }, o => o is BaseEntry));
-
-            public BaseEntry GetWaiting() {
+            [CanBeNull]
+            public IEntry GetWaiting() {
                 return Entries.FirstOrDefault(x => x.Waiting);
             }
 
-            public BaseEntry GetWaiting(WaitingFor t) {
-                return Entries.FirstOrDefault(x => x.WaitingFor == t);
+            public bool StopWaiting() {
+                var found = false;
+                foreach (var entry in Entries.Where(x => x.Waiting)) {
+                    entry.Waiting = false;
+                    found = true;
+                }
+
+                return found;
             }
 
-            public void StopWaiting() {
-                foreach (var entry in Entries) {
-                    entry.WaitingFor = WaitingFor.None;
+            public bool ClearWaiting() {
+                var found = false;
+                foreach (var entry in Entries.Where(x => x.Waiting)) {
+                    entry.Clear();
+                    found = true;
                 }
+
+                return found;
+            }
+
+            public bool AssignKey(Key key) {
+                if (!key.IsInputAssignable()) return false;
+
+                var waiting = GetWaiting() as KeyboardButtonEntry;
+                if (waiting == null) return false;
+                
+                AssignInput(GetKeyboardInputButton(KeyInterop.VirtualKeyFromKey(key)));
+                return true;
             }
 
             protected override void LoadFromIni() {
@@ -390,18 +482,21 @@ namespace AcManager.Tools.Helpers {
 
                     var device = devices.ElementAtOrDefault(section.GetInt("JOY", -1));
                     var axle = device?.Axles.ElementAtOrDefault(section.GetInt("AXLE", -1));
-                    entry.LoadFromIni(Ini, axle);
+                    entry.Set(Ini, axle);
                 }
 
                 CombineWithKeyboardInput = Ini["ADVANCED"].GetBool("COMBINE_WITH_KEYBOARD_CONTROL", false);
 
-                foreach (var entry in WheelButtonEntries) {
-                    section = Ini[entry.Id];
+                foreach (var pair in WheelButtonEntries) {
+                    var id = pair.WheelButton.Id;
+                    section = Ini[id];
 
                     var device = devices.ElementAtOrDefault(section.GetInt("JOY", -1));
                     var button = device?.Buttons.ElementAtOrDefault(section.GetInt("BUTTON", -1));
+                    pair.WheelButton.Set(Ini, button);
+
                     var keyCode = section.GetInt("KEY", -1);
-                    entry.LoadFromIni(Ini, button, GetKeyboardInputButton(keyCode));
+                    pair.KeyboardButton.Set(Ini, GetKeyboardInputButton(keyCode));
                 }
 
                 var hShifter = Ini["SHIFTER"];
