@@ -112,7 +112,7 @@ namespace AcManager.Pages.Dialogs {
             try {
                 _installator = await AdditionalContentInstallation.FromFile(Filename);
             } catch (Exception e) {
-                NonfatalError.Notify("Can't install content from file", e);
+                NonfatalError.Notify("Can’t install content from file", e);
                 Close();
                 return;
             }
@@ -183,7 +183,7 @@ namespace AcManager.Pages.Dialogs {
                 NonfatalError.Notify(@"Password is incorrect", e);
                 Close();
             } catch (Exception e) {
-                NonfatalError.Notify(@"Can't unpack", @"Maybe archive is damaged or password is incorrect.", e);
+                NonfatalError.Notify(@"Can’t unpack", @"Maybe archive is damaged or password is incorrect.", e);
                 Close();
             } finally {
                 _cancellationTokenSource = null;
@@ -209,7 +209,7 @@ namespace AcManager.Pages.Dialogs {
                                 wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
                         await _installator.InstallEntryToAsync(wrapper.Entry, wrapper.SelectedOption?.Filter, directory, waiting, waiting.CancellationToken);
                     } catch (Exception e) {
-                        NonfatalError.Notify(@"Can't install " + wrapper.Entry.Name, e);
+                        NonfatalError.Notify(@"Can’t install " + wrapper.Entry.Name, e);
                     }
                 }
             }

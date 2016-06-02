@@ -105,7 +105,7 @@ namespace AcManager.Tools.Objects {
                     await client.DownloadFileTaskAsync(url, PreviewImage);
                 }
             } catch (Exception e) {
-                Logging.Warning("Can't download showroom's preview: " + e);
+                Logging.Warning("Can’t download showroom's preview: " + e);
             }
         }
 

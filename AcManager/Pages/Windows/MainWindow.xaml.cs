@@ -155,7 +155,7 @@ namespace AcManager.Pages.Windows {
                 _hook = HandleMessages;
                 HwndSource.FromHwnd(new WindowInteropHelper(this).Handle)?.AddHook(_hook);
             } catch (Exception) {
-                Logging.Warning("Can't add one-instance hook");
+                Logging.Warning("Can’t add one-instance hook");
                 _hook = null;
             }
         }
@@ -189,7 +189,7 @@ namespace AcManager.Pages.Windows {
             try {
                 HwndSource.FromHwnd(new WindowInteropHelper(this).Handle)?.RemoveHook(_hook);
             } catch (Exception) {
-                Logging.Warning("Can't remove one-instance hook");
+                Logging.Warning("Can’t remove one-instance hook");
             }
 
             _hook = null;
@@ -278,7 +278,7 @@ namespace AcManager.Pages.Windows {
                 case "quickdrive":
                     var preset = Convert.FromBase64String(param).ToUtf8String();
                     if (!QuickDrive.RunSerializedPreset(preset)) {
-                        NonfatalError.Notify("Can't start race", "Make sure required car & track are installed and available.");
+                        NonfatalError.Notify("Can’t start race", "Make sure required car & track are installed and available.");
                     }
                     break;
 
@@ -326,7 +326,7 @@ namespace AcManager.Pages.Windows {
                 try {
                     new InstallAdditionalContentDialog(filename).ShowDialog();
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can't install additional content", e);
+                    NonfatalError.Notify("Can’t install additional content", e);
                 }
             }
 

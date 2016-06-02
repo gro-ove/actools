@@ -337,7 +337,7 @@ namespace AcTools.Utils {
                 if (!File.Exists(result)) return result;
             }
 
-            throw new Exception("Can't find unique filename");
+            throw new Exception("Can’t find unique filename");
         }
     }
 }

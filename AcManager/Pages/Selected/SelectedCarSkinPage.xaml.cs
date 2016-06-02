@@ -70,8 +70,8 @@ namespace AcManager.Pages.Selected {
         }
 
         void ILoadableContent.Initialize() {
-            if (_carObject == null) throw new ArgumentException("Can't find car with provided ID");
-            if (_object == null) throw new ArgumentException("Can't find object with provided ID");
+            if (_carObject == null) throw new ArgumentException("Can’t find car with provided ID");
+            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
             InitializeAcObjectPage(_model = new SelectedCarSkinPageViewModel(_carObject, _object));
             InputBindings.AddRange(new[] {

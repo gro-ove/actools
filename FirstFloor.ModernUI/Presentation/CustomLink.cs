@@ -18,7 +18,7 @@ namespace FirstFloor.ModernUI.Presentation {
                     Source = new Uri(p[1], UriKind.RelativeOrAbsolute)
                 };
             } catch (Exception e) {
-                Logging.Warning("can't deserialize custom link: " + e);
+                Logging.Warning("can’t deserialize custom link: " + e);
                 return null;
             }
         }

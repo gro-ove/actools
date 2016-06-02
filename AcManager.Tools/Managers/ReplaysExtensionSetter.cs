@@ -49,7 +49,7 @@ namespace AcManager.Tools.Managers {
                     File.Move(file, file + ReplayObject.ReplayExtension);
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can't rename replays", "Make sure none of those files are busy at the moment.", e);
+                NonfatalError.Notify("Can’t rename replays", "Make sure none of those files are busy at the moment.", e);
             }
         }
 

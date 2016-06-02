@@ -208,7 +208,7 @@ namespace AcManager.Controls.Pages.Dialogs {
                 try {
                     await Task.Run(() => File.Copy(origin, dialog.FileName));
                 } catch (Exception ex) {
-                    NonfatalError.Notify("Can't export texture", ex);
+                    NonfatalError.Notify("Can’t export texture", ex);
                 }
             }, o => CurrentImage is string));
         }

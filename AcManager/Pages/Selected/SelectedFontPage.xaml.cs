@@ -90,7 +90,7 @@ namespace AcManager.Pages.Selected {
         }
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can't find object with provided ID");
+            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
             InitializeAcObjectPage(new SelectedFontPageViewModel(_object));
             InputBindings.AddRange(new[] {
@@ -124,7 +124,7 @@ namespace AcManager.Pages.Selected {
             try {
                 Canvas.Children.Add(new FontTestHost(text, Model.SelectedObject));
             } catch (Exception e) {
-                Logging.Warning("Can't update testing text: " + e);
+                Logging.Warning("Can’t update testing text: " + e);
             }
         }
 

@@ -61,7 +61,7 @@ namespace CustomShowroom {
                     File.WriteAllBytes(log, new byte[0]);
                     RenderLogging.Initialize(log);
                 } catch (Exception e) {
-                    MessageBox.Show("Can't setup logging: " + e, @"Oops!", MessageBoxButtons.OK);
+                    MessageBox.Show("Can’t setup logging: " + e, @"Oops!", MessageBoxButtons.OK);
                 }
             }
 

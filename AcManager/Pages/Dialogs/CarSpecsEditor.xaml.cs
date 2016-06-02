@@ -155,7 +155,7 @@ namespace AcManager.Pages.Dialogs {
             double power, torque;
             if (!FlexibleParser.TryParseDouble(BhpInput.Text, out power) ||
                 !FlexibleParser.TryParseDouble(TorqueInput.Text, out torque)) {
-                ShowMessage("You have to specify BHP and Torque values first", "Can't do", MessageBoxButton.OK);
+                ShowMessage("You have to specify BHP and Torque values first", "Can’t do", MessageBoxButton.OK);
                 return;
             }
 
@@ -167,7 +167,7 @@ namespace AcManager.Pages.Dialogs {
             double power, torque;
             if (!FlexibleParser.TryParseDouble(BhpInput.Text, out power) ||
                 !FlexibleParser.TryParseDouble(TorqueInput.Text, out torque)) {
-                ShowMessage("You have to specify BHP and Torque values first", "Can't do", MessageBoxButton.OK);
+                ShowMessage("You have to specify BHP and Torque values first", "Can’t do", MessageBoxButton.OK);
                 return;
             }
 

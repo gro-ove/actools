@@ -108,7 +108,7 @@ namespace AcManager.Pages.Selected {
                                 x.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))).ToList();
 
                 if (!newShots.Any()) {
-                    NonfatalError.Notify("Can't update preview", "You were supposed to make at least one screenshot.");
+                    NonfatalError.Notify("Can’t update preview", "You were supposed to make at least one screenshot.");
                     return;
                 }
 
@@ -125,7 +125,7 @@ namespace AcManager.Pages.Selected {
                 try {
                     ImageUtils.ApplyPreview(shot, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can't update preview", e);
+                    NonfatalError.Notify("Can’t update preview", e);
                 }
             }, o => SelectedObject.Enabled));
 
@@ -142,7 +142,7 @@ namespace AcManager.Pages.Selected {
                     try {
                         ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
                     } catch (Exception e) {
-                        NonfatalError.Notify("Can't update preview", e);
+                        NonfatalError.Notify("Can’t update preview", e);
                     }
                 }
             }));
@@ -189,7 +189,7 @@ namespace AcManager.Pages.Selected {
         }
 
         public void Initialize() {
-            if (_object == null) throw new ArgumentException("Can't find object with provided ID");
+            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
             InitializeAcObjectPage(_model = new SelectedTrackPageViewModel(_object));
             InputBindings.AddRange(new[] {

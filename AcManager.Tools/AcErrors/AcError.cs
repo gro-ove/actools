@@ -51,7 +51,7 @@ namespace AcManager.Tools.AcErrors {
                 return result;
             }
 
-            Logging.Warning("Can't get category for AcErrorType: " + type);
+            Logging.Warning("Can’t get category for AcErrorType: " + type);
             return AcErrorCategory.Unspecific;
         }
 

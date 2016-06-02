@@ -53,12 +53,12 @@ namespace AcManager.Pages.Dialogs {
             } catch (SolvingException exception) {
                 Solver.OnError(solution);
                 if (!exception.IsCancelled) {
-                    NonfatalError.Notify("Can't solve the problem", exception);
+                    NonfatalError.Notify("Can’t solve the problem", exception);
                 }
                 return;
             } catch (Exception exception) {
                 Solver.OnError(solution);
-                NonfatalError.Notify("Can't solve the problem", exception);
+                NonfatalError.Notify("Can’t solve the problem", exception);
                 return;
             }
 

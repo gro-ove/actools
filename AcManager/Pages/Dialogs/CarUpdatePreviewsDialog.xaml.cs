@@ -345,7 +345,7 @@ namespace AcManager.Pages.Dialogs {
 
                 if (data == null) {
                     dialog.Close();
-                    NonfatalError.Notify($@"Can't download showroom “{showroomName}”", "Make sure internet connection is working properly.");
+                    NonfatalError.Notify($@"Can’t download showroom “{showroomName}”", "Make sure internet connection is working properly.");
                     return;
                 }
 
@@ -359,7 +359,7 @@ namespace AcManager.Pages.Dialogs {
                     });
                 } catch (Exception e) {
                     dialog.Close();
-                    NonfatalError.Notify($@"Can't install showroom “{showroomName}”", e);
+                    NonfatalError.Notify($@"Can’t install showroom “{showroomName}”", e);
                     return;
                 }
 
@@ -519,10 +519,10 @@ namespace AcManager.Pages.Dialogs {
                 try {
                     await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews, waiting, waiting.CancellationToken);
                 } catch (OutOfMemoryException e) {
-                    NonfatalError.Notify("Can't save previews", AppAddonsManager.Instance.IsAddonEnabled("Magick")
+                    NonfatalError.Notify("Can’t save previews", AppAddonsManager.Instance.IsAddonEnabled("Magick")
                             ? "Please, report this bug to developers." : "I recommend to enable Magick.NET addon.", e);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can't save previews", e);
+                    NonfatalError.Notify("Can’t save previews", e);
                 }
             }
         }

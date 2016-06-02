@@ -32,7 +32,7 @@ namespace AcManager.Controls.Pages.Dialogs {
                 Logging.Write("[VLC] Player.BeginStop()");
                 Player.BeginStop(Stopped);
             } catch (Exception ex) {
-                NonfatalError.Notify("Can't play video", "Make sure VLC addon is installed properly.", ex);
+                NonfatalError.Notify("Can’t play video", "Make sure VLC addon is installed properly.", ex);
                 Close();
             }
         }
@@ -45,7 +45,7 @@ namespace AcManager.Controls.Pages.Dialogs {
                 Player.Play();
                 Player.StateChanged += Player_StateChanged;
             } catch (Exception e) {
-                NonfatalError.Notify("Can't play video", "Make sure VLC addon is installed properly.", e);
+                NonfatalError.Notify("Can’t play video", "Make sure VLC addon is installed properly.", e);
                 Close();
             }
         }

@@ -50,7 +50,7 @@ namespace AcManager.Pages.Selected {
         }
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can't find object with provided ID");
+            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
             InitializeAcObjectPage(_model = new SelectedReplayPageViewModel(_object));
             InitializeComponent();

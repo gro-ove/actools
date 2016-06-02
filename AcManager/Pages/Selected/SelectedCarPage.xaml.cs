@@ -40,7 +40,7 @@ namespace AcManager.Pages.Selected {
                             FileUtils.RecycleSilent(SelectedObject.BrandBadge);
                             File.Copy(entry.Filename, SelectedObject.BrandBadge);
                         } catch (Exception e) {
-                            Logging.Warning("Can't change brand badge: " + e);
+                            Logging.Warning("Can’t change brand badge: " + e);
                         }
                     }
                 }
@@ -210,7 +210,7 @@ namespace AcManager.Pages.Selected {
         private SelectedCarPageViewModel _model;
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can't find object with provided ID");
+            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
             InitializeAcObjectPage(_model = new SelectedCarPageViewModel(_object));
             InputBindings.AddRange(new[] {

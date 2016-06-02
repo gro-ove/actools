@@ -30,7 +30,7 @@ namespace PreviewUpdater {
                 try {
                     ImageUtils.LoadImageMagickAssembly(magick);
                 } catch (Exception e) {
-                    Console.Error.WriteLine("Can't load ImageMagick assembly: " + e.Message);
+                    Console.Error.WriteLine("Can’t load ImageMagick assembly: " + e.Message);
                 }
             }
 
@@ -49,7 +49,7 @@ namespace PreviewUpdater {
                     Console.WriteLine("Filter: " + filter);
                 }
             } catch (Exception e) {
-                Console.Error.WriteLine("Can't parse filter: " + e);
+                Console.Error.WriteLine("Can’t parse filter: " + e);
                 return 2;
             }
 

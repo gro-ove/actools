@@ -358,7 +358,7 @@ namespace AcManager.Pages.Drive {
                             await RecentManager.Instance.AddServer(s, waiting);
                         }
                     } catch (Exception e) {
-                        NonfatalError.Notify("Can't add server", e);
+                        NonfatalError.Notify("Can’t add server", e);
                     }
                 }
             }, o => Manager is RecentManager));

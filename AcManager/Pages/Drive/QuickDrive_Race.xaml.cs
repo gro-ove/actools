@@ -574,7 +574,7 @@ namespace AcManager.Pages.Drive {
                         OpponentsCarsError = null;
                     } catch (Exception e) {
                         OpponentsCars.Clear();
-                        OpponentsCarsError = "Can't filter cars for starting grid";
+                        OpponentsCarsError = "Can’t filter cars for starting grid";
                         Logging.Warning("UpdateOpponentsCars failed: " + e);
                     }
 
@@ -588,17 +588,17 @@ namespace AcManager.Pages.Drive {
 
                 using (var waiting = new WaitingDialog()) {
                     if (selectedCar == null || !selectedCar.Enabled) {
-                        ModernDialog.ShowMessage("Please, select some non-disabled car.", "Can't start race", MessageBoxButton.OK);
+                        ModernDialog.ShowMessage("Please, select some non-disabled car.", "Can’t start race", MessageBoxButton.OK);
                         return;
                     }
 
                     if (selectedTrack == null) {
-                        ModernDialog.ShowMessage("Please, select a track.", "Can't start race", MessageBoxButton.OK);
+                        ModernDialog.ShowMessage("Please, select a track.", "Can’t start race", MessageBoxButton.OK);
                         return;
                     }
 
                     if (OpponentsNumber < 1) {
-                        ModernDialog.ShowMessage("Please, set at least one opponent.", "Can't start race", MessageBoxButton.OK);
+                        ModernDialog.ShowMessage("Please, set at least one opponent.", "Can’t start race", MessageBoxButton.OK);
                         return;
                     }
 
@@ -622,13 +622,13 @@ namespace AcManager.Pages.Drive {
                             Logging.Write("Appropriate cars: " + cars.JoinToString(", "));
                             if (SelectedGridType.Test) return;
                         } catch (Exception e) {
-                            NonfatalError.Notify("Can't filter appropriate cars for starting grid",
+                            NonfatalError.Notify("Can’t filter appropriate cars for starting grid",
                                     "If you made any changes to GridTypes.json, make sure they're all right.", e);
                             return;
                         }
 
                         if (cars.Length == 0) {
-                            ModernDialog.ShowMessage("Attempt to find any car fitting selected grid type is failed.", "Can't start race", MessageBoxButton.OK);
+                            ModernDialog.ShowMessage("Attempt to find any car fitting selected grid type is failed.", "Can’t start race", MessageBoxButton.OK);
                             return;
                         }
                     }
@@ -705,7 +705,7 @@ namespace AcManager.Pages.Drive {
 
                     if (!string.IsNullOrWhiteSpace(type.Script)) {
                         var state = LuaHelper.GetExtended();
-                        if (state == null) throw new Exception("Can't initialize Lua");
+                        if (state == null) throw new Exception("Can’t initialize Lua");
 
                         state.Globals["selected"] = car;
                         state.Globals["track"] = track;

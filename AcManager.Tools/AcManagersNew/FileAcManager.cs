@@ -86,7 +86,7 @@ namespace AcManager.Tools.AcManagersNew {
                 FileUtils.Recycle(location);
 
                 if (FileUtils.Exists(location)) {
-                    throw new OperationCanceledException("Can't remove existing directory");
+                    throw new OperationCanceledException("Can’t remove existing directory");
                 }
             }
 

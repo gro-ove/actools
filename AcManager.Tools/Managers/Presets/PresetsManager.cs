@@ -80,7 +80,7 @@ namespace AcManager.Tools.Managers.Presets {
 
             if (!filename.StartsWith(presetsDirectory)) {
                 if (ModernDialog.ShowMessage("Please, choose a file in initial directory or some subdirectory.",
-                                             "Can't Do", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                                             "Can’t Do", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                     SavePresetUsingDialog(category, data, filename, out resultFilename);
                 } else {
                     resultFilename = null;

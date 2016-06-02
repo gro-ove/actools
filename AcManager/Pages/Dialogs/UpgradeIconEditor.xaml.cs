@@ -69,7 +69,7 @@ namespace AcManager.Pages.Dialogs {
             try {
                 cropped.SaveAsPng(Car.UpgradeIcon);
             } catch (Exception) {
-                ShowMessage(@"Can't change upgrade icon.", @"Fail", MessageBoxButton.OK);
+                ShowMessage(@"Can’t change upgrade icon.", @"Fail", MessageBoxButton.OK);
                 return;
             }
 
@@ -81,7 +81,7 @@ namespace AcManager.Pages.Dialogs {
             try {
                 FilesStorage.Instance.AddUserContentToDirectory(ContentCategory.UpgradeIcons, Car.UpgradeIcon, saveAs);
             } catch (Exception) {
-                ShowMessage(@"Can't add new element into the library.", @"Fail", MessageBoxButton.OK);
+                ShowMessage(@"Can’t add new element into the library.", @"Fail", MessageBoxButton.OK);
             }
 
             Close();

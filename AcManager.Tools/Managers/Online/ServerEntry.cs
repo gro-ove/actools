@@ -583,7 +583,7 @@ namespace AcManager.Tools.Managers.Online {
                             KunosApiProvider.TryToGetInformation(Ip, Port));
                     if (newInformation == null) {
                         Status = ServerStatus.Error;
-                        ErrorMessage += @"Can't refresh server information." + "\n";
+                        ErrorMessage += @"Can’t refresh server information." + "\n";
                     } else {
                         // TODO
                         if (!UpdateValuesFrom(newInformation)) {

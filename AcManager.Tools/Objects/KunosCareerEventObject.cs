@@ -526,7 +526,7 @@ namespace AcManager.Tools.Objects {
                 if (!iniFile.ContainsKey(sectionKey) || string.IsNullOrWhiteSpace(iniFile[sectionKey].Get("DRIVER_NAME"))) {
                     if (opponentsIniFile == null) {
                         var career = KunosCareerManager.Instance.GetById(KunosCareerId);
-                        if (career == null) throw new Exception("Can't find parent career with ID=" + KunosCareerId);
+                        if (career == null) throw new Exception("Can’t find parent career with ID=" + KunosCareerId);
 
                         opponentsIniFile = new IniFile(career.OpponentsIniFilename);
                         if (opponentsIniFile.IsEmptyOrDamaged()) break;

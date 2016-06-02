@@ -18,7 +18,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
             var match = Regex.Match(downloadPage, @"href=""(/[^""]+/download)""");
             if (!match.Success) {
-                NonfatalError.Notify("Can't download file", "RaceDepartment is changed.");
+                NonfatalError.Notify("Can’t download file", "RaceDepartment is changed.");
                 return false;
             }
 

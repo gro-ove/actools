@@ -59,7 +59,7 @@ namespace AcManager.Tools.AcErrors.Solver {
                     @"App will make an attempt to read known properties from damaged JSON file (be carefull, data loss is possible)",
                     () => {
                         if (!TryToRestoreDamagedJsonFile(Target.JsonFilename, JObjectRestorationSchemeProvider.GetScheme(Target))) {
-                            throw new SolvingException("Can't restore damaged JSON");
+                            throw new SolvingException("Can’t restore damaged JSON");
                         }
                     }),
                 CreateNewFile(Target)

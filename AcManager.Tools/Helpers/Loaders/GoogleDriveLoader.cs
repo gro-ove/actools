@@ -30,7 +30,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             if (client.ResponseHeaders?.Get("Content-Type").Contains("text/html", StringComparison.OrdinalIgnoreCase) == false) return true;
             var match = Regex.Match(downloadPage, @"href=""(/uc\?export=download[^""]+)", RegexOptions.IgnoreCase);
             if (!match.Success) {
-                NonfatalError.Notify("Can't download file", "Google Drive is changed.");
+                NonfatalError.Notify("Can’t download file", "Google Drive is changed.");
                 return false;
             }
 

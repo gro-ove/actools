@@ -129,7 +129,7 @@ namespace AcManager.Controls.CustomShowroom {
                             if (FlexibleParser.TryParseInt(result, out value)) {
                                 width = height = value;
                             } else {
-                                NonfatalError.Notify("Can't figure out dimensions", "Please, use valid format for them.");
+                                NonfatalError.Notify("Can’t figure out dimensions", "Please, use valid format for them.");
                                 return;
                             }
                         }
@@ -171,7 +171,7 @@ namespace AcManager.Controls.CustomShowroom {
                 try {
                     await Task.Run(() => File.WriteAllBytes(dialog.FileName, Data));
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can't export texture", e);
+                    NonfatalError.Notify("Can’t export texture", e);
                 }
             }, o => Data != null));
 
@@ -209,7 +209,7 @@ namespace AcManager.Controls.CustomShowroom {
                         FormatDescription = formatDescription
                     };
                 } catch (Exception e) {
-                    Logging.Warning("Can't show texture preview: " + e);
+                    Logging.Warning("Can’t show texture preview: " + e);
                     return null;
                 }
             }

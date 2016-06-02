@@ -42,7 +42,7 @@ namespace AcManager.Tools.Managers.Online {
             string ip;
             int port;
             if (!KunosApiProvider.ParseAddress(address, out ip, out port)) {
-                throw new Exception("Can't parse address");
+                throw new Exception("Can’t parse address");
             }
 
             if (port > 0) {
@@ -60,7 +60,7 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 if (information == null) {
-                    throw new Exception("Can't access server");
+                    throw new Exception("Can’t access server");
                 }
 
                 AddToSavedList(information.Ip, information.PortC);

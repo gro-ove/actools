@@ -37,7 +37,7 @@ namespace AcManager.Tools.Helpers {
                 return addressInformation.IPv4Mask;
             }
 
-            throw new Exception($"Can't find subnetmask for IP address '{address}'");
+            throw new Exception($"Can’t find subnetmask for IP address '{address}'");
         }
     }
 }

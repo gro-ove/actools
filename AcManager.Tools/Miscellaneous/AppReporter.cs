@@ -20,14 +20,14 @@ namespace AcManager.Tools.Miscellaneous {
                     try {
                         zip.CreateEntryFromString("Message.txt", message);
                     } catch (Exception e) {
-                        Logging.Warning("Can't attach Message.txt: " + e);
+                        Logging.Warning("Can’t attach Message.txt: " + e);
                     }
                 }
 
                 try {
                     zip.CreateEntryFromFile(FileUtils.GetLogFilename(), "AC Log.txt");
                 } catch (Exception e) {
-                    Logging.Warning("Can't attach AC Log.txt: " + e);
+                    Logging.Warning("Can’t attach AC Log.txt: " + e);
                 }
 
                 try {
@@ -40,13 +40,13 @@ namespace AcManager.Tools.Miscellaneous {
                         SteamId = SteamIdHelper.Instance.Value
                     }, Formatting.Indented));
                 } catch (Exception e) {
-                    Logging.Warning("Can't attach Description.txt: " + e);
+                    Logging.Warning("Can’t attach Description.txt: " + e);
                 }
 
                 try {
                     zip.CreateEntryFromString("Values.txt", ValuesStorage.Instance.GetData());
                 } catch (Exception e) {
-                    Logging.Warning("Can't attach Values.data: " + e);
+                    Logging.Warning("Can’t attach Values.data: " + e);
                 }
 
                 try {
@@ -54,7 +54,7 @@ namespace AcManager.Tools.Miscellaneous {
                         zip.CreateEntryFromFile(FilesStorage.Instance.GetFilename("Arguments.txt"), "Arguments.txt");
                     }
                 } catch (Exception e) {
-                    Logging.Warning("Can't attach Arguments.txt: " + e);
+                    Logging.Warning("Can’t attach Arguments.txt: " + e);
                 }
 
                 foreach (var fileInfo in new DirectoryInfo(logsDirectory).GetFiles("*.txt").Where(x => x.Length < 100000)
@@ -62,7 +62,7 @@ namespace AcManager.Tools.Miscellaneous {
                     try {
                         zip.CreateEntryFromFile(fileInfo.FullName, "Logs/" + fileInfo.Name, CompressionLevel.Optimal);
                     } catch (Exception e) {
-                        Logging.Warning("Can't attach Logs/" + fileInfo.Name + ": " + e);
+                        Logging.Warning("Can’t attach Logs/" + fileInfo.Name + ": " + e);
                     }
                 }
             }

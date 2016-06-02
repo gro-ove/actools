@@ -19,7 +19,7 @@ namespace AcManager.Tools.SemiGui {
             if (string.IsNullOrWhiteSpace(command)) return;
 
             command = VariablesReplacement.Process(command, _properties, null);
-            Logging.Write($"[GAMECOMMANDEXECUTOR] Executing command: ì{command}î");
+            Logging.Write($"[GAMECOMMANDEXECUTOR] Executing command: ‚Äú{command}‚Äù");
 
             try {
                 var proc = Process.Start(new ProcessStartInfo {
@@ -46,7 +46,7 @@ namespace AcManager.Tools.SemiGui {
                     throw new Exception("Timeout exceeded");
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can't execute command", e);
+                NonfatalError.Notify("Can‚Äôt execute command", e);
             }
         }
 

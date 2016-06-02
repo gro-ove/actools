@@ -68,7 +68,7 @@ namespace AcManager.Pages.Selected {
                                                     true);
                         }
                     } catch (Exception e) {
-                        NonfatalError.Notify("Can't update showroom's preview", e);
+                        NonfatalError.Notify("Can’t update showroom's preview", e);
                     } finally {
                         if (Directory.Exists(sphereDirectory)) {
                             Directory.Delete(sphereDirectory, true);
@@ -112,7 +112,7 @@ namespace AcManager.Pages.Selected {
         }
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can't find object with provided ID");
+            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
             InitializeAcObjectPage(_model = new SelectedShowroomPageViewModel(_object));
             InputBindings.AddRange(new[] {

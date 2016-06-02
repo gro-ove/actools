@@ -62,7 +62,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             } catch (TaskCanceledException) {
                 return null;
             } catch (Exception e) {
-                NonfatalError.Notify("Can't download file", "Make sure Internet connection is available.", e);
+                NonfatalError.Notify("Can’t download file", "Make sure Internet connection is available.", e);
                 return null;
             }
         }

@@ -21,56 +21,56 @@ namespace AcManager.Tools.AcErrors {
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [Description("File ì{0}î is missing")]
+        [Description("File ‚Äú{0}‚Äù is missing")]
         Data_IniIsMissing,
 
         /// <summary>
         /// {0}: file name
         /// </summary>
         [Obsolete]
-        [Description("Can't read ì{0}î")]
+        [Description("Can‚Äôt read ‚Äú{0}‚Äù")]
         Data_IniIsUnreadable,
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [Description("File ì{0}î is damaged")]
+        [Description("File ‚Äú{0}‚Äù is damaged")]
         Data_IniIsDamaged,
 
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [Description("File ì{0}î is missing")]
+        [Description("File ‚Äú{0}‚Äù is missing")]
         Data_JsonIsMissing,
 
         /// <summary>
         /// {0}: file name
         /// </summary>
         [Obsolete]
-        [Description("Can't read ì{0}î")]
+        [Description("Can‚Äôt read ‚Äú{0}‚Äù")]
         Data_JsonIsUnreadable,
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [Description("File ì{0}î is damaged")]
+        [Description("File ‚Äú{0}‚Äù is damaged")]
         Data_JsonIsDamaged,
         
         [Description("Field with name is missing or empty")]
         Data_ObjectNameIsMissing,
         
-        [Description("Field ìbrandî is missing or empty")]
+        [Description("Field ‚Äúbrand‚Äù is missing or empty")]
         Data_CarBrandIsMissing,
         
-        [Description("Directory ìuiî is missing")]
+        [Description("Directory ‚Äúui‚Äù is missing")]
         Data_UiDirectoryIsMissing,
 
 
         /// <summary>
         /// {0}: career name or id
         /// </summary>
-        [Description("Events of ì{0}î are missing")]
+        [Description("Events of ‚Äú{0}‚Äù are missing")]
         Data_KunosCareerEventsAreMissing,
 
         [Description("Event conditions aren't supported")]
@@ -82,26 +82,26 @@ namespace AcManager.Tools.AcErrors {
         /// <summary>
         /// {0}: track id
         /// </summary>
-        [Description("Required track ì{0}î is missing")]
+        [Description("Required track ‚Äú{0}‚Äù is missing")]
         Data_KunosCareerTrackIsMissing,
 
         /// <summary>
         /// {0}: skin id
         /// </summary>
-        [Description("Required car ì{0}î is missing")]
+        [Description("Required car ‚Äú{0}‚Äù is missing")]
         Data_KunosCareerCarIsMissing,
 
         /// <summary>
         /// {0}: car name or id
         /// {1}: skin id
         /// </summary>
-        [Description("Required skin ì{1}î of {0} for is missing")]
+        [Description("Required skin ‚Äú{1}‚Äù of {0} for is missing")]
         Data_KunosCareerCarSkinIsMissing,
 
         /// <summary>
         /// {0}: weather id
         /// </summary>
-        [Description("Required weather ì{0}î is missing")]
+        [Description("Required weather ‚Äú{0}‚Äù is missing")]
         Data_KunosCareerWeatherIsMissing,
 
 

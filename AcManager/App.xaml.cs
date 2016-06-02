@@ -158,7 +158,7 @@ namespace AcManager {
                 ToolTipService.InitialShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(700));
                 ItemsControl.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
             } catch (Exception e) {
-                Logging.Warning("Can't prepare UI: " + e);
+                Logging.Warning("Can’t prepare UI: " + e);
             }
         }
 

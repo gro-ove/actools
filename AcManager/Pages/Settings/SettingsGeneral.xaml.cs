@@ -71,7 +71,7 @@ namespace AcManager.Pages.Settings {
                     ValuesStorage.Set(KeyLogsSentTime, DateTime.Now);
                     Toast.Show("Logs Sent", "Thank you for the help!");
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can't send logs", e);
+                    NonfatalError.Notify("Can’t send logs", e);
                 }
             }, o => DateTime.Now - ValuesStorage.GetDateTimeOrEpochTime(KeyLogsSentTime) > TimeSpan.FromHours(0.0001), 3000));
         }

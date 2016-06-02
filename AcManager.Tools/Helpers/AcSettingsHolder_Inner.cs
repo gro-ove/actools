@@ -98,7 +98,7 @@ namespace AcManager.Tools.Helpers {
                     }
 
                     if (i == 5) {
-                        Logging.Warning("Can't load config file: " + Path.GetFileName(Filename));
+                        Logging.Warning("Can’t load config file: " + Path.GetFileName(Filename));
                         return;
                     }
 
@@ -123,7 +123,7 @@ namespace AcManager.Tools.Helpers {
                     Ini.Save(Filename);
                     _lastSaved = DateTime.Now;
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can't save AC settings", "Make sure app has access to cfg folder.", e);
+                    NonfatalError.Notify("Can’t save AC settings", "Make sure app has access to cfg folder.", e);
                 } finally {
                     _saving = false;
                 }

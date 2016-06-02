@@ -38,7 +38,7 @@ namespace AcTools.Processes {
                 var result = JsonConvert.DeserializeObject<Result>(FileUtils.ReadAllText(filename));
                 return result?.IsNotCancelled == true ? result : null;
             } catch (Exception e) {
-                throw new Exception("Can't parse “race_out.json”", e);
+                throw new Exception("Can’t parse “race_out.json”", e);
             }
         }
 

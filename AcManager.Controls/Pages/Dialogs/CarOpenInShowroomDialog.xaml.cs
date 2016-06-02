@@ -172,7 +172,7 @@ namespace AcManager.Controls.Pages.Dialogs {
                         UseBmp = false
                     }));
                 } catch (Exception e) {
-                    ShowMessage("Can't start showroom:\n\n" + e, "Oops!", MessageBoxButton.OK);
+                    ShowMessage("Can’t start showroom:\n\n" + e, "Oops!", MessageBoxButton.OK);
                     Logging.Warning("cannot update previews: " + e);
                 }
             }

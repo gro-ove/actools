@@ -11,13 +11,13 @@ namespace AcManager.Tools.Miscellaneous {
             [Description("Password is invalid")]
             OnlineWrongPassword,
 
-            [Description("Can't connect to remote server")]
+            [Description("Canâ€™t connect to remote server")]
             OnlineConnectionFailed,
 
-            [Description("Suspension objects (SUSP_LF, SUSP_LR, …) are missing")]
+            [Description("Suspension objects (SUSP_LF, SUSP_LR, â€¦) are missing")]
             SuspensionIsMissing,
 
-            [Description("Wheels objects (WHEEL_LF, WHEEL_LR, …) are missing")]
+            [Description("Wheels objects (WHEEL_LF, WHEEL_LR, â€¦) are missing")]
             WheelsAreMissing,
 
             [Description("Driver model is probably missing")]

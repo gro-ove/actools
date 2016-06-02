@@ -64,7 +64,7 @@ namespace AcManager.Pages.Dialogs {
 
                 File.Copy(Selected.Filename, Car.BrandBadge);
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can't change brand badge.", "Make sure car's brand badge file is available to write.", ex);
+                NonfatalError.Notify(@"Can’t change brand badge.", "Make sure car's brand badge file is available to write.", ex);
             }
         }
 
@@ -99,7 +99,7 @@ namespace AcManager.Pages.Dialogs {
             try {
                 cropped.SaveAsPng(Car.BrandBadge);
             } catch (Exception) {
-                ShowMessage(@"Can't change brand badge.", @"Fail", MessageBoxButton.OK);
+                ShowMessage(@"Can’t change brand badge.", @"Fail", MessageBoxButton.OK);
                 return;
             }
 
@@ -109,7 +109,7 @@ namespace AcManager.Pages.Dialogs {
             try {
                 FilesStorage.Instance.AddUserContentToDirectory(ContentCategory.BrandBadges, Car.BrandBadge, saveAs);
             } catch (Exception) {
-                ShowMessage(@"Can't add new element into the library.", @"Fail", MessageBoxButton.OK);
+                ShowMessage(@"Can’t add new element into the library.", @"Fail", MessageBoxButton.OK);
             }
 
             Close();

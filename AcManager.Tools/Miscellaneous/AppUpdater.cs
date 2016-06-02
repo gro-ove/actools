@@ -174,7 +174,7 @@ namespace AcManager.Tools.Miscellaneous {
                 var data = await CmApiProvider.GetStringAsync($"app/manifest/{Branch}");
                 return data == null ? null : VersionFromData(data);
             } catch (Exception e) {
-                LatestError = "Can't download information about latest version.";
+                LatestError = "Can’t download information about latest version.";
                 Logging.Warning("[APPUPDATED] Cannot get app/manifest.json: " + e);
                 return null;
             } finally {
@@ -208,7 +208,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         private async Task LoadAndPrepare() {
             if (!MainExecutingFile.IsPacked) {
-                NonfatalError.Notify(@"Can't update app", "Sadly, unpacked version doesn't support auto-updating.");
+                NonfatalError.Notify(@"Can’t update app", "Sadly, unpacked version doesn't support auto-updating.");
                 LatestError = "Unpacked version doesn't support auto-updating.";
                 return;
             }
@@ -238,12 +238,12 @@ namespace AcManager.Tools.Miscellaneous {
                 UpdateIsReady = preparedVersion;
             } catch (UnauthorizedAccessException) {
                 NonfatalError.Notify(@"Access is denied",
-                        @"Can't update app due to lack of permissions. Please, update it manually.");
-                LatestError = "Can't update app due to lack of permissions.";
+                        @"Can’t update app due to lack of permissions. Please, update it manually.");
+                LatestError = "Can’t update app due to lack of permissions.";
             } catch (Exception e) {
-                NonfatalError.Notify(@"Can't load the new version",
+                NonfatalError.Notify(@"Can’t load the new version",
                         @"Make sure internet connection is working and app has write permissions to its folder.", e);
-                LatestError = "Can't load the new version.";
+                LatestError = "Can’t load the new version.";
             } finally {
                 _isPreparing = false;
             }
@@ -280,7 +280,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 return false;
             } catch (Exception e) {
-                MessageBox.Show($"Can't process update: {e.Message}. Try to install a new version manually, sorry.", "Update failed", MessageBoxButton.OK,
+                MessageBox.Show($"Can’t process update: {e.Message}. Try to install a new version manually, sorry.", "Update failed", MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 return false;
             }
@@ -341,7 +341,7 @@ namespace AcManager.Tools.Miscellaneous {
                 }
 
                 if (File.Exists(originalFilename)) {
-                    MessageBox.Show($"Can't remove original file “{Path.GetFileName(originalFilename)}” to install update. " +
+                    MessageBox.Show($"Can’t remove original file “{Path.GetFileName(originalFilename)}” to install update. " +
                             $"Try to remove it manually and then run “{Path.GetFileName(MainExecutingFile.Location)}”.", "Update failed", MessageBoxButton.OK,
                             MessageBoxImage.Error);
                     return;

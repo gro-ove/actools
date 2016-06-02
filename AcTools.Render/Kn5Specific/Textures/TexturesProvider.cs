@@ -78,7 +78,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                         texture.Override = null;
                     }
                 } catch (Exception e) {
-                    Logging.Warning("Can't load override texture: " + e);
+                    Logging.Warning("Can’t load override texture: " + e);
                     texture.Override = null;
                 }
             }

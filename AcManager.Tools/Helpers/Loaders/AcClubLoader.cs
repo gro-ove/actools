@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
             var match = Regex.Match(downloadPage, @"<p class=""download""><a href=""([^""]+)");
             if (!match.Success) {
-                NonfatalError.Notify("Can't download file", "AssettoCorsa.club is changed.");
+                NonfatalError.Notify("Can’t download file", "AssettoCorsa.club is changed.");
                 return false;
             }
 

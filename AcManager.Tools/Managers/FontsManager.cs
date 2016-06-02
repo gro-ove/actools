@@ -178,7 +178,7 @@ namespace AcManager.Tools.Managers {
             } catch (TaskCanceledException) {
                 return null;
             } catch (Exception e) {
-                NonfatalError.Notify("Can't rescan cars", e);
+                NonfatalError.Notify("Can’t rescan cars", e);
                 return null;
             } finally {
                 LastUsingsRescan = DateTime.Now;

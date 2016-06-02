@@ -21,7 +21,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (SteamIdHelper.Instance.Value == null) {
                 ErrorFatal = true;
-                throw new Exception(@"Can't find Steam ID.");
+                throw new Exception(@"Can’t find Steam ID.");
             }
 
             var data = KunosApiProvider.TryToGetList()?.Select(x => new ServerEntry(this, x));
@@ -29,7 +29,7 @@ namespace AcManager.Tools.Managers.Online {
                 return data;
             }
                 
-            throw new Exception(@"Can't load data.");
+            throw new Exception(@"Can’t load data.");
         }
     }
 }

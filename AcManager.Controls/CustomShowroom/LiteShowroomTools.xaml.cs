@@ -370,7 +370,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                     Process.Start(destination);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can't unpack KN5", e);
+                    NonfatalError.Notify("Can’t unpack KN5", e);
                 }
             }, o => SettingsHolder.Common.DeveloperMode && AppAddonsManager.Instance.IsAddonEnabled("FbxConverter") && Renderer?.Kn5 != null));
             #endregion

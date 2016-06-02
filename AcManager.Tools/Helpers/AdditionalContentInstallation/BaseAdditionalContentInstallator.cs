@@ -123,7 +123,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                     var jsonBytes = await fileInfo.ReadAsync();
                     jObject = JsonExtension.Parse(jsonBytes.ToUtf8String());
                 } catch (Exception e) {
-                    Logging.Warning("Can't read as a JSON (" + fileInfo.Filename + "): " + e);
+                    Logging.Warning("Can’t read as a JSON (" + fileInfo.Filename + "): " + e);
                     continue;
                 }
 

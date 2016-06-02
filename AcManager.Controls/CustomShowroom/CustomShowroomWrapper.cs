@@ -77,8 +77,8 @@ namespace AcManager.Controls.CustomShowroom {
                     renderer = await Task.Run(() => new ToolsKn5ObjectRenderer(kn5, carDirectory));
                     wrapper = new LiteShowroomWrapperWithTools((ToolsKn5ObjectRenderer)renderer, carObject, skinId);
                 } else {
-                    Logging.Warning($"Can't find CarObject for “{carDirectory}”");
-                    Logging.Warning($"Found location: “{carObject?.Location ?? "NULL"}”");
+                    Logging.Warning($"Canâ€™t find CarObject for â€œ{carDirectory}â€");
+                    Logging.Warning($"Found location: â€œ{carObject?.Location ?? "NULL"}â€");
 
                     renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(kn5, carDirectory));
                     wrapper = new LiteShowroomWrapper(renderer);
@@ -99,7 +99,7 @@ namespace AcManager.Controls.CustomShowroom {
                 
                 GC.Collect();
             } catch (Exception e) {
-                NonfatalError.Notify("Can't start Custom Showroom", e);
+                NonfatalError.Notify("Canâ€™t start Custom Showroom", e);
             } finally {
                 renderer?.Dispose();
                 _last = null;
@@ -130,12 +130,12 @@ namespace AcManager.Controls.CustomShowroom {
                 wrapper.Form.Icon = Icon;
                 wrapper.Run(() => _starting = false);
             } catch (Exception e) {
-                NonfatalError.Notify("Can't start Custom Showroom", e);
+                NonfatalError.Notify("Canâ€™t start Custom Showroom", e);
             } finally {
                 renderer?.Dispose();
                 _last = null;
             }
-        }
+        } 
 
         public static Task StartAsync(CustomShowroomMode mode, string kn5, string skinId = null) {
             switch (mode) {

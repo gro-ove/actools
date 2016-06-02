@@ -158,7 +158,7 @@ namespace AcManager.Tools.Data {
                 var data = await CmApiProvider.GetStringAsync("content/manifest");
                 return data == null ? null : VersionFromData(data);
             } catch (Exception e) {
-                LatestError = "Can't download information about latest version.";
+                LatestError = "Can’t download information about latest version.";
                 Logging.Warning("cannot get content/manifest.json: " + e);
                 return null;
             } finally {
@@ -190,7 +190,7 @@ namespace AcManager.Tools.Data {
                 InstalledVersion = installedVersion;
                 Logging.Write("Content loaded: " + InstalledVersion);
             } catch (Exception e) {
-                NonfatalError.Notify(@"Can't load content pack",
+                NonfatalError.Notify(@"Can’t load content pack",
                         @"Make sure internet connection is working and nothing is going on in Content folder.", e);
             } finally {
                 _isInstalling = false;
