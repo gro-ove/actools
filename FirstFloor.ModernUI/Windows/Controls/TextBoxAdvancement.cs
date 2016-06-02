@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public static class TextBoxAdvancement {
-        // sorry about it, but I don't think I can handle another library only for number parsing
+        // sorry about it, but I don’t think I can handle another library only for number parsing
         private static class FlexibleParser {
             private static Regex _parseDouble, _parseInt;
 

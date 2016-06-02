@@ -53,7 +53,7 @@ namespace AcManager.Controls.ViewModels {
         private bool _loaded, _second;
 
         /// <summary>
-        /// Don't forget to use me!
+        /// Don’t forget to use me!
         /// </summary>
         public virtual void Load() {
             if (_loaded) return;
@@ -84,7 +84,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         /// <summary>
-        /// Don't forget to use me!
+        /// Don’t forget to use me!
         /// </summary>
         public virtual void Unload() {
             if (!_loaded) return;

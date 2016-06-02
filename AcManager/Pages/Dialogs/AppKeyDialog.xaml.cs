@@ -171,7 +171,7 @@ namespace AcManager.Pages.Dialogs {
                 ValuesStorage.Remove(AppKeyRevokedKey);
                 AppKeyHolder.Instance.SetKey(Value);
 
-                ShowMessage("Now app will be restarted, but it shouldn't take long. Thanks again for your support!\n\n[i]Please, don't share your key, otherwise it might get compromised.[/i]", "Thank You!", MessageBoxButton.OK);
+                ShowMessage("Now app will be restarted, but it shouldn’t take long. Thanks again for your support!\n\n[i]Please, don’t share your key, otherwise it might get compromised.[/i]", "Thank You!", MessageBoxButton.OK);
                 WindowsHelper.RestartCurrentApplication();
             }, o => IsValueAcceptable && !CheckingInProgress && !InternetConnectionRequired && !string.IsNullOrWhiteSpace(Value)));
 

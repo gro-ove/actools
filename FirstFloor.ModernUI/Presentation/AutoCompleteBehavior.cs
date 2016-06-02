@@ -114,7 +114,7 @@ namespace FirstFloor.ModernUI.Presentation {
                 return;
 
             IEnumerable<String> values = GetAutoCompleteItemsSource(tb);
-            //No reason to search if we don't have any values.
+            //No reason to search if we don’t have any values.
             if (values == null)
                 return;
 

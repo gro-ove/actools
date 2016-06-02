@@ -73,7 +73,7 @@ namespace AcManager.Tools.AcErrors {
         [Description("Events of “{0}” are missing")]
         Data_KunosCareerEventsAreMissing,
 
-        [Description("Event conditions aren't supported")]
+        [Description("Event conditions aren’t supported")]
         Data_KunosCareerConditions,
 
         [Description("Required content is missing")]

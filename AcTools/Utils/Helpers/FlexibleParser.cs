@@ -140,7 +140,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         /// <summary>
-        /// Throws an exception if can't parse!
+        /// Throws an exception if can’t parse!
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
@@ -159,7 +159,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         /// <summary>
-        /// Throws an exception if can't parse!
+        /// Throws an exception if can’t parse!
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
@@ -178,7 +178,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         /// <summary>
-        /// Throws an exception if can't parse!
+        /// Throws an exception if can’t parse!
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>

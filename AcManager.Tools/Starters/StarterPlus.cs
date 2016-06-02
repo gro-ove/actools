@@ -62,7 +62,7 @@ namespace AcManager.Tools.Starters {
                         File.Move(launcherFilename, backupFilename);
                     }
                 } catch (Exception e) {
-                    Logging.Warning("[STARTER+] Can't move original file out of the way: " + e);
+                    Logging.Warning("[STARTER+] Can’t move original file out of the way: " + e);
                     return;
                 }
             }
@@ -74,7 +74,7 @@ namespace AcManager.Tools.Starters {
                     archive.GetEntry("AssettoCorsa.exe").ExtractToFile(launcherFilename);
                 }
             } catch (Exception e) {
-                Logging.Warning("[STARTER+] Can't extract file: " + e);
+                Logging.Warning("[STARTER+] Can’t extract file: " + e);
                 Logging.Warning("[STARTER+] Rollback!");
                 RollBack();
                 return;
@@ -104,7 +104,7 @@ namespace AcManager.Tools.Starters {
                 try {
                     File.Delete(launcherFilename);
                 } catch (Exception e) {
-                    Logging.Warning("[STARTER+] Can't move modified file out of the way: " + e);
+                    Logging.Warning("[STARTER+] Can’t move modified file out of the way: " + e);
                     return;
                 }
             }
@@ -115,7 +115,7 @@ namespace AcManager.Tools.Starters {
                 try {
                     File.Copy(backupFilename, launcherFilename);
                 } catch (Exception e) {
-                    Logging.Warning("[STARTER+] Can't move restore original file: " + e);
+                    Logging.Warning("[STARTER+] Can’t move restore original file: " + e);
                 }
             }
 
@@ -132,7 +132,7 @@ namespace AcManager.Tools.Starters {
 
         public override void Run() {
             if (!IsPatched()) {
-                throw new Exception("Addon isn't activated properly");
+                throw new Exception("Addon isn’t activated properly");
             }
 
             File.WriteAllText(FlagFilename, AcsName);
@@ -148,7 +148,7 @@ namespace AcManager.Tools.Starters {
             base.CleanUp();
 
             if (File.Exists(FlagFilename)) {
-                Logging.Warning("[STARTER+] Flag wasn't deleted!");
+                Logging.Warning("[STARTER+] Flag wasn’t deleted!");
                 File.Delete(FlagFilename);
             }
         }

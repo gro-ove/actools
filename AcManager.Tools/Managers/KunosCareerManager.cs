@@ -88,7 +88,7 @@ namespace AcManager.Tools.Managers {
             var career = GetById(careerProperties.CareerId);
             var ev = career?.GetEventById(careerProperties.EventId);
             if (ev == null) {
-                Logging.Warning("[KUNOSCAREERMANAGER] Can't find career or event by ID.");
+                Logging.Warning("[KUNOSCAREERMANAGER] Can’t find career or event by ID.");
                 return;
             }
 

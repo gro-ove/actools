@@ -320,7 +320,7 @@ namespace FirstFloor.ModernUI.Win32
         /// <summary>
         /// Indicates if the current OS version matches, or is greater than,
         /// the provided version information. This method is useful in
-        /// confirming a version of Windows Server that doesn't share a
+        /// confirming a version of Windows Server that doesn’t share a
         /// version number with a client release.
         /// </summary>
         /// <param name="majorVersion">The major OS version number.</param>

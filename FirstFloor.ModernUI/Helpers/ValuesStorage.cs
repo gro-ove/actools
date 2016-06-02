@@ -494,7 +494,7 @@ namespace FirstFloor.ModernUI.Helpers {
             Set(key, BitConverter.ToInt32(new[] { color.A, color.R, color.G, color.B }, 0));
         }
 
-        /* I know that this is not a proper protection or anything, but I just don't want to save some
+        /* I know that this is not a proper protection or anything, but I just don’t want to save some
             stuff plain-texted */
         private const string Something = "encisfinedontworry";
 

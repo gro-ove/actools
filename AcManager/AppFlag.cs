@@ -67,7 +67,7 @@ namespace AcManager {
         ForceDisableWebBrowserEmulationMode,
 
         /// <summary>
-        /// Don't affect WebBrowser emulation mode at all.
+        /// Don’t affect WebBrowser emulation mode at all.
         /// Example: --prevent-disable-web-browser-emulation-mode
         /// </summary>
         PreventDisableWebBrowserEmulationMode,
@@ -158,7 +158,7 @@ namespace AcManager {
 
         /// <summary>
         /// Ignore skipped events (when first event is called “event5” or something like this,
-        /// in other words — broken). I don't think it'll work, but anyway.
+        /// in other words — broken). I don’t think it'll work, but anyway.
         /// Example: --kunos-career-ignore-skipped-events
         /// </summary>
         KunosCareerIgnoreSkippedEvents,
@@ -171,7 +171,7 @@ namespace AcManager {
         IgnoreSystemProxy,
 
         /// <summary>
-        /// When started using command line args, don't show main window.
+        /// When started using command line args, don’t show main window.
         /// Example: --lite-startup-mode-supported
         /// </summary>
         LiteStartupModeSupported

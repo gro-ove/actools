@@ -665,7 +665,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 if (cars.Contains(null)) {
                     Status = ServerStatus.Error;
-                    ErrorMessage = @"Cars don't match.";
+                    ErrorMessage = @"Cars don’t match.";
                     return;
                 }
 

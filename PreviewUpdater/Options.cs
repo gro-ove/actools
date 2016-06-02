@@ -33,7 +33,7 @@ namespace PreviewUpdater {
         [Option('v', "fov", DefaultValue = 30.0, HelpText = "Field of view.")]
         public double Fov { get; set; }
 
-        [Option('e', "exposure", DefaultValue = 0.0, HelpText = "Exposure (looks like doesn't work).")]
+        [Option('e', "exposure", DefaultValue = 0.0, HelpText = "Exposure (looks like doesn’t work).")]
         public double Exposure { get; set; }
 
         [Option('f', "filter", DefaultValue = "S1-Showroom", HelpText = "PP filter.")]

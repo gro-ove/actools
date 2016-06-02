@@ -69,7 +69,7 @@ namespace AcManager.Tools.AcManagersNew {
             var currentLocation = ((AcCommonObject)wrapper.Value).Location;
             var path = wrapper.Value.Enabled ? Directories.DisabledDirectory : Directories.EnabledDirectory;
             if (path == null) {
-                throw new Exception("Object can't be toggled");
+                throw new Exception("Object can’t be toggled");
             }
 
             var newLocation = Path.Combine(path, wrapper.Value.Id);
@@ -112,7 +112,7 @@ namespace AcManager.Tools.AcManagersNew {
             try {
                 id = LocationToId(dir);
             } catch (Exception) {
-                // can't get location from id
+                // can’t get location from id
                 return;
             }
 

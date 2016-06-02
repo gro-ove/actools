@@ -354,7 +354,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         /// <summary>
-        /// Create a new AssistsViewModel which will load data from serialized string, but won't
+        /// Create a new AssistsViewModel which will load data from serialized string, but won’t
         /// save any changes if they will occur.
         /// </summary>
         /// <param name="serializedData"></param>

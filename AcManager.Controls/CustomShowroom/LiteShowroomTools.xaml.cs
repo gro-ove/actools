@@ -289,7 +289,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             public RelayCommand AmbientShadowSizeSaveCommand => _ambientShadowSizeSaveCommand ?? (_ambientShadowSizeSaveCommand = new RelayCommand(o => {
                 if (Renderer == null || File.Exists(Path.Combine(Car.Location, "data.acd")) && ModernDialog.ShowMessage(
-                        "Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won't have any affect. Continue?",
+                        "Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?",
                         "Data is Encrypted", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
                 var data = Path.Combine(Car.Location, "data");

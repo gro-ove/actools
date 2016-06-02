@@ -132,7 +132,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
 
                             if (sb != null) {
                                 // need to kick the storyboard, otherwise new values are not taken into account.
-                                // it’s sad, really don't want to start storyboards in vsm, but I see no other option
+                                // it’s sad, really don’t want to start storyboards in vsm, but I see no other option
                                 sb.Begin(this);     
                             }
                         }

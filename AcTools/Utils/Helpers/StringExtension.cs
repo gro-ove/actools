@@ -180,7 +180,7 @@ namespace AcTools.Utils.Helpers {
         /// <returns></returns>
         [Pure]
         public static IEnumerable<int> ToDiapason(this string s, int min, int max) {
-            if (min < 0) throw new ArgumentOutOfRangeException(nameof(min), @"Negative numbers aren't supported");
+            if (min < 0) throw new ArgumentOutOfRangeException(nameof(min), @"Negative numbers aren’t supported");
             if (max < min) throw new ArgumentOutOfRangeException(nameof(max));
 
             return s.Split(',').SelectMany(part => {

@@ -67,7 +67,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
         }
 
         protected override Task<IEnumerable<IFileInfo>> GetFileEntriesAsync() {
-            if (_extractor == null) throw new Exception("Extractor wasn't initialized");
+            if (_extractor == null) throw new Exception("Extractor wasn’t initialized");
             return Task.FromResult(
                     _extractor.Entries.Where(x => !x.IsDirectory).Select(x => (IFileInfo)new ArchiveFileInfo(x)));
         }

@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                 case ArchiveType.Tar:
                 case ArchiveType.SevenZip:
                 case ArchiveType.GZip:
-                    throw new NotSupportedException("Sorry, but " + archive.Type + " encryption isn't supported");
+                    throw new NotSupportedException("Sorry, but " + archive.Type + " encryption isn’t supported");
                 default:
                     throw new ArgumentOutOfRangeException();
             }

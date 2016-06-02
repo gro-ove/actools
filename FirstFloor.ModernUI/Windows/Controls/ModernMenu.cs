@@ -306,7 +306,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     // could not find link and group based on selected source, fall back to selected link group
                     selectedGroup = SelectedLinkGroup;
 
-                    // if selected group doesn't exist in available groups, select first group
+                    // if selected group doesn’t exist in available groups, select first group
                     if (LinkGroups.All(g => g != selectedGroup)) {
                         selectedGroup = LinkGroups.FirstOrDefault();
                     }

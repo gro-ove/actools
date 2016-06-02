@@ -222,7 +222,7 @@ namespace AcManager.Pages.Dialogs {
                 var destination = Path.Combine(FileUtils.GetPpFiltersDirectory(AcRootDirectory.Instance.Value), Filename);
                 if (File.Exists(destination) && new FileInfo(destination).Length == Content.Length) return;
 
-                // don't ignore changes because why? list will be updated, but it’s not a bad thing
+                // don’t ignore changes because why? list will be updated, but it’s not a bad thing
                 File.WriteAllBytes(destination, Content);
             }
         }
@@ -328,7 +328,7 @@ namespace AcManager.Pages.Dialogs {
         private readonly ISaveHelper _saveable;
 
         private void ShowroomMessage(string showroomName, string showroomId, string informationUrl) {
-            if (ShowMessage($@"[url={informationUrl.Length}]{showroomName}[/url] isn't installed. Install it?",
+            if (ShowMessage($@"[url={informationUrl.Length}]{showroomName}[/url] isn’t installed. Install it?",
                     @"Showroom is missing", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
             InstallShowroom(showroomName, showroomId).Forget();
         }

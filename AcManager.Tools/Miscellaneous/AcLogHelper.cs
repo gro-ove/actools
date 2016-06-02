@@ -48,7 +48,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return WhatsGoingOn.DriverModelIsMissing;
                 }
             } catch (Exception e) {
-                Logging.Write("[ACLOGHELPER] Can't determine what’s going on: " + e);
+                Logging.Write("[ACLOGHELPER] Can’t determine what’s going on: " + e);
             }
 
             return null;

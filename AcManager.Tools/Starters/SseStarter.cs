@@ -17,7 +17,7 @@ namespace AcManager.Tools.Starters {
         public override void Run() {
             var acRoot = AcRootDirectory.Instance.RequireValue;
             var addon = AppAddonsManager.Instance.GetById(AddonId);
-            if (addon?.IsReady != true) throw new Exception("Addon isn't ready");
+            if (addon?.IsReady != true) throw new Exception("Addon isn’t ready");
 
             _filename = addon.GetFilename(ConfigName);
 

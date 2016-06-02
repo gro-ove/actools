@@ -109,7 +109,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         public async Task CheckAndUpdateIfNeeded() {
             if (!MainExecutingFile.IsPacked) {
-                LatestError = "Unpacked version doesn't support auto-updating.";
+                LatestError = "Unpacked version doesn’t support auto-updating.";
                 IsSupported = false;
                 return;
             }
@@ -208,8 +208,8 @@ namespace AcManager.Tools.Miscellaneous {
 
         private async Task LoadAndPrepare() {
             if (!MainExecutingFile.IsPacked) {
-                NonfatalError.Notify(@"Can’t update app", "Sadly, unpacked version doesn't support auto-updating.");
-                LatestError = "Unpacked version doesn't support auto-updating.";
+                NonfatalError.Notify(@"Can’t update app", "Sadly, unpacked version doesn’t support auto-updating.");
+                LatestError = "Unpacked version doesn’t support auto-updating.";
                 return;
             }
 
@@ -320,7 +320,7 @@ namespace AcManager.Tools.Miscellaneous {
                     }
                 }
 
-                /* if we couldn't delete file normally, let’s kill any process with this name */
+                /* if we couldn’t delete file normally, let’s kill any process with this name */
                 if (File.Exists(originalFilename)) {
                     try {
                         foreach (var process in Process.GetProcessesByName(Path.GetFileName(originalFilename))) {

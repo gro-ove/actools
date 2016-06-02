@@ -72,7 +72,7 @@ namespace AcManager.Tools.Helpers {
 
                 Logging.Write("[CustomUriSchemeHelper] Registered!");
             } catch (Exception e) {
-                Logging.Warning("[CustomUriSchemeHelper] Can't register: " + e);
+                Logging.Warning("[CustomUriSchemeHelper] Can’t register: " + e);
             }
         }
     }

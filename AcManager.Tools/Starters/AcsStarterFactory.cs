@@ -50,7 +50,7 @@ namespace AcManager.Tools.Starters {
             
             var preparable = result as IAcsPrepareableStarter;
             if (preparable != null && !preparable.TryToPrepare()) {
-                Logging.Warning("[ACSSTARTERFACTORY] Can't prepare, using fallback starter instead.");
+                Logging.Warning("[ACSSTARTERFACTORY] Can’t prepare, using fallback starter instead.");
                 return CreateFallback().SetPlatform();
             }
 

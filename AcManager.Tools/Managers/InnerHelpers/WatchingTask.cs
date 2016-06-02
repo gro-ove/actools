@@ -95,7 +95,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
 
                     case WatcherChangeTypes.Deleted:
                         if (last.Type == WatcherChangeTypes.Created) {
-                            // special CREATED-DELETED occasion, this way AcManager won't be bothered
+                            // special CREATED-DELETED occasion, this way AcManager won’t be bothered
                             _queue.Clear();
                         } else if (last.Type == WatcherChangeTypes.Changed) {
                             // CHANGED-DELETED case, remove useless CHANGED
@@ -119,7 +119,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                     case WatcherChangeTypes.Changed:
                         // some file inside was changed
                         // if last entry is CHANGED too, we should add FULL_FILENAME for smart reload
-                        // FULL_FILENAME=null means that changes can't be processes with smart reload
+                        // FULL_FILENAME=null means that changes can’t be processes with smart reload
 
                         if (last.Type == WatcherChangeTypes.Changed && last.FullFilename != null) {
                             if (fullFilename == null) {

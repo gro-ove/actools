@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Directories {
     /// <summary>
-    /// This thing doesn't subscribe or listen to anything.
+    /// This thing doesn’t subscribe or listen to anything.
     /// </summary>
     public class NonListeningAcDirectories : BaseAcDirectories {
         public NonListeningAcDirectories([NotNull] string enabledDirectory, [CanBeNull] string disabledDirectory)

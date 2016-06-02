@@ -46,14 +46,14 @@ namespace AcManager.Tools.Miscellaneous {
 
                 return script;
             } catch (Exception e) {
-                Logging.Warning($"[LUAHELPER] Can't initialize: " + e);
+                Logging.Warning($"[LUAHELPER] Can’t initialize: " + e);
                 return null;
             }
         }
 
         /*[CanBeNull]
             public static Lua GetExtended() {
-                // I have no idea why this place sometimes (very rarely) doesn't work
+                // I have no idea why this place sometimes (very rarely) doesn’t work
                 // but I know that I have the same problem with another app which uses
                 // the same library
                 for (var i = 0; i < 5; i++) {
@@ -75,7 +75,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                         return result;
                     } catch (Exception e) {
-                        Logging.Warning($"[LUAHELPER] Can't initialize ({i}): " + e);
+                        Logging.Warning($"[LUAHELPER] Can’t initialize ({i}): " + e);
                     }
                 }
 

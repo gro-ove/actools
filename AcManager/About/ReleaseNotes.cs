@@ -11,7 +11,7 @@ namespace AcManager.About {
 
         public static readonly ReleaseNotes[] Notes = {
             new ReleaseNotes("0.2.69", @"Kunos career, improved driving",
-                    @"Kunos career is ready! Single events, championships, etc. Don't forget to open settings and change driving options for your taste. Also, now CM can process driving properly (not everywhere, but still).
+                    @"Kunos career is ready! Single events, championships, etc. Don’t forget to open settings and change driving options for your taste. Also, now CM can process driving properly (not everywhere, but still).
 
 Of course, different bugs are more than possible. Just for in case, CM will make a backup for career.ini (you can find it in [i]…\Documents\Assetto Corsa\launcherdata\filestore[/i].
 
@@ -34,7 +34,7 @@ And, of course, couple of beta-related changes: special option, which allows to 
             new ReleaseNotes("0.4.79", @"Assetto Corsa 1.5",
                     @"Auto-update Previews part was updated and fixed to match new previews. Feel free to delete “Studio Black Showroom (AT Previews Special)” showroom.
 
-Only problem is that new Kunos showroom isn't quite match their previews, as you can see here:
+Only problem is that new Kunos showroom isn’t quite match their previews, as you can see here:
 
  • [b]Original:[/b]
 
@@ -49,10 +49,10 @@ If Kunos [url=""http://www.assettocorsa.net/forum/index.php?threads/custom-camer
             new ReleaseNotes("0.4.111", @"Some changes", @"Some of important changes since 0.4.79:
 
  • [b]Mods Installation[/b]
-Just try to drag-n-drop archive on app’s window to add a new car or track or update it. Sadly, at the moment app supports only Zip, Rar (but not Rar5), 7Zip (non-encrypted only), Tar and GZip; also, unpacking for Rar-archives is pretty slow. But, if you're using WinRAR, don't worry — you can just drag'n'drop required folder from its window to CM.
+Just try to drag-n-drop archive on app’s window to add a new car or track or update it. Sadly, at the moment app supports only Zip, Rar (but not Rar5), 7Zip (non-encrypted only), Tar and GZip; also, unpacking for Rar-archives is pretty slow. But, if you're using WinRAR, don’t worry — you can just drag'n'drop required folder from its window to CM.
 
  • [b]Skins Manager[/b]
-Finally, it works! Just press [i]Ctrl+K[/i] on car’s page. Livery editor isn't ready yet though.
+Finally, it works! Just press [i]Ctrl+K[/i] on car’s page. Livery editor isn’t ready yet though.
 
  • [b]Filters[/b]
 I'll make another page in Important Tips section, but for just some examples:

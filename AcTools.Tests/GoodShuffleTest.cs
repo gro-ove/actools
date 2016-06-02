@@ -16,8 +16,8 @@ namespace AcTools.Tests {
             var n2Of100 = Enumerable.Range(0, 100).Select(x => g2.Next).Count(x => x == 2);
             
 
-            Assert.AreEqual(n1Of10, 2, 0, "n1Of10: isn't uniform enough");
-            Assert.AreEqual(n2Of100, 20, 0, "n2Of100: isn't uniform enough");
+            Assert.AreEqual(n1Of10, 2, 0, "n1Of10: isn’t uniform enough");
+            Assert.AreEqual(n2Of100, 20, 0, "n2Of100: isn’t uniform enough");
         }
 
         [TestMethod]
@@ -34,8 +34,8 @@ namespace AcTools.Tests {
             var n4Of109 = Enumerable.Range(0, 109).Select(x => g2.Next).Count(x => x == 4);
             
 
-            Assert.AreEqual(n3Of9, 1, 0, "isn't uniform enough");
-            Assert.AreEqual(n4Of109, 21, 0, "isn't uniform enough");
+            Assert.AreEqual(n3Of9, 1, 0, "isn’t uniform enough");
+            Assert.AreEqual(n4Of109, 21, 0, "isn’t uniform enough");
         }
         
         [TestMethod]
@@ -48,8 +48,8 @@ namespace AcTools.Tests {
             var v1 = Enumerable.Range(0, 100).Select(x => GoodShuffle.Get(array).Next).Count(x => x == 1);
 
             // assert
-            Assert.AreEqual(v0, 20, 10, "v0: isn't random enough");
-            Assert.AreEqual(v1, 20, 10, "v1: isn't random enough");
+            Assert.AreEqual(v0, 20, 10, "v0: isn’t random enough");
+            Assert.AreEqual(v1, 20, 10, "v1: isn’t random enough");
         }
     }
 }
