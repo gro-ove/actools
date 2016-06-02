@@ -44,9 +44,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     if (foundChild != null) break;
                 } else if (!string.IsNullOrEmpty(childName)) {
                     var frameworkElement = child as FrameworkElement;
-                    // If the child's name is set for search
+                    // If the child’s name is set for search
                     if (frameworkElement == null || frameworkElement.Name != childName) continue;
-                    // if the child's name is of the request name
+                    // if the child’s name is of the request name
                     foundChild = (T)child;
                     break;
                 } else {

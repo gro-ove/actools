@@ -34,7 +34,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         /// <summary>
-        /// Using UTF8 (only if it's a correct one) or Default encoding
+        /// Using UTF8 (only if it’s a correct one) or Default encoding
         /// </summary>
         /// <returns></returns>
         public static string ReadAsStringAndDispose(this Stream s) {

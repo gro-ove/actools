@@ -49,14 +49,14 @@ If Kunos [url=""http://www.assettocorsa.net/forum/index.php?threads/custom-camer
             new ReleaseNotes("0.4.111", @"Some changes", @"Some of important changes since 0.4.79:
 
  • [b]Mods Installation[/b]
-Just try to drag-n-drop archive on app's window to add a new car or track or update it. Sadly, at the moment app supports only Zip, Rar (but not Rar5), 7Zip (non-encrypted only), Tar and GZip; also, unpacking for Rar-archives is pretty slow. But, if you're using WinRAR, don't worry — you can just drag'n'drop required folder from its window to CM.
+Just try to drag-n-drop archive on app’s window to add a new car or track or update it. Sadly, at the moment app supports only Zip, Rar (but not Rar5), 7Zip (non-encrypted only), Tar and GZip; also, unpacking for Rar-archives is pretty slow. But, if you're using WinRAR, don't worry — you can just drag'n'drop required folder from its window to CM.
 
  • [b]Skins Manager[/b]
-Finally, it works! Just press [i]Ctrl+K[/i] on car's page. Livery editor isn't ready yet though.
+Finally, it works! Just press [i]Ctrl+K[/i] on car’s page. Livery editor isn't ready yet though.
 
  • [b]Filters[/b]
 I'll make another page in Important Tips section, but for just some examples:
-  [b][mono]bhp>500 & (weight<1000 | skins=5), brand:A*[/mono][/b] — as you can see, this one is for cars, filters all cars by their power and weight or number or skins; and, just as an addition, keeps all cars if their brand's name is started with “A” (“,” works as “|”, totally the same);
+  [b][mono]bhp>500 & (weight<1000 | skins=5), brand:A*[/mono][/b] — as you can see, this one is for cars, filters all cars by their power and weight or number or skins; and, just as an addition, keeps all cars if their brand’s name is started with “A” (“,” works as “|”, totally the same);
   [b][mono]length<5000 & pits=5[/mono][/b] — this one is for tracks, filters by length and number of pitstops;
   [b][mono]practice+ & qualification-[/mono][/b] — online servers, keeps only the ones with practice session, but without qualification one;
   [b][mono]available(bhp>500)[/mono][/b] — again online servers, at this time you'll get only servers which have available car with more than 500 bhp."),
@@ -78,7 +78,7 @@ If you want to get those buttons, please, install [url=""https://greasyfork.org/
 
  [img=""http://i.imgur.com/ydstiDS.png|32""]Trello icon[/img]
 
-It might be a pretty handy to send feedback, watch progress, report bugs and stuff using this board. Only problem is that for commenting and rating you'll have to sign up (or log in using Google), but I think it's worth it (seriosly, it's a superbly made service, Google could learn a lot from those guys about proper webapps).
+It might be a pretty handy to send feedback, watch progress, report bugs and stuff using this board. Only problem is that for commenting and rating you'll have to sign up (or log in using Google), but I think it’s worth it (seriosly, it’s a superbly made service, Google could learn a lot from those guys about proper webapps).
 
 Of course, you can still use e-mails for a feedback though.
 
@@ -88,7 +88,7 @@ Of course, you can still use e-mails for a feedback though.
 
  [img=""http://i.imgur.com/UB2cku6.png|360""]Lite Showroom for skins[/img]
 
-No more those terrible bugs with normals, very different shaders and poor optimization. This code is so nice it can be used for two different showrooms instead of only one! Apart from simple (and DirectX 10-compatible) Lite Showroom here is also Fancy Showroom. It's very heavy, poorly optimized and needed mostly for experiments, but still.
+No more those terrible bugs with normals, very different shaders and poor optimization. This code is so nice it can be used for two different showrooms instead of only one! Apart from simple (and DirectX 10-compatible) Lite Showroom here is also Fancy Showroom. It’s very heavy, poorly optimized and needed mostly for experiments, but still.
 
  [img=""http://i.imgur.com/HqDvMBP.png|360""]Day (SSLR!)[/img]
 
@@ -96,14 +96,14 @@ No more those terrible bugs with normals, very different shaders and poor optimi
 
 Other features such as Ambient Shadow or Track Map renderers will be ported soon."),
 
-            new ReleaseNotes("0.5.207", @"Default previews preset updated (again)", @"[i]Honestly, it's starting to get on my nerves.[/i]
+            new ReleaseNotes("0.5.207", @"Default previews preset updated (again)", @"[i]Honestly, it’s starting to get on my nerves.[/i]
 
 Kunos previews preset changed again, now they returned to using S1-Showroom. Please, open Auto-Update Previews settings and reset to Kunos preset if you're using their style.
 
 Some of other changes since the recent notes:
 
  • [b]Information Finder[/b]
-That old thing from Cars Manager, I think it's quite useful one. Now you can select from a range of search engines (if you need some which not in the list, please, [url=""https://trello.com/c/1HrHi37u/32-other-suggestions""]tell[/url]).
+That old thing from Cars Manager, I think it’s quite useful one. Now you can select from a range of search engines (if you need some which not in the list, please, [url=""https://trello.com/c/1HrHi37u/32-other-suggestions""]tell[/url]).
 
  • [b]Weekends[/b]
 If future I'm planning to add fully customizable grids. Also, if you need Drag-races, please, tell (I'm not sure if anybody ever used them).
@@ -113,7 +113,7 @@ As a replacement for [url=""http://enigmaprotector.com/en/aboutvb.html""]Enigma 
 
  • [b]Online sorting[/b]
 Of course, UI will be reworked, but for now like this, sorry.
- [img=""https://trello-attachments.s3.amazonaws.com/5717c1b396f7190255bdc6e5/1013x783/2f4c6a0f652172b06c01249cd3805a6a/VvPUX9V.png""]It's better to see[/img]
+ [img=""https://trello-attachments.s3.amazonaws.com/5717c1b396f7190255bdc6e5/1013x783/2f4c6a0f652172b06c01249cd3805a6a/VvPUX9V.png""]It’s better to see[/img]
 
  • [b]Lite Showroom improvements[/b]
 Now it has some new features such as texture/materials viewing, UV exporting or ambients shadows updating (using much better algorithm than before). [url=""https://www.youtube.com/watch?v=g-ar6rcNP0s""]Video demonstration[/url].

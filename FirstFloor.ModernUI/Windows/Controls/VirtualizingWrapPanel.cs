@@ -380,7 +380,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         _generator.PrepareItemContainer(child);
                         child.Measure(ChildSlotSize);
                     } else {
-                        // The child has already been created, let's be sure it's in the right spot
+                        // The child has already been created, let’s be sure it’s in the right spot
                         Debug.Assert(Equals(child, _children[childIndex]), "Wrong child was generated");
                     }
                     _childSize = child.DesiredSize;

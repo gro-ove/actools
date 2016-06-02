@@ -80,7 +80,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
 
         /// <summary>
-        /// The Split Button's Items property maps to the base classes ContextMenu.Items property
+        /// The Split Button’s Items property maps to the base classes ContextMenu.Items property
         /// </summary>
         public ItemCollection Items {
             get {
@@ -249,7 +249,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         */
 
         /// <summary>
-        /// Event Handler for the Drop Down Button's Click event
+        /// Event Handler for the Drop Down Button’s Click event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

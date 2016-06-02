@@ -7,7 +7,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
         public string Id { get; }
 
         /// <summary>
-        /// Empty if object's in root.
+        /// Empty if object’s in root.
         /// </summary>
         [NotNull]
         public string Path { get; }

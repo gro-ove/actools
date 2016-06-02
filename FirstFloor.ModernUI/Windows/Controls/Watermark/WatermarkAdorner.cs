@@ -81,7 +81,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.Watermark {
         /// <param name="constraint">A size to constrain the adorner to.</param>
         /// <returns>A <see cref="Size"/> object representing the amount of layout space needed by the adorner.</returns>
         protected override Size MeasureOverride(Size constraint) {
-            // Here's the secret to getting the adorner to cover the whole control
+            // Here’s the secret to getting the adorner to cover the whole control
             _contentPresenter.Measure(AdornedElement.RenderSize);
             return AdornedElement.RenderSize;
         }

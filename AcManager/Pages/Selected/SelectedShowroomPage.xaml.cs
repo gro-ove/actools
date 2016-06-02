@@ -68,7 +68,7 @@ namespace AcManager.Pages.Selected {
                                                     true);
                         }
                     } catch (Exception e) {
-                        NonfatalError.Notify("Can’t update showroom's preview", e);
+                        NonfatalError.Notify("Can’t update showroom’s preview", e);
                     } finally {
                         if (Directory.Exists(sphereDirectory)) {
                             Directory.Delete(sphereDirectory, true);

@@ -161,7 +161,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         /// <summary>
-        /// Convert bytes to using UTF8 (only if it's a correct one) or Default encoding.
+        /// Convert bytes to using UTF8 (only if it’s a correct one) or Default encoding.
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>

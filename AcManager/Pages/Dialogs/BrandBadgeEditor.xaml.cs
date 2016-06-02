@@ -64,7 +64,7 @@ namespace AcManager.Pages.Dialogs {
 
                 File.Copy(Selected.Filename, Car.BrandBadge);
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t change brand badge.", "Make sure car's brand badge file is available to write.", ex);
+                NonfatalError.Notify(@"Can’t change brand badge.", "Make sure car’s brand badge file is available to write.", ex);
             }
         }
 

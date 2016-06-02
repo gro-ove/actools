@@ -344,7 +344,7 @@ namespace AcManager.Controls.ViewModels {
         /// <summary>
         /// Load data from serialized string, but save only if specific flag is provided.
         /// Warning! Without fixed mode previos saved data will be rewritten by new loaded data.
-        /// It's not a problem, it's a feature.
+        /// It’s not a problem, it’s a feature.
         /// </summary>
         /// <param name="serializedData">Serialized data</param>
         /// <param name="fixedMode">Prevent saving</param>

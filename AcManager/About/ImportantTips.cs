@@ -22,7 +22,7 @@ You can see the full list [url=""https://github.com/gro-ove/actools/blob/master/
 
             new ImportantTips(@"Starters", @"[b]This part is very important. Please, take a moment.[/b]
 
-Since Steam version of AC can't be started only by running [i]acs.exe[/i], CM has to use some weird ways to do the trick. At the moment there are three strange ways to start the game (apart from direct starting by [b]Naive Starter[/b]). All of them had their flaws, that's why you have to select one which suits you:
+Since Steam version of AC can't be started only by running [i]acs.exe[/i], CM has to use some weird ways to do the trick. At the moment there are three strange ways to start the game (apart from direct starting by [b]Naive Starter[/b]). All of them had their flaws, that’s why you have to select one which suits you:
 
  • [b]Tricky Starter[/b]
 First one. Uses pretty weird approach, which requires to temporary remove [i]AssettoCorsa.exe[/i] out of the way. On the bright side, this is the only change it does. So:
@@ -45,7 +45,7 @@ Changes original launcher a little.
 
  • [b]SSE Starter[/b]
 Quite questionable solution. I won't spread about it too much, just basics:
-  + Compatible: doesn't mess with [i]AssettoCorsa.exe[/i] at all, can work even if it's runned;
+  + Compatible: doesn't mess with [i]AssettoCorsa.exe[/i] at all, can work even if it’s runned;
   + Tested: surprisingly solid, works without Internet;
   − Steam-unfriendly: doesn't work for archievments & stuff.
   − Obsoletable: you can miss some updates for AC using it.

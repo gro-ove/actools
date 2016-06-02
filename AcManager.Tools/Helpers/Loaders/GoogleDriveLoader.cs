@@ -23,7 +23,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         public override async Task<bool> PrepareAsync(WebClient client, CancellationToken cancellation) {
             if (!Url.Contains("://drive.google.com/uc?", StringComparison.OrdinalIgnoreCase)) return true;
 
-            // TODO: drop if page is bigger than, let's say, 1MB
+            // TODO: drop if page is bigger than, let’s say, 1MB
             var downloadPage = await client.DownloadStringTaskAsync(Url);
             if (cancellation.IsCancellationRequested) return false;
 

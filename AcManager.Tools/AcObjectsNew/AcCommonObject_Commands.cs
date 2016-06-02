@@ -17,9 +17,9 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 Toggle();
             } catch (ToggleException ex) {
-                NonfatalError.Notify(@"Can’t toggle: " + ex.Message, @"Make sure there is no runned app working with object's folder.");
+                NonfatalError.Notify(@"Can’t toggle: " + ex.Message, @"Make sure there is no runned app working with object’s folder.");
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t toggle", @"Make sure there is no runned app working with object's folder.", ex);
+                NonfatalError.Notify(@"Can’t toggle", @"Make sure there is no runned app working with object’s folder.", ex);
             }
         }));
 
@@ -29,7 +29,7 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 Delete();
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t delete", @"Make sure there is no runned app working with object's folder.", ex);
+                NonfatalError.Notify(@"Can’t delete", @"Make sure there is no runned app working with object’s folder.", ex);
             }
         }));
 

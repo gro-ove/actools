@@ -105,7 +105,7 @@ namespace AcManager.Tools.AcErrors {
         Data_KunosCareerWeatherIsMissing,
 
 
-        [Description("Car's parent is missing")]
+        [Description("Car’s parent is missing")]
         Car_ParentIsMissing,
         
 
@@ -116,10 +116,10 @@ namespace AcManager.Tools.AcErrors {
         CarSkins_DirectoryIsUnavailable,
 
 
-        [Description("Skin's livery ({0}/livery.png) is missing")]
+        [Description("Skin’s livery ({0}/livery.png) is missing")]
         CarSkin_LiveryIsMissing,
 
-        [Description("Skin's preview ({0}/preview.jpg) is missing")]
+        [Description("Skin’s preview ({0}/preview.jpg) is missing")]
         CarSkin_PreviewIsMissing,
 
 
@@ -127,7 +127,7 @@ namespace AcManager.Tools.AcErrors {
         Showroom_Kn5IsMissing,
 
 
-        [Description("Font's bitmap is missing")]
+        [Description("Font’s bitmap is missing")]
         Font_BitmapIsMissing,
 
         [Description("Font is used but disabled")]

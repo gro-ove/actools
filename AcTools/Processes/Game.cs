@@ -19,7 +19,7 @@ namespace AcTools.Processes {
             file["REPLAY"].Set("ACTIVE", false);
             file["REMOTE"].Set("ACTIVE", false);
 
-            file.RemoveSections("CAR", 1); // because CAR_0 is a player's car
+            file.RemoveSections("CAR", 1); // because CAR_0 is a player’s car
             file.RemoveSections("SESSION");
         }
 

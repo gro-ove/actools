@@ -215,7 +215,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         /// <summary>
-        /// Gets or sets the collection of link groups shown in the window's menu.
+        /// Gets or sets the collection of link groups shown in the window’s menu.
         /// </summary>
         public LinkGroupCollection MenuLinkGroups {
             get { return (LinkGroupCollection)GetValue(MenuLinkGroupsProperty); }

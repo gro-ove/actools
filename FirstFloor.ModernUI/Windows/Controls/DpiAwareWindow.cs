@@ -124,7 +124,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             // Marshal the value in the lParam into a Rect.
             var newDisplayRect = (RECT)Marshal.PtrToStructure(lParam, typeof(RECT));
 
-            // Set the Window's position & size.
+            // Set the Window’s position & size.
             var matrix = _source.CompositionTarget.TransformFromDevice;
             var ul = matrix.Transform(new Vector(newDisplayRect.left, newDisplayRect.top));
             var hw = matrix.Transform(new Vector(newDisplayRect.right - newDisplayRect.left, newDisplayRect.bottom - newDisplayRect.top));

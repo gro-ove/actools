@@ -105,7 +105,7 @@ namespace AcManager.Tools.Objects {
                     await client.DownloadFileTaskAsync(url, PreviewImage);
                 }
             } catch (Exception e) {
-                Logging.Warning("Can’t download showroom's preview: " + e);
+                Logging.Warning("Can’t download showroom’s preview: " + e);
             }
         }
 
@@ -178,7 +178,7 @@ namespace AcManager.Tools.Objects {
                 ToggleSound();
             } catch (ToggleException ex) {
                 NonfatalError.Notify(@"Cannot toggle sound",
-                    @"Make sure there is no runned app working with showroom's sound files.", ex);
+                    @"Make sure there is no runned app working with showroom’s sound files.", ex);
             }
         }, o => HasSound));
     }

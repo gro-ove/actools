@@ -118,7 +118,7 @@ namespace FirstFloor.ModernUI.Presentation {
             if (values == null)
                 return;
 
-            //No reason to search if there's nothing there.
+            //No reason to search if there’s nothing there.
             if (String.IsNullOrEmpty(tb.Text))
                 return;
 

@@ -1,6 +1,6 @@
 namespace AcManager {
     /// <summary>
-    /// Taken from command line arguments or from Arguments.txt in app's data
+    /// Taken from command line arguments or from Arguments.txt in app‚Äôs data
     /// directory (one argument per line).
     /// </summary>
     public enum AppFlag {
@@ -143,7 +143,7 @@ namespace AcManager {
         RecentlyClosedQueueSize,
 
         /// <summary>
-        /// Mark current preset as changed only if it's actually changed, enabled by default.
+        /// Mark current preset as changed only if it‚Äôs actually changed, enabled by default.
         /// You can disable it to improve performance.
         /// Example: --smart-presets-changed-handling=false
         /// </summary>
@@ -157,8 +157,8 @@ namespace AcManager {
         EnableRaceIniRestoration,
 
         /// <summary>
-        /// Ignore skipped events (when first event is called ìevent5î or something like this,
-        /// in other words ó broken). I don't think it'll work, but anyway.
+        /// Ignore skipped events (when first event is called ‚Äúevent5‚Äù or something like this,
+        /// in other words ‚Äî broken). I don't think it'll work, but anyway.
         /// Example: --kunos-career-ignore-skipped-events
         /// </summary>
         KunosCareerIgnoreSkippedEvents,

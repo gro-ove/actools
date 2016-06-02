@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public partial class KunosCareerObject : IAcManagerScanWrapper {
-        /* for UI car's skins manager */
+        /* for UI car’s skins manager */
         public KunosCareerEventsManager EventsManager { get; private set; }
 
         public IAcWrapperObservableCollection EventsWrappers => EventsManager.WrappersList;

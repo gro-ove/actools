@@ -320,7 +320,7 @@ namespace AcManager.Tools.Miscellaneous {
                     }
                 }
 
-                /* if we couldn't delete file normally, let's kill any process with this name */
+                /* if we couldn't delete file normally, let’s kill any process with this name */
                 if (File.Exists(originalFilename)) {
                     try {
                         foreach (var process in Process.GetProcessesByName(Path.GetFileName(originalFilename))) {

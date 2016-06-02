@@ -66,7 +66,7 @@ namespace AcManager.Pages.Settings {
 
             public AsyncCommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new AsyncCommand(async o => {
                 try {
-                    var message = Prompt.Show("What's the Problem?", "Please, describe the problem.", watermark: "?", multiline: true);
+                    var message = Prompt.Show("What’s the Problem?", "Please, describe the problem.", watermark: "?", multiline: true);
                     await Task.Run(() => AppReporter.SendLogs(message));
                     ValuesStorage.Set(KeyLogsSentTime, DateTime.Now);
                     Toast.Show("Logs Sent", "Thank you for the help!");

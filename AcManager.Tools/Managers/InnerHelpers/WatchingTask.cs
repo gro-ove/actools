@@ -48,7 +48,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                         if (change.Type == WatcherChangeTypes.Changed) {
                             // very special case:
                             // after CHANGED could be only CHANGED, and only with FULL_FILENAME
-                            // let's process all of them in one INVOKE
+                            // let’s process all of them in one INVOKE
 
                             foreach (var next in _queue) {
                                 _applier.ApplyChange(_location, next);

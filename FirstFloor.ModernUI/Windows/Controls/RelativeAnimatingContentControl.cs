@@ -76,7 +76,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         }
 
         /// <summary>
-        /// Walks through the known storyboards in the control's template that
+        /// Walks through the known storyboards in the control’s template that
         /// may contain identifying values, storing them for future
         /// use and updates.
         /// </summary>
@@ -132,7 +132,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
 
                             if (sb != null) {
                                 // need to kick the storyboard, otherwise new values are not taken into account.
-                                // it's sad, really don't want to start storyboards in vsm, but I see no other option
+                                // it’s sad, really don't want to start storyboards in vsm, but I see no other option
                                 sb.Begin(this);     
                             }
                         }
@@ -347,7 +347,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         }
 
         /// <summary>
-        /// Adapter for DoubleAnimation's To property.
+        /// Adapter for DoubleAnimation’s To property.
         /// </summary>
         private class DoubleAnimationToAdapter : GeneralAnimationValueAdapter<DoubleAnimation>
         {
@@ -381,7 +381,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         }
 
         /// <summary>
-        /// Adapter for DoubleAnimation's From property.
+        /// Adapter for DoubleAnimation’s From property.
         /// </summary>
         private class DoubleAnimationFromAdapter : GeneralAnimationValueAdapter<DoubleAnimation>
         {
