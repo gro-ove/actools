@@ -181,6 +181,9 @@
     <Compile Include="Managers\Online\OnlineManagerType.cs" />
     <Compile Include="Managers\Online\RecentManager.cs" />
     <Compile Include="Managers\Online\ServerStatus.cs" />
+    <Compile Include="Managers\Presets\BuiltInPresetEntry.cs" />
+    <Compile Include="Managers\Presets\ISavedPresetEntry.cs" />
+    <Compile Include="Managers\Presets\SavedPresetEntry.cs" />
     <Compile Include="Managers\ReplaysExtensionSetter.cs" />
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
@@ -249,7 +252,7 @@
     <Compile Include="Managers\Online\BaseOnlineManager.cs" />
     <Compile Include="Managers\Online\ServerEntry.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerInformation.cs" />
-    <Compile Include="Managers\PresetsManager.cs" />
+    <Compile Include="Managers\Presets\PresetsManager.cs" />
     <Compile Include="Managers\PpFiltersManager.cs" />
     <Compile Include="Managers\ReplaysManager.cs" />
     <Compile Include="Helpers\SettingsHolder.cs" />

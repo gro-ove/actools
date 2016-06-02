@@ -1,52 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Tools.Managers;
-using AcTools.Utils;
+using AcManager.Tools.Managers.Presets;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Controls {
-    public interface IUserPresetable {
-        bool CanBeSaved { get; }
-
-        string UserPresetableKey { get; }
-
-        string ExportToUserPresetData();
-
-        event EventHandler Changed;
-
-        void ImportFromUserPresetData(string data);
-    }
-
-    public interface IPreviewProvider {
-        object GetPreview(string serializedData);
-    }
-
-    internal class ChangedPresetEventArgs : EventArgs {
-        public string Key { get; }
-
-        public string Value { get; }
-
-        public ChangedPresetEventArgs(string key, string value) {
-            Key = key;
-            Value = value;
-        }
-    }
-
-    internal delegate void ChangedPresetEventHandler(object sender, ChangedPresetEventArgs args);
-
     public class UserPresetsControl : Control {
         public static bool OptionSmartChangedHandling = true;
 
-        private static event ChangedPresetEventHandler PresetSelected;
+        private static event EventHandler<ChangedPresetEventArgs> PresetSelected;
 
         static UserPresetsControl() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(UserPresetsControl), new FrameworkPropertyMetadata(typeof(UserPresetsControl)));
@@ -231,19 +200,34 @@ namespace AcManager.Controls {
         }
 
         private static MenuItem ToMenuItem(ISavedPresetEntry entry, string mainDirectory, RoutedEventHandler clickHandler,
-                IPreviewProvider previewProvider = null) {
-            var l = mainDirectory.Length + 1;
-            var result = new MenuItem {
-                Header = entry.Filename.Substring(l, entry.Filename.Length - l - PresetsManager.FileExtension.Length),
-                Tag = new TagHelper(previewProvider, entry),
-            };
+                IPreviewProvider previewProvider, string extension) {
+            try {
+                var l = mainDirectory.Length + 1;
+                var result = new MenuItem {
+                    Header = entry.Filename.Substring(l, entry.Filename.Length - l - extension.Length),
+                    Tag = new TagHelper(previewProvider, entry),
+                };
 
-            result.Click += clickHandler;
-            return result;
+                result.Click += clickHandler;
+                return result;
+            } catch (ArgumentOutOfRangeException e) {
+                Logging.Warning($"ToMenuItem() exception:\n" +
+                        $"  mainDirectory: {mainDirectory}\n" +
+                        $"  filename: {entry.Filename}\n" +
+                        $"  extension: {extension}\n  " + e);
+                
+                var result = new MenuItem {
+                    Header = entry.Filename,
+                    Tag = new TagHelper(previewProvider, entry),
+                };
+
+                result.Click += clickHandler;
+                return result;
+            }
         }
 
         public static IEnumerable<MenuItem> GroupPresets(IEnumerable<ISavedPresetEntry> entries, string mainDirectory, RoutedEventHandler clickHandler,
-                IPreviewProvider previewProvider = null) {
+                IPreviewProvider previewProvider = null, string extension = PresetsManager.FileExtension) {
             var list = entries.Select(x => new {
                 Entry = x,
                 Directory = GetHead(x.Filename, mainDirectory)
@@ -257,18 +241,18 @@ namespace AcManager.Controls {
                         Header = Path.GetFileName(directory)
                     };
 
-                    foreach (var sub in GroupPresets(subList, directory, clickHandler)){
+                    foreach (var sub in GroupPresets(subList, directory, clickHandler, previewProvider, extension)){
                         group.Items.Add(sub);
                     }
 
                     yield return group;
                 } else if (list.Any()){
-                    yield return ToMenuItem(subList[0], mainDirectory, clickHandler, previewProvider);
+                    yield return ToMenuItem(subList[0], mainDirectory, clickHandler, previewProvider, extension);
                 }
             }
 
             foreach (var entry in list.Where(x => x.Directory == mainDirectory)) {
-                yield return ToMenuItem(entry.Entry, mainDirectory, clickHandler, previewProvider);
+                yield return ToMenuItem(entry.Entry, mainDirectory, clickHandler, previewProvider, extension);
             }
         }
 

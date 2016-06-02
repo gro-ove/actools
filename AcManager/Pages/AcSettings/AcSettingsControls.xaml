@@ -125,7 +125,7 @@
 
                 <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                         Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="Menu">
-                    <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}" ItemsSource="{Binding Controls.Presets}"
+                    <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}" ItemsSource="{Binding Presets}"
                             Width="{Binding Path=ActualWidth, ElementName=Menu}">
                         <MenuItem.Header>
                             <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"

@@ -2,84 +2,13 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
 
-namespace AcManager.Tools.Managers {
-    public interface ISavedPresetEntry {
-        string DisplayName { get; }
-
-        string Filename { get; }
-
-        string ReadData();
-    }
-
-    internal class SavedPresetEntry : ISavedPresetEntry {
-        public string BaseDirectory { get; private set; }
-
-        public string Filename { get; private set; }
-
-        public string DisplayName {
-            get {
-                if (_displayName != null) return _displayName;
-                var start = BaseDirectory.Length + 1;
-                return _displayName = Filename.Substring(start, Filename.Length - start - PresetsManager.FileExtension.Length);
-            }
-        }
-
-        public SavedPresetEntry(string baseDirectory, string filename) {
-            BaseDirectory = baseDirectory;
-            Filename = filename;
-        }
-
-        public string ReadData() {
-            return FileUtils.ReadAllText(Filename);
-        }
-
-        private string _displayName;
-
-        public override string ToString() {
-            return DisplayName;
-        }
-    }
-
-    internal class BuiltInPresetEntry : ISavedPresetEntry {
-        public byte[] Data { get; private set; }
-
-        public string BaseDirectory { get; private set; }
-
-        public string Filename { get; internal set; }
-
-        public BuiltInPresetEntry(string baseDirectory, string filename, byte[] data) {
-            BaseDirectory = baseDirectory;
-            Filename = filename;
-            Data = data;
-        }
-
-        public string ReadData() {
-            return Encoding.UTF8.GetString(Data);
-        }
-
-        private string _displayName;
-        
-        public string DisplayName {
-            get {
-                if (_displayName != null) return _displayName;
-                var start = BaseDirectory.Length + 1;
-                return _displayName =
-                    Filename.Substring(start, Filename.Length - start - PresetsManager.FileExtension.Length);
-            }
-        }
-
-        public override string ToString() {
-            return DisplayName;
-        }
-    }
-
+namespace AcManager.Tools.Managers.Presets {
     public class PresetsManager : AbstractFilesStorage {
         public const string FileExtension = ".cmpreset";
 
@@ -121,11 +50,6 @@ namespace AcManager.Tools.Managers {
                                      .ToList<ISavedPresetEntry>();
             return filesList.Union(GetBuiltInPresetsList(category)
                                        .Where(x => filesList.All(y => x.Filename != y.Filename))).OrderBy(x => x.Filename);
-
-            /*var list = GetBuiltInPresetsList(category);
-            return FileUtils.GetFiles(directory)
-                         .Where(x => x.ToLowerInvariant().EndsWith(Ext))
-                         .Select(x => new SavedPresetEntry(directory, x));*/
         }
 
         public bool SavePresetUsingDialog(string category, string data, string filename, out string resultFilename) {

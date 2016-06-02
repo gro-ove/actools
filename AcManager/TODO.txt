@@ -433,7 +433,7 @@ todo:
 
     - errors & fixers for badly make ui_skin.json
 
-    - replace int.TryParse in converters to something better
+    + replace int.TryParse in converters to something better
         - including the ones from QuickDrive_Weekend
 
     + lite custom showroom

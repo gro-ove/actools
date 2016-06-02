@@ -84,6 +84,9 @@
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
+    <Compile Include="ChangedPresetEventArgs.cs" />
+    <Compile Include="IPreviewProvider.cs" />
+    <Compile Include="IUserPresetable.cs" />
     <Compile Include="ValueLabel.cs" />
     <Compile Include="Converters\KunosCareerTypeToIconConverter.cs" />
     <Compile Include="Converters\PlaceToColorConverter.cs" />

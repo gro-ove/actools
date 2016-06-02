@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Lists;
+using AcManager.Tools.Managers.Presets;
+using AcTools.DataFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
@@ -25,8 +33,98 @@ namespace AcManager.Pages.AcSettings {
             DetectedControllers.Visibility = ActualWidth > 720 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public class AcControlsViewModel : NotifyPropertyChanged {
-            internal AcControlsViewModel() { }
+        public class AcControlsViewModel : NotifyPropertyChanged, IPreviewProvider {
+            internal AcControlsViewModel() {
+                Controls.PresetsUpdated += OnPresetsUpdated;
+                RebuildPresetsList();
+            }
+
+            private void OnPresetsUpdated(object sender, EventArgs e) {
+                RebuildPresetsList();
+            }
+
+            private bool _presetsReady;
+
+            public bool PresetsReady {
+                get { return _presetsReady; }
+                set {
+                    if (Equals(value, _presetsReady)) return;
+                    _presetsReady = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool _reloading;
+            private bool _loading;
+            private bool _saving;
+            private DateTime _lastSaved;
+
+            public class PresetEntry : NotifyPropertyChanged, ISavedPresetEntry {
+                public PresetEntry(string filename) {
+                    DisplayName = Path.GetFileNameWithoutExtension(filename);
+                    Filename = filename;
+                }
+
+                public string DisplayName { get; }
+
+                public string Filename { get; }
+
+                public string ReadData() {
+                    return FileUtils.ReadAllText(Filename);
+                }
+            }
+
+            private async Task<MenuItem> RebuildAsync(string header, string sub) {
+                var result = new MenuItem { Header = header };
+                var directory = Path.Combine(Controls.PresetsDirectory, sub);
+                var list = await Task.Run(() => FileUtils.GetFiles(directory, "*.ini").Select(x => new PresetEntry(x)).ToList());
+                foreach (var item in UserPresetsControl.GroupPresets(list, directory, ClickHandler, this, ".ini")) {
+                    result.Items.Add(item);
+                }
+                return result;
+            }
+
+            private void ClickHandler(object sender, RoutedEventArgs routedEventArgs) {
+                var entry = (((MenuItem)sender).Tag as UserPresetsControl.TagHelper)?.Entry as PresetEntry;
+                if (entry == null ||
+                        ModernDialog.ShowMessage($"Load “{entry.DisplayName}”? Current values will be replaced (but later could be restored from Recycle Bin).",
+                                "Are you sure?", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                    return;
+                }
+
+                Logging.Write("LOAD: " + entry.Filename);
+
+                //FileUtils.Recycle(Filename);
+                //File.Copy(entry.Value, Filename);
+            }
+
+            private async void RebuildPresetsList() {
+                if (_reloading || _saving || DateTime.Now - _lastSaved < TimeSpan.FromSeconds(1)) return;
+
+                _reloading = true;
+                PresetsReady = false;
+
+                await Task.Delay(200);
+
+                try {
+                    var builtIn = await RebuildAsync("Built-in Presets", "presets");
+                    Presets.ReplaceEverythingBy(new[] {
+                        builtIn,
+                        await RebuildAsync("User Presets", "savedsetups")
+                    });
+                } finally {
+                    _reloading = false;
+                }
+            }
+
+            object IPreviewProvider.GetPreview(string serializedData) {
+                var ini = IniFile.Parse(serializedData);
+                return new BbCodeBlock {
+                    BbCode = $"Input method: [b]{ini["HEADER"].GetEntry("INPUT_METHOD", Controls.InputMethods).DisplayName}[/b]"
+                };
+            }
+
+            public BetterObservableCollection<MenuItem> Presets { get; } = new BetterObservableCollection<MenuItem>();
 
             public AcSettingsHolder.ControlsSettings Controls => AcSettingsHolder.Controls;
 

@@ -24,6 +24,7 @@ using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Addons;
 using AcManager.Tools.Managers.Online;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;

@@ -157,13 +157,10 @@ namespace AcTools.Utils {
 
             using (var archive = ZipFile.OpenRead(pathToZip)) {
                 archive.ExtractToDirectory(destination);
-                //foreach (ZipArchiveEntry entry in archive.Entries) {
-                //    entry.ExtractToFile(Path.Combine(destination, entry.FullName));
-                //}
             }
         }
 
-        public static IEnumerable<string> GetFiles(string path) {
+        public static IEnumerable<string> GetFiles(string path, string searchPattern = null) {
             var queue = new Queue<string>();
             queue.Enqueue(path);
 
@@ -188,7 +185,7 @@ namespace AcTools.Utils {
 
                 string[] files = null;
                 try {
-                    files = Directory.GetFiles(path);
+                    files = searchPattern == null ? Directory.GetFiles(path) : Directory.GetFiles(path, searchPattern);
                 } catch (Exception) {
                     // ignored
                 }

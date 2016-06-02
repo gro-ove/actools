@@ -40,8 +40,7 @@ namespace AcManager.Tools.Helpers {
 
                     _directInput = new SlimDX.DirectInput.DirectInput();
                     _keyboardInput = new Dictionary<int, KeyboardInputButton>();
-                    _presetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
-                    ReloadPresets();
+                    PresetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
 
                     _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
                 } catch (Exception e) {
@@ -192,89 +191,25 @@ namespace AcManager.Tools.Helpers {
             #endregion
 
             #region Presets
-            private readonly string _presetsDirectory;
+            public readonly string PresetsDirectory;
 
             protected override void OnRenamed(object sender, RenamedEventArgs e) {
-                if (FileUtils.IsAffected(e.OldFullPath, _presetsDirectory) || FileUtils.IsAffected(e.FullPath, _presetsDirectory)) {
-                    ReloadPresetsLater();
+                if (FileUtils.IsAffected(e.OldFullPath, PresetsDirectory) || FileUtils.IsAffected(e.FullPath, PresetsDirectory)) {
+                    PresetsUpdated?.Invoke(this, EventArgs.Empty);
                 }
 
                 base.OnRenamed(sender, e);
             }
 
             protected override void OnChanged(object sender, FileSystemEventArgs e) {
-                if (FileUtils.IsAffected(e.FullPath, _presetsDirectory)) {
-                    ReloadPresetsLater();
+                if (FileUtils.IsAffected(e.FullPath, PresetsDirectory)) {
+                    PresetsUpdated?.Invoke(this, EventArgs.Empty);
                 }
 
                 base.OnChanged(sender, e);
             }
 
-            private bool _reloading;
-            private bool _loading;
-            private bool _saving;
-            private DateTime _lastSaved;
-
-            private IEnumerable<SettingEntry> GetUserPresets() {
-                return Directory.GetFiles(Path.Combine(_presetsDirectory, "savedsetups"), "*.ini").Select(x => new SettingEntry(x, Path.GetFileNameWithoutExtension(x)));
-            }
-
-            private IEnumerable<SettingEntry> GetBuiltInPresets() {
-                return Directory.GetFiles(Path.Combine(_presetsDirectory, "presets"), "*.ini").Select(x => new SettingEntry(x, Path.GetFileNameWithoutExtension(x)));
-            }
-
-            private MenuItem CreateMenuItem(SettingEntry x) {
-                var result = new MenuItem {
-                    Header = x.DisplayName,
-                    Tag = x
-                };
-
-                result.Click += MenuItemClick;
-                return result;
-            }
-
-            private void MenuItemClick(object sender, RoutedEventArgs e) {
-                var entry = ((MenuItem)sender).Tag as SettingEntry;
-                if (entry == null ||
-                        ModernDialog.ShowMessage($"Load {entry.DisplayName}? Current values will be replaced (but later could be restored from Recycle Bin).",
-                                "Are you sure?", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
-                    return;
-                }
-
-                FileUtils.Recycle(Filename);
-                File.Copy(entry.Value, Filename);
-            }
-
-            private void ReloadPresets() {
-                var userPresets = new MenuItem { Header = "User Presets" };
-                foreach (var x in GetUserPresets()) {
-                    userPresets.Items.Add(CreateMenuItem(x));
-                }
-
-                var builtInPresets = new MenuItem { Header = "Built-in Presets" };
-                foreach (var x in GetBuiltInPresets()) {
-                    builtInPresets.Items.Add(CreateMenuItem(x));
-                }
-
-                Presets.ReplaceEverythingBy(new[] {
-                    builtInPresets, userPresets
-                });
-            }
-
-            private async void ReloadPresetsLater() {
-                if (_reloading || _saving || DateTime.Now - _lastSaved < TimeSpan.FromSeconds(1)) return;
-
-                _reloading = true;
-                await Task.Delay(200);
-
-                try {
-                    ReloadPresets();
-                } finally {
-                    _reloading = false;
-                }
-            }
-
-            public BetterObservableCollection<MenuItem> Presets { get; } = new BetterObservableCollection<MenuItem>();
+            public event EventHandler PresetsUpdated;
 
             private SettingEntry _currentPreset;
 
