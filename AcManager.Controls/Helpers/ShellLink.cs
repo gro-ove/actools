@@ -5,7 +5,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
-namespace AcManager.Tools {
+namespace AcManager.Controls.Helpers {
     // Modified from http://smdn.jp/programming/tips/createlnk/
     // Originally from http://www.vbaccelerator.com/home/NET/Code/Libraries/Shell_Projects
     // /Creating_and_Modifying_Shortcuts/article.asp

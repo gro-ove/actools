@@ -1,8 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:AcManager.Controls" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:acSettingsControls="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI">
-
+        xmlns:acSettingsControls="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -19,7 +17,7 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-    
+
     <ItemsPanelTemplate x:Key="TwoColumnsPanel">
         <UniformGrid Columns="2" />
     </ItemsPanelTemplate>
@@ -67,15 +65,17 @@
 
                     <Grid HorizontalAlignment="Left">
                         <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
-                            <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left" />
+                            <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
+                                    TextTrimming="CharacterEllipsis" />
                             <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0"
-                                    Name="ProviderName" />
+                                    Name="ProviderName" TextTrimming="CharacterEllipsis" />
                             <TextBlock Text="Click to assign" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left"
-                                    VerticalAlignment="Center" FontWeight="Normal"
+                                    VerticalAlignment="Center" FontWeight="Normal" TextTrimming="CharacterEllipsis"
                                     Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" />
                         </Grid>
                         <TextBlock Text="Waiting for input" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                TextTrimming="CharacterEllipsis" FontWeight="Normal"
+                                Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </Grid>
                 </Button>
             </DockPanel>
@@ -132,10 +132,10 @@
             <Grid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Clear wheel binding" Command="{Binding WheelButton.ClearCommand}" />
-                    <MenuItem Header="Clear keyboard binding" Command="{Binding WheelButton.ClearCommand}"/>
+                    <MenuItem Header="Clear keyboard binding" Command="{Binding WheelButton.ClearCommand}" />
                 </ContextMenu>
             </Grid.ContextMenu>
-            
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="160" />
                 <ColumnDefinition Width="1.5*" MinWidth="160" />
@@ -152,18 +152,22 @@
                         <MenuItem Header="Clear" Command="{Binding ClearCommand}" InputGestureText="Delete" />
                     </ContextMenu>
                 </Button.ContextMenu>
-                
+
                 <Grid HorizontalAlignment="Stretch">
                     <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
-                        <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left" />
-                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0" />
+                        <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
+                                TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0"
+                                TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="Click to assign" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" />
+                                FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}"
+                                TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                     </Grid>
                     <TextBlock Text="Waiting for input" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                            FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            TextTrimming="CharacterEllipsis" />
                 </Grid>
             </Button>
 
@@ -176,17 +180,20 @@
                         <MenuItem Header="Clear" Command="{Binding ClearCommand}" InputGestureText="Delete" />
                     </ContextMenu>
                 </Button.ContextMenu>
-                
+
                 <Grid HorizontalAlignment="Stretch">
                     <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
-                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="Click to assign" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" />
+                                FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}"
+                                TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                     </Grid>
                     <TextBlock Text="Waiting for input" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                            FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            TextTrimming="CharacterEllipsis" />
                 </Grid>
             </Button>
         </Grid>
@@ -199,21 +206,24 @@
                     <MenuItem Header="Clear" Command="{Binding ClearCommand}" InputGestureText="Delete" />
                 </ContextMenu>
             </DockPanel.ContextMenu>
-            
+
             <TextBlock Text="{Binding ShortName, StringFormat='{}{0}:'}" Style="{StaticResource Label}" DockPanel.Dock="Left" Margin="0 0 8 0" Width="20"
                     TextAlignment="Right" />
             <Button Command="{Binding ToggleWaitingCommand, Source={x:Static helpers:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
                     Style="{StaticResource WaitingButton}">
                 <Grid HorizontalAlignment="Stretch">
                     <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
-                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" />
+                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+                                TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="Click to assign" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" />
+                                FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}"
+                                TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                     </Grid>
                     <TextBlock Text="Waiting for input" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                            FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            TextTrimming="CharacterEllipsis" />
                 </Grid>
             </Button>
         </DockPanel>
@@ -226,21 +236,24 @@
                     <MenuItem Header="Clear" Command="{Binding ClearCommand}" InputGestureText="Delete" />
                 </ContextMenu>
             </DockPanel.ContextMenu>
-            
+
             <TextBlock Text="{Binding DisplayName, StringFormat='{}{0}:'}" Style="{StaticResource Label}" DockPanel.Dock="Left" Margin="0 0 8 0" Width="120"
                     TextAlignment="Left" />
             <Button Command="{Binding ToggleWaitingCommand, Source={x:Static helpers:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
                     Style="{StaticResource WaitingButton}" Margin="0 0 8 0">
                 <Grid HorizontalAlignment="Stretch">
                     <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
-                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" />
+                        <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+                                TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="Click to assign" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" />
+                                FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}"
+                                TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                     </Grid>
                     <TextBlock Text="Waiting for input" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                            FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            FontWeight="Normal" Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            TextTrimming="CharacterEllipsis" />
                 </Grid>
             </Button>
         </DockPanel>

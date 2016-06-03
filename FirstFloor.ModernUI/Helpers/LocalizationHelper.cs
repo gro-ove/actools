@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -164,6 +165,10 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             return readable.ToString(format) + suffix;
+        }
+
+        public static string ToTitle(this string s) {
+            return Regex.Replace(s, @"\b[a-z]", x => x.Value.ToUpper());
         }
 
         public static string ReadableKey(this Keys key) {

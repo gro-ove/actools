@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,15 +10,20 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls;
+using AcManager.Controls.Helpers;
+using AcManager.Controls.Pages.Dialogs;
+using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers.Presets;
+using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using Microsoft.Win32;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsControls : IAcControlsConflictResolver {
@@ -30,17 +36,32 @@ namespace AcManager.Pages.AcSettings {
         }
 
         private void ResizingStuff() {
-            DetectedControllers.Visibility = ActualWidth > 720 ? Visibility.Visible : Visibility.Collapsed;
+            DetectedControllers.Visibility = ActualWidth > 640 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public class AcControlsViewModel : NotifyPropertyChanged, IPreviewProvider {
             internal AcControlsViewModel() {
                 Controls.PresetsUpdated += OnPresetsUpdated;
-                RebuildPresetsList();
+                RebuildPresetsList().Forget();
             }
 
-            private void OnPresetsUpdated(object sender, EventArgs e) {
-                RebuildPresetsList();
+            private bool _innerReloading;
+
+            private async void OnPresetsUpdated(object sender, EventArgs args) {
+                if (_innerReloading) return;
+
+                _innerReloading = true;
+
+                try {
+                    await Task.Delay(200);
+                    Application.Current.Dispatcher.Invoke(() => {
+                        RebuildPresetsList().Forget();
+                    });
+                } catch (Exception e) {
+                    Logging.Warning("OnPresetsUpdated() exception: " + e);
+                } finally {
+                    _innerReloading = false;
+                }
             }
 
             private bool _presetsReady;
@@ -55,9 +76,6 @@ namespace AcManager.Pages.AcSettings {
             }
 
             private bool _reloading;
-            private bool _loading;
-            private bool _saving;
-            private DateTime _lastSaved;
 
             public class PresetEntry : NotifyPropertyChanged, ISavedPresetEntry {
                 public PresetEntry(string filename) {
@@ -86,32 +104,28 @@ namespace AcManager.Pages.AcSettings {
 
             private void ClickHandler(object sender, RoutedEventArgs routedEventArgs) {
                 var entry = (((MenuItem)sender).Tag as UserPresetsControl.TagHelper)?.Entry as PresetEntry;
-                if (entry == null ||
+                if (entry == null || (Controls.CurrentPresetName == null || Controls.CurrentPresetChanged) &&
                         ModernDialog.ShowMessage($"Load “{entry.DisplayName}”? Current values will be replaced (but later could be restored from Recycle Bin).",
                                 "Are you sure?", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                     return;
                 }
 
-                Logging.Write("LOAD: " + entry.Filename);
-
-                //FileUtils.Recycle(Filename);
-                //File.Copy(entry.Value, Filename);
+                Controls.LoadPreset(entry.Filename);
             }
 
-            private async void RebuildPresetsList() {
-                if (_reloading || _saving || DateTime.Now - _lastSaved < TimeSpan.FromSeconds(1)) return;
+            private async Task RebuildPresetsList() {
+                if (_reloading) return;
 
                 _reloading = true;
                 PresetsReady = false;
 
-                await Task.Delay(200);
-
                 try {
-                    var builtIn = await RebuildAsync("Built-in Presets", "presets");
                     Presets.ReplaceEverythingBy(new[] {
-                        builtIn,
+                        await RebuildAsync("Built-in Presets", "presets"),
                         await RebuildAsync("User Presets", "savedsetups")
                     });
+                } catch (Exception e) {
+                    Logging.Warning("RebuildPresetsList() exception: " + e);
                 } finally {
                     _reloading = false;
                 }
@@ -123,6 +137,62 @@ namespace AcManager.Pages.AcSettings {
                     BbCode = $"Input method: [b]{ini["HEADER"].GetEntry("INPUT_METHOD", Controls.InputMethods).DisplayName}[/b]"
                 };
             }
+
+            private RelayCommand _saveCommand;
+
+            public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
+                var presetsDirectory = Path.Combine(Controls.PresetsDirectory, "savedsetups");
+
+                var dialog = new SaveFileDialog {
+                    InitialDirectory = presetsDirectory,
+                    Filter = string.Format(@"Presets (*{0})|*{0}", ".ini"),
+                    DefaultExt = ".ini",
+                    OverwritePrompt = true
+                };
+                
+                var filename = Controls.Ini["__LAUNCHER_CM"].Get("PRESET_NAME");
+                if (filename?.StartsWith("savedsetups", StringComparison.OrdinalIgnoreCase) != null) {
+                    dialog.InitialDirectory = Path.GetDirectoryName(Path.Combine(Controls.PresetsDirectory, filename));
+                    dialog.FileName = Path.GetFileNameWithoutExtension(filename);
+                }
+
+                if (o != null) {
+                    dialog.FileName = o as string;
+                }
+
+                if (dialog.ShowDialog() != true) {
+                    return;
+                }
+
+                filename = dialog.FileName;
+                if (!filename.StartsWith(presetsDirectory)) {
+                    if (ModernDialog.ShowMessage("Please, choose a file in initial directory or some subdirectory.",
+                                                 "Can’t Do", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                        SaveCommand?.Execute(Path.GetFileName(filename));
+                    } else {
+                        return;
+                    }
+                }
+
+                Controls.SavePreset(filename);
+            }));
+
+            private RelayCommand _testCommand;
+
+            public RelayCommand TestCommand => _testCommand ?? (_testCommand = new RelayCommand(o => {
+                QuickDrive.Run();
+            }));
+
+            private AsyncCommand _shareCommand;
+
+            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async o => {
+                var target = Controls.InputMethod.Id == "KEYBOARD" ? "keyboard" :
+                        Controls.InputMethod.Id == "X360" ? "Xbox 360 controller" :
+                        Controls.WheelAxleEntries.FirstOrDefault()?.Input?.Device?.DisplayName;
+
+                await SharingUiHelper.ShareAsync(SharingHelper.EntryType.ControlsPreset, Controls.CurrentPresetName, target, 
+                    File.ReadAllBytes(Controls.Filename));
+            }, o => o as bool? != true));
 
             public BetterObservableCollection<MenuItem> Presets { get; } = new BetterObservableCollection<MenuItem>();
 

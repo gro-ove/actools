@@ -186,6 +186,9 @@
     <Compile Include="Pages\Selected\SelectedFontPage.xaml.cs">
       <DependentUpon>SelectedFontPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\SettingsSharing.xaml.cs">
+      <DependentUpon>SettingsSharing.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\SettingsCustomShowroom.xaml.cs">
       <DependentUpon>SettingsCustomShowroom.xaml</DependentUpon>
     </Compile>
@@ -264,8 +267,6 @@
     <Compile Include="Tools\AcErrors\UiSolversFactory.cs" />
     <Compile Include="About\ReleaseNotes.cs" />
     <Compile Include="Tools\UriProvider.cs" />
-    <Compile Include="Tools\ShellLink.cs" />
-    <Compile Include="Tools\Toast.cs" />
     <Compile Include="Tools\AcErrors\UiAcErrorFixer.cs" />
     <Page Include="Pages\About\PieceOfInformationBlock.xaml">
       <SubType>Designer</SubType>
@@ -492,6 +493,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Settings\SettingsAddons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\SettingsSharing.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

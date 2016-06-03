@@ -8,7 +8,7 @@ using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools {
+namespace AcManager.Controls.Helpers {
     public class ToastWin8Helper {
         public const string AppUserModelId = "AcClub.ContentManager";
         public static string ShortcutLocation;

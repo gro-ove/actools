@@ -47,7 +47,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public string Prompt(string message, string defaultValue) {
-                return Controls.Pages.Dialogs.Prompt.Show("Webpage says", message, defaultValue);
+                return Controls.Pages.Dialogs.Prompt.Show(message, "Webpage says", defaultValue);
             }
 
             public void Update(string selected) {

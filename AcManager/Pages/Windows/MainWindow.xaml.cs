@@ -255,6 +255,10 @@ namespace AcManager.Pages.Windows {
             var request = uri.SubstringExt(CustomUriSchemeHelper.UriScheme.Length);
             Logging.Write("[MAINWINDOW] URI Request: " + request);
 
+            if (request.StartsWith("//", StringComparison.Ordinal)) {
+                request = request.Substring(2);
+            }
+
             string key, param;
             NameValueCollection query;
 
@@ -275,6 +279,13 @@ namespace AcManager.Pages.Windows {
             }
 
             switch (key) {
+                case "shared":
+                    using (var waiting = new WaitingDialog()) {
+                        waiting.Report("Loading…");
+
+                    }
+                    break;
+
                 case "quickdrive":
                     var preset = Convert.FromBase64String(param).ToUtf8String();
                     if (!QuickDrive.RunSerializedPreset(preset)) {
@@ -283,7 +294,6 @@ namespace AcManager.Pages.Windows {
                     break;
 
                 case "race":
-                    ModernDialog.ShowMessage("Here!");
                     var raceIni = Convert.FromBase64String(param).ToUtf8String();
                     await GameWrapper.StartAsync(new Game.StartProperties {
                         PreparedConfig = IniFile.Parse(raceIni)

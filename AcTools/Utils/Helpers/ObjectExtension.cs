@@ -4,29 +4,36 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ObjectExtension {
+        [Pure]
         public static string ToInvariantString(this float o) {
             return o.ToString(CultureInfo.InvariantCulture);
         }
 
+        [Pure]
         public static string ToInvariantString(this double o) {
             return o.ToString(CultureInfo.InvariantCulture);
         }
+        [Pure]
         public static string ToInvariantString(this int o) {
             return o.ToString(CultureInfo.InvariantCulture);
         }
 
+        [Pure]
         public static string ToInvariantString(this uint o) {
             return o.ToString(CultureInfo.InvariantCulture);
         }
 
+        [Pure]
         public static string ToInvariantString(this short o) {
             return o.ToString(CultureInfo.InvariantCulture);
         }
 
+        [Pure]
         public static string ToInvariantString(this ushort o) {
             return o.ToString(CultureInfo.InvariantCulture);
         }
 
+        [Pure]
         public static string ToInvariantString([NotNull] this object o) {
             if (o == null) throw new ArgumentNullException(nameof(o));
 

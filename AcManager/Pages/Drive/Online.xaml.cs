@@ -347,8 +347,8 @@ namespace AcManager.Pages.Drive {
             private AsyncCommand _addNewServerCommand;
 
             public AsyncCommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new AsyncCommand(async o => {
-                var address = Prompt.Show("Add a New Server", "Server address (IP & HTTP or TCP Port):", "",
-                        "127.0.0.1:8081", "Port could be omitted, in this case app will scan all specific ports");
+                var address = Prompt.Show("Server address (IP & HTTP or TCP Port):", "Add a New Server", "",
+                    "127.0.0.1:8081", "Port could be omitted, in this case app will scan all specific ports");
                 if (address == null) return;
 
                 foreach (var s in address.Split(',').Select(x => x.Trim())) {

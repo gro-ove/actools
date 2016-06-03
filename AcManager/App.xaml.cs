@@ -125,6 +125,9 @@ namespace AcManager {
             InitializeUpdatableStuff();
             InitializePresets();
 
+            SharingHelper.Initialize();
+            SharingUiHelper.Initialize();
+
             AppAddonsManager.Initialize(FilesStorage.Instance.GetDirectory("Addons"));
             StarterPlus.Initialize();
             InitializeMagickAddonAsync().Forget();

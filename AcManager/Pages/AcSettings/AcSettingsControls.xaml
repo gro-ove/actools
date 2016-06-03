@@ -33,7 +33,7 @@
                 </DockPanel>
             </StackPanel>
 
-            <mui:ModernFrame Margin="0 4 0 0" Source="{Binding Controls.InputMethod.Id, Converter={x:Static acSettings:AcSettingsControls.ModeToUriConverter}}" />
+            <mui:ModernFrame Margin="0 4 1 0" Source="{Binding Controls.InputMethod.Id, Converter={x:Static acSettings:AcSettingsControls.ModeToUriConverter}}" />
         </DockPanel>
 
         <StackPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" Name="DetectedControllers">
@@ -48,7 +48,7 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type directInput:DirectInputDevice}">
-                            <StackPanel Width="164" Margin="0 0 0 8">
+                            <StackPanel Width="164" Margin="0 0 0 8" Background="Transparent">
                                 <StackPanel.ToolTip>
                                     <StackPanel Margin="4">
                                         <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
@@ -129,14 +129,14 @@
                             Width="{Binding Path=ActualWidth, ElementName=Menu}">
                         <MenuItem.Header>
                             <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
-                                    Text="{Binding Controls.CurrentPreset.DisplayName, FallbackValue='Unsaved'}">
+                                    Text="{Binding Controls.CurrentPresetName, TargetNullValue='Unsaved'}">
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Controls.CurrentPresetChanged}" Value="True">
                                                 <Setter Property="FontStyle" Value="Italic" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding Controls.CurrentPreset}" Value="{x:Null}">
+                                            <DataTrigger Binding="{Binding Controls.CurrentPresetName}" Value="{x:Null}">
                                                 <Setter Property="FontStyle" Value="Italic" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -150,11 +150,19 @@
                     </MenuItem>
                 </Menu>
 
-                <Button Command="{Binding Controls.SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset">Save</Button>
+                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset">Save</Button>
             </Grid>
-            <!--<Button Command="{Binding Controls.ShareCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="Share preset and copy link to clipboard">Share</Button>
-            <Button Command="{Binding Controls.TestCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="Test current preset with Quick Drive"
-                    Style="{StaticResource Go.Button}">Test</Button>-->
+            <Button Command="{Binding ShareCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="Share preset and copy link to clipboard">
+                Share
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Share preset" Command="{Binding ShareCommand, Mode=OneTime}" />
+                        <MenuItem Header="Share FFB settings only" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="True" />
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button Command="{Binding TestCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="Test current preset with Quick Drive"
+                    Style="{StaticResource Go.Button}">Test</Button>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -17,11 +15,9 @@ using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using SlimDX.DirectInput;
 using Key = System.Windows.Input.Key;
-using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
@@ -194,7 +190,8 @@ namespace AcManager.Tools.Helpers {
             public readonly string PresetsDirectory;
 
             protected override void OnRenamed(object sender, RenamedEventArgs e) {
-                if (FileUtils.IsAffected(e.OldFullPath, PresetsDirectory) || FileUtils.IsAffected(e.FullPath, PresetsDirectory)) {
+                if (FileUtils.IsAffected(PresetsDirectory, e.OldFullPath) || FileUtils.IsAffected(PresetsDirectory, e.FullPath) ||
+                        FileUtils.IsAffected(e.OldFullPath, PresetsDirectory) || FileUtils.IsAffected(e.FullPath, PresetsDirectory)) {
                     PresetsUpdated?.Invoke(this, EventArgs.Empty);
                 }
 
@@ -202,7 +199,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             protected override void OnChanged(object sender, FileSystemEventArgs e) {
-                if (FileUtils.IsAffected(e.FullPath, PresetsDirectory)) {
+                if (FileUtils.IsAffected(PresetsDirectory, e.FullPath) || FileUtils.IsAffected(e.FullPath, PresetsDirectory)) {
                     PresetsUpdated?.Invoke(this, EventArgs.Empty);
                 }
 
@@ -211,15 +208,21 @@ namespace AcManager.Tools.Helpers {
 
             public event EventHandler PresetsUpdated;
 
-            private SettingEntry _currentPreset;
+            private string _currentPresetName;
 
-            public SettingEntry CurrentPreset {
-                get { return _currentPreset; }
+            public string CurrentPresetName {
+                get { return _currentPresetName; }
                 set {
-                    if (Equals(value, _currentPreset)) return;
-                    _currentPreset = value;
-                    OnPropertyChanged();
+                    if (Equals(value, _currentPresetName)) return;
+                    _currentPresetName = value;
+                    OnPropertyChanged(false);
                 }
+            }
+
+            private string GetCurrentPresetName(string filename) {
+                filename = FileUtils.GetRelativePath(filename, PresetsDirectory);
+                var f = new[] { "presets", "savedsetups" }.FirstOrDefault(s => filename.StartsWith(s, StringComparison.OrdinalIgnoreCase));
+                return (f == null ? filename : filename.SubstringExt(f.Length + 1)).ApartFromLast(".ini", StringComparison.OrdinalIgnoreCase);
             }
 
             private bool _currentPresetChanged = true;
@@ -229,8 +232,25 @@ namespace AcManager.Tools.Helpers {
                 set {
                     if (Equals(value, _currentPresetChanged)) return;
                     _currentPresetChanged = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(false);
                 }
+            }
+
+            protected override void Save() {
+                if (CurrentPresetName != null) {
+                    CurrentPresetChanged = true;
+                }
+
+                base.Save();
+            }
+
+            public void LoadPreset(string presetFilename) {
+                new IniFile(presetFilename) {
+                    ["__LAUNCHER_CM"] = {
+                        ["PRESET_NAME"] = presetFilename.SubstringExt(PresetsDirectory.Length + 1),
+                        ["PRESET_CHANGED"] = false
+                    }
+                }.SaveAs(Filename, true);
             }
             #endregion
 
@@ -248,6 +268,7 @@ namespace AcManager.Tools.Helpers {
             public SettingEntry InputMethod {
                 get { return _inputMethod; }
                 set {
+                    if (!InputMethods.Contains(value)) value = InputMethods[0];
                     if (Equals(value, _inputMethod)) return;
                     _inputMethod = value;
                     OnPropertyChanged();
@@ -309,7 +330,7 @@ namespace AcManager.Tools.Helpers {
                 set {
                     if (Equals(value, _wheelHShifterDevice)) return;
                     _wheelHShifterDevice = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(false);
                 }
             }
 
@@ -543,9 +564,9 @@ namespace AcManager.Tools.Helpers {
             private void EntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 if (e.PropertyName == nameof(WheelHShifterButtonEntry.Input) && sender is WheelHShifterButtonEntry) {
                     UpdateWheelHShifterDevice();
+                } else if (e.PropertyName != nameof(WheelAxleEntry.Value)) {
+                    Save();
                 }
-
-                Save();
             }
 
             private RelayCommand _toggleWaitingCommand;
@@ -560,12 +581,6 @@ namespace AcManager.Tools.Helpers {
 
                 b.Waiting = !b.Waiting;
             }, o => o is IEntry));
-
-            private RelayCommand _saveCommand;
-
-            public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
-                // TODO
-            }, o => false));
 
             [CanBeNull]
             public IEntry GetWaiting() {
@@ -649,6 +664,10 @@ namespace AcManager.Tools.Helpers {
                 KeyboardMouseSteering = section.GetBool("MOUSE_STEER", false);
                 KeyboardMouseButtons = section.GetBool("MOUSE_ACCELERATOR_BRAKE", false);
                 KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
+
+                section = Ini["__LAUNCHER_CM"];
+                CurrentPresetName = section.ContainsKey("PRESET_NAME") ? GetCurrentPresetName(section.Get("PRESET_NAME")) : null;
+                CurrentPresetChanged = CurrentPresetName != null && section.GetBool("PRESET_CHANGED", true);
             }
 
             protected override void SetToIni() {
@@ -674,6 +693,22 @@ namespace AcManager.Tools.Helpers {
                 section.Set("MOUSE_STEER", KeyboardMouseSteering);
                 section.Set("MOUSE_ACCELERATOR_BRAKE", KeyboardMouseButtons);
                 section.Set("MOUSE_SPEED", KeyboardMouseSteeringSpeed);
+
+                section = Ini["__LAUNCHER_CM"];
+                section.Set("PRESET_CHANGED", CurrentPresetChanged);
+            }
+
+            public void SavePreset(string filename) {
+                SetToIni();
+
+                var section = Ini["__LAUNCHER_CM"];
+                section.Set("PRESET_NAME", filename.SubstringExt(PresetsDirectory.Length + 1));
+                section.Set("PRESET_CHANGED", false);
+
+                Ini.SaveAs(filename);
+
+                CurrentPresetName = GetCurrentPresetName(section.Get("PRESET_NAME"));
+                CurrentPresetChanged = false;
             }
         }
 

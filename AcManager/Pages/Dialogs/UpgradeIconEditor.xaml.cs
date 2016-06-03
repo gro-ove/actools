@@ -75,7 +75,7 @@ namespace AcManager.Pages.Dialogs {
 
             // Car.RefreshUpgradeIcon();
 
-            var saveAs = Controls.Pages.Dialogs.Prompt.Show(@"Add into the library?", @"Add as:", Path.GetFileNameWithoutExtension(filename));
+            var saveAs = Controls.Pages.Dialogs.Prompt.Show(@"Add as:", @"Add into the library?", Path.GetFileNameWithoutExtension(filename));
             if (saveAs == null) return;
 
             try {

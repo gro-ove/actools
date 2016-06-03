@@ -4,7 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
 using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
@@ -103,7 +105,7 @@ namespace AcManager.Tools.Helpers {
                     }
 
                     _loading = true;
-                    LoadFromIni();
+                    Application.Current.Dispatcher.Invoke(LoadFromIni);
                     _loading = false;
                 } finally {
                     _reloading = false;
@@ -112,7 +114,7 @@ namespace AcManager.Tools.Helpers {
 
             private bool _saving;
 
-            protected async void Save() {
+            protected virtual async void Save() {
                 if (_saving || _loading) return;
 
                 _saving = true;
@@ -136,7 +138,7 @@ namespace AcManager.Tools.Helpers {
                 _loading = l;
             }
 
-            protected IniFile Ini;
+            public IniFile Ini;
 
             /// <summary>
             /// Called from IniSettings constructor!
@@ -147,8 +149,7 @@ namespace AcManager.Tools.Helpers {
 
             [NotifyPropertyChangedInvocator]
             protected override void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-                base.OnPropertyChanged(propertyName);
-                Save();
+                OnPropertyChanged(true, propertyName);
             }
 
             [NotifyPropertyChangedInvocator]

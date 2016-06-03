@@ -546,5 +546,68 @@ namespace AcManager.Tools.Helpers {
         private static CustomShowroomSettings _customShowroom;
 
         public static CustomShowroomSettings CustomShowroom => _customShowroom ?? (_customShowroom = new CustomShowroomSettings());
+
+        public class SharingSettings : NotifyPropertyChanged {
+            internal SharingSettings() { }
+
+            public bool CustomIds {
+                get { return ValuesStorage.GetBool("Settings.SharingSettings.CustomIds", false); }
+                set {
+                    if (Equals(value, CustomIds)) return;
+                    ValuesStorage.Set("Settings.SharingSettings.CustomIds", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool VerifyBeforeSharing {
+                get { return ValuesStorage.GetBool("Settings.SharingSettings.VerifyBeforeSharing", true); }
+                set {
+                    if (Equals(value, VerifyBeforeSharing)) return;
+                    ValuesStorage.Set("Settings.SharingSettings.VerifyBeforeSharing", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool CopyLinkToClipboard {
+                get { return ValuesStorage.GetBool("Settings.SharingSettings.CopyLinkToClipboard", true); }
+                set {
+                    if (Equals(value, CopyLinkToClipboard)) return;
+                    ValuesStorage.Set("Settings.SharingSettings.CopyLinkToClipboard", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool ShareAnonymously {
+                get { return ValuesStorage.GetBool("Settings.SharingSettings.ShareAnonymously", false); }
+                set {
+                    if (Equals(value, ShareAnonymously)) return;
+                    ValuesStorage.Set("Settings.SharingSettings.ShareAnonymously", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool ShareWithoutName {
+                get { return ValuesStorage.GetBool("Settings.SharingSettings.ShareWithoutName", false); }
+                set {
+                    if (Equals(value, ShareWithoutName)) return;
+                    ValuesStorage.Set("Settings.SharingSettings.ShareWithoutName", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            [CanBeNull]
+            public string SharingName {
+                get { return ValuesStorage.GetString("Settings.SharingSettings.SharingName", null) ?? Drive.PlayerNameOnline; }
+                set {
+                    if (Equals(value, SharingName)) return;
+                    ValuesStorage.Set("Settings.SharingSettings.SharingName", value);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private static SharingSettings _sharing;
+
+        public static SharingSettings Sharing => _sharing ?? (_sharing = new SharingSettings());
     }
 }

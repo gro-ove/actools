@@ -187,6 +187,7 @@
     <Compile Include="Managers\ReplaysExtensionSetter.cs" />
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
+    <Compile Include="Miscellaneous\SharingHelper.cs" />
     <Compile Include="Objects\CarSkinObject_Lists.cs" />
     <Compile Include="Objects\FontObject.cs" />
     <Compile Include="SemiGui\DriverName.cs" />

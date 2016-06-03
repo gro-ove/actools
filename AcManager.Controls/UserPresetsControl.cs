@@ -211,7 +211,7 @@ namespace AcManager.Controls {
                 result.Click += clickHandler;
                 return result;
             } catch (ArgumentOutOfRangeException e) {
-                Logging.Warning($"ToMenuItem() exception:\n" +
+                Logging.Warning("ToMenuItem() exception:\n" +
                         $"  mainDirectory: {mainDirectory}\n" +
                         $"  filename: {entry.Filename}\n" +
                         $"  extension: {extension}\n  " + e);

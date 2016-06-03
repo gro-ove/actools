@@ -421,6 +421,23 @@ todo:
 
     - lite mode (without main form): overlays, second commands, attempts to open main form?
 
+    - proper sharing
+        + settings
+        + sharing
+        - receiving
+        - history
+        - deleting shared
+        - custom ids?
+        - special types:
+            + controls
+            - ffb only
+            - quick drive
+            - car setups
+            - ppfilters?
+            - replays?
+
+    - __LAUNCHER_CM/WEATHER_TYPE editing
+
     - ac options
         + switching for auto-update previews
         + audio

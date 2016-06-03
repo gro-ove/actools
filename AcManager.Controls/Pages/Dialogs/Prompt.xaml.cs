@@ -93,8 +93,8 @@ namespace AcManager.Controls.Pages.Dialogs {
         public string Result { get; private set; }
 
         [CanBeNull]
-        public static string Show(string title, string description, string defaultValue = "", string watermark = null, string toolTip = null,
-                bool multiline = false, bool passwordMode = false) {
+        public static string Show(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
+            bool multiline = false, bool passwordMode = false) {
             var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode);
             dialog.ShowDialog();
             return dialog.Result;

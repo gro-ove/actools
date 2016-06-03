@@ -115,7 +115,7 @@ namespace AcManager.Controls.CustomShowroom {
                 int width, height;
                 switch (p) {
                     case "custom":
-                        var result = Prompt.Show("View Mapping", "Dimensions ([Width]×[Height]):", ValuesStorage.GetString(KeyDimensions, ""), "2048x2048");
+                        var result = Prompt.Show("Dimensions ([Width]×[Height]):", "View Mapping", ValuesStorage.GetString(KeyDimensions, ""), "2048x2048");
                         if (string.IsNullOrWhiteSpace(result)) return;
 
                         ValuesStorage.Set(KeyDimensions, result);

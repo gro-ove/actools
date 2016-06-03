@@ -64,7 +64,7 @@ namespace AcManager.Tools.Objects {
             TemperatureCoefficient = ini["LAUNCHER"].GetDouble("TEMPERATURE_COEFF", 0d);
 
             try {
-                WeatherType = ini["LAUNCHER_CM"].GetEnumNullable<WeatherDescription.WeatherType>("WEATHER_TYPE");
+                WeatherType = ini["__LAUNCHER_CM"].GetEnumNullable<WeatherDescription.WeatherType>("WEATHER_TYPE");
             } catch (Exception) {
                 WeatherType = null;
             }
@@ -77,7 +77,7 @@ namespace AcManager.Tools.Objects {
         public override void SaveData(IniFile ini) {
             ini["LAUNCHER"].Set("NAME", Name);
             ini["LAUNCHER"].Set("TEMPERATURE_COEFF", TemperatureCoefficient);
-            ini["LAUNCHER_CM"].Set("WEATHER_TYPE", WeatherType);
+            ini["__LAUNCHER_CM"].Set("WEATHER_TYPE", WeatherType);
         }
     }
 }

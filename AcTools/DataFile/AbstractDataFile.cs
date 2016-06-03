@@ -74,6 +74,15 @@ namespace AcTools.DataFile {
                 throw new InvalidDataException();
             }
 
+            SaveAs(filename, backup);
+        }
+
+        public void SaveAs(string filename, bool backup = false) {
+            if (SourceFilename == filename) {
+                Save(backup);
+                return;
+            }
+
             if (File.Exists(filename) && backup) {
                 FileUtils.Recycle(filename);
             }

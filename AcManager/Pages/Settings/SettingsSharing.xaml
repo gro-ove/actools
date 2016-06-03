@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsSharing" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
+        xmlns:miscellaneous="clr-namespace:AcManager.Tools.Miscellaneous;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsSharing+SharingViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="HistoryEntryType" DataType="{x:Type miscellaneous:SharingHelper+SharedEntry}">
+                <DockPanel>
+                    <TextBlock Text="{Binding EntryType, Converter={StaticResource EnumToDescriptionConverter}}" TextTrimming="CharacterEllipsis" />
+                </DockPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer>
+        <StackPanel Style="{StaticResource SettingsPanel}">
+            <CheckBox IsChecked="{Binding Sharing.CopyLinkToClipboard}">
+                <Label>Copy link to clipboard</Label>
+            </CheckBox>
+
+            <DockPanel IsEnabled="{Binding Sharing.ShareAnonymously, Converter={StaticResource InvertBooleanConverter}}">
+                <Label>Sharing name:</Label>
+                <TextBox Text="{Binding Sharing.SharingName}" watermark:WatermarkService.Watermark="?" />
+            </DockPanel>
+
+            <CheckBox IsChecked="{Binding Sharing.ShareAnonymously}">
+                <Label>Share anonymously</Label>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Sharing.ShareWithoutName}" ToolTip="Shared entities will be unnamed">
+                <Label>Disable custom names for sharing</Label>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Sharing.VerifyBeforeSharing}">
+                <Label>Verify param before sharing</Label>
+            </CheckBox>
+
+            <StackPanel
+                    Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <!--special options-->
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Special:</TextBlock>
+
+                <CheckBox IsChecked="{Binding Sharing.CustomIds}">
+                    <Label>Custom IDs</Label>
+                </CheckBox>
+            </StackPanel>
+
+            <!--history-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">History:</TextBlock>
+            <DockPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="400"
+                        PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
+                    <DataGrid ItemsSource="{Binding History}" Style="{StaticResource DataGrid.ReadOnly}" MouseDoubleClick="History_OnMouseDoubleClick"
+                              Name="HistoryDataGrid">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="160" Header="Type" SortMemberPath="EntryType" CellTemplate="{StaticResource HistoryEntryType}" />
+                            <DataGridTextColumn Width="1*" Header="Name" Binding="{Binding Name, TargetNullValue='?'}" />
+                            <DataGridTextColumn Width="1*" Header="Target" Binding="{Binding Target, TargetNullValue='?'}" />
+                            <DataGridTextColumn Width="160" Header="URL" Binding="{Binding Url, TargetNullValue='?'}" />
+                        </DataGrid.Columns>
+
+                        <!--<DataGrid.RowDetailsTemplate>
+                            <DataTemplate DataType="{x:Type miscellaneous:SharingHelper+SharedEntry}">
+                                <DockPanel>
+                                    <Button DockPanel.Dock="Right" Command="{Binding RemoveCommand}">Remove</Button>
+                                    <TextBlock Text="{Binding Id, StringFormat='{}ID: {0}'}" VerticalAlignment="Center" Margin="4 0" />
+                                </DockPanel>
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>-->
+                    </DataGrid>
+                </ScrollViewer>
+            </DockPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -69,6 +69,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Windows">
+      <HintPath>C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Windows.winmd</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -85,6 +88,9 @@
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="ChangedPresetEventArgs.cs" />
+    <Compile Include="Helpers\SharingUiHelper.cs" />
+    <Compile Include="Helpers\ShellLink.cs" />
+    <Compile Include="Helpers\Toast.cs" />
     <Compile Include="IPreviewProvider.cs" />
     <Compile Include="IUserPresetable.cs" />
     <Compile Include="ValueLabel.cs" />
