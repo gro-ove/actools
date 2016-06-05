@@ -160,8 +160,8 @@
 
                 <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2">
                     <controls:ValueLabel Value="{Binding TimeMultipler}" Postfix="×">Time multipler</controls:ValueLabel>
-                    <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}" Margin="0 0 0 4"
-                            Name="TimeMultiplerSlider" TickFrequency="60" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                    <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
+                            Margin="0 0 0 4" Name="TimeMultiplerSlider" TickFrequency="60" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
             </Grid>
         </Grid>
@@ -210,7 +210,8 @@
             </StackPanel>
 
             <mui:ModernTab Grid.Column="1" LinksMargin="0" FrameMargin="0 40 0 4" LinksHorizontalAlignment="Left"
-                    SelectedSource="{Binding SelectedMode, Mode=TwoWay}" Name="ModeTab" FrameNavigated="ModeTab_OnFrameNavigated" VerticalAlignment="Stretch">
+                    SelectedSource="{Binding SelectedMode, Mode=TwoWay}" Name="ModeTab" FrameNavigated="ModeTab_OnFrameNavigated" VerticalAlignment="Stretch"
+                    ContentLoader="{x:Static drive:QuickDrive.ContentLoader}">
                 <mui:ModernTab.Links>
                     <mui:Link DisplayName="Practice" Source="/Pages/Drive/QuickDrive_Practice.xaml" />
                     <mui:Link DisplayName="Hotlap" Source="/Pages/Drive/QuickDrive_Hotlap.xaml" />
@@ -223,19 +224,10 @@
             </mui:ModernTab>
         </Grid>
 
-        <Grid Grid.Row="2" Margin="0 16 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <controls:UserPresetsControl Grid.Column="1" Margin="0 0 4 0" UserPresetable="{Binding}" />
-            <Button Grid.Column="2" Command="{Binding GoCommand}" Style="{StaticResource Go.Button}">Go!</Button>
-        </Grid>
+        <StackPanel Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
+            <controls:UserPresetsControl Grid.Column="1" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
+            <Button Command="{Binding ShareCommand}" Margin="0 0 4 0">Share</Button>
+            <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}">Go!</Button>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Controls.Pages.Dialogs;
@@ -36,11 +37,20 @@ namespace AcManager.Controls.Helpers {
             // TODO
         }, o => o is SharingHelper.SharedEntry));
 
+        private static bool _sharingInProcess;
+
+        public static Task ShareAsync(SharingHelper.EntryType type, string defaultName, string target, string data) {
+            return ShareAsync(type, defaultName, target, Encoding.UTF8.GetBytes(data));
+        }
+
         public static async Task ShareAsync(SharingHelper.EntryType type, string defaultName, string target, byte[] data) {
+            if (_sharingInProcess) return;
+            _sharingInProcess = true;
+
             try {
                 var contentName = defaultName;
                 if (!SettingsHolder.Sharing.ShareWithoutName) {
-                    contentName = Prompt.Show("Enter name or keep field empty:", "Share As", defaultName, "None");
+                    contentName = Prompt.Show("Enter name or keep field empty:", "Share As", defaultName, "None", maxLength: 60);
                     if (contentName == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(contentName)) {
                         contentName = null;
@@ -49,7 +59,7 @@ namespace AcManager.Controls.Helpers {
 
                 string id = null;
                 if (SettingsHolder.Sharing.CustomIds) {
-                    id = Prompt.Show("Enter custom ID:", "Custom ID", "", "None")?.Trim();
+                    id = Prompt.Show("Enter custom ID:", "Custom ID", "", "None", maxLength: 200)?.Trim();
                     if (id == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(id)) {
                         id = null;
@@ -67,8 +77,7 @@ namespace AcManager.Controls.Helpers {
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report("Sharing…");
 
-                    link = await SharingHelper.ShareAsync(SharingHelper.EntryType.ControlsPreset,
-                            contentName, target, data, id, waiting.CancellationToken);
+                    link = await SharingHelper.ShareAsync(type, contentName, target, data, id, waiting.CancellationToken);
                     if (link == null) return;
                 }
 
@@ -79,6 +88,8 @@ namespace AcManager.Controls.Helpers {
                 Toast.Show(type.GetDescription().ToTitle() + " Shared", "Link copied to clipboard", () => {
                     Process.Start(link + "#noauto");
                 });
+
+                await Task.Delay(2000);
 
 #if WIN10_SHARE
                 try {
@@ -91,6 +102,8 @@ namespace AcManager.Controls.Helpers {
 #endif
             } catch (Exception e) {
                 NonfatalError.Notify($"Can’t share {type.GetDescription()}", "Make sure Internet connection is available.", e);
+            } finally {
+                _sharingInProcess = false;
             }
         }
 

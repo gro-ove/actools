@@ -1,38 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
-using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Helpers;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
-using AcManager.Pages.Drive;
+using AcManager.Tools;
 using AcManager.Tools.About;
-using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
-using AcManager.Tools.Starters;
-using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Controls;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using DragDropEffects = System.Windows.DragDropEffects;
-using Path = System.IO.Path;
-using WaitingDialog = AcManager.Controls.Pages.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener {
@@ -92,6 +80,8 @@ namespace AcManager.Pages.Windows {
             }
         }
 
+        private readonly ArgumentsHandler _argumentsHandler = new ArgumentsHandler();
+
         private async void ProcessArguments() {
             if (OptionLiteModeSupported) {
                 Visibility = Visibility.Hidden;
@@ -100,7 +90,13 @@ namespace AcManager.Pages.Windows {
             var cancelled = true;
             foreach (var arg in AppArguments.Values) {
                 Logging.Write("[MAINWINDOW] Input: " + arg);
-                if (await ProcessArgument(arg)) {
+
+                var result = await _argumentsHandler.ProcessArgument(arg);
+                if (result == ArgumentHandleResult.FailedShow) {
+                    NonfatalError.Notify("Can’t process argument", "Make sure it’s in valid format.");
+                }
+
+                if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
                     Visibility = Visibility.Visible;
                     cancelled = false;
                 }
@@ -208,139 +204,9 @@ namespace AcManager.Pages.Windows {
         private async void HandleMessagesAsync(IEnumerable<string> data) {
             await Task.Delay(1);
             foreach (var filename in data) {
-                await ProcessArgument(filename);
+                await _argumentsHandler.ProcessArgument(filename);
                 await Task.Delay(1);
             }
-        }
-
-        private async Task<string> LoadRemoveFile(string argument, string name) {
-            using (var waiting = new WaitingDialog("Loading…")) {
-                return await FlexibleLoader.LoadAsync(argument, name, waiting, waiting.CancellationToken);
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="argument"></param>
-        /// <returns>True if form should be shown</returns>
-        private async Task<bool> ProcessArgument(string argument) {
-            if (string.IsNullOrWhiteSpace(argument)) return true;
-
-            if (argument.StartsWith(CustomUriSchemeHelper.UriScheme)) {
-                return await ProcessUriRequest(argument);
-            }
-
-            if (argument.StartsWith("http", StringComparison.OrdinalIgnoreCase) || argument.StartsWith("https", StringComparison.OrdinalIgnoreCase) ||
-                    argument.StartsWith("ftp", StringComparison.OrdinalIgnoreCase)) {
-                argument = await LoadRemoveFile(argument, null);
-                if (string.IsNullOrWhiteSpace(argument)) return true;
-            }
-
-            try {
-                if (!FileUtils.Exists(argument)) return true;
-            } catch (Exception) {
-                return true;
-            }
-
-            return await ProcessInputFile(argument);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="uri"></param>
-        /// <returns>True if form should be shown</returns>
-        private async Task<bool> ProcessUriRequest(string uri) {
-            if (!uri.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.OrdinalIgnoreCase)) return true;
-
-            var request = uri.SubstringExt(CustomUriSchemeHelper.UriScheme.Length);
-            Logging.Write("[MAINWINDOW] URI Request: " + request);
-
-            if (request.StartsWith("//", StringComparison.Ordinal)) {
-                request = request.Substring(2);
-            }
-
-            string key, param;
-            NameValueCollection query;
-
-            {
-                var splitted = request.Split(new[] { '/' }, 2);
-                if (splitted.Length != 2) return false;
-
-                key = splitted[0];
-                param = splitted[1];
-
-                var index = param.IndexOf('?');
-                if (index != -1) {
-                    query = HttpUtility.ParseQueryString(param.SubstringExt(index + 1));
-                    param = param.Substring(0, index);
-                } else {
-                    query = null;
-                }
-            }
-
-            switch (key) {
-                case "shared":
-                    using (var waiting = new WaitingDialog()) {
-                        waiting.Report("Loading…");
-
-                    }
-                    break;
-
-                case "quickdrive":
-                    var preset = Convert.FromBase64String(param).ToUtf8String();
-                    if (!QuickDrive.RunSerializedPreset(preset)) {
-                        NonfatalError.Notify("Can’t start race", "Make sure required car & track are installed and available.");
-                    }
-                    break;
-
-                case "race":
-                    var raceIni = Convert.FromBase64String(param).ToUtf8String();
-                    await GameWrapper.StartAsync(new Game.StartProperties {
-                        PreparedConfig = IniFile.Parse(raceIni)
-                    });
-                    break;
-
-                case "open":
-                case "install":
-                    var address = Convert.FromBase64String(param).ToUtf8String();
-                    var path = await LoadRemoveFile(address, query?.Get("name"));
-                    if (string.IsNullOrWhiteSpace(path)) return true;
-
-                    try {
-                        if (!FileUtils.Exists(path)) return true;
-                    } catch (Exception) {
-                        return true;
-                    }
-
-                    return await ProcessInputFile(path);
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <returns>True if form should be shown</returns>
-        private async Task<bool> ProcessInputFile(string filename) {
-            var isDirectory = FileUtils.IsDirectory(filename);
-            if (!isDirectory && filename.EndsWith(".acreplay", StringComparison.OrdinalIgnoreCase) ||
-                Path.GetDirectoryName(filename)?.Equals(FileUtils.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
-                Game.Start(AcsStarterFactory.Create(),
-                        new Game.StartProperties(new Game.ReplayProperties {
-                            Filename = filename
-                        }));
-            } else if (!isDirectory && filename.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase)) {
-                await CustomShowroomWrapper.StartAsync(filename);
-            } else {
-                try {
-                    new InstallAdditionalContentDialog(filename).ShowDialog();
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t install additional content", e);
-                }
-            }
-
-            return false;
         }
 
         private void MainWindow_OnDrop(object sender, DragEventArgs e) {
@@ -366,7 +232,7 @@ namespace AcManager.Pages.Windows {
         private async void ProcessDroppedFiles(IEnumerable<string> files) {
             if (files == null) return;
             foreach (var filename in files) {
-                await ProcessArgument(filename);
+                await _argumentsHandler.ProcessArgument(filename);
             }
         }
 

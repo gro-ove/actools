@@ -59,9 +59,13 @@ namespace AcManager.Pages.Drive {
 
         public QuickDrive_TimeAttack() {
             InitializeComponent();
-            DataContext = new QuickDrive_TimeAttackViewModel();
+            // DataContext = new QuickDrive_TimeAttackViewModel();
         }
 
-        public QuickDriveModeViewModel Model => (QuickDrive_TimeAttackViewModel)DataContext;
+
+        public QuickDriveModeViewModel Model {
+            get { return (QuickDriveModeViewModel)DataContext; }
+            set { DataContext = value; }
+        }
     }
 }

@@ -79,9 +79,12 @@ namespace AcManager.Pages.Drive {
 
         public QuickDrive_Practice() {
             InitializeComponent();
-            DataContext = new QuickDrive_PracticeViewModel();
+            // DataContext = new QuickDrive_PracticeViewModel();
         }
 
-        public QuickDriveModeViewModel Model => (QuickDrive_PracticeViewModel)DataContext;
+        public QuickDriveModeViewModel Model {
+            get { return (QuickDriveModeViewModel)DataContext; }
+            set { DataContext = value; }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -37,6 +38,7 @@ namespace AcManager.Tools.Helpers {
                     _directInput = new SlimDX.DirectInput.DirectInput();
                     _keyboardInput = new Dictionary<int, KeyboardInputButton>();
                     PresetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
+                    UserPresetsDirectory = Path.Combine(PresetsDirectory, "savedsetups");
 
                     _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
                 } catch (Exception e) {
@@ -67,6 +69,11 @@ namespace AcManager.Tools.Helpers {
                 get { return _used; }
                 set {
                     if (Equals(_used, value)) return;
+
+                    if (_used == 0) {
+                        RescanDevices();
+                    }
+
                     _used = value;
                     OnPropertyChanged(false);
                     UpdateInputs();
@@ -76,8 +83,19 @@ namespace AcManager.Tools.Helpers {
             public event EventHandler<DirectInputAxleEventArgs> AxleEventHandler;
             public event EventHandler<DirectInputButtonEventArgs> ButtonEventHandler;
 
+            private Stopwatch _rescanStopwatch;
+
             private void UpdateInputs() {
                 if (Used == 0 && AxleEventHandler == null && ButtonEventHandler == null) return;
+
+                if (_rescanStopwatch == null) {
+                    _rescanStopwatch = Stopwatch.StartNew();
+                }
+                
+                if (_rescanStopwatch.ElapsedMilliseconds > 1000 || Devices.Any(x => x.Unplugged)) {
+                    RescanDevices();
+                    _rescanStopwatch.Restart();
+                }
 
                 foreach (var device in Devices) {
                     device.OnTick();
@@ -98,10 +116,44 @@ namespace AcManager.Tools.Helpers {
                 DisposeHelper.Dispose(ref _directInput);
             }
 
+            private string _devicesFootprint;
+
+            private string GetFootprint(IEnumerable<DeviceInstance> devices) {
+                return devices.Select(x => x.InstanceGuid).JoinToString(";");
+            }
+
             private void RescanDevices() {
+                var devices = _directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
+                var footprint = GetFootprint(devices);
+                if (footprint == _devicesFootprint) return;
+
+                var newDevices = devices.Select((x, i) => DirectInputDevice.Create(_directInput, x, i)).NonNull().ToList();
+                _devicesFootprint = GetFootprint(newDevices.Select(x => x.Device));
+
+                foreach (var axleEntry in WheelAxleEntries) {
+                    if (axleEntry.Input == null) {
+                        if (newDevices.Count > 0) {
+                            // axleEntry.Input = newDevices[0].Axles[axleEntry.Input.Id];
+                        }
+                    } else {
+                        if (!newDevices.Contains(axleEntry.Input.Device)) {
+                            axleEntry.Input = null;
+                        }
+                    }
+                }
+
+                foreach (var device in Devices) {
+                    foreach (var button in device.Buttons) {
+                        button.PropertyChanged -= DeviceButtonEventHandler;
+                    }
+
+                    foreach (var axle in device.Axles) {
+                        axle.PropertyChanged -= DeviceAxleEventHandler;
+                    }
+                }
+
                 Devices.DisposeEverything();
-                Devices.ReplaceEverythingBy(_directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly)
-                                                        .Select((x, i) => new DirectInputDevice(_directInput, x, i)));
+                Devices.ReplaceEverythingBy(newDevices);
 
                 foreach (var device in Devices) {
                     foreach (var button in device.Buttons) {
@@ -188,6 +240,7 @@ namespace AcManager.Tools.Helpers {
 
             #region Presets
             public readonly string PresetsDirectory;
+            public readonly string UserPresetsDirectory;
 
             protected override void OnRenamed(object sender, RenamedEventArgs e) {
                 if (FileUtils.IsAffected(PresetsDirectory, e.OldFullPath) || FileUtils.IsAffected(PresetsDirectory, e.FullPath) ||
@@ -277,6 +330,18 @@ namespace AcManager.Tools.Helpers {
             #endregion
 
             #region Wheel
+            private int _debouncingInterval;
+
+            public int DebouncingInterval {
+                get { return _debouncingInterval; }
+                set {
+                    value = value.Clamp(0, 500);
+                    if (Equals(value, _debouncingInterval)) return;
+                    _debouncingInterval = value;
+                    OnPropertyChanged();
+                }
+            }
+
             public WheelAxleEntry[] WheelAxleEntries { get; } = {
                 new WheelAxleEntry("STEER", "Steering", false, true),
                 new WheelAxleEntry("THROTTLE", "Throttle"),
@@ -553,6 +618,7 @@ namespace AcManager.Tools.Helpers {
             public KeyboardButtonEntry[] KeyboardSpecificButtonEntries { get; }
             #endregion
 
+            #region Main
             private IEnumerable<IEntry> Entries
                 => WheelAxleEntries
                         .Select(x => (IEntry)x)
@@ -616,6 +682,44 @@ namespace AcManager.Tools.Helpers {
                 AssignInput(GetKeyboardInputButton(KeyInterop.VirtualKeyFromKey(key)));
                 return true;
             }
+            #endregion
+
+            #region Loading/Saving
+            public void LoadFfbFromIni(IniFile ini) {
+                var section = ini["STEER"];
+                var ffbGain = section.GetDouble("FF_GAIN", 1d);
+                WheelFfbInvert = ffbGain < 0;
+                WheelFfbGain = ffbGain.Abs().ToIntPercentage();
+                WheelFfbFilter = section.GetDouble("FILTER_FF", 0d).ToIntPercentage();
+
+                section = ini["FF_TWEAKS"];
+                WheelFfbMinForce = section.GetDouble("MIN_FF", 0.05) * 100d;
+
+                section = ini["FF_ENHANCEMENT"];
+                WheelFfbKerbEffect = section.GetDouble("CURBS", 0.4).ToIntPercentage();
+                WheelFfbRoadEffect = section.GetDouble("ROAD", 0.5).ToIntPercentage();
+                WheelFfbSlipEffect = section.GetDouble("SLIPS", 0.0).ToIntPercentage();
+
+                section = ini["FF_ENHANCEMENT_2"];
+                WheelFfbEnhancedUndersteer = section.GetBool("UNDERSTEER", false);
+            }
+
+            public void SaveFfbToIni(IniFile ini) {
+                var section = ini["STEER"];
+                section.Set("FF_GAIN", (WheelFfbInvert ? -1d : 1d) * WheelFfbGain.ToDoublePercentage());
+                section.Set("FILTER_FF", WheelFfbFilter.ToDoublePercentage());
+
+                section = ini["FF_TWEAKS"];
+                section.Set("MIN_FF", WheelFfbMinForce / 100d);
+
+                section = ini["FF_ENHANCEMENT"];
+                section.Set("CURBS", WheelFfbKerbEffect.ToDoublePercentage());
+                section.Set("ROAD", WheelFfbRoadEffect.ToDoublePercentage());
+                section.Set("SLIPS", WheelFfbSlipEffect.ToDoublePercentage());
+
+                section = ini["FF_ENHANCEMENT_2"];
+                section.Set("UNDERSTEER", WheelFfbEnhancedUndersteer);
+            }
 
             protected override void LoadFromIni() {
                 if (Devices.Count == 0) {
@@ -625,6 +729,7 @@ namespace AcManager.Tools.Helpers {
                 InputMethod = Ini["HEADER"].GetEntry("INPUT_METHOD", InputMethods);
                 CombineWithKeyboardInput = Ini["ADVANCED"].GetBool("COMBINE_WITH_KEYBOARD_CONTROL", false);
                 WheelUseHShifter = Ini["SHIFTER"].GetBool("ACTIVE", false);
+                DebouncingInterval = Ini["STEER"].GetInt("DEBOUNCING_MS", 50);
 
                 var section = Ini["CONTROLLERS"];
                 var devices = LinqExtension.RangeFrom().Select(x => section.Get($"PGUID{x}")).TakeWhile(x => x != null).Select(x => {
@@ -640,22 +745,7 @@ namespace AcManager.Tools.Helpers {
                     entry.Load(Ini, devices);
                 }
 
-                section = Ini["STEER"];
-                var ffbGain = section.GetDouble("FF_GAIN", 1d);
-                WheelFfbInvert = ffbGain < 0;
-                WheelFfbGain = ffbGain.Abs().ToIntPercentage();
-                WheelFfbFilter = section.GetDouble("FILTER_FF", 0d).ToIntPercentage();
-
-                section = Ini["FF_TWEAKS"];
-                WheelFfbMinForce = section.GetDouble("MIN_FF", 0.05) * 100d;
-
-                section = Ini["FF_ENHANCEMENT"];
-                WheelFfbKerbEffect = section.GetDouble("CURBS", 0.4).ToIntPercentage();
-                WheelFfbRoadEffect = section.GetDouble("ROAD", 0.5).ToIntPercentage();
-                WheelFfbSlipEffect = section.GetDouble("SLIPS", 0.0).ToIntPercentage();
-
-                section = Ini["FF_ENHANCEMENT_2"];
-                WheelFfbEnhancedUndersteer = section.GetBool("UNDERSTEER", false);
+                LoadFfbFromIni(Ini);
 
                 section = Ini["KEYBOARD"];
                 KeyboardSteeringSpeed = section.GetDouble("STEERING_SPEED", 1.75);
@@ -670,11 +760,43 @@ namespace AcManager.Tools.Helpers {
                 CurrentPresetChanged = CurrentPresetName != null && section.GetBool("PRESET_CHANGED", true);
             }
 
+            public void SaveControllers() {
+                foreach (var device in Devices) {
+                    var filename = Path.Combine(PresetsDirectory, device.Device.InstanceGuid + ".ini");
+
+                    var ini = new IniFile {
+                        ["CONTROLLER"] = {
+                            ["NAME"] = device.DisplayName,
+                            ["PRODUCT"] = device.Device.ProductGuid.ToString()
+                        }
+                    };
+
+                    foreach (var entry in WheelAxleEntries.Where(x => x.Input != null)) {
+                        ini[entry.Id].Set("AXLE", entry.Input?.Id);
+                    }
+
+                    foreach (var entry in WheelButtonEntries.Select(x => x.WheelButton).Where(x => x.Input != null)) {
+                        ini[entry.Id].Set("BUTTON", entry.Input?.Id);
+                    }
+
+                    foreach (var entry in WheelHShifterButtonEntries.Where(x => x.Input != null)) {
+                        ini["SHIFTER"].Set(entry.Id, entry.Input?.Id);
+                    }
+
+                    ini.SaveAs(filename);
+                }
+            }
+
             protected override void SetToIni() {
+#if DEBUG
+                var sw = Stopwatch.StartNew();
+#endif
+
                 Ini["HEADER"].Set("INPUT_METHOD", InputMethod);
                 Ini["ADVANCED"].Set("COMBINE_WITH_KEYBOARD_CONTROL", CombineWithKeyboardInput);
                 Ini["SHIFTER"].Set("ACTIVE", WheelUseHShifter);
                 Ini["SHIFTER"].Set("JOY", WheelHShifterButtonEntries.FirstOrDefault(x => x.Input != null)?.Input?.Device.IniId);
+                Ini["STEER"].Set("DEBOUNCING_MS", DebouncingInterval);
 
                 Ini["CONTROLLERS"] = Devices.Aggregate(new IniFileSection(), (s, d, i) => {
                     s.Set("CON" + i, d.DisplayName);
@@ -686,6 +808,8 @@ namespace AcManager.Tools.Helpers {
                     entry.Save(Ini);
                 }
 
+                SaveFfbToIni(Ini);
+
                 var section = Ini["KEYBOARD"];
                 section.Set("STEERING_SPEED", KeyboardSteeringSpeed);
                 section.Set("STEERING_OPPOSITE_DIRECTION_SPEED", KeyboardOppositeLockSpeed);
@@ -696,6 +820,12 @@ namespace AcManager.Tools.Helpers {
 
                 section = Ini["__LAUNCHER_CM"];
                 section.Set("PRESET_CHANGED", CurrentPresetChanged);
+
+                SaveControllers();
+
+#if DEBUG
+                Logging.Write("Controls saving time: " + sw.ElapsedMilliseconds + " ms");
+#endif
             }
 
             public void SavePreset(string filename) {
@@ -710,6 +840,7 @@ namespace AcManager.Tools.Helpers {
                 CurrentPresetName = GetCurrentPresetName(section.Get("PRESET_NAME"));
                 CurrentPresetChanged = false;
             }
+            #endregion
         }
 
         private static ControlsSettings _controls;

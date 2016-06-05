@@ -27,20 +27,20 @@
             </CheckBox>
 
             <DockPanel IsEnabled="{Binding Sharing.ShareAnonymously, Converter={StaticResource InvertBooleanConverter}}">
-                <Label>Sharing name:</Label>
-                <TextBox Text="{Binding Sharing.SharingName}" watermark:WatermarkService.Watermark="?" />
+                <Label>Sharing nickname:</Label>
+                <TextBox Text="{Binding Sharing.SharingName}" watermark:WatermarkService.Watermark="?" MaxLength="60" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Sharing.ShareAnonymously}">
                 <Label>Share anonymously</Label>
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Sharing.ShareWithoutName}" ToolTip="Shared entities will be unnamed">
+            <CheckBox IsChecked="{Binding Sharing.ShareWithoutName}">
                 <Label>Disable custom names for sharing</Label>
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Sharing.VerifyBeforeSharing}">
-                <Label>Verify param before sharing</Label>
+                <Label>Verify params before sharing</Label>
             </CheckBox>
 
             <StackPanel

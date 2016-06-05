@@ -19,7 +19,12 @@ namespace AcManager.Tools.SemiGui {
         /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
         /// <param name="exception">Exception which caused the problem</param>
         public static void Notify(string problemDescription, string solutionCommentary, Exception exception = null) {
-            _notifier?.Notify(problemDescription, solutionCommentary, exception);
+            var i = exception as InformativeException;
+            if (i != null) {
+                _notifier?.Notify(i.Message, i.SolutionCommentary, null);
+            } else {
+                _notifier?.Notify(problemDescription, solutionCommentary, exception);
+            }
         }
 
         /// <summary>
@@ -29,7 +34,7 @@ namespace AcManager.Tools.SemiGui {
         /// <param name="problemDescription">Ex.: “Can’t do this and that”</param>
         /// <param name="exception">Exception which caused the problem</param>
         public static void Notify(string problemDescription, Exception exception = null) {
-            _notifier?.Notify(problemDescription, null, exception);
+            Notify(problemDescription, null, exception);
         }
     }
 }

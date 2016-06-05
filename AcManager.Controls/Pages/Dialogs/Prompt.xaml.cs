@@ -94,10 +94,19 @@ namespace AcManager.Controls.Pages.Dialogs {
 
         [CanBeNull]
         public static string Show(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
-            bool multiline = false, bool passwordMode = false) {
+            bool multiline = false, bool passwordMode = false, int maxLength = -1) {
             var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode);
             dialog.ShowDialog();
-            return dialog.Result;
+
+            if (maxLength != -1) {
+                dialog.TextBox.MaxLength = maxLength;
+            }
+
+            var result = dialog.Result;
+            if (maxLength != -1 && result?.Length > maxLength) {
+                result = result.Substring(0, maxLength);
+            }
+            return result;
         }
     }
 }

@@ -80,9 +80,12 @@ namespace AcManager.Pages.Drive {
 
         public QuickDrive_Drift() {
             InitializeComponent();
-            DataContext = new QuickDrive_DriftViewModel();
+            //DataContext = new QuickDrive_DriftViewModel();
         }
-
-        public QuickDriveModeViewModel Model => (QuickDrive_DriftViewModel) DataContext;
+        
+        public QuickDriveModeViewModel Model {
+            get { return (QuickDriveModeViewModel)DataContext; }
+            set { DataContext = value; }
+        }
     }
 }

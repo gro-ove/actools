@@ -1,7 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsControls_Wheel_Buttons" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
+        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Unloaded="AcSettingsControls_Wheel_Buttons_OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,7 +21,7 @@
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Shifters:</TextBlock>
             <ItemsControl ItemsSource="{Binding WheelGearsButtonEntries}" Margin="0 0 20 4" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <CheckBox IsChecked="{Binding WheelUseHShifter}" Margin="0 0 0 4">
+            <CheckBox IsChecked="{Binding WheelUseHShifter}" Margin="0 0 0 8">
                 <Label>Use _H-shifter</Label>
             </CheckBox>
 
@@ -30,6 +31,11 @@
                 <ItemsControl ItemsSource="{Binding WheelHShifterButtonEntries}" Margin="2" ItemTemplate="{StaticResource HShifterButtonEntryTemplate}"
                         ItemsPanel="{StaticResource TwoColumnsPanel}" />
             </StackPanel>
+
+            <DockPanel Margin="0 0 0 20" ToolTip="Prevents accidental gearshifts due to faulty hardware">
+                <controls:ValueLabel Value="{Binding DebouncingInterval}" Postfix=" ms" DockPanel.Dock="Left" VerticalAlignment="Center" Width="200">Gear shift debouncing</controls:ValueLabel>
+                <Slider Minimum="0" Maximum="250" Value="{Binding DebouncingInterval}" TickFrequency="25" TickPlacement="BottomRight" />
+            </DockPanel>
 
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Miscellaneous:</TextBlock>
             <ItemsControl ItemsSource="{Binding WheelCarButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />

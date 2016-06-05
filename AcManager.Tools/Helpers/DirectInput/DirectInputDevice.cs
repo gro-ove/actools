@@ -2,13 +2,20 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
-using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 using SlimDX.DirectInput;
 
 namespace AcManager.Tools.Helpers.DirectInput {
-    public sealed class DirectInputDevice : Displayable, IWithId, IDisposable {
+    public interface IDirectInputDevice : IWithId {
+        string DisplayName { get; }
+
+        int IniId { get; }
+    }
+
+    public sealed class DirectInputDevice : Displayable, IDirectInputDevice, IDisposable {
         public DeviceInstance Device { get; }
 
         public string Id { get; }
@@ -22,7 +29,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         private Joystick _joystick;
         private readonly int _buttonsCount;
 
-        public DirectInputDevice(SlimDX.DirectInput.DirectInput directInput, DeviceInstance device, int iniId) {
+        private DirectInputDevice(SlimDX.DirectInput.DirectInput directInput, DeviceInstance device, int iniId) {
             Device = device;
             DisplayName = device.InstanceName;
 
@@ -30,6 +37,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
             IniId = iniId;
 
             _joystick = new Joystick(directInput, Device.InstanceGuid);
+            _joystick.SetCooperativeLevel(new WindowInteropHelper(Application.Current.MainWindow).Handle,
+                    CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 
             var capabilities = _joystick.Capabilities;
             _buttonsCount = capabilities.ButtonCount;
@@ -38,14 +47,22 @@ namespace AcManager.Tools.Helpers.DirectInput {
             Axles = Enumerable.Range(0, 8).Select(x => new DirectInputAxle(this, x)).ToArray();
         }
 
+        [CanBeNull]
+        public static DirectInputDevice Create(SlimDX.DirectInput.DirectInput directInput, DeviceInstance device, int iniId) {
+            try {
+                return new DirectInputDevice(directInput, device, iniId);
+            } catch (DirectInputException) {
+                return null;
+            }
+        }
+
+        public bool Error { get; private set; }
+
+        public bool Unplugged { get; private set; }
+
         public void OnTick() {
             try {
-                // TODO
                 if (_joystick.Acquire().IsFailure || _joystick.Poll().IsFailure || SlimDX.Result.Last.IsFailure) {
-                    // TODO
-                    _joystick.SetCooperativeLevel(new WindowInteropHelper(Application.Current.MainWindow).Handle,
-                            CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
-
                     return;
                 }
 
@@ -66,7 +83,12 @@ namespace AcManager.Tools.Helpers.DirectInput {
                     Axles[i++].Value = source / 65535d;
                 }
             } catch (DirectInputException e) {
-                // TODO
+                if (e.Message.Contains("DIERR_UNPLUGGED")) {
+                    Unplugged = true;
+                } else if (!Error){
+                    Logging.Warning("[DirectInputDevice] Exception: " + e);
+                    Error = true;
+                }
             }
         }
 

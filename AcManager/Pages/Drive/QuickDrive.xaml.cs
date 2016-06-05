@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls;
@@ -16,6 +15,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
@@ -23,11 +23,13 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive {
         public const string UserPresetableKeyValue = "Quick Drive";
+        private const string KeySaveable = "__QuickDrive_Main";
 
         private readonly QuickDriveViewModel _model;
 
@@ -58,7 +60,12 @@ namespace AcManager.Pages.Drive {
         }
 
         private void ModeTab_OnFrameNavigated(object sender, NavigationEventArgs e) {
-            _model.SelectedModeViewModel = (ModeTab.Frame.Content as IQuickDriveModeControl)?.Model;
+            var c = ModeTab.Frame.Content as IQuickDriveModeControl;
+            if (c != null) {
+                c.Model = _model.SelectedModeViewModel;
+            }
+
+            // _model.SelectedModeViewModel = (ModeTab.Frame.Content as IQuickDriveModeControl)?.Model;
         }
 
         private void AssistsMore_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
@@ -87,30 +94,35 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged();
                     SaveLater();
 
-                    if (_uiMode) return;
+                    // if (_uiMode) return;
                     switch (value.ToString()) {
                         case "/Pages/Drive/QuickDrive_Drift.xaml":
-                            SelectedModeViewModel = new QuickDrive_Drift.QuickDrive_DriftViewModel(false);
+                            SelectedModeViewModel = new QuickDrive_Drift.QuickDrive_DriftViewModel();
                             break;
 
                         case "/Pages/Drive/QuickDrive_Hotlap.xaml":
-                            SelectedModeViewModel = new QuickDrive_Hotlap.QuickDrive_HotlapViewModel(false);
+                            SelectedModeViewModel = new QuickDrive_Hotlap.QuickDrive_HotlapViewModel();
                             break;
 
                         case "/Pages/Drive/QuickDrive_Practice.xaml":
-                            SelectedModeViewModel = new QuickDrive_Practice.QuickDrive_PracticeViewModel(false);
+                            SelectedModeViewModel = new QuickDrive_Practice.QuickDrive_PracticeViewModel();
                             break;
 
                         case "/Pages/Drive/QuickDrive_Race.xaml":
-                            SelectedModeViewModel = new QuickDrive_Race.QuickDrive_RaceViewModel(false);
+                            SelectedModeViewModel = new QuickDrive_Race.QuickDrive_RaceViewModel();
+                            break;
+
+                        case "/Pages/Drive/QuickDrive_Weekend.xaml":
+                            SelectedModeViewModel = new QuickDrive_Weekend.QuickDrive_WeekendViewModel();
                             break;
 
                         case "/Pages/Drive/QuickDrive_TimeAttack.xaml":
-                            SelectedModeViewModel = new QuickDrive_TimeAttack.QuickDrive_TimeAttackViewModel(false);
+                            SelectedModeViewModel = new QuickDrive_TimeAttack.QuickDrive_TimeAttackViewModel();
                             break;
 
                         default:
-                            Logging.Warning("[QUICKDRIVE] Not supported mode: " + value);
+                            Logging.Warning("[QuickDrive] Not supported mode: " + value);
+                            SelectedModeViewModel = null;
                             break;
                     }
                 }
@@ -249,9 +261,9 @@ namespace AcManager.Pages.Drive {
             public double Temperature {
                 get { return _temperature; }
                 set {
-                    value = MathUtils.Round(value, 0.5);
+                    value = value.Round(0.5);
                     if (Equals(value, _temperature)) return;
-                    _temperature = MathUtils.Clamp(value, TemperatureMinimum, TemperatureMaximum);
+                    _temperature = value.Clamp(TemperatureMinimum, TemperatureMaximum);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
 
@@ -270,7 +282,7 @@ namespace AcManager.Pages.Drive {
                 get { return _time; }
                 set {
                     if (value == _time) return;
-                    _time = MathUtils.Clamp(value, TimeMinimum, TimeMaximum);
+                    _time = value.Clamp(TimeMinimum, TimeMaximum);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayTime));
                     OnPropertyChanged(nameof(RoadTemperature));
@@ -300,7 +312,7 @@ namespace AcManager.Pages.Drive {
                 get { return _timeMultipler; }
                 set {
                     if (value == _timeMultipler) return;
-                    _timeMultipler = MathUtils.Clamp(value, TimeMultiplerMinimum, TimeMultiplerMaximum);
+                    _timeMultipler = value.Clamp(TimeMultiplerMinimum, TimeMultiplerMaximum);
                     OnPropertyChanged();
                     SaveLater();
                 }
@@ -342,10 +354,10 @@ namespace AcManager.Pages.Drive {
             }
 
             internal QuickDriveViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, 
-                    TrackBaseObject trackObject = null) {
+                    TrackBaseObject trackObject = null, bool savePreset = false) {
                 _uiMode = uiMode;
 
-                _saveable = new SaveHelper<SaveableData>("__QuickDrive_Main", () => new SaveableData {
+                _saveable = new SaveHelper<SaveableData>(KeySaveable, () => new SaveableData {
                     RealConditions = RealConditions,
                     RealConditionsTimezones = RealConditionsTimezones,
                     RealConditionsLighting = RealConditionsLighting,
@@ -372,9 +384,11 @@ namespace AcManager.Pages.Drive {
                     if (o.CarId != null) SelectedCar = CarsManager.Instance.GetById(o.CarId) ?? SelectedCar;
                     if (o.TrackId != null) SelectedTrack = TracksManager.Instance.GetLayoutById(o.TrackId) ?? SelectedTrack;
                     if (o.WeatherId != null) SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
-                    if (o.TrackPropertiesPreset != null)
+
+                    if (o.TrackPropertiesPreset != null) {
                         SelectedTrackPropertiesPreset =
                                 Game.DefaultTrackPropertiesPresets.FirstOrDefault(x => x.Name == o.TrackPropertiesPreset) ?? SelectedTrackPropertiesPreset;
+                    }
 
                     Temperature = o.Temperature;
                     Time = o.Time;
@@ -399,7 +413,12 @@ namespace AcManager.Pages.Drive {
                     _saveable.Initialize();
                 } else {
                     _saveable.Reset();
-                    _saveable.FromSerializedStringWithoutSaving(serializedPreset);
+
+                    if (savePreset) {
+                        _saveable.FromSerializedString(serializedPreset);
+                    } else {
+                        _saveable.FromSerializedStringWithoutSaving(serializedPreset);
+                    }
                 }
 
                 if (carObject != null) {
@@ -417,13 +436,13 @@ namespace AcManager.Pages.Drive {
 
             string IUserPresetable.UserPresetableKey => UserPresetableKeyValue;
 
-            string IUserPresetable.ExportToUserPresetData() {
+            public string ExportToUserPresetData() {
                 return _saveable.ToSerializedString();
             }
 
             public event EventHandler Changed;
 
-            void IUserPresetable.ImportFromUserPresetData(string data) {
+            public void ImportFromUserPresetData(string data) {
                 _saveable.FromSerializedString(data);
             }
             #endregion
@@ -504,7 +523,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void TryToSetTime(int value) {
-                var clamped = MathUtils.Clamp(value, TimeMinimum, TimeMaximum);
+                var clamped = value.Clamp(TimeMinimum, TimeMaximum);
                 IsTimeClamped = clamped != value;
                 Time = clamped;
                 _realTimeInProcess = false;
@@ -541,7 +560,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void TryToSetTemperature(double value) {
-                var clamped = MathUtils.Clamp(value, TemperatureMinimum, TemperatureMaximum);
+                var clamped = value.Clamp(TemperatureMinimum, TemperatureMaximum);
                 IsTemperatureClamped = value < TemperatureMinimum || value > TemperatureMaximum;
                 Temperature = clamped;
             }
@@ -621,6 +640,16 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private AsyncCommand _shareCommand;
+
+            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
+
+            private async Task Share(object o) {
+                await SharingUiHelper.ShareAsync(SharingHelper.EntryType.QuickDrivePreset,
+                        Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(UserPresetableKeyValue)), null,
+                        ExportToUserPresetData());
+            }
+
             private void OnSelectedUpdated() {
                 SelectedModeViewModel?.OnSelectedUpdated(SelectedCar, SelectedTrack);
             }
@@ -645,7 +674,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void SelectedModeViewModel_Changed(object sender, EventArgs e) {
-                Changed?.Invoke(this, new EventArgs());
+                Changed?.Invoke(this, EventArgs.Empty);
             }
 
             internal bool Run() {
@@ -677,6 +706,25 @@ namespace AcManager.Pages.Drive {
             return new QuickDriveViewModel(preset, false).Run();
         }
 
+        public static void LoadPreset(string presetFilename) {
+            UserPresetsControl.LoadPreset(UserPresetableKeyValue, presetFilename);
+            NavigateToPage();
+        }
+
+        public static void LoadSerializedPreset(string serializedPreset) {
+            if (!UserPresetsControl.LoadSerializedPreset(UserPresetableKeyValue, serializedPreset)) {
+                ValuesStorage.Set(KeySaveable, serializedPreset);
+            }
+
+            NavigateToPage();
+        }
+
+        private static void NavigateToPage() {
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            if (mainWindow == null) return;
+            mainWindow.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
+        }
+
         private static CarObject _selectNextCar;
         private static string _selectNextCarSkinId;
         private static TrackBaseObject _selectNextTrack;
@@ -688,12 +736,15 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = car;
             _selectNextCarSkinId = carSkinId;
             _selectNextTrack = track;
-            mainWindow.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
+
+            NavigateToPage();
         }
+
+        public static IContentLoader ContentLoader { get; } = new ImmediateContentLoader();
     }
 
     public interface IQuickDriveModeControl {
-        QuickDriveModeViewModel Model { get; }
+        QuickDriveModeViewModel Model { get; set; }
     }
 
     public abstract class QuickDriveModeViewModel : NotifyPropertyChanged {

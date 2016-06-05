@@ -19,9 +19,11 @@ namespace AcManager.Tools.Helpers.Loaders {
             return new DirectLoader(uri);
         }
 
-        public static async Task<string> LoadAsync(string argument, string name, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task<string> LoadAsync(string argument, string name = null, string extension = null, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            var tmp = name == null ? Path.GetTempFileName() : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
+            var tmp = name == null
+                ? extension == null ? Path.GetTempFileName() : FileUtils.GetTempFileName(Path.GetTempPath(), extension)
+                : FileUtils.GetTempFileNameFixed(Path.GetTempPath(), name);
             var loader = CreateLoader(argument);
 
             try {

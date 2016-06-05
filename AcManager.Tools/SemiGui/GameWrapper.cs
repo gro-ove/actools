@@ -34,7 +34,9 @@ namespace AcManager.Tools.SemiGui {
         }
 
         public static async Task<Game.Result> StartAsync(Game.StartProperties properties) {
-            AcSettingsHolder.Video.EnsureResolutionIsCorrect();
+            if (SettingsHolder.Common.FixResolutionAutomatically) {
+                AcSettingsHolder.Video.EnsureResolutionIsCorrect();
+            }
 
             if (SettingsHolder.Drive.ImmediateStart) {
                 properties.SetAdditional(new ImmediateStart());

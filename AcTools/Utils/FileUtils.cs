@@ -274,8 +274,11 @@ namespace AcTools.Utils {
         }
 
         public static string GetTempFileName(string dir) {
+            var i = 0;
             string result;
-            for (var i = 0; File.Exists(result = Path.Combine(dir, "__tmp_" + i)); i++) {}
+            do {
+                result = Path.Combine(dir, "__tmp_" + i++);
+            } while (Exists(result));
             return result;
         }
 
@@ -286,8 +289,11 @@ namespace AcTools.Utils {
         }
 
         public static string GetTempFileName(string dir, string extension) {
+            var i = 0;
             string result;
-            for (var i = 0; File.Exists(result = Path.Combine(dir, "__tmp_" + i + extension)); i++) {}
+            do {
+                result = Path.Combine(dir, "__tmp_" + i++ + extension);
+            } while (Exists(result));
             return result;
         }
 

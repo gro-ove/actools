@@ -32,11 +32,11 @@
                         Text="{Binding MainList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} server'}">
                     <TextBlock.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Sort by name" Command="{Binding ChangeSortingCommand}" CommandParameter="{x:Null}"
+                            <MenuItem Header="Sort By Name" Command="{Binding ChangeSortingCommand}" CommandParameter="{x:Null}"
                                     IsChecked="{Binding SortingMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Null}}" />
-                            <MenuItem Header="Sort by drivers" Command="{Binding ChangeSortingCommand}" CommandParameter="drivers"
+                            <MenuItem Header="Sort By Drivers" Command="{Binding ChangeSortingCommand}" CommandParameter="drivers"
                                     IsChecked="{Binding SortingMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='drivers'}" />
-                            <MenuItem Header="Sort by ping" Command="{Binding ChangeSortingCommand}" CommandParameter="ping"
+                            <MenuItem Header="Sort By Ping" Command="{Binding ChangeSortingCommand}" CommandParameter="ping"
                                     IsChecked="{Binding SortingMode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='ping'}" />
                             <Separator />
                             <MenuItem Header="Reload" InputGestureText="Ctrl+R" Command="{Binding Manager.RefreshListCommand}" />

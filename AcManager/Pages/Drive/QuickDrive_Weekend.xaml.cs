@@ -13,7 +13,7 @@ namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Weekend : IQuickDriveModeControl {
         public QuickDrive_Weekend() {
             InitializeComponent();
-            DataContext = new QuickDrive_WeekendViewModel();
+            // DataContext = new QuickDrive_WeekendViewModel();
         }
 
         private bool _loaded;
@@ -30,7 +30,10 @@ namespace AcManager.Pages.Drive {
             ActualModel.Unload();
         }
 
-        public QuickDriveModeViewModel Model => ActualModel;
+        public QuickDriveModeViewModel Model {
+            get { return (QuickDriveModeViewModel)DataContext; }
+            set { DataContext = value; }
+        }
 
         public QuickDrive_WeekendViewModel ActualModel => (QuickDrive_WeekendViewModel)DataContext;
 

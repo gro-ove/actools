@@ -3,14 +3,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Controls.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance dialogs:Prompt+PromptViewModel}">
-    <StackPanel Orientation="Vertical">
-        <TextBlock Text="{Binding Description, Mode=OneTime}" Margin="0 0 0 8" />
-        <Grid>
-            <TextBox Name="TextBox" Text="{Binding Text}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                    watermark:WatermarkService.Watermark="{Binding Watermark, Mode=OneTime}" ToolTip="{Binding ToolTip}" />
-            <mui:ProperPasswordBox Name="PasswordBox" Password="{Binding Text}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                    watermark:WatermarkService.Watermark="{Binding Watermark, Mode=OneTime}" ToolTip="{Binding ToolTip}" Visibility="Collapsed" />
-        </Grid>
-    </StackPanel>
+        d:DataContext="{d:DesignInstance dialogs:Prompt+PromptViewModel}" SizeToContent="Manual" Width="720" Height="160" ResizeMode="CanResizeWithGrip">
+    <Grid>
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock Text="{Binding Description, Mode=OneTime}" Margin="0 0 0 8" />
+            <Grid>
+                <TextBox Name="TextBox" Text="{Binding Text}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                        watermark:WatermarkService.Watermark="{Binding Watermark, Mode=OneTime}" ToolTip="{Binding ToolTip}" />
+                <mui:ProperPasswordBox Name="PasswordBox" Password="{Binding Text}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                        watermark:WatermarkService.Watermark="{Binding Watermark, Mode=OneTime}" ToolTip="{Binding ToolTip}" Visibility="Collapsed" />
+            </Grid>
+        </StackPanel>
+    </Grid>
 </mui:ModernDialog>

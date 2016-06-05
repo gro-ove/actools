@@ -4,7 +4,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 
-namespace AcManager.Tools.AcErrors {
+namespace AcManager.Tools {
     public class UriProvider : IAcObjectsUriProvider {
         Uri IAcObjectsUriProvider.GetUri(AcObjectNew obj) {
             if (obj is CarObject) {

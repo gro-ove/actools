@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +11,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
-using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
@@ -149,7 +148,7 @@ namespace AcManager.Pages.AcSettings {
                     DefaultExt = ".ini",
                     OverwritePrompt = true
                 };
-                
+
                 var filename = Controls.Ini["__LAUNCHER_CM"].Get("PRESET_NAME");
                 if (filename?.StartsWith("savedsetups", StringComparison.OrdinalIgnoreCase) != null) {
                     dialog.InitialDirectory = Path.GetDirectoryName(Path.Combine(Controls.PresetsDirectory, filename));
@@ -185,14 +184,24 @@ namespace AcManager.Pages.AcSettings {
 
             private AsyncCommand _shareCommand;
 
-            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async o => {
-                var target = Controls.InputMethod.Id == "KEYBOARD" ? "keyboard" :
-                        Controls.InputMethod.Id == "X360" ? "Xbox 360 controller" :
-                        Controls.WheelAxleEntries.FirstOrDefault()?.Input?.Device?.DisplayName;
+            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Execute));
 
-                await SharingUiHelper.ShareAsync(SharingHelper.EntryType.ControlsPreset, Controls.CurrentPresetName, target, 
-                    File.ReadAllBytes(Controls.Filename));
-            }, o => o as bool? != true));
+            private async Task Execute(object o) {
+                if (o as string == "FFBOnly") {
+                    var iniFile = new IniFile();
+                    AcSettingsHolder.Controls.SaveFfbToIni(iniFile);
+                    AcSettingsHolder.System.SaveFfbToIni(iniFile);
+
+                    await SharingUiHelper.ShareAsync(SharingHelper.EntryType.ForceFeedbackPreset, Path.GetFileName(Controls.CurrentPresetName) + " (FFB Only)", null, iniFile.Stringify());
+                } else if (o as string == "Basic") {
+                    var target = Controls.InputMethod.Id == "KEYBOARD" ? "keyboard" :
+                            Controls.InputMethod.Id == "X360" ? "Xbox 360 controller" :
+                                    Controls.WheelAxleEntries.FirstOrDefault()?.Input?.Device?.DisplayName;
+
+                    await SharingUiHelper.ShareAsync(SharingHelper.EntryType.ControlsPreset, Path.GetFileName(Controls.CurrentPresetName), target,
+                            File.ReadAllBytes(Controls.Filename));
+                }
+            }
 
             public BetterObservableCollection<MenuItem> Presets { get; } = new BetterObservableCollection<MenuItem>();
 
@@ -309,6 +318,11 @@ namespace AcManager.Pages.AcSettings {
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void ShareButton_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            ShareContextMenu.DataContext = DataContext;
+            ShareContextMenu.IsOpen = true;
         }
     }
 }

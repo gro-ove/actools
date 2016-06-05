@@ -91,9 +91,12 @@ namespace AcManager.Pages.Drive {
 
         public QuickDrive_Hotlap() {
             InitializeComponent();
-            DataContext = new QuickDrive_HotlapViewModel();
+            // DataContext = new QuickDrive_HotlapViewModel();
         }
 
-        public QuickDriveModeViewModel Model => (QuickDrive_HotlapViewModel)DataContext;
+        public QuickDriveModeViewModel Model {
+            get { return (QuickDriveModeViewModel)DataContext; }
+            set { DataContext = value; }
+        }
     }
 }

@@ -33,7 +33,7 @@
                         </Menu>
                         <Button Command="{Binding SaveCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0"
                                 Visibility="{TemplateBinding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="Save current settings as preset">Save</Button>
+                                ToolTip="Save current settings as preset">Save Preset</Button>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Changed" Value="True">

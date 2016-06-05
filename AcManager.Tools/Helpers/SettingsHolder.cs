@@ -167,6 +167,15 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            public bool FixResolutionAutomatically {
+                get { return ValuesStorage.GetBool("Settings.CommonSettings.FixResolutionAutomatically", true); }
+                set {
+                    if (Equals(value, FixResolutionAutomatically)) return;
+                    ValuesStorage.Set("Settings.CommonSettings.FixResolutionAutomatically", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static CommonSettings _common;
@@ -599,6 +608,10 @@ namespace AcManager.Tools.Helpers {
             public string SharingName {
                 get { return ValuesStorage.GetString("Settings.SharingSettings.SharingName", null) ?? Drive.PlayerNameOnline; }
                 set {
+                    if (value?.Length > 60) {
+                        value = value?.Substring(0, 60);
+                    }
+
                     if (Equals(value, SharingName)) return;
                     ValuesStorage.Set("Settings.SharingSettings.SharingName", value);
                     OnPropertyChanged();

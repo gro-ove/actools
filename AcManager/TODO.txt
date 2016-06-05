@@ -416,6 +416,8 @@ fixme:
     - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
 
 todo:
+    - combine watchers for CM data directory into one?
+
     - upload Content to Trello for those who doesn't have Internet connection
     - custom showroom: proper wpf-based errors handling for invalid dx and stuff
 
@@ -424,14 +426,14 @@ todo:
     - proper sharing
         + settings
         + sharing
-        - receiving
-        - history
+        + receiving
+        + history
+        + custom ids?
         - deleting shared
-        - custom ids?
         - special types:
             + controls
-            - ffb only
-            - quick drive
+            + ffb only
+            + quick drive
             - car setups
             - ppfilters?
             - replays?

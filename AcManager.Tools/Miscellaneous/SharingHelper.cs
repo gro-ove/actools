@@ -4,15 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
+using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -42,7 +41,27 @@ namespace AcManager.Tools.Miscellaneous {
             CarSetup
         }
 
+        public static string GetExtenstion(EntryType type) {
+            switch (type) {
+                case EntryType.CarSetup:
+                case EntryType.ControlsPreset:
+                case EntryType.ForceFeedbackPreset:
+                    return ".ini";
+
+                case EntryType.QuickDrivePreset:
+                    return ".cmpreset";
+
+                case EntryType.Replay:
+                    return ".lnk";
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         public class SharedEntry : NotifyPropertyChanged {
+            public string Id { get; set; }
+
             public EntryType EntryType { get; set; }
 
             [CanBeNull]
@@ -51,15 +70,30 @@ namespace AcManager.Tools.Miscellaneous {
             [CanBeNull]
             public string Target { get; set; }
 
-            public string Id { get; set; }
+            [JsonIgnore]
+            [CanBeNull]
+            public string Author { get; set; }
+
+            [JsonIgnore]
+            [CanBeNull]
+            public byte[] Data { get; set; }
 
             [JsonIgnore]
             public string Url => InternalUtils.ShareResult.GetUrl(Id);
 
+            [CanBeNull]
             public string RemovalKey { get; set; }
 
             [JsonIgnore]
             private string _json;
+
+            [NotNull]
+            public string GetFileName() {
+                return (Name ?? EntryType.GetDescription()) +
+                        // (Target == null ? "" : " for " + Target) +
+                        (Author == null ? "" : " (" + Author + ")") + 
+                        GetExtenstion(EntryType);
+            }
 
             internal static SharedEntry Deserialize(string s) {
                 var value = JsonConvert.DeserializeObject<SharedEntry>(s);
@@ -70,6 +104,31 @@ namespace AcManager.Tools.Miscellaneous {
             internal string Serialize() {
                 return _json ?? JsonConvert.SerializeObject(this, Formatting.None);
             }
+        }
+
+        [ItemCanBeNull]
+        public static async Task<SharedEntry> GetSharedAsync(string id, CancellationToken cancellation = default(CancellationToken)) {
+            InternalUtils.SharedEntryLoaded loaded;
+            try {
+                loaded = await InternalUtils.GetSharedEntryAsync(id, CmApiProvider.UserAgent, cancellation);
+                if (loaded == null || cancellation.IsCancellationRequested) return null;
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t get shared entry", "Make sure Internet connection works.", e);
+                return null;
+            }
+
+            EntryType entryType;
+            try {
+                entryType = (EntryType)Enum.Parse(typeof(EntryType), loaded.EntryType);
+            } catch (Exception) {
+                NonfatalError.Notify($"Can’t get shared entry, its type {loaded.EntryType} is not supported", "Make sure you have the latest version of CM.");
+                Logging.Warning("[SHARER] Unsupported entry type: " + loaded.EntryType);
+                return null;
+            }
+
+            return new SharedEntry {
+                Id = id, EntryType = entryType, Name = loaded.Name, Target = loaded.Target, Author = loaded.Author, Data = loaded.Data
+            };
         }
 
         private BetterObservableCollection<SharedEntry> _history;
@@ -93,32 +152,15 @@ namespace AcManager.Tools.Miscellaneous {
 
         private void AddToHistory(EntryType type, string name, string target, InternalUtils.ShareResult result) {
             History.Add(new SharedEntry {
-                EntryType = type,
-                Id = result.Id,
-                RemovalKey = result.RemovalKey,
-                Name = name,
-                Target = target
+                EntryType = type, Id = result.Id, RemovalKey = result.RemovalKey, Name = name, Target = target
             });
             SaveHistory();
         }
 
-        [CanBeNull]
-        public static string Share(EntryType type, string name, string target, byte[] data, string customId = null) {
-            var authorName = SettingsHolder.Sharing.ShareAnonymously ? null : SettingsHolder.Sharing.SharingName;
-            var result = InternalUtils.ShareEntry(type.ToString(), name, target, authorName, data,
-                CmApiProvider.UserAgent, customId);
-            if (result == null) return null;
-
-            Instance.AddToHistory(type, name, target, result);
-            return result.Url;
-        }
-
         [ItemCanBeNull]
-        public static async Task<string> ShareAsync(EntryType type, string name, string target, byte[] data, string customId = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> ShareAsync(EntryType type, string name, string target, byte[] data, string customId = null, CancellationToken cancellation = default(CancellationToken)) {
             var authorName = SettingsHolder.Sharing.ShareAnonymously ? null : SettingsHolder.Sharing.SharingName;
-            var result = await InternalUtils.ShareEntryAsync(type.ToString(), name, target, authorName, data,
-                    CmApiProvider.UserAgent, customId, cancellation);
+            var result = await InternalUtils.ShareEntryAsync(type.ToString(), name, target, authorName, data, CmApiProvider.UserAgent, customId, cancellation);
             if (result == null || cancellation.IsCancellationRequested) return null;
 
             Instance.AddToHistory(type, name, target, result);

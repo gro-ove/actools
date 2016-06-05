@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Threading;
 using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
@@ -17,11 +16,11 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
-        private static Dictionary<string, FileSystemWatcher> _watcher = new Dictionary<string, FileSystemWatcher>();
+        private static readonly Dictionary<string, FileSystemWatcher> Watchers = new Dictionary<string, FileSystemWatcher>();
 
         private static FileSystemWatcher GetWatcher(string directory) {
             FileSystemWatcher result;
-            if (_watcher.TryGetValue(directory, out result)) return result;
+            if (Watchers.TryGetValue(directory, out result)) return result;
             
             Directory.CreateDirectory(directory);
             result = new FileSystemWatcher {
@@ -32,7 +31,7 @@ namespace AcManager.Tools.Helpers {
                 IncludeSubdirectories = true
             };
 
-            _watcher[directory] = result;
+            Watchers[directory] = result;
             return result;
         }
 
@@ -122,7 +121,7 @@ namespace AcManager.Tools.Helpers {
 
                 try {
                     SetToIni();
-                    Ini.Save(Filename);
+                    await Ini.SaveAsAsync(Filename);
                     _lastSaved = DateTime.Now;
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t save AC settings", "Make sure app has access to cfg folder.", e);

@@ -194,6 +194,7 @@
     <Compile Include="SemiGui\GameCommandExecutor.cs" />
     <Compile Include="SemiGui\GameEndedArgs.cs" />
     <Compile Include="SemiGui\GameFinishedArgs.cs" />
+    <Compile Include="SemiGui\InformativeException.cs" />
     <Compile Include="SemiGui\ReplayHelper.cs" />
     <Compile Include="SemiGui\IGameUi.cs" />
     <Compile Include="SemiGui\IGameUiFactory.cs" />

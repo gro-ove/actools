@@ -53,10 +53,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 ShowInTaskbar = true;
             }
 
-            base.ShowDialog();
-
-            if (owner != null) {
-                owner.IsDimmed = false;
+            try {
+                base.ShowDialog();
+            } finally {
+                if (owner != null) {
+                    owner.IsDimmed = false;
+                }
             }
         }
 

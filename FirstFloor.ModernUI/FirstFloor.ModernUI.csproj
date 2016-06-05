@@ -194,6 +194,7 @@
     <Compile Include="Windows\Converters\ToUpperConverter.cs" />
     <Compile Include="Windows\DefaultContentLoader.cs" />
     <Compile Include="Windows\ILoadableContent.cs" />
+    <Compile Include="Windows\ImmediateContentLoader.cs" />
     <Compile Include="Windows\IParametrizedUriContent.cs" />
     <Compile Include="Windows\Navigation\DefaultLinkNavigator.cs" />
     <Compile Include="Windows\Navigation\FragmentNavigationEventArgs.cs" />

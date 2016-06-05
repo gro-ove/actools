@@ -2,9 +2,12 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.Pages.Dialogs {
@@ -78,22 +81,54 @@ namespace AcManager.Controls.Pages.Dialogs {
             _cancellationTokenSource?.Cancel();
         }
 
-        private bool _shown, _closed;
+        private bool _loaded;
+
+        private void OnLoaded(object sender, EventArgs eventArgs) {
+            if (_disposed) {
+                EnsureClosed();
+            }
+        }
+
+        private bool _shown, _closed, _disposed;
+
+        private async void EnsureShown() {
+            if (_disposed) return;
+
+            _loaded = true;
+            if (!IsVisible && !_shown) {
+                _shown = true;
+
+                await Task.Delay(500);
+                if (_closed || _disposed) return;
+
+                await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
+                    if (_closed || _disposed) return;
+
+                    try {
+                        ShowDialog();
+                    } catch (InvalidOperationException) {
+                        Logging.Warning("Damn…");
+                    }
+                }));
+            }
+        }
+
+        private void EnsureClosed() {
+            if (_loaded && !_closed) {
+                _closed = true;
+                Close();
+            }
+        }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void Report(string value) {
             if (Message == value) return;
             Dispatcher.Invoke(() => {
                 if (value != null) {
-                    if (!IsVisible && !_shown) {
-                        _shown = true;
-                        ShowDialogWithoutBlocking();
-                    }
-
+                    EnsureShown();
                     Message = value;
-                } else if (IsVisible && !_closed) {
-                    Close();
-                    _closed = true;
+                } else {
+                    EnsureClosed();
                 }
             });
         }
@@ -103,16 +138,11 @@ namespace AcManager.Controls.Pages.Dialogs {
             if (Progress.HasValue && value.HasValue && Math.Abs(Progress.Value - value.Value) < 0.0001) return;
             Dispatcher.Invoke(() => {
                 if (value != null) {
-                    if (!IsVisible && !_shown) {
-                        _shown = true;
-                        ShowDialogWithoutBlocking();
-                    }
-                    
+                    EnsureShown();
                     Progress = value;
                     ProgressIndetermitate = value == 0d;
-                } else if (IsVisible && !_closed) {
-                    Close();
-                    _closed = true;
+                } else {
+                    EnsureClosed();
                 }
             });
         }
@@ -120,17 +150,12 @@ namespace AcManager.Controls.Pages.Dialogs {
         public void Report(AsyncProgressEntry value) {
             Dispatcher.Invoke(() => {
                 if (value.Message != null) {
-                    if (!IsVisible && !_shown) {
-                        _shown = true;
-                        ShowDialogWithoutBlocking();
-                    }
-
+                    EnsureShown();
                     Message = value.Message;
                     Progress = value.Progress;
                     ProgressIndetermitate = value.Progress == 0d;
-                } else if (IsVisible && !_closed) {
-                    Close();
-                    _closed = true;
+                } else {
+                    EnsureClosed();
                 }
             });
         }
@@ -138,29 +163,20 @@ namespace AcManager.Controls.Pages.Dialogs {
         public void Report(Tuple<string, double?> value) {
             Dispatcher.Invoke(() => {
                 if (value.Item1 != null) {
-                    if (!IsVisible && !_shown) {
-                        _shown = true;
-                        ShowDialogWithoutBlocking();
-                    }
-
+                    EnsureShown();
                     Message = value.Item1;
                     Progress = value.Item2;
                     ProgressIndetermitate = value.Item2 == 0d;
-                } else if (IsVisible && !_closed) {
-                    Close();
-                    _closed = true;
+                } else {
+                    EnsureClosed();
                 }
             });
         }
 
         void IDisposable.Dispose() {
+            _disposed = true;
             DisposeHelper.Dispose(ref _cancellationTokenSource);
-            Dispatcher.Invoke(() => {
-                if (IsVisible && !_closed) {
-                    Close();
-                    _closed = true;
-                }
-            });
+            Dispatcher.Invoke(EnsureClosed);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

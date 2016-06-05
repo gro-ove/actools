@@ -1,11 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsVideo" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
-        xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:internal="clr-namespace:AcManager.Internal;assembly=AcManager.Internal"
-        xmlns:limitedMark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.LimitedMark;assembly=FirstFloor.ModernUI"
         xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings" xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+AcVideoViewModel}">
@@ -18,6 +14,11 @@
                 <Label>Resolution:</Label>
                 <ComboBox ItemsSource="{Binding Video.Resolutions}" SelectedItem="{Binding Video.Resolution}" DisplayMemberPath="DisplayName" />
             </DockPanel>
+
+            <CheckBox IsChecked="{Binding FixResolutionAutomatically, Source={x:Static helpers:SettingsHolder.Common}}"
+                    ToolTip="Automatically switch resolution before starting race if it's not on the list">
+                <Label>Fix resolution automatically</Label>
+            </CheckBox>
 
             <DockPanel>
                 <Label>Rendering mode:</Label>

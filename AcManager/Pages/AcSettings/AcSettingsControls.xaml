@@ -117,7 +117,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0 20 20 20" Orientation="Horizontal">
-            <Grid MinWidth="250">
+            <Grid MinWidth="300">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -150,14 +150,16 @@
                     </MenuItem>
                 </Menu>
 
-                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset">Save</Button>
+                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset">Save Preset</Button>
             </Grid>
-            <Button Command="{Binding ShareCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="Share preset and copy link to clipboard">
+            <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0" ToolTip="Share preset and copy link to clipboard">
                 Share
                 <Button.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Share preset" Command="{Binding ShareCommand, Mode=OneTime}" />
-                        <MenuItem Header="Share FFB settings only" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="True" />
+                    <ContextMenu Name="ShareContextMenu">
+                        <MenuItem Header="Share Preset" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="Basic"
+                                ToolTip="Only basic properties, without experimental ones" />
+                        <MenuItem Header="Share FFB Settings Only" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="FFBOnly"
+                                ToolTip="Including experimental FFB properties" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>

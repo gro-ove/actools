@@ -33,7 +33,7 @@ namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Race : IQuickDriveModeControl {
         public QuickDrive_Race() {
             InitializeComponent();
-            DataContext = new QuickDrive_RaceViewModel();
+            // DataContext = new QuickDrive_RaceViewModel();
         }
 
         private bool _loaded;
@@ -50,7 +50,11 @@ namespace AcManager.Pages.Drive {
             ActualModel.Unload();
         }
 
-        public QuickDriveModeViewModel Model => (QuickDrive_RaceViewModel)DataContext;
+
+        public QuickDriveModeViewModel Model {
+            get { return (QuickDriveModeViewModel)DataContext; }
+            set { DataContext = value; }
+        }
 
         public QuickDrive_RaceViewModel ActualModel => (QuickDrive_RaceViewModel)DataContext;
 

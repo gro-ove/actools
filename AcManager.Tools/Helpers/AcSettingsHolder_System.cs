@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using AcTools.DataFile;
 using AcTools.Utils;
 
 namespace AcManager.Tools.Helpers {
@@ -106,11 +107,23 @@ namespace AcManager.Tools.Helpers {
                 }
             }
             #endregion
+            
+            public void LoadFfbFromIni(IniFile ini) {
+                var section = ini["FF_EXPERIMENTAL"];
+                FfbGyro = section.GetBool("ENABLE_GYRO", false);
+                FfbDamperMinLevel = section.GetDouble("DAMPER_MIN_LEVEL", 0d).ToIntPercentage();
+                FfbDamperGain = section.GetDouble("DAMPER_GAIN", 1d).ToIntPercentage();
+            }
+
+            public void SaveFfbToIni(IniFile ini) {
+                var section = ini["FF_EXPERIMENTAL"];
+                section.Set("ENABLE_GYRO", FfbGyro);
+                section.Set("DAMPER_MIN_LEVEL", FfbDamperMinLevel.ToDoublePercentage());
+                section.Set("DAMPER_GAIN", FfbDamperGain.ToDoublePercentage());
+            }
 
             protected override void LoadFromIni() {
-                FfbGyro = Ini["FF_EXPERIMENTAL"].GetBool("ENABLE_GYRO", false);
-                FfbDamperMinLevel = Ini["FF_EXPERIMENTAL"].GetDouble("DAMPER_MIN_LEVEL", 0d).ToIntPercentage();
-                FfbDamperGain = Ini["FF_EXPERIMENTAL"].GetDouble("DAMPER_GAIN", 1d).ToIntPercentage();
+                LoadFfbFromIni(Ini);
 
                 SimulationValue = Ini["ASSETTO_CORSA"].GetDouble("SIMULATION_VALUE", 0d).ToIntPercentage();
                 DeveloperApps = Ini["AC_APPS"].GetBool("ENABLE_DEV_APPS", false);
@@ -120,9 +133,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             protected override void SetToIni() {
-                Ini["FF_EXPERIMENTAL"].Set("ENABLE_GYRO", FfbGyro);
-                Ini["FF_EXPERIMENTAL"].Set("DAMPER_MIN_LEVEL", FfbDamperMinLevel.ToDoublePercentage());
-                Ini["FF_EXPERIMENTAL"].Set("DAMPER_GAIN", FfbDamperGain.ToDoublePercentage());
+                SaveFfbToIni(Ini);
 
                 Ini["ASSETTO_CORSA"].Set("SIMULATION_VALUE", SimulationValue.ToDoublePercentage());
                 Ini["AC_APPS"].Set("ENABLE_DEV_APPS", DeveloperApps);

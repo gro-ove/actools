@@ -62,6 +62,26 @@ namespace AcManager.Tools.Lists {
             }
         }
 
+        public virtual void ReplaceEverythingBy([NotNull] IList<T> list) {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            
+            if (list.Count > 3) {
+                Items.Clear();
+                foreach (var item in list) {
+                    Items.Add(item);
+                }
+
+                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            } else {
+                Clear();
+                foreach (var item in list) {
+                    Add(item);
+                }
+            }
+        }
+
         public void Replace(T item, T newItem) {
             var index = IndexOf(item);
             if (index < 0) return;

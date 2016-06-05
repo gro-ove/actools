@@ -1,4 +1,6 @@
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 using AcTools.AcdFile;
 using AcTools.Utils;
 
@@ -88,6 +90,19 @@ namespace AcTools.DataFile {
             }
 
             File.WriteAllText(filename, Stringify());
+        }
+
+        public async Task SaveAsAsync(string filename, bool backup = false) {
+            if (SourceFilename == filename) {
+                Save(backup);
+                return;
+            }
+
+            if (File.Exists(filename) && backup) {
+                FileUtils.Recycle(filename);
+            }
+
+            await FileUtils.WriteAllBytesAsync(filename, Encoding.UTF8.GetBytes(Stringify()));
         }
 
         public void Save(bool backup = false) {

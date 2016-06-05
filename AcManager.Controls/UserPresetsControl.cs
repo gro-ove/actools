@@ -10,10 +10,14 @@ using AcManager.Tools.Managers.Presets;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls {
     public class UserPresetsControl : Control {
         public static bool OptionSmartChangedHandling = true;
+
+        private static readonly Dictionary<string, WeakReference<UserPresetsControl>> Instances =
+                new Dictionary<string, WeakReference<UserPresetsControl>>();
 
         private static event EventHandler<ChangedPresetEventArgs> PresetSelected;
 
@@ -25,6 +29,54 @@ namespace AcManager.Controls {
             SaveCommand = new RelayCommand(SaveExecute, SaveCanExecute);
             Loaded += UserPresetsControl_Loaded;
             Unloaded += UserPresetsControl_Unloaded;
+        }
+
+        [CanBeNull]
+        public static string GetCurrentFilename(string key) {
+            return ValuesStorage.GetString("__userpresets_p_" + key);
+        }
+
+        private static UserPresetsControl GetInstance(string key) {
+            WeakReference<UserPresetsControl> r;
+            UserPresetsControl c;
+            return Instances.TryGetValue(key, out r) && r.TryGetTarget(out c) ? c : null;
+        }
+
+        public static bool HasInstance(string key) {
+            return GetInstance(key) != null;
+        }
+
+        public static bool LoadPreset(string key, string filename) {
+            ValuesStorage.Set("__userpresets_p_" + key, filename);
+            ValuesStorage.Set("__userpresets_c_" + key, false);
+
+            var c = GetInstance(key);
+            if (c == null) return false;
+
+            c.UpdateSavedPresets();
+
+            var entry = c.SavedPresets.FirstOrDefault(x => x.Filename == filename);
+            if (entry == null) {
+                Logging.Warning($@"[UserPresetsControl] Can’t set preset to “{filename}”, entry not found");
+            } else if (c.CurrentUserPreset != entry) {
+                c.CurrentUserPreset = entry;
+            } else {
+                c.SelectionChanged(entry);
+            }
+
+            return true;
+        }
+
+        public static bool LoadSerializedPreset(string key, string serialized) {
+            ValuesStorage.Remove("__userpresets_p_" + key);
+            ValuesStorage.Set("__userpresets_c_" + key, false);
+
+            var c = GetInstance(key);
+            if (c == null) return false;
+
+            c.CurrentUserPreset = null;
+            c.UserPresetable?.ImportFromUserPresetData(serialized);
+            return true;
         }
 
         private void UserPresetsControl_Loaded(object sender, RoutedEventArgs e) {
@@ -131,7 +183,7 @@ namespace AcManager.Controls {
             typeof(UserPresetsControl), new PropertyMetadata(OnUserPresetableChanged));
 
         private static void OnUserPresetableChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            ((UserPresetsControl)d).OnUserPresetableChanged((IUserPresetable)e.NewValue);
+            ((UserPresetsControl)d).OnUserPresetableChanged((IUserPresetable)e.OldValue, (IUserPresetable)e.NewValue);
         }
 
         private static readonly DependencyPropertyKey SavedPresetsPropertyKey = DependencyProperty.RegisterReadOnly("SavedPresets", 
@@ -148,7 +200,17 @@ namespace AcManager.Controls {
 
         private IUserPresetable _presetable;
 
-        private void OnUserPresetableChanged(IUserPresetable newValue) {
+        private void OnUserPresetableChanged(IUserPresetable oldValue, IUserPresetable newValue) {
+            if (oldValue != null) {
+                Instances.Remove(oldValue.UserPresetableKey);
+            }
+
+            Instances.RemoveDeadReferences();
+
+            if (newValue != null) {
+                Instances[newValue.UserPresetableKey] = new WeakReference<UserPresetsControl>(this);
+            }
+
             if (_presetable != null) {
                 PresetsManager.Instance.Watcher(_presetable.UserPresetableKey).Update -= Presets_Update;
                 _presetable.Changed -= Presetable_Changed;
