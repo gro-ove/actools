@@ -56,7 +56,12 @@ namespace AcManager {
             var prefix = id + "_";
             var name = prefix + hash + ".dll";
             var filename = Path.Combine(_temporaryDirectory, name);
-            if (File.Exists(filename)) return filename;
+            Log("extracting resource: " + filename);
+
+            if (File.Exists(filename)) {
+                Log("already extracted, reusing");
+                return filename;
+            }
 
             var bytes = _references.GetObject(id) as byte[];
             if (bytes == null) {
@@ -66,6 +71,8 @@ namespace AcManager {
 
             var compressed = _references.GetObject(id + "//compressed") as bool?;
             if (compressed == true) {
+                Log("compressed! decompressing…");
+
                 using (var memory = new MemoryStream(bytes))
                 using (var output = new MemoryStream()) {
                     using (var decomp = new DeflateStream(memory, CompressionMode.Decompress)) {
@@ -82,10 +89,16 @@ namespace AcManager {
 
             var previous = _temporaryFiles.FirstOrDefault(x => x.StartsWith(prefix));
             if (previous != null) {
-                File.Delete(Path.Combine(_temporaryDirectory, previous));
-                _temporaryFiles.Remove(previous);
+                Log("removing previous version: " + previous);
+                try {
+                    File.Delete(Path.Combine(_temporaryDirectory, previous));
+                    _temporaryFiles.Remove(previous);
+                } catch (Exception e) {
+                    Log("can’t remove: " + e);
+                }
             }
 
+            Log("writing, " + bytes.Length + " bytes");
             File.WriteAllBytes(filename, bytes);
             return filename;
         }

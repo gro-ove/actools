@@ -567,7 +567,7 @@ namespace AcManager.Pages.Drive {
 
             private bool _waitingForWeatherList;
 
-            private async Task TryToSetWeatherType(WeatherDescription.WeatherType type) {
+            private async Task TryToSetWeatherType(WeatherType type) {
                 if (_waitingForWeatherList) return;
 
                 _waitingForWeatherList = true;
@@ -576,12 +576,12 @@ namespace AcManager.Pages.Drive {
 
                 try {
                     var closest = WeatherDescription.FindClosestWeather(from w in WeatherManager.Instance.LoadedOnly
-                                                                        where w.WeatherType.HasValue
-                                                                        select w.WeatherType.Value, type);
+                                                                        where w.Type.HasValue
+                                                                        select w.Type.Value, type);
                     if (closest == null) {
                         IsWeatherNotSupported = true;
                     } else {
-                        SelectedWeather = WeatherManager.Instance.LoadedOnly.Where(x => x.WeatherType == closest).RandomElement();
+                        SelectedWeather = WeatherManager.Instance.LoadedOnly.Where(x => x.Type == closest).RandomElement();
                     }
                 } catch (Exception e) {
                     IsWeatherNotSupported = true;
@@ -721,8 +721,7 @@ namespace AcManager.Pages.Drive {
 
         private static void NavigateToPage() {
             var mainWindow = Application.Current.MainWindow as MainWindow;
-            if (mainWindow == null) return;
-            mainWindow.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
+            mainWindow?.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
         }
 
         private static CarObject _selectNextCar;

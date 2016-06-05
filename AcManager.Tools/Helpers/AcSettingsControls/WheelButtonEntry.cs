@@ -4,13 +4,12 @@ using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
-    public sealed class WheelButtonEntry : BaseEntry<DirectInputButton> {
+    public class WheelButtonEntry : BaseEntry<DirectInputButton>, IDirectInputEntry {
         public WheelButtonEntry(string id, string name) : base(id, name) {}
 
-        public override void Load(IniFile ini, IReadOnlyList<DirectInputDevice> devices) {
+        public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {
             var section = ini[Id];
-            Input = devices.ElementAtOrDefault(section.GetInt("JOY", -1))?
-                           .Buttons.ElementAtOrDefault(section.GetInt("BUTTON", -1));
+            Input = devices.ElementAtOrDefault(section.GetInt("JOY", -1))?.GetButton(section.GetInt("BUTTON", -1));
         }
 
         public override void Save(IniFile ini) {
@@ -18,5 +17,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             section.Set("JOY", Input?.Device.IniId ?? -1);
             section.Set("BUTTON", Input?.Id ?? -1);
         }
+
+        IDirectInputDevice IDirectInputEntry.Device => Input?.Device;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
@@ -12,7 +13,44 @@ namespace AcManager.Tools.Helpers.DirectInput {
     public interface IDirectInputDevice : IWithId {
         string DisplayName { get; }
 
-        int IniId { get; }
+        int IniId { get; set; }
+
+        [CanBeNull]
+        DirectInputAxle GetAxle(int id);
+
+        [CanBeNull]
+        DirectInputButton GetButton(int id);
+    }
+
+    public class PlaceholderInputDevice : IDirectInputDevice {
+        public PlaceholderInputDevice(string id, string displayName, int iniId) {
+            Id = id;
+            DisplayName = displayName + " (!)";
+            IniId = iniId;
+        }
+
+        public string Id { get; }
+
+        public string DisplayName { get; }
+
+        public int IniId { get; set; }
+
+        private readonly Dictionary<int, DirectInputAxle> _axles = new Dictionary<int, DirectInputAxle>(); 
+        private readonly Dictionary<int, DirectInputButton> _buttons = new Dictionary<int, DirectInputButton>(); 
+
+        public DirectInputAxle GetAxle(int id) {
+            DirectInputAxle result;
+            if (_axles.TryGetValue(id, out result)) return result;
+            result = new DirectInputAxle(this, id);
+            return _axles[id] = result;
+        }
+
+        public DirectInputButton GetButton(int id) {
+            DirectInputButton result;
+            if (_buttons.TryGetValue(id, out result)) return result;
+            result = new DirectInputButton(this, id);
+            return _buttons[id] = result;
+        }
     }
 
     public sealed class DirectInputDevice : Displayable, IDirectInputDevice, IDisposable {
@@ -20,7 +58,15 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public string Id { get; }
 
-        public int IniId { get; }
+        public int IniId { get; set; }
+
+        public DirectInputAxle GetAxle(int id) {
+            return Axles.ElementAtOrDefault(id);
+        }
+
+        public DirectInputButton GetButton(int id) {
+            return Buttons.ElementAtOrDefault(id);
+        }
 
         public DirectInputButton[] Buttons { get; } 
 

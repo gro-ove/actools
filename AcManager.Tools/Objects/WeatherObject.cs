@@ -10,16 +10,14 @@ namespace AcManager.Tools.Objects {
         public WeatherObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {}
 
-        private WeatherDescription.WeatherType? _weatherType;
+        private WeatherType? _type;
 
-        public WeatherDescription.WeatherType? WeatherType {
-            get { return _weatherType; }
+        public WeatherType? Type {
+            get { return _type; }
             set { 
-                if (Equals(_weatherType, value)) return;
-
-                _weatherType = value; 
-                OnPropertyChanged(nameof(WeatherType));
-                OnPropertyChanged(nameof(WeatherTypeInformation));
+                if (Equals(_type, value)) return;
+                _type = value; 
+                OnPropertyChanged();
                 Changed = true;
             }
         }
@@ -30,27 +28,36 @@ namespace AcManager.Tools.Objects {
             get { return _temperatureCoefficient; }
             set { 
                 if (Equals(_temperatureCoefficient, value)) return;
-
                 _temperatureCoefficient = value;
-                OnPropertyChanged(nameof(TemperatureCoefficient));
+                OnPropertyChanged();
                 Changed = true;
             }
         }
 
-        public string WeatherTypeInformation => _weatherType.HasValue ? WeatherDescription.GetWeatherTypeName(_weatherType.Value) : "None";
+        private bool _forceCarLights;
 
-        private static WeatherDescription.WeatherType? TryToDetectWeatherTypeById(string id) {
+        public bool ForceCarLights {
+            get { return _forceCarLights; }
+            set {
+                if (Equals(value, _forceCarLights)) return;
+                _forceCarLights = value;
+                OnPropertyChanged();
+                Changed = true;
+            }
+        }
+
+        private static WeatherType? TryToDetectWeatherTypeById(string id) {
             var lid = id.ToLower();
 
-            if (lid.Contains("mid_clear")) return WeatherDescription.WeatherType.FewClouds;
-            if (lid.Contains("light_clouds")) return WeatherDescription.WeatherType.ScatteredClouds;
-            if (lid.Contains("heavy_clouds")) return WeatherDescription.WeatherType.OvercastClouds;
+            if (lid.Contains("mid_clear")) return WeatherType.FewClouds;
+            if (lid.Contains("light_clouds")) return WeatherType.ScatteredClouds;
+            if (lid.Contains("heavy_clouds")) return WeatherType.OvercastClouds;
 
-            if (lid.Contains("clouds")) return WeatherDescription.WeatherType.BrokenClouds;
-            if (lid.Contains("clear")) return WeatherDescription.WeatherType.Clear;
+            if (lid.Contains("clouds")) return WeatherType.BrokenClouds;
+            if (lid.Contains("clear")) return WeatherType.Clear;
             
-            if (lid.Contains("light_fog")) return WeatherDescription.WeatherType.Mist;
-            if (lid.Contains("fog")) return WeatherDescription.WeatherType.Fog;
+            if (lid.Contains("light_fog")) return WeatherType.Mist;
+            if (lid.Contains("fog")) return WeatherType.Fog;
 
             return null;
         }
@@ -62,22 +69,24 @@ namespace AcManager.Tools.Objects {
         protected override void LoadData(IniFile ini) {
             Name = ini["LAUNCHER"].Get("NAME");
             TemperatureCoefficient = ini["LAUNCHER"].GetDouble("TEMPERATURE_COEFF", 0d);
+            ForceCarLights = ini["CAR_LIGHTS"].GetBool("FORCE_ON", false);
 
             try {
-                WeatherType = ini["__LAUNCHER_CM"].GetEnumNullable<WeatherDescription.WeatherType>("WEATHER_TYPE");
+                Type = ini["__LAUNCHER_CM"].GetEnumNullable<WeatherType>("WEATHER_TYPE");
             } catch (Exception) {
-                WeatherType = null;
+                Type = null;
             }
 
-            if (!WeatherType.HasValue) {
-                WeatherType = TryToDetectWeatherTypeById(Id);
+            if (!Type.HasValue) {
+                Type = TryToDetectWeatherTypeById(Id);
             }
         }
 
         public override void SaveData(IniFile ini) {
             ini["LAUNCHER"].Set("NAME", Name);
             ini["LAUNCHER"].Set("TEMPERATURE_COEFF", TemperatureCoefficient);
-            ini["__LAUNCHER_CM"].Set("WEATHER_TYPE", WeatherType);
+            ini["CAR_LIGHTS"].Set("FORCE_ON", ForceCarLights);
+            ini["__LAUNCHER_CM"].Set("WEATHER_TYPE", Type);
         }
     }
 }

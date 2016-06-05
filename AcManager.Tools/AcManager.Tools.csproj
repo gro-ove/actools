@@ -114,6 +114,7 @@
     <Compile Include="Data\AsyncProgressEntry.cs" />
     <Compile Include="Data\KunosCareerProgressEntry.cs" />
     <Compile Include="Data\WeatherDescription.cs" />
+    <Compile Include="Data\WeatherType.cs" />
     <Compile Include="Filters\AcCommonObjectTester.cs" />
     <Compile Include="Filters\AcJsonObjectTester.cs" />
     <Compile Include="Filters\AcObjectTester.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />
     <Compile Include="Helpers\AcSettingsControls\BaseEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\IDirectInputEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\IEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\KeyboardButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonEntry.cs" />

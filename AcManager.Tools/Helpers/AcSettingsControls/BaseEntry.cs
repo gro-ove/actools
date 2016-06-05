@@ -53,7 +53,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public abstract void Save(IniFile ini);
 
-        public abstract void Load(IniFile ini, IReadOnlyList<DirectInputDevice> devices);
+        public abstract void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices);
 
         public void Clear() {
             Waiting = false;

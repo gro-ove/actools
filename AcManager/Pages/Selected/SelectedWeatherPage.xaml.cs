@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
@@ -11,6 +12,45 @@ namespace AcManager.Pages.Selected {
     public partial class SelectedWeatherPage : ILoadableContent, IParametrizedUriContent {
         public class SelectedWeatherPageViewModel : SelectedAcObjectViewModel<WeatherObject> {
             public SelectedWeatherPageViewModel([NotNull] WeatherObject acObject) : base(acObject) { }
+
+            public WeatherType?[] WeatherTypes { get; } = WeatherTypesArray;
+
+            private static readonly WeatherType?[] WeatherTypesArray = {
+                null,
+                WeatherType.LightThunderstorm,
+                WeatherType.Thunderstorm,
+                WeatherType.HeavyThunderstorm,
+                WeatherType.LightDrizzle,
+                WeatherType.Drizzle,
+                WeatherType.HeavyDrizzle,
+                WeatherType.LightRain,
+                WeatherType.Rain,
+                WeatherType.HeavyRain,
+                WeatherType.LightSnow,
+                WeatherType.Snow,
+                WeatherType.HeavySnow,
+                WeatherType.LightSleet,
+                WeatherType.Sleet,
+                WeatherType.HeavySleet,
+                WeatherType.Clear,
+                WeatherType.FewClouds,
+                WeatherType.ScatteredClouds,
+                WeatherType.BrokenClouds,
+                WeatherType.OvercastClouds,
+                WeatherType.Fog,
+                WeatherType.Mist,
+                WeatherType.Smoke,
+                WeatherType.Haze,
+                WeatherType.Sand,
+                WeatherType.Dust,
+                WeatherType.Squalls,
+                WeatherType.Tornado,
+                WeatherType.Hurricane,
+                WeatherType.Cold,
+                WeatherType.Hot,
+                WeatherType.Windy,
+                WeatherType.Hail
+            };
         }
 
         private string _id;

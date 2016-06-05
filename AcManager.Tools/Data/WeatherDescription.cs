@@ -2,48 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace AcManager.Tools.Data {
     public class WeatherDescription {
-        public enum WeatherType {
-            LightThunderstorm,
-            Thunderstorm,
-            HeavyThunderstorm,
-
-            LightDrizzle,
-            Drizzle,
-            HeavyDrizzle,
-
-            LightRain,
-            Rain,
-            HeavyRain,
-
-            LightSnow,
-            Snow,
-            HeavySnow,
-
-            LightSleet,
-            Sleet,
-            HeavySleet,
-
-            Clear,
-            FewClouds,
-            ScatteredClouds,
-            BrokenClouds,
-            OvercastClouds,
-
-            Fog,
-            Mist,
-
-            Smoke, Haze, Sand, Dust, Squalls,
-            Tornado, Hurricane, Cold, Hot, Windy, Hail
-        }
-
-        public static string GetWeatherTypeName(WeatherType type) {
-            return Regex.Replace(type.ToString(), @"(?=[A-Z])", " ").TrimStart();
-        }
-
         [Pure]
         public static WeatherType? FindClosestWeather(IEnumerable<WeatherType> list, WeatherType type) {
             var weatherTypes = list.Select(x => (WeatherType?)x).ToList();

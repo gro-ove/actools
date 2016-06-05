@@ -16,7 +16,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             }
         }
 
-        public override void Load(IniFile ini, IReadOnlyList<DirectInputDevice> devices) {
+        public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {
             var section = ini[Id];
             Input = AcSettingsHolder.Controls.GetKeyboardInputButton(section.GetInt("KEY", -1));
         }
@@ -30,7 +30,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
     public class KeyboardSpecificButtonEntry : KeyboardButtonEntry {
         public KeyboardSpecificButtonEntry(string id, string name) : base(id, name) { }
 
-        public override void Load(IniFile ini, IReadOnlyList<DirectInputDevice> devices) {
+        public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {
             var section = ini["KEYBOARD"];
             Input = AcSettingsHolder.Controls.GetKeyboardInputButton(section.GetInt(Id, -1));
         }

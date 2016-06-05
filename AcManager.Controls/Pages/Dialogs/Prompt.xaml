@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Controls.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance dialogs:Prompt+PromptViewModel}" SizeToContent="Manual" Width="720" Height="160" ResizeMode="CanResizeWithGrip">
+        d:DataContext="{d:DesignInstance dialogs:Prompt+PromptViewModel}" SizeToContent="Height" Width="720" MinHeight="160">
     <Grid>
         <StackPanel VerticalAlignment="Center">
             <TextBlock Text="{Binding Description, Mode=OneTime}" Margin="0 0 0 8" />

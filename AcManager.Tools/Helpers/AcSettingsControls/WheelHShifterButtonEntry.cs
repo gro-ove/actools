@@ -4,17 +4,16 @@ using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
-    public sealed class WheelHShifterButtonEntry : BaseEntry<DirectInputButton> {
+    public sealed class WheelHShifterButtonEntry : WheelButtonEntry {
         public WheelHShifterButtonEntry(string id, string name, string shortName) : base(id, name) {
             ShortName = shortName;
         }
 
         public string ShortName { get; }
 
-        public override void Load(IniFile ini, IReadOnlyList<DirectInputDevice> devices) {
+        public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {
             var section = ini["SHIFTER"];
-            Input = devices.ElementAtOrDefault(section.GetInt("JOY", -1))?
-                           .Buttons.ElementAtOrDefault(section.GetInt(Id, -1));
+            Input = devices.ElementAtOrDefault(section.GetInt("JOY", -1))?.GetButton(section.GetInt(Id, -1));
         }
 
         public override void Save(IniFile ini) {

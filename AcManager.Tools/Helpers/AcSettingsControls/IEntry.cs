@@ -12,7 +12,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         void Clear();
 
-        void Load(IniFile ini, IReadOnlyList<DirectInputDevice> devices);
+        void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices);
 
         void Save(IniFile ini);
     }

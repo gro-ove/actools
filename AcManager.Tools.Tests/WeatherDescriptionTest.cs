@@ -9,8 +9,8 @@ namespace AcManager.Tools.Tests {
     public class WeatherDescriptionTest {
         [TestMethod]
         public void FindClosestTest() {
-            var values = Enum.GetValues(typeof(WeatherDescription.WeatherType)).OfType<WeatherDescription.WeatherType>().ToArray();
-            WeatherDescription.WeatherType? result = null;
+            var values = Enum.GetValues(typeof(WeatherType)).OfType<WeatherType>().ToArray();
+            WeatherType? result = null;
 
             foreach (var type in values) {
                 for (var i = 1; i < values.Length; i++) {

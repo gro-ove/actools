@@ -5,7 +5,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
-    public sealed class WheelAxleEntry : BaseEntry<DirectInputAxle> {
+    public sealed class WheelAxleEntry : BaseEntry<DirectInputAxle>, IDirectInputEntry {
         public bool RangeMode { get; }
 
         public bool GammaMode { get; }
@@ -15,6 +15,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             GammaMode = gammaMode;
         }
 
+        IDirectInputDevice IDirectInputEntry.Device => Input?.Device;
+
         protected override void OnInputChanged(DirectInputAxle oldValue, DirectInputAxle newValue) {
             if (oldValue != null) {
                 oldValue.PropertyChanged -= AxlePropertyChanged;
@@ -23,6 +25,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             if (newValue != null) {
                 newValue.PropertyChanged += AxlePropertyChanged;
                 UpdateValue();
+            } else {
+                Value = 0d;
             }
         }
 
@@ -173,12 +177,10 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         }
         #endregion
 
-        public override void Load(IniFile ini, IReadOnlyList<DirectInputDevice> devices) {
+        public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {
             var section = ini[Id];
 
-            Input = devices.ElementAtOrDefault(section.GetInt("JOY", -1))?
-                           .Axles.ElementAtOrDefault(section.GetInt("AXLE", -1));
-
+            Input = devices.ElementAtOrDefault(section.GetInt("JOY", -1))?.GetAxle(section.GetInt("AXLE", -1));
             if (RangeMode) {
                 if (GammaMode) {
                     Gamma = section.GetDouble("GAMMA", 1d);
@@ -207,6 +209,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 Filter = section.GetDouble("STEER_FILTER", 0d).ToIntPercentage();
                 SpeedSensitivity = section.GetDouble("SPEED_SENSITIVITY", 0d).ToIntPercentage();
             }
+
+            UpdateValue();
         }
 
         public override void Save(IniFile ini) {

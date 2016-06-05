@@ -25,7 +25,8 @@ namespace AcManager {
                 SetUnhandledExceptionHandler();
             }
 
-            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References", false).Handler;
+            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References",
+                    Assembly.GetEntryAssembly().Location.Contains("_log_packed")).Handler;
             MainInner(a);
         }
         

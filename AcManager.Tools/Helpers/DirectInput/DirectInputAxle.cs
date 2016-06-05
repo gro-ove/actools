@@ -3,13 +3,13 @@ using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Helpers.DirectInput {
     public sealed class DirectInputAxle : BaseInputProvider<double>, IDirectInputProvider {
-        public DirectInputAxle(DirectInputDevice device, int id) : base(id) {
+        public DirectInputAxle(IDirectInputDevice device, int id) : base(id) {
             Device = device;
             ShortName = (id + 1).ToInvariantString();
             DisplayName = $"Axle {ShortName}";
         }
 
-        public DirectInputDevice Device { get; }
+        public IDirectInputDevice Device { get; }
 
         private double _roundedValue;
 

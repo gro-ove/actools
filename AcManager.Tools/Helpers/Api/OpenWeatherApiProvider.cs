@@ -88,7 +88,7 @@ namespace AcManager.Tools.Helpers.Api {
             HurricaneAdditional = 962,
         }
 
-        private static WeatherDescription.WeatherType OpenWeatherTypeToCommonType(OpenWeatherType type) {
+        private static WeatherType OpenWeatherTypeToCommonType(OpenWeatherType type) {
             switch (type) {
                 case OpenWeatherType.RaggedThunderstorm:
                 case OpenWeatherType.Thunderstorm:
@@ -98,113 +98,113 @@ namespace AcManager.Tools.Helpers.Api {
                 case OpenWeatherType.ThunderstormWithLightDrizzle:
                 case OpenWeatherType.ThunderstormWithDrizzle:
                 case OpenWeatherType.ThunderstormWithHeavyDrizzle:
-                    return WeatherDescription.WeatherType.Thunderstorm;
+                    return WeatherType.Thunderstorm;
 
                 case OpenWeatherType.LightThunderstorm:
-                    return WeatherDescription.WeatherType.LightThunderstorm;
+                    return WeatherType.LightThunderstorm;
 
                 case OpenWeatherType.HeavyThunderstorm:
                 case OpenWeatherType.TropicalStorm:
-                    return WeatherDescription.WeatherType.HeavyThunderstorm;
+                    return WeatherType.HeavyThunderstorm;
 
                 case OpenWeatherType.LightIntensityDrizzle:
                 case OpenWeatherType.LightIntensityDrizzleRain:
-                    return WeatherDescription.WeatherType.LightDrizzle;
+                    return WeatherType.LightDrizzle;
 
                 case OpenWeatherType.Drizzle:
                 case OpenWeatherType.DrizzleRain:
                 case OpenWeatherType.ShowerDrizzle:
-                    return WeatherDescription.WeatherType.Drizzle;
+                    return WeatherType.Drizzle;
 
                 case OpenWeatherType.HeavyIntensityDrizzle:
                 case OpenWeatherType.HeavyIntensityDrizzleRain:
-                    return WeatherDescription.WeatherType.HeavyDrizzle;
+                    return WeatherType.HeavyDrizzle;
 
                 case OpenWeatherType.LightRain:
                 case OpenWeatherType.LightIntensityShowerRain:
-                    return WeatherDescription.WeatherType.LightRain;
+                    return WeatherType.LightRain;
 
                 case OpenWeatherType.ModerateRain:
                 case OpenWeatherType.FreezingRain:
                 case OpenWeatherType.ShowerRainAndDrizzle:
                 case OpenWeatherType.ShowerRain:
                 case OpenWeatherType.RaggedShowerRain:
-                    return WeatherDescription.WeatherType.Rain;
+                    return WeatherType.Rain;
 
                 case OpenWeatherType.HeavyIntensityRain:
                 case OpenWeatherType.VeryHeavyRain:
                 case OpenWeatherType.ExtremeRain:
                 case OpenWeatherType.HeavyShowerRainAndDrizzle:
                 case OpenWeatherType.HeavyIntensityShowerRain:
-                    return WeatherDescription.WeatherType.HeavyRain;
+                    return WeatherType.HeavyRain;
                     
                 case OpenWeatherType.LightSnow:
                 case OpenWeatherType.LightShowerSnow:
-                    return WeatherDescription.WeatherType.LightSnow;
+                    return WeatherType.LightSnow;
 
                 case OpenWeatherType.Snow:
                 case OpenWeatherType.ShowerSnow:
-                    return WeatherDescription.WeatherType.Snow;
+                    return WeatherType.Snow;
 
                 case OpenWeatherType.HeavySnow:
                 case OpenWeatherType.HeavyShowerSnow:
-                    return WeatherDescription.WeatherType.HeavySnow;
+                    return WeatherType.HeavySnow;
                     
                 case OpenWeatherType.LightRainAndSnow:
-                    return WeatherDescription.WeatherType.LightSleet;
+                    return WeatherType.LightSleet;
 
                 case OpenWeatherType.RainAndSnow:
                 case OpenWeatherType.Sleet:
-                    return WeatherDescription.WeatherType.Sleet;
+                    return WeatherType.Sleet;
                     
                 case OpenWeatherType.ShowerSleet:
-                    return WeatherDescription.WeatherType.HeavySleet;
+                    return WeatherType.HeavySleet;
 
                 case OpenWeatherType.Mist:
-                    return WeatherDescription.WeatherType.Mist;
+                    return WeatherType.Mist;
 
                 case OpenWeatherType.Smoke:
-                    return WeatherDescription.WeatherType.Smoke;
+                    return WeatherType.Smoke;
 
                 case OpenWeatherType.Haze:
-                    return WeatherDescription.WeatherType.Haze;
+                    return WeatherType.Haze;
                     
                 case OpenWeatherType.Sand:
                 case OpenWeatherType.SandAndDustWhirls:
-                    return WeatherDescription.WeatherType.Sand;
+                    return WeatherType.Sand;
                     
                 case OpenWeatherType.Dust:
                 case OpenWeatherType.VolcanicAsh:
-                    return WeatherDescription.WeatherType.Dust;
+                    return WeatherType.Dust;
 
                 case OpenWeatherType.Fog:
-                    return WeatherDescription.WeatherType.Fog;
+                    return WeatherType.Fog;
 
                 case OpenWeatherType.Squalls:
-                    return WeatherDescription.WeatherType.Squalls;
+                    return WeatherType.Squalls;
 
                 case OpenWeatherType.Tornado:
                 case OpenWeatherType.TornadoExtreme:
-                    return WeatherDescription.WeatherType.Tornado;
+                    return WeatherType.Tornado;
 
                 case OpenWeatherType.ClearSky:
                 case OpenWeatherType.Calm:
                 case OpenWeatherType.LightBreeze:
-                    return WeatherDescription.WeatherType.Clear;
+                    return WeatherType.Clear;
 
                 case OpenWeatherType.FewClouds:
                 case OpenWeatherType.GentleBreeze:
                 case OpenWeatherType.ModerateBreeze:
-                    return WeatherDescription.WeatherType.FewClouds;
+                    return WeatherType.FewClouds;
 
                 case OpenWeatherType.ScatteredClouds:
-                    return WeatherDescription.WeatherType.ScatteredClouds;
+                    return WeatherType.ScatteredClouds;
 
                 case OpenWeatherType.BrokenClouds:
-                    return WeatherDescription.WeatherType.BrokenClouds;
+                    return WeatherType.BrokenClouds;
 
                 case OpenWeatherType.OvercastClouds:
-                    return WeatherDescription.WeatherType.OvercastClouds;
+                    return WeatherType.OvercastClouds;
 
                 case OpenWeatherType.Hurricane:
                 case OpenWeatherType.Gale:
@@ -212,22 +212,22 @@ namespace AcManager.Tools.Helpers.Api {
                 case OpenWeatherType.Storm:
                 case OpenWeatherType.ViolentStorm:
                 case OpenWeatherType.HurricaneAdditional:
-                    return WeatherDescription.WeatherType.Hurricane;
+                    return WeatherType.Hurricane;
 
                 case OpenWeatherType.Cold:
-                    return WeatherDescription.WeatherType.Cold;
+                    return WeatherType.Cold;
 
                 case OpenWeatherType.Hot:
-                    return WeatherDescription.WeatherType.Hot;
+                    return WeatherType.Hot;
 
                 case OpenWeatherType.Windy:
                 case OpenWeatherType.FreshBreeze:
                 case OpenWeatherType.StrongBreeze:
                 case OpenWeatherType.HighWind:
-                    return WeatherDescription.WeatherType.Windy;
+                    return WeatherType.Windy;
 
                 case OpenWeatherType.Hail:
-                    return WeatherDescription.WeatherType.Hail;
+                    return WeatherType.Hail;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
