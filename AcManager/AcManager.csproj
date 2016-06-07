@@ -183,6 +183,9 @@
     <Compile Include="Pages\Lists\CarSetupsListPage.xaml.cs">
       <DependentUpon>CarSetupsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\PpFiltersListPage.xaml.cs">
+      <DependentUpon>PpFiltersListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\FontsListPage.xaml.cs">
       <DependentUpon>FontsListPage.xaml</DependentUpon>
     </Compile>
@@ -194,6 +197,9 @@
     </Compile>
     <Compile Include="Pages\Selected\SelectedCarSkinPage.xaml.cs">
       <DependentUpon>SelectedCarSkinPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Selected\SelectedPpFilterPage.xaml.cs">
+      <DependentUpon>SelectedPpFilterPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\SelectedFontPage.xaml.cs">
       <DependentUpon>SelectedFontPage.xaml</DependentUpon>
@@ -441,6 +447,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\PpFiltersListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Lists\ReplaysListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -492,6 +502,10 @@
     <Page Include="Pages\Selected\SelectedCarSetupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Selected\SelectedPpFilterPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedReplayPage.xaml">
       <Generator>MSBuild:Compile</Generator>

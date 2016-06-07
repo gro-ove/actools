@@ -123,25 +123,15 @@
                 </CheckBox>
             </StackPanel>
 
-            <!--effects-->
+            <!--reflections-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Reflections:</TextBlock>
-
-            <DockPanel>
-                <Label>Mirror resolution:</Label>
-                <ComboBox ItemsSource="{Binding Video.MirrorResolutions}" SelectedItem="{Binding Video.MirrorResolution}" DisplayMemberPath="DisplayName" />
-            </DockPanel>
-
-            <CheckBox IsChecked="{Binding Video.MirrorHighQuality}" Margin="20 0 0 8">
-                <Label>High quality</Label>
-            </CheckBox>
 
             <DockPanel>
                 <Label>Reflection resolution:</Label>
                 <ComboBox ItemsSource="{Binding Video.CubemapResolutions}" SelectedItem="{Binding Video.CubemapResolution}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
-            <StackPanel Visibility="{Binding Video.CubemapResolution.Value, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}"
-                    Margin="20 0 0 0">
+            <StackPanel Visibility="{Binding Video.CubemapResolution.Value, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
                 <DockPanel>
                     <Label>Rendering frequency:</Label>
                     <ComboBox ItemsSource="{Binding Video.CubemapRenderingFrequencies}" SelectedItem="{Binding Video.CubemapRenderingFrequency}"
@@ -153,6 +143,18 @@
                     <Slider Minimum="0" Maximum="1200" Value="{Binding Video.CubemapDistance}" TickFrequency="120" TickPlacement="BottomRight" />
                 </DockPanel>
             </StackPanel>
+
+            <!--mirrors-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Mirrors:</TextBlock>
+
+            <DockPanel>
+                <Label>Mirror resolution:</Label>
+                <ComboBox ItemsSource="{Binding Video.MirrorResolutions}" SelectedItem="{Binding Video.MirrorResolution}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <CheckBox IsChecked="{Binding Video.MirrorHighQuality}">
+                <Label>High quality</Label>
+            </CheckBox>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

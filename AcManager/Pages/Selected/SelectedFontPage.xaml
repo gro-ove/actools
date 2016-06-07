@@ -9,7 +9,7 @@
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" Icon="{Binding SelectedObject.IconBitmap}" IconMouseDown="AcObjectBase_OnIconMouseDown">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Folder" ToolTip="Open weather's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+                <Button Content="Folder" ToolTip="Open font's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
                 

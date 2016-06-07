@@ -241,7 +241,7 @@ namespace AcManager.Tools.Helpers {
             public int FramerateLimit {
                 get { return _framerateLimit; }
                 set {
-                    value = MathUtils.Clamp(value, 30, 240);
+                    value = value.Clamp(30, 240);
                     if (Equals(value, _framerateLimit)) return;
                     _framerateLimit = value;
                     OnPropertyChanged();
@@ -373,7 +373,7 @@ namespace AcManager.Tools.Helpers {
             public int ColorSaturation {
                 get { return _colorSaturation; }
                 set {
-                    value = MathUtils.Clamp(value, 0, 200);
+                    value = value.Clamp(0, 400);
                     if (Equals(value, _colorSaturation)) return;
                     _colorSaturation = value;
                     OnPropertyChanged();
@@ -396,7 +396,7 @@ namespace AcManager.Tools.Helpers {
             public int MotionBlur {
                 get { return _motionBlur; }
                 set {
-                    value = MathUtils.Clamp(value, 0, 12);
+                    value = value.Clamp(0, 12);
                     if (Equals(value, _motionBlur)) return;
                     _motionBlur = value;
                     OnPropertyChanged();
@@ -457,7 +457,7 @@ namespace AcManager.Tools.Helpers {
             public int CubemapDistance {
                 get { return _cubemapDistance; }
                 set {
-                    value = MathUtils.Clamp(value, 0, 10000);
+                    value = value.Clamp(0, 10000);
                     if (Equals(value, _cubemapDistance)) return;
                     _cubemapDistance = value;
                     OnPropertyChanged();
@@ -508,7 +508,9 @@ namespace AcManager.Tools.Helpers {
             protected override void LoadFromIni() {
                 UpdateResolutionsList();
 
-                var loaded = new ResolutionEntry(Ini["VIDEO"].GetInt("WIDTH", 0), Ini["VIDEO"].GetInt("HEIGHT", 0), Ini["VIDEO"].GetInt("REFRESH", 0));
+                // VIDEO
+                var section = Ini["VIDEO"];
+                var loaded = new ResolutionEntry(section.GetInt("WIDTH", 0), section.GetInt("HEIGHT", 0), section.GetInt("REFRESH", 0));
                 var resolution = Resolutions.FirstOrDefault(x => x.Equals(loaded));
                 if (resolution == null) {
                     Resolution = Resolutions.FirstOrDefault(x => x.Width == loaded.Width && x.Height == loaded.Height);
@@ -518,79 +520,101 @@ namespace AcManager.Tools.Helpers {
                     Resolution = resolution;
                 }
 
-                Fullscreen = Ini["VIDEO"].GetBool("FULLSCREEN", true);
-                VerticalSyncronization = Ini["VIDEO"].GetBool("VSYNC", false);
-                AntiAliasingLevel = Ini["VIDEO"].GetEntry("AASAMPLES", AntiAliasingLevels);
-                AnisotropicLevel = Ini["VIDEO"].GetEntry("ANISOTROPIC", AnisotropicLevels, "8");
-                ShadowMapSize = Ini["VIDEO"].GetEntry("SHADOW_MAP_SIZE", ShadowMapSizes, "2048");
+                Fullscreen = section.GetBool("FULLSCREEN", true);
+                VerticalSyncronization = section.GetBool("VSYNC", false);
+                AntiAliasingLevel = section.GetEntry("AASAMPLES", AntiAliasingLevels);
+                AnisotropicLevel = section.GetEntry("ANISOTROPIC", AnisotropicLevels, "8");
+                ShadowMapSize = section.GetEntry("SHADOW_MAP_SIZE", ShadowMapSizes, "2048");
 
-                var limit = Ini["VIDEO"].GetDouble("FPS_CAP_MS", 0);
+                var limit = section.GetDouble("FPS_CAP_MS", 0);
                 FramerateLimitEnabled = Math.Abs(limit) >= 0.1;
                 FramerateLimit = FramerateLimitEnabled ? (int)Math.Round(1e3 / limit) : 60;
 
                 CameraMode = Ini["CAMERA"].GetEntry("MODE", CameraModes);
 
-                HideArms = Ini["ASSETTOCORSA"].GetBool("HIDE_ARMS", false);
-                HideSteeringWheel = Ini["ASSETTOCORSA"].GetBool("HIDE_STEER", false);
-                LockSteeringWheel = Ini["ASSETTOCORSA"].GetBool("LOCK_STEER", false);
-                WorldDetail = Ini["ASSETTOCORSA"].GetEntry("WORLD_DETAIL", WorldDetailLevels, "4");
+                // ASSETTOCORSA
+                section = Ini["ASSETTOCORSA"];
+                HideArms = section.GetBool("HIDE_ARMS", false);
+                HideSteeringWheel = section.GetBool("HIDE_STEER", false);
+                LockSteeringWheel = section.GetBool("LOCK_STEER", false);
+                WorldDetail = section.GetEntry("WORLD_DETAIL", WorldDetailLevels, "4");
 
                 MotionBlur = Ini["EFFECTS"].GetInt("MOTION_BLUR", 6);
                 SmokeInMirrors = Ini["EFFECTS"].GetBool("RENDER_SMOKE_IN_MIRROR", false);
                 SmokeLevel = Ini["EFFECTS"].GetEntry("SMOKE", SmokeLevels, "2");
 
-                PostProcessing = Ini["POST_PROCESS"].GetBool("ENABLED", true);
-                PostProcessingQuality = Ini["POST_PROCESS"].GetEntry("QUALITY", PostProcessingQualities, "4");
-                GlareQuality = Ini["POST_PROCESS"].GetEntry("GLARE", GlareQualities, "4");
-                DepthOfFieldQuality = Ini["POST_PROCESS"].GetEntry("DOF", DepthOfFieldQualities, "4");
-                RaysOfGod = Ini["POST_PROCESS"].GetBool("RAYS_OF_GOD", true);
-                HeatShimmering = Ini["POST_PROCESS"].GetBool("HEAT_SHIMMER", true);
-                Fxaa = Ini["POST_PROCESS"].GetBool("FXAA", true);
+                // POST_PROCESS
+                section = Ini["POST_PROCESS"];
+                PostProcessing = section.GetBool("ENABLED", true);
+                PostProcessingQuality = section.GetEntry("QUALITY", PostProcessingQualities, "4");
+                GlareQuality = section.GetEntry("GLARE", GlareQualities, "4");
+                DepthOfFieldQuality = section.GetEntry("DOF", DepthOfFieldQualities, "4");
+                RaysOfGod = section.GetBool("RAYS_OF_GOD", true);
+                HeatShimmering = section.GetBool("HEAT_SHIMMER", true);
+                Fxaa = section.GetBool("FXAA", true);
                 ColorSaturation = Ini["SATURATION"].GetInt("LEVEL", 100);
 
                 MirrorHighQuality = Ini["MIRROR"].GetBool("HQ", false);
                 MirrorResolution = Ini["MIRROR"].GetEntry("SIZE", MirrorResolutions, "512");
-                CubemapResolution = Ini["CUBEMAP"].GetEntry("SIZE", CubemapResolutions, "1024");
-                CubemapRenderingFrequency = Ini["CUBEMAP"].GetEntry("FACES_PER_FRAME", CubemapRenderingFrequencies, "3");
-                CubemapDistance = Ini["CUBEMAP"].GetInt("FARPLANE", 600);
+
+                section = Ini["CUBEMAP"];
+                CubemapResolution = section.GetEntry("SIZE", CubemapResolutions, "1024");
+                var orig = CubemapResolution.Value == "0" && section.ContainsKey("__ORIG_FACES_PER_FRAME");
+                CubemapRenderingFrequency = section.GetEntry(orig ? "__ORIG_FACES_PER_FRAME" : "FACES_PER_FRAME", CubemapRenderingFrequencies, "3");
+                CubemapDistance = section.GetInt(orig ? "__ORIG_FARPLANE" : "FARPLANE", 600);
             }
 
             protected override void SetToIni() {
-                Ini["VIDEO"].Set("WIDTH", Resolution.Width);
-                Ini["VIDEO"].Set("HEIGHT", Resolution.Height);
-                Ini["VIDEO"].Set("REFRESH", Resolution.Framerate);
+                var section = Ini["VIDEO"];
+                section.Set("WIDTH", Resolution.Width);
+                section.Set("HEIGHT", Resolution.Height);
+                section.Set("REFRESH", Resolution.Framerate);
 
-                Ini["VIDEO"].Set("FULLSCREEN", Fullscreen);
-                Ini["VIDEO"].Set("VSYNC", VerticalSyncronization);
-                Ini["VIDEO"].Set("AASAMPLES", AntiAliasingLevel);
-                Ini["VIDEO"].Set("ANISOTROPIC", AnisotropicLevel);
-                Ini["VIDEO"].Set("SHADOW_MAP_SIZE", ShadowMapSize);
-                Ini["VIDEO"].Set("FPS_CAP_MS", FramerateLimitEnabled ? 1e3 / FramerateLimit : 0d);
+                section.Set("FULLSCREEN", Fullscreen);
+                section.Set("VSYNC", VerticalSyncronization);
+                section.Set("AASAMPLES", AntiAliasingLevel);
+                section.Set("ANISOTROPIC", AnisotropicLevel);
+                section.Set("SHADOW_MAP_SIZE", ShadowMapSize);
+                section.Set("FPS_CAP_MS", FramerateLimitEnabled ? 1e3 / FramerateLimit : 0d);
                 Ini["CAMERA"].Set("MODE", CameraMode);
-
-                Ini["ASSETTOCORSA"].Set("HIDE_ARMS", HideArms);
-                Ini["ASSETTOCORSA"].Set("HIDE_STEER", HideSteeringWheel);
-                Ini["ASSETTOCORSA"].Set("LOCK_STEER", LockSteeringWheel);
-                Ini["ASSETTOCORSA"].Set("WORLD_DETAIL", WorldDetail);
+                
+                section = Ini["ASSETTOCORSA"];
+                section.Set("HIDE_ARMS", HideArms);
+                section.Set("HIDE_STEER", HideSteeringWheel);
+                section.Set("LOCK_STEER", LockSteeringWheel);
+                section.Set("WORLD_DETAIL", WorldDetail);
 
                 Ini["EFFECTS"].Set("MOTION_BLUR", MotionBlur);
                 Ini["EFFECTS"].Set("RENDER_SMOKE_IN_MIRROR", SmokeInMirrors);
                 Ini["EFFECTS"].Set("SMOKE", SmokeLevel);
 
-                Ini["POST_PROCESS"].Set("ENABLED", PostProcessing);
-                Ini["POST_PROCESS"].Set("QUALITY", PostProcessingQuality);
-                Ini["POST_PROCESS"].Set("GLARE", GlareQuality);
-                Ini["POST_PROCESS"].Set("DOF", DepthOfFieldQuality);
-                Ini["POST_PROCESS"].Set("RAYS_OF_GOD", RaysOfGod);
-                Ini["POST_PROCESS"].Set("HEAT_SHIMMER", HeatShimmering);
-                Ini["POST_PROCESS"].Set("FXAA", Fxaa);
+                section = Ini["POST_PROCESS"];
+                section.Set("ENABLED", PostProcessing);
+                section.Set("QUALITY", PostProcessingQuality);
+                section.Set("GLARE", GlareQuality);
+                section.Set("DOF", DepthOfFieldQuality);
+                section.Set("RAYS_OF_GOD", RaysOfGod);
+                section.Set("HEAT_SHIMMER", HeatShimmering);
+                section.Set("FXAA", Fxaa);
                 Ini["SATURATION"].Set("LEVEL", ColorSaturation);
 
                 Ini["MIRROR"].Set("HQ", MirrorHighQuality);
                 Ini["MIRROR"].Set("SIZE", MirrorResolution);
-                Ini["CUBEMAP"].Set("SIZE", CubemapResolution);
-                Ini["CUBEMAP"].Set("FACES_PER_FRAME", CubemapRenderingFrequency);
-                Ini["CUBEMAP"].Set("FARPLANE", CubemapDistance);
+
+                section = Ini["CUBEMAP"];
+                if (CubemapResolution.Value == "0") {
+                    section.Set("SIZE", 0);
+                    section.Set("FACES_PER_FRAME", 0);
+                    section.Set("FARPLANE", 0);
+                    section.Set("__ORIG_FACES_PER_FRAME", CubemapRenderingFrequency);
+                    section.Set("__ORIG_FARPLANE", CubemapDistance);
+                } else {
+                    section.Set("SIZE", CubemapResolution);
+                    section.Set("FACES_PER_FRAME", CubemapRenderingFrequency);
+                    section.Set("FARPLANE", CubemapDistance);
+                    section.Remove("__ORIG_FACES_PER_FRAME");
+                    section.Remove("__ORIG_FARPLANE");
+                }
             }
         }
 
