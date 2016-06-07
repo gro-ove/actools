@@ -67,7 +67,7 @@ namespace AcManager.Tools.Managers {
             return FilterRegex.IsMatch(Path.GetFileName(filename) ?? "");
         }
 
-        public override BaseAcDirectories Directories { get; }
+        public override IAcDirectories Directories { get; }
 
         protected override KunosCareerEventObject CreateAcObject(string id, bool enabled) {
             var result = new KunosCareerEventObject(_kunosCareerId, _kunosCareerType, this, id, enabled);

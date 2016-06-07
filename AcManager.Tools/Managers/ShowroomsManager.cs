@@ -19,7 +19,7 @@ namespace AcManager.Tools.Managers {
             return new ShowroomObject(this, id, enabled);
         }
 
-        public override BaseAcDirectories Directories => AcRootDirectory.Instance.ShowroomsDirectories;
+        public override IAcDirectories Directories => AcRootDirectory.Instance.ShowroomsDirectories;
 
         public override ShowroomObject GetDefault() {
             return GetById("showroom") ?? base.GetDefault();

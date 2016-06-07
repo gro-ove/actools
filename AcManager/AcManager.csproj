@@ -165,6 +165,9 @@
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\CarSetupsDialog.xaml.cs">
+      <DependentUpon>CarSetupsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\GameDialog.xaml.cs">
       <DependentUpon>GameDialog.xaml</DependentUpon>
     </Compile>
@@ -177,8 +180,17 @@
     <Compile Include="Pages\Drive\QuickDrive_Weekend.xaml.cs">
       <DependentUpon>QuickDrive_Weekend.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\CarSetupsListPage.xaml.cs">
+      <DependentUpon>CarSetupsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\FontsListPage.xaml.cs">
       <DependentUpon>FontsListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
+    <Compile Include="Pages\Selected\SelectedAcJsonObjectPage.cs" />
+    <Compile Include="Pages\Selected\SelectedAcObjectViewModel.cs" />
+    <Compile Include="Pages\Selected\SelectedCarSetupPage.xaml.cs">
+      <DependentUpon>SelectedCarSetupPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\SelectedCarSkinPage.xaml.cs">
       <DependentUpon>SelectedCarSkinPage.xaml</DependentUpon>
@@ -341,6 +353,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Dialogs\CarSetupsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Dialogs\CarUpdatePreviewsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -417,6 +433,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\CarSetupsListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Lists\CarSkinsListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -468,6 +488,10 @@
     <Page Include="Pages\Miscellaneous\WorkInProgress.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Selected\SelectedCarSetupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Selected\SelectedReplayPage.xaml">
       <Generator>MSBuild:Compile</Generator>

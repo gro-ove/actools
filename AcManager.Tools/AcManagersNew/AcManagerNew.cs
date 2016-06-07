@@ -14,14 +14,6 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcManagersNew {
-    public class IgnoringHolder : IDisposable {
-        internal event EventHandler Disposed;
-
-        public void Dispose() {
-            Disposed?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
     /// <summary>
     /// “Standart” version — files & watching.
     /// </summary>

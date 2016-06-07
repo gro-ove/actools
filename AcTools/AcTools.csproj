@@ -112,12 +112,14 @@
     <Compile Include="Utils\Helpers\FlexibleParser.cs" />
     <Compile Include="Utils\Helpers\GeoTagsEntry.cs" />
     <Compile Include="Utils\Helpers\GoodShuffle.cs" />
+    <Compile Include="Utils\Helpers\InvariantParser.cs" />
     <Compile Include="Utils\Helpers\LinqExtension.cs" />
     <Compile Include="Utils\Helpers\JsonExtension.cs" />
     <Compile Include="Utils\Helpers\DictionaryExtension.cs" />
     <Compile Include="Utils\Helpers\ObjectExtension.cs" />
     <Compile Include="Utils\Helpers\StreamExtension.cs" />
     <Compile Include="Utils\Helpers\StringExtension.cs" />
+    <Compile Include="Utils\Helpers\WeakList.cs" />
     <Compile Include="Utils\Helpers\ZipFileExtension.cs" />
     <Compile Include="Utils\Helpers\Utf8Checker.cs" />
     <Compile Include="Utils\Helpers\DisposeHelper.cs" />

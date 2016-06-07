@@ -6,40 +6,40 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class CarSkinsDialog {
-        private class CarSkinsDialogModel {
+    public partial class CarSetupsDialog {
+        private class CarSetupsDialogModel {
             [NotNull]
             public CarObject SelectedCar { get; }
 
-            public Uri ListUri => UriExtension.Create("/Pages/Lists/CarSkinsListPage.xaml?CarId={0}", SelectedCar.Id);
+            public Uri ListUri => UriExtension.Create("/Pages/Lists/CarSetupsListPage.xaml?CarId={0}", SelectedCar.Id);
 
-            public CarSkinsDialogModel([NotNull] CarObject car) {
+            public CarSetupsDialogModel([NotNull] CarObject car) {
                 SelectedCar = car;
             }
         }
 
-        private CarSkinsDialogModel Model => (CarSkinsDialogModel) DataContext;
+        private CarSetupsDialogModel Model => (CarSetupsDialogModel)DataContext;
 
-        public CarSkinsDialog([NotNull] CarObject car) {
+        public CarSetupsDialog([NotNull] CarObject car) {
             if (car == null) throw new ArgumentNullException(nameof(car));
 
-            DataContext = new CarSkinsDialogModel(car);
+            DataContext = new CarSetupsDialogModel(car);
 
             DefaultContentSource = Model.ListUri;
             MenuLinkGroups.Add(new LinkGroupFilterable {
-                DisplayName = "skins",
+                DisplayName = "setups",
                 Source = Model.ListUri
             });
 
             InitializeComponent();
         }
 
-        private void CarSkinsDialog_OnInitialized(object sender, EventArgs e) {
+        private void CarSetupsDialog_OnInitialized(object sender, EventArgs e) {
             if (Model?.SelectedCar == null) return;
             Model.SelectedCar.AcObjectOutdated += SelectedCar_AcObjectOutdated;
         }
 
-        private void CarSkinsDialog_OnClosed(object sender, EventArgs e) {
+        private void CarSetupsDialog_OnClosed(object sender, EventArgs e) {
             if (Model?.SelectedCar == null) return;
             Model.SelectedCar.AcObjectOutdated -= SelectedCar_AcObjectOutdated;
         }

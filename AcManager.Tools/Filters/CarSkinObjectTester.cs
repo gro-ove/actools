@@ -1,5 +1,4 @@
 using AcManager.Tools.Objects;
-using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {

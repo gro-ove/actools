@@ -464,8 +464,16 @@ namespace AcTools.Utils.Helpers {
         [Pure]
         public static IEnumerable<T> TakeLast<T>([NotNull] this IEnumerable<T> source, int count) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            var list = source.ToIReadOnlyListIfItsNot();
+            var list = source.ToList();
             return list.Skip(Math.Max(list.Count - count, 0));
+        }
+
+        [Pure]
+        public static IEnumerable<T> TakeLast<T>([NotNull] this IList<T> source, int count) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            for (var i = Math.Max(source.Count - count, 0); i < source.Count; i++) {
+                yield return source[i];
+            }
         }
 
         [Pure]

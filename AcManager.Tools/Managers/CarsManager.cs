@@ -15,7 +15,7 @@ namespace AcManager.Tools.Managers {
             return Instance = new CarsManager();
         }
 
-        public override BaseAcDirectories Directories => AcRootDirectory.Instance.CarsDirectories;
+        public override IAcDirectories Directories => AcRootDirectory.Instance.CarsDirectories;
 
         public override CarObject GetDefault() {
             return GetById("abarth500") ?? base.GetDefault();

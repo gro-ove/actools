@@ -82,6 +82,14 @@ namespace AcTools.Utils {
             return GetMainCarFilename(GetCarDirectory(acRoot, carName));
         }
 
+        public static string GetCarSetupsDirectory() {
+            return Path.Combine(GetDocumentsDirectory(), "setups");
+        }
+
+        public static string GetCarSetupsDirectory(string carName) {
+            return Path.Combine(GetDocumentsDirectory(), "setups", carName);
+        }
+
         public static string GetCarSkinsDirectory(string carDir) {
             return Path.Combine(carDir, "skins");
         }

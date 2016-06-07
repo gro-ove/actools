@@ -20,7 +20,7 @@ namespace AcManager.Tools.Managers {
             return v == null ? base.GetDefault() : EnsureWrapperLoaded(v);
         }
 
-        public override BaseAcDirectories Directories => AcRootDirectory.Instance.PpFiltersDirectories;
+        public override IAcDirectories Directories => AcRootDirectory.Instance.PpFiltersDirectories;
 
         protected override PpFilterObject CreateAcObject(string id, bool enabled) {
             return new PpFilterObject(this, id, enabled);

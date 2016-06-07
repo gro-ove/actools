@@ -91,6 +91,7 @@
     <Compile Include="AcManagersNew\IAcManagerNew.cs" />
     <Compile Include="AcManagersNew\IAcManagerScanWrapper.cs" />
     <Compile Include="AcManagersNew\IFileAcManager.cs" />
+    <Compile Include="AcManagersNew\IgnoringHolder.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject.cs" />
     <Compile Include="AcObjectsNew\AcCommonSingleFileObject.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject_Commands.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Filters\AcJsonObjectTester.cs" />
     <Compile Include="Filters\AcObjectTester.cs" />
     <Compile Include="Filters\CarObjectTester.cs" />
+    <Compile Include="Filters\CarSetupObjectTester.cs" />
     <Compile Include="Filters\CarSkinObjectTester.cs" />
     <Compile Include="Filters\ServerEntryTester.cs" />
     <Compile Include="Filters\ShowroomObjectTester.cs" />
@@ -175,7 +177,10 @@
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Lists\CompositeObservableCollection.cs" />
+    <Compile Include="Managers\CarSetupsDirectories.cs" />
+    <Compile Include="Managers\CarSetupsManager.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
+    <Compile Include="Managers\Directories\IAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
     <Compile Include="Managers\Directories\NonListeningAcDirectories.cs" />
     <Compile Include="Managers\FontsManager.cs" />
@@ -190,6 +195,8 @@
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
     <Compile Include="Miscellaneous\SharingHelper.cs" />
+    <Compile Include="Objects\CarObject_Setups.cs" />
+    <Compile Include="Objects\CarSetupObject.cs" />
     <Compile Include="Objects\CarSkinObject_Lists.cs" />
     <Compile Include="Objects\FontObject.cs" />
     <Compile Include="SemiGui\DriverName.cs" />

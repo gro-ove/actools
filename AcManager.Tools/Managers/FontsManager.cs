@@ -44,7 +44,7 @@ namespace AcManager.Tools.Managers {
             return v == null ? base.GetDefault() : EnsureWrapperLoaded(v);
         }
 
-        public override BaseAcDirectories Directories => AcRootDirectory.Instance.FontsDirectories;
+        public override IAcDirectories Directories => AcRootDirectory.Instance.FontsDirectories;
 
         protected override FontObject CreateAcObject(string id, bool enabled) {
             return new FontObject(this, id, enabled);

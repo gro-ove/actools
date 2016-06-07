@@ -20,6 +20,7 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
@@ -41,8 +42,8 @@ namespace AcManager.Tools.Managers.Online {
             public string DisplayTypeShort => DisplayType.Substring(0, 1);
 
             public string DisplayDuration => Type == Game.SessionType.Race ?
-                $"{Duration} {LocalizationHelper.MultiplyForm(Duration, "lap", "laps")}" :
-                LocalizationHelper.ReadableTime(Duration);
+                    PluralizingConverter.PluralizeExt((int)Duration, "{0} lap") :
+                    Duration.ReadableTime();
         }
 
         public class CarEntry {
@@ -520,9 +521,8 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private static TrackBaseObject GetTrack(string informationId) {
-            return informationId.Contains("-") ?
-                    TracksManager.Instance.GetLayoutById(informationId.ReplaceLastOccurrence("-", "/")) :
-                    TracksManager.Instance.GetById(informationId);
+            return TracksManager.Instance.GetById(informationId) ??
+                    (informationId.Contains("-") ? TracksManager.Instance.GetLayoutById(informationId.ReplaceLastOccurrence("-", "/")) : null);
         }
 
         public int Compare(object x, object y) {

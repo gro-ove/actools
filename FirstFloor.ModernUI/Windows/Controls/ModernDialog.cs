@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,8 +9,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// Represents a Modern UI styled dialog window.
     /// </summary>
-    public class ModernDialog
-            : DpiAwareWindow {
+    public class ModernDialog : DpiAwareWindow {
         /// <summary>
         /// Identifies the BackgroundContent dependency property.
         /// </summary>
@@ -39,12 +37,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             CloseCommand = new RelayCommand(o => CloseWithResult(o as MessageBoxResult?));
             Buttons = new[] { CloseButton };
-
-            // set the default owner
-            if (Application.Current != null && !ReferenceEquals(Application.Current.MainWindow, this)) {
-                Owner = Application.Current.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsActive)
-                        ?? (Application.Current.MainWindow.IsVisible ? Application.Current.MainWindow : null);
-            }
         }
 
         protected void CloseWithResult(MessageBoxResult? result) {

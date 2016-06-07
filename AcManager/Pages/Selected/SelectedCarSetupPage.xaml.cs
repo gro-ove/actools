@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using AcManager.Pages.Dialogs;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
+using AcTools.DataFile;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
+
+namespace AcManager.Pages.Selected {
+    public partial class SelectedCarSetupPage : ILoadableContent, IParametrizedUriContent {
+        public class SelectedCarSetupPageViewModel : SelectedAcObjectViewModel<CarSetupObject> {
+            public CarObject Car { get; }
+
+            public SettingEntry[] Tyres { get; }
+
+            private SettingEntry _selectedTyres;
+
+            public SettingEntry SelectedTyres {
+                get { return _selectedTyres; }
+                set {
+                    if (!Tyres.Contains(value)) value = Tyres[0];
+                    if (Equals(value, _selectedTyres)) return;
+                    _selectedTyres = value;
+                    OnPropertyChanged();
+                    SelectedObject.Tyres = value?.IntValue ?? 0;
+                }
+            }
+
+            public SelectedCarSetupPageViewModel(CarObject car, [NotNull] CarSetupObject acObject) : base(acObject) {
+                Car = car;
+
+                var main = Car.Data.GetIniFile("car.ini");
+                SelectedObject.FuelMaximum = main["FUEL"].GetInt("MAX_FUEL", 0);
+
+                var tyres = Car.Data.GetIniFile("tyres.ini");
+                Tyres = tyres.GetSections("FRONT", -1).Select((x, i) => new SettingEntry(i, x.Get("NAME"))).ToArray();
+                SelectedTyres = Tyres.ElementAtOrDefault(SelectedObject.Tyres);
+
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);
+            }
+
+            private RelayCommand _changeTrackCommand;
+
+            public RelayCommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new RelayCommand(o => {
+                var dialog = new SelectTrackDialog(SelectedObject.Track);
+                dialog.ShowDialog();
+                if (!dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null) return;
+                SelectedObject.Track = dialog.Model.SelectedTrack;
+            }));
+
+            private void Handler(object sender, PropertyChangedEventArgs e) {
+                switch (e.PropertyName) {
+                    case nameof(SelectedObject.Tyres):
+                        SelectedTyres = Tyres.ElementAtOrDefault(SelectedObject.Tyres);
+                        break;
+                }
+            }
+        }
+
+        private string _carId, _id;
+
+        void IParametrizedUriContent.OnUri(Uri uri) {
+            _carId = uri.GetQueryParam("CarId");
+            if (_carId == null) throw new ArgumentException("Car ID is missing");
+
+            _id = uri.GetQueryParam("Id");
+            if (_id == null) throw new ArgumentException("ID is missing");
+        }
+
+        private CarObject _carObject;
+        private CarSetupObject _object;
+
+        async Task ILoadableContent.LoadAsync(CancellationToken cancellationToken) {
+            do {
+                _carObject = await CarsManager.Instance.GetByIdAsync(_carId);
+                if (_carObject == null) {
+                    _object = null;
+                    return;
+                }
+
+                await Task.Run(() => {
+                    _carObject.Data.GetIniFile("car.ini");
+                    _carObject.Data.GetIniFile("tyres.ini");
+                }, cancellationToken);
+
+                _object = await _carObject.SetupsManager.GetByIdAsync(_id);
+            } while (_carObject.Outdated);
+        }
+
+        void ILoadableContent.Load() {
+            do {
+                _carObject = CarsManager.Instance.GetById(_carId);
+                if (_carObject == null) {
+                    _object = null;
+                    return;
+                }
+
+                _object = _carObject?.SetupsManager.GetById(_id);
+            } while (_carObject.Outdated);
+        }
+
+        void ILoadableContent.Initialize() {
+            if (_carObject == null) throw new ArgumentException("Can’t find car with provided ID");
+            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+
+            InitializeAcObjectPage(_model = new SelectedCarSetupPageViewModel(_carObject, _object));
+            //InputBindings.AddRange(new[] {
+            //    new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control))
+            //});
+            InitializeComponent();
+        }
+
+        private SelectedCarSetupPageViewModel _model;
+    }
+}

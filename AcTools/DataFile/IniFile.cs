@@ -152,13 +152,19 @@ namespace AcTools.DataFile {
             return null;
         }
 
+        private IEnumerable<string> GetSectionNames(string prefixName, int startFrom) {
+            return LinqExtension.RangeFrom(startFrom == -1 ? 0 : startFrom)
+                                .Select(x => startFrom == -1 && x == 0 ? prefixName : $"{prefixName}_{x}")
+                                .TakeWhile(ContainsKey);
+        }
+
         /// <summary>
         /// Remove all sections by prefix like SECTION_0, SECTION_1, …
         /// </summary>
         /// <param name="prefixName">Prefix</param>
         /// <param name="startFrom">ID of first section</param>
         public void RemoveSections(string prefixName, int startFrom = 0) {
-            foreach (var key in LinqExtension.RangeFrom(startFrom).Select(x => $"{prefixName}_{x}").TakeWhile(ContainsKey)) {
+            foreach (var key in GetSectionNames(prefixName, startFrom)) {
                 Remove(key);
             }
         }
@@ -167,9 +173,9 @@ namespace AcTools.DataFile {
         /// Get all sections by prefix like SECTION_0, SECTION_1, …
         /// </summary>
         /// <param name="prefixName">Prefix (e.g. “SECTION”)</param>
-        /// <param name="startFrom">ID of first section</param>
+        /// <param name="startFrom">ID of first section (use -1 if first section is SECTION and second is SECTION_1)</param>
         public IEnumerable<IniFileSection> GetSections(string prefixName, int startFrom = 0) {
-            return LinqExtension.RangeFrom(startFrom).Select(x => $"{prefixName}_{x}").TakeWhile(ContainsKey).Select(key => this[key]);
+            return GetSectionNames(prefixName, startFrom).Select(key => this[key]);
         }
     }
 }

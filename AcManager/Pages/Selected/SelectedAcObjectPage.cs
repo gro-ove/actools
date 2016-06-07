@@ -1,42 +1,9 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Annotations;
-using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;
-using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Selected {
-    public interface ISelectedAcObjectViewModel {
-        AcCommonObject SelectedAcObject { get; }
-
-        void Load();
-
-        void Unload();
-
-        RelayCommand FindInformationCommand { get; }
-    }
-
-    public class SelectedAcObjectViewModel<T> : NotifyPropertyChanged, ISelectedAcObjectViewModel where T : AcCommonObject {
-        [NotNull]
-        public T SelectedObject { get; }
-
-        public AcCommonObject SelectedAcObject => SelectedObject;
-
-        protected SelectedAcObjectViewModel([NotNull] T acObject) {
-            SelectedObject = acObject;
-        }
-
-        public virtual void Load() { }
-
-        public virtual void Unload() { }
-
-        private RelayCommand _findInformationCommand;
-
-        public RelayCommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new RelayCommand(o => {
-            new FindInformationDialog((AcJsonObjectNew)SelectedAcObject).ShowDialog();
-        }, o => SelectedAcObject is AcJsonObjectNew));
-    }
-
     public abstract class SelectedAcObjectPage : UserControl {
         public AcCommonObject SelectedAcObject { get; private set; }
 
@@ -70,37 +37,6 @@ namespace AcManager.Pages.Selected {
             _loaded = false;
 
             ((ISelectedAcObjectViewModel)DataContext).Unload();
-        }
-    }
-
-    public abstract class SelectedAcJsonObjectPage : SelectedAcObjectPage {
-        public AcJsonObjectNew SelectedAcJsonObject => (AcJsonObjectNew)((ISelectedAcObjectViewModel)DataContext).SelectedAcObject;
-
-        protected void InitializeAcObjectPage<T>(SelectedAcObjectViewModel<T> model) where T : AcJsonObjectNew {
-            base.InitializeAcObjectPage(model);
-            InputBindings.AddRange(new[] {
-                new InputBinding(SelectedAcJsonObject.TagsCleanUpAndSortCommand, new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Alt))
-            });
-        }
-
-        protected virtual void VersionInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
-                e.Handled = true;
-                new VersionInfoEditor(SelectedAcJsonObject).ShowDialog();
-            }
-        }
-
-        protected void TagsList_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton != MouseButton.Right) return;
-
-            new ContextMenu {
-                Items = {
-                    new MenuItem { Header = "Clean Up Tags", Command = SelectedAcJsonObject.TagsCleanUpCommand },
-                    new MenuItem { Header = "Sort Tags", Command = SelectedAcJsonObject.TagsSortCommand },
-                    new MenuItem { Header = "Clean Up & Sort Tags", Command = SelectedAcJsonObject.TagsCleanUpAndSortCommand, InputGestureText = "Ctrl+Alt+T" }
-                }
-            }.IsOpen = true;
-            e.Handled = true;
         }
     }
 }

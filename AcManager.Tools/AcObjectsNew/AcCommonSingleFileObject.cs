@@ -23,12 +23,22 @@ namespace AcManager.Tools.AcObjectsNew {
             return result.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
         }
 
+        private string _originalName;
+
         protected override void LoadOrThrow() {
             Name = GetOriginalFilename();
+            _originalName = Name;
+        }
+
+        protected virtual void Rename() {
+            FileUtils.Move(Location, FileAcManager.Directories.GetLocation(Name + Extension, Enabled));
         }
 
         public override void Save() {
-            FileUtils.Move(Location, FileAcManager.Directories.GetLocation(Name + Extension, Enabled));
+            if (_originalName != Name) {
+                Rename();
+                _originalName = Name;
+            }
         }
 
         public override bool HandleChangedFile(string filename) {

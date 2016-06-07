@@ -36,6 +36,11 @@ namespace AcManager.Tools {
                 return UriExtension.Create("/Pages/Selected/SelectedCarSkinPage.xaml?Id={0}&CarId={1}", carSkinObject.Id, carSkinObject.CarId);
             }
 
+            var carSetupObject = obj as CarSetupObject;
+            if (carSetupObject != null) {
+                return UriExtension.Create("/Pages/Selected/SelectedCarSetupPage.xaml?Id={0}&CarId={1}", carSetupObject.Id, carSetupObject.CarId);
+            }
+
             throw new NotImplementedException("Not supported type: " + obj.GetType());
         }
     }

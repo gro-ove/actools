@@ -2,7 +2,7 @@ using AcManager.Tools.Managers.Directories;
 
 namespace AcManager.Tools.AcManagersNew {
     public interface IFileAcManager : IAcManagerNew {
-        BaseAcDirectories Directories { get; }
+        IAcDirectories Directories { get; }
 
         void Toggle(string id);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
@@ -37,6 +38,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             // try to set per-monitor dpi awareness, before the window is displayed
             _isPerMonitorDpiAware = ModernUiHelper.TrySetPerMonitorDpiAware();
+
+            // set the default owner
+            if (Application.Current != null && !ReferenceEquals(Application.Current.MainWindow, this)) {
+                Owner = Application.Current.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsActive)
+                        ?? (Application.Current.MainWindow.IsVisible ? Application.Current.MainWindow : null);
+            }
         }
 
         public new void ShowDialog() {
@@ -269,7 +276,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 var handle = new WindowInteropHelper(this).Handle;
                 SetWindowLong(handle, GwlStyle, GetWindowLong(handle, GwlStyle) &
-                    ~WsDisabled | (value ? 0 : WsDisabled));
+                        ~WsDisabled | (value ? 0 : WsDisabled));
             }
         }
 

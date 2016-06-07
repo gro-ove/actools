@@ -2,7 +2,6 @@
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Tools.Objects {
-
     public class PpFilterObject : AcCommonSingleFileObject {
         public override string Extension => ".ini";
 

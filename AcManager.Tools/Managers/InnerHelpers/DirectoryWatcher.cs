@@ -11,12 +11,10 @@ namespace AcManager.Tools.Managers.InnerHelpers {
     public class DirectoryWatcher : IDisposable {
         public readonly string TargetDirectory;
 
-        public FileSystemWatcher InnerWatcher { get; private set; }
-
+        private FileSystemWatcher _innerWatcher;
         private FileSystemWatcher _helperWatcher;
 
         private readonly bool _failed;
-
         private readonly List<IDirectoryListener> _listeners = new List<IDirectoryListener>(1);
 
         public DirectoryWatcher([NotNull] string directory) {
@@ -42,7 +40,6 @@ namespace AcManager.Tools.Managers.InnerHelpers {
             _helperWatcher.Created += HelperWatcher_Something;
             _helperWatcher.Renamed += HelperWatcher_Something;
             _helperWatcher.Deleted += HelperWatcher_Something;
-
             UpdateInnerWatcher();
         }
 
@@ -54,11 +51,11 @@ namespace AcManager.Tools.Managers.InnerHelpers {
             if (_failed) return;
 
             if (Directory.Exists(TargetDirectory)) {
-                if (InnerWatcher != null) return;
+                if (_innerWatcher != null) return;
 
                 Debug.WriteLine("UPDATE INNER WATCHER: CREATE WATCHER FOR " + TargetDirectory);
 
-                InnerWatcher = new FileSystemWatcher {
+                _innerWatcher = new FileSystemWatcher {
                     Path = TargetDirectory,
                     NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
                     Filter = "*",
@@ -68,21 +65,21 @@ namespace AcManager.Tools.Managers.InnerHelpers {
 
                 var content = FileUtils.GetFilesAndDirectories(TargetDirectory).ToList();
                 foreach (var listener in _listeners) {
-                    InnerWatcher.Changed += listener.FileOrDirectoryChanged;
-                    InnerWatcher.Created += listener.FileOrDirectoryCreated;
-                    InnerWatcher.Deleted += listener.FileOrDirectoryDeleted;
-                    InnerWatcher.Renamed += listener.FileOrDirectoryRenamed;
+                    _innerWatcher.Changed += listener.FileOrDirectoryChanged;
+                    _innerWatcher.Created += listener.FileOrDirectoryCreated;
+                    _innerWatcher.Deleted += listener.FileOrDirectoryDeleted;
+                    _innerWatcher.Renamed += listener.FileOrDirectoryRenamed;
 
                     foreach (var sub in content) {
                         listener.FileOrDirectoryCreated(this, new FileSystemEventArgs(WatcherChangeTypes.Created, TargetDirectory, Path.GetFileName(sub)));
                     }
                 }
-            } else if (InnerWatcher != null) {
+            } else if (_innerWatcher != null) {
                 Debug.WriteLine("UPDATE INNER WATCHER: REMOVE WATCHER FOR " + TargetDirectory);
 
-                InnerWatcher.EnableRaisingEvents = false;
-                InnerWatcher.Dispose();
-                InnerWatcher = null;
+                _innerWatcher.EnableRaisingEvents = false;
+                _innerWatcher.Dispose();
+                _innerWatcher = null;
 
                 foreach (var listener in _listeners) {
                     listener.FileOrDirectoryDeleted(this, new FileSystemEventArgs(WatcherChangeTypes.Deleted, TargetDirectory, null));
@@ -94,21 +91,21 @@ namespace AcManager.Tools.Managers.InnerHelpers {
             if (listener == null) throw new ArgumentNullException(nameof(listener));
             if (_failed) return;
 
-            if (InnerWatcher != null) {
-                InnerWatcher.Changed += listener.FileOrDirectoryChanged;
-                InnerWatcher.Created += listener.FileOrDirectoryCreated;
-                InnerWatcher.Deleted += listener.FileOrDirectoryDeleted;
-                InnerWatcher.Renamed += listener.FileOrDirectoryRenamed;
+            if (_innerWatcher != null) {
+                _innerWatcher.Changed += listener.FileOrDirectoryChanged;
+                _innerWatcher.Created += listener.FileOrDirectoryCreated;
+                _innerWatcher.Deleted += listener.FileOrDirectoryDeleted;
+                _innerWatcher.Renamed += listener.FileOrDirectoryRenamed;
             }
 
             _listeners.Add(listener);
         }
 
         public void Dispose() {
-            if (InnerWatcher != null) {
-                InnerWatcher.EnableRaisingEvents = false;
-                InnerWatcher.Dispose();
-                InnerWatcher = null;
+            if (_innerWatcher != null) {
+                _innerWatcher.EnableRaisingEvents = false;
+                _innerWatcher.Dispose();
+                _innerWatcher = null;
             }
 
             if (_helperWatcher != null) {

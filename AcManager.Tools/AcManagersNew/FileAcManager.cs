@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
@@ -28,7 +27,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
-        public abstract BaseAcDirectories Directories { get; }
+        public abstract IAcDirectories Directories { get; }
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
             return Directories.GetSubDirectories().Where(Filter).Select(dir =>

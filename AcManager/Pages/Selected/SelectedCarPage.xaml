@@ -3,7 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
-        xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarPage+SelectedCarPageViewModel}">
     <UserControl.Resources>
@@ -55,6 +56,9 @@
                 <Separator />
                 <Button Content="Find Information" Command="{Binding FindInformationCommand}" ToolTip="Find information about car (Ctrl+I)" />
                 <Button Content="Manage Skins" Command="{Binding ManageSkinsCommand}" ToolTip="Manage skins (Ctrl+K)" />
+                <Button
+                        Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Content="Manage Setups" Command="{Binding ManageSetupsCommand}" ToolTip="Manage setups (Ctrl+U)" />
                 <mui:ButtonWithComboBox Content="Update Previews" Command="{Binding UpdatePreviewsCommand}" ButtonToolTip="Update all previews (Ctrl+P)"
                         PreviewMouseDown="ToolbarButtonUpdatePreviews_OnPreviewMouseDown">
                     <MenuItem Header="Manual Mode" ToolTip="Set camera position manually and then press F8 to start shooting" InputGestureText="Ctrl+Alt+P"
@@ -70,8 +74,6 @@
                         </MenuItem.ItemsSource>
                     </MenuItem>
                 </mui:ButtonWithComboBox>
-                <Separator />
-                <Button Content="Update Shadows" IsEnabled="False" />
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 

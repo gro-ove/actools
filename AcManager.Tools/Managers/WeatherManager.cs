@@ -25,7 +25,7 @@ namespace AcManager.Tools.Managers {
             return !WatchedFiles.Contains(inner.ToLowerInvariant());
         }
 
-        public override BaseAcDirectories Directories => AcRootDirectory.Instance.WeatherDirectories;
+        public override IAcDirectories Directories => AcRootDirectory.Instance.WeatherDirectories;
 
         public override WeatherObject GetDefault() {
             var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains("clear"));

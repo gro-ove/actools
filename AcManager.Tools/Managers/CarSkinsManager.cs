@@ -10,7 +10,9 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers {
     public class CarSkinsManager : AcManagerNew<CarSkinObject> {
-        public readonly string CarId;
+        public string CarId { get; }
+
+        public override IAcDirectories Directories { get; }
 
         internal CarSkinsManager(string carId, BaseAcDirectories directories) {
             CarId = carId;
@@ -26,8 +28,6 @@ namespace AcManager.Tools.Managers {
         protected override AcWrapperObservableCollection CreateCollection() {
             return new NumericSortedAcWrapperObservableCollection();
         }
-
-        public override BaseAcDirectories Directories { get; }
 
         public event AcObjectEventHandler<CarSkinObject> Created;
 

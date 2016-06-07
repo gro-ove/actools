@@ -9,12 +9,10 @@ namespace AcManager.Tools.Managers.Directories {
     /// <summary>
     /// Basic version with only an abstract concept of watching.
     /// </summary>
-    public abstract class BaseAcDirectories : IDisposable {
-        [NotNull]
-        public readonly string EnabledDirectory;
-
-        [CanBeNull]
-        public readonly string DisabledDirectory;
+    public abstract class BaseAcDirectories : IAcDirectories {
+        public string EnabledDirectory { get; }
+        
+        public string DisabledDirectory { get; }
 
         protected BaseAcDirectories([NotNull] string enabledDirectory, [CanBeNull] string disabledDirectory) {
             if (enabledDirectory == null) throw new ArgumentNullException(nameof(enabledDirectory));
@@ -31,15 +29,15 @@ namespace AcManager.Tools.Managers.Directories {
             Directory.CreateDirectory(EnabledDirectory);
         }
 
-        public string GetLocation([NotNull] string id, bool enabled) {
+        public string GetLocation(string id, bool enabled) {
             if (id == null) throw new ArgumentNullException(nameof(id));
-            if (!Actual) throw new Exception("not valid anymore");
-            if (DisabledDirectory == null && !enabled) throw new Exception("cannot be disabled");
+            if (!Actual) throw new Exception("Not valid anymore");
+            if (DisabledDirectory == null && !enabled) throw new Exception("Cannot be disabled");
             return Path.Combine(enabled ? EnabledDirectory : DisabledDirectory, id);
         }
 
         private IEnumerable<string> GetSubSomething(Func<string, string[]> selector) {
-            if (!Actual) throw new Exception("not valid anymore");
+            if (!Actual) throw new Exception("Not valid anymore");
 
             List<string> enabled;
             if (Directory.Exists(EnabledDirectory)) {
@@ -81,7 +79,7 @@ namespace AcManager.Tools.Managers.Directories {
 
         public abstract void Dispose();
 
-        public bool CheckIfEnabled([NotNull] string location) {
+        public bool CheckIfEnabled(string location) {
             // TODO: What if disabled directory is in enabled (like …/content/cars and …/content/ca)
             return DisabledDirectory == null || !location.StartsWith(DisabledDirectory);
         }

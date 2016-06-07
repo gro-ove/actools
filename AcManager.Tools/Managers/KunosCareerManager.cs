@@ -228,7 +228,7 @@ namespace AcManager.Tools.Managers {
             return Directories.GetSubDirectories("series*").Where(Filter).Select(dir => CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
         }
 
-        public override BaseAcDirectories Directories => AcRootDirectory.Instance.KunosCareerDirectories;
+        public override IAcDirectories Directories => AcRootDirectory.Instance.KunosCareerDirectories;
 
         public override KunosCareerObject GetDefault() {
             var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains("series0"));

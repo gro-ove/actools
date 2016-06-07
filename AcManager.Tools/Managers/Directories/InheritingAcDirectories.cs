@@ -7,14 +7,14 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Directories {
     public class InheritingAcDirectories : BaseAcDirectories, IDirectoryListener {
-        private readonly BaseAcDirectories _parentDirectories;
+        private readonly IAcDirectories _parentDirectories;
 
-        public InheritingAcDirectories(BaseAcDirectories parentDirectories, [NotNull] string enabledDirectory, [CanBeNull] string disabledDirectory)
+        public InheritingAcDirectories(IAcDirectories parentDirectories, [NotNull] string enabledDirectory, [CanBeNull] string disabledDirectory)
                 : base(enabledDirectory, disabledDirectory) {
             _parentDirectories = parentDirectories;
         }
 
-        public InheritingAcDirectories(BaseAcDirectories parentDirectories, [NotNull] string enabledDirectory)
+        public InheritingAcDirectories(IAcDirectories parentDirectories, [NotNull] string enabledDirectory)
                 : base(enabledDirectory) {
             _parentDirectories = parentDirectories;
         }

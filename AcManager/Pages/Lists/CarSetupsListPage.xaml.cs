@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using AcManager.Annotations;
 using AcManager.Controls.ViewModels;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -13,7 +13,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {
-    public partial class CarSkinsListPage : IParametrizedUriContent, ILoadableContent {
+    public partial class CarSetupsListPage : IParametrizedUriContent, ILoadableContent {
         public void OnUri(Uri uri) {
             _carId = uri.GetQueryParam("CarId");
             _filter = uri.GetQueryParam("Filter");
@@ -45,31 +45,22 @@ namespace AcManager.Pages.Lists {
         }
 
         public void Initialize() {
-            DataContext = new CarSkinsListPageViewModel(_car, string.IsNullOrEmpty(_filter) ? null : Filter.Create(CarSkinObjectTester.Instance, _filter));
+            DataContext = new CarSetupsListPageViewModel(_car, string.IsNullOrEmpty(_filter) ? null : Filter.Create(CarSetupObjectTester.Instance, _filter));
             InitializeComponent();
         }
 
-        public CarSkinsListPage([NotNull] CarObject car, string filter = null) {
-            _car = car;
-            _filter = filter;
-        }
+        private CarSetupsListPageViewModel Model => (CarSetupsListPageViewModel)DataContext;
 
-        public CarSkinsListPage() { }
-
-        private void CarsListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            ((CarSkinsListPageViewModel)DataContext).Unload();
-        }
-
-        public class CarSkinsListPageViewModel : AcListPageViewModel<CarSkinObject> {
+        public class CarSetupsListPageViewModel : AcListPageViewModel<CarSetupObject> {
             public CarObject SelectedCar { get; private set; }
 
-            public CarSkinsListPageViewModel([NotNull] CarObject car, IFilter<CarSkinObject> listFilter)
-                    : base(car.SkinsManager, listFilter) {
+            public CarSetupsListPageViewModel([NotNull] CarObject car, IFilter<CarSetupObject> listFilter)
+                    : base(car.SetupsManager, listFilter) {
                 SelectedCar = car;
             }
 
             protected override string GetStatus() {
-                return PluralizingConverter.PluralizeExt(MainList.Count, @"{0} skin");
+                return PluralizingConverter.PluralizeExt(MainList.Count, @"{0} setup");
             }
         }
     }

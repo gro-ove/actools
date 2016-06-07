@@ -15,7 +15,7 @@ namespace AcManager.Tools.Managers {
             return Instance = new TracksManager();
         }
 
-        public override BaseAcDirectories Directories => AcRootDirectory.Instance.TracksDirectories;
+        public override IAcDirectories Directories => AcRootDirectory.Instance.TracksDirectories;
 
         public override TrackObject GetDefault() {
             return base.GetById("imola") ?? base.GetDefault();

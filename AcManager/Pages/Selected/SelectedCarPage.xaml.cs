@@ -183,6 +183,14 @@ namespace AcManager.Pages.Selected {
                     ShowInTaskbar = false
                 }.ShowDialogWithoutBlocking();
             }));
+
+            private RelayCommand _manageSetupsCommand;
+
+            public RelayCommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new RelayCommand(o => {
+                new CarSetupsDialog(SelectedObject) {
+                    ShowInTaskbar = false
+                }.ShowDialogWithoutBlocking();
+            }));
         }
 
         private string _id;
@@ -224,8 +232,9 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(_model.OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
-
-                new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control))
+                
+                new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control)),
+                new InputBinding(_model.ManageSetupsCommand, new KeyGesture(Key.U, ModifierKeys.Control))
             });
             InitializeComponent();
         }
