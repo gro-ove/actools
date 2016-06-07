@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
 
@@ -33,24 +34,23 @@ namespace AcManager.Controls {
 
                 if (_currentObject != null) {
                     _currentObject.AcObjectOutdated += SelectedAcObject_Outdated;
-                    SetCurrentValue(SelectedSourceProperty, _setNextToNull ? null : AcObjectsUriManager.GetUri(_currentObject));
+                    SetCurrentValue(SelectedSourceProperty, AcObjectsUriManager.GetUri(_currentObject));
                 } else {
                     SetCurrentValue(SelectedSourceProperty, null);
                 }
             }
         }
 
-        private bool _setNextToNull;
-
         public AcListPage() {
             SelectMode = false;
 
-            _selectedWrapper = new DelayedPropertyWrapper<AcItemWrapper>(v => {
-                if (v != null) {
-                    _list?.ScrollIntoView(v);
-                }
-                
+            _selectedWrapper = new DelayedPropertyWrapper<AcItemWrapper>(async v => {
                 CurrentObject = v?.Loaded();
+
+                if (v != null && SettingsHolder.Content.ScrollAutomatically) {
+                    await Task.Delay(1);
+                    _list?.ScrollIntoView(_list.SelectedItem);
+                }
             });
         }
 
@@ -69,29 +69,30 @@ namespace AcManager.Controls {
             }
         }
 
-        private async void SelectedAcObject_Outdated(object sender, EventArgs e) {
+        private void SelectedAcObject_Outdated(object sender, EventArgs e) {
             SetCurrentValue(SelectedSourceProperty, null);
 
             var oldItem = _selectedWrapper.Value;
             var id = (sender as AcObjectNew)?.Id;
-            if (id == null) {
-                _setNextToNull = false;
-                return;
-            }
+            if (id == null) return;
 
-            _setNextToNull = true;
-            await Task.Delay(1);
-
-            _setNextToNull = false;
             var newItem = ItemsSource.OfType<AcItemWrapper>().GetByIdOrDefault(id);
             if (oldItem != null && newItem == oldItem) {
                 CurrentObject = newItem.Loaded();
             } else if (newItem != null) {
                 ItemsSource.MoveCurrentTo(newItem);
-            } else if (CurrentObject != null) {
-                SetCurrentValue(SelectedSourceProperty, AcObjectsUriManager.GetUri(CurrentObject));
             } else {
-                ItemsSource.MoveCurrentToFirst();
+                var replacement = ItemsSource.OfType<AcItemWrapper>().FirstOrDefault(x => (x.Value as AcCommonObject)?.PreviousId == id);
+                if (replacement != null) {
+                    ItemsSource.MoveCurrentTo(replacement);
+                    return;
+                }
+
+                if (CurrentObject != null) {
+                    SetCurrentValue(SelectedSourceProperty, AcObjectsUriManager.GetUri(CurrentObject));
+                } else {
+                    ItemsSource.MoveCurrentToFirst();
+                }
             }
         }
 

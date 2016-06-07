@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.InnerHelpers;
-using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -49,38 +48,15 @@ namespace AcManager.Tools.AcManagersNew {
             return null;
         }
 
-        public override void Toggle(string id) {
-            if (!Directories.Actual) return;
-            if (id == null) throw new ArgumentNullException(nameof(id));
-
-            var wrapper = GetWrapperById(id);
-            if (wrapper == null) {
-                throw new ArgumentException(@"ID is wrong", nameof(id));
+        protected override void MoveInner(string id, string newId, string oldLocation, string newLocation, bool newEnabled) {
+            using (IgnoreChanges()) {
+                base.MoveInner(id, newId, oldLocation, newLocation, newEnabled);
             }
+        }
 
-            var currentLocation = ((AcCommonObject)wrapper.Value).Location;
-            var path = wrapper.Value.Enabled ? Directories.DisabledDirectory : Directories.EnabledDirectory;
-            if (path == null) {
-                throw new Exception("Object can’t be toggled");
-            }
-
-            var newLocation = Path.Combine(path, wrapper.Value.FileName);
-
-            if (FileUtils.Exists(newLocation)) {
-                throw new ToggleException("Place is taken");
-            }
-
-            try {
-                using (IgnoreChanges()) {
-                    FileUtils.Move(currentLocation, newLocation);
-
-                    RemoveFromList(id);
-                    var obj = CreateAndLoadAcObject(wrapper.Value.FileName, Directories.CheckIfEnabled(newLocation));
-                    InnerWrappersList.Add(new AcItemWrapper(this, obj));
-                    UpdateList();
-                }
-            } catch (Exception e) {
-                throw new ToggleException(e.Message);
+        protected override void DeleteInner(string id, string location) {
+            using (IgnoreChanges()) {
+                base.DeleteInner(id, location);
             }
         }
 
@@ -99,19 +75,18 @@ namespace AcManager.Tools.AcManagersNew {
             Debug.WriteLine($"ACMGR [NEW]: IWatchingChangeApplier.ApplyChange({dir}, {change.Type})\n" +
                             $"    ORIGINAL FILENAME: {change.FullFilename}\n" +
                             $"    NEW LOCATION: {change.NewLocation}");
-
-            string fileName;
+            string id;
             try {
-                fileName = LocationToFileName(dir);
+                id = LocationToId(dir);
             } catch (Exception) {
                 // can’t get location from id
                 return;
             }
 
             bool isFreshlyLoaded;
-            var obj = GetById(fileName, out isFreshlyLoaded);
+            var obj = GetById(id, out isFreshlyLoaded);
 
-            Debug.WriteLine($"    object: {obj}; location: {obj?.Location}");
+            Debug.WriteLine($"    id: {id}; object: {obj}; location: {obj?.Location}");
             if (obj != null && !obj.Location.Equals(dir, StringComparison.OrdinalIgnoreCase)) {
                 if (change.Type == WatcherChangeTypes.Created) {
                     Debug.WriteLine("    wrong location, removed");
@@ -136,7 +111,7 @@ namespace AcManager.Tools.AcManagersNew {
                             obj.Reload();
                         }
                     } else if (FileUtils.Exists(dir)) {
-                        obj = CreateAndLoadAcObject(fileName, Directories.CheckIfEnabled(dir));
+                        obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(dir));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
                         UpdateList();
                     }
@@ -167,7 +142,7 @@ namespace AcManager.Tools.AcManagersNew {
                     }
 
                     if (FileUtils.Exists(change.NewLocation)) {
-                        obj = CreateAndLoadAcObject(LocationToFileName(change.NewLocation), Directories.CheckIfEnabled(change.NewLocation));
+                        obj = CreateAndLoadAcObject(LocationToId(change.NewLocation), Directories.CheckIfEnabled(change.NewLocation));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
                         UpdateList();
                     }
@@ -187,7 +162,11 @@ namespace AcManager.Tools.AcManagersNew {
 
         private void OnChanged(string fullPath) {
             // ignore all directories changes — we'll receive events on sublevel anyway
-            if (FileUtils.IsDirectory(fullPath)) return;
+            try {
+                if (FileUtils.IsDirectory(fullPath)) return;
+            } catch (FileNotFoundException) {
+                return;
+            }
 
             bool inner;
             var objectLocation = GetObjectLocation(fullPath, out inner)?.ToLowerInvariant();

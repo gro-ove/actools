@@ -402,6 +402,30 @@ done:
     + find a way to deal with AVs
     + remember all window sizes
     + anitrosopic filtration
+    + __LAUNCHER_CM/WEATHER_TYPE editing
+    - ac options
+        + switching for auto-update previews
+        + audio
+        + video
+        + gameplay
+        + controls
+        + presets?
+        + wrong resolution auto-fixing option
+    + proper sharing
+        + settings
+        + sharing
+        + receiving
+        + history
+        + custom ids?
+        + special types:
+            + controls
+            + ffb only
+            + quick drive
+    + car setups management
+        + basic properties
+        + rename & change track
+        + watching
+    + built-in code editor
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -412,7 +436,6 @@ fixme:
     - potential error here:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
     - replays with "[" or "]" in name
-    - online: tracks with "-" (trento-bondone)
     - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
 
 todo:
@@ -423,32 +446,20 @@ todo:
 
     - lite mode (without main form): overlays, second commands, attempts to open main form?
 
-    - proper sharing
-        + settings
-        + sharing
-        + receiving
-        + history
-        + custom ids?
+    + proper sharing
         - deleting shared
-        - special types:
-            + controls
-            + ffb only
-            + quick drive
+        + special types:
             - car setups
-            - ppfilters?
+            - ppfilters
             - replays?
 
-    - __LAUNCHER_CM/WEATHER_TYPE editing
-
-    - ac options
-        + switching for auto-update previews
-        + audio
-        + video
-        + gameplay
-        - controls
-        - presets?
+    + ac options
+        - xbox360
         - quick switching?
-        × wrong resolution warning
+
+    + car setups management
+        - sharing
+        - fully customizable mode?
 
     - errors & fixers for badly make ui_skin.json
 
@@ -465,7 +476,7 @@ todo:
         - automatically switch to freshly installed content in some cases (optional)?
         - drivers installation
         - skins installation
-        - pp-filter, app, weather installation
+        - pp-filters, apps, weathers installation
         - remove old data before installing the new one, etc
         - define installation modes in lua-scripts in content
 
@@ -487,7 +498,7 @@ todo:
             - periodic refreshing of selected server
             - list all cars
             - keyboard shortcuts
-            - login as admin
+            - login as admin?
         - test and fix for AcManager content autoupdating feature
             - handle obsolete!
         - challenges
@@ -498,13 +509,12 @@ todo:
             - hidden steering wheel
             - hud configuration
             - quickly switchable controls configs?
-    - car setups management
     - change IDs (especially for skins)
 
     - go buttons keyboard shortcut
         - special case for try again button in drive window
 
-    - cm: tracks
+    - content/tracks
         - copy track ui properties to other configurations
             - context menu
             - button in toolbar
@@ -523,6 +533,7 @@ todo:
         - generate automatically based on preview and/or model
 
     + error fixer
+        + missing parent
         + showroom missing kn5 error detection
         + missing skin preview
         - missing skin livery
@@ -559,9 +570,14 @@ todo:
 
     - favorites
 
-    + additional section “stuff”
+    + additional section “miscellaneous”
         + weather
-            - base properties?
+            - editing
+            - testing?
+            × base properties?
+        + pp filters
+            + editing
+            - testing
         + replays
             + warning for cr (will be lost without renaming)
             - filtering
@@ -570,7 +586,6 @@ todo:
             - length in minutes?
             - track's display name
             - weather's display name
-        - pp filters
         - apps
 
     - improve showroom generator
@@ -604,6 +619,7 @@ later:
         - watching
         - customizable recent size
         - sorting, grouping
+        - deleting
         - find a way to make unavaliable servers visible
 
     - try that idea with reusing selectedsomethingpage?
@@ -692,6 +708,7 @@ later:
     - fix bb parsing
 
     - image cache?
+    - proper replacement for the Image control
 
     ? get driver's name from default launcher
         ? and from Steam

@@ -7,8 +7,6 @@ namespace AcManager.Tools.AcObjectsNew {
     public class AcPlaceholderNew : NotifyPropertyChanged, IAcObjectNew, IWithId {
         public string Id { get; }
 
-        public string FileName { get; }
-
         public virtual string DisplayName => Id;
 
         public virtual bool Enabled { get; }
@@ -17,9 +15,8 @@ namespace AcManager.Tools.AcObjectsNew {
             return Id;
         }
 
-        internal AcPlaceholderNew(string fileName, bool enabled) {
-            FileName = fileName;
-            Id = FileName.ToLowerInvariant();
+        internal AcPlaceholderNew(string id, bool enabled) {
+            Id = id;
             Enabled = enabled;
         }
 

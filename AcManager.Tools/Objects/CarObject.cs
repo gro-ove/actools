@@ -23,7 +23,7 @@ namespace AcManager.Tools.Objects {
     public partial class CarObject : AcJsonObjectNew {
         public static int OptionSkinsLoadingConcurrency = 5;
 
-        public CarObject(IFileAcManager manager, string fileName, bool enabled) : base(manager, fileName, enabled) {
+        public CarObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
             SkinsManager = new CarSkinsManager(Id, new InheritingAcDirectories(manager.Directories, SkinsDirectory)) {
                 ScanWrapper = this
             };
@@ -123,12 +123,12 @@ namespace AcManager.Tools.Objects {
             var rhsParent = c.Parent;
 
             if (lhsParent == null && rhsParent == null || lhsParent == rhsParent) {
-                return DisplayName.CompareToExt(c.DisplayName);
+                return DisplayName.InvariantCompareTo(c.DisplayName);
             }
 
             if (lhsParent == c) return 1;
             if (rhsParent == this) return -1;
-            return (lhsParent ?? this).DisplayName.CompareToExt((rhsParent ?? c).DisplayName);
+            return (lhsParent ?? this).DisplayName.InvariantCompareTo((rhsParent ?? c).DisplayName);
         }
 
         protected override void Toggle() {

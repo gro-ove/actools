@@ -7,7 +7,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -209,19 +208,29 @@ namespace AcTools.Utils {
         }
 
         /// <summary>
-        /// Move directory or file.
+        /// Move directory or file
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
         public static void Move(string from, string to) {
-            if (from.Equals(to, StringComparison.Ordinal) ||
-                Path.GetDirectoryName(from)?.Equals(Path.GetDirectoryName(to), StringComparison.OrdinalIgnoreCase) == true) return;
+            if (string.Equals(from, to, StringComparison.Ordinal)) return;
+
             EnsureFileDirectoryExists(to);
             if (File.GetAttributes(from).HasFlag(FileAttributes.Directory)) {
                 Directory.Move(from, to);
             } else {
                 File.Move(from, to);
             }
+        }
+
+        /// <summary>
+        /// Move directory or file (without changing the name!)
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        public static void ChangeDirectory(string from, string to) {
+            if (string.Equals(Path.GetDirectoryName(from), Path.GetDirectoryName(to), StringComparison.OrdinalIgnoreCase)) return;
+            Move(from, to);
         }
 
         /// <summary>

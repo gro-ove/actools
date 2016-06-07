@@ -9,8 +9,8 @@ namespace AcManager.Tools.Objects {
 
         public sealed override string LayoutId { get; }
 
-        public TrackExtraLayoutObject(IFileAcManager manager, string fileName, bool enabled, string fixedLocation)
-                : base(manager, fileName, enabled) {
+        public TrackExtraLayoutObject(IFileAcManager manager, string id, bool enabled, string fixedLocation)
+                : base(manager, id, enabled) {
             Location = fixedLocation;
             LayoutId = Path.GetFileName(fixedLocation);
             IdWithLayout = $"{Id}/{LayoutId}";

@@ -6,6 +6,8 @@ namespace AcManager.Tools.AcManagersNew {
 
         void Toggle(string id);
 
+        void Rename(string id, string newFileName, bool newEnabledState);
+
         void Delete(string id);
 
         string PrepareForAdditionalContent(string id, bool removeExisting);

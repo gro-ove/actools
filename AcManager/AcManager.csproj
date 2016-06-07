@@ -55,6 +55,10 @@
     <StartupObject>AcManager.EntryPoint</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
@@ -753,6 +757,7 @@
     <None Include="Assets\Data\AssistsPro.cmpreset" />
     <None Include="Assets\Data\ShowroomPanoramaTemplate.zip" />
     <None Include="Assets\Data\ShowroomPreviewSphere.zip" />
+    <Resource Include="Assets\Syntax\Ini.xml" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

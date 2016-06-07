@@ -3,6 +3,7 @@ using System.IO;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -26,15 +27,17 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _track)) return;
                 _track = value;
+                TrackId = value?.Id;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(DisplayName));
+                Changed = true;
             }
         }
 
         public override string Extension => ".ini";
 
-        public CarSetupObject(string carId, IFileAcManager manager, string fileName, bool enabled)
-                : base(manager, fileName, enabled) {
+        public CarSetupObject(string carId, IFileAcManager manager, string id, bool enabled)
+                : base(manager, id, enabled) {
             CarId = carId;
 
             foreach (var tyrePressure in TyresPressure) {
@@ -44,6 +47,23 @@ namespace AcManager.Tools.Objects {
                     }
                 };
             }
+        }
+
+        public override int CompareTo(AcPlaceholderNew o) {
+            var c = o as CarSetupObject;
+            if (c == null) return base.CompareTo(o);
+
+            var lhsEnabled = Enabled;
+            if (lhsEnabled != c.Enabled) return lhsEnabled ? -1 : 1;
+
+            var lhsParent = TrackId;
+            var rhsParent = c.TrackId;
+
+            if (lhsParent == null && rhsParent == null || lhsParent == rhsParent) {
+                return DisplayName.InvariantCompareTo(c.DisplayName);
+            }
+            
+            return lhsParent.InvariantCompareTo(rhsParent);
         }
 
         private int _tyres;
@@ -113,29 +133,57 @@ namespace AcManager.Tools.Objects {
             new TyrePressure("RR", "Right rear")
         };
 
-        protected override void LoadOrThrow() {
-            base.LoadOrThrow();
+        private string _oldName;
+        private string _oldTrackId;
 
-            var dir = Path.GetDirectoryName(Id);
-            TrackId = dir == GenericDirectory ? null : dir;
-            Track = TrackId == null ? null : TracksManager.Instance.GetById(TrackId);
-
+        private void LoadData() {
             try {
                 var ini = new IniFile(Location);
                 Tyres = ini["TYRES"].GetInt("VALUE", 0);
                 Fuel = ini["FUEL"].GetInt("VALUE", 0);
+                SetHasData(true);
 
                 foreach (var entry in TyresPressure) {
                     entry.Value = ini["PRESSURE_" + entry.Id].GetIntNullable("VALUE");
                 }
             } catch (Exception e) {
                 Logging.Warning("[CarSetupObject] Can’t read file: " + e);
-                AddError(AcErrorType.Data_IniIsDamaged, FileName);
+                AddError(AcErrorType.Data_IniIsDamaged, Id);
+                SetHasData(false);
             }
         }
 
+        protected override void LoadOrThrow() {
+            _oldName = Path.GetFileName(Id.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase));
+            Name = _oldName;
+
+            var dir = Path.GetDirectoryName(Id);
+            if (string.IsNullOrEmpty(dir)) {
+                AddError(AcErrorType.Load_Base, "Invalid location");
+                _oldTrackId = null;
+                TrackId = _oldTrackId;
+                Track = null;
+                SetHasData(false);
+                return;
+            }
+
+            _oldTrackId = dir == GenericDirectory ? null : dir;
+            TrackId = _oldTrackId;
+            Track = TrackId == null ? null : TracksManager.Instance.GetById(TrackId);
+
+            LoadData();
+        }
+
+        public override bool HandleChangedFile(string filename) {
+            if (string.Equals(filename, Location, StringComparison.OrdinalIgnoreCase)) {
+                LoadData();
+            }
+
+            return true;
+        }
+
         protected override void Rename() {
-            FileUtils.Move(Location, FileAcManager.Directories.GetLocation(Path.Combine(Track?.Id ?? GenericDirectory, Name + Extension), Enabled));
+            Rename(Path.Combine(Track?.Id ?? GenericDirectory, Name + Extension));
         }
 
         public override void Save() {
@@ -153,12 +201,23 @@ namespace AcManager.Tools.Objects {
                 Logging.Warning("[CarSetupObject] Can’t save file: " + e);
             }
 
-            base.Save();
+            if (_oldName != Name || _oldTrackId != TrackId) {
+                Rename();
+            }
+
             Changed = false;
         }
 
-        public override string DisplayName => Track == null ? Name : $"{Name} ({Track.DisplayName})";
+        public override string DisplayName => TrackId == null ? Name : $"{Name} ({Track?.DisplayName ?? TrackId})";
 
-        public override bool HasData => true;
+        private bool _hasData;
+
+        private void SetHasData(bool value) {
+            if (Equals(value, _hasData)) return;
+            _hasData = value;
+            OnPropertyChanged(nameof(HasData));
+        }
+
+        public override bool HasData => _hasData;
     }
 }

@@ -24,9 +24,8 @@ namespace AcManager.Tools.Managers {
         public static CarSetupsManager Create(CarObject car) {
             return new CarSetupsManager(car.Id, new CarSetupsDirectories(car));
         }
-
-        [NotNull]
-        public static string LocationToId(string directory) {
+        
+        protected override string LocationToId(string directory) {
             var name = directory.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).TakeLast(2).JoinToString(Path.DirectorySeparatorChar);
             if (name == null) throw new Exception("Cannot get file name from path");
             return name;

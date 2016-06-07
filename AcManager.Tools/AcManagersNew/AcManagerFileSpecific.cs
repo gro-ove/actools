@@ -16,7 +16,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
             return Directories.GetSubFiles(SearchPattern).Where(Filter).Select(dir =>
-                    CreateAcPlaceholder(LocationToFileName(dir), Directories.CheckIfEnabled(dir)));
+                    CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
         }
     }
 }

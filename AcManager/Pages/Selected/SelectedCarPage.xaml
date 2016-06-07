@@ -55,10 +55,8 @@
                 <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
                 <Separator />
                 <Button Content="Find Information" Command="{Binding FindInformationCommand}" ToolTip="Find information about car (Ctrl+I)" />
-                <Button Content="Manage Skins" Command="{Binding ManageSkinsCommand}" ToolTip="Manage skins (Ctrl+K)" />
-                <Button
-                        Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Content="Manage Setups" Command="{Binding ManageSetupsCommand}" ToolTip="Manage setups (Ctrl+U)" />
+                <Button Content="Skins" Command="{Binding ManageSkinsCommand}" ToolTip="Manage skins (Ctrl+K)" />
+                <Button Content="Setups" Command="{Binding ManageSetupsCommand}" ToolTip="Manage setups (Ctrl+U)" />
                 <mui:ButtonWithComboBox Content="Update Previews" Command="{Binding UpdatePreviewsCommand}" ButtonToolTip="Update all previews (Ctrl+P)"
                         PreviewMouseDown="ToolbarButtonUpdatePreviews_OnPreviewMouseDown">
                     <MenuItem Header="Manual Mode" ToolTip="Set camera position manually and then press F8 to start shooting" InputGestureText="Ctrl+Alt+P"

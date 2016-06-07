@@ -79,28 +79,30 @@ namespace AcManager.Tools.Managers {
             return null;
         }
 
-        public override void Toggle(string id) {
+        protected override void MoveInner(string id, string newId, string oldLocation, string newLocation, bool newEnabled) {
+            throw new NotSupportedException();
+        }
+
+        protected override void DeleteInner(string id, string location) {
+            throw new NotSupportedException();
+        }
+
+        public override void Rename(string id, string newFileName, bool newEnabled) {
             if (!Directories.Actual) return;
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var wrapper = GetWrapperById(id);
-            if (wrapper == null) {
-                throw new ArgumentException(@"ID is wrong", nameof(id));
-            }
+            if (wrapper == null) throw new ArgumentException(@"ID is wrong", nameof(id));
 
             var currentLocation = ((AcCommonObject)wrapper.Value).Location;
             var currentBitmapLocation = ((FontObject)wrapper.Value).FontBitmap;
-            var path = wrapper.Value.Enabled ? Directories.DisabledDirectory : Directories.EnabledDirectory;
-            if (path == null) {
-                throw new Exception("Object can’t be toggled");
-            }
+            var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
+            if (path == null) throw new ToggleException("Object can’t be moved");
 
-            var newLocation = Path.Combine(path, wrapper.Value.Id);
-            var newBitmapLocation = currentBitmapLocation == null ? null : Path.Combine(path, Path.GetFileName(currentBitmapLocation));
-
-            if (File.Exists(newLocation) || currentBitmapLocation != null && File.Exists(newBitmapLocation)) {
-                throw new ToggleException("Place is taken");
-            }
+            var newLocation = Path.Combine(path, newFileName);
+            var newBitmapLocation = currentBitmapLocation == null
+                    ? null : Path.Combine(path, Path.GetFileNameWithoutExtension(newLocation) + Path.GetExtension(currentBitmapLocation));
+            if (FileUtils.Exists(newLocation) || currentBitmapLocation != null && File.Exists(newBitmapLocation)) throw new ToggleException("Place is taken");
 
             try {
                 using (IgnoreChanges()) {
@@ -110,9 +112,10 @@ namespace AcManager.Tools.Managers {
                         FileUtils.Move(currentBitmapLocation, newBitmapLocation);
                     }
 
-                    RemoveFromList(id);
-                    var obj = CreateAndLoadAcObject(wrapper.Value.FileName, Directories.CheckIfEnabled(newLocation));
-                    InnerWrappersList.Add(new AcItemWrapper(this, obj));
+                    var obj = CreateAndLoadAcObject(newFileName, Directories.CheckIfEnabled(newLocation));
+                    obj.PreviousId = id;
+                    ReplaceInList(id, new AcItemWrapper(this, obj));
+
                     UpdateList();
                 }
             } catch (Exception e) {

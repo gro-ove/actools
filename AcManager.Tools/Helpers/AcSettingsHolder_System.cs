@@ -12,6 +12,31 @@ namespace AcManager.Tools.Helpers {
                 new SettingEntry("BMP", "Bitmap (without compression)")
             };
 
+            #region Some controls stuff
+            private bool _softLock;
+
+            public bool SoftLock {
+                get { return _softLock; }
+                set {
+                    if (Equals(value, _softLock)) return;
+                    _softLock = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _ffbSkipSteps;
+
+            public int FfbSkipSteps {
+                get { return _ffbSkipSteps; }
+                set {
+                    value = value.Clamp(0, 1000);
+                    if (Equals(value, _ffbSkipSteps)) return;
+                    _ffbSkipSteps = value;
+                    OnPropertyChanged();
+                }
+            }
+            #endregion
+
             #region Experimental FFB
             private bool _ffbGyro;
 
@@ -107,8 +132,11 @@ namespace AcManager.Tools.Helpers {
                 }
             }
             #endregion
-            
+
             public void LoadFfbFromIni(IniFile ini) {
+                SoftLock = ini["SOFT_LOCK"].GetBool("ENABLED", false);
+                FfbSkipSteps = ini["FORCE_FEEDBACK"].GetInt("FF_SKIP_STEPS", 1);
+
                 var section = ini["FF_EXPERIMENTAL"];
                 FfbGyro = section.GetBool("ENABLE_GYRO", false);
                 FfbDamperMinLevel = section.GetDouble("DAMPER_MIN_LEVEL", 0d).ToIntPercentage();
@@ -116,6 +144,9 @@ namespace AcManager.Tools.Helpers {
             }
 
             public void SaveFfbToIni(IniFile ini) {
+                ini["SOFT_LOCK"].Set("ENABLED", SoftLock);
+                ini["FORCE_FEEDBACK"].Set("FF_SKIP_STEPS", FfbSkipSteps);
+
                 var section = ini["FF_EXPERIMENTAL"];
                 section.Set("ENABLE_GYRO", FfbGyro);
                 section.Set("DAMPER_MIN_LEVEL", FfbDamperMinLevel.ToDoublePercentage());

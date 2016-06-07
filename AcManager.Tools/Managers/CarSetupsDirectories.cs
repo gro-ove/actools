@@ -40,8 +40,8 @@ namespace AcManager.Tools.Managers {
             return true;
         }
 
-        public string GetLocation(string fileName, bool enabled) {
-            return Path.Combine(EnabledDirectory, fileName);
+        public string GetLocation(string id, bool enabled) {
+            return Path.Combine(EnabledDirectory, id);
         }
 
         private List<IDirectoryListener> _subscribed;

@@ -13,21 +13,22 @@
                 <ControlTemplate TargetType="ac:AcObjectBase">
                     <Grid Name="PART_Main">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        
+                        <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}" Icon="{TemplateBinding Icon}"
+                                x:Name="PART_Header" />
 
-                        <ScrollViewer HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" Margin="-8 0 -8 0">
+                        <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" Margin="-8 8 -8 0">
                             <StackPanel MinWidth="500" Margin="0 0 0 40">
-                                <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}" 
-                                                          Icon="{TemplateBinding Icon}"
-                                                          x:Name="PART_Header" />
                                 <ac:AcObjectErrorsSection AcObject="{TemplateBinding AcObject}" />
-                                <ContentPresenter Margin="0 12 0 0" Content="{TemplateBinding Content}" />
+                                <ContentPresenter Margin="0 4 0 0" Content="{TemplateBinding Content}" />
                             </StackPanel>
                         </ScrollViewer>
 
-                        <ac:AcToolBar Grid.Row="1" x:Name="PART_ToolBar" ToolBars="{TemplateBinding ToolBars}"/>
+                        <ac:AcToolBar Grid.Row="2" x:Name="PART_ToolBar" ToolBars="{TemplateBinding ToolBars}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

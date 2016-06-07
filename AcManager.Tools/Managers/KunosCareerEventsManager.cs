@@ -58,7 +58,7 @@ namespace AcManager.Tools.Managers {
                                 .Select(x => entries.FirstOrDefault(y => y.Name == x))
                                 .TakeWhile(x => x != null)
                                 .Select(dir =>
-                                        CreateAcPlaceholder(LocationToFileName(dir.Path), Directories.CheckIfEnabled(dir.Path)));
+                                        CreateAcPlaceholder(LocationToId(dir.Path), Directories.CheckIfEnabled(dir.Path)));
         }
 
         private static readonly Regex FilterRegex = new Regex(@"^event[1-9]\d*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

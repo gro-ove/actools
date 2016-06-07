@@ -27,10 +27,10 @@ namespace AcManager.Tools.Objects {
         /// </summary>
         public int EventNumber { get; }
 
-        public KunosCareerEventObject(string kunosCareerId, KunosCareerObjectType type, IFileAcManager manager, string fileName, bool enabled)
-                : base(manager, fileName, enabled) {
+        public KunosCareerEventObject(string kunosCareerId, KunosCareerObjectType type, IFileAcManager manager, string id, bool enabled)
+                : base(manager, id, enabled) {
             KunosCareerId = kunosCareerId;
-            EventNumber = FlexibleParser.ParseInt(fileName.Substring("event".Length)) - 1;
+            EventNumber = FlexibleParser.ParseInt(id.Substring("event".Length)) - 1;
             KunosCareerType = type;
         }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using AcManager.Tools.AcManagersNew;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.AcObjectsNew {
@@ -10,8 +9,8 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public sealed override string Location => base.Location;
 
-        protected AcCommonSingleFileObject(IFileAcManager manager, string fileName, bool enabled)
-                : base(manager, fileName, enabled) {}
+        protected AcCommonSingleFileObject(IFileAcManager manager, string id, bool enabled)
+                : base(manager, id, enabled) { }
 
         public string GetOriginalFileName() {
             var fileInfo = new FileInfo(Location);
@@ -19,24 +18,20 @@ namespace AcManager.Tools.AcObjectsNew {
             return result;
         }
 
-        private string _originalName;
+        private string _oldName;
 
         protected override void LoadOrThrow() {
-            Name = FileName.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
-            _originalName = Name;
+            _oldName = Id.ApartFromLast(Extension, StringComparison.OrdinalIgnoreCase);
+            Name = _oldName;
         }
 
         protected virtual void Rename() {
-            // to keep upper case if needed
-            var destination = Path.GetDirectoryName(FileAcManager.Directories.GetLocation(FileName, Enabled));
-            if (destination == null) throw new Exception("Invalid destination");
-            FileUtils.Move(Location, Path.Combine(destination, FileName));
+            Rename(Name + Extension);
         }
 
         public override void Save() {
-            if (_originalName != Name) {
+            if (_oldName != Name) {
                 Rename();
-                _originalName = Name;
             }
         }
 

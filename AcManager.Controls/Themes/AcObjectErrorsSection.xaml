@@ -8,7 +8,7 @@
 
     <Style TargetType="ac:AcObjectErrorsSection">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Padding" Value="0 12 0 12" />
+        <Setter Property="Padding" Value="0 4 0 8" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding AcObject.HasErrors, RelativeSource={RelativeSource Self}}" Value="True">
                 <Setter Property="Template">

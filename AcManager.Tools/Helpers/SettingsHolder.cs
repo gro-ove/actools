@@ -414,6 +414,15 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            public bool ScrollAutomatically {
+                get { return ValuesStorage.GetBool("Settings.ContentSettings.ScrollAutomatically", true); }
+                set {
+                    if (Equals(value, ScrollAutomatically)) return;
+                    ValuesStorage.Set("Settings.ContentSettings.ScrollAutomatically", value);
+                    OnPropertyChanged();
+                }
+            }
+
             public string FontIconCharacter {
                 get { return ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", "A"); }
                 set {

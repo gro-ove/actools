@@ -182,7 +182,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             lock (_loadLocker) {
                 foreach (var item in WrappersList.Where(x => !x.IsLoaded)) {
-                    item.Value = CreateAndLoadAcObject(item.Value.FileName, item.Value.Enabled);
+                    item.Value = CreateAndLoadAcObject(item.Value.Id, item.Value.Enabled);
                 }
 
                 IsLoaded = true;
@@ -203,7 +203,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             LoadingReset = false;
             await TaskExtension.WhenAll(WrappersList.Where(x => !x.IsLoaded).Select(async x => {
-                var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.FileName, x.Value.Enabled, false));
+                var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
                 if (x.IsLoaded) return;
 
                 x.Value = loaded;
@@ -224,7 +224,7 @@ namespace AcManager.Tools.AcManagersNew {
             if (id == null) throw new ArgumentNullException(nameof(id));
             var wrapper = GetWrapperById(id);
             if (wrapper == null) throw new ArgumentException(@"ID is wrong", nameof(id));
-            wrapper.Value = CreateAndLoadAcObject(wrapper.Value.FileName, wrapper.Value.Enabled);
+            wrapper.Value = CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled);
         }
         
         protected virtual void ListReady() {
@@ -243,6 +243,17 @@ namespace AcManager.Tools.AcManagersNew {
                 ((AcObjectNew)wrapper.Value).Outdate();
             }
             InnerWrappersList.Remove(wrapper);
+            ResetLoading();
+        }
+
+        protected void ReplaceInList([NotNull]string oldId, AcItemWrapper newItem) {
+            if (oldId == null) throw new ArgumentNullException(nameof(oldId));
+            var wrapper = GetWrapperById(oldId);
+            if (wrapper == null) return;
+            if (wrapper.IsLoaded) {
+                ((AcObjectNew)wrapper.Value).Outdate();
+            }
+            InnerWrappersList.Replace(wrapper, newItem);
             ResetLoading();
         }
         
@@ -269,7 +280,7 @@ namespace AcManager.Tools.AcManagersNew {
                     return (T)wrapper.Value;
                 }
 
-                var value = CreateAndLoadAcObject(wrapper.Value.FileName, wrapper.Value.Enabled);
+                var value = CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled);
                 wrapper.Value = value;
                 isFreshlyLoaded = true;
                 return value;
@@ -285,7 +296,7 @@ namespace AcManager.Tools.AcManagersNew {
                     return (T)wrapper.Value;
                 }
 
-                var value = CreateAndLoadAcObject(wrapper.Value.FileName, wrapper.Value.Enabled);
+                var value = CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled);
                 wrapper.Value = value;
                 return value;
             }
@@ -299,7 +310,7 @@ namespace AcManager.Tools.AcManagersNew {
                 return (T)wrapper.Value;
             }
 
-            var value = await Task.Run(() => CreateAndLoadAcObject(wrapper.Value.FileName, wrapper.Value.Enabled, false));
+            var value = await Task.Run(() => CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled, false));
             wrapper.Value = value;
             return value;
         }
@@ -347,8 +358,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         [NotNull]
-        protected virtual T CreateAndLoadAcObject([NotNull] string fileName, bool enabled, bool withPastLoad = true) {
-            var result = CreateAcObject(fileName, enabled);
+        protected virtual T CreateAndLoadAcObject([NotNull] string id, bool enabled, bool withPastLoad = true) {
+            var result = CreateAcObject(id, enabled);
             result.Load();
             if (withPastLoad) {
                 result.PastLoad();

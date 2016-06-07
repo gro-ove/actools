@@ -22,7 +22,7 @@ namespace AcManager.Pages.Selected {
                 using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
                     Game.Start(AcsStarterFactory.Create(),
                             new Game.StartProperties(new Game.ReplayProperties {
-                                Name = SelectedObject.FileName,
+                                Name = SelectedObject.Id,
                                 TrackId = SelectedObject.TrackId,
                                 TrackConfiguration = SelectedObject.TrackConfiguration
                             }));

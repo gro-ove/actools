@@ -1,0 +1,18 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit">
+    <SolidColorBrush x:Key="TextEditorBackground">#282c2d</SolidColorBrush>
+    <SolidColorBrush x:Key="TextEditorForeground">#eeeeec</SolidColorBrush>
+    <SolidColorBrush x:Key="TextEditorLineNumbersForeground">#959a8f</SolidColorBrush>
+
+    <Style TargetType="{x:Type avalonEdit:TextEditor}" BasedOn="{StaticResource {x:Type avalonEdit:TextEditor}}">
+        <Setter Property="Background" Value="{StaticResource TextEditorBackground}" />
+        <Setter Property="Foreground" Value="{StaticResource TextEditorForeground}" />
+        <Setter Property="LineNumbersForeground" Value="{StaticResource TextEditorLineNumbersForeground}" />
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="10pt" />
+        <Setter Property="Padding" Value="8 0" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+        <Setter Property="ShowLineNumbers" Value="True" />
+    </Style>
+</ResourceDictionary>

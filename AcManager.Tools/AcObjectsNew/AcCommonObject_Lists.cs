@@ -15,5 +15,7 @@ namespace AcManager.Tools.AcObjectsNew {
                 return _authorsListView;
             }
         }
+
+        public string PreviousId { get; internal set; }
     }
 }

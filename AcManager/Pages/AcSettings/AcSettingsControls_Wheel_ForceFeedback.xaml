@@ -52,6 +52,16 @@
                 <Label>Enhanced understeer effect</Label>
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding System.SoftLock}">
+                <Label>Soft lock</Label>
+            </CheckBox>
+
+            <DockPanel>
+                <DockPanel.ToolTip>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</DockPanel.ToolTip>
+                <controls:ValueLabel Value="{Binding System.FfbSkipSteps}" Mode="Integer">Skip FFB steps</controls:ValueLabel>
+                <Slider Minimum="0" Maximum="5" Value="{Binding System.FfbSkipSteps}" TickFrequency="1" TickPlacement="BottomRight" />
+            </DockPanel>
+
             <!--experimental-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Experimental:</TextBlock>
 

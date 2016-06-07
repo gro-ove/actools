@@ -19,8 +19,8 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
     public class ShowroomObject : AcJsonObjectNew {
-        public ShowroomObject(IFileAcManager manager, string fileName, bool enabled)
-                : base(manager, fileName, enabled) { }
+        public ShowroomObject(IFileAcManager manager, string id, bool enabled)
+                : base(manager, id, enabled) { }
 
         public override void Reload() {
             base.Reload();
@@ -82,7 +82,7 @@ namespace AcManager.Tools.Objects {
 
         public string PreviewImage => ImageRefreshing ?? GetPreviewImage();
 
-        private bool _previewProcessed = false;
+        private bool _previewProcessed;
 
         private string GetPreviewImage() {
             var path = Path.Combine(Location, "preview.jpg");

@@ -476,8 +476,8 @@ namespace AcTools.Processes {
                 file["REPLAY"].Set("FILENAME", Name);
 
                 // another weirdness of Assetto Corsa
-                file["RACE"].Set("TRACK", TrackId);
-                file["RACE"].Set("CONFIG_TRACK", TrackConfiguration);
+                file["RACE"].SetId("TRACK", TrackId);
+                file["RACE"].SetId("CONFIG_TRACK", TrackConfiguration);
             }
         }
     }

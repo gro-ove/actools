@@ -16,7 +16,7 @@
             </DockPanel>
 
             <CheckBox IsChecked="{Binding FixResolutionAutomatically, Source={x:Static helpers:SettingsHolder.Common}}"
-                    ToolTip="Automatically switch resolution before starting race if it's not on the list">
+                    ToolTip="Automatically switch resolution before starting race if it's not on the list" Margin="0 0 0 20">
                 <Label>Fix resolution automatically</Label>
             </CheckBox>
 

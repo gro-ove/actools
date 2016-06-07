@@ -9,7 +9,7 @@ namespace AcManager.Tools.Managers {
         public static PpFiltersManager Instance { get; private set; }
 
         public static PpFiltersManager Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new PpFiltersManager();
         }
 
