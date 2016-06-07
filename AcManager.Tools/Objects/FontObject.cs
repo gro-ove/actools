@@ -31,8 +31,8 @@ namespace AcManager.Tools.Objects {
 
         public override string Extension => FontExtension;
 
-        public FontObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
-            AcId = id.ApartFromLast(FontExtension);
+        public FontObject(IFileAcManager manager, string fileName, bool enabled) : base(manager, fileName, enabled) {
+            AcId = fileName.ApartFromLast(FontExtension);
 
             _usingsCarsIds = ValuesStorage.GetStringList(KeyUsingsCarsIds).ToArray();
             IsUsed = _usingsCarsIds.Any();

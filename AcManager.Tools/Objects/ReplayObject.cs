@@ -32,15 +32,15 @@ namespace AcManager.Tools.Objects {
 
         public override string Extension => ReplayExtension;
 
-        public ReplayObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {}
+        public ReplayObject(IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) {}
 
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
 
             Date = File.GetLastWriteTime(Location);
 
-            if (Filename == PreviousReplayName) {
+            if (FileName == PreviousReplayName) {
                 IsNew = true;
             }
 
@@ -65,7 +65,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override string DisplayName => Filename == PreviousReplayName && Name == PreviousReplayName ? "Previous Online Session" : base.DisplayName;
+        public override string DisplayName => FileName == PreviousReplayName && Name == PreviousReplayName ? "Previous Online Session" : base.DisplayName;
 
         public override int CompareTo(AcPlaceholderNew o) {
             var or = o as ReplayObject;

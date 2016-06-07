@@ -19,8 +19,8 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.Objects {
     public partial class KunosCareerObject : AcIniObject, IComparer {
-        public KunosCareerObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {
+        public KunosCareerObject(IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) {
             ChampionshipDrivers = new BetterObservableCollection<ChampionshipDriverEntry>();
             ChampionshipDriversView = new BetterListCollectionView(ChampionshipDrivers) { CustomSort = this };
         }

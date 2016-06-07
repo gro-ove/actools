@@ -64,7 +64,7 @@ namespace AcManager.Tools.AcManagersNew {
                 throw new Exception("Object can’t be toggled");
             }
 
-            var newLocation = Path.Combine(path, wrapper.Value.Id);
+            var newLocation = Path.Combine(path, wrapper.Value.FileName);
 
             if (FileUtils.Exists(newLocation)) {
                 throw new ToggleException("Place is taken");
@@ -75,7 +75,7 @@ namespace AcManager.Tools.AcManagersNew {
                     FileUtils.Move(currentLocation, newLocation);
 
                     RemoveFromList(id);
-                    var obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(newLocation));
+                    var obj = CreateAndLoadAcObject(wrapper.Value.FileName, Directories.CheckIfEnabled(newLocation));
                     InnerWrappersList.Add(new AcItemWrapper(this, obj));
                     UpdateList();
                 }
@@ -100,16 +100,16 @@ namespace AcManager.Tools.AcManagersNew {
                             $"    ORIGINAL FILENAME: {change.FullFilename}\n" +
                             $"    NEW LOCATION: {change.NewLocation}");
 
-            string id;
+            string fileName;
             try {
-                id = LocationToId(dir);
+                fileName = LocationToFileName(dir);
             } catch (Exception) {
                 // can’t get location from id
                 return;
             }
 
             bool isFreshlyLoaded;
-            var obj = GetById(id, out isFreshlyLoaded);
+            var obj = GetById(fileName, out isFreshlyLoaded);
 
             Debug.WriteLine($"    object: {obj}; location: {obj?.Location}");
             if (obj != null && !obj.Location.Equals(dir, StringComparison.OrdinalIgnoreCase)) {
@@ -136,7 +136,7 @@ namespace AcManager.Tools.AcManagersNew {
                             obj.Reload();
                         }
                     } else if (FileUtils.Exists(dir)) {
-                        obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(dir));
+                        obj = CreateAndLoadAcObject(fileName, Directories.CheckIfEnabled(dir));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
                         UpdateList();
                     }
@@ -167,7 +167,7 @@ namespace AcManager.Tools.AcManagersNew {
                     }
 
                     if (FileUtils.Exists(change.NewLocation)) {
-                        obj = CreateAndLoadAcObject(LocationToId(change.NewLocation), Directories.CheckIfEnabled(change.NewLocation));
+                        obj = CreateAndLoadAcObject(LocationToFileName(change.NewLocation), Directories.CheckIfEnabled(change.NewLocation));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
                         UpdateList();
                     }

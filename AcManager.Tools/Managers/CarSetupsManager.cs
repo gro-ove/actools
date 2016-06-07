@@ -26,10 +26,10 @@ namespace AcManager.Tools.Managers {
         }
 
         [NotNull]
-        public new static string LocationToId(string directory) {
+        public static string LocationToId(string directory) {
             var name = directory.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).TakeLast(2).JoinToString(Path.DirectorySeparatorChar);
             if (name == null) throw new Exception("Cannot get file name from path");
-            return name.ToLower();
+            return name;
         }
 
         protected override string GetObjectLocation(string filename, out bool inner) {

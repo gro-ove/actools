@@ -10,8 +10,8 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcIniObject : AcCommonObject {
-        protected AcIniObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {
+        protected AcIniObject(IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) {
         }
 
         public void ReloadIniData() {

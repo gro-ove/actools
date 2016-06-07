@@ -19,7 +19,7 @@ namespace AcManager.Tools.Managers.Directories {
 
         IEnumerable<string> GetSubFiles(string searchPattern);
 
-        string GetLocation([NotNull] string id, bool enabled);
+        string GetLocation([NotNull] string fileName, bool enabled);
 
         bool CheckIfEnabled([NotNull] string location);
 

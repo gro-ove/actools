@@ -29,11 +29,11 @@ namespace AcManager.Tools.Managers.Directories {
             Directory.CreateDirectory(EnabledDirectory);
         }
 
-        public string GetLocation(string id, bool enabled) {
-            if (id == null) throw new ArgumentNullException(nameof(id));
+        public string GetLocation(string fileName, bool enabled) {
+            if (fileName == null) throw new ArgumentNullException(nameof(fileName));
             if (!Actual) throw new Exception("Not valid anymore");
             if (DisabledDirectory == null && !enabled) throw new Exception("Cannot be disabled");
-            return Path.Combine(enabled ? EnabledDirectory : DisabledDirectory, id);
+            return Path.Combine(enabled ? EnabledDirectory : DisabledDirectory, fileName);
         }
 
         private IEnumerable<string> GetSubSomething(Func<string, string[]> selector) {

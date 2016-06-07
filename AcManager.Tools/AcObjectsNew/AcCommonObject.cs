@@ -14,8 +14,8 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public virtual bool NeedsMargin => false;
 
-        protected AcCommonObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {
+        protected AcCommonObject(IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) {
             FileAcManager = manager;
         }
 
@@ -142,7 +142,7 @@ namespace AcManager.Tools.AcObjectsNew {
         public abstract void Save();
 
         [NotNull]
-        public virtual string Location => FileAcManager.Directories.GetLocation(Id, Enabled);
+        public virtual string Location => FileAcManager.Directories.GetLocation(FileName, Enabled);
 
         public virtual void ViewInExplorer() {
             if (File.GetAttributes(Location).HasFlag(FileAttributes.Directory)) {

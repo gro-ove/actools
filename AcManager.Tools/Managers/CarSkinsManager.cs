@@ -35,8 +35,8 @@ namespace AcManager.Tools.Managers {
             return new CarSkinObject(CarId, this, id, enabled);
         }
 
-        protected override CarSkinObject CreateAndLoadAcObject(string id, bool enabled, bool withPastLoad = true) {
-            var result = CreateAcObject(id, enabled);
+        protected override CarSkinObject CreateAndLoadAcObject(string fileName, bool enabled, bool withPastLoad = true) {
+            var result = CreateAcObject(fileName, enabled);
             result.Load();
             if (withPastLoad) {
                 Created?.Invoke(this, new AcObjectEventArgs<CarSkinObject>(result));
@@ -49,7 +49,7 @@ namespace AcManager.Tools.Managers {
         protected override async Task LoadAsync() {
             LoadingReset = false;
             await TaskExtension.WhenAll(WrappersList.Where(x => !x.IsLoaded).Select(async x => {
-                var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
+                var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.FileName, x.Value.Enabled, false));
                 if (x.IsLoaded) return;
 
                 Created?.Invoke(this, new AcObjectEventArgs<CarSkinObject>(loaded));

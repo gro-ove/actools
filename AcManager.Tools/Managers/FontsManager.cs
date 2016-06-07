@@ -111,7 +111,7 @@ namespace AcManager.Tools.Managers {
                     }
 
                     RemoveFromList(id);
-                    var obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(newLocation));
+                    var obj = CreateAndLoadAcObject(wrapper.Value.FileName, Directories.CheckIfEnabled(newLocation));
                     InnerWrappersList.Add(new AcItemWrapper(this, obj));
                     UpdateList();
                 }

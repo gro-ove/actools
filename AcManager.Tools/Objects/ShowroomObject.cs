@@ -19,8 +19,8 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
     public class ShowroomObject : AcJsonObjectNew {
-        public ShowroomObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) { }
+        public ShowroomObject(IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) { }
 
         public override void Reload() {
             base.Reload();

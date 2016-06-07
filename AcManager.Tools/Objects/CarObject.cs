@@ -23,7 +23,7 @@ namespace AcManager.Tools.Objects {
     public partial class CarObject : AcJsonObjectNew {
         public static int OptionSkinsLoadingConcurrency = 5;
 
-        public CarObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
+        public CarObject(IFileAcManager manager, string fileName, bool enabled) : base(manager, fileName, enabled) {
             SkinsManager = new CarSkinsManager(Id, new InheritingAcDirectories(manager.Directories, SkinsDirectory)) {
                 ScanWrapper = this
             };

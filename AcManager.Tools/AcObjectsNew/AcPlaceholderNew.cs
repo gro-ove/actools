@@ -1,10 +1,13 @@
 ﻿using System;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.AcObjectsNew {
     public class AcPlaceholderNew : NotifyPropertyChanged, IAcObjectNew, IWithId {
         public string Id { get; }
+
+        public string FileName { get; }
 
         public virtual string DisplayName => Id;
 
@@ -14,12 +17,15 @@ namespace AcManager.Tools.AcObjectsNew {
             return Id;
         }
 
-        internal AcPlaceholderNew(string id, bool enabled) {
-            Id = id.ToLowerInvariant();
+        internal AcPlaceholderNew(string fileName, bool enabled) {
+            FileName = fileName;
+            Id = FileName.ToLowerInvariant();
             Enabled = enabled;
         }
 
-        public virtual int CompareTo(AcPlaceholderNew o) => Enabled == o.Enabled ? 
-            string.Compare(DisplayName, o.DisplayName, StringComparison.CurrentCultureIgnoreCase) : Enabled ? -1 : 1;
+        public virtual int CompareTo(AcPlaceholderNew o) {
+            return Enabled == o.Enabled ?
+                    string.Compare(DisplayName, o.DisplayName, StringComparison.CurrentCultureIgnoreCase) : Enabled ? -1 : 1;
+        }
     }
 }

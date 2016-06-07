@@ -130,7 +130,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool IsUnavailable { get; }
 
-        public ServerEntry(IOnlineManager manager, string id, bool enabled) : base(manager, id, enabled) {
+        public ServerEntry(IOnlineManager manager, string fileName, bool enabled) : base(manager, fileName, enabled) {
             IsUnavailable = true;
         }
 

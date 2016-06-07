@@ -16,8 +16,8 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
     public abstract partial class TrackBaseObject : AcJsonObjectNew {
-        protected TrackBaseObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) { }
+        protected TrackBaseObject(IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) { }
 
         public override void PastLoad() {
             base.PastLoad();

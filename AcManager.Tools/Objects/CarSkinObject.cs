@@ -14,8 +14,8 @@ namespace AcManager.Tools.Objects {
     public partial class CarSkinObject : AcJsonObjectNew {
         public string CarId { get; }
 
-        public CarSkinObject(string carId, IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {
+        public CarSkinObject(string carId, IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) {
             CarId = carId;
         }
 

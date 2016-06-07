@@ -27,11 +27,18 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
+        [NotNull]
+        protected static string LocationToFileName(string directory) {
+            var name = Path.GetFileName(directory);
+            if (name == null) throw new Exception("Cannot get file name from path");
+            return name;
+        }
+
         public abstract IAcDirectories Directories { get; }
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
             return Directories.GetSubDirectories().Where(Filter).Select(dir =>
-                    CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
+                    CreateAcPlaceholder(LocationToFileName(dir), Directories.CheckIfEnabled(dir)));
         }
 
         public virtual void Toggle(string id) {
@@ -49,7 +56,7 @@ namespace AcManager.Tools.AcManagersNew {
                 throw new Exception("Object can’t be toggled");
             }
 
-            var newLocation = Path.Combine(path, wrapper.Value.Id);
+            var newLocation = Path.Combine(path, wrapper.Value.FileName);
 
             if (FileUtils.Exists(newLocation)) {
                 throw new ToggleException("Place is taken");

@@ -33,8 +33,8 @@ namespace AcManager.Tools.Objects {
 
         public override string Extension => ".ini";
 
-        public CarSetupObject(string carId, IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {
+        public CarSetupObject(string carId, IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) {
             CarId = carId;
 
             foreach (var tyrePressure in TyresPressure) {
@@ -130,7 +130,7 @@ namespace AcManager.Tools.Objects {
                 }
             } catch (Exception e) {
                 Logging.Warning("[CarSetupObject] Can’t read file: " + e);
-                AddError(AcErrorType.Data_IniIsDamaged, Path.GetFileName(Filename));
+                AddError(AcErrorType.Data_IniIsDamaged, FileName);
             }
         }
 

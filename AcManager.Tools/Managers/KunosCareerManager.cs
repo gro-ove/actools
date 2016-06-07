@@ -225,7 +225,7 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
-            return Directories.GetSubDirectories("series*").Where(Filter).Select(dir => CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
+            return Directories.GetSubDirectories("series*").Where(Filter).Select(dir => CreateAcPlaceholder(LocationToFileName(dir), Directories.CheckIfEnabled(dir)));
         }
 
         public override IAcDirectories Directories => AcRootDirectory.Instance.KunosCareerDirectories;

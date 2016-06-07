@@ -28,8 +28,8 @@ namespace AcManager.Tools.Objects {
 
         public bool MultiLayoutMode => MultiLayouts != null;
 
-        public TrackObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {
+        public TrackObject(IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) {
             try {
                 var list = GetMultiLayouts();
                 if (IsInMultiLayoutsMode(list)) {
@@ -38,7 +38,7 @@ namespace AcManager.Tools.Objects {
                     IdWithLayout = $"{Id}/{LayoutId}";
                     MultiLayouts = new BetterObservableCollection<TrackBaseObject>(
                             list.Skip(1).Select(x => {
-                                var c = new TrackExtraLayoutObject(manager, id, enabled, x);
+                                var c = new TrackExtraLayoutObject(manager, fileName, enabled, x);
                                 c.PropertyChanged += Configuration_PropertyChanged;
                                 return c;
                             }).Prepend((TrackBaseObject)this));

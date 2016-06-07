@@ -15,8 +15,8 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcJsonObjectNew : AcCommonObject {
-        protected AcJsonObjectNew(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {
+        protected AcJsonObjectNew(IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) {
             Tags = new TagsCollection();
         }
 

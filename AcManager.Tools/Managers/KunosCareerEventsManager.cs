@@ -54,11 +54,11 @@ namespace AcManager.Tools.Managers {
             }).ToList();
 
             return LinqExtension.RangeFrom(1)
-                    .Select(x => "event" + x)
-                    .Select(x => entries.FirstOrDefault(y => y.Name == x))
-                    .TakeWhile(x => x != null)
-                    .Select(dir =>
-                            CreateAcPlaceholder(LocationToId(dir.Path), Directories.CheckIfEnabled(dir.Path)));
+                                .Select(x => "event" + x)
+                                .Select(x => entries.FirstOrDefault(y => y.Name == x))
+                                .TakeWhile(x => x != null)
+                                .Select(dir =>
+                                        CreateAcPlaceholder(LocationToFileName(dir.Path), Directories.CheckIfEnabled(dir.Path)));
         }
 
         private static readonly Regex FilterRegex = new Regex(@"^event[1-9]\d*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

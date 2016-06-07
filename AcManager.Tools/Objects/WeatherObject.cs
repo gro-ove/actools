@@ -7,8 +7,8 @@ using AcTools.DataFile;
 
 namespace AcManager.Tools.Objects {
     public class WeatherObject : AcIniObject {
-        public WeatherObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {}
+        public WeatherObject(IFileAcManager manager, string fileName, bool enabled)
+                : base(manager, fileName, enabled) {}
 
         private WeatherType? _type;
 
