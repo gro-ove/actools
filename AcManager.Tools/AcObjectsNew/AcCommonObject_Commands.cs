@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
@@ -10,6 +11,24 @@ namespace AcManager.Tools.AcObjectsNew {
         private ICommand _viewInExplorerCommand;
         public virtual ICommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new RelayCommand(o => {
             ViewInExplorer();
+        }));
+
+        private RelayCommand _copyIdCommand;
+
+        public RelayCommand CopyIdCommand => _copyIdCommand ?? (_copyIdCommand = new RelayCommand(o => {
+            switch (o as string) {
+                case "name":
+                    Clipboard.SetText(DisplayName);
+                    break;
+
+                case "path":
+                    Clipboard.SetText(Location);
+                    break;
+
+                default:
+                    Clipboard.SetText(Id);
+                    break;
+            }
         }));
 
         private ICommand _toggleCommand;
