@@ -133,6 +133,15 @@ namespace AcManager.Pages.Dialogs {
 
         public BetterObservableCollection<CarObject> TunableVersions { get; } = new BetterObservableCollection<CarObject>();
 
+        private RelayCommand _manageSetupsCommand;
+
+        public RelayCommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new RelayCommand(o => {
+            if (_selectedCar.Value == null) return;
+            new CarSetupsDialog(_selectedCar.Value) {
+                ShowInTaskbar = false
+            }.ShowDialogWithoutBlocking();
+        }));
+
         public SelectCarDialog(CarObject car) {
             _selectedCar = new DelayedPropertyWrapper<CarObject>(SelectedCarChanged);
 

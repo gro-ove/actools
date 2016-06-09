@@ -181,6 +181,9 @@ namespace AcManager.Tools {
 
             try {
                 switch (parsed.Path) {
+                    case "setup":
+                        return await ProcessShared(parsed.Params.Get("id"));
+
                     case "shared":
                         return await ProcessShared(parsed.Params.Get("id"));
 

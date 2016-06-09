@@ -90,4 +90,12 @@
                     Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
         </Grid>
     </ToolTip>
+
+    <Style x:Key="CarBlockButton" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Width" Value="64"/>
+        <Setter Property="Height" Value="64"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
 </ResourceDictionary>

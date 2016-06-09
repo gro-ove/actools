@@ -6,102 +6,111 @@
         xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{Binding SelectedCar.DisplayName}" IconSource="{Binding SelectedCar.LogoIcon}" Loaded="SelectAndSetupCarDialog_OnLoaded"
-        Unloaded="SelectAndSetupCarDialog_OnUnloaded" d:DataContext="{d:DesignInstance dialogs:SelectCarDialog}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip"
-        Width="960" MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="540" Height="640" LocationAndSizeKey="SelectCarDialog_LS">
+        Unloaded="SelectAndSetupCarDialog_OnUnloaded" d:DataContext="{d:DesignInstance dialogs:SelectCarDialog}" SizeToContent="Manual"
+        ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="540" Height="640"
+        LocationAndSizeKey="SelectCarDialog_LS">
     <mui:ModernDialog.Resources>
-        <Style x:Key="TunableVersions.ComboBox" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Foreground" Value="Transparent" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ComboBox}">
-                        <Grid Name="InnerMainGrid" SnapsToDevicePixels="true">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0" />
-                            </Grid.ColumnDefinitions>
-                            <Popup Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" Placement="Bottom" Margin="1"
-                                    IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                    PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-                                <Grid Margin="4" MinWidth="{Binding ElementName=InnerMainGrid, Path=ActualWidth}"
-                                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                                    <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-                                    <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}"
-                                            BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" Margin="0,-1,0,0">
-                                        <!-- popup border thickness not dependent on BorderThickness property-->
-                                        <ScrollViewer Name="DropDownScrollViewer">
-                                            <Grid RenderOptions.ClearTypeHint="Enabled">
-                                                <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                    <Rectangle Name="OpaqueRect" Height="{Binding ElementName=DropDownBorder,Path=ActualHeight}"
-                                                            Width="{Binding ElementName=DropDownBorder,Path=ActualWidth}"
-                                                            Fill="{Binding ElementName=DropDownBorder,Path=Background}" />
-                                                </Canvas>
-                                                <ItemsPresenter Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
-                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                            </Grid>
-                                        </ScrollViewer>
-                                    </Border>
-                                </Grid>
-                            </Popup>
-                            <ToggleButton Grid.Column="0" Grid.ColumnSpan="2" Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                                    IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Padding="0,0,0,10" />
-                            <Path Name="Arrow" Grid.Column="0" Grid.ColumnSpan="2" Margin="3,1,8,0" Fill="{TemplateBinding Foreground}"
-                                    Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False"
-                                    Visibility="Collapsed" />
+            <Style x:Key="TunableVersions.ComboBox" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Foreground" Value="Transparent" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ComboBox}">
+                            <Grid Name="InnerMainGrid" SnapsToDevicePixels="true">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0" />
+                                </Grid.ColumnDefinitions>
+                                <Popup Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" Placement="Bottom" Margin="1"
+                                        IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                        PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                                    <Grid Margin="4" MinWidth="{Binding ElementName=InnerMainGrid, Path=ActualWidth}"
+                                            MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                        <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+                                        <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
 
-                            <ContentPresenter IsHitTestVisible="false" Margin="{TemplateBinding Padding}" Content="{TemplateBinding SelectionBoxItem}"
-                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                    ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                    ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.Column="0" Grid.ColumnSpan="2" />
+                                        <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}"
+                                                BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" Margin="0,-1,0,0">
+                                            <!-- popup border thickness not dependent on BorderThickness property-->
+                                            <ScrollViewer Name="DropDownScrollViewer">
+                                                <Grid RenderOptions.ClearTypeHint="Enabled">
+                                                    <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                        <Rectangle Name="OpaqueRect" Height="{Binding ElementName=DropDownBorder,Path=ActualHeight}"
+                                                                Width="{Binding ElementName=DropDownBorder,Path=ActualWidth}"
+                                                                Fill="{Binding ElementName=DropDownBorder,Path=Background}" />
+                                                    </Canvas>
+                                                    <ItemsPresenter Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
+                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                </Grid>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </Grid>
+                                </Popup>
+                                <ToggleButton Grid.Column="0" Grid.ColumnSpan="2" Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                        IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Padding="0,0,0,10" />
+                                <Path Name="Arrow" Grid.Column="0" Grid.ColumnSpan="2" Margin="3,1,8,0" Fill="{TemplateBinding Foreground}"
+                                        Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                        IsHitTestVisible="False" Visibility="Collapsed" />
 
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="HasItems" Value="false">
-                                <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
-                                <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="true">
-                                <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
-                            </Trigger>
-                            <Trigger Property="IsGrouping" Value="true">
-                                <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
-                            </Trigger>
-                            <Trigger SourceName="DropDownScrollViewer" Property="ScrollViewer.CanContentScroll" Value="false">
-                                <Setter TargetName="OpaqueRect" Property="Canvas.Top" Value="{Binding ElementName=DropDownScrollViewer, Path=VerticalOffset}" />
-                                <Setter TargetName="OpaqueRect" Property="Canvas.Left" Value="{Binding ElementName=DropDownScrollViewer, Path=HorizontalOffset}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                                <ContentPresenter IsHitTestVisible="false" Margin="{TemplateBinding Padding}" Content="{TemplateBinding SelectionBoxItem}"
+                                        ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                        ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                        ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.Column="0" Grid.ColumnSpan="2" />
 
-        <DataTemplate x:Key="TunableVersions.ItemTemplate" DataType="{x:Type objects:CarObject}">
-            <Image RenderOptions.BitmapScalingMode="LowQuality" Width="64" Height="64" ToolTip="{Binding DisplayName}" Name="UpgradeIconImage"
-                    Source="/Assets/Img/UpgradeStd.png" />
-            <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding IsChild}" Value="True">
-                    <Setter TargetName="UpgradeIconImage" Property="Source"
-                            Value="{Binding UpgradeIcon, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
-                </DataTrigger>
-            </DataTemplate.Triggers>
-        </DataTemplate>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasItems" Value="false">
+                                    <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter Property="Background" Value="{DynamicResource InputBackgroundHover}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource InputBorderHover}" />
+                                </Trigger>
+                                <Trigger Property="IsFocused" Value="true">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource Accent}" />
+                                </Trigger>
+                                <Trigger Property="IsGrouping" Value="true">
+                                    <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                                </Trigger>
+                                <Trigger SourceName="DropDownScrollViewer" Property="ScrollViewer.CanContentScroll" Value="false">
+                                    <Setter TargetName="OpaqueRect" Property="Canvas.Top"
+                                            Value="{Binding ElementName=DropDownScrollViewer, Path=VerticalOffset}" />
+                                    <Setter TargetName="OpaqueRect" Property="Canvas.Left"
+                                            Value="{Binding ElementName=DropDownScrollViewer, Path=HorizontalOffset}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+            <DataTemplate x:Key="TunableVersions.ItemTemplate" DataType="{x:Type objects:CarObject}">
+                <Image RenderOptions.BitmapScalingMode="LowQuality" Width="64" Height="64" ToolTip="{Binding DisplayName}" Name="UpgradeIconImage"
+                        Source="/Assets/Img/UpgradeStd.png" />
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding IsChild}" Value="True">
+                        <Setter TargetName="UpgradeIconImage" Property="Source"
+                                Value="{Binding UpgradeIcon, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+        </ResourceDictionary>
     </mui:ModernDialog.Resources>
 
     <Grid>
@@ -111,13 +120,17 @@
         </Grid.ColumnDefinitions>
 
         <userControls:CarBlock Car="{Binding SelectedCar, Mode=OneWay}" SelectedSkin="{Binding SelectedSkin, Mode=TwoWay}" SelectSkin="True" Margin="0 0 0 -42">
-            <Grid>
-                <ComboBox Margin="8" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="64" Height="64"
-                        DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" ItemsSource="{Binding TunableVersions}"
+            <StackPanel Orientation="Horizontal" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <ComboBox Width="64" Height="64" DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" ItemsSource="{Binding TunableVersions}"
                         Style="{StaticResource TunableVersions.ComboBox}"
                         Visibility="{Binding HasChildren, Converter={StaticResource BooleanToVisibilityConverter}}"
                         SelectedItem="{Binding SelectedTunableVersion}" ItemTemplate="{StaticResource TunableVersions.ItemTemplate}" />
-            </Grid>
+                <Button Margin="8 0 0 0" Command="{Binding ManageSetupsCommand}" DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
+                        Style="{StaticResource CarBlockButton}">
+                    <Button.ToolTip>Manage car’s setups</Button.ToolTip>
+                    <Image RenderOptions.BitmapScalingMode="LowQuality" Width="64" Height="64" Source="/Assets/Img/CarSetups.png" />
+                </Button>
+            </StackPanel>
         </userControls:CarBlock>
 
         <mui:ModernTab Layout="TabWithTitle" Margin="20 0 0 0" LinksMargin="0 0 0 0" FrameMargin="0 30 0 0" x:Name="Tabs" Width="320" Grid.Column="1"
