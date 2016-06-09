@@ -30,12 +30,16 @@ namespace AcManager.Pages.Drive {
     public partial class QuickDrive {
         public const string UserPresetableKeyValue = "Quick Drive";
         private const string KeySaveable = "__QuickDrive_Main";
-
-        private readonly QuickDriveViewModel _model;
+        
+        private QuickDriveViewModel Model => (QuickDriveViewModel)DataContext;
 
         public QuickDrive() {
+            DataContext = new QuickDriveViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack);
+            InputBindings.AddRange(new[] {
+                new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control))
+            });
             InitializeComponent();
-            DataContext = _model = new QuickDriveViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack);
 
             _selectNextCar = null;
             _selectNextCarSkinId = null;
@@ -47,8 +51,8 @@ namespace AcManager.Pages.Drive {
         private void QuickDrive_Loaded(object sender, RoutedEventArgs e) {
             _realConditionsTimer = new DispatcherTimer();
             _realConditionsTimer.Tick += (o, args) => {
-                if (_model.RealConditions) {
-                    _model.TryToSetRealConditions();
+                if (Model.RealConditions) {
+                    Model.TryToSetRealConditions();
                 }
             };
             _realConditionsTimer.Interval = new TimeSpan(0, 0, 60);
@@ -62,14 +66,14 @@ namespace AcManager.Pages.Drive {
         private void ModeTab_OnFrameNavigated(object sender, NavigationEventArgs e) {
             var c = ModeTab.Frame.Content as IQuickDriveModeControl;
             if (c != null) {
-                c.Model = _model.SelectedModeViewModel;
+                c.Model = Model.SelectedModeViewModel;
             }
 
             // _model.SelectedModeViewModel = (ModeTab.Frame.Content as IQuickDriveModeControl)?.Model;
         }
 
         private void AssistsMore_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            new AssistsDialog(_model.AssistsViewModel).ShowDialog();
+            new AssistsDialog(Model.AssistsViewModel).ShowDialog();
         }
 
         public class QuickDriveViewModel : NotifyPropertyChanged, IUserPresetable {

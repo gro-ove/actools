@@ -25,8 +25,7 @@ namespace AcManager.Pages.Dialogs {
                 CloseButton
             };
 
-            WebBrowser.ObjectForScripting = new ScriptProvider(Model);
-            WebBrowser.Navigate(GetMapAddress(obj));
+            WebBrowser.Inner.ObjectForScripting = new ScriptProvider(Model);
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -39,7 +38,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public void Log(string message) {
-                Logging.Write("[SCRIPTPROVIDER] " + message);
+                Logging.Write("[ScriptProvider] " + message);
             }
 
             public void Alert(string message) {
@@ -61,6 +60,8 @@ namespace AcManager.Pages.Dialogs {
 
         public class FindInformationViewModel : NotifyPropertyChanged {
             public AcJsonObjectNew SelectedObject { get; }
+
+            public string StartPage { get; }
 
             private string _selectedText = "";
 
@@ -89,6 +90,7 @@ namespace AcManager.Pages.Dialogs {
 
             public FindInformationViewModel(AcJsonObjectNew selectedObject) {
                 SelectedObject = selectedObject;
+                StartPage = GetMapAddress(SelectedObject);
             }
 
             private void UpdateSaveLabel() {
@@ -139,14 +141,13 @@ namespace AcManager.Pages.Dialogs {
             }, o => !string.IsNullOrEmpty(SelectedText)));
         }
         
-        private static string GetMapAddress(AcCommonObject car) {
-            return SettingsHolder.Content.SearchEngine?.GetUri(car.DisplayName) ??
-                    $"https://duckduckgo.com/?q=site%3Awikipedia.org+{Uri.EscapeDataString(car.DisplayName)}&ia=web";
+        private static string GetMapAddress(AcCommonObject obj) {
+            return SettingsHolder.Content.SearchEngine?.GetUri(obj.DisplayName) ??
+                    $"https://duckduckgo.com/?q=site%3Awikipedia.org+{Uri.EscapeDataString(obj.DisplayName)}&ia=web";
         }
 
         private void WebBrowser_OnNavigated(object sender, NavigationEventArgs e) {
-            WebBrowserHelper.SetSilent(WebBrowser, true);
-            WebBrowser.InvokeScript("eval", @"(function(){
+            WebBrowser.Inner.InvokeScript("eval", @"(function(){
     window.onerror = function(err){
         window.external.Log('' + err);
     };
@@ -161,45 +162,6 @@ namespace AcManager.Pages.Dialogs {
         }
     }, false);
 })();");
-            UrlTextBox.Text = e.Uri.OriginalString;
-            CommandManager.InvalidateRequerySuggested();
-        }
-
-        private void UrlTextBox_KeyUp(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Enter) {
-                e.Handled = true;
-            }
-        }
-
-        private void UrlTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Enter) {
-                e.Handled = true;
-                WebBrowser.Navigate(UrlTextBox.Text);
-            }
-        }
-
-        private void BrowseBack_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = ((WebBrowser != null) && (WebBrowser.CanGoBack));
-        }
-
-        private void BrowseBack_Executed(object sender, ExecutedRoutedEventArgs e) {
-            WebBrowser.GoBack();
-        }
-
-        private void BrowseForward_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = ((WebBrowser != null) && (WebBrowser.CanGoForward));
-        }
-
-        private void BrowseForward_Executed(object sender, ExecutedRoutedEventArgs e) {
-            WebBrowser.GoForward();
-        }
-
-        private void GoToPage_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = true;
-        }
-
-        private void GoToPage_Executed(object sender, ExecutedRoutedEventArgs e) {
-            WebBrowser.Navigate(UrlTextBox.Text);
         }
     }
 }

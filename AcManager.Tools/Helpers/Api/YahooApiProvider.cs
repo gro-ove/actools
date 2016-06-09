@@ -9,14 +9,14 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Api {
-    public class YahooApiProvider {
+    public static class YahooApiProvider {
         private const string RequestLocationUri = "https://query.yahooapis.com/v1/public/yql?q=" +
             "select centroid from geo.places(1) where text='{1},{0}'";
 
         private static readonly Regex CleanUpRegex = new Regex(@"[^\w-]+", RegexOptions.Compiled);
 
         [CanBeNull]
-        public GeoTagsEntry TryToLocate([CanBeNull] string country, [CanBeNull] string city) {
+        public static GeoTagsEntry TryToLocate([CanBeNull] string country, [CanBeNull] string city) {
             country = CleanUpRegex.Replace(country ?? "", " ").Trim();
             city = CleanUpRegex.Replace(city ?? "", " ").Trim();
 

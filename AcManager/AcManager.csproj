@@ -184,6 +184,9 @@
     <Compile Include="Pages\Drive\QuickDrive_Weekend.xaml.cs">
       <DependentUpon>QuickDrive_Weekend.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\Rsr.xaml.cs">
+      <DependentUpon>Rsr.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\CarSetupsListPage.xaml.cs">
       <DependentUpon>CarSetupsListPage.xaml</DependentUpon>
     </Compile>
@@ -193,6 +196,7 @@
     <Compile Include="Pages\Lists\FontsListPage.xaml.cs">
       <DependentUpon>FontsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
     <Compile Include="Tools\TextEditing\IniFoldingStrategy.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
@@ -446,6 +450,10 @@
     <Page Include="Pages\Drive\QuickDrive_Practice.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Drive\Rsr.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Lists\CarSetupsListPage.xaml">
       <SubType>Designer</SubType>

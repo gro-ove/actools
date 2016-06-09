@@ -13,7 +13,7 @@ namespace AcManager.Tools.Helpers {
                 return new GeoTagsEntry(ValuesStorage.GetDouble(key + "__lat"), ValuesStorage.GetDouble(key + "__lon"));
             }
 
-            var result = new YahooApiProvider().TryToLocate(country, city);
+            var result = YahooApiProvider.TryToLocate(country, city);
             if (result?.LatitudeValue == null || result.LongitudeValue == null) return null;
 
             ValuesStorage.Set(key + "__lat", result.LatitudeValue.Value);

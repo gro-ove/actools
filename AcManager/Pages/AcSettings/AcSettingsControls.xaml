@@ -5,7 +5,7 @@
         xmlns:directInput="clr-namespace:AcManager.Tools.Helpers.DirectInput;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsControls+AcControlsViewModel}"
         SizeChanged="AcSettingsControls_OnSizeChanged" Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded"
-        PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown">
+        PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -152,7 +152,7 @@
 
                 <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset">Save Preset</Button>
             </Grid>
-            <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0" ToolTip="Share preset and copy link to clipboard">
+            <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0" ToolTip="Share current settings (Ctrl+Page Up)">
                 Share
                 <Button.ContextMenu>
                     <ContextMenu Name="ShareContextMenu">

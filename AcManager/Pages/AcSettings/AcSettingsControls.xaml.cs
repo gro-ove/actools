@@ -26,11 +26,17 @@ using Microsoft.Win32;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsControls : IAcControlsConflictResolver {
+        private AcControlsViewModel Model => (AcControlsViewModel)DataContext;
+
         public AcSettingsControls() {
             AcSettingsHolder.Controls.ConflictResolver = this;
 
-            InitializeComponent();
             DataContext = new AcControlsViewModel();
+            InputBindings.AddRange(new[] {
+                new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control))
+            });
+            InitializeComponent();
+
             ResizingStuff();
         }
 

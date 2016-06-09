@@ -97,6 +97,9 @@
     <Compile Include="Helpers\Toast.cs" />
     <Compile Include="IPreviewProvider.cs" />
     <Compile Include="IUserPresetable.cs" />
+    <Compile Include="UserControls\WebBrowserBlock.xaml.cs">
+      <DependentUpon>WebBrowserBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueLabel.cs" />
     <Compile Include="Converters\KunosCareerTypeToIconConverter.cs" />
     <Compile Include="Converters\PlaceToColorConverter.cs" />
@@ -310,6 +313,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\CarBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\WebBrowserBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

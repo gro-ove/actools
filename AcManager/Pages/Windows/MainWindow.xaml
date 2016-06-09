@@ -22,6 +22,11 @@
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="online" Source="/Pages/Drive/Online.xaml" />
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="lan" Source="/Pages/Drive/Online.xaml?Mode=Lan" />
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />
+        <!--<mui:LinkGroup GroupKey="drive" DisplayName="live timing">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="RSR" Source="/Pages/Drive/Rsr.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>-->
 
         <!--media-->
         <mui:LinkGroupFilterable GroupKey="media" DisplayName="screenshots" Source="/Pages/Miscellaneous/WorkInProgress.xaml?screenshots" />
@@ -33,7 +38,7 @@
         <mui:LinkGroupFilterable GroupKey="content" DisplayName="showrooms" Source="/Pages/Lists/ShowroomsListPage.xaml" />
         <mui:LinkGroup GroupKey="content" DisplayName="miscellaneous">
             <mui:LinkGroup.Links>
-                <mui:Link DisplayName="Apps" Source="/Pages/Miscellaneous/WorkInProgress.xaml?apps" />
+                <!--<mui:Link DisplayName="Apps" Source="/Pages/Miscellaneous/WorkInProgress.xaml?apps" />-->
                 <mui:Link DisplayName="Fonts" Source="/Pages/Lists/FontsListPage.xaml" />
                 <mui:Link DisplayName="PP Filters" Source="/Pages/Lists/PpFiltersListPage.xaml" />
                 <mui:Link DisplayName="Weather" Source="/Pages/Lists/WeatherListPage.xaml" />

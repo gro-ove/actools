@@ -132,6 +132,9 @@
   <data name="Go" xml:space="preserve">
     <value>Go</value>
   </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
   <data name="Maximize" xml:space="preserve">
     <value>Maximize</value>
   </data>

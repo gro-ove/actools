@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Input;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public static class InputBindingBehavior {
