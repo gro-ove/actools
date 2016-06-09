@@ -11,7 +11,7 @@ namespace AcManager.Pages.Settings {
         public class SharingViewModel : NotifyPropertyChanged {
             public SettingsHolder.SharingSettings Sharing => SettingsHolder.Sharing;
 
-            public BetterObservableCollection<SharingHelper.SharedEntry> History => SharingHelper.Instance.History;
+            public BetterObservableCollection<SharedEntry> History => SharingHelper.Instance.History;
         }
 
         public SettingsSharing() {
@@ -26,7 +26,7 @@ namespace AcManager.Pages.Settings {
         }
 
         private void History_OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            var value = HistoryDataGrid.SelectedValue as SharingHelper.SharedEntry;
+            var value = HistoryDataGrid.SelectedValue as SharedEntry;
             if (value != null) {
                 Process.Start(value.Url + "#noauto");
             }

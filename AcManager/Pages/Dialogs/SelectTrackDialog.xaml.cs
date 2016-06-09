@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Threading;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.Objects;
@@ -12,7 +11,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
-using OxyPlot.Series;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class SelectTrackDialog {
@@ -65,7 +64,7 @@ namespace AcManager.Pages.Dialogs {
             _list = (((ModernTab)sender).Frame.Content as AcObjectSelectList)?.Model;
             if (_list == null) return;
 
-            _list.SelectedItem = Model.SelectedTrackConfiguration.MainTrackObject;
+            _list.SelectedItem = Model.SelectedTrackConfiguration?.MainTrackObject;
             _list.PropertyChanged += List_PropertyChanged;
 
             /* save uri */
@@ -83,6 +82,7 @@ namespace AcManager.Pages.Dialogs {
         public class SelectTrackDialogViewModel : NotifyPropertyChanged {
             private readonly DelayedPropertyWrapper<TrackBaseObject> _selectedTrackConfiguration;
 
+            [CanBeNull]
             public TrackBaseObject SelectedTrackConfiguration {
                 get { return _selectedTrackConfiguration.Value; }
                 set {

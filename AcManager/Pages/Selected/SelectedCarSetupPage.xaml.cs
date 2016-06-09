@@ -1,15 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcTools.DataFile;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -57,6 +61,13 @@ namespace AcManager.Pages.Selected {
                 SelectedObject.Track = dialog.Model.SelectedTrack;
             }));
 
+            private RelayCommand _clearTrackCommand;
+
+            public RelayCommand ClearTrackCommand => _clearTrackCommand ?? (_clearTrackCommand = new RelayCommand(o => {
+                SelectedObject.TrackId = null;
+                ClearTrackCommand.OnCanExecuteChanged();
+            }, o => SelectedObject.TrackId != null));
+
             private void Handler(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(SelectedObject.Tyres):
@@ -64,6 +75,25 @@ namespace AcManager.Pages.Selected {
                         break;
                 }
             }
+
+            private AsyncCommand _shareCommand;
+
+            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(o => {
+                var data = SharingHelper.SetMetadata(SharedEntryType.CarSetup, FileUtils.ReadAllText(SelectedObject.Location),
+                        new SharedMetadata {
+                            ["car"] = Car.Id,
+                            ["track"] = SelectedObject.TrackId
+                        });
+                var target = SelectedObject.Track == null ? Car.DisplayName : $"{Car.DisplayName} ({SelectedObject.Track.DisplayName})";
+                return SharingUiHelper.ShareAsync(SharedEntryType.CarSetup, SelectedObject.Name, target, data);
+            }));
+
+            private AsyncCommand _testCommand;
+
+            public AsyncCommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(o => {
+                var setupId = SelectedObject.Id.ApartFromLast(SelectedObject.Extension).Replace('\\', '/');
+                return QuickDrive.RunAsync(Car, track: SelectedObject.Track, carSetupId: setupId);
+            }));
         }
 
         private string _carId, _id;
@@ -113,9 +143,10 @@ namespace AcManager.Pages.Selected {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
             InitializeAcObjectPage(_model = new SelectedCarSetupPageViewModel(_carObject, _object));
-            //InputBindings.AddRange(new[] {
-            //    new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control))
-            //});
+            InputBindings.AddRange(new[] {
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
+            });
             InitializeComponent();
         }
 

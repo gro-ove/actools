@@ -84,7 +84,7 @@ namespace AcManager.Tools.AcObjectsNew {
             var ini = IniObject;
             SaveData(ini);
 
-            using (CarsManager.Instance.IgnoreChanges()) {
+            using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
                 File.WriteAllText(IniFilename, ini.ToString());
             }
 

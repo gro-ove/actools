@@ -14,9 +14,12 @@
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open setup's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+                <Separator />
+                <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share setup (Ctrl+K)" />
+                <Button Content="Test" Command="{Binding TestCommand}" ToolTip="Test setup (Ctrl+G)" Style="{StaticResource Go.ToolBarButton}" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
-                <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed ini-file (Ctrl+S)" />
+                <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed ini-file (Ctrl+PageUp)" />
                 <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
             </ToolBar>
         </controls:AcObjectBase.ToolBars>
@@ -24,9 +27,16 @@
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
                 <Label>Track:</Label>
+                <Button Command="{Binding ClearTrackCommand}">Clear</Button>
                 <Button Command="{Binding ChangeTrackCommand}">Change</Button>
-                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Track.DisplayName, Mode=OneWay}"
-                        watermark:WatermarkService.Watermark="None" />
+
+                <Grid>
+                    <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Track.DisplayName, Mode=OneWay}"
+                            Visibility="{Binding SelectedObject.Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                    <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.TrackId, Mode=OneWay}"
+                            watermark:WatermarkService.Watermark="Generic"
+                            Visibility="{Binding SelectedObject.Track, Converter={StaticResource NullToVisibilityConverter}}" />
+                </Grid>
             </DockPanel>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">Tyres:</TextBlock>

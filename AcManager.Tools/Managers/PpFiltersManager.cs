@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class PpFiltersManager : AcManagerFileSpecific<PpFilterObject> {
@@ -11,6 +13,11 @@ namespace AcManager.Tools.Managers {
         public static PpFiltersManager Initialize() {
             if (Instance != null) throw new Exception("Already initialized");
             return Instance = new PpFiltersManager();
+        }
+
+        [CanBeNull]
+        public PpFilterObject GetByAcId(string v) {
+            return GetById(v + PpFilterObject.FileExtension);
         }
 
         public override string SearchPattern => "*.ini";

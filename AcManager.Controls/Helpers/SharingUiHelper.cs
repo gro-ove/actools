@@ -31,19 +31,19 @@ namespace AcManager.Controls.Helpers {
         private RelayCommand _removeCommand;
 
         public RelayCommand RemoveCommand => _removeCommand ?? (_removeCommand = new RelayCommand(o => {
-            var entry = o as SharingHelper.SharedEntry;
+            var entry = o as SharedEntry;
             if (entry == null) return;
 
             // TODO
-        }, o => o is SharingHelper.SharedEntry));
+        }, o => o is SharedEntry));
 
         private static bool _sharingInProcess;
 
-        public static Task ShareAsync(SharingHelper.EntryType type, string defaultName, string target, string data) {
+        public static Task ShareAsync(SharedEntryType type, string defaultName, string target, string data) {
             return ShareAsync(type, defaultName, target, Encoding.UTF8.GetBytes(data));
         }
 
-        public static async Task ShareAsync(SharingHelper.EntryType type, string defaultName, string target, byte[] data) {
+        public static async Task ShareAsync(SharedEntryType type, string defaultName, string target, byte[] data) {
             if (_sharingInProcess) return;
             _sharingInProcess = true;
 

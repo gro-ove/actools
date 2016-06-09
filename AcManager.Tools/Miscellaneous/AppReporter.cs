@@ -68,7 +68,11 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             var zipBytes = File.ReadAllBytes(tempFilename);
-            File.Delete(tempFilename);
+            try {
+                File.Delete(tempFilename);
+            } catch (Exception e) {
+                Logging.Warning("[AppReporter] Can’t clean up: " + e);
+            }
 
             InternalUtils.SendAppReport(zipBytes, CmApiProvider.UserAgent);
         }

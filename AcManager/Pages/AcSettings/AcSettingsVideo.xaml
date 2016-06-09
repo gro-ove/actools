@@ -3,7 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
         xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings" xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+             xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+AcVideoViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -75,13 +76,20 @@
             </CheckBox>
 
             <!--effects-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Effects:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Post-Processing:</TextBlock>
 
             <CheckBox IsChecked="{Binding Video.PostProcessing}">
                 <Label>Enable _post-processing effects</Label>
             </CheckBox>
 
             <StackPanel Visibility="{Binding Video.PostProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <DockPanel>
+                    <Label>Filter:</Label>
+                    <Button Command="{Binding ManageFiltersCommand}">Manage</Button>
+                    <ComboBox ItemsSource="{Binding Filters}" SelectedItem="{Binding SelectedFilter}" DisplayMemberPath="DisplayName"
+                            watermark:WatermarkService.Watermark="{Binding Video.PostProcessingFilter}" />
+                </DockPanel>
+                
                 <DockPanel>
                     <Label>Overall quality:</Label>
                     <ComboBox ItemsSource="{Binding Video.PostProcessingQualities}" SelectedItem="{Binding Video.PostProcessingQuality}"

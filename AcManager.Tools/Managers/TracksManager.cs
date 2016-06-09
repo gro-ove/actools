@@ -5,6 +5,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class TracksManager : AcManagerNew<TrackObject> {
@@ -25,9 +26,15 @@ namespace AcManager.Tools.Managers {
             return base.GetById(id.Contains('/') ? id.Split('/')[0] : id);
         }
 
+        [CanBeNull]
         public TrackBaseObject GetLayoutById(string id) {
             if (!id.Contains('/')) return base.GetById(id);
             return base.GetById(id.Split('/')[0])?.GetLayoutById(id);
+        }
+
+        [CanBeNull]
+        public TrackBaseObject GetLayoutById(string trackId, string layoutId) {
+            return GetById(trackId)?.GetLayoutByLayoutId(layoutId);
         }
 
         protected override TrackObject CreateAcObject(string id, bool enabled) {

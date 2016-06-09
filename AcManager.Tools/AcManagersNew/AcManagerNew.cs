@@ -17,7 +17,7 @@ namespace AcManager.Tools.AcManagersNew {
     /// “Standart” version — files & watching.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class AcManagerNew<T> : FileAcManager<T>, IDirectoryListener, IWatchingChangeApplier where T : AcCommonObject {
+    public abstract class AcManagerNew<T> : FileAcManager<T>, IDirectoryListener, IWatchingChangeApplier, IIgnorer where T : AcCommonObject {
         private bool _subscribed;
 
         public override void ActualScan() {
@@ -111,6 +111,7 @@ namespace AcManager.Tools.AcManagersNew {
                             obj.Reload();
                         }
                     } else if (FileUtils.Exists(dir)) {
+                        id = LocationToId(FileUtils.GetOriginalFilename(dir));
                         obj = CreateAndLoadAcObject(id, Directories.CheckIfEnabled(dir));
                         InnerWrappersList.Add(new AcItemWrapper(this, obj));
                         UpdateList();

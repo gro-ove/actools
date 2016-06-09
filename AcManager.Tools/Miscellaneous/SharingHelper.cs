@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Internal;
@@ -16,6 +18,83 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Miscellaneous {
+    public enum SharedEntryType {
+        [Description("Controls preset")]
+        ControlsPreset,
+
+        [Description("Force Feedback preset")]
+        ForceFeedbackPreset,
+
+        [Description("Quick Drive preset")]
+        QuickDrivePreset,
+
+        [Description("Replay")]
+        Replay,
+
+        [Description("Car setup")]
+        CarSetup,
+
+        [Description("PP filter")]
+        PpFilter,
+
+        [Description("Weather")]
+        Weather
+    }
+
+    public class SharedEntry : NotifyPropertyChanged {
+        public string Id { get; set; }
+
+        public SharedEntryType EntryType { get; set; }
+
+        [CanBeNull]
+        public string Name { get; set; }
+
+        [CanBeNull]
+        public string Target { get; set; }
+
+        [JsonIgnore]
+        [CanBeNull]
+        public string Author { get; set; }
+
+        [JsonIgnore]
+        [CanBeNull]
+        public byte[] Data { get; set; }
+
+        [JsonIgnore]
+        public string Url => InternalUtils.ShareResult.GetUrl(Id);
+
+        [CanBeNull]
+        public string RemovalKey { get; set; }
+
+        [JsonIgnore]
+        private string _json;
+
+        [NotNull]
+        public string GetFileName() {
+            switch (EntryType) {
+                case SharedEntryType.Weather:
+                    return Name ?? EntryType.GetDescription();
+
+                default:
+                    return (Name ?? EntryType.GetDescription()) +
+                            // (Target == null ? "" : " for " + Target) +
+                            (Author == null ? "" : " (" + Author + ")") + SharingHelper.GetExtenstion(EntryType);
+            }
+        }
+
+        internal static SharedEntry Deserialize(string s) {
+            var value = JsonConvert.DeserializeObject<SharedEntry>(s);
+            value._json = s;
+            return value;
+        }
+
+        internal string Serialize() {
+            return _json ?? JsonConvert.SerializeObject(this, Formatting.None);
+        }
+    }
+
+    public class SharedMetadata : Dictionary<string, string> {}
+
     public class SharingHelper : NotifyPropertyChanged {
         public static SharingHelper Instance { get; private set; }
 
@@ -24,85 +103,60 @@ namespace AcManager.Tools.Miscellaneous {
             Instance = new SharingHelper();
         }
 
-        public enum EntryType {
-            [Description("Controls preset")]
-            ControlsPreset,
-
-            [Description("Force Feedback preset")]
-            ForceFeedbackPreset,
-
-            [Description("Quick Drive preset")]
-            QuickDrivePreset,
-
-            [Description("Replay")]
-            Replay,
-
-            [Description("Car setup")]
-            CarSetup
-        }
-
-        public static string GetExtenstion(EntryType type) {
+        public static string GetExtenstion(SharedEntryType type) {
             switch (type) {
-                case EntryType.CarSetup:
-                case EntryType.ControlsPreset:
-                case EntryType.ForceFeedbackPreset:
+                case SharedEntryType.CarSetup:
+                case SharedEntryType.ControlsPreset:
+                case SharedEntryType.ForceFeedbackPreset:
+                case SharedEntryType.PpFilter:
                     return ".ini";
 
-                case EntryType.QuickDrivePreset:
+                case SharedEntryType.QuickDrivePreset:
                     return ".cmpreset";
 
-                case EntryType.Replay:
+                case SharedEntryType.Replay:
                     return ".lnk";
+
+                case SharedEntryType.Weather:
+                    return "";
 
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public class SharedEntry : NotifyPropertyChanged {
-            public string Id { get; set; }
+        private const string IniMetadataPrefix = "# __cmattr:";
 
-            public EntryType EntryType { get; set; }
+        public static string SetMetadata(SharedEntryType type, string data, SharedMetadata metadata) {
+            switch (type) {
+                case SharedEntryType.CarSetup:
+                    var s = new StringBuilder();
+                    foreach (var pair in metadata.Where(x => x.Value != null)) {
+                        if (pair.Key.Contains(":")) {
+                            throw new Exception("Invalid key");
+                        }
+                        s.Append(IniMetadataPrefix + pair.Key + ":" + ValuesStorage.Encode(pair.Value) + "\n");
+                    }
+                    return s + data;
 
-            [CanBeNull]
-            public string Name { get; set; }
-
-            [CanBeNull]
-            public string Target { get; set; }
-
-            [JsonIgnore]
-            [CanBeNull]
-            public string Author { get; set; }
-
-            [JsonIgnore]
-            [CanBeNull]
-            public byte[] Data { get; set; }
-
-            [JsonIgnore]
-            public string Url => InternalUtils.ShareResult.GetUrl(Id);
-
-            [CanBeNull]
-            public string RemovalKey { get; set; }
-
-            [JsonIgnore]
-            private string _json;
-
-            [NotNull]
-            public string GetFileName() {
-                return (Name ?? EntryType.GetDescription()) +
-                        // (Target == null ? "" : " for " + Target) +
-                        (Author == null ? "" : " (" + Author + ")") + 
-                        GetExtenstion(EntryType);
+                default:
+                    throw new NotSupportedException();
             }
+        }
 
-            internal static SharedEntry Deserialize(string s) {
-                var value = JsonConvert.DeserializeObject<SharedEntry>(s);
-                value._json = s;
-                return value;
-            }
+        public static SharedMetadata GetMetadata(SharedEntryType type, string data, out string cleaned) {
+            switch (type) {
+                case SharedEntryType.CarSetup:
+                    var r = new SharedMetadata();
+                    var s = data.Split('\n');
+                    foreach (var k in s.Where(x => x.StartsWith(IniMetadataPrefix)).Select(l => l.Split(new[] { ':' }, 3)).Where(k => k.Length == 3)) {
+                        r[k[1]] = ValuesStorage.Decode(k[2]);
+                    }
+                    cleaned = s.Where(x => !x.StartsWith(IniMetadataPrefix)).JoinToString('\n');
+                    return r;
 
-            internal string Serialize() {
-                return _json ?? JsonConvert.SerializeObject(this, Formatting.None);
+                default:
+                    throw new NotSupportedException();
             }
         }
 
@@ -111,15 +165,17 @@ namespace AcManager.Tools.Miscellaneous {
             InternalUtils.SharedEntryLoaded loaded;
             try {
                 loaded = await InternalUtils.GetSharedEntryAsync(id, CmApiProvider.UserAgent, cancellation);
-                if (loaded == null || cancellation.IsCancellationRequested) return null;
+                if (loaded == null || cancellation.IsCancellationRequested) {
+                    return null;
+                }
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t get shared entry", "Make sure Internet connection works.", e);
                 return null;
             }
 
-            EntryType entryType;
+            SharedEntryType entryType;
             try {
-                entryType = (EntryType)Enum.Parse(typeof(EntryType), loaded.EntryType);
+                entryType = (SharedEntryType)Enum.Parse(typeof(SharedEntryType), loaded.EntryType);
             } catch (Exception) {
                 NonfatalError.Notify($"Can’t get shared entry, its type {loaded.EntryType} is not supported", "Make sure you have the latest version of CM.");
                 Logging.Warning("[SHARER] Unsupported entry type: " + loaded.EntryType);
@@ -150,7 +206,7 @@ namespace AcManager.Tools.Miscellaneous {
             ValuesStorage.Set(Key, History.Select(x => x.Serialize()));
         }
 
-        private void AddToHistory(EntryType type, string name, string target, InternalUtils.ShareResult result) {
+        private void AddToHistory(SharedEntryType type, string name, string target, InternalUtils.ShareResult result) {
             History.Add(new SharedEntry {
                 EntryType = type, Id = result.Id, RemovalKey = result.RemovalKey, Name = name, Target = target
             });
@@ -158,10 +214,12 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         [ItemCanBeNull]
-        public static async Task<string> ShareAsync(EntryType type, string name, string target, byte[] data, string customId = null, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> ShareAsync(SharedEntryType type, string name, string target, byte[] data, string customId = null, CancellationToken cancellation = default(CancellationToken)) {
             var authorName = SettingsHolder.Sharing.ShareAnonymously ? null : SettingsHolder.Sharing.SharingName;
             var result = await InternalUtils.ShareEntryAsync(type.ToString(), name, target, authorName, data, CmApiProvider.UserAgent, customId, cancellation);
-            if (result == null || cancellation.IsCancellationRequested) return null;
+            if (result == null || cancellation.IsCancellationRequested) {
+                return null;
+            }
 
             Instance.AddToHistory(type, name, target, result);
             return result.Url;

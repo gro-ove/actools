@@ -158,6 +158,8 @@ namespace AcManager.Controls.Pages.Dialogs {
                 return true;
             }
 
+            public string ForceFilterAcId;
+
             public async void RunAsync() {
                 try {
                     await Task.Run(() => Showroom.Start(new Showroom.ShowroomProperties {
@@ -168,7 +170,7 @@ namespace AcManager.Controls.Pages.Dialogs {
                         CameraFov = CameraFov,
                         DisableSweetFx = DisableSweetFx,
                         DisableWatermark = DisableSweetFx,
-                        Filter = SelectedFilter.Name,
+                        Filter = ForceFilterAcId ?? SelectedFilter.AcId,
                         UseBmp = false
                     }));
                 } catch (Exception e) {
@@ -192,8 +194,10 @@ namespace AcManager.Controls.Pages.Dialogs {
             ViewModel.Run();
         }
 
-        public static bool Run(CarObject carObject, string selectedSkinId) {
-            return new CarOpenInShowroomDialogViewModel(string.Empty, carObject, selectedSkinId).Run();
+        public static bool Run(CarObject carObject, string selectedSkinId, string filterAcId = null) {
+            return new CarOpenInShowroomDialogViewModel(string.Empty, carObject, selectedSkinId) {
+                ForceFilterAcId = filterAcId
+            }.Run();
         }
 
         public static bool RunPreset(string presetFilename, CarObject carObject, string selectedSkinId) {

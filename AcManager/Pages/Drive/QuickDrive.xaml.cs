@@ -353,9 +353,12 @@ namespace AcManager.Pages.Drive {
                 Changed?.Invoke(this, EventArgs.Empty);
             }
 
-            internal QuickDriveViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, 
-                    TrackBaseObject trackObject = null, bool savePreset = false) {
+            private string _carSetupId;
+
+            internal QuickDriveViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null,
+                    TrackBaseObject trackObject = null, string carSetupId = null, bool savePreset = false) {
                 _uiMode = uiMode;
+                _carSetupId = carSetupId;
 
                 _saveable = new SaveHelper<SaveableData>(KeySaveable, () => new SaveableData {
                     RealConditions = RealConditions,
@@ -625,7 +628,13 @@ namespace AcManager.Pages.Drive {
                 if (selectedMode == null) return;
 
                 try {
-                    await selectedMode.Drive(SelectedCar, SelectedTrack, AssistsViewModel.GameProperties, new Game.ConditionProperties {
+                    await selectedMode.Drive(new Game.BasicProperties {
+                        CarId = SelectedCar.Id,
+                        CarSkinId = SelectedCar.SelectedSkin?.Id,
+                        CarSetupId = _carSetupId,
+                        TrackId = SelectedTrack.Id,
+                        TrackConfigurationId = SelectedTrack.LayoutId
+                    }, AssistsViewModel.GameProperties, new Game.ConditionProperties {
                         AmbientTemperature = Temperature,
                         RoadTemperature = RoadTemperature,
 
@@ -645,7 +654,7 @@ namespace AcManager.Pages.Drive {
             public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
             private async Task Share(object o) {
-                await SharingUiHelper.ShareAsync(SharingHelper.EntryType.QuickDrivePreset,
+                await SharingUiHelper.ShareAsync(SharedEntryType.QuickDrivePreset,
                         Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(UserPresetableKeyValue)), null,
                         ExportToUserPresetData());
             }
@@ -687,19 +696,20 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        public static bool Run(CarObject car = null, string carSkinId = null, TrackBaseObject track = null) {
-            return new QuickDriveViewModel(string.Empty, false, car, carSkinId, track).Run();
+        public static bool Run(CarObject car = null, string carSkinId = null, TrackBaseObject track = null, string carSetupId = null) {
+            return new QuickDriveViewModel(string.Empty, false, car, carSkinId, track, carSetupId).Run();
         }
 
-        public static async Task<bool> RunAsync(CarObject car = null, string carSkinId = null, TrackBaseObject track = null) {
-            var model = new QuickDriveViewModel(string.Empty, false, car, carSkinId, track);
+        public static async Task<bool> RunAsync(CarObject car = null, string carSkinId = null, TrackBaseObject track = null, string carSetupId = null) {
+            var model = new QuickDriveViewModel(string.Empty, false, car, carSkinId, track, carSetupId);
             if (!model.GoCommand.CanExecute(null)) return false;
             await model.Go();
             return true;
         }
 
-        public static bool RunPreset(string presetFilename, CarObject car = null, string carSkinId = null, TrackBaseObject track = null) {
-            return new QuickDriveViewModel(File.ReadAllText(presetFilename), false, car, carSkinId, track).Run();
+        public static bool RunPreset(string presetFilename, CarObject car = null, string carSkinId = null, TrackBaseObject track = null,
+                string carSetupId = null) {
+            return new QuickDriveViewModel(File.ReadAllText(presetFilename), false, car, carSkinId, track, carSetupId).Run();
         }
 
         public static bool RunSerializedPreset(string preset) {
@@ -756,9 +766,9 @@ namespace AcManager.Pages.Drive {
             Changed?.Invoke(this, new EventArgs());
         }
 
-        public abstract Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack,
-            Game.AssistsProperties assistsProperties,
-            Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties);
+        public abstract Task Drive(Game.BasicProperties basicProperties,
+                Game.AssistsProperties assistsProperties,
+                Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties);
 
         protected async Task StartAsync(Game.StartProperties properties) {
             await GameWrapper.StartAsync(properties);

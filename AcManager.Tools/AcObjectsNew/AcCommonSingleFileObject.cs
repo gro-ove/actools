@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using AcManager.Tools.AcManagersNew;
 using AcTools.Utils.Helpers;
 
@@ -11,12 +10,6 @@ namespace AcManager.Tools.AcObjectsNew {
 
         protected AcCommonSingleFileObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) { }
-
-        public string GetOriginalFileName() {
-            var fileInfo = new FileInfo(Location);
-            var result = fileInfo.Directory?.GetFiles(fileInfo.Name)[0].Name ?? Location;
-            return result;
-        }
 
         private string _oldName;
 

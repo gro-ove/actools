@@ -4,14 +4,19 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.SemiGui;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Objects {
     public class PpFilterObject : AcCommonSingleFileObject {
-        public override string Extension => ".ini";
+        public const string FileExtension = ".ini";
+
+        public override string Extension => FileExtension;
 
         public PpFilterObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) { }
+
+        public string AcId => Id.ApartFromLast(FileExtension);
 
         public override bool HasData => true;
 
@@ -74,10 +79,6 @@ namespace AcManager.Tools.Objects {
                 NonfatalError.Notify("Can’t save PP filter", "Make sure its file could be overwritten.", e);
                 return false;
             }
-        }
-
-        public void SetChanged(bool changed) {
-            Changed = changed;
         }
     }
 }

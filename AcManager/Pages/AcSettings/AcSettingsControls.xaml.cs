@@ -192,13 +192,13 @@ namespace AcManager.Pages.AcSettings {
                     AcSettingsHolder.Controls.SaveFfbToIni(iniFile);
                     AcSettingsHolder.System.SaveFfbToIni(iniFile);
 
-                    await SharingUiHelper.ShareAsync(SharingHelper.EntryType.ForceFeedbackPreset, Path.GetFileName(Controls.CurrentPresetName) + " (FFB Only)", null, iniFile.Stringify());
+                    await SharingUiHelper.ShareAsync(SharedEntryType.ForceFeedbackPreset, Path.GetFileName(Controls.CurrentPresetName) + " (FFB Only)", null, iniFile.Stringify());
                 } else if (o as string == "Basic") {
                     var target = Controls.InputMethod.Id == "KEYBOARD" ? "keyboard" :
                             Controls.InputMethod.Id == "X360" ? "Xbox 360 controller" :
                                     Controls.WheelAxleEntries.FirstOrDefault()?.Input?.Device?.DisplayName;
 
-                    await SharingUiHelper.ShareAsync(SharingHelper.EntryType.ControlsPreset, Path.GetFileName(Controls.CurrentPresetName), target,
+                    await SharingUiHelper.ShareAsync(SharedEntryType.ControlsPreset, Path.GetFileName(Controls.CurrentPresetName), target,
                             File.ReadAllBytes(Controls.Filename));
                 }
             }

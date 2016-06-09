@@ -585,9 +585,12 @@ namespace AcManager.Pages.Drive {
                     OpponentsCarsLoading = false;
                 }
             }
-
-            public override async Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack, Game.AssistsProperties assistsProperties,
+            
+            public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
+                var selectedCar = CarsManager.Instance.GetById(basicProperties.CarId);
+                var selectedTrack = TracksManager.Instance.GetLayoutById(basicProperties.TrackId, basicProperties.TrackConfigurationId);
+
                 IEnumerable<Game.AiCar> botCars;
 
                 using (var waiting = new WaitingDialog()) {

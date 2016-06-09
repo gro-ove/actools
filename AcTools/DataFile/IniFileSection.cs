@@ -23,6 +23,11 @@ namespace AcTools.DataFile {
             return ContainsKey(key) ? base[key] : null;
         }
 
+        [CanBeNull]
+        public string Get(string key, string defaultValue) {
+            return ContainsKey(key) ? base[key] : defaultValue;
+        }
+
         /// <summary>
         /// Warning! Throws exception if value is missing!
         /// </summary>

@@ -39,6 +39,9 @@
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open PP filter's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+                <Separator />
+                <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share filter (Ctrl+K)" />
+                <Button Content="Test" Command="{Binding TestCommand}" ToolTip="Test filter in showroom (Ctrl+G)" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
@@ -50,10 +53,6 @@
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
-        <!--<syntaxHighlightBox:SyntaxHighlightBox IsLineNumbersMarginVisible="True" x:Name="CodeBox" Background="#5b5f58" FontFamily="Consolas"
-                Text="{Binding SelectedObject.Content}" HorizontalScrollBarVisibility="Disabled" AutoWordSelection="False" AcceptsReturn="True"
-                AcceptsTab="True" IsUndoEnabled="True" />-->
-
-        <avalonedit:TextEditor Name="TextEditor" TextChanged="TextEditor_OnTextChanged" />
+        <avalonedit:TextEditor Name="TextEditor" />
     </ac:AcObjectBase>
 </selected:SelectedAcObjectPage>

@@ -13,7 +13,7 @@
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate x:Key="HistoryEntryType" DataType="{x:Type miscellaneous:SharingHelper+SharedEntry}">
+            <DataTemplate x:Key="HistoryEntryType" DataType="{x:Type miscellaneous:SharedEntry}">
                 <DockPanel>
                     <TextBlock Text="{Binding EntryType, Converter={StaticResource EnumToDescriptionConverter}}" TextTrimming="CharacterEllipsis" />
                 </DockPanel>

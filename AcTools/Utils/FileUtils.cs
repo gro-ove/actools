@@ -224,6 +224,17 @@ namespace AcTools.Utils {
         }
 
         /// <summary>
+        /// Helps to find original casing.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static string GetOriginalFilename(string filename) {
+            var fileInfo = new FileInfo(filename);
+            var result = fileInfo.Directory?.GetFiles(fileInfo.Name)[0].FullName ?? filename;
+            return result;
+        }
+
+        /// <summary>
         /// Move directory or file (without changing the name!)
         /// </summary>
         /// <param name="from"></param>

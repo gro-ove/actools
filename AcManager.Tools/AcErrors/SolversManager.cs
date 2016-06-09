@@ -74,6 +74,14 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Font_UsedButDisabled:
                     return new Font_UsedButDisabledSolver((FontObject)obj, error);
 
+                case AcErrorType.CarSetup_TrackIsMissing:
+                    return new CarSetup_TrackIsMissingSolver((CarSetupObject)obj, error);
+
+                case AcErrorType.CarSkin_LiveryIsMissing:
+                    break;
+                case AcErrorType.CarSkin_PreviewIsMissing:
+                    break;
+
                 default:
                     // throw new ArgumentOutOfRangeException();
                     return null;

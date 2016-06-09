@@ -76,6 +76,7 @@
     <Compile Include="AcErrors\AcErrorType.cs" />
     <Compile Include="AcErrors\AcErrorWrapper.cs" />
     <Compile Include="AcErrors\IAcError.cs" />
+    <Compile Include="AcErrors\Solver\CarSetupSolvers.cs" />
     <Compile Include="AcErrors\Solver\FontSolvers.cs" />
     <Compile Include="AcErrors\Solver\ShowroomSolvers.cs" />
     <Compile Include="AcErrors\Solver\CarSolvers.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="AcManagersNew\IAcManagerScanWrapper.cs" />
     <Compile Include="AcManagersNew\IFileAcManager.cs" />
     <Compile Include="AcManagersNew\IgnoringHolder.cs" />
+    <Compile Include="AcManagersNew\IIgnorer.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject.cs" />
     <Compile Include="AcObjectsNew\AcCommonSingleFileObject.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject_Commands.cs" />

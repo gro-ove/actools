@@ -193,7 +193,10 @@
     <Compile Include="Pages\Lists\FontsListPage.xaml.cs">
       <DependentUpon>FontsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
+    <Compile Include="Tools\TextEditing\IniFoldingStrategy.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
+    <Compile Include="Tools\TextEditing\ProperUndoStrategy.cs" />
     <Compile Include="Pages\Selected\SelectedAcJsonObjectPage.cs" />
     <Compile Include="Pages\Selected\SelectedAcObjectViewModel.cs" />
     <Compile Include="Pages\Selected\SelectedCarSetupPage.xaml.cs">
@@ -288,6 +291,7 @@
     <Compile Include="Tools\AcErrors\Solver\CarSolvers.cs" />
     <Compile Include="Tools\AcErrors\UiSolversFactory.cs" />
     <Compile Include="About\ReleaseNotes.cs" />
+    <Compile Include="Tools\TextEditing\TextEditorExtension.cs" />
     <Compile Include="Tools\UriProvider.cs" />
     <Compile Include="Tools\AcErrors\UiAcErrorFixer.cs" />
     <Compile Include="Tools\ArgumentsHandler.cs" />

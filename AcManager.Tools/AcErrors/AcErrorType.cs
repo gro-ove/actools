@@ -10,26 +10,12 @@ namespace AcManager.Tools.AcErrors {
         [Description("Loading unhandled error: {0}")]
         Load_Base,
 
-        /// <summary>
-        /// {0}: exception
-        /// </summary>
-        [Obsolete]
-        [Description("Full loading unhandled error: {0}")]
-        Load_Fully,
-
 
         /// <summary>
         /// {0}: file name
         /// </summary>
         [Description("File “{0}” is missing")]
         Data_IniIsMissing,
-
-        /// <summary>
-        /// {0}: file name
-        /// </summary>
-        [Obsolete]
-        [Description("Can’t read “{0}”")]
-        Data_IniIsUnreadable,
 
         /// <summary>
         /// {0}: file name
@@ -43,13 +29,6 @@ namespace AcManager.Tools.AcErrors {
         /// </summary>
         [Description("File “{0}” is missing")]
         Data_JsonIsMissing,
-
-        /// <summary>
-        /// {0}: file name
-        /// </summary>
-        [Obsolete]
-        [Description("Can’t read “{0}”")]
-        Data_JsonIsUnreadable,
 
         /// <summary>
         /// {0}: file name
@@ -116,6 +95,10 @@ namespace AcManager.Tools.AcErrors {
         CarSkins_DirectoryIsUnavailable,
 
 
+        [Description("Setup’s track ({0}) is missing")]
+        CarSetup_TrackIsMissing,
+
+
         [Description("Skin’s livery ({0}/livery.png) is missing")]
         CarSkin_LiveryIsMissing,
 
@@ -123,7 +106,7 @@ namespace AcManager.Tools.AcErrors {
         CarSkin_PreviewIsMissing,
 
 
-        [Description("Model (kn5-file) is missing")]
+        [Description("Model (KN5 file) is missing")]
         Showroom_Kn5IsMissing,
 
 

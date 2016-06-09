@@ -5,6 +5,7 @@ using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
@@ -310,6 +311,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private string _postProcessingFilter;
+            
+            [CanBeNull]
+            public string PostProcessingFilter {
+                get { return _postProcessingFilter; }
+                set {
+                    if (Equals(value, _postProcessingFilter)) return;
+                    _postProcessingFilter = value;
+                    OnPropertyChanged();
+                }
+            }
+
             private SettingEntry _postProcessingQuality;
 
             public SettingEntry PostProcessingQuality {
@@ -547,6 +560,7 @@ namespace AcManager.Tools.Helpers {
                 section = Ini["POST_PROCESS"];
                 PostProcessing = section.GetBool("ENABLED", true);
                 PostProcessingQuality = section.GetEntry("QUALITY", PostProcessingQualities, "4");
+                PostProcessingFilter = section.Get("FILTER", "default");
                 GlareQuality = section.GetEntry("GLARE", GlareQualities, "4");
                 DepthOfFieldQuality = section.GetEntry("DOF", DepthOfFieldQualities, "4");
                 RaysOfGod = section.GetBool("RAYS_OF_GOD", true);
@@ -591,6 +605,7 @@ namespace AcManager.Tools.Helpers {
                 section = Ini["POST_PROCESS"];
                 section.Set("ENABLED", PostProcessing);
                 section.Set("QUALITY", PostProcessingQuality);
+                section.Set("FILTER", PostProcessingFilter);
                 section.Set("GLARE", GlareQuality);
                 section.Set("DOF", DepthOfFieldQuality);
                 section.Set("RAYS_OF_GOD", RaysOfGod);

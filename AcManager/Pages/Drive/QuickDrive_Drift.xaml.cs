@@ -57,15 +57,10 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public override async Task Drive(CarObject selectedCar, TrackBaseObject selectedTrack, Game.AssistsProperties assistsProperties,
-                Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
+            public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
+                    Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
                 await StartAsync(new Game.StartProperties {
-                    BasicProperties = new Game.BasicProperties {
-                        CarId = selectedCar.Id,
-                        CarSkinId = selectedCar.SelectedSkin?.Id,
-                        TrackId = selectedTrack.Id,
-                        TrackConfigurationId = selectedTrack.LayoutId
-                    },
+                    BasicProperties = basicProperties,
                     AssistsProperties = assistsProperties,
                     ConditionProperties = conditionProperties,
                     TrackProperties = trackProperties,

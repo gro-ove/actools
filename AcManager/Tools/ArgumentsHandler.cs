@@ -12,8 +12,10 @@ using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
+using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcTools.DataFile;
@@ -192,17 +194,37 @@ namespace AcManager.Tools {
             }
         }
 
-        private MessageBoxResult ShowDialog(SharingHelper.SharedEntry shared, bool saveable, string additionalButton = null) {
-            var description = $@"Name: [b]{shared.Name ?? "[/b][i]?[/i][b]"}[/b]
+        private enum Choise {
+            ApplyAndSave,
+            Apply,
+            Save,
+            Extra,
+            Cancel
+        }
+
+        /// <summary>
+        /// Shows dialog with all information about shared entry and offers a choise to user what to do with it.
+        /// </summary>
+        /// <param name="shared">Shared entry.</param>
+        /// <param name="additionalButton">Label of additional button.</param>
+        /// <param name="saveable">Can be saved.</param>
+        /// <param name="applyable">Can be applied.</param>
+        /// <param name="nonSaveable">Can be applied without saving.</param>
+        /// <returns>User choise.</returns>
+        private Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true, 
+                bool nonSaveable = true) {
+            var description =
+                    $@"Name: [b]{shared.Name ?? "[/b][i]?[/i][b]"}[/b]
 For: [b]{shared.Target ?? "[/b][i]?[/i][b]"}[/b]
-Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
+Author: [b]{
+                            shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
 
             var dlg = new ModernDialog {
                 Title = shared.EntryType.GetDescription().ToTitle(),
                 Content = new ScrollViewer {
                     Content = new BbCodeBlock {
                         BbCode = description + "\n\n" + (
-                            saveable ? "Would you like to apply this preset or to save it for later?" : "Would you like to apply this preset?"),
+                                saveable ? "Would you like to apply this preset or to save it for later?" : "Would you like to apply this preset?"),
                         Margin = new Thickness(0, 0, 0, 8)
                     },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -215,18 +237,32 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
             };
 
             dlg.Buttons = new[] {
-                saveable ? dlg.CreateCloseDialogButton("Apply & Save", true, false, MessageBoxResult.Yes) : null,
-                dlg.CreateCloseDialogButton(saveable ? "Apply Only" : "Apply", true, false, MessageBoxResult.OK),
-                saveable ? dlg.CreateCloseDialogButton("Save Only", true, false, MessageBoxResult.No) : null,
+                applyable && saveable ? dlg.CreateCloseDialogButton(nonSaveable ? "Apply & Save" : "Save & Apply", true, false, MessageBoxResult.Yes) : null,
+                nonSaveable && applyable ? dlg.CreateCloseDialogButton(saveable ? "Apply Only" : "Apply", true, false, MessageBoxResult.OK) : null,
+                saveable ? dlg.CreateCloseDialogButton(applyable && nonSaveable ? "Save Only" : "Save", true, false, MessageBoxResult.No) : null,
                 additionalButton == null ? null : dlg.CreateCloseDialogButton(additionalButton, true, false, MessageBoxResult.None),
                 dlg.CancelButton
             }.NonNull();
             dlg.ShowDialog();
-            return dlg.MessageBoxResult;
+
+            switch (dlg.MessageBoxResult) {
+                case MessageBoxResult.None:
+                    return Choise.Extra;
+                case MessageBoxResult.OK:
+                    return Choise.Apply;
+                case MessageBoxResult.Cancel:
+                    return Choise.Cancel;
+                case MessageBoxResult.Yes:
+                    return Choise.ApplyAndSave;
+                case MessageBoxResult.No:
+                    return Choise.Save;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private async Task<ArgumentHandleResult> ProcessShared(string id) {
-            SharingHelper.SharedEntry shared;
+            SharedEntry shared;
 
             using (var waiting = new WaitingDialog()) {
                 waiting.Report("Loading…");
@@ -236,90 +272,116 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
             var data = shared?.Data;
             if (data == null) return ArgumentHandleResult.Failed;
 
-            MessageBoxResult result;
             switch (shared.EntryType) {
-                case SharingHelper.EntryType.ControlsPreset:
-                    result = ShowDialog(shared, true, "Apply FFB Only");
-                    break;
-
-                case SharingHelper.EntryType.ForceFeedbackPreset:
-                    result = ShowDialog(shared, false);
-                    break;
-
-                case SharingHelper.EntryType.QuickDrivePreset:
-                    result = ShowDialog(shared, true, "Just Go");
-                    break;
-
-                default:
-                    throw new Exception($"Unsupported yet type: “{shared.EntryType}”");
-            }
-
-            switch (shared.EntryType) {
-                case SharingHelper.EntryType.ControlsPreset:
+                case SharedEntryType.PpFilter: {
+                    var result = ShowDialog(shared, nonSaveable: false);
                     switch (result) {
-                        case MessageBoxResult.Yes: // save (and apply)
-                        case MessageBoxResult.No:
-                            var filename = Path.Combine(AcSettingsHolder.Controls.UserPresetsDirectory, "Loaded", shared.GetFileName());
+                        case Choise.Save:
+                        case Choise.ApplyAndSave:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(
+                                    PpFiltersManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
                             Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                             File.WriteAllBytes(filename, data);
+                            if (result == Choise.ApplyAndSave) {
+                                AcSettingsHolder.Video.PostProcessingFilter = Path.GetFileNameWithoutExtension(filename);
+                            }
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
+                    }
+                }
 
-                            if (result == MessageBoxResult.Yes) {
+                case SharedEntryType.CarSetup: {
+                    var content = data.ToUtf8String();
+                    var metadata = SharingHelper.GetMetadata(SharedEntryType.CarSetup, content, out content);
+
+                    var carId = metadata.GetValueOrDefault("car");
+                    var trackId = metadata.GetValueOrDefault("track") ?? CarSetupObject.GenericDirectory;
+                    if (carId == null) {
+                        NonfatalError.Notify("Can’t install car’s setup", "Metadata is missing.");
+                        return ArgumentHandleResult.Failed;
+                    }
+
+                    var result = ShowDialog(shared, applyable: false);
+                    switch (result) {
+                        case Choise.Save:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(carId), trackId, shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllText(filename, content);
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
+                    }
+                }
+
+                case SharedEntryType.ControlsPreset: {
+                    var result = ShowDialog(shared, "Apply FFB Only");
+                    switch (result) {
+                        case Choise.Save:
+                        case Choise.ApplyAndSave:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(
+                                    AcSettingsHolder.Controls.UserPresetsDirectory, "Loaded", shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllBytes(filename, data);
+                            if (result == Choise.ApplyAndSave) {
                                 AcSettingsHolder.Controls.LoadPreset(filename);
                             }
-
                             return ArgumentHandleResult.SuccessfulShow;
-                        case MessageBoxResult.OK: // apply only
+                        case Choise.Apply:
                             if (File.Exists(AcSettingsHolder.Controls.Filename)) {
                                 FileUtils.Recycle(AcSettingsHolder.Controls.Filename);
                             }
-
                             File.WriteAllBytes(AcSettingsHolder.Controls.Filename, data);
                             return ArgumentHandleResult.SuccessfulShow;
-                        case MessageBoxResult.None: // ffb only
+                        case Choise.Extra: // ffb only
                             var ini = IniFile.Parse(data.ToUtf8String());
                             AcSettingsHolder.Controls.LoadFfbFromIni(ini);
                             return ArgumentHandleResult.SuccessfulShow;
                         default:
                             return ArgumentHandleResult.Failed;
                     }
+                }
 
-
-                case SharingHelper.EntryType.ForceFeedbackPreset:
-                    if (result == MessageBoxResult.OK) {
-                        var ini = IniFile.Parse(data.ToUtf8String());
-                        AcSettingsHolder.Controls.LoadFfbFromIni(ini);
-                        AcSettingsHolder.System.LoadFfbFromIni(ini);
-                        return ArgumentHandleResult.SuccessfulShow;
-                    }
-                    return ArgumentHandleResult.Failed;
-
-                case SharingHelper.EntryType.QuickDrivePreset:
+                case SharedEntryType.ForceFeedbackPreset: {
+                    var result = ShowDialog(shared, saveable: false);
                     switch (result) {
-                        case MessageBoxResult.Yes: // save (and apply)
-                        case MessageBoxResult.No:
-                            var filename = Path.Combine(PresetsManager.Instance.GetDirectory(QuickDrive.UserPresetableKeyValue), "Loaded", shared.GetFileName());
-                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
-                            File.WriteAllBytes(filename, data);
-
-                            if (result == MessageBoxResult.Yes) {
-                                QuickDrive.LoadPreset(filename);
-                            }
-
-                            return ArgumentHandleResult.SuccessfulShow;
-                        case MessageBoxResult.OK: // apply only
-                            QuickDrive.LoadSerializedPreset(data.ToUtf8String());
-                            return ArgumentHandleResult.SuccessfulShow;
-                        case MessageBoxResult.None: // just go
-                            if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
-                                throw new InformativeException("Can’t start race", "Make sure required car & track are installed and available.");
-                            }
+                        case Choise.Apply:
+                            var ini = IniFile.Parse(data.ToUtf8String());
+                            AcSettingsHolder.Controls.LoadFfbFromIni(ini);
+                            AcSettingsHolder.System.LoadFfbFromIni(ini);
                             return ArgumentHandleResult.SuccessfulShow;
                         default:
                             return ArgumentHandleResult.Failed;
                     }
-            }
+                }
 
-            return ArgumentHandleResult.FailedShow;
+                case SharedEntryType.QuickDrivePreset: {
+                    var result = ShowDialog(shared, "Just Go");
+                    switch (result) {
+                        case Choise.Save:
+                        case Choise.ApplyAndSave:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(
+                                    PresetsManager.Instance.GetDirectory(QuickDrive.UserPresetableKeyValue), "Loaded", shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllBytes(filename, data);
+                            if (result == Choise.ApplyAndSave) {
+                                QuickDrive.LoadPreset(filename);
+                            }
+                            return ArgumentHandleResult.SuccessfulShow;
+                        case Choise.Apply:
+                            QuickDrive.LoadSerializedPreset(data.ToUtf8String());
+                            return ArgumentHandleResult.SuccessfulShow;
+                        case Choise.Extra: // just go
+                            if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) throw new InformativeException("Can’t start race", "Make sure required car & track are installed and available.");
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
+                    }
+                }
+
+                default:
+                    throw new Exception($"Unsupported yet type: “{shared.EntryType}”");
+            }
         }
     }
 }

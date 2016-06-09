@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
+using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
+using AcManager.Tools.Managers;
 using AcTools.DataFile;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Objects {
     public class WeatherObject : AcIniObject {
@@ -19,6 +22,11 @@ namespace AcManager.Tools.Objects {
                 _type = value; 
                 OnPropertyChanged();
                 Changed = true;
+
+                if (_preparedForEditing) {
+                    SaveData(IniObject);
+                    Content = IniObject.Stringify();
+                }
             }
         }
 
@@ -31,6 +39,11 @@ namespace AcManager.Tools.Objects {
                 _temperatureCoefficient = value;
                 OnPropertyChanged();
                 Changed = true;
+
+                if (_preparedForEditing) {
+                    SaveData(IniObject);
+                    Content = IniObject.Stringify();
+                }
             }
         }
 
@@ -43,6 +56,11 @@ namespace AcManager.Tools.Objects {
                 _forceCarLights = value;
                 OnPropertyChanged();
                 Changed = true;
+
+                if (_preparedForEditing) {
+                    SaveData(IniObject);
+                    Content = IniObject.Stringify();
+                }
             }
         }
 
@@ -82,11 +100,68 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        public override void Save() {
+            var ini = _preparedForEditing ? IniFile.Parse(Content) : IniObject;
+            SaveData(ini);
+
+            using (WeatherManager.Instance.IgnoreChanges()) {
+                File.WriteAllText(IniFilename, ini.ToString());
+            }
+
+            Changed = false;
+        }
+
         public override void SaveData(IniFile ini) {
             ini["LAUNCHER"].Set("NAME", Name);
             ini["LAUNCHER"].Set("TEMPERATURE_COEFF", TemperatureCoefficient);
             ini["CAR_LIGHTS"].Set("FORCE_ON", ForceCarLights);
             ini["__LAUNCHER_CM"].Set("WEATHER_TYPE", Type);
+        }
+
+        public override bool HandleChangedFile(string filename) {
+            if (string.Equals(filename, IniFilename, StringComparison.OrdinalIgnoreCase)) {
+                if (_preparedForEditing) {
+                    Content = File.ReadAllText(Location);
+                } else {
+                    LoadOrThrow();
+                }
+            }
+
+            return true;
+        }
+
+        private string _content;
+
+        public string Content {
+            get { return _content; }
+            set {
+                if (Equals(value, _content)) return;
+                _content = value;
+                OnPropertyChanged();
+                Changed = true;
+
+                if (_preparedForEditing && _content != null) {
+                    LoadData(IniFile.Parse(_content));
+                }
+            }
+        }
+
+        private bool _preparedForEditing;
+
+        public void PrepareForEditing() {
+            if (_preparedForEditing) return;
+
+            var changed = Changed;
+            try {
+                Content = File.ReadAllText(IniFilename);
+                RemoveError(AcErrorType.Data_IniIsMissing);
+            } catch (Exception e) {
+                Logging.Write("[WeatherObject] Can’t load: " + e);
+                AddError(AcErrorType.Data_IniIsMissing, Id);
+            } finally {
+                Changed = changed;
+                _preparedForEditing = true;
+            }
         }
     }
 }

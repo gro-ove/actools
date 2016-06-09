@@ -8,7 +8,6 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
-using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class CarSetupsManager : AcManagerNew<CarSetupObject> {

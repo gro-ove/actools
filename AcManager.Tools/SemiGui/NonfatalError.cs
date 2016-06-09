@@ -15,9 +15,9 @@ namespace AcManager.Tools.SemiGui {
         /// Notify about some non-fatal exception. User will see some message only if
         /// some notifier (implemented INonfatalErrorNotifier interface) was registered.
         /// </summary>
-        /// <param name="problemDescription">Ex.: “Can’t do this and that”</param>
+        /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
         /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
-        /// <param name="exception">Exception which caused the problem</param>
+        /// <param name="exception">Exception which caused the problem.</param>
         public static void Notify(string problemDescription, string solutionCommentary, Exception exception = null) {
             var i = exception as InformativeException;
             if (i != null) {
@@ -31,8 +31,8 @@ namespace AcManager.Tools.SemiGui {
         /// Notify about some non-fatal exception. User will see some message only if
         /// some notifier (implemented INonfatalErrorNotifier interface) was registered.
         /// </summary>
-        /// <param name="problemDescription">Ex.: “Can’t do this and that”</param>
-        /// <param name="exception">Exception which caused the problem</param>
+        /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
+        /// <param name="exception">Exception which caused the problem.</param>
         public static void Notify(string problemDescription, Exception exception = null) {
             Notify(problemDescription, null, exception);
         }

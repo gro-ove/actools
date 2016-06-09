@@ -14,12 +14,23 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class CarSetupObject : AcCommonSingleFileObject {
-        private const string GenericDirectory = "generic";
+        public const string GenericDirectory = "generic";
 
         public string CarId { get; }
 
         [CanBeNull]
-        public string TrackId { get; private set; }
+        public string TrackId {
+            get { return _trackId; }
+            set {
+                if (Equals(value, _trackId)) return;
+                _trackId = value;
+                Track = value == null ? null : TracksManager.Instance.GetById(value);
+                ErrorIf(value != null && Track == null, AcErrorType.CarSetup_TrackIsMissing, value);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayName));
+                Changed = true;
+            }
+        }
 
         [CanBeNull]
         public TrackObject Track {
@@ -162,15 +173,12 @@ namespace AcManager.Tools.Objects {
                 AddError(AcErrorType.Load_Base, "Invalid location");
                 _oldTrackId = null;
                 TrackId = _oldTrackId;
-                Track = null;
                 SetHasData(false);
                 return;
             }
 
             _oldTrackId = dir == GenericDirectory ? null : dir;
             TrackId = _oldTrackId;
-            Track = TrackId == null ? null : TracksManager.Instance.GetById(TrackId);
-
             LoadData();
         }
 
@@ -211,6 +219,7 @@ namespace AcManager.Tools.Objects {
         public override string DisplayName => TrackId == null ? Name : $"{Name} ({Track?.DisplayName ?? TrackId})";
 
         private bool _hasData;
+        private string _trackId;
 
         private void SetHasData(bool value) {
             if (Equals(value, _hasData)) return;
