@@ -151,6 +151,9 @@
     <Compile Include="Pages\AcSettings\AcSettingsControls_Wheel_Buttons.xaml.cs">
       <DependentUpon>AcSettingsControls_Wheel_Buttons.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsPython.xaml.cs">
+      <DependentUpon>AcSettingsPython.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsSystem.xaml.cs">
       <DependentUpon>AcSettingsSystem.xaml</DependentUpon>
     </Compile>
@@ -190,11 +193,17 @@
     <Compile Include="Pages\Lists\CarSetupsListPage.xaml.cs">
       <DependentUpon>CarSetupsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\PythonAppsListPage.xaml.cs">
+      <DependentUpon>PythonAppsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Lists\PpFiltersListPage.xaml.cs">
       <DependentUpon>PpFiltersListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Lists\FontsListPage.xaml.cs">
       <DependentUpon>FontsListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Selected\SelectedPythonAppPage.xaml.cs">
+      <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
@@ -339,6 +348,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\AcSettings\AcSettingsPython.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\AcSettings\AcSettingsSystem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -463,6 +476,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\PythonAppsListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Lists\PpFiltersListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -518,6 +535,10 @@
     <Page Include="Pages\Selected\SelectedCarSetupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Selected\SelectedPythonAppPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedPpFilterPage.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -21,8 +21,8 @@ namespace AcManager.Pages.Lists {
             ((PpFiltersListPageViewModel)DataContext).Unload();
         }
 
-        private class PpFiltersListPageViewModel : AcListPageViewModel<FontObject> {
-            public PpFiltersListPageViewModel(IFilter<FontObject> listFilter)
+        private class PpFiltersListPageViewModel : AcListPageViewModel<PpFilterObject> {
+            public PpFiltersListPageViewModel(IFilter<PpFilterObject> listFilter)
                 : base(PpFiltersManager.Instance, listFilter) {
             }
 

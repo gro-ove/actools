@@ -5,6 +5,18 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class DictionaryExtension {
+        public static TValue GetValueOr<TKey, TValue>([NotNull] this IReadOnlyDictionary<TKey, TValue> dictionary, [NotNull] TKey key,
+                [NotNull] TValue defaultValue) {
+            if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (defaultValue == null) {
+                throw new ArgumentNullException(nameof(defaultValue));
+            }
+
+            TValue result;
+            return dictionary.TryGetValue(key, out result) ? result : defaultValue;
+        }
+
         [CanBeNull]
         public static TValue GetValueOrDefault<TKey, TValue>([NotNull] this IReadOnlyDictionary<TKey, TValue> dictionary, [NotNull] TKey key) {
             if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));

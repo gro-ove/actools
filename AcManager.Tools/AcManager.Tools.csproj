@@ -141,6 +141,7 @@
     <Compile Include="Helpers\AcSettingsHolder_Audio.cs" />
     <Compile Include="Helpers\AcSettingsHolder_CameraOnboard.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Gameplay.cs" />
+    <Compile Include="Helpers\AcSettingsHolder_Python.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Replay.cs" />
     <Compile Include="Helpers\AcSettingsHolder_System.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Controls.cs" />
@@ -194,6 +195,7 @@
     <Compile Include="Managers\Presets\BuiltInPresetEntry.cs" />
     <Compile Include="Managers\Presets\ISavedPresetEntry.cs" />
     <Compile Include="Managers\Presets\SavedPresetEntry.cs" />
+    <Compile Include="Managers\PythonAppsManager.cs" />
     <Compile Include="Managers\ReplaysExtensionSetter.cs" />
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
@@ -202,6 +204,7 @@
     <Compile Include="Objects\CarSetupObject.cs" />
     <Compile Include="Objects\CarSkinObject_Lists.cs" />
     <Compile Include="Objects\FontObject.cs" />
+    <Compile Include="Objects\PythonAppObject.cs" />
     <Compile Include="SemiGui\DriverName.cs" />
     <Compile Include="SemiGui\GameCommandExecutor.cs" />
     <Compile Include="SemiGui\GameEndedArgs.cs" />

@@ -18,7 +18,7 @@ namespace AcManager.Tools.Helpers.Api.Rsr {
             return $"http://www.radiators-champ.com/RSRLiveTiming/index.php?page=event_rank&eventId={eventId.ToInvariantString()}";
         }
 
-        [CanBeNull]
+        [ItemCanBeNull]
         public static async Task<RsrEventInformation> GetEventInformationAsync(int eventId, CancellationToken cancellation = default(CancellationToken)) {
             try {
                 using (var client = new WebClient { Headers = {

@@ -6,6 +6,7 @@
     <Grid Style="{StaticResource ContentRoot}">
         <mui:ModernTab Layout="List" SelectedSource="/Pages/AcSettings/AcSettingsGeneral.xaml" SaveKey="__AcSettingsPage.SelectedPage">
             <mui:ModernTab.Links>
+                <mui:Link DisplayName="apps" Source="/Pages/AcSettings/AcSettingsPython.xaml" />
                 <mui:Link DisplayName="video" Source="/Pages/AcSettings/AcSettingsVideo.xaml" />
                 <mui:Link DisplayName="view &amp; ui" Source="/Pages/AcSettings/AcSettingsView.xaml" />
                 <mui:Link DisplayName="audio" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />

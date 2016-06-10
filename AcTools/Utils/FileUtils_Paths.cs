@@ -118,6 +118,10 @@ namespace AcTools.Utils {
             return Path.Combine(acRoot, "system", "cfg", "ppfilters");
         }
 
+        public static string GetPythonAppsDirectory(string acRoot) {
+            return Path.Combine(acRoot, "apps", "python");
+        }
+
         public static string GetKunosCareerDirectory(string acRoot) {
             return Path.Combine(acRoot, "content", "career");
         }

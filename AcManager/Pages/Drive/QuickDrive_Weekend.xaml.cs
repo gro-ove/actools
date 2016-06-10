@@ -43,7 +43,7 @@ namespace AcManager.Pages.Drive {
             public int PracticeDuration {
                 get { return _practiceDuration; }
                 set {
-                    value = MathUtils.Clamp(value, 0, 90);
+                    value = value.Clamp(0, 90);
                     if (Equals(value, _practiceDuration)) return;
                     _practiceDuration = value;
                     OnPropertyChanged();
@@ -123,8 +123,8 @@ namespace AcManager.Pages.Drive {
         private class SpecialPluralizingConverter_Inner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null || parameter == null) return null;
-                int number;
-                return int.TryParse(value.ToString(), out number) && number != 0 ? PluralizingConverter.PluralizeExt(number, parameter.ToString()) : "";
+                var number = value.AsInt();
+                return number != 0 ? PluralizingConverter.PluralizeExt(number, parameter.ToString()) : "";
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -135,14 +135,13 @@ namespace AcManager.Pages.Drive {
         private class SpecialSessionConverter_Inner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null) return null;
-                int number;
-                return int.TryParse(value.ToString(), out number) ? number == 0 ? "Skip" : number.ToString() : "";
+                var number = value.AsInt();
+                return number == 0 ? "Skip" : number.ToString();
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null) return null;
-                int number;
-                return value as string == "Skip" ? 0 : int.TryParse(value.ToString(), out number) ? number : FlexibleParser.TryParseInt(value.ToString());
+                return value as string == "Skip" ? 0 : value.AsInt();
             }
         }
     }

@@ -426,6 +426,14 @@ done:
         + rename & change track
         + watching
     + built-in code editor
+    + replace int.TryParse in converters to something better
+        + including the ones from QuickDrive_Weekend
+    + additional section “miscellaneous”
+        + apps
+        + pp filters
+            + editing
+            + testing
+            + sharing
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -447,11 +455,12 @@ todo:
     - lite mode (without main form): overlays, second commands, attempts to open main form?
 
     + proper sharing
-        - deleting shared
         + special types:
-            - car setups
-            - ppfilters
+            + car setups
+            + ppfilters
             - replays?
+            - weather?
+        - deleting shared
 
     + ac options
         - xbox360
@@ -463,14 +472,12 @@ todo:
 
     - errors & fixers for badly make ui_skin.json
 
-    + replace int.TryParse in converters to something better
-        - including the ones from QuickDrive_Weekend
-
     + lite custom showroom
         - Esc to deselect/exit special mode
         - fix memory leaks!
 
     - showroom from Online
+    - car setups: warn about "last"
 
     - content installation
         - automatically switch to freshly installed content in some cases (optional)?
@@ -509,10 +516,14 @@ todo:
             - hidden steering wheel
             - hud configuration
             - quickly switchable controls configs?
+        - RSR?
     - change IDs (especially for skins)
 
-    - go buttons keyboard shortcut
-        - special case for try again button in drive window
+    + go buttons keyboard shortcut
+        + quick drive
+        - kunos career
+        - online
+        - "try again" button
 
     - content/tracks
         - copy track ui properties to other configurations
@@ -572,12 +583,10 @@ todo:
 
     + additional section “miscellaneous”
         + weather
-            - editing
+            - sharing?
             - testing?
+            × editing
             × base properties?
-        + pp filters
-            + editing
-            - testing
         + replays
             + warning for cr (will be lost without renaming)
             - filtering
@@ -586,7 +595,6 @@ todo:
             - length in minutes?
             - track's display name
             - weather's display name
-        - apps
 
     - improve showroom generator
         - async
@@ -606,7 +614,6 @@ later:
     - add NVIDIA copyrights and stuff
 
     - option for disabling .acreplay on renaming replays in content tab
-    - try to implement some stuff from /r/loadingicon/?
     - description: convert html to bb and back?
 
     + auto-update previews
@@ -645,7 +652,7 @@ later:
         > skins, names, AI level, etc
 
     - color picker
-    - addons directory watching
+    - addons directory watching?
     - reducing image footprint
 
     - custom track presets for QD
@@ -695,15 +702,10 @@ later:
     - optional use logo.png instead of brand badge in selectedcarpage
     - optional bind classes list to race, street, drift?
 
-    + specs editor
-        - optional forced spaces?
-        × optional format?
-
     - improve image cropper 
     - url/stuff bb protection
     - check new content version on acclub
     - check new content version on RD?
-    - 3d-viewer in-app?
     - warn about stuff like "Mercedes"?
     - fix bb parsing
 
@@ -730,4 +732,5 @@ later:
     - tests?
     - profiles?
 
-    × font generator
+    × 3d-viewer in-app
+    × try to implement some stuff from /r/loadingicon/?

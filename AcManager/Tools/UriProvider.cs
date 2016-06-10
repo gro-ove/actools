@@ -35,6 +35,10 @@ namespace AcManager.Tools {
                 return UriExtension.Create("/Pages/Selected/SelectedPpFilterPage.xaml?Id={0}", obj.Id);
             }
 
+            if (obj is PythonAppObject) {
+                return UriExtension.Create("/Pages/Selected/SelectedPythonAppPage.xaml?Id={0}", obj.Id);
+            }
+
             var carSkinObject = obj as CarSkinObject;
             if (carSkinObject != null) {
                 return UriExtension.Create("/Pages/Selected/SelectedCarSkinPage.xaml?Id={0}&CarId={1}", carSkinObject.Id, carSkinObject.CarId);

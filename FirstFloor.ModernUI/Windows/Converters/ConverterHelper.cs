@@ -2,8 +2,8 @@
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
-    internal static class ConverterHelper {
-        internal static int AsInt([CanBeNull] this object value, int defaultValue) {
+    public static class ConverterHelper {
+        public static int AsInt([CanBeNull] this object value, int defaultValue) {
             if (value is int) {
                 return (int)value;
             }
@@ -16,7 +16,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             return result;
         }
 
-        internal static int AsInt([CanBeNull] this object value) {
+        public static int AsInt([CanBeNull] this object value) {
             if (value is int) {
                 return (int)value;
             }
@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             return result;
         }
 
-        internal static double AsDouble([CanBeNull] this object value, double defaultValue) {
+        public static double AsDouble([CanBeNull] this object value, double defaultValue) {
             if (value is double) {
                 return (double)value;
             }
@@ -42,7 +42,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             return result;
         }
 
-        internal static double AsDouble([CanBeNull] this object value) {
+        public static double AsDouble([CanBeNull] this object value) {
             if (value is double) {
                 return (double)value;
             }

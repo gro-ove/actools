@@ -1,0 +1,37 @@
+﻿<selected:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedPythonAppPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance selected:SelectedPythonAppPage+SelectedPythonAppPageViewModel}" Unloaded="OnUnloaded">
+    <UserControl.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+    </UserControl.Resources>
+    
+    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
+        <ac:AcObjectBase.ToolBars>
+            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
+                <Button Content="Folder" ToolTip="Open app's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+                <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+                <!--<Separator />
+                <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share app (Ctrl+Page Up)" />
+                <Button Content="Test" Command="{Binding TestCommand}" ToolTip="Test filter in showroom (Ctrl+G)" />-->
+            </ToolBar>
+            <ToolBar Band="1" BandIndex="1">
+                <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
+                        Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Content="Enable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Enable (Ctrl+D)"
+                        Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed name (Ctrl+S)" />
+                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+            </ToolBar>
+        </ac:AcObjectBase.ToolBars>
+
+        <StackPanel Style="{StaticResource SettingsPanel}">
+            <CheckBox IsChecked="{Binding IsActivated}" IsEnabled="{Binding SelectedObject.Enabled}">
+                <Label>_Activated</Label>
+            </CheckBox>
+        </StackPanel>
+    </ac:AcObjectBase>
+</selected:SelectedAcObjectPage>
