@@ -22,13 +22,13 @@ Set of utils and apps designed for Assetto Corsa. If you have any interest in th
 ## Content Manager
 
 - ### [AcManager.Tools](https://github.com/gro-ove/actools/tree/master/AcManager.Tools)
-    Library with logic, almost without any UI stuff (like CarsManager and CarObject, for instance).
+    Library with logic, almost without any UI parts (like CarsManager and CarObject, for instance).
 
 - ### [AcManager.Controls](https://github.com/gro-ove/actools/tree/master/AcManager.Controls)
-    Library with common UI stuff (like AcListPage).
+    Library with common UI components (like AcListPage).
 
 - ### [FirstFloor.ModernUI](https://github.com/gro-ove/actools/tree/master/FirstFloor.ModernUI)
-    Basic UI library. Was taken from [here](https://github.com/firstfloorsoftware/mui) and then adjusted a little.
+    Main UI library. Slightly modified version of [Modern UI for WPF (MUI)](https://github.com/firstfloorsoftware/mui).
 
 - ### [AcManager](https://github.com/gro-ove/actools/tree/master/AcManager)
     App itself.
