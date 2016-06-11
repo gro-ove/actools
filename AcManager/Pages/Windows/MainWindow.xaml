@@ -20,13 +20,15 @@
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="online" Source="/Pages/Drive/Online.xaml" />
+        <!-- ReSharper disable once Xaml.PathError -->
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="lan" Source="/Pages/Drive/Online.xaml?Mode=Lan" />
+        <!-- ReSharper disable once Xaml.PathError -->
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />
-        <!--<mui:LinkGroup GroupKey="drive" DisplayName="live timing">
+        <mui:LinkGroup GroupKey="drive" DisplayName="live timing">
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="RSR" Source="/Pages/Drive/Rsr.xaml" />
             </mui:LinkGroup.Links>
-        </mui:LinkGroup>-->
+        </mui:LinkGroup>
 
         <!--media-->
         <mui:LinkGroupFilterable GroupKey="media" DisplayName="screenshots" Source="/Pages/Miscellaneous/WorkInProgress.xaml?screenshots" />
@@ -42,7 +44,7 @@
                 <mui:Link DisplayName="Fonts" Source="/Pages/Lists/FontsListPage.xaml" />
                 <mui:Link DisplayName="PP Filters" Source="/Pages/Lists/PpFiltersListPage.xaml" />
                 <mui:Link DisplayName="Weather" Source="/Pages/Lists/WeatherListPage.xaml" />
-                <mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" />
+                <!--<mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" />-->
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
 
@@ -70,6 +72,7 @@
         <mui:TitleLink DisplayName="content" GroupKey="content" IsEnabled="False" Source="/Pages/Lists/CarsListPage.xaml" />
         <mui:TitleLink DisplayName="settings" GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml" />
         <mui:TitleLink DisplayName="about" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />
+        <!-- ReSharper disable once Xaml.PathError -->
         <mui:TitleLink DisplayName="enter key" Source="cmd://enterkey" IsAccented="True" />
     </mui:ModernWindow.TitleLinks>
 </mui:ModernWindow>

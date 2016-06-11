@@ -611,6 +611,7 @@ todo:
     - show race params on loading screen?
 
 later:    
+    - changeable list area width
     - add NVIDIA copyrights and stuff
 
     - option for disabling .acreplay on renaming replays in content tab

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Microsoft.Win32;
+// ReSharper disable InconsistentNaming
 
 namespace AcManager.Tools.Helpers {
     public static class WebBrowserHelper {
@@ -60,6 +61,18 @@ namespace AcManager.Tools.Helpers {
         private interface IOleServiceProvider {
             [PreserveSig]
             int QueryService([In] ref Guid guidService, [In] ref Guid riid, [MarshalAs(UnmanagedType.IDispatch)] out object ppvObject);
+        }
+
+        [DllImport("urlmon.dll", CharSet = CharSet.Ansi)]
+        private static extern int UrlMkSetSessionOption(
+                int dwOption, string pBuffer, int dwBufferLength, int dwReserved);
+
+        const int URLMON_OPTION_USERAGENT = 0x10000001;
+        const int URLMON_OPTION_USERAGENT_REFRESH = 0x10000002;
+
+        public static void SetUserAgent(string userAgent) {
+            UrlMkSetSessionOption(URLMON_OPTION_USERAGENT_REFRESH, null, 0, 0);
+            UrlMkSetSessionOption(URLMON_OPTION_USERAGENT, userAgent, userAgent.Length, 0);
         }
     }
 }

@@ -102,7 +102,9 @@ table tbody tr:hover td { background: #555 !important; }
 .borderRadius, .borderRadiusTp, .driver_profile { border-radius: 0 !important; }
 
 #header, #pb_bnr, #contentRSR .right_top_name, .change_style_div { display: none !important; }";
-                WebBrowser.SetUserStyle(userCss);
+                WebBrowser.UserStyle = userCss;
+            } else {
+                WebBrowser.UserStyle = null;
             }
         }
     }

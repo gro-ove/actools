@@ -1,6 +1,6 @@
 using System;
 
-namespace AcManager.Controls {
+namespace AcManager.Tools.Helpers {
     public interface IUserPresetable {
         bool CanBeSaved { get; }
 

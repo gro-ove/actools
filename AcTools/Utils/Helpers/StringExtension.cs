@@ -143,6 +143,16 @@ namespace AcTools.Utils.Helpers {
             return apart <= 0 ? s : s.Substring(0, s.Length - apart);
         }
 
+        public static string ApartFromFirst(this string s, string apart) {
+            if (apart == string.Empty) return s;
+            return s.StartsWith(apart) ? s.Substring(apart?.Length ?? 0) : s;
+        }
+
+        public static string ApartFromFirst(this string s, string apart, StringComparison comparisonType) {
+            if (apart == string.Empty) return s;
+            return s.StartsWith(apart, comparisonType) ? s.Substring(apart?.Length ?? 0) : s;
+        }
+
         public static string ApartFromLast(this string s, string apart) {
             if (apart == string.Empty) return s;
             return s.EndsWith(apart) ? s.ApartFromLast(apart?.Length ?? 0) : s;

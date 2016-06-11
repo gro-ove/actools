@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;

@@ -142,6 +142,7 @@
     <Compile Include="Helpers\AcSettingsHolder_CameraOnboard.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Gameplay.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Python.cs" />
+    <Compile Include="Helpers\AcSettingsHolder_Forms.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Replay.cs" />
     <Compile Include="Helpers\AcSettingsHolder_System.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Controls.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Helpers\DirectInput\KeyboardInputButton.cs" />
     <Compile Include="Helpers\IAcControlsConflictResolver.cs" />
     <Compile Include="Helpers\IniFileExtension.cs" />
+    <Compile Include="Helpers\IUserPresetable.cs" />
     <Compile Include="Helpers\Loaders\AcClubLoader.cs" />
     <Compile Include="Helpers\Loaders\AssettoDbLoader.cs" />
     <Compile Include="Helpers\Loaders\DirectLoader.cs" />

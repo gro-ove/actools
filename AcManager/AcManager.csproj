@@ -54,6 +54,9 @@
   <PropertyGroup>
     <StartupObject>AcManager.EntryPoint</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -783,6 +786,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="app.manifest" />
     <None Include="Assets\Data\AssistsGamer.cmpreset" />
     <None Include="Assets\Data\AssistsIntermediate.cmpreset" />
     <None Include="Assets\Data\AT-Previews Special %281.6%29.ini" />

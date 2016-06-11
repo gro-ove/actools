@@ -42,7 +42,7 @@
         <Setter Property="SelectionMode" Value="Single" />
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
-        <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
         <Setter Property="MinRowHeight" Value="24" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>

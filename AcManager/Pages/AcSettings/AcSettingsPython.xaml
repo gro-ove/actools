@@ -2,36 +2,104 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings" xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System"
         xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsPython+AcPythonViewModel}" Unloaded="OnUnloaded">
     <UserControl.Resources>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer>
-        <StackPanel Style="{StaticResource SettingsPanel}">
-            <DockPanel>
-                <Label>Activated apps:</Label>
-                <ListBox Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple"
-                        SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Enabled}" Value="False">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="objects:PythonAppObject">
-                            <StackPanel IsEnabled="{Binding Enabled}">
-                                <TextBlock Text="{Binding DisplayName}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </DockPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ScrollViewer>
+            <StackPanel Style="{StaticResource SettingsPanel}">
+                <DockPanel>
+                    <Label>Activated apps:</Label>
+                    <ListBox Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple"
+                            SelectionChanged="EnabledAppsListBox_OnSelectionChanged" MaxHeight="320">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel IsItemsHost="True" CacheLength="2,3" CacheLengthUnit="Page" ScrollUnit="Pixel"
+                                        VirtualizationMode="Recycling" IsVirtualizing="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Enabled}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="objects:PythonAppObject">
+                                <StackPanel IsEnabled="{Binding Enabled}">
+                                    <TextBlock Text="{Binding DisplayName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+
+                <DockPanel>
+                    <Label>Forms:</Label>
+                    <DataGrid Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.ReadOnly}"
+                            IsReadOnly="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible"
+                            Height="320" VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True"
+                            VirtualizingPanel.IsVirtualizingWhenGrouping="True" ScrollViewer.CanContentScroll="True" VirtualizingStackPanel.ScrollUnit="Pixel"
+                            VirtualizingStackPanel.CacheLengthUnit="Item" VirtualizingStackPanel.CacheLength="1,1" CanUserResizeColumns="False"
+                            CanUserResizeRows="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Name" SortMemberPath="DisplayName">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="80" Header="X" SortMemberPath="PosX">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding PosX}" mui:TextBoxAdvancement.SpecialMode="Integer" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="80" Header="Y" SortMemberPath="PosY">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding PosY}" mui:TextBoxAdvancement.SpecialMode="Integer" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="80" Header="Visible" SortMemberPath="IsVisible">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="80" Header="Locked" SortMemberPath="IsBlocked">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
+            <controls:UserPresetsControl Name="UserPresetsControl" UserPresetable="{Binding Presets}" />
         </StackPanel>
-    </ScrollViewer>
+    </Grid>
 </UserControl>

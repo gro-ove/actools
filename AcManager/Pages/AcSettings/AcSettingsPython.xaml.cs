@@ -7,7 +7,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
@@ -17,6 +16,10 @@ namespace AcManager.Pages.AcSettings {
             internal AcPythonViewModel() { }
 
             public AcSettingsHolder.PythonSettings Python => AcSettingsHolder.Python;
+
+            public AcSettingsHolder.FormsSettings Forms => AcSettingsHolder.Forms;
+
+            public IUserPresetable Presets => AcSettingsHolder.AppsPresets;
 
             public AcLoadedOnlyCollection<PythonAppObject> Apps => PythonAppsManager.Instance.LoadedOnlyCollection;
         }

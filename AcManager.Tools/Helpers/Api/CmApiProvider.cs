@@ -13,7 +13,8 @@ namespace AcManager.Tools.Helpers.Api {
         public static readonly string UserAgent;
 
         static CmApiProvider() {
-            UserAgent = $"ContentManager/{BuildInformation.AppVersion} ({Environment.OSVersion.Version}; {(Environment.Is64BitOperatingSystem ? "x64" : "x32")})";
+            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? " WOW64;" : "")}";
+            UserAgent = $"ContentManager/{BuildInformation.AppVersion} ({windows})";
         }
         #endregion
 

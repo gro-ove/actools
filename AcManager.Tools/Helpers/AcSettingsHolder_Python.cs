@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AcTools.DataFile;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
-        public class PythonSettings : IniSettings {
+        public class PythonSettings : IniPresetableSettings {
             internal PythonSettings() : base("python") {}
 
             private Dictionary<string, bool> _apps;
@@ -35,6 +36,8 @@ namespace AcManager.Tools.Helpers {
 
                 Apps[appId] = value;
                 Save();
+
+                _appsPresets?.InvokeChanged();
             }
 
             protected override void LoadFromIni() {
@@ -43,9 +46,9 @@ namespace AcManager.Tools.Helpers {
                         x => x.Value.GetBool("ACTIVE", false));
             }
 
-            protected override void SetToIni() {
+            protected override void SetToIni(IniFile ini) {
                 foreach (var app in Apps) {
-                    Ini[app.Key.ToUpperInvariant()].Set("ACTIVE", app.Value);
+                    ini[app.Key.ToUpperInvariant()].Set("ACTIVE", app.Value);
                 }
             }
         }
