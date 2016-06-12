@@ -8,11 +8,9 @@
         <Setter Property="Focusable" Value="True" />
 
         <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
         <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
-        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="7,3,8,3" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />

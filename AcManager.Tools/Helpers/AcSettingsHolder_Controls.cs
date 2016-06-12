@@ -319,6 +319,8 @@ namespace AcManager.Tools.Helpers {
             }
 
             protected override void Save() {
+                if (IsLoading) return;
+
                 if (CurrentPresetName != null) {
                     CurrentPresetChanged = true;
                 }
@@ -326,7 +328,10 @@ namespace AcManager.Tools.Helpers {
                 base.Save();
             }
 
+            public event EventHandler PresetLoading;
+
             public void LoadPreset(string presetFilename) {
+                PresetLoading?.Invoke(this, EventArgs.Empty);
                 new IniFile(presetFilename) {
                     ["__LAUNCHER_CM"] = {
                         ["PRESET_NAME"] = presetFilename.SubstringExt(PresetsDirectory.Length + 1),
@@ -767,7 +772,6 @@ namespace AcManager.Tools.Helpers {
                 }).TakeWhile(x => x.Id != null).Select((x, i) => {
                     var device = Devices.GetByIdOrDefault(x.Id);
                     if (device == null) {
-                        Logging.Warning("DEVICE NOT FOUND: " + x);
                         return (IDirectInputDevice)GetPlaceholderDevice(x.Id, x.Name, i);
                     }
 

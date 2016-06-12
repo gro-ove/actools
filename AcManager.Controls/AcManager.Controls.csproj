@@ -93,10 +93,14 @@
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="ChangedPresetEventArgs.cs" />
+    <Compile Include="Helpers\ControlsPresets.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
     <Compile Include="Helpers\ShellLink.cs" />
     <Compile Include="Helpers\Toast.cs" />
     <Compile Include="IPreviewProvider.cs" />
+    <Compile Include="UserControls\QuickSwitchesBlock.xaml.cs">
+      <DependentUpon>QuickSwitchesBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\WebBrowserBlock.xaml.cs">
       <DependentUpon>WebBrowserBlock.xaml</DependentUpon>
     </Compile>
@@ -301,6 +305,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="AssistsDescription.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\QuickSwitchesBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

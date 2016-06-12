@@ -341,7 +341,9 @@ namespace AcManager.Controls {
             _ignoreNext = false;
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e){
+        private void MenuItem_Click(object sender, RoutedEventArgs e) {
+            e.Handled = true;
+
             var entry = (((MenuItem)sender).Tag as TagHelper)?.Entry;
             if (entry == null) return;
 

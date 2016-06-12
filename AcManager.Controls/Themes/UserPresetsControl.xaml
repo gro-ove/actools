@@ -2,13 +2,19 @@
         xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ButtonWithComboBox.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Themes/UserPresetsControl_MenuAsComboBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="ac:UserPresetsControl">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+        <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="MinWidth" Value="100" />
         <Setter Property="Template">
             <Setter.Value>
@@ -21,10 +27,13 @@
                         <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                                 Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="PART_Menu">
                             <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}"
-                                    ItemsSource="{TemplateBinding SavedPresetsGrouped}" Width="{Binding Path=ActualWidth, ElementName=PART_Menu}">
+                                    ItemsSource="{TemplateBinding SavedPresetsGrouped}" Width="{Binding Path=ActualWidth, ElementName=PART_Menu}"
+                                    Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
+                                    FontSize="{TemplateBinding FontSize}" BorderBrush="{TemplateBinding BorderBrush}" Foreground="{TemplateBinding Foreground}"
+                                    FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}">
                                 <MenuItem.Header>
                                     <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
-                                            Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}}" />
+                                            Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}}"/>
                                 </MenuItem.Header>
                                 <MenuItem.ItemContainerStyle>
                                     <Style TargetType="MenuItem" BasedOn="{StaticResource SpecialMenuItem}" />
@@ -49,7 +58,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="ShowSaveButton" Value="True">
-                <Setter Property="MinWidth" Value="250"/>
+                <Setter Property="MinWidth" Value="250" />
             </Trigger>
         </Style.Triggers>
     </Style>

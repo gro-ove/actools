@@ -40,6 +40,12 @@
                 <Label>Don't show results of Practice session</Label>
             </CheckBox>
 
+            <!--quick switches-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Quick Switches (WIP):</TextBlock>
+            <CheckBox IsChecked="{Binding Drive.QuickSwitches}">
+                <Label>Enable</Label>
+            </CheckBox>
+
             <!--player's name-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Player’s name:</TextBlock>
 

@@ -33,8 +33,9 @@ namespace AcManager.Tools.Managers {
         }
 
         [CanBeNull]
-        public TrackBaseObject GetLayoutById(string trackId, string layoutId) {
-            return GetById(trackId)?.GetLayoutByLayoutId(layoutId);
+        public TrackBaseObject GetLayoutById([NotNull] string trackId, [CanBeNull] string layoutId) {
+            if (trackId == null) throw new ArgumentNullException(nameof(trackId));
+            return layoutId == null ? GetById(trackId) : GetById(trackId)?.GetLayoutByLayoutId(layoutId);
         }
 
         protected override TrackObject CreateAcObject(string id, bool enabled) {

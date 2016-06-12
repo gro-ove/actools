@@ -357,7 +357,7 @@ namespace AcManager.Pages.Drive {
                 Changed?.Invoke(this, EventArgs.Empty);
             }
 
-            private string _carSetupId;
+            private readonly string _carSetupId;
 
             internal QuickDriveViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null,
                     TrackBaseObject trackObject = null, string carSetupId = null, bool savePreset = false) {
@@ -385,7 +385,7 @@ namespace AcManager.Pages.Drive {
                     RealConditionsTimezones = o.RealConditionsTimezones;
                     RealConditionsLighting = o.RealConditionsLighting;
 
-                    if (o.Mode != null) SelectedMode = o.Mode ?? SelectedMode;
+                    if (o.Mode != null) SelectedMode = o.Mode != null && o.Mode.OriginalString.Contains('_') ? o.Mode : SelectedMode;
                     if (o.ModeData != null) SelectedModeViewModel?.FromSerializedString(o.ModeData);
 
                     if (o.CarId != null) SelectedCar = CarsManager.Instance.GetById(o.CarId) ?? SelectedCar;

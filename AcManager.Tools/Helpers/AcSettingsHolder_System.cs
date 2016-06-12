@@ -181,23 +181,23 @@ namespace AcManager.Tools.Helpers {
         public class ProximityIndicatorSettings : IniSettings {
             internal ProximityIndicatorSettings() : base("proximity_indicator", systemConfig: true) { }
 
-            private bool _enable;
+            private bool _isEnabled;
 
-            public bool Enable {
-                get { return _enable; }
+            public bool IsEnabled {
+                get { return _isEnabled; }
                 set {
-                    if (Equals(value, _enable)) return;
-                    _enable = value;
+                    if (Equals(value, _isEnabled)) return;
+                    _isEnabled = value;
                     OnPropertyChanged();
                 }
             }
 
             protected override void LoadFromIni() {
-                Enable = !Ini["SETTINGS"].GetBool("HIDE", false);
+                IsEnabled = !Ini["SETTINGS"].GetBool("HIDE", false);
             }
 
             protected override void SetToIni() {
-                Ini["SETTINGS"].Set("HIDE", !Enable);
+                Ini["SETTINGS"].Set("HIDE", !IsEnabled);
             }
         }
 

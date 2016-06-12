@@ -1,11 +1,14 @@
 ﻿<mui:ModernWindow x:Class="AcManager.Pages.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:windows="clr-namespace:AcManager.Pages.Windows" mc:Ignorable="d" Title="Content Manager (Limited Mode)" IsTitleVisible="True" MinWidth="800"
-        MinHeight="640" Width="800" Height="720" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="MainWindow_OnDrop"
-        DragEnter="MainWindow_OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="MainWindow_OnLoaded" Unloaded="MainWindow_OnUnloaded" Closed="MainWindow_OnClosed"
-        d:DataContext="{d:DesignInstance windows:MainWindow+MainWindowViewModel}" AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}"
-        AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow" LocationAndSizeKey="MainWindow_LS">
+        xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d"
+        Title="Content Manager (Limited Mode)" IsTitleVisible="True" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False"
+        FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="MainWindow_OnDrop" DragEnter="MainWindow_OnDragEnter"
+        DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="MainWindow_OnLoaded" Unloaded="MainWindow_OnUnloaded" Closed="MainWindow_OnClosed"
+        MouseRightButtonDown="MainWindow_OnMouseRightButtonDown" PreviewMouseRightButtonUp="MainWindow_OnPreviewMouseRightButtonUp"
+        PreviewMouseRightButtonDown="MainWindow_OnPreviewMouseRightButtonDown" d:DataContext="{d:DesignInstance windows:MainWindow+MainWindowViewModel}"
+        AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
+        LocationAndSizeKey="MainWindow_LS" Name="Window">
     <mui:ModernWindow.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
     </mui:ModernWindow.Resources>
@@ -24,11 +27,11 @@
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="lan" Source="/Pages/Drive/Online.xaml?Mode=Lan" />
         <!-- ReSharper disable once Xaml.PathError -->
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />
-        <mui:LinkGroup GroupKey="drive" DisplayName="live timing">
+        <!--<mui:LinkGroup GroupKey="drive" DisplayName="live timing">
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="RSR" Source="/Pages/Drive/Rsr.xaml" />
             </mui:LinkGroup.Links>
-        </mui:LinkGroup>
+        </mui:LinkGroup>-->
 
         <!--media-->
         <mui:LinkGroupFilterable GroupKey="media" DisplayName="screenshots" Source="/Pages/Miscellaneous/WorkInProgress.xaml?screenshots" />
@@ -75,4 +78,9 @@
         <!-- ReSharper disable once Xaml.PathError -->
         <mui:TitleLink DisplayName="enter key" Source="cmd://enterkey" IsAccented="True" />
     </mui:ModernWindow.TitleLinks>
+
+    <Popup Placement="Absolute" HorizontalOffset="{Binding Left, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
+            VerticalOffset="{Binding Top, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
+            Height="{Binding ActualHeight, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=-2}"
+            PlacementTarget="{Binding ElementName=Window}" Name="Popup" StaysOpen="False" PopupAnimation="Slide" AllowsTransparency="True" />
 </mui:ModernWindow>

@@ -377,6 +377,15 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            public bool QuickSwitches {
+                get { return ValuesStorage.GetBool("Settings.DriveSettings.QuickSwitches_WIP", false); } // TODO
+                set {
+                    if (Equals(value, QuickSwitches)) return;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickSwitches_WIP", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static DriveSettings _drive;

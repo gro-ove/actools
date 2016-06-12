@@ -2,10 +2,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
-        xmlns:directInput="clr-namespace:AcManager.Tools.Helpers.DirectInput;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsControls+AcControlsViewModel}"
-        SizeChanged="AcSettingsControls_OnSizeChanged" Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded"
-        PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        xmlns:directInput="clr-namespace:AcManager.Tools.Helpers.DirectInput;assembly=AcManager.Tools" xmlns:tools="clr-namespace:AcManager.Tools"
+             xmlns:helpers="clr-namespace:AcManager.Controls.Helpers;assembly=AcManager.Controls"
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance acSettings:AcSettingsControls+AcControlsViewModel}" SizeChanged="AcSettingsControls_OnSizeChanged"
+        Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded" PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -124,19 +126,21 @@
                 </Grid.ColumnDefinitions>
 
                 <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                        Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="Menu">
-                    <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}" ItemsSource="{Binding Presets}"
+                        Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="Menu"
+                        IsEnabled="{Binding PresetsReady, Source={x:Static helpers:ControlsPresets.Instance}}">
+                    <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}"
+                            ItemsSource="{Binding Presets, Source={x:Static helpers:ControlsPresets.Instance}}"
                             Width="{Binding Path=ActualWidth, ElementName=Menu}">
                         <MenuItem.Header>
-                            <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
-                                    Text="{Binding Controls.CurrentPresetName, TargetNullValue='Unsaved'}">
+                            <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" DataContext="{Binding Controls}"
+                                    Text="{Binding CurrentPresetName, TargetNullValue='Unsaved'}">
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Controls.CurrentPresetChanged}" Value="True">
+                                            <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
                                                 <Setter Property="FontStyle" Value="Italic" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding Controls.CurrentPresetName}" Value="{x:Null}">
+                                            <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
                                                 <Setter Property="FontStyle" Value="Italic" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -152,8 +156,8 @@
 
                 <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset">Save Preset</Button>
             </Grid>
-            <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0" ToolTip="Share current settings (Ctrl+Page Up)">
-                Share
+            <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0" ToolTip="Share current settings (Ctrl+Page Up)"
+                    Content="Share">
                 <Button.ContextMenu>
                     <ContextMenu Name="ShareContextMenu">
                         <MenuItem Header="Share Preset" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="Basic"

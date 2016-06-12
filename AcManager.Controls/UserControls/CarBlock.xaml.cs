@@ -7,10 +7,9 @@ using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 
 namespace AcManager.Controls.UserControls {
-    [ContentProperty("PreviewContent")]
+    [ContentProperty(nameof(PreviewContent))]
     public partial class CarBlock {
         public CarBlock() {
             InitializeComponent();
@@ -75,15 +74,18 @@ namespace AcManager.Controls.UserControls {
         private void ShowroomButton_OnMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left) {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
+                    e.Handled = true;
                     CustomShowroomWrapper.StartAsync(Car, SelectedSkin);
                     return;
                 }
 
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id)) {
+                    e.Handled = true;
                     new CarOpenInShowroomDialog(Car, SelectedSkin?.Id).ShowDialog();
                 }
             } else if (e.ChangedButton == MouseButton.Right) {
+                e.Handled = true;
                 var contextMenu = new ContextMenu();
 
                 var item = new MenuItem { Header = "Open In Showroom" };

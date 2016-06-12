@@ -5,12 +5,14 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media.Animation;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// Represents a Modern UI styled window.
     /// </summary>
+    [ContentProperty(nameof(AdditionalContent))]
     public class ModernWindow : DpiAwareWindow {
         /// <summary>
         /// Identifies the BackgroundContent dependency property.
@@ -299,6 +301,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public string SaveKey {
             get { return (string)GetValue(SaveKeyProperty); }
             set { SetValue(SaveKeyProperty, value); }
+        }
+
+        public static readonly DependencyProperty AdditionalContentProperty = DependencyProperty.Register(nameof(AdditionalContent), typeof(object),
+                typeof(ModernWindow));
+
+        public object AdditionalContent {
+            get { return GetValue(AdditionalContentProperty); }
+            set { SetValue(AdditionalContentProperty, value); }
         }
     }
 }

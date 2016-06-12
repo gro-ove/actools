@@ -3,23 +3,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
-using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
@@ -44,104 +38,8 @@ namespace AcManager.Pages.AcSettings {
             DetectedControllers.Visibility = ActualWidth > 640 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public class AcControlsViewModel : NotifyPropertyChanged, IPreviewProvider {
-            internal AcControlsViewModel() {
-                Controls.PresetsUpdated += OnPresetsUpdated;
-                RebuildPresetsList().Forget();
-            }
-
-            private bool _innerReloading;
-
-            private async void OnPresetsUpdated(object sender, EventArgs args) {
-                if (_innerReloading) return;
-
-                _innerReloading = true;
-
-                try {
-                    await Task.Delay(200);
-                    Application.Current.Dispatcher.Invoke(() => {
-                        RebuildPresetsList().Forget();
-                    });
-                } catch (Exception e) {
-                    Logging.Warning("OnPresetsUpdated() exception: " + e);
-                } finally {
-                    _innerReloading = false;
-                }
-            }
-
-            private bool _presetsReady;
-
-            public bool PresetsReady {
-                get { return _presetsReady; }
-                set {
-                    if (Equals(value, _presetsReady)) return;
-                    _presetsReady = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool _reloading;
-
-            public class PresetEntry : NotifyPropertyChanged, ISavedPresetEntry {
-                public PresetEntry(string filename) {
-                    DisplayName = Path.GetFileNameWithoutExtension(filename);
-                    Filename = filename;
-                }
-
-                public string DisplayName { get; }
-
-                public string Filename { get; }
-
-                public string ReadData() {
-                    return FileUtils.ReadAllText(Filename);
-                }
-            }
-
-            private async Task<MenuItem> RebuildAsync(string header, string sub) {
-                var result = new MenuItem { Header = header };
-                var directory = Path.Combine(Controls.PresetsDirectory, sub);
-                var list = await Task.Run(() => FileUtils.GetFiles(directory, "*.ini").Select(x => new PresetEntry(x)).ToList());
-                foreach (var item in UserPresetsControl.GroupPresets(list, directory, ClickHandler, this, ".ini")) {
-                    result.Items.Add(item);
-                }
-                return result;
-            }
-
-            private void ClickHandler(object sender, RoutedEventArgs routedEventArgs) {
-                var entry = (((MenuItem)sender).Tag as UserPresetsControl.TagHelper)?.Entry as PresetEntry;
-                if (entry == null || (Controls.CurrentPresetName == null || Controls.CurrentPresetChanged) &&
-                        ModernDialog.ShowMessage($"Load “{entry.DisplayName}”? Current values will be replaced (but later could be restored from Recycle Bin).",
-                                "Are you sure?", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
-                    return;
-                }
-
-                Controls.LoadPreset(entry.Filename);
-            }
-
-            private async Task RebuildPresetsList() {
-                if (_reloading) return;
-
-                _reloading = true;
-                PresetsReady = false;
-
-                try {
-                    Presets.ReplaceEverythingBy(new[] {
-                        await RebuildAsync("Built-in Presets", "presets"),
-                        await RebuildAsync("User Presets", "savedsetups")
-                    });
-                } catch (Exception e) {
-                    Logging.Warning("RebuildPresetsList() exception: " + e);
-                } finally {
-                    _reloading = false;
-                }
-            }
-
-            object IPreviewProvider.GetPreview(string serializedData) {
-                var ini = IniFile.Parse(serializedData);
-                return new BbCodeBlock {
-                    BbCode = $"Input method: [b]{ini["HEADER"].GetEntry("INPUT_METHOD", Controls.InputMethods).DisplayName}[/b]"
-                };
-            }
+        public class AcControlsViewModel : NotifyPropertyChanged {
+            internal AcControlsViewModel() {}
 
             private RelayCommand _saveCommand;
 
@@ -190,9 +88,9 @@ namespace AcManager.Pages.AcSettings {
 
             private AsyncCommand _shareCommand;
 
-            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Execute));
+            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
-            private async Task Execute(object o) {
+            private async Task Share(object o) {
                 if (o as string == "FFBOnly") {
                     var iniFile = new IniFile();
                     AcSettingsHolder.Controls.SaveFfbToIni(iniFile);
@@ -208,8 +106,6 @@ namespace AcManager.Pages.AcSettings {
                             File.ReadAllBytes(Controls.Filename));
                 }
             }
-
-            public BetterObservableCollection<MenuItem> Presets { get; } = new BetterObservableCollection<MenuItem>();
 
             public AcSettingsHolder.ControlsSettings Controls => AcSettingsHolder.Controls;
 
@@ -327,6 +223,7 @@ namespace AcManager.Pages.AcSettings {
         }
 
         private void ShareButton_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
             ShareContextMenu.DataContext = DataContext;
             ShareContextMenu.IsOpen = true;
         }

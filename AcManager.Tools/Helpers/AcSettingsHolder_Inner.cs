@@ -81,8 +81,14 @@ namespace AcManager.Tools.Helpers {
             private bool _loading;
             private DateTime _lastSaved;
 
+            protected bool IsLoading => _loading;
+
+            protected void IgnoreChangesForAWhile() {
+                _lastSaved = DateTime.Now;
+            }
+
             private async void ReloadLater() {
-                if (_reloading || _saving || DateTime.Now - _lastSaved < TimeSpan.FromSeconds(1)) return;
+                if (_reloading || _saving || DateTime.Now - _lastSaved < TimeSpan.FromSeconds(3)) return;
 
                 _reloading = true;
                 await Task.Delay(200);
@@ -114,15 +120,15 @@ namespace AcManager.Tools.Helpers {
             private bool _saving;
 
             protected virtual async void Save() {
-                if (_saving || _loading) return;
+                if (_saving || IsLoading) return;
 
                 _saving = true;
                 await Task.Delay(500);
 
                 try {
                     SetToIni();
+                    IgnoreChangesForAWhile();
                     await Ini.SaveAsAsync(Filename);
-                    _lastSaved = DateTime.Now;
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t save AC settings", "Make sure app has access to cfg folder.", e);
                 } finally {

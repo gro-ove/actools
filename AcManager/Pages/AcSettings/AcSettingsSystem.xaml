@@ -34,7 +34,7 @@
             <!--proximity indicator-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Proximity indicator</TextBlock>
 
-            <CheckBox IsChecked="{Binding ProximityIndicator.Enable}">
+            <CheckBox IsChecked="{Binding ProximityIndicator.IsEnabled}">
                 <Label>Show nearest opponents</Label>
             </CheckBox>
         </StackPanel>

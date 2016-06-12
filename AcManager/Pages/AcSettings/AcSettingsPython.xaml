@@ -22,7 +22,7 @@
                 <DockPanel>
                     <Label>Activated apps:</Label>
                     <ListBox Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple"
-                            SelectionChanged="EnabledAppsListBox_OnSelectionChanged" MaxHeight="320">
+                            SelectionChanged="EnabledAppsListBox_OnSelectionChanged" MaxHeight="250">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <VirtualizingStackPanel IsItemsHost="True" CacheLength="2,3" CacheLengthUnit="Page" ScrollUnit="Pixel"
@@ -52,7 +52,7 @@
                     <Label>Forms:</Label>
                     <DataGrid Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.ReadOnly}"
                             IsReadOnly="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible"
-                            Height="320" VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True"
+                            Height="250" VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True"
                             VirtualizingPanel.IsVirtualizingWhenGrouping="True" ScrollViewer.CanContentScroll="True" VirtualizingStackPanel.ScrollUnit="Pixel"
                             VirtualizingStackPanel.CacheLengthUnit="Item" VirtualizingStackPanel.CacheLength="1,1" CanUserResizeColumns="False"
                             CanUserResizeRows="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">

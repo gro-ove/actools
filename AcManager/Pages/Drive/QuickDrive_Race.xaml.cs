@@ -85,7 +85,7 @@ namespace AcManager.Pages.Drive {
                 get { return _lapsNumber; }
                 set {
                     if (Equals(value, _lapsNumber)) return;
-                    _lapsNumber = MathUtils.Clamp(value, 1, LapsNumberMaximum);
+                    _lapsNumber = value.Clamp(1, LapsNumberMaximum);
                     OnPropertyChanged();
                     SaveLater();
                 }
@@ -101,7 +101,7 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _opponentsNumber)) return;
 
                     _unclampedOpponentsNumber = value;
-                    _opponentsNumber = MathUtils.Clamp(value, 1, OpponentsNumberLimit);
+                    _opponentsNumber = value.Clamp(1, OpponentsNumberLimit);
 
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(StartingPositionLimit));
@@ -128,7 +128,7 @@ namespace AcManager.Pages.Drive {
             public int AiLevel {
                 get { return _aiLevel; }
                 set {
-                    value = MathUtils.Clamp(value, AiLevelMinimum, 100);
+                    value = value.Clamp(AiLevelMinimum, 100);
                     if (Equals(value, _aiLevel)) return;
                     _aiLevel = value;
                     OnPropertyChanged();
@@ -147,7 +147,7 @@ namespace AcManager.Pages.Drive {
                 set {
                     if (AiLevelFixed) return;
 
-                    value = MathUtils.Clamp(value, AiLevelMinimum, 100);
+                    value = value.Clamp(AiLevelMinimum, 100);
                     if (Equals(value, _aiLevelMin)) return;
                     _aiLevelMin = value;
                     OnPropertyChanged();
@@ -220,7 +220,7 @@ namespace AcManager.Pages.Drive {
                         _unclampedStartingPosition = Math.Max(value, 0);
                     }
 
-                    value = MathUtils.Clamp(value, 0, StartingPositionLimit);
+                    value = value.Clamp(0, StartingPositionLimit);
                     if (Equals(value, _startingPosition)) return;
 
                     _startingPosition = value;
@@ -232,7 +232,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public string DisplayStartingPosition => StartingPosition == 0 ? @"Random" : _last ? @"Last" : LocalizationHelper.GetOrdinalReadable(StartingPosition);
+            public string DisplayStartingPosition => StartingPosition == 0 ? @"Random" : _last ? @"Last" : StartingPosition.GetOrdinalReadable();
 
             public int StartingPositionLimit => OpponentsNumber + 1;
 
@@ -630,7 +630,7 @@ namespace AcManager.Pages.Drive {
                             if (SelectedGridType.Test) return;
                         } catch (Exception e) {
                             NonfatalError.Notify("Can’t filter appropriate cars for starting grid",
-                                    "If you made any changes to GridTypes.json, make sure they're all right.", e);
+                                    "If you made any changes to GridTypes.json, make sure they’re all right.", e);
                             return;
                         }
 

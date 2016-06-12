@@ -6,10 +6,12 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.UserControls;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.About;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
@@ -238,6 +240,41 @@ namespace AcManager.Pages.Windows {
 
         private void MainWindow_OnClosed(object sender, EventArgs e) {
             Application.Current.Shutdown();
+        }
+
+        private void MainWindow_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+            if (!SettingsHolder.Drive.QuickSwitches) return;
+
+            if (!Popup.IsOpen && Popup.Child == null) {
+                Popup.Child = new QuickSwitchesBlock();
+                AcSettingsHolder.Controls.PresetLoading += Controls_PresetLoading;
+            }
+
+            Popup.IsOpen = !Popup.IsOpen;
+            if (Popup.IsOpen) {
+                Popup.Focus();
+                e.Handled = true;
+            }
+        }
+
+        private async void Controls_PresetLoading(object sender, EventArgs e) {
+            // shitty fix, but it works (?)
+            Popup.StaysOpen = true;
+            await Task.Delay(1);
+            Popup.StaysOpen = false;
+        }
+
+        private void MainWindow_OnPreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
+            if (Popup.IsOpen) {
+                e.Handled = true;
+            }
+        }
+
+        private void MainWindow_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+            if (Popup.IsOpen) {
+                Popup.IsOpen = false;
+                e.Handled = true;
+            }
         }
     }
 }
