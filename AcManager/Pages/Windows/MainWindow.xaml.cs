@@ -23,6 +23,7 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using DragDropEffects = System.Windows.DragDropEffects;
+using QuickSwitchesBlock = AcManager.Controls.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener {

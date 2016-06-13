@@ -1,0 +1,79 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:AcManager.Controls.QuickSwitches" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:hs="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:conhs="clr-namespace:AcManager.Controls.Helpers">
+    <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/QuickSwitches/QuickSwitchesStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!--switches-->
+    <mui:ModernToggleButton x:Key="WidgetHideDriveArms" IsChecked="{Binding HideArms, Source={x:Static hs:AcSettingsHolder.Video}}" Content="Hide arms"
+            IconData="{StaticResource HideIconData}">
+        <mui:ModernToggleButton.ToolTip>Hide driver’s wheel</mui:ModernToggleButton.ToolTip>
+    </mui:ModernToggleButton>
+    <mui:ModernToggleButton x:Key="WidgetHideSteeringWheel" IsChecked="{Binding HideSteeringWheel, Source={x:Static hs:AcSettingsHolder.Video}}"
+            Content="Hide wheel" IconData="{StaticResource HideIconData}" ToolTip="Hide steering wheel" />
+    <mui:ModernToggleButton x:Key="WidgetLockSteeringWheel" IsChecked="{Binding LockSteeringWheel, Source={x:Static hs:AcSettingsHolder.Video}}"
+            Content="Lock wheel" IconData="{StaticResource LockIconData}" ToolTip="Lock steering wheel" />
+    <mui:ModernToggleButton x:Key="WidgetLockOnboardCamera" IsChecked="{Binding WorldAligned, Source={x:Static hs:AcSettingsHolder.CameraOnboard}}"
+            Content="Lock camera" IconData="{StaticResource HorizontalIconData}" ToolTip="Lock onboard camera to horizon" />
+
+    <mui:ModernToggleButton x:Key="WidgetVirtualMirror" IsChecked="{Binding DisplayMirror, Source={x:Static hs:AcSettingsHolder.Gameplay}}" Content="Mirror"
+            IconData="{StaticResource MirrorIconData}" ToolTip="Display virtual mirror" />
+    <mui:ModernToggleButton x:Key="WidgetLeaderboard" IsChecked="{Binding DisplayLeaderboard, Source={x:Static hs:AcSettingsHolder.Gameplay}}"
+            Content="Leaderboard" IconData="{StaticResource LeaderboardIconData}" ToolTip="Display leaderboard" />
+    <mui:ModernToggleButton x:Key="WidgetDamage" IsChecked="{Binding DisplayDamage, Source={x:Static hs:AcSettingsHolder.Gameplay}}" Content="Damage (UI)"
+            IconData="{StaticResource AccidentIconData}" ToolTip="Display damage" />
+
+    <mui:ModernToggleButton x:Key="WidgetProximityIndicator" IsChecked="{Binding IsEnabled, Source={x:Static hs:AcSettingsHolder.ProximityIndicator}}"
+            Content="Nearest" IconData="{StaticResource ExpandIconData}" ToolTip="Show nearest opponents with proximity indicator" />
+    <mui:ModernToggleButton x:Key="WidgetDeveloperApps" IsChecked="{Binding DeveloperApps, Source={x:Static hs:AcSettingsHolder.System}}" Content="Dev apps"
+            IconData="{StaticResource RoadConeIconData}" ToolTip="Enable developer apps" />
+    <mui:ModernToggleButton x:Key="WidgetFreeCamera" IsChecked="{Binding AllowFreeCamera, Source={x:Static hs:AcSettingsHolder.System}}" Content="Free camera"
+            IconData="{StaticResource FreeCameraIconData}" ToolTip="Enable free camera (press F7 in-game)" />
+
+    <!--comboboxes-->
+    <local:QuickSwitchPresetsControl x:Key="WidgetUiPresets" UserPresetable="{x:Static hs:AcSettingsHolder.AppsPresets}"
+            IconData="{StaticResource ScreenIconData}" ToolTip="Switch between UI presets" />
+    <DockPanel x:Key="WidgetControlsPresets" FocusVisualStyle="{x:Null}" ToolTip="Switch between controls presets" Background="Transparent">
+        <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="PART_Menu" DockPanel.Dock="Bottom"
+                IsEnabled="{Binding PresetsReady, Source={x:Static conhs:ControlsPresets.Instance}}" Margin="{StaticResource LabelMargin}">
+            <MenuItem HorizontalAlignment="Center" Style="{StaticResource UserPresetsControlMenuItem}"
+                    ItemsSource="{Binding Presets, Source={x:Static conhs:ControlsPresets.Instance}}" Background="Transparent" BorderThickness="0"
+                    HorizontalContentAlignment="Center" Margin="8 0 -2 0" Padding="7 2 8 4">
+                <MenuItem.Header>
+                    <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"
+                            FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource FontFamily}" FontSize="{StaticResource FontSize}"
+                            DataContext="{x:Static hs:AcSettingsHolder.Controls}"
+                            Text="{Binding CurrentPresetName, TargetNullValue='Unsaved', Converter={StaticResource ToUpperConverter}}">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
+                                        <Setter Property="FontStyle" Value="Italic" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
+                                        <Setter Property="FontStyle" Value="Italic" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </MenuItem.Header>
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem" BasedOn="{StaticResource SpecialMenuItem}" />
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
+        </Menu>
+        <Path Data="{StaticResource KeyboardIconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" Fill="{DynamicResource ButtonText}"
+                Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+    </DockPanel>
+
+    <!--sliders-->
+    <local:QuickSwitchSlider x:Key="WidgetExposure" DataContext="{x:Static hs:AcSettingsHolder.Exposure}" Maximum="200" Minimum="0" Value="{Binding Value}"
+            Content="Exposure" IconData="{StaticResource SunIconData}" TickFrequency="5" DisplayValue="{Binding Value, StringFormat='{}{0}%'}"
+            ToolTip="Brightness level" />
+    <local:QuickSwitchSlider x:Key="WidgetFieldOfView" DataContext="{x:Static hs:AcSettingsHolder.CameraOnboard}" Maximum="92" Minimum="20"
+            Value="{Binding FieldOfView}" Content="FOV" IconData="{StaticResource FieldOfViewIconData}" TickFrequency="2" 
+            DisplayValue="{Binding FieldOfView, StringFormat='{}{0}°'}" ToolTip="Field of view (vertical angle)" />
+</ResourceDictionary>
