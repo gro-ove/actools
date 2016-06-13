@@ -94,9 +94,11 @@
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="ChangedPresetEventArgs.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
+    <Compile Include="Helpers\DragAdorner.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
     <Compile Include="Helpers\ShellLink.cs" />
     <Compile Include="Helpers\Toast.cs" />
+    <Compile Include="Helpers\ToastWin8Helper.cs" />
     <Compile Include="IPreviewProvider.cs" />
     <Compile Include="QuickSwitches\QuickSwitchesBlock.xaml.cs">
       <DependentUpon>QuickSwitchesBlock.xaml</DependentUpon>

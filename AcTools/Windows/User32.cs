@@ -7,6 +7,18 @@ using System.Windows.Forms;
 
 namespace AcTools.Windows {
     public static class User32 {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Win32Point {
+            public int X;
+            public int Y;
+        };
+
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(ref Win32Point pt);
+
+        [DllImport("user32.dll")]
+        public static extern bool ScreenToClient(IntPtr hwnd, ref Win32Point pt);
+
         public static bool IsKeyPressed(int keyCode) => (GetAsyncKeyState((Keys)keyCode) & 0x8000) != 0;
 
         public static bool IsKeyPressed(Keys vKey) => (GetAsyncKeyState(vKey) & 0x8000) != 0;

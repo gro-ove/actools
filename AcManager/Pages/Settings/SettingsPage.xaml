@@ -10,6 +10,7 @@
                 <mui:Link DisplayName="addons" Source="/Pages/Settings/SettingsAddons.xaml" />
                 <mui:Link DisplayName="drive" Source="/Pages/Settings/SettingsDrive.xaml" />
                 <mui:Link DisplayName="online" Source="/Pages/Settings/SettingsOnline.xaml" />
+                <mui:Link DisplayName="quick switches" Source="/Pages/Settings/SettingsQuickSwitches.xaml" />
                 <mui:Link DisplayName="custom showroom" Source="/Pages/Settings/SettingsCustomShowroom.xaml" />
                 <mui:Link DisplayName="content" Source="/Pages/Settings/SettingsContent.xaml" />
                 <mui:Link DisplayName="sharing" Source="/Pages/Settings/SettingsSharing.xaml" />

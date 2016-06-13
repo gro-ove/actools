@@ -208,6 +208,9 @@
     <Compile Include="Pages\Selected\SelectedPythonAppPage.xaml.cs">
       <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\SettingsQuickSwitches.xaml.cs">
+      <DependentUpon>SettingsQuickSwitches.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
     <Compile Include="Tools\TextEditing\IniFoldingStrategy.cs" />
@@ -572,6 +575,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Settings\SettingsAddons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\SettingsQuickSwitches.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -114,6 +114,9 @@
 
     <Style TargetType="qs:QuickSwitchPresetsControl">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Margin" Value="{StaticResource BlockMargin}" />
+        <Setter Property="Width" Value="{StaticResource BlockSize}" />
+        <Setter Property="Height" Value="{StaticResource BlockSize}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="qs:QuickSwitchPresetsControl">

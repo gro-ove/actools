@@ -25,7 +25,7 @@
             </CheckBox>
 
             <!--find information specific-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Information Search:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Information search:</TextBlock>
             
             <DockPanel>
                 <Label>Search Engine:</Label>

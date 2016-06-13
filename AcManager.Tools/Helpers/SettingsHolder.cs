@@ -379,10 +379,25 @@ namespace AcManager.Tools.Helpers {
             }
 
             public bool QuickSwitches {
-                get { return ValuesStorage.GetBool("Settings.DriveSettings.QuickSwitches_WIP", false); } // TODO
+                get { return ValuesStorage.GetBool("Settings.DriveSettings.QuickSwitches", true); }
                 set {
                     if (Equals(value, QuickSwitches)) return;
-                    ValuesStorage.Set("Settings.DriveSettings.QuickSwitches_WIP", value);
+                    ValuesStorage.Set("Settings.DriveSettings.QuickSwitches", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string[] _quickSwitchesList;
+
+            public string[] QuickSwitchesList {
+                get {
+                    return _quickSwitchesList ??
+                            (_quickSwitchesList = ValuesStorage.GetStringList("Settings.DriveSettings.QuickSwitchesList").ToArray());
+                }
+                set {
+                    if (Equals(value, _quickSwitchesList)) return;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickSwitchesList", value);
+                    _quickSwitchesList = value;
                     OnPropertyChanged();
                 }
             }

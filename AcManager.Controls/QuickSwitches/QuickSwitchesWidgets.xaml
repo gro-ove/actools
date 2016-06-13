@@ -34,7 +34,8 @@
     <!--comboboxes-->
     <local:QuickSwitchPresetsControl x:Key="WidgetUiPresets" UserPresetable="{x:Static hs:AcSettingsHolder.AppsPresets}"
             IconData="{StaticResource ScreenIconData}" ToolTip="Switch between UI presets" />
-    <DockPanel x:Key="WidgetControlsPresets" FocusVisualStyle="{x:Null}" ToolTip="Switch between controls presets" Background="Transparent">
+    <DockPanel x:Key="WidgetControlsPresets" FocusVisualStyle="{x:Null}" ToolTip="Switch between controls presets" Background="Transparent"
+            Width="{StaticResource BlockSize}" Height="{StaticResource BlockSize}" Margin="{StaticResource BlockMargin}">
         <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
                 Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="PART_Menu" DockPanel.Dock="Bottom"
                 IsEnabled="{Binding PresetsReady, Source={x:Static conhs:ControlsPresets.Instance}}" Margin="{StaticResource LabelMargin}">
@@ -74,6 +75,6 @@
             Content="Exposure" IconData="{StaticResource SunIconData}" TickFrequency="5" DisplayValue="{Binding Value, StringFormat='{}{0}%'}"
             ToolTip="Brightness level" />
     <local:QuickSwitchSlider x:Key="WidgetFieldOfView" DataContext="{x:Static hs:AcSettingsHolder.CameraOnboard}" Maximum="92" Minimum="20"
-            Value="{Binding FieldOfView}" Content="FOV" IconData="{StaticResource FieldOfViewIconData}" TickFrequency="2" 
+            Value="{Binding FieldOfView}" Content="FOV" IconData="{StaticResource FieldOfViewIconData}" TickFrequency="2"
             DisplayValue="{Binding FieldOfView, StringFormat='{}{0}°'}" ToolTip="Field of view (vertical angle)" />
 </ResourceDictionary>
