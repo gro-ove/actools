@@ -392,7 +392,12 @@ namespace AcManager.Tools.Helpers {
             public string[] QuickSwitchesList {
                 get {
                     return _quickSwitchesList ??
-                            (_quickSwitchesList = ValuesStorage.GetStringList("Settings.DriveSettings.QuickSwitchesList").ToArray());
+                            (_quickSwitchesList = ValuesStorage.GetStringList("Settings.DriveSettings.QuickSwitchesList", new [] {
+                                "WidgetExposure",
+                                "WidgetUiPresets",
+                                "WidgetHideDriveArms",
+                                "WidgetHideSteeringWheel"
+                            }).ToArray());
                 }
                 set {
                     if (Equals(value, _quickSwitchesList)) return;

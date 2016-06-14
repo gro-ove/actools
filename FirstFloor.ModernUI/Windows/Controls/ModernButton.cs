@@ -6,8 +6,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// Adds icon content to a standard button.
     /// </summary>
-    public class ModernButton
-        : Button {
+    public class ModernButton : Button {
         /// <summary>
         /// Identifies the EllipseDiameter property.
         /// </summary>

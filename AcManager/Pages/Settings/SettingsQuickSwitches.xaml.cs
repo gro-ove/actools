@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -12,38 +8,56 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
+using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsQuickSwitches {
-        private SettingsQuickSwitchesViewModel Model => (SettingsQuickSwitchesViewModel)DataContext;
+        private static string[] _widgets;
+
+        public SettingsQuickSwitchesViewModel Model => (SettingsQuickSwitchesViewModel)DataContext;
 
         public SettingsQuickSwitches() {
             DataContext = new SettingsQuickSwitchesViewModel();
             InitializeComponent();
 
-            /*var list = Model.Holder.IgnoredInterfaces;
-            foreach (var item in Model.NetworkInterfaces.Where(x => !list.Contains(x.Id)).ToList()) {
-                IgnoredInterfacesListBox.SelectedItems.Add(item);
-            }*/
+            var active = SettingsHolder.Drive.QuickSwitchesList;
 
-            //AddedItems.ItemContainerStyle.Setters.Add(new EventSetter(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(AddedItems_OnPreviewMouseLeftButtonDown)));
+            if (_widgets == null) {
+                _widgets = Resources.MergedDictionaries.SelectMany(x => x.Keys.OfType<string>()).Where(x => x.StartsWith("Widget")).ToArray();
+                Logging.Write("_widgets: " + _widgets.JoinToString(", "));
+
+                if (active.Any(x => !_widgets.Contains(x))) {
+                    active = active.Where(x => _widgets.Contains(x)).ToArray();
+                    SettingsHolder.Drive.QuickSwitchesList = active;
+                }
+            }
+
+            foreach (var key in active) {
+                var widget = (FrameworkElement)FindResource(key);
+                widget.Tag = key;
+                (widget.Parent as ListBox)?.Items.Remove(widget);
+                AddedItems.Items.Add(widget);
+            }
+
+            foreach (var key in _widgets.Where(x => !active.Contains(x))) {
+                var widget = (FrameworkElement)FindResource(key);
+                widget.Tag = key;
+                (widget.Parent as ListBox)?.Items.Remove(widget);
+                StoredItems.Items.Add(widget);
+            }
         }
 
-        private void IgnoredInterfacesListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            //var selected = IgnoredInterfacesListBox.SelectedItems.OfType<NetworkInterface>().Select(x => x.Id).ToList();
-            //Model.Holder.IgnoredInterfaces = Model.NetworkInterfaces.Where(x => !selected.Contains(x.Id)).Select(x => x.Id);
+        public void Save() {
+            SettingsHolder.Drive.QuickSwitchesList =
+                    AddedItems.Items.OfType<FrameworkElement>().Select(x => x.Tag).OfType<string>().ToArray();
         }
 
         public class SettingsQuickSwitchesViewModel : NotifyPropertyChanged {
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
-
-            public SettingsQuickSwitchesViewModel() {
-                /*NetworkInterfaces = NetworkInterface.GetAllNetworkInterfaces().Where(
-                        x => x.GetIPProperties().UnicastAddresses.Any(
-                                y => y.Address.AddressFamily == AddressFamily.InterNetwork)).ToList();*/
-            }
         }
 
         private static Point GetMousePosition(Visual relativeTo) {
@@ -58,37 +72,55 @@ namespace AcManager.Pages.Settings {
         private DragAdorner _dragAdorner;
         private Point _mouseDown, _delta;
 
-        private AdornerLayer InitializeAdornerLayer(ListBox list, ListBoxItem itemToDrag) {
-            _dragAdorner = new DragAdorner(list, itemToDrag.RenderSize, new VisualBrush(itemToDrag)) {
+        private AdornerLayer InitializeAdornerLayer() {
+            _dragAdorner = new DragAdorner(_draggedSource, _draggedItem.RenderSize, new VisualBrush(_draggedItem)) {
                 Opacity = 0.9
             };
             
             _mouseDown = GetMousePosition(this);
-            _draggedItem = itemToDrag;
-            _draggedSource = list;
-            _delta = _draggedItem.TranslatePoint(new Point(0, 0), list);
+            _delta = _draggedItem.TranslatePoint(new Point(0, 0), _draggedSource);
 
             var layer = AdornerLayer.GetAdornerLayer(this);
             layer.Add(_dragAdorner);
             return layer;
         }
 
-        private void Item_OnPreviewMouseMove(object sender, MouseEventArgs e) {
+        private void Item_OnPreviewMouseLeftButtonDown(object sender, MouseEventArgs e) {
             if (e.LeftButton != MouseButtonState.Pressed) return;
 
-            var draggedItem = sender as ListBoxItem;
-            if (draggedItem == null) return;
+            _draggedItem = sender as ListBoxItem;
+            if (_draggedItem == null) return;
 
-            var list = AddedItems.Items.Contains(draggedItem.DataContext) ? AddedItems : StoredItems;
-            var layer = InitializeAdornerLayer(list, draggedItem);
-            
+            _draggedSource = AddedItems.Items.Contains(_draggedItem.DataContext) ? AddedItems : StoredItems;
+            _draggedSource.SelectedItem = _draggedItem;
+            var layer = InitializeAdornerLayer();
+
             Application.Current.MainWindow.AllowDrop = false;
-            _draggedValue = draggedItem.DataContext;
-            DragDrop.DoDragDrop(draggedItem, _draggedValue, DragDropEffects.Move);
+            _draggedValue = _draggedItem.DataContext;
+            if (DragDrop.DoDragDrop(_draggedItem, _draggedValue, DragDropEffects.Move) == DragDropEffects.Move) {
+                Save();
+            }
+
             Application.Current.MainWindow.AllowDrop = true;
 
             layer.Remove(_dragAdorner);
             _dragAdorner = null;
+        }
+
+        private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {
+            if (e.ChangedButton != MouseButton.Left) return;
+
+            var item = sender as ListBoxItem;
+            if (item == null) return;
+
+            var list = AddedItems.Items.Contains(item.DataContext) ? AddedItems : StoredItems;
+            var anotherList = ReferenceEquals(list, AddedItems) ? StoredItems : AddedItems;
+            var value = item.DataContext;
+
+            list.Items.Remove(value);
+            anotherList.Items.Add(value);
+
+            Save();
         }
 
         void UpdateDragAdornerLocation() {
@@ -127,11 +159,12 @@ namespace AcManager.Pages.Settings {
 
         private void List_OnDrop(object sender, DragEventArgs e) {
             var destination = (ListBox)sender;
-            if (_draggedValue == null) {
+            if (_draggedValue == null || _draggedSource == null) {
                 e.Effects = DragDropEffects.None;
                 return;
             }
-            
+
+            var oldIndex = _draggedSource.Items.IndexOf(_draggedValue);
             var newIndex = -1;
             for (var i = 0; i < destination.Items.Count; i++) {
                 var item = GetListViewItem(destination, i);
@@ -140,6 +173,8 @@ namespace AcManager.Pages.Settings {
                     break;
                 }
             }
+
+            Logging.Write($"OnDrop(): from {oldIndex} to {newIndex}");
             
             _draggedSource.Items.Remove(_draggedValue);
             if (newIndex == -1) {

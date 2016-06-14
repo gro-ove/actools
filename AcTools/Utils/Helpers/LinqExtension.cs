@@ -196,6 +196,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull]
+        [Pure]
         public static IEnumerable<IEnumerable<T>> Chunk<T>([NotNull] this IEnumerable<T> source, int chunksize) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             var list = source as IList<T> ?? source.ToList();
@@ -207,11 +208,13 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
+        [Pure]
         public static TimeSpan Sum([NotNull] this IEnumerable<TimeSpan> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             return enumerable.Aggregate(TimeSpan.Zero, (current, timeSpan) => current + timeSpan);
         }
 
+        [Pure]
         public static T RandomElement<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var list = enumerable as IList<T> ?? enumerable.ToList();
@@ -219,31 +222,37 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull]
+        [Pure]
         public static string JoinToString([NotNull] this IEnumerable<uint> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
         [NotNull]
+        [Pure]
         public static string JoinToString([NotNull] this IEnumerable<ushort> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
         [NotNull]
+        [Pure]
         public static string JoinToString([NotNull] this IEnumerable<float> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
         [NotNull]
+        [Pure]
         public static string JoinToString([NotNull] this IEnumerable<double> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
         [NotNull]
+        [Pure]
         public static string JoinToString([NotNull] this IEnumerable<int> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
         [NotNull]
+        [Pure]
         public static string JoinToString<T>([NotNull] this IEnumerable<T> enumerable, string s) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var sb = new StringBuilder();
@@ -258,6 +267,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull]
+        [Pure]
         public static string JoinToString<T>([NotNull] this IEnumerable<T> enumerable, char s) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var sb = new StringBuilder();

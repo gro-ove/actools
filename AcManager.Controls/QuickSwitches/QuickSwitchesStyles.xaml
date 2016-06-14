@@ -112,6 +112,90 @@
         </Setter>
     </Style>
 
+    <Style TargetType="qs:QuickSwitchComboBox">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Margin" Value="{StaticResource BlockMargin}" />
+        <Setter Property="Width" Value="{StaticResource BlockSize}" />
+        <Setter Property="Height" Value="{StaticResource BlockSize}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="Padding" Value="1 0 3 0" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+        <Setter Property="ScrollViewer.PanningMode" Value="Both" />
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type qs:QuickSwitchComboBox}">
+                    <DockPanel>
+                        <Grid Name="MainGrid" SnapsToDevicePixels="True" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="0 0 0 4">
+                            <Popup Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" Placement="Bottom" Margin="1"
+                                    IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                    PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                                <Grid Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+                                    <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+
+                                    <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}"
+                                            BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" Margin="0 -1 0 0">
+                                        <!-- popup border thickness not dependent on BorderThickness property-->
+                                        <ScrollViewer Name="DropDownScrollViewer">
+                                            <Grid RenderOptions.ClearTypeHint="Enabled">
+                                                <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                    <Rectangle Name="OpaqueRect" Height="{Binding ElementName=DropDownBorder,Path=ActualHeight}"
+                                                            Width="{Binding ElementName=DropDownBorder,Path=ActualWidth}"
+                                                            Fill="{Binding ElementName=DropDownBorder,Path=Background}" />
+                                                </Canvas>
+                                                <ItemsPresenter Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
+                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            </Grid>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                            
+                            <ToggleButton Background="Transparent" BorderThickness="0"
+                                    IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" />
+
+                            <Path Name="Arrow" Margin="3 1 0 0" Fill="{TemplateBinding Foreground}"
+                                    Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
+
+                            <TextBlock x:Name="PART_Text" IsHitTestVisible="False" DataContext="{TemplateBinding SelectionBoxItem}"
+                                    Text="{Binding Converter={StaticResource ToUpperConverter}}" TextTrimming="CharacterEllipsis"
+                                    Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" FontFamily="{StaticResource FontFamily}"
+                                    FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" Margin="0 0 11 0" />
+                        </Grid>
+
+                        <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}"
+                                Fill="{TemplateBinding Foreground}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                SnapsToDevicePixels="True" />
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="True">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+                        </Trigger>
+                        <Trigger SourceName="DropDownScrollViewer" Property="ScrollViewer.CanContentScroll" Value="False">
+                            <Setter TargetName="OpaqueRect" Property="Canvas.Top" Value="{Binding ElementName=DropDownScrollViewer, Path=VerticalOffset}" />
+                            <Setter TargetName="OpaqueRect" Property="Canvas.Left" Value="{Binding ElementName=DropDownScrollViewer, Path=HorizontalOffset}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="qs:QuickSwitchPresetsControl">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Margin" Value="{StaticResource BlockMargin}" />
@@ -126,7 +210,7 @@
                                 Margin="{StaticResource LabelMargin}">
                             <MenuItem HorizontalAlignment="Center" Style="{StaticResource UserPresetsControlMenuItem}"
                                     ItemsSource="{TemplateBinding SavedPresetsGrouped}" Background="Transparent" BorderThickness="0"
-                                    HorizontalContentAlignment="Center" Margin="8 0 -2 0" Padding="7 2 8 4">
+                                    HorizontalContentAlignment="Center" Margin="8 6 -2 0" Padding="1 0 3 0">
                                 <MenuItem.Header>
                                     <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
                                             Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ToUpperConverter}}"

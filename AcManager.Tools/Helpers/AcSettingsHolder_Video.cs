@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -319,7 +321,30 @@ namespace AcManager.Tools.Helpers {
                 set {
                     if (Equals(value, _postProcessingFilter)) return;
                     _postProcessingFilter = value;
+                    _postProcessingFilterObjectSet = false;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(PostProcessingFilterObject));
+                }
+            }
+
+            private bool _postProcessingFilterObjectSet;
+            private PpFilterObject _postProcessingFilterObject;
+
+            [CanBeNull]
+            public PpFilterObject PostProcessingFilterObject {
+                get {
+                    if (_postProcessingFilterObjectSet) return _postProcessingFilterObject;
+
+                    _postProcessingFilterObjectSet = true;
+                    _postProcessingFilterObject = PostProcessingFilter == null ? null : PpFiltersManager.Instance.GetByAcId(PostProcessingFilter);
+                    return _postProcessingFilterObject;
+                }
+                set {
+                    _postProcessingFilterObjectSet = true;
+                    _postProcessingFilterObject = value;
+                    _postProcessingFilter = value?.AcId;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(PostProcessingFilterObject));
                 }
             }
 

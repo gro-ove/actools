@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:AcManager.Controls.QuickSwitches" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:hs="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:conhs="clr-namespace:AcManager.Controls.Helpers">
+        xmlns:hs="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:conhs="clr-namespace:AcManager.Controls.Helpers"
+        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools">
     <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/QuickSwitches/QuickSwitchesStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -41,7 +42,7 @@
                 IsEnabled="{Binding PresetsReady, Source={x:Static conhs:ControlsPresets.Instance}}" Margin="{StaticResource LabelMargin}">
             <MenuItem HorizontalAlignment="Center" Style="{StaticResource UserPresetsControlMenuItem}"
                     ItemsSource="{Binding Presets, Source={x:Static conhs:ControlsPresets.Instance}}" Background="Transparent" BorderThickness="0"
-                    HorizontalContentAlignment="Center" Margin="8 0 -2 0" Padding="7 2 8 4">
+                    HorizontalContentAlignment="Center" Margin="8 6 -2 0" Padding="1 0 3 0">
                 <MenuItem.Header>
                     <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"
                             FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource FontFamily}" FontSize="{StaticResource FontSize}"
@@ -69,6 +70,9 @@
         <Path Data="{StaticResource KeyboardIconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" Fill="{DynamicResource ButtonText}"
                 Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
     </DockPanel>
+    <local:QuickSwitchComboBox x:Key="WidgetPpFilters" ItemsSource="{Binding LoadedOnlyCollection, Source={x:Static managers:PpFiltersManager.Instance}}"
+            SelectedItem="{Binding PostProcessingFilterObject, Source={x:Static hs:AcSettingsHolder.Video}}" IconData="{StaticResource PpFilterIconData}"
+            ToolTip="Switch between PP filters" DisplayMemberPath="DisplayName" />
 
     <!--sliders-->
     <local:QuickSwitchSlider x:Key="WidgetExposure" DataContext="{x:Static hs:AcSettingsHolder.Exposure}" Maximum="200" Minimum="0" Value="{Binding Value}"
