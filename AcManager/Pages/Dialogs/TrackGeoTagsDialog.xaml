@@ -3,8 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
                   xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+                  mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{Binding Track.DisplayName, Mode=OneTime}" MaxWidth="1200" MaxHeight="900"
         d:DataContext="{d:DesignInstance dialogs:TrackGeoTagsDialog+TrackGeoTagsDialogViewModel}">
 
@@ -21,9 +20,9 @@
             <TextBlock Text="Longitude:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Recommended format: '…° W' or '…° E'" />
 
             <TextBox Text="{Binding Latitude}" Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                    attached:TextBoxAdvancement.SpecialMode="Number" attached:FocusAdvancement.AdvancesByEnterKey="True" watermark:WatermarkService.Watermark="?" />
+                    attached:TextBoxAdvancement.SpecialMode="Number" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
             <TextBox Text="{Binding Longitude}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                    attached:TextBoxAdvancement.SpecialMode="Number" attached:FocusAdvancement.AdvancesByEnterKey="True" watermark:WatermarkService.Watermark="?" />
+                    attached:TextBoxAdvancement.SpecialMode="Number" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
         </Grid>
 
         <WebBrowser Name="MapWebBrowser" Width="1080" Height="640" Navigated="MapWebBrowser_OnNavigated" />

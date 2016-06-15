@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
                                xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-                               xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
                                mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" d:DataContext="{d:DesignInstance selected:SelectedCarSetupPage+SelectedCarSetupPageViewModel}"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
@@ -36,7 +35,7 @@
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Track.DisplayName, Mode=OneWay}"
                             Visibility="{Binding SelectedObject.Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.TrackId, Mode=OneWay}"
-                            watermark:WatermarkService.Watermark="Generic"
+                            attached:WatermarkService.Watermark="Generic"
                             Visibility="{Binding SelectedObject.Track, Converter={StaticResource NullToVisibilityConverter}}" />
                 </Grid>
             </DockPanel>

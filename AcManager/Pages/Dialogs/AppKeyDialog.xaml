@@ -3,15 +3,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
                   xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="App Key"
+                  mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="App Key"
         d:DataContext="{d:DesignInstance dialogs:AppKeyDialog+AppKeyDialogViewModel}">
     <StackPanel>
         <TextBlock Text="Enter app key (XXXX-XXXX-…):" Style="{StaticResource Heading2}" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                 Background="Transparent" />
 
         <TextBox Text="{Binding Value, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="360"
-                watermark:WatermarkService.Watermark="?" ToolTip="Please, don't share key, otherwise it might get revoked!"
+                attached:WatermarkService.Watermark="?" ToolTip="Please, don't share key, otherwise it might get revoked!"
                 attached:FocusAdvancement.AdvancesByEnterKey="True" Margin="0 8 0 0" Name="TextBox" />
 
         <ProgressBar IsIndeterminate="True"

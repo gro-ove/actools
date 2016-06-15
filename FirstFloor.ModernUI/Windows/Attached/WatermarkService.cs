@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 
-namespace FirstFloor.ModernUI.Windows.Attached.Watermark {
+namespace FirstFloor.ModernUI.Windows.Attached {
     public static class WatermarkService {
         public static readonly DependencyProperty WatermarkProperty;
         private static readonly IDictionary<object, ItemsControl> ItemsControls = new Dictionary<object, ItemsControl>();

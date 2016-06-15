@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using StringBasedFilter.Parsing;
 
 namespace StringBasedFilter {
@@ -36,7 +37,10 @@ namespace StringBasedFilter {
             return new Filter<T>(tester, filter);
         }
 
-        public static string Encode(string s) {
+        [NotNull]
+        public static string Encode([CanBeNull]string s) {
+            if (s == null) return string.Empty;
+
             var b = new StringBuilder(s.Length + 5);
             for (var i = 0; i < s.Length; i++) {
                 switch (s[i]) {

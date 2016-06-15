@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
                                    xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-                                   xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
                                    mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedTrackPage+SelectedTrackPageViewModel}">
@@ -122,27 +121,27 @@
 
                     <ComboBox Text="{Binding Country}" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding CountriesList}" IsTextSearchEnabled="True"
                             IsEditable="True" Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            watermark:WatermarkService.Watermark="?" />
+                            attached:WatermarkService.Watermark="?" />
                     <TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer" watermark:WatermarkService.Watermark="?" />
+                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer" attached:WatermarkService.Watermark="?" />
 
                     <!-- second row -->
                     <TextBlock Text="City:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
                     <TextBlock Text="Author:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
 
                     <ComboBox Text="{Binding City}" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding CitiesList}" IsTextSearchEnabled="True" IsEditable="True"
-                            Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True" watermark:WatermarkService.Watermark="?" />
-                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" MouseDown="VersionInfoBlock_OnMouseDown" watermark:WatermarkService.Watermark="?"
+                            Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
+                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" MouseDown="VersionInfoBlock_OnMouseDown" attached:WatermarkService.Watermark="?"
                             Grid.Column="3" Grid.Row="1" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
                     <!-- third row -->
                     <TextBlock Text="Geo Tags:" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Grid.Column="1" Grid.Row="2" MouseDown="GeoTags_KeyDown" Text="{Binding GeoTags}" watermark:WatermarkService.Watermark="?"
+                    <TextBlock Grid.Column="1" Grid.Row="2" MouseDown="GeoTags_KeyDown" Text="{Binding GeoTags}" attached:WatermarkService.Watermark="?"
                             TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 
                     <!-- last row -->
                     <TextBlock Text="Specs:" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="{Binding SpecsInfoDisplay}" watermark:WatermarkService.Watermark="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
+                    <TextBlock Text="{Binding SpecsInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
                             MouseDown="SpecsInfoBlock_OnMouseDown" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                 </Grid>
 

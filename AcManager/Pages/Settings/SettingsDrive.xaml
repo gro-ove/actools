@@ -4,7 +4,7 @@
              xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDrive+SettingsDriveViewModel}">
     <UserControl.Resources>
@@ -46,19 +46,19 @@
 
             <DockPanel>
                 <Label>Name:</Label>
-                <TextBox Text="{Binding Drive.PlayerName}" watermark:WatermarkService.Watermark="?" />
+                <TextBox Text="{Binding Drive.PlayerName}" attached:WatermarkService.Watermark="?" />
             </DockPanel>
 
             <DockPanel>
                 <Label>Nationality:</Label>
-                <TextBox Text="{Binding Drive.PlayerNationality}" watermark:WatermarkService.Watermark="?" />
+                <TextBox Text="{Binding Drive.PlayerNationality}" attached:WatermarkService.Watermark="?" />
             </DockPanel>
 
             <DockPanel>
                 <Label>Online name:</Label>
                 <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" ToolTip="Use different name online"
                         VerticalAlignment="Center" />
-                <TextBox Text="{Binding Drive.PlayerNameOnline}" watermark:WatermarkService.Watermark="?" IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
+                <TextBox Text="{Binding Drive.PlayerNameOnline}" attached:WatermarkService.Watermark="?" IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
             </DockPanel>
 
             <!--replays-->
@@ -112,7 +112,7 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label>Replays name format</Label>
-                <TextBox Text="{Binding Drive.ReplaysNameFormat}" watermark:WatermarkService.Watermark="{Binding Drive.DefaultReplaysNameFormat}" />
+                <TextBox Text="{Binding Drive.ReplaysNameFormat}" attached:WatermarkService.Watermark="{Binding Drive.DefaultReplaysNameFormat}" />
             </DockPanel>
 
             <DockPanel>
@@ -171,7 +171,7 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label>Pre-race event command:</Label>
-                <TextBox Text="{Binding Drive.PreCommand}" watermark:WatermarkService.Watermark="None" />
+                <TextBox Text="{Binding Drive.PreCommand}" attached:WatermarkService.Watermark="None" />
             </DockPanel>
 
             <DockPanel>
@@ -194,7 +194,7 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label>Post-race event command:</Label>
-                <TextBox Text="{Binding Drive.PostCommand}" watermark:WatermarkService.Watermark="None" />
+                <TextBox Text="{Binding Drive.PostCommand}" attached:WatermarkService.Watermark="None" />
             </DockPanel>
         </StackPanel>
     </ScrollViewer>

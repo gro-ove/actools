@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom"
                   xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-                  xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
+                  xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="Car Texture" d:DataContext="{d:DesignInstance customShowroom:CarTextureDialog+CarTextureDialogViewModel}" Loaded="CarTextureDialog_OnLoaded"
         Unloaded="CarTextureDialog_OnUnloaded" WindowStartupLocation="CenterScreen" MaxWidth="999">
@@ -47,15 +47,15 @@
             <StackPanel VerticalAlignment="Top">
                 <DockPanel>
                     <Label DockPanel.Dock="Left" Width="100">Type:</Label>
-                    <TextBlock Text="{Binding TextureFormat}" watermark:WatermarkService.Watermark="?" />
+                    <TextBlock Text="{Binding TextureFormat}" attached:WatermarkService.Watermark="?" />
                 </DockPanel>
                 <DockPanel>
                     <Label DockPanel.Dock="Left" Width="100">Format:</Label>
-                    <TextBlock Text="{Binding TextureFormatDescription}" watermark:WatermarkService.Watermark="?" />
+                    <TextBlock Text="{Binding TextureFormatDescription}" attached:WatermarkService.Watermark="?" />
                 </DockPanel>
                 <DockPanel>
                     <Label DockPanel.Dock="Left" Width="100">Dimensions:</Label>
-                    <TextBlock Text="{Binding TextureDimensions}" watermark:WatermarkService.Watermark="?" />
+                    <TextBlock Text="{Binding TextureDimensions}" attached:WatermarkService.Watermark="?" />
                 </DockPanel>
                 <DockPanel>
                     <Label DockPanel.Dock="Left" Width="100">Size:</Label>

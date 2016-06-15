@@ -14,7 +14,9 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Pages.Windows;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -23,6 +25,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using StringBasedFilter;
 using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace AcManager.Pages.Selected {
@@ -30,6 +33,7 @@ namespace AcManager.Pages.Selected {
         public class SelectedCarPageViewModel : SelectedAcObjectViewModel<CarObject> {
             public SelectedCarPageViewModel([NotNull] CarObject acObject) : base(acObject) {
                 WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);
+                FilterTabType = "cars";
             }
 
             private void Handler(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
@@ -45,6 +49,39 @@ namespace AcManager.Pages.Selected {
                     }
                 }
             }
+
+            public override void Load() {
+                base.Load();
+                SelectedObject.PropertyChanged += SelectedObject_PropertyChanged;
+            }
+
+            public override void Unload() {
+                base.Unload();
+                SelectedObject.PropertyChanged -= SelectedObject_PropertyChanged;
+                _helper.Dispose();
+            }
+
+            private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+                switch (e.PropertyName) {
+                    case nameof(AcCommonObject.Year):
+                        FilterDecadeCommand.OnCanExecuteChanged();
+                        break;
+                }
+            }
+
+            #region Filter By
+            private RelayCommand _filterClassCommand;
+
+            public RelayCommand FilterClassCommand => _filterClassCommand ?? (_filterClassCommand = new RelayCommand(o => {
+                NewFilterTab($"class:{Filter.Encode(SelectedObject.CarClass)}");
+            }));
+
+            private RelayCommand _filterBrandCommand;
+
+            public RelayCommand FilterBrandCommand => _filterBrandCommand ?? (_filterBrandCommand = new RelayCommand(o => {
+                NewFilterTab($"brand:{Filter.Encode(SelectedObject.Brand)}");
+            }));
+            #endregion
 
             #region Open In Showroom
             private RelayCommand _openInShowroomCommand;
@@ -146,11 +183,6 @@ namespace AcManager.Pages.Selected {
             private ObservableCollection<MenuItem> _showroomPresets, _updatePreviewsPresets, _quickDrivePresets;
             private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
 
-            public override void Unload() {
-                base.Unload();
-                _helper.Dispose();
-            }
-
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
                     ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.UserPresetableKeyValue, p => {
@@ -232,7 +264,7 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(_model.OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
-                
+
                 new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control)),
                 new InputBinding(_model.ManageSetupsCommand, new KeyGesture(Key.U, ModifierKeys.Control))
             });

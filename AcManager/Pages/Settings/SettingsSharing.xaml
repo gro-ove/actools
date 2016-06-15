@@ -4,7 +4,7 @@
              xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
         xmlns:miscellaneous="clr-namespace:AcManager.Tools.Miscellaneous;assembly=AcManager.Tools"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsSharing+SharingViewModel}">
     <UserControl.Resources>
@@ -29,7 +29,7 @@
 
             <DockPanel IsEnabled="{Binding Sharing.ShareAnonymously, Converter={StaticResource InvertBooleanConverter}}">
                 <Label>Sharing nickname:</Label>
-                <TextBox Text="{Binding Sharing.SharingName}" watermark:WatermarkService.Watermark="?" MaxLength="60" />
+                <TextBox Text="{Binding Sharing.SharingName}" attached:WatermarkService.Watermark="?" MaxLength="60" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Sharing.ShareAnonymously}">

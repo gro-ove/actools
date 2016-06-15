@@ -4,8 +4,7 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
                                    xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+                                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <ac:AcObjectBase.ToolBars>
@@ -66,13 +65,13 @@
 
                     <ComboBox Text="{Binding Country}" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding CountriesList}" IsTextSearchEnabled="True"
                             IsEditable="True" Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            watermark:WatermarkService.Watermark="?" />
+                            attached:WatermarkService.Watermark="?" />
                     <TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer" watermark:WatermarkService.Watermark="?" />
+                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer" attached:WatermarkService.Watermark="?" />
 
                     <!-- last row -->
                     <TextBlock Text="Author:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
-                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" MouseDown="VersionInfoBlock_OnMouseDown" watermark:WatermarkService.Watermark="?"
+                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" MouseDown="VersionInfoBlock_OnMouseDown" attached:WatermarkService.Watermark="?"
                             Grid.Column="1" Grid.Row="1" />
                 </Grid>
 

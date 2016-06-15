@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,11 +26,11 @@ namespace AcManager.Controls {
             base.OnApplyTemplate();
 
             if (_main != null) {
-                _main.MouseRightButtonDown -= Main_OnMouseDown;
+                _main.MouseRightButtonUp -= Main_OnMouseUp;
             }
 
             if (_toolBar != null) {
-                _toolBar.PreviewMouseDown -= ToolBar_OnMouseDown;
+                _toolBar.PreviewMouseUp -= ToolBar_OnMouseUp;
             }
 
             if (_iconImage != null) {
@@ -41,11 +42,11 @@ namespace AcManager.Controls {
             _iconImage = GetTemplateChild("PART_Header") as AcObjectHeaderSection;
 
             if (_main != null) {
-                _main.MouseRightButtonDown += Main_OnMouseDown;
+                _main.MouseRightButtonUp += Main_OnMouseUp;
             }
 
             if (_toolBar != null) {
-                _toolBar.PreviewMouseDown += ToolBar_OnMouseDown;
+                _toolBar.PreviewMouseUp += ToolBar_OnMouseUp;
             }
 
             if (_iconImage != null) {
@@ -53,13 +54,17 @@ namespace AcManager.Controls {
             }
         }
 
-        protected void Main_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton != MouseButton.Right) return;
+        protected async void Main_OnMouseUp(object sender, MouseButtonEventArgs e) {
             if (_toolBar == null) return;
+
+            await Task.Delay(1);
+            if (e.Handled) return;
+
+            e.Handled = true;
             _toolBar.IsActive = !_toolBar.IsActive;
         }
 
-        protected void ToolBar_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        protected void ToolBar_OnMouseUp(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton != MouseButton.Left) return;
             if (_toolBar == null) return;
             _toolBar.IsActive = false;

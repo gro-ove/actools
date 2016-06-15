@@ -5,7 +5,7 @@
         Title="Content Manager (Limited Mode)" IsTitleVisible="True" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False"
         FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="MainWindow_OnDrop" DragEnter="MainWindow_OnDragEnter"
         DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="MainWindow_OnLoaded" Unloaded="MainWindow_OnUnloaded" Closed="MainWindow_OnClosed"
-        MouseRightButtonDown="MainWindow_OnMouseRightButtonDown" PreviewMouseRightButtonUp="MainWindow_OnPreviewMouseRightButtonUp"
+        MouseRightButtonUp="MainWindow_OnMouseRightButtonDown" PreviewMouseRightButtonUp="MainWindow_OnPreviewMouseRightButtonUp"
         PreviewMouseRightButtonDown="MainWindow_OnPreviewMouseRightButtonDown" d:DataContext="{d:DesignInstance windows:MainWindow+MainWindowViewModel}"
         AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
         LocationAndSizeKey="MainWindow_LS" Name="Window">
@@ -23,9 +23,7 @@
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="online" Source="/Pages/Drive/Online.xaml" />
-        <!-- ReSharper disable once Xaml.PathError -->
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="lan" Source="/Pages/Drive/Online.xaml?Mode=Lan" />
-        <!-- ReSharper disable once Xaml.PathError -->
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />
         <!--<mui:LinkGroup GroupKey="drive" DisplayName="live timing">
             <mui:LinkGroup.Links>

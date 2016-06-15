@@ -1,4 +1,5 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
     <Style x:Key="{x:Type ContextMenu}" TargetType="{x:Type ContextMenu}">
         <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}"/>
         <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}"/>
@@ -44,7 +45,9 @@
         </Setter>
     </Style>
 
-    <ContextMenu x:Key="TextBoxContextMenu">
+    <Style x:Key="{x:Type attached:InheritingContextMenu}" TargetType="{x:Type attached:InheritingContextMenu}" BasedOn="{StaticResource {x:Type ContextMenu}}" />
+
+    <attached:InheritingContextMenu x:Key="TextBoxContextMenu">
         <MenuItem Command="ApplicationCommands.Undo" />
         <Separator />
         <MenuItem Command="ApplicationCommands.Cut" />
@@ -53,5 +56,5 @@
         <MenuItem Command="ApplicationCommands.Delete" />
         <Separator />
         <MenuItem Command="ApplicationCommands.SelectAll" />
-    </ContextMenu>
+    </attached:InheritingContextMenu>
 </ResourceDictionary>

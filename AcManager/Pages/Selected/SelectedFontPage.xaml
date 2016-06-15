@@ -4,8 +4,7 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
                                xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+                               mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedFontPage+SelectedFontPageViewModel}" Loaded="SelectedFontPage_OnLoaded">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" Icon="{Binding SelectedObject.IconBitmap}" IconMouseDown="AcObjectBase_OnIconMouseDown">
@@ -36,7 +35,7 @@
         <StackPanel>
             <StackPanel Margin="8 0 8 0">
                 <TextBlock Text="Test:" Style="{StaticResource Label}" Margin="0 12 0 0" />
-                <TextBox x:Name="TextBox" watermark:WatermarkService.Watermark="?" Margin="0 4 0 0" TextChanged="TestTextBox_OnTextChanged" />
+                <TextBox x:Name="TextBox" attached:WatermarkService.Watermark="?" Margin="0 4 0 0" TextChanged="TestTextBox_OnTextChanged" />
                 <Grid x:Name="Canvas" Height="120" Background="Black" Margin="0 4 0 0" ClipToBounds="True"
                         services:ImageViewerService.Image="{Binding SelectedObject.FontBitmap}" />
             </StackPanel>
@@ -44,7 +43,7 @@
             <StackPanel Margin="8 12 8 0">
                 <TextBlock Text="Used in:" Style="{StaticResource Label}" Margin="0 12 0 0" />
                 <TextBlock Text="{Binding SelectedObject.UsingsCarsIds, Converter={x:Static selected:SelectedFontPage.UsingsConverter}, IsAsync=True}"
-                        watermark:WatermarkService.Watermark="?" Margin="0 4 0 0" TextWrapping="Wrap" FontWeight="Bold" />
+                        attached:WatermarkService.Watermark="?" Margin="0 4 0 0" TextWrapping="Wrap" FontWeight="Bold" />
                 <TextBlock Text="{Binding Manager.LastUsingsRescan, StringFormat='{}Last scanned: {0}', TargetNullValue='Last scanned: Never'}"
                         TextAlignment="Right" Style="{StaticResource Small}" Margin="0 4 0 0" />
                 <Button Margin="0 4 0 0" Command="{Binding UsingsRescanCommand}">Rescan</Button>

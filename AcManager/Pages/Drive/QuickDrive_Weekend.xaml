@@ -4,8 +4,7 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_Weekend+QuickDrive_WeekendViewModel}" Loaded="QuickDrive_Weekend_OnLoaded"
         Unloaded="QuickDrive_Weekend_OnUnloaded">
 
@@ -120,7 +119,7 @@
                             Visibility="{Binding SelectedGridType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠same_car'}">
                         <TextBlock Text="Filter:" Width="60" DockPanel.Dock="Left" />
                         <TextBox Style="{StaticResource TextBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                                watermark:WatermarkService.Watermark="*" Text="{Binding OpponentsCarsFilter, UpdateSourceTrigger=PropertyChanged}" />
+                                attached:WatermarkService.Watermark="*" Text="{Binding OpponentsCarsFilter, UpdateSourceTrigger=PropertyChanged}" />
                     </DockPanel>
 
                     <ListBox Name="ListBox" ItemsSource="{Binding OpponentsCarsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"

@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Windows.Controls;
 
-namespace FirstFloor.ModernUI.Windows.Attached.LimitedMark {
+namespace FirstFloor.ModernUI.Windows.Attached {
     internal class LimitedAdorner : Adorner {
         private readonly FrameworkElement _contentPresenter;
 

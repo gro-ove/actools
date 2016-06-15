@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
                   xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-                  xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
                   mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Title="Create New Showroom">
     <StackPanel>
@@ -20,11 +19,11 @@
 
             <TextBlock Text="ID:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
             <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                    watermark:WatermarkService.Watermark="?" Text="{Binding ResultId}" />
+                    attached:WatermarkService.Watermark="?" Text="{Binding ResultId}" />
 
             <TextBlock Text="Name:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
             <TextBox Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                    watermark:WatermarkService.Watermark="?" Text="{Binding ResultName}" />
+                    attached:WatermarkService.Watermark="?" Text="{Binding ResultName}" />
 
             <TextBlock Text="Panorama:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
             <DockPanel Grid.Column="1" Grid.Row="1">
@@ -38,7 +37,7 @@
                 </DockPanel.ToolTip>
                 
                 <Button DockPanel.Dock="Right" Command="{Binding SelectPanoramaFileCommand}" HorizontalAlignment="Right" Margin="4 0 4 0" Padding="4 0 4 0">…</Button>
-                <TextBox Text="{Binding PanoramaFilename}" watermark:WatermarkService.Watermark="?" Style="{StaticResource TextBoxAsTextBlock}" />
+                <TextBox Text="{Binding PanoramaFilename}" attached:WatermarkService.Watermark="?" Style="{StaticResource TextBoxAsTextBlock}" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding InShadow}" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0 0 0">

@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using AcManager.Controls.Helpers;
-using AcManager.Controls.UserControls;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
@@ -243,19 +242,25 @@ namespace AcManager.Pages.Windows {
             Application.Current.Shutdown();
         }
 
-        private void MainWindow_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+        private async void MainWindow_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
             if (!SettingsHolder.Drive.QuickSwitches) return;
 
-            if (!Popup.IsOpen && Popup.Child == null) {
-                Popup.Child = new QuickSwitchesBlock();
-                AcSettingsHolder.Controls.PresetLoading += Controls_PresetLoading;
+            await Task.Delay(10);
+            if (e.Handled) return;
+
+            if (Popup.IsOpen) {
+                Popup.IsOpen = false;
+            } else if (_openOnNext){
+                if (Popup.Child == null) {
+                    Popup.Child = new QuickSwitchesBlock();
+                    AcSettingsHolder.Controls.PresetLoading += Controls_PresetLoading;
+                }
+
+                Popup.IsOpen = true;
+                Popup.Focus();
             }
 
-            Popup.IsOpen = !Popup.IsOpen;
-            if (Popup.IsOpen) {
-                Popup.Focus();
-                e.Handled = true;
-            }
+            e.Handled = true;
         }
 
         private async void Controls_PresetLoading(object sender, EventArgs e) {
@@ -271,10 +276,13 @@ namespace AcManager.Pages.Windows {
             }
         }
 
+        private bool _openOnNext;
+
         private void MainWindow_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+            _openOnNext = !Popup.IsOpen;
             if (Popup.IsOpen) {
-                Popup.IsOpen = false;
-                e.Handled = true;
+                // Popup.IsOpen = false;
+                // e.Handled = true;
             }
         }
     }

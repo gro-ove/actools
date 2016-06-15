@@ -4,7 +4,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace FirstFloor.ModernUI.Windows.Attached.Watermark {
+namespace FirstFloor.ModernUI.Windows.Attached {
     /// <summary>
     /// Adorner for the watermark
     /// </summary>

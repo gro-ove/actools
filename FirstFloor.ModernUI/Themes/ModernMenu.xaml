@@ -2,7 +2,6 @@
         xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:presentation="clr-namespace:FirstFloor.ModernUI.Presentation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached"
-                    xmlns:limitedMark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.LimitedMark"
                     mc:Ignorable="d">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -174,7 +173,7 @@
                                                     <DataTrigger Binding="{Binding IsEnabled}" Value="False">
                                                         <Setter Property="IsEnabled" Value="False" />
                                                         <Setter Property="Foreground" Value="{DynamicResource MenuTextDisabled}" />
-                                                        <Setter Property="limitedMark:LimitedService.Limited" Value="True" />
+                                                        <Setter Property="attached:LimitedService.Limited" Value="True" />
                                                     </DataTrigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>

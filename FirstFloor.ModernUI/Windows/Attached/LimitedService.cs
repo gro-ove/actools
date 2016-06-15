@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Documents;
 
-namespace FirstFloor.ModernUI.Windows.Attached.LimitedMark {
+namespace FirstFloor.ModernUI.Windows.Attached {
     public static class LimitedService {
         public static bool OptionNonLimited = false;
 

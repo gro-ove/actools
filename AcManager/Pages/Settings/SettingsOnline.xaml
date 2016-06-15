@@ -4,8 +4,7 @@
              xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance settings:SettingsOnline+SettingsOnlineViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -25,7 +24,7 @@
 
             <DockPanel>
                 <Label>Scan ports:</Label>
-                <TextBox Text="{Binding Holder.PortsEnumeration}" ToolTip="Some enumeration like '9000-10000'" watermark:WatermarkService.Watermark="?"
+                <TextBox Text="{Binding Holder.PortsEnumeration}" ToolTip="Some enumeration like '9000-10000'" attached:WatermarkService.Watermark="?"
                         attached:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
@@ -38,7 +37,7 @@
             <DockPanel>
                 <Label>Scan ports:</Label>
                 <TextBox Text="{Binding Holder.LanPortsEnumeration}" ToolTip="Some enumeration like '9600,9602,9700-9750'"
-                        watermark:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
+                        attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
             <DockPanel>

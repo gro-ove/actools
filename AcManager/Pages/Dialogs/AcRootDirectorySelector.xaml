@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
                   xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-                  xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
                   mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Title="Content Manager" ShowInTaskbar="True"
         d:DataContext="{d:DesignInstance dialogs:AcRootDirectorySelector+AcRootDirectorySelectorViewModel}">
@@ -15,7 +14,7 @@
 
         <DockPanel Margin="0 8 0 0">
             <Button Content="…" Click="Button_OnClick" DockPanel.Dock="Right" Margin="4 0 0 0" />
-            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" watermark:WatermarkService.Watermark="?"
+            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" attached:WatermarkService.Watermark="?"
                     attached:FocusAdvancement.AdvancesByEnterKey="True" />
         </DockPanel>
     </StackPanel>

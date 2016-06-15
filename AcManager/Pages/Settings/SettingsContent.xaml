@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-             xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
              mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsContent+ContentViewModel}">
     <UserControl.Resources>
@@ -19,7 +18,7 @@
             <DockPanel>
                 <Label>Loading concurrency:</Label>
                 <TextBox Text="{Binding Holder.LoadingConcurrency}" ToolTip="Smaller value may increase UI responsibleness, but decrease loading times"
-                        watermark:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Positive" />
+                        attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Positive" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Holder.ScrollAutomatically}" ToolTip="For example, on disabling">
@@ -58,7 +57,7 @@
 
             <DockPanel>
                 <Label>Font's icon symbol:</Label>
-                <TextBox Text="{Binding Holder.FontIconCharacter}" ToolTip="One symbol which will be used for an icon" watermark:WatermarkService.Watermark="?"
+                <TextBox Text="{Binding Holder.FontIconCharacter}" ToolTip="One symbol which will be used for an icon" attached:WatermarkService.Watermark="?"
                         attached:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
         </StackPanel>

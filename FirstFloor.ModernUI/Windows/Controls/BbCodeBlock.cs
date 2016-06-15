@@ -9,14 +9,6 @@ using FirstFloor.ModernUI.Windows.Controls.BbCode;
 using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public class BbCodeImageEventArgs : EventArgs {
-        public readonly Uri ImageUri;
-
-        public BbCodeImageEventArgs(Uri imageUri) {
-            ImageUri = imageUri;
-        }
-    }
-
     /// <summary>
     /// A lighweight control for displaying small amounts of rich formatted BbCode content.
     /// </summary>

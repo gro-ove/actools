@@ -4,7 +4,7 @@
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
              xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
-             xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
+             xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
              mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+AcVideoViewModel}">
     <UserControl.Resources>
@@ -89,7 +89,7 @@
                     <Button Command="{Binding ManageFiltersCommand}">Manage</Button>
                     <ComboBox ItemsSource="{Binding LoadedOnlyCollection, Source={x:Static managers:PpFiltersManager.Instance}}"
                             SelectedItem="{Binding Video.PostProcessingFilterObject}" DisplayMemberPath="DisplayName"
-                            watermark:WatermarkService.Watermark="{Binding Video.PostProcessingFilter}" />
+                            attached:WatermarkService.Watermark="{Binding Video.PostProcessingFilter}" />
                 </DockPanel>
 
                 <DockPanel>
