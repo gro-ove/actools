@@ -3,9 +3,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
-using FirstFloor.ModernUI.Helpers;
 
-namespace FirstFloor.ModernUI.Windows.Controls.Watermark {
+namespace FirstFloor.ModernUI.Windows.Attached.Watermark {
     /// <summary>
     /// Adorner for the watermark
     /// </summary>

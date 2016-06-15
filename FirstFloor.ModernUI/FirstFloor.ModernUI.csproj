@@ -128,16 +128,16 @@
     <Compile Include="Windows\Controls\DataGridCheckBoxColumn.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.cs" />
     <Compile Include="Windows\Controls\DpiInformation.cs" />
-    <Compile Include="Windows\Controls\LimitedMark\LimitedService.cs" />
-    <Compile Include="Windows\Controls\LimitedMark\LimitedAdorner.cs" />
+    <Compile Include="Windows\Attached\LimitedMark\LimitedService.cs" />
+    <Compile Include="Windows\Attached\LimitedMark\LimitedAdorner.cs" />
     <Compile Include="Windows\Controls\ModernMenu_Helpers.cs" />
     <Compile Include="Windows\Controls\ModernToggleButton.cs" />
     <Compile Include="Windows\Controls\OutlinedTextBlock.cs" />
     <Compile Include="Windows\Controls\ProperPasswordBox.cs" />
     <Compile Include="Windows\Controls\TextBlockAutoShrink.cs" />
-    <Compile Include="Windows\Controls\TextBoxAdvancement.cs" />
-    <Compile Include="Windows\Controls\FocusAdvancement.cs" />
-    <Compile Include="Windows\Controls\InputBindingBehavior.cs" />
+    <Compile Include="Windows\Attached\TextBoxAdvancement.cs" />
+    <Compile Include="Windows\Attached\FocusAdvancement.cs" />
+    <Compile Include="Windows\Attached\InputBindingBehavior.cs" />
     <Compile Include="Windows\Controls\ModernProgressRing.cs" />
     <Compile Include="Windows\Controls\SourceEventArgs.cs" />
     <Compile Include="Windows\Controls\ModernButton.cs" />
@@ -161,8 +161,8 @@
     <Compile Include="Windows\Controls\TextBoxEnterKeyUpdateBehavior.cs" />
     <Compile Include="Windows\Controls\TransitioningContentControl.cs" />
     <Compile Include="Windows\Controls\VirtualizingWrapPanel.cs" />
-    <Compile Include="Windows\Controls\Watermark\WatermarkAdorner.cs" />
-    <Compile Include="Windows\Controls\Watermark\WatermarkService.cs" />
+    <Compile Include="Windows\Attached\Watermark\WatermarkAdorner.cs" />
+    <Compile Include="Windows\Attached\Watermark\WatermarkService.cs" />
     <Compile Include="Windows\Converters\BooleanToTextConverter.cs" />
     <Compile Include="Windows\Converters\ConverterHelper.cs" />
     <Compile Include="Windows\Converters\EnumToBooleanConverter.cs" />
@@ -417,6 +417,7 @@
     <Resource Include="Effects\Shaders\GrayscaleEffect.ps" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

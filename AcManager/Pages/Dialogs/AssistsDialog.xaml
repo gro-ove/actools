@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:viewModels="clr-namespace:AcManager.Controls.ViewModels;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:viewModels="clr-namespace:AcManager.Controls.ViewModels;assembly=AcManager.Controls"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="Assists" d:DataContext="{d:DesignInstance viewModels:AssistsViewModel}" MaxWidth="99999">
 
     <mui:ModernDialog.Resources>
@@ -67,8 +69,8 @@
                     <Label Content="_Stability control: " Target="{x:Reference StabilityControlTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
                             Padding="10 0 0 0" />
                     <TextBox Name="StabilityControlTextBox" Text="{Binding StabilityControl, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                            mui:TextBoxAdvancement.SpecialMode="Integer" />
+                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            attached:TextBoxAdvancement.SpecialMode="Integer" />
                     <Label Content="%" Target="{x:Reference StabilityControlTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                 </StackPanel>
             </Grid>
@@ -88,8 +90,8 @@
                     <Label Content="Mechanical _damage: " Target="{x:Reference MechanicalDamageTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
                             Padding="10 0 0 0" />
                     <TextBox Name="MechanicalDamageTextBox" Text="{Binding Damage, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                            mui:TextBoxAdvancement.SpecialMode="Integer" />
+                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            attached:TextBoxAdvancement.SpecialMode="Integer" />
                     <Label Content="%" Target="{x:Reference MechanicalDamageTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                 </StackPanel>
             </Grid>
@@ -102,8 +104,8 @@
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Tyre Wear: " Target="{x:Reference TyreWearTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" Padding="10 0 0 0" />
                     <TextBox Name="TyreWearTextBox" Text="{Binding TyreWearMultipler, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                            mui:TextBoxAdvancement.SpecialMode="Number" />
+                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            attached:TextBoxAdvancement.SpecialMode="Number" />
                     <Label Content="x" Target="{x:Reference TyreWearTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                 </StackPanel>
             </Grid>
@@ -122,8 +124,8 @@
                     <Label Content="Slipstream Effect: " Target="{x:Reference SlipSteamTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
                             Padding="10 0 0 0" />
                     <TextBox Name="SlipSteamTextBox" Text="{Binding SlipSteamMultipler, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                            mui:TextBoxAdvancement.SpecialMode="Integer" />
+                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            attached:TextBoxAdvancement.SpecialMode="Integer" />
                     <Label Content="x" Target="{x:Reference SlipSteamTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                 </StackPanel>
             </Grid>

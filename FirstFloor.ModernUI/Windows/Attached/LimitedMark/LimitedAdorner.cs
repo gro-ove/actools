@@ -4,8 +4,9 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Windows.Controls;
 
-namespace FirstFloor.ModernUI.Windows.Controls.LimitedMark {
+namespace FirstFloor.ModernUI.Windows.Attached.LimitedMark {
     internal class LimitedAdorner : Adorner {
         private readonly FrameworkElement _contentPresenter;
 

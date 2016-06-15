@@ -6,9 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
-using FirstFloor.ModernUI.Helpers;
 
-namespace FirstFloor.ModernUI.Windows.Controls.Watermark {
+namespace FirstFloor.ModernUI.Windows.Attached.Watermark {
     public static class WatermarkService {
         public static readonly DependencyProperty WatermarkProperty;
         private static readonly IDictionary<object, ItemsControl> ItemsControls = new Dictionary<object, ItemsControl>();

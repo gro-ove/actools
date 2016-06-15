@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace FirstFloor.ModernUI.Windows.Controls {
+namespace FirstFloor.ModernUI.Windows.Attached {
     public static class TextBoxAdvancement {
         // sorry about it, but I don’t think I can handle another library only for number parsing
         private static class FlexibleParser {

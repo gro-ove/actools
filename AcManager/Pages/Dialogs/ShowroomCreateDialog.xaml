@@ -1,7 +1,9 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.ShowroomCreateDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+                  xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+                  xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
+                  mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Title="Create New Showroom">
     <StackPanel>
         <Grid Margin="0 10 10 10">
@@ -17,11 +19,11 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="ID:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-            <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+            <TextBox Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                     watermark:WatermarkService.Watermark="?" Text="{Binding ResultId}" />
 
             <TextBlock Text="Name:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-            <TextBox Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+            <TextBox Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                     watermark:WatermarkService.Watermark="?" Text="{Binding ResultName}" />
 
             <TextBlock Text="Panorama:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />

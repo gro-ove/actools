@@ -3,7 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+                  xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+                  xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
+                  mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Title="Update Previews" MinWidth="320" MinHeight="120" Width="540" Height="400" ResizeMode="NoResize" MaxWidth="1920"
         MaxHeight="1080" Closing="CarUpdatePreviewsDialog_OnClosing" SizeToContent="Manual" Loaded="CarUpdatePreviewsDialog_OnLoaded"
         d:DataContext="{d:DesignInstance dialogs:CarUpdatePreviewsDialog}" SizeChanged="CarUpdatePreviewsDialog_OnSizeChanged">
@@ -114,12 +116,12 @@
 
                 <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="2">
                     <TextBlock Margin="0 0 0 4" Text="FOV:" Style="{StaticResource LabelWithPadding}" />
-                    <TextBox Margin="5 0 5 0" Text="{Binding CameraFov}" mui:TextBoxAdvancement.SpecialMode="Number" />
+                    <TextBox Margin="5 0 5 0" Text="{Binding CameraFov}" attached:TextBoxAdvancement.SpecialMode="Number" />
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="2">
                     <TextBlock Margin="0 0 0 4" Text="Exposure:" Style="{StaticResource LabelWithPadding}" />
-                    <TextBox Margin="4 0 4 0" Text="{Binding CameraExposure}" mui:TextBoxAdvancement.SpecialMode="Number"
+                    <TextBox Margin="4 0 4 0" Text="{Binding CameraExposure}" attached:TextBoxAdvancement.SpecialMode="Number"
                             watermark:WatermarkService.Watermark="?" />
                 </StackPanel>
             </Grid>

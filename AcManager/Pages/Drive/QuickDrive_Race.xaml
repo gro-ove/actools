@@ -2,8 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Controls.Watermark;assembly=FirstFloor.ModernUI"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:watermark="clr-namespace:FirstFloor.ModernUI.Windows.Attached.Watermark;assembly=FirstFloor.ModernUI"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_Race+QuickDrive_RaceViewModel}" Loaded="QuickDrive_Race_OnLoaded"
         Unloaded="QuickDrive_Race_OnUnloaded">
 
@@ -106,7 +108,7 @@
                     <DockPanel Margin="0 0 0 8" HorizontalAlignment="Stretch"
                             Visibility="{Binding SelectedGridType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠same_car'}">
                         <TextBlock Text="Filter:" Width="60" DockPanel.Dock="Left" />
-                        <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                        <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                                 watermark:WatermarkService.Watermark="*" Text="{Binding OpponentsCarsFilter, UpdateSourceTrigger=PropertyChanged}"
                                 IsEditable="True" IsTextSearchEnabled="True" ItemsSource="{Binding OpponentsCarsFilterHistory}"
                                 LostFocus="OpponentsCarsFilterTextBox_OnLostFocus" />

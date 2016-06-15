@@ -4,10 +4,11 @@
         xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
         xmlns:directInput="clr-namespace:AcManager.Tools.Helpers.DirectInput;assembly=AcManager.Tools" xmlns:tools="clr-namespace:AcManager.Tools"
              xmlns:helpers="clr-namespace:AcManager.Controls.Helpers;assembly=AcManager.Controls"
+             xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
              mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance acSettings:AcSettingsControls+AcControlsViewModel}" SizeChanged="AcSettingsControls_OnSizeChanged"
         Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded" PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown"
-        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

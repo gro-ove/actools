@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 
-namespace FirstFloor.ModernUI.Windows.Controls {
+namespace FirstFloor.ModernUI.Windows.Attached {
     public static class InputBindingBehavior {
         public static bool GetPropagateInputBindingsToWindow(FrameworkElement obj) {
             return (bool)obj.GetValue(PropagateInputBindingsToWindowProperty);

@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Controls.Pages.Dialogs" xmlns:controls="clr-namespace:AcManager.Controls"
+                  xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Showroom"
         Closing="CarOpenInShowroomDialog_OnClosing" d:DataContext="{d:DesignInstance dialogs:CarOpenInShowroomDialog+CarOpenInShowroomDialogViewModel}">
 
@@ -58,7 +59,7 @@
             <Grid Margin="0 0 0 4">
                 <TextBlock Text="FOV:" Style="{StaticResource LabelWithPadding}" />
             </Grid>
-            <TextBox Margin="4 0 4 0" Text="{Binding CameraFov}" mui:TextBoxAdvancement.SpecialMode="Number" />
+            <TextBox Margin="4 0 4 0" Text="{Binding CameraFov}" attached:TextBoxAdvancement.SpecialMode="Number" />
         </StackPanel>
     </Grid>
 

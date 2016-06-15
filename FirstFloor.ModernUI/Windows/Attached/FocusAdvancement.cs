@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Windows.Media;
 
-namespace FirstFloor.ModernUI.Windows.Controls {
+namespace FirstFloor.ModernUI.Windows.Attached {
     public static class FocusAdvancement {
         public static bool GetAdvancesByEnterKey(DependencyObject obj) {
             return (bool)obj.GetValue(AdvancesByEnterKeyProperty);
