@@ -445,6 +445,7 @@ fixme:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
     - replays with "[" or "]" in name
     - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
+    - contextmenu on mouseup/down only
 
 todo:
     - combine watchers for CM data directory into one?
@@ -516,7 +517,14 @@ todo:
             - hidden steering wheel
             - hud configuration
             - quickly switchable controls configs?
-        - RSR?
+        - RSR
+            - built-in part
+                - start the race
+                - install setups
+                - share setups?
+            - chrome extension 
+                - start the race
+                - install setups
     - change IDs (especially for skins)
 
     + go buttons keyboard shortcut
@@ -564,9 +572,13 @@ todo:
     - context menu for lists in aclistpages
         - reload list
     - context menu for adding new filters
-        - in this tab/as a new tab (+ctrl)
+        - in this tab/as a new tab (+ctrl)?
         - tags
         - properties
+            + cars
+            - tracks
+            - showrooms
+            - skins
 
     - update years database
 
