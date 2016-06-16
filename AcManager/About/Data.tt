@@ -23,7 +23,10 @@ namespace AcManager.About {<#
     public static class <#= className #> {
         public static readonly PieceOfInformation[] Entries = {<#
             
-        foreach (var entry in Directory.GetFiles(sub, "*.txt")){
+        foreach (var entry in Directory.GetFiles(sub, "*.txt")
+                .Select(x => new FileInfo(x))
+                .OrderBy(f => f.LastWriteTime.Year <= 1601 ? f.CreationTime : f.LastWriteTime)
+                .Select(x => x.FullName)){
             var lines = File.ReadAllLines(entry);
             string sid = null;
             string id = null;
