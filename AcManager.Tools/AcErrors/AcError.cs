@@ -32,7 +32,8 @@ namespace AcManager.Tools.AcErrors {
 
             BaseException = args.OfType<Exception>().FirstOrDefault();
 
-            if (type != AcErrorType.Data_JsonIsMissing || !Equals(args.FirstOrDefault(), "ui_skin.json")) {
+            if (Category != AcErrorCategory.CarSkin &&
+                    (type != AcErrorType.Data_JsonIsMissing || !Equals(args.FirstOrDefault(), "ui_skin.json"))) {
                 Logging.Write("[ACERROR] " + Message);
             }
 
