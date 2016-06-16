@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using AcManager.Pages.Windows;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
 
@@ -26,10 +25,10 @@ namespace AcManager.Pages.About {
         }
 
         private static void OnPieceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((PieceOfInformationBlock)o).OnPieceChanged((PieceOfInformation)e.OldValue, (PieceOfInformation)e.NewValue);
+            ((PieceOfInformationBlock)o).OnPieceChanged((PieceOfInformation)e.NewValue);
         }
 
-        private void OnPieceChanged(PieceOfInformation oldValue, PieceOfInformation newValue) {
+        private void OnPieceChanged(PieceOfInformation newValue) {
             MarkAsRead(newValue).Forget();
         }
 

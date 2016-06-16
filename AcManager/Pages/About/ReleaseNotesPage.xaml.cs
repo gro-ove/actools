@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Windows.Data;
 using AcManager.About;
+using AcManager.Internal;
+using AcManager.Tools.About;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -19,17 +21,17 @@ namespace AcManager.Pages.About {
 
         public class ReleaseNotesPageViewModel : NotifyPropertyChanged, IComparer {
             public ReleaseNotesPageViewModel() {
-                NotesList = new ListCollectionView(ReleaseNotes.Notes) { CustomSort = this };
+                NotesList = new ListCollectionView(ReleaseNotes.Entries.Where(x => !x.IsLimited || AppKeyHolder.IsAllRight).ToList()) { CustomSort = this };
                 NotesList.MoveCurrentToFirst();
             }
 
             private RelayCommand _markAllAsReadCommand;
 
             public RelayCommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new RelayCommand(o => {
-                foreach (var note in ReleaseNotes.Notes.Where(x => x.IsNew)) {
+                foreach (var note in ReleaseNotes.Entries.Where(x => x.IsNew)) {
                     note.MarkAsRead();
                 }
-            }, o => ReleaseNotes.Notes.Any(x => x.IsNew)));
+            }, o => ReleaseNotes.Entries.Any(x => x.IsNew)));
 
             private ListCollectionView _notesList;
 
@@ -43,7 +45,7 @@ namespace AcManager.Pages.About {
             }
 
             public int Compare(object x, object y) {
-                return -((ReleaseNotes)x).Version.CompareAsVersionTo(((ReleaseNotes)y).Version);
+                return -((PieceOfInformation)x).Version.CompareAsVersionTo(((PieceOfInformation)y).Version);
             }
         }
     }

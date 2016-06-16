@@ -93,7 +93,7 @@ namespace AcManager.Pages.Selected {
                 }
 
                 if (!ValuesStorage.GetBool(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
-                        ImportantTips.Tips.GetByIdOrDefault("trackPreviews")?.Details, "How-To", MessageBoxButton.OK) !=
+                        ImportantTips.Entries.GetByIdOrDefault("trackPreviews")?.Content, "How-To", MessageBoxButton.OK) !=
                         MessageBoxResult.OK) {
                     return;
                 }

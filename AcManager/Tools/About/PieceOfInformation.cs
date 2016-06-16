@@ -3,23 +3,28 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.About {
-    public class PieceOfInformation : Displayable, IWithId {
-        private readonly string _keyIsNotNew;
+    public sealed class PieceOfInformation : Displayable, IWithId {
+        private readonly string _sid;
 
-        public sealed override string DisplayName { get; set; }
-
-        public PieceOfInformation(string displayName, string details, string id = null) {
-            _keyIsNotNew = "PieceOfInformation.IsNotNew_" + displayName.Length + "_" + displayName.GetHashCode() + "_" + details.GetHashCode();
+        public PieceOfInformation(string sid, string id, string displayName, string version, string content, bool limited) {
+            _sid = "PieceOfInformation.IsNotNew_" + sid;
             Id = id;
 
-            Details = details;
             DisplayName = displayName;
-            IsNew = !ValuesStorage.GetBool(_keyIsNotNew);
+            Content = content;
+            Version = version;
+            IsLimited = limited;
+
+            IsNew = !ValuesStorage.GetBool(_sid);
         }
 
-        public string Details { get; }
+        public string Id { get; }
 
-        public string Id { get; set; }
+        public string Version { get; }
+
+        public string Content { get; }
+
+        public bool IsLimited { get; }
 
         private bool _isNew;
 
@@ -35,7 +40,7 @@ namespace AcManager.Tools.About {
         public void MarkAsRead() {
             IsNew = false;
             AboutHelper.Instance.CheckIfThereIsSomethingNew();
-            ValuesStorage.Set(_keyIsNotNew, true);
+            ValuesStorage.Set(_sid, true);
         }
     }
 }

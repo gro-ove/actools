@@ -1,0 +1,16 @@
+name: Assetto Corsa 1.5.8
+sid: 19_1647635780_-761346372
+
+Auto-update Previews part was updated again. Also, some new options were added. One of them, “Shot in 3840×2160”, makes previews much smoother and nicer (but may take a bit more time). 
+
+ [img="http://i.imgur.com/IMvD9Y1.jpg|320"]Example of a new preview[/img]
+
+Another big change is a special protocol which allows to install mods directly from different sites (and [url="http://jsfiddle.net/x4fab/ppp0rjkm/1/embedded/result/"]something[/url] [url="http://jsfiddle.net/x4fab/8dcj8b37/embedded/result/"]else[/url]).
+
+ [img="http://i.imgur.com/bWC2e3s.jpg|349"]AssettoCorsa.club[/img]
+
+ [img="http://i.imgur.com/0iPlIYH.jpg|349"]RaceDepartment.com[/img]
+
+If you want to get those buttons, please, install [url="https://greasyfork.org/en/scripts/18779-actools-content-manager-helper"]this userscript[/url]. Works for [url="assettocorsa.club"]AssettoCorsa.club[/url] and [url="racedepartment.com"]RaceDepartment.com[/url].
+
+

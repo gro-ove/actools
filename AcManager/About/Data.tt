@@ -1,0 +1,76 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core.dll" #>
+<#@ Assembly Name="System.Xml.dll" #>
+<#@ Assembly Name="System.Xml.Linq.dll" #>
+<#@ Assembly Name="System.Windows.Forms.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>using AcManager.Tools.About;
+
+namespace AcManager.About {<#   
+    var location = Path.GetDirectoryName(this.Host.TemplateFile);
+    foreach (var sub in Directory.GetDirectories(location)){
+        var className = Path.GetFileName(sub);
+
+        #>
+
+    public static class <#= className #> {
+        public static readonly PieceOfInformation[] Entries = {<#
+            
+        foreach (var entry in Directory.GetFiles(sub, "*.txt")){
+            var lines = File.ReadAllLines(entry);
+            string sid = null;
+            string id = null;
+            string name = Path.GetFileNameWithoutExtension(entry);
+            string version = null;
+            bool limited = false;
+
+            var skip = 0;
+            foreach (var s in lines.Select(x => Regex.Match(x, @"^([a-z]+):\s*(.+)$")).TakeWhile(x => x.Success)){
+                skip++;
+
+                var v = s.Groups[2].Value.Trim();
+                switch (s.Groups[1].Value){
+                    case "sid": sid = v; break;
+                    case "id": id = v; break;
+                    case "version": version = v; break;
+                    case "limited": limited = v == "true"; break;
+                    case "name": {
+                        if (version == null){
+                            version = name;
+                        }
+                        name = v; 
+                        break;
+                    }
+                }
+            }
+
+            var content = string.Join("\n", lines.Skip(skip)).Trim();
+
+            if (sid == null){
+                sid = name.Length + "_" + name.GetHashCode() + "_" + content.GetHashCode();
+                File.WriteAllLines(entry, new[]{ "sid: " + sid }.Union(lines));
+            }
+            #>
+
+            new PieceOfInformation(<#= O(sid) #>, <#= O(id) #>, <#= O(name) #>, <#= O(version) #>, <#= O(content) #>, <#= O(limited) #>),<#
+        }
+
+        #>
+
+        };
+    }
+<# 
+}
+#>
+}
+<#+ 
+    string O(string s){ return s == null ? "null" : "@\"" + s.Replace("\"", "\"\"") + "\""; }
+    string O(bool s){ return s ? "true" : "false"; }
+#>

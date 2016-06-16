@@ -1,14 +1,16 @@
 ﻿sid: 21_1095401383_1831013213
-id: iNeedYourHelp
+id: trackPreviews
+limited: true
 
-Race will be started as usual, but instead of driving you need to make some picturesque shots (you'll be able to choose one of them later).
+If you want to generate a new preview image for any track, press “Update Preview” button on the track’s page in Content tab. Race will be started as usual, but instead of driving you need to make some picturesque shots (you’ll be able to choose one of them later).
 
 Hints:
  • Press F8 to make a shot;
- • Press F7 to switch to a Free Camera mode;
+ • Press F7 to switch to a Free Camera mode (you can enable it in AC settings);
  • In Free Camera mode use arrows to move camera around; also you may hold Ctrl or Shift to adjust its speed;
- • And, as usual, PageUp/PageDown allow to tune exposure.
+ • And, as usual, PageUp/PageDown allow to tune exposure;
+ • App will cut and resize them to match Kunos previews automatically.
 
- [img=""http://i.imgur.com/LzLLjAw.png|355""]Example[/img]
+ [img="http://i.imgur.com/LzLLjAw.png|355"]Example[/img]
 
 Good luck!

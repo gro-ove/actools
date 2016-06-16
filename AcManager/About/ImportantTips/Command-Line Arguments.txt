@@ -1,4 +1,4 @@
-﻿id: 22_-1950881468_1645627313
+﻿sid: 22_-1950881468_1645627313
 
 CM has a bunch of special options you can set by using command-line arguments. Or just create a new [i]Arguments.txt[/i] file in [i]…\AppData\Local\AcTools Content Manager[/i] and write them in it (one argument per line).
 

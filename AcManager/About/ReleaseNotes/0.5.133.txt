@@ -1,0 +1,16 @@
+name: New Custom Showroom
+sid: 19_-1105440277_-1065672958
+
+Old AcTools Custom Showroom is now replaced by the brand new Custom Showroom!
+
+ [img="http://i.imgur.com/UB2cku6.png|360"]Lite Showroom for skins[/img]
+
+No more those terrible bugs with normals, very different shaders and poor optimization. This code is so nice it can be used for two different showrooms instead of only one! Apart from simple (and DirectX 10-compatible) Lite Showroom here is also Fancy Showroom. It’s very heavy, poorly optimized and needed mostly for experiments, but still.
+
+ [img="http://i.imgur.com/HqDvMBP.png|360"]Day (SSLR!)[/img]
+
+ [img="http://i.imgur.com/3RJrHsV.png|360"]Night (dynamic lighting!)[/img]
+
+Other features such as Ambient Shadow or Track Map renderers will be ported soon.
+
+
