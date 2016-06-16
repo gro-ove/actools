@@ -29,6 +29,7 @@
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -64,6 +65,15 @@
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>3D119A881BD645AA0C6CAF608319085E7E16D35D</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>AcManager_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
@@ -803,6 +813,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="AcManager_TemporaryKey.pfx" />
     <None Include="app.config" />
     <None Include="app.manifest" />
     <None Include="Assets\Data\AssistsGamer.cmpreset" />
@@ -886,24 +897,24 @@
     <Resource Include="Assets\Img\CarSetups.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="About\Data.tt">
+    <None Include="About\Data.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Data.cs</LastGenOutput>
-    </Content>
-    <Content Include="About\ImportantTips\I Need Your Help!.txt" />
-    <Content Include="About\ImportantTips\Track Previews How-To.txt" />
-    <Content Include="About\ImportantTips\Starters.txt" />
-    <Content Include="About\ImportantTips\Command-Line Arguments.txt" />
-    <Content Include="About\ReleaseNotes\0.2.69.txt" />
-    <Content Include="About\ReleaseNotes\0.3.70.txt" />
-    <Content Include="About\ReleaseNotes\0.4.111.txt" />
-    <Content Include="About\ReleaseNotes\0.4.71.txt" />
-    <Content Include="About\ReleaseNotes\0.4.79.txt" />
-    <Content Include="About\ReleaseNotes\0.5.123.txt" />
-    <Content Include="About\ReleaseNotes\0.5.130.txt" />
-    <Content Include="About\ReleaseNotes\0.5.133.txt" />
-    <Content Include="About\ReleaseNotes\0.5.207.txt" />
-    <Content Include="About\ReleaseNotes\0.5.234.txt" />
+    </None>
+    <None Include="About\ImportantTips\I Need Your Help!.txt" />
+    <None Include="About\ImportantTips\Track Previews How-To.txt" />
+    <None Include="About\ImportantTips\Starters.txt" />
+    <None Include="About\ImportantTips\Command-Line Arguments.txt" />
+    <None Include="About\ReleaseNotes\0.2.69.txt" />
+    <None Include="About\ReleaseNotes\0.3.70.txt" />
+    <None Include="About\ReleaseNotes\0.4.111.txt" />
+    <None Include="About\ReleaseNotes\0.4.71.txt" />
+    <None Include="About\ReleaseNotes\0.4.79.txt" />
+    <None Include="About\ReleaseNotes\0.5.123.txt" />
+    <None Include="About\ReleaseNotes\0.5.130.txt" />
+    <None Include="About\ReleaseNotes\0.5.133.txt" />
+    <None Include="About\ReleaseNotes\0.5.207.txt" />
+    <None Include="About\ReleaseNotes\0.5.234.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
