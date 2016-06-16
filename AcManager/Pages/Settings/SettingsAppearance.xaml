@@ -24,6 +24,11 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            
+            <DockPanel>
+                <Label>Custom color:</Label>
+                <TextBox Text="{Binding AppAppearanceManager.AccentColorDisplayName}" />
+            </DockPanel>
 
             <DockPanel>
                 <Label>Theme:</Label>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
@@ -133,11 +132,46 @@ namespace AcManager.Tools.Managers {
         }
 
         public static bool CheckDirectory(string directory) {
-            if (directory == null || (!OptionDisableChecking &&
-                    (!Directory.Exists(directory) || !Directory.Exists(Path.Combine(directory, "apps", "python")) ||
-                            !Directory.Exists(Path.Combine(directory, "content", "cars")) ||
-                            !Directory.Exists(Path.Combine(directory, "content", "tracks")) || !File.Exists(Path.Combine(directory, "acs.exe"))))) {
+            string s;
+            return CheckDirectory(directory, out s);
+        }
+
+        public static bool CheckDirectory(string directory, out string reason) {
+            if (directory == null) {
+                reason = "Directory is not defined";
                 return false;
+            }
+
+            if (!OptionDisableChecking) {
+                if (!Directory.Exists(directory)) {
+                    reason = "Directory is missing";
+                    return false;
+                }
+
+                if (!Directory.Exists(Path.Combine(directory, "apps"))) {
+                    reason = "Directory “apps” is missing";
+                    return false;
+                }
+
+                if (!Directory.Exists(Path.Combine(directory, "content"))) {
+                    reason = "Directory “content” is missing";
+                    return false;
+                }
+
+                if (!Directory.Exists(Path.Combine(directory, "content", "cars"))) {
+                    reason = "Directory “content/cars” is missing";
+                    return false;
+                }
+
+                if (!Directory.Exists(Path.Combine(directory, "content", "tracks"))) {
+                    reason = "Directory “content/tracks” is missing";
+                    return false;
+                }
+
+                if (!File.Exists(Path.Combine(directory, "acs.exe"))) {
+                    reason = "File “acs.exe” is missing";
+                    return false;
+                }
             }
 
             var launcher = Path.Combine(directory, "AssettoCorsa.exe");
@@ -155,7 +189,13 @@ namespace AcManager.Tools.Managers {
                 }
             }
 
-            return File.Exists(launcher);
+            if (!File.Exists(launcher)) {
+                reason = "File “AssettoCorsa.exe” is missing";
+                return false;
+            }
+
+            reason = null;
+            return true;
         }
 
         public static string TryToFind() {

@@ -9,7 +9,7 @@
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="FontSize" Value="10" />
         <Setter Property="Margin" Value="0 4 0 0" />
-        <Setter Property="Background" Value="#FFdc000c" />
+        <Setter Property="Background" Value="#888888" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="Padding" Value="2" />
     </Style>

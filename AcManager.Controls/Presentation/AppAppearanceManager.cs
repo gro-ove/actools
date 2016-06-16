@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -90,8 +89,19 @@ namespace AcManager.Controls.Presentation {
                 if (Equals(value, _accentColor)) return;
                 _accentColor = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(AccentColorDisplayName));
                 ValuesStorage.Set(KeyAccentColor, value);
                 AppearanceManager.Current.AccentColor = value;
+            }
+        }
+
+        public string AccentColorDisplayName {
+            get { return AccentColor.ToHexString(); }
+            set {
+                var v = value.ToColor();
+                if (v.HasValue) {
+                    AccentColor = v.Value;
+                }
             }
         }
 

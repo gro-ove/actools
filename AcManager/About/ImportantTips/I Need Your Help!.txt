@@ -1,0 +1,6 @@
+﻿sid: 17_-113008927_-924009265
+id: trackPreviews
+
+Since AC 1.6 SSE stoped working, and other two (Tricky and Starter+) require write-access to root AC folder, which could be unavailable. Also, both of them require the default launcher (AssettoCorsa.exe) to be replaced, and it could cause some troubles.
+
+So, I'm asking Kunos to add some official support for custom launchers. [url=""http://www.assettocorsa.net/forum/index.php?threads/alternative-launchers-official-support.32894/""]Please, show that you're interested in it![/url]

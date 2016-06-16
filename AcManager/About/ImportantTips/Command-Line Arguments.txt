@@ -1,0 +1,14 @@
+﻿id: 22_-1950881468_1645627313
+
+CM has a bunch of special options you can set by using command-line arguments. Or just create a new [i]Arguments.txt[/i] file in [i]…\AppData\Local\AcTools Content Manager[/i] and write them in it (one argument per line).
+
+ [img="http://i.imgur.com/qO7oOVn.png|240"]Example of that file[/img]
+
+Here are some of the arguments:
+ [b][mono]--ignore-system-proxy=false[/mono][/b] — use proxy settings from Internet Explorer;
+ [b][mono]--disable-logging[/mono][/b] — please, don’t use it now, app could crash in any time, and logs could be very helpful;
+ [b][mono]--storage-location=LOCATION[/mono][/b] — change location of data folder (of course, this one should be used only as a command-line argument);
+ [b][mono]--ping-concurrency=30[/mono][/b] — number of servers being pinged concurrently;
+ [b][mono]--enable-race-ini-restoration=false[/mono][/b] — don’t revert changes in [i]race.ini[/i].
+
+You can see the full list [url="https://github.com/gro-ove/actools/blob/master/AcManager/AppFlag.cs"]here[/url].

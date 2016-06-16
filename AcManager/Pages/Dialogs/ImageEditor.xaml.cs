@@ -3,9 +3,8 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using AcManager.Controls.Helpers;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Pages.Dialogs {
     public partial class ImageEditor : ModernDialog {

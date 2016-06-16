@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace AcManager.Controls.Helpers {
+namespace FirstFloor.ModernUI.Helpers {
     public static class BitmapSourceExtension {
         public static BitmapFrame Resize(this BitmapSource bitmap, int width, int height, BitmapScalingMode scalingMode = BitmapScalingMode.HighQuality) {
             var group = new DrawingGroup();

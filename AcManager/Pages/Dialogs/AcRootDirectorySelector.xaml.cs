@@ -19,7 +19,9 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, new CombinedCommand(Model.ApplyCommand, new RelayCommand(o => {
-                    new MainWindow().Show();
+                    new MainWindow {
+                        Owner = null
+                    }.Show();
                     CloseWithResult(MessageBoxResult.OK);
                 }))),
                 CancelButton
@@ -28,6 +30,9 @@ namespace AcManager.Pages.Dialogs {
 
         public class AcRootDirectorySelectorViewModel : NotifyPropertyChanged, INotifyDataErrorInfo {
             public bool FirstRun { get; private set; }
+
+            private bool _isValueAcceptable;
+            private string _previousInacceptanceReason;
 
             public bool IsValueAcceptable {
                 get { return _isValueAcceptable; }
@@ -39,8 +44,6 @@ namespace AcManager.Pages.Dialogs {
                     ApplyCommand.OnCanExecuteChanged();
                 }
             }
-            
-            private bool _isValueAcceptable;
 
             private string _value;
 
@@ -49,15 +52,18 @@ namespace AcManager.Pages.Dialogs {
                 set {
                     if (Equals(value, _value)) return;
                     _value = value;
+                    _isValueAcceptable = AcRootDirectory.CheckDirectory(_value, out _previousInacceptanceReason);
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsValueAcceptable));
                     OnErrorsChanged();
-                    IsValueAcceptable = AcRootDirectory.CheckDirectory(_value);
+                    ApplyCommand.OnCanExecuteChanged();
                 }
             }
 
             private RelayCommand _applyCommand;
 
             public RelayCommand ApplyCommand => _applyCommand ?? (_applyCommand = new RelayCommand(o => {
+                Logging.Write("APPLY ACROOT DIRECTORY VALUE: " + Value);
                 AcRootDirectory.Instance.Value = Value;
             }, o => IsValueAcceptable));
 
@@ -72,7 +78,7 @@ namespace AcManager.Pages.Dialogs {
 
             public IEnumerable GetErrors(string propertyName) {
                 return propertyName == nameof(Value) ? (string.IsNullOrWhiteSpace(Value) ? new[] { "Required value" } :
-                        IsValueAcceptable ? null : new[] { "Folder is unacceptable" }) : null;
+                        IsValueAcceptable ? null : new[] { _previousInacceptanceReason ?? "Folder is unacceptable" }) : null;
             }
 
             public bool HasErrors => string.IsNullOrWhiteSpace(Value) || !IsValueAcceptable;
