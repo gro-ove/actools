@@ -13,6 +13,8 @@ using AcManager.Tools.Helpers.Api.Kunos;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using SharpCompress.Compressor;
+using SharpCompress.Compressor.Deflate;
 
 namespace AcManager.Tools.Helpers.Api {
     public partial class KunosApiProvider {
@@ -26,8 +28,13 @@ namespace AcManager.Tools.Helpers.Api {
 
         public static int ServersNumber => InternalUtils.KunosServersNumber;
 
+        private static bool _skipProxyUri;
+
         [CanBeNull]
         private static string ServerUri => InternalUtils.GetKunosServerUri(SettingsHolder.Online.OnlineServerId);
+
+        [CanBeNull]
+        private static string ServerProxyUri => InternalUtils.GetKunosServerProxyUri();
 
         private static void NextServer() {
             InternalUtils.MoveToNextKunosServer();
@@ -36,11 +43,11 @@ namespace AcManager.Tools.Helpers.Api {
 
         private static HttpRequestCachePolicy _cachePolicy;
 
-        private static string Load(string uri) {
-            return OptionUseWebClient ? LoadUsingClient(uri) : LoadUsingRequest(uri);
+        private static string Load(string uri, bool deflated = false) {
+            return OptionUseWebClient ? LoadUsingClient(uri, deflated) : LoadUsingRequest(uri, deflated);
         }
 
-        private static string LoadUsingClient(string uri) {
+        private static string LoadUsingClient(string uri, bool deflated) {
             using (var client = new WebClient {
                 Headers = {
                     [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent()
@@ -50,7 +57,7 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
         
-        private static string LoadUsingRequest(string uri) {
+        private static string LoadUsingRequest(string uri, bool deflated) {
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
             request.UserAgent = InternalUtils.GetKunosUserAgent();
@@ -77,8 +84,16 @@ namespace AcManager.Tools.Helpers.Api {
                         throw new Exception("ResponseStream = null");
                     }
 
-                    using (var reader = new StreamReader(stream, Encoding.UTF8)) {
-                        result = reader.ReadToEnd();
+                    if (deflated) {
+                        using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
+                            using (var reader = new StreamReader(deflateStream, Encoding.UTF8)) {
+                                result = reader.ReadToEnd();
+                            }
+                        }
+                    } else {
+                        using (var reader = new StreamReader(stream, Encoding.UTF8)) {
+                            result = reader.ReadToEnd();
+                        }
                     }
                 }
             }
@@ -98,10 +113,11 @@ namespace AcManager.Tools.Helpers.Api {
             if (SteamIdHelper.Instance.Value == null) throw new Exception("Steam ID is missing");
 
             while (ServerUri != null) {
-                var requestUri = $"http://{ServerUri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
+                var uri = SettingsHolder.Online.UseFastServer && !_skipProxyUri ? ServerProxyUri : ServerUri;
+                var requestUri = $"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
                 try {
                     var watch = Stopwatch.StartNew();
-                    var data = Load(requestUri);
+                    var data = Load(requestUri, SettingsHolder.Online.UseFastServer);
                     var loadTime = watch.Elapsed;
                     watch.Restart();
                     var parsed = JsonConvert.DeserializeObject<ServerInformation[]>(data);
@@ -112,7 +128,11 @@ namespace AcManager.Tools.Helpers.Api {
                     Logging.Warning("cannot get servers list: {0}\n{1}", requestUri, e);
                 }
 
-                NextServer();
+                if (SettingsHolder.Online.UseFastServer && !_skipProxyUri) {
+                    _skipProxyUri = true;
+                } else {
+                    NextServer();
+                }
             }
 
             return null;

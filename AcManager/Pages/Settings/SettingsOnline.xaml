@@ -16,16 +16,22 @@
             </CheckBox>
 
             <DockPanel>
-                <Label>Use server:</Label>
+                <Label>Server:</Label>
                 <ComboBox ItemsSource="{Binding Holder.OnlineServers}" SelectedItem="{Binding Holder.OnlineServer}" DisplayMemberPath="DisplayName" />
             </DockPanel>
+            
+            <!--<CheckBox IsChecked="{Binding Holder.UseFastServer}" attached:LimitedService.Limited="True">
+                <Label>Use Fast Caching Server (experimental)</Label>
+            </CheckBox>-->
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Adding by IP:</TextBlock>
 
             <DockPanel>
                 <Label>Scan ports:</Label>
-                <TextBox Text="{Binding Holder.PortsEnumeration}" ToolTip="Some enumeration like '9000-10000'" attached:WatermarkService.Watermark="?"
-                        attached:FocusAdvancement.AdvancesByEnterKey="True" />
+                <TextBox Text="{Binding Holder.PortsEnumeration}" attached:WatermarkService.Watermark="?"
+                        attached:FocusAdvancement.AdvancesByEnterKey="True">
+                    <TextBox.ToolTip>Some enumeration like “9000-10000”</TextBox.ToolTip>
+                </TextBox>
             </DockPanel>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">LAN:</TextBlock>
@@ -36,8 +42,10 @@
 
             <DockPanel>
                 <Label>Scan ports:</Label>
-                <TextBox Text="{Binding Holder.LanPortsEnumeration}" ToolTip="Some enumeration like '9600,9602,9700-9750'"
-                        attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
+                <TextBox Text="{Binding Holder.LanPortsEnumeration}"
+                         attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True">
+                    <TextBox.ToolTip>Some enumeration like “9600,9602,9700-9750”</TextBox.ToolTip>
+                </TextBox>
             </DockPanel>
 
             <DockPanel>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Internal;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Addons;
@@ -76,6 +77,15 @@ namespace AcManager.Tools.Helpers {
                 set {
                     if (Equals(value, RememberPasswords)) return;
                     ValuesStorage.Set("Settings.OnlineSettings.RememberPasswords", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public bool UseFastServer {
+                get { return AppKeyHolder.IsAllRight && ValuesStorage.GetBool("Settings.OnlineSettings.UseFastServer", false); }
+                set {
+                    if (Equals(value, UseFastServer)) return;
+                    ValuesStorage.Set("Settings.OnlineSettings.UseFastServer", value);
                     OnPropertyChanged();
                 }
             }

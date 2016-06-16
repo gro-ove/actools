@@ -37,6 +37,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             var c = (UIElement)sender;
             if (GetLimited(c)) {
                 Add(c);
+                c.IsEnabled = false;
             }
         }
 
