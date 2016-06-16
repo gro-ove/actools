@@ -89,3 +89,4 @@ AcManager.Tools/Helpers/Api/CmHelpersProvider_Consts.cs
 */obj~
 *.tmp_proj
 *.DotSettings.user
+*.DotSettings
