@@ -30,8 +30,10 @@ Set of utils and apps designed for Assetto Corsa. If you have any interest in th
 - ### [FirstFloor.ModernUI](https://github.com/gro-ove/actools/tree/master/FirstFloor.ModernUI)
     Main UI library. Slightly modified version of [Modern UI for WPF (MUI)](https://github.com/firstfloorsoftware/mui).
 
+    [![New colorpicker control](http://i.imgur.com/5ZJnszR.png)](http://i.imgur.com/5ZJnszR.png)
+
 - ### [AcManager](https://github.com/gro-ove/actools/tree/master/AcManager)
     App itself.
 
-    [![Content Manager](https://ascobash.files.wordpress.com/2015/10/content-manager_2016-02-15_02-31-14.png?w=320)](https://ascobash.files.wordpress.com/2015/10/content-manager_2016-02-15_02-31-14.png)
-    [![Content Manager](https://ascobash.files.wordpress.com/2016/02/content-manager_2016-02-18_20-49-56.png?w=320)](https://ascobash.files.wordpress.com/2016/02/content-manager_2016-02-18_20-49-56.png)
+    [![Content Manager](http://i.imgur.com/WsovqYV.png)](http://i.imgur.com/WsovqYV.png)
+    [![Content Manager](http://i.imgur.com/wvM1SMY.png)](http://i.imgur.com/wvM1SMY.png)
