@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:AcManager.Controls" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:acSettingsControls="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools">
+        xmlns:acSettingsControls="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -87,40 +88,40 @@
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
                         Margin="0 0 0 4">
-                    <controls:ValueLabel Value="{Binding DegressOfRotation}" Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left">Degress</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding DegressOfRotation}" Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0" Width="120"
+                            DockPanel.Dock="Left">Degress</mui:ValueLabel>
                     <Slider Minimum="40" Maximum="1180" Value="{Binding DegressOfRotation}" TickFrequency="20" TickPlacement="None" IsSnapToTickEnabled="True" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                    <controls:ValueLabel Value="{Binding RangeFrom}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left">From</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding RangeFrom}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                            DockPanel.Dock="Left">From</mui:ValueLabel>
                     <Slider Minimum="0" Maximum="100" Value="{Binding RangeFrom}" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                    <controls:ValueLabel Value="{Binding RangeTo}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left">To</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding RangeTo}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                            DockPanel.Dock="Left">To</mui:ValueLabel>
                     <Slider Minimum="0" Maximum="100" Value="{Binding RangeTo}" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                    <controls:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left">Gamma</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0" Width="120"
+                            DockPanel.Dock="Left">Gamma</mui:ValueLabel>
                     <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
                         Margin="0 0 0 4">
-                    <controls:ValueLabel Value="{Binding Filter}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left">Filter</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Filter}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                            DockPanel.Dock="Left">Filter</mui:ValueLabel>
                     <Slider Minimum="0" Maximum="100" Value="{Binding Filter}" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
                         Margin="0 0 0 4">
-                    <controls:ValueLabel Value="{Binding SpeedSensitivity}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left">Speed sensitivity</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SpeedSensitivity}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                            DockPanel.Dock="Left">Speed sensitivity</mui:ValueLabel>
                     <Slider Minimum="0" Maximum="100" Value="{Binding SpeedSensitivity}" />
                 </DockPanel>
             </StackPanel>

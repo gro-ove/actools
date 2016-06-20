@@ -8,7 +8,8 @@
     </UserControl.Resources>
     <ScrollViewer>
         <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
-            <ListBox ItemsSource="{Binding AppAppearanceManager.AccentColors}" SelectedItem="{Binding AppAppearanceManager.AccentColor, Mode=TwoWay}" Margin="0 0 0 16">
+            <ListBox ItemsSource="{Binding AppAppearanceManager.AccentColors}" SelectedItem="{Binding AppAppearanceManager.AccentColor, Mode=TwoWay}"
+                    Margin="0 0 0 16">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel MaxWidth="{Binding ActualWidth, ElementName=Panel}" />
@@ -24,10 +25,10 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            
+
             <DockPanel>
-                <Label>Custom color:</Label>
-                <TextBox Text="{Binding AppAppearanceManager.AccentColorDisplayName}" />
+                <Label>Color:</Label>
+                <mui:ColorPicker Color="{Binding AppAppearanceManager.AccentColor}" DisplayColor="{Binding AppAppearanceManager.AccentDisplayColor}" />
             </DockPanel>
 
             <DockPanel>

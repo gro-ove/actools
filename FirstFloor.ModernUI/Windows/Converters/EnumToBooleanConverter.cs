@@ -20,7 +20,13 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
         
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            throw new NotSupportedException();
+            if (value == null || parameter == null) {
+                return null;
+            }
+
+            var useValue = (bool)value;
+            var targetValue = parameter.ToString();
+            return useValue ? Enum.Parse(targetType, targetValue) : null;
         }
     }
 }

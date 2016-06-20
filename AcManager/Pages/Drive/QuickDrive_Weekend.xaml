@@ -34,13 +34,13 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
-            <controls:ValueLabel Value="{Binding LapsNumber}"
-                    Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter=' lap'}">Race duration</controls:ValueLabel>
+            <mui:ValueLabel Value="{Binding LapsNumber}"
+                    Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter=' lap'}">Race duration</mui:ValueLabel>
             <Slider Minimum="1" Maximum="{Binding LapsNumberMaximumLimited}" Value="{Binding LapsNumber}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0">
-            <controls:ValueLabel Value="{Binding AiLevel}" Postfix='%'>Opponents strength</controls:ValueLabel>
+            <mui:ValueLabel Value="{Binding AiLevel}" Postfix='%'>Opponents strength</mui:ValueLabel>
             <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevel}" />
         </StackPanel>
 
@@ -53,7 +53,7 @@
                             IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
                 </ContextMenu>
             </StackPanel.ContextMenu>
-            <controls:ValueLabel Value="{Binding AiLevelMin}" Postfix='%'>Opponents strength (min)</controls:ValueLabel>
+            <mui:ValueLabel Value="{Binding AiLevelMin}" Postfix='%'>Opponents strength (min)</mui:ValueLabel>
             <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevelMin}" />
         </StackPanel>
 
@@ -79,7 +79,7 @@
                 <ToolTip Content="{Binding TrackPitsNumber}" ContentStringFormat="Limited by number of pits available ({0})" />
             </StackPanel.ToolTip>
 
-            <controls:ValueLabel Value="{Binding OpponentsNumber}"
+            <mui:ValueLabel Value="{Binding OpponentsNumber}"
                     Postfix="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter=' opponent'}" />
             <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
         </StackPanel>
@@ -137,15 +137,15 @@
 
         <!--weekends stuff-->
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="1">
-            <controls:ValueLabel Value="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialSessionConverter}}"
+            <mui:ValueLabel Value="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialSessionConverter}}"
                     Postfix="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialPluralizingConverter}, ConverterParameter=' minute'}"
-                    Mode="IntegerOrZeroLabel">Practice</controls:ValueLabel>
+                    Mode="IntegerOrZeroLabel">Practice</mui:ValueLabel>
             <Slider Minimum="0" Maximum="90" Value="{Binding PracticeDuration}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="4" Grid.Column="1">
-            <controls:ValueLabel Value="{Binding QualificationDuration}" Mode="Positive"
-                    Postfix="{Binding QualificationDuration, Converter={StaticResource PluralizingConverter}, ConverterParameter=' minute'}">Qualification</controls:ValueLabel>
+            <mui:ValueLabel Value="{Binding QualificationDuration}" Mode="Positive"
+                    Postfix="{Binding QualificationDuration, Converter={StaticResource PluralizingConverter}, ConverterParameter=' minute'}">Qualification</mui:ValueLabel>
             <Slider Minimum="5" Maximum="90" Value="{Binding QualificationDuration}" />
         </StackPanel>
     </Grid>

@@ -50,7 +50,7 @@
             </CheckBox>
 
             <DockPanel Visibility="{Binding Video.FramerateLimitEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <controls:ValueLabel Value="{Binding Video.FramerateLimit}" Mode="Positive" Postfix=" FPS">Framerate</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Video.FramerateLimit}" Mode="Positive" Postfix=" FPS">Framerate</mui:ValueLabel>
                 <Slider Minimum="30" Maximum="240" Value="{Binding Video.FramerateLimit}" TickFrequency="21" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -110,13 +110,13 @@
                 </DockPanel>
 
                 <DockPanel>
-                    <controls:ValueLabel Value="{Binding Video.ColorSaturation}" Mode="Integer" Postfix="%">Saturation</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Video.ColorSaturation}" Mode="Integer" Postfix="%">Saturation</mui:ValueLabel>
                     <Slider Minimum="0" Maximum="120" Value="{Binding Video.ColorSaturation}" TickFrequency="12" TickPlacement="BottomRight" />
                 </DockPanel>
 
                 <DockPanel>
-                    <controls:ValueLabel Value="{Binding Video.MotionBlur, Converter={x:Static helpers:AcSettingsHolder.ZeroToOffConverter}}"
-                            Mode="IntegerOrZeroLabel">Motion blur</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Video.MotionBlur, Converter={x:Static helpers:AcSettingsHolder.ZeroToOffConverter}}"
+                            Mode="IntegerOrZeroLabel">Motion blur</mui:ValueLabel>
                     <Slider Minimum="0" Maximum="12" Value="{Binding Video.MotionBlur}" TickFrequency="2" TickPlacement="BottomRight" />
                 </DockPanel>
 
@@ -149,7 +149,7 @@
                 </DockPanel>
 
                 <DockPanel>
-                    <controls:ValueLabel Value="{Binding Video.CubemapDistance}" Mode="Integer" Postfix=" m">Rendering distance</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Video.CubemapDistance}" Mode="Integer" Postfix=" m">Rendering distance</mui:ValueLabel>
                     <Slider Minimum="0" Maximum="1200" Value="{Binding Video.CubemapDistance}" TickFrequency="120" TickPlacement="BottomRight" />
                 </DockPanel>
             </StackPanel>

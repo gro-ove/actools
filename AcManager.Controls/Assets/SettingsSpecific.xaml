@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:AcManager.Controls">
+        xmlns:controls="clr-namespace:AcManager.Controls"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -33,7 +34,7 @@
                         <Setter Property="DockPanel.Dock" Value="Left" />
                     </Style>
 
-                    <Style TargetType="{x:Type controls:ValueLabel}" BasedOn="{StaticResource {x:Type controls:ValueLabel}}">
+                    <Style TargetType="{x:Type mui:ValueLabel}" BasedOn="{StaticResource {x:Type mui:ValueLabel}}">
                         <Setter Property="Padding" Value="0" />
                         <Setter Property="Margin" Value="0 0 16 0" />
                         <Setter Property="Width" Value="140" />

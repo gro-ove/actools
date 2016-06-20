@@ -51,7 +51,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
-                            <controls:ValueLabel Value="{Binding Value}" Mode="Integer" Postfix=" psi" Content="{Binding DisplayName}" Margin="0 0 0 4"
+                            <mui:ValueLabel Value="{Binding Value}" Mode="Integer" Postfix=" psi" Content="{Binding DisplayName}" Margin="0 0 0 4"
                                     Width="160" DockPanel.Dock="Left" />
                             <Slider Minimum="10" Maximum="50" Value="{Binding Value}" TickFrequency="4" TickPlacement="BottomRight" />
                         </DockPanel>
@@ -62,8 +62,8 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Fuel:</TextBlock>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding SelectedObject.Fuel}" Mode="Integer"
-                        Postfix="{Binding SelectedObject.Fuel, Converter={StaticResource PluralizingConverter}, ConverterParameter=' litre'}">Fuel</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding SelectedObject.Fuel}" Mode="Integer"
+                        Postfix="{Binding SelectedObject.Fuel, Converter={StaticResource PluralizingConverter}, ConverterParameter=' litre'}">Fuel</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="{Binding SelectedObject.FuelMaximum}" Value="{Binding SelectedObject.Fuel}"
                         TickFrequency="{Binding SelectedObject.FuelMaximum, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.1}"
                         TickPlacement="BottomRight" />

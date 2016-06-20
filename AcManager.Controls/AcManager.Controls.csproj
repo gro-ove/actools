@@ -109,7 +109,6 @@
     <Compile Include="UserControls\WebBrowserBlock.xaml.cs">
       <DependentUpon>WebBrowserBlock.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ValueLabel.cs" />
     <Compile Include="Converters\KunosCareerTypeToIconConverter.cs" />
     <Compile Include="Converters\PlaceToColorConverter.cs" />
     <Compile Include="Converters\RealismLevelToColorConverter.cs" />
@@ -287,10 +286,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\AcObjectErrorsSection.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\ValueLabel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

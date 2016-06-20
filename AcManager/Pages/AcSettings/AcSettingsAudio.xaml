@@ -1,12 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsAudio" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:internal="clr-namespace:AcManager.Internal;assembly=AcManager.Internal"
-             xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance acSettings:AcSettingsAudio+AcAudioViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -19,44 +14,44 @@
             </DockPanel>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" Mode="Integer" Postfix="%">Tyres offset</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" Mode="Integer" Postfix="%">Tyres offset</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="200" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
-            
+
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Levels:</TextBlock>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding Audio.LevelMaster, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Master</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Audio.LevelMaster, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Master</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelMaster}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding Audio.LevelTyres, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Tyres</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Audio.LevelTyres, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Tyres</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelTyres}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding Audio.LevelEngine, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Engine</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Audio.LevelEngine, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Engine</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelEngine}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding Audio.LevelSurfaces, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Surface</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Audio.LevelSurfaces, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Surface</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelSurfaces}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding Audio.LevelWind, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Wind</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Audio.LevelWind, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Wind</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelWind}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding Audio.LevelOpponents, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Opponents</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Audio.LevelOpponents, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Opponents</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelOpponents}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding Audio.LevelUi, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">UI</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Audio.LevelUi, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">UI</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelUi}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
         </StackPanel>

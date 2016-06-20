@@ -12,6 +12,7 @@ namespace AcManager.Controls.Presentation {
     public class AppAppearanceManager : NotifyPropertyChanged {
         public const string KeyTheme = "appearance_theme";
         public const string KeyAccentColor = "appearance_accentColor";
+        public const string KeyAccentDisplayColor = "appearance_accentColor_d";
         public const string KeySmallFont = "appearance_smallFont";
         public const string KeyPopupToolBars = "appearance_ThemePopupToolBars";
         public const string KeyFrameAnimation = "AppAppearanceManager.FrameAnimation";
@@ -33,6 +34,7 @@ namespace AcManager.Controls.Presentation {
             SelectedTheme = Themes.FirstOrDefault(x => x.Source == theme) ?? Themes.FirstOrDefault();
 
             AccentColor = ValuesStorage.GetColor(KeyAccentColor) ?? AccentColors.First();
+            AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
             SmallFont = ValuesStorage.GetBool(KeySmallFont);
             LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
             PopupToolBars = ValuesStorage.GetBool(KeyPopupToolBars);
@@ -89,19 +91,20 @@ namespace AcManager.Controls.Presentation {
                 if (Equals(value, _accentColor)) return;
                 _accentColor = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(AccentColorDisplayName));
                 ValuesStorage.Set(KeyAccentColor, value);
-                AppearanceManager.Current.AccentColor = value;
+                AppearanceManager.Current.SetAccentColorAsync(value);
             }
         }
 
-        public string AccentColorDisplayName {
-            get { return AccentColor.ToHexString(); }
+        private string _accentDisplayColor;
+
+        public string AccentDisplayColor {
+            get { return _accentDisplayColor; }
             set {
-                var v = value.ToColor();
-                if (v.HasValue) {
-                    AccentColor = v.Value;
-                }
+                if (Equals(value, _accentDisplayColor)) return;
+                _accentDisplayColor = value;
+                OnPropertyChanged();
+                ValuesStorage.Set(KeyAccentDisplayColor, value);
             }
         }
 

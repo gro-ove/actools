@@ -446,6 +446,10 @@ fixme:
     - replays with "[" or "]" in name
     - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
     - contextmenu on mouseup/down only
+    - setups button size
+    - laggy online tab
+    - switching from online tab
+    - fix copying
 
 todo:
     - combine watchers for CM data directory into one?
@@ -517,6 +521,7 @@ todo:
             - hidden steering wheel
             - hud configuration
             - quickly switchable controls configs?
+        - race results: total time
         - RSR
             - built-in part
                 - start the race
@@ -665,6 +670,9 @@ later:
         > skins, names, AI level, etc
 
     - color picker
+        + additinal switchable schemes
+        - pick color from screen
+
     - addons directory watching?
     - reducing image footprint
 

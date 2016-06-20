@@ -229,9 +229,11 @@ namespace AcTools.Utils {
         /// <param name="filename"></param>
         /// <returns></returns>
         public static string GetOriginalFilename(string filename) {
-            var fileInfo = new FileInfo(filename);
-            var result = fileInfo.Directory?.GetFiles(fileInfo.Name)[0].FullName ?? filename;
-            return result;
+            var directory = Path.GetDirectoryName(filename);
+            var name = Path.GetFileName(filename);
+            if (directory == null) return filename;
+            return Directory.GetFiles(directory, name).FirstOrDefault() ??
+                    Directory.GetDirectories(directory, name).FirstOrDefault() ?? filename;
         }
 
         /// <summary>

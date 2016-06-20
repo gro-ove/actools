@@ -20,17 +20,17 @@
                 <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Keyboard steering:</TextBlock>
 
                 <DockPanel>
-                    <controls:ValueLabel Value="{Binding Controls.KeyboardSteeringSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Steering speed</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Controls.KeyboardSteeringSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Steering speed</mui:ValueLabel>
                     <Slider Minimum="0.4" Maximum="3" Value="{Binding Controls.KeyboardSteeringSpeed}" TickFrequency="0.26" TickPlacement="BottomRight" />
                 </DockPanel>
 
                 <DockPanel>
-                    <controls:ValueLabel Value="{Binding Controls.KeyboardOppositeLockSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Opposite lock speed</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Controls.KeyboardOppositeLockSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Opposite lock speed</mui:ValueLabel>
                     <Slider Minimum="1" Maximum="5" Value="{Binding Controls.KeyboardOppositeLockSpeed}" TickFrequency="0.4" TickPlacement="BottomRight" />
                 </DockPanel>
 
                 <DockPanel>
-                    <controls:ValueLabel Value="{Binding Controls.KeyboardReturnRate, StringFormat='{}{0:F2}'}" Mode="Number">Return rate</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Controls.KeyboardReturnRate, StringFormat='{}{0:F2}'}" Mode="Number">Return rate</mui:ValueLabel>
                     <Slider Minimum="1" Maximum="5" Value="{Binding Controls.KeyboardReturnRate}" TickFrequency="0.4" TickPlacement="BottomRight" />
                 </DockPanel>
 
@@ -45,7 +45,7 @@
                 </CheckBox>
 
                 <DockPanel>
-                    <controls:ValueLabel Value="{Binding Controls.KeyboardMouseSteeringSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Steering speed</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Controls.KeyboardMouseSteeringSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Steering speed</mui:ValueLabel>
                     <Slider Minimum="0.1" Maximum="1" Value="{Binding Controls.KeyboardMouseSteeringSpeed}" TickFrequency="0.09" TickPlacement="BottomRight" />
                 </DockPanel>
 

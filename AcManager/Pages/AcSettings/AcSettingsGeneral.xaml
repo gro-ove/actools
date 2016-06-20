@@ -13,7 +13,7 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Margin="0 0 0 8">Exposure:</TextBlock>
 
             <DockPanel>
-                <controls:ValueLabel Value="{Binding Exposure.Value}" Postfix="%">Value</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Exposure.Value}" Postfix="%">Value</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="200" Value="{Binding Exposure.Value}" TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
             
@@ -32,7 +32,7 @@
                                 Text="{Binding Replay.RecommendedSize, StringFormat='{}Maximum size (recommended): {0} MB', TargetNullValue='?', FallbackValue='?'}" />
                     </ToolTip>
                 </DockPanel.ToolTip>
-                <controls:ValueLabel Value="{Binding Replay.MaxSize}" Mode="Positive" Postfix=" MB">Maximum size</controls:ValueLabel>
+                <mui:ValueLabel Value="{Binding Replay.MaxSize}" Mode="Positive" Postfix=" MB">Maximum size</mui:ValueLabel>
                 <Slider Minimum="10" Maximum="1000" Value="{Binding Replay.MaxSize}" TickFrequency="99" TickPlacement="BottomRight" />
             </DockPanel>
         </StackPanel>

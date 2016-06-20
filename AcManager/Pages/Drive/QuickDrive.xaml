@@ -72,7 +72,7 @@
                 <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="0"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
-                        <controls:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0">Time</controls:ValueLabel>
+                        <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0">Time</mui:ValueLabel>
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="Actual time is out of range, closest value is used" HorizontalAlignment="Right" />
@@ -108,11 +108,11 @@
 
                 <StackPanel Orientation="Vertical" Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
-                    <controls:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number" Postfix=" °C">Temperature
-                        <controls:ValueLabel.ToolTip>
+                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number" Postfix=" °C">Temperature
+                        <mui:ValueLabel.ToolTip>
                             <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{}Road temperature: {0:F1} °C" />
-                        </controls:ValueLabel.ToolTip>
-                    </controls:ValueLabel>
+                        </mui:ValueLabel.ToolTip>
+                    </mui:ValueLabel>
                     <Grid Margin="0 0 0 4">
                         <Grid.ToolTip>
                             <Grid>
@@ -161,7 +161,7 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2">
-                    <controls:ValueLabel Value="{Binding TimeMultipler}" Postfix="×">Time multipler</controls:ValueLabel>
+                    <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×">Time multipler</mui:ValueLabel>
                     <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
                             Margin="0 0 0 4" Name="TimeMultiplerSlider" TickFrequency="60" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>

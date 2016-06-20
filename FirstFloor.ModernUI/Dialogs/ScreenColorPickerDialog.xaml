@@ -1,0 +1,78 @@
+﻿<controls:ModernDialog x:Class="FirstFloor.ModernUI.Dialogs.ScreenColorPickerDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
+        xmlns:presentation="clr-namespace:FirstFloor.ModernUI.Presentation" xmlns:dialogs="clr-namespace:FirstFloor.ModernUI.Dialogs" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" MaxWidth="999999" MaxHeight="999999" Title="Pick a Color" ResizeMode="NoResize" WindowState="Maximized"
+        WindowStyle="None" SizeToContent="Manual" MouseMove="OnMouseMove" MouseLeave="OnMouseLeave" KeyUp="OnKeyUp" MouseLeftButtonUp="OnMouseLeftButtonUp"
+        d:DataContext="{d:DesignInstance dialogs:ScreenColorPickerDialog}">
+    <controls:ModernDialog.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <presentation:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </controls:ModernDialog.Resources>
+    <controls:ModernDialog.Template>
+        <ControlTemplate TargetType="controls:ModernDialog">
+            <Border Background="{DynamicResource WindowBackground}">
+                <AdornerDecorator>
+                    <ContentControl Content="{TemplateBinding Content}" />
+                </AdornerDecorator>
+            </Border>
+        </ControlTemplate>
+    </controls:ModernDialog.Template>
+    <controls:ModernDialog.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Flash" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.2" FillBehavior="HoldEnd" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+        <EventTrigger SourceName="UpperPart" RoutedEvent="FrameworkElement.MouseEnter">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" BeginTime="0:0:0.4"
+                            FillBehavior="HoldEnd" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+        <EventTrigger SourceName="UpperPart" RoutedEvent="FrameworkElement.MouseLeave">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" BeginTime="0:0:0.4"
+                            FillBehavior="HoldEnd" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </controls:ModernDialog.Triggers>
+    <Grid Cursor="{x:Static Cursors.Cross}">
+        <Image x:Name="CapturedImage" RenderOptions.BitmapScalingMode="NearestNeighbor" />
+        <TextBlock x:Name="Title" Style="{StaticResource Heading1}" Background="#55000000" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="20">
+            Pick a color
+        </TextBlock>
+        <Border x:Name="UpperPart" Background="Transparent" VerticalAlignment="Top" Height="200" />
+        <Border x:Name="Flash" Background="White" IsHitTestVisible="False" />
+        <Popup x:Name="FloatingTip" AllowsTransparency="True" Placement="Relative" IsHitTestVisible="False">
+            <Grid Margin="4" IsHitTestVisible="False">
+                <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+                <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+
+                <Border Background="{DynamicResource WindowBackground}" BorderThickness="1" BorderBrush="{DynamicResource WindowBorderActive}" Padding="5 4 5 4"
+                        CornerRadius="0">
+                    <DockPanel>
+                        <Rectangle DockPanel.Dock="Left" Width="16" Height="16" VerticalAlignment="Top" Margin="0 0 4 0"
+                                Fill="{Binding Color, Converter={x:Static controls:ColorPicker.ColorToBrushConverter}}" />
+                        <TextBlock Text="{Binding Color, Converter={x:Static controls:ColorPicker.ColorToStringConverter}}" FontWeight="Bold"
+                                DockPanel.Dock="Top" />
+                        <TextBlock>
+                            (<Run Text="{Binding Color.R, Mode=OneWay}" FontWeight="Bold" />,
+                            <Run Text="{Binding Color.G, Mode=OneWay}" FontWeight="Bold" />,
+                            <Run Text="{Binding Color.B, Mode=OneWay}" FontWeight="Bold" />)
+                        </TextBlock>
+                    </DockPanel>
+                </Border>
+            </Grid>
+        </Popup>
+    </Grid>
+</controls:ModernDialog>

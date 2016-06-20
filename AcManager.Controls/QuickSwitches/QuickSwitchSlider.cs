@@ -85,11 +85,6 @@ namespace AcManager.Controls.QuickSwitches {
             IsThumbDragging = false;
         }
 
-        private void Wrapper_MouseWheel(object sender, MouseWheelEventArgs e) {
-            Value += IsSnapToTickEnabled ? (e.Delta < 0 ? -TickFrequency : +TickFrequency)
-                    : (Maximum - Minimum) * e.Delta / 100d;
-        }
-
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e) {
             var position = Mouse.GetPosition(_wrapper);
             position.X -= _wrapper.ActualWidth / 2d;
@@ -98,6 +93,11 @@ namespace AcManager.Controls.QuickSwitches {
             var angle = Math.Atan2(Math.Abs(position.X), position.X > 0 ? -position.Y : position.Y) / Math.PI + (position.X > 0 ? 1d : 0d);
             var value = Minimum + (Maximum - Minimum) * angle / 2d;
             Value = IsSnapToTickEnabled ? value.Round(TickFrequency) : value;
+        }
+
+        private void Wrapper_MouseWheel(object sender, MouseWheelEventArgs e) {
+            Value += IsSnapToTickEnabled ? (e.Delta < 0 ? -TickFrequency : +TickFrequency)
+                    : (Maximum - Minimum) * e.Delta / 100d;
         }
 
         private class InnerConverter : IMultiValueConverter {

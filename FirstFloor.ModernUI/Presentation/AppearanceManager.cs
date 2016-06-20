@@ -1,10 +1,8 @@
-﻿using FirstFloor.ModernUI.Windows.Navigation;
-using System;
+﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class AppearanceManager : NotifyPropertyChanged {
@@ -105,6 +103,38 @@ namespace FirstFloor.ModernUI.Presentation {
                 }
 
                 OnPropertyChanged();
+            }
+        }
+
+        private DateTime _lastSet;
+        private bool _settingInProgress;
+        private Color? _actualColor;
+
+        public async void SetAccentColorAsync(Color value) {
+            if (_settingInProgress) {
+                _actualColor = value;
+                return;
+            }
+
+            if (DateTime.Now - _lastSet > TimeSpan.FromSeconds(1)) {
+                AccentColor = value;
+                _lastSet = DateTime.Now;
+            } else {
+                _settingInProgress = true;
+
+                try {
+                    do {
+                        if (_actualColor.HasValue) {
+                            value = _actualColor.Value;
+                            _actualColor = null;
+                        }
+                        await Task.Delay(300);
+                    } while (_actualColor.HasValue); 
+                    AccentColor = value;
+                    _lastSet = DateTime.Now;
+                } finally {
+                    _settingInProgress = false;
+                }
             }
         }
 
