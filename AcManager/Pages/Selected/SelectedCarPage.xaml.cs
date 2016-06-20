@@ -53,8 +53,7 @@ namespace AcManager.Pages.Selected {
             public override void Load() {
                 base.Load();
                 SelectedObject.PropertyChanged += SelectedObject_PropertyChanged;
-
-                new LiveryIconEditor(SelectedObject.SelectedSkin).ShowDialog();
+                // new LiveryIconEditor(SelectedObject.SelectedSkin).ShowDialog();
             }
 
             public override void Unload() {

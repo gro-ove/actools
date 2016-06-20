@@ -10,7 +10,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty("Text")]
     public class OutlinedTextBlock : FrameworkElement {
         private void UpdatePen() {
-            _pen = new Pen(Stroke, StrokeThickness) {
+            _Pen = new Pen(Stroke, StrokeThickness) {
                 DashCap = PenLineCap.Round,
                 EndLineCap = PenLineCap.Round,
                 LineJoin = PenLineJoin.Round,
@@ -32,7 +32,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(OutlinedTextBlock),
                 new FrameworkPropertyMetadata(Brushes.Black, FrameworkPropertyMetadataOptions.AffectsRender, StrokePropertyChangedCallback));
 
-        private static void StrokePropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs) {
+        private static void StrokePropertyChangedCallback(DependencyObject dependencyObject,
+                DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs) {
             (dependencyObject as OutlinedTextBlock)?.UpdatePen();
         }
 
@@ -92,9 +93,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(OutlinedTextBlock),
                 new FrameworkPropertyMetadata(TextWrapping.NoWrap, OnFormattedTextUpdated));
 
-        private FormattedText _formattedText;
-        private Geometry _textGeometry;
-        private Pen _pen;
+        private FormattedText _FormattedText;
+        private Geometry _TextGeometry;
+        private Pen _Pen;
 
         public Brush Fill {
             get { return (Brush)GetValue(FillProperty); }
@@ -170,8 +171,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected override void OnRender(DrawingContext drawingContext) {
             EnsureGeometry();
 
-            drawingContext.DrawGeometry(null, _pen, _textGeometry);
-            drawingContext.DrawGeometry(Fill, null, _textGeometry);
+            drawingContext.DrawGeometry(null, _Pen, _TextGeometry);
+            drawingContext.DrawGeometry(Fill, null, _TextGeometry);
         }
 
         protected override Size MeasureOverride(Size availableSize) {
@@ -183,23 +184,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             double h = availableSize.Height;
 
             // the Math.Min call is important - without this constraint (which seems arbitrary, but is the maximum allowable text width), things blow up when availableSize is infinite in both directions
-            // the Math.Max call is to ensure we don’t hit zero, which will cause MaxTextHeight to throw
-            _formattedText.MaxTextWidth = Math.Min(3579139, w);
-            _formattedText.MaxTextHeight = Math.Max(0.0001d, h);
+            // the Math.Max call is to ensure we don't hit zero, which will cause MaxTextHeight to throw
+            _FormattedText.MaxTextWidth = Math.Min(3579139, w);
+            _FormattedText.MaxTextHeight = Math.Max(0.0001d, h);
 
             // return the desired size
-            return new Size(Math.Ceiling(_formattedText.Width), Math.Ceiling(_formattedText.Height));
+            return new Size(Math.Ceiling(_FormattedText.Width), Math.Ceiling(_FormattedText.Height));
         }
 
         protected override Size ArrangeOverride(Size finalSize) {
             EnsureFormattedText();
 
             // update the formatted text with the final size
-            _formattedText.MaxTextWidth = finalSize.Width;
-            _formattedText.MaxTextHeight = Math.Max(0.0001d, finalSize.Height);
+            _FormattedText.MaxTextWidth = finalSize.Width;
+            _FormattedText.MaxTextHeight = Math.Max(0.0001d, finalSize.Height);
 
             // need to re-generate the geometry now that the dimensions have changed
-            _textGeometry = null;
+            _TextGeometry = null;
 
             return finalSize;
         }
@@ -207,8 +208,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static void OnFormattedTextInvalidated(DependencyObject dependencyObject,
                 DependencyPropertyChangedEventArgs e) {
             var outlinedTextBlock = (OutlinedTextBlock)dependencyObject;
-            outlinedTextBlock._formattedText = null;
-            outlinedTextBlock._textGeometry = null;
+            outlinedTextBlock._FormattedText = null;
+            outlinedTextBlock._TextGeometry = null;
 
             outlinedTextBlock.InvalidateMeasure();
             outlinedTextBlock.InvalidateVisual();
@@ -217,18 +218,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static void OnFormattedTextUpdated(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
             var outlinedTextBlock = (OutlinedTextBlock)dependencyObject;
             outlinedTextBlock.UpdateFormattedText();
-            outlinedTextBlock._textGeometry = null;
+            outlinedTextBlock._TextGeometry = null;
 
             outlinedTextBlock.InvalidateMeasure();
             outlinedTextBlock.InvalidateVisual();
         }
 
         private void EnsureFormattedText() {
-            if (_formattedText != null) {
+            if (_FormattedText != null) {
                 return;
             }
 
-            _formattedText = new FormattedText(
+            _FormattedText = new FormattedText(
                     Text ?? "",
                     CultureInfo.CurrentUICulture,
                     FlowDirection,
@@ -240,29 +241,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void UpdateFormattedText() {
-            if (_formattedText == null) {
+            if (_FormattedText == null) {
                 return;
             }
 
-            _formattedText.MaxLineCount = TextWrapping == TextWrapping.NoWrap ? 1 : int.MaxValue;
-            _formattedText.TextAlignment = TextAlignment;
-            _formattedText.Trimming = TextTrimming;
+            _FormattedText.MaxLineCount = TextWrapping == TextWrapping.NoWrap ? 1 : int.MaxValue;
+            _FormattedText.TextAlignment = TextAlignment;
+            _FormattedText.Trimming = TextTrimming;
 
-            _formattedText.SetFontSize(FontSize);
-            _formattedText.SetFontStyle(FontStyle);
-            _formattedText.SetFontWeight(FontWeight);
-            _formattedText.SetFontFamily(FontFamily);
-            _formattedText.SetFontStretch(FontStretch);
-            _formattedText.SetTextDecorations(TextDecorations);
+            _FormattedText.SetFontSize(FontSize);
+            _FormattedText.SetFontStyle(FontStyle);
+            _FormattedText.SetFontWeight(FontWeight);
+            _FormattedText.SetFontFamily(FontFamily);
+            _FormattedText.SetFontStretch(FontStretch);
+            _FormattedText.SetTextDecorations(TextDecorations);
         }
 
         private void EnsureGeometry() {
-            if (_textGeometry != null) {
+            if (_TextGeometry != null) {
                 return;
             }
 
             EnsureFormattedText();
-            _textGeometry = _formattedText.BuildGeometry(new Point(0, 0));
+            _TextGeometry = _FormattedText.BuildGeometry(new Point(0, 0));
         }
     }
 }

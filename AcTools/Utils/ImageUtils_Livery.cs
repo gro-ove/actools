@@ -1,110 +1,189 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 
 namespace AcTools.Utils {
     public static partial class ImageUtils {
         internal class ColorEntry {
-            public double H, S, V;
+            public double H, S, B;
+            public double Smax, Bmax;
             public double Weight;
 
-            public double Distance(double h, double s, double v) {
-                var hd = Math.Abs(H - h);
-                if (hd > 180) hd = 360 - hd;
-                return (hd / 360) * 2.0 + Math.Abs(S - s) * 0.7 + Math.Abs(V - v) * 0.9;
+            public ColorEntry(double h, double s, double b, double w) {
+                H = h;
+                S = s;
+                Smax = s;
+                B = b;
+                Bmax = b;
+                Weight = w;
             }
 
-            public void Add(double h, double s, double v, double w) {
-                H = Math.Sqrt((H * H * Weight + h * h * w) / (Weight + w));
-                S = Math.Sqrt((S * S * Weight + s * s * w) / (Weight + w));
-                V = Math.Sqrt((V * V * Weight + v * v * w) / (Weight + w));
+            public double Distance(double h, double s, double b) {
+                var hd = Math.Abs(H - h);
+                if (hd > 180) hd = 360 - hd;
+                return hd / 360.0 * 2.4 + Math.Abs(S - s) * 0.2 + Math.Abs(B - b) * 0.2;
+            }
+
+            public void Add(double h, double s, double b, double w) {
+                if (Equals(w, 0d)) return;
+
+                if (h - H >= 180) {
+                    h -= 360;
+                } else if (H - h >= 180) {
+                    H -= 360;
+                }
+
+                H = (H * Weight + h * w) / (Weight + w);
+                if (H < 0) {
+                    H += 360;
+                } else if (H >= 360) {
+                    H -= 360;
+                }
+
+                S = (S * Weight + s * w) / (Weight + w);
+                Smax = Math.Max(Smax, s);
+
+                B = (B * Weight + b * w) / (Weight + w);
+                Bmax = Math.Max(Bmax, b);
                 Weight += w;
             }
 
             public Color Tune() {
-                S = (S * 1.1).Saturate();
-                V = (V * 1.1).Saturate();
-                return Color;
+                var result = ToColor(H, S, (B + Bmax) / 2.0);
+                const double fixR = 1.30;
+                const double fixG = 1.11;
+                const double fixB = 1.00;
+                return Color.FromArgb((int)(result.R * fixR), (int)(result.G * fixG), (int)(result.B * fixB));
             }
 
-            public Color Color {
-                get {
-                    var hi = Convert.ToInt32(Math.Floor(H / 60)) % 6;
-                    var f = H / 60 - Math.Floor(H / 60);
+            public Color Color => ToColor(H, S, B);
 
-                    V = V * 255;
-                    var v = Convert.ToInt32(V);
-                    var p = Convert.ToInt32(V * (1 - S));
-                    var q = Convert.ToInt32(V * (1 - f * S));
-                    var t = Convert.ToInt32(V * (1 - (1 - f) * S));
+            private static Color ToColor(double hue, double sat, double bri) {
+                while (hue < 0) {
+                    hue += 360;
+                }
 
-                    switch (hi) {
+                while (hue >= 360) {
+                    hue -= 360;
+                }
+
+                double r, g, b;
+                if (bri <= 0) {
+                    r = g = b = 0;
+                } else if (sat <= 0) {
+                    r = g = b = bri;
+                } else {
+                    var hf = hue / 60.0;
+                    var i = (int)Math.Floor(hf);
+                    var f = hf - i;
+                    var pv = bri * (1 - sat);
+                    var qv = bri * (1 - sat * f);
+                    var tv = bri * (1 - sat * (1 - f));
+
+                    switch (i) {
                         case 0:
-                            return Color.FromArgb(255, v, t, p);
+                            r = bri;
+                            g = tv;
+                            b = pv;
+                            break;
+
                         case 1:
-                            return Color.FromArgb(255, q, v, p);
+                            r = qv;
+                            g = bri;
+                            b = pv;
+                            break;
+
                         case 2:
-                            return Color.FromArgb(255, p, v, t);
+                            r = pv;
+                            g = bri;
+                            b = tv;
+                            break;
+
                         case 3:
-                            return Color.FromArgb(255, p, q, v);
+                            r = pv;
+                            g = qv;
+                            b = bri;
+                            break;
+
                         case 4:
-                            return Color.FromArgb(255, t, p, v);
+                            r = tv;
+                            g = pv;
+                            b = bri;
+                            break;
+
+                        case 5:
+                            r = bri;
+                            g = pv;
+                            b = qv;
+                            break;
+
+                        case 6:
+                            r = bri;
+                            g = tv;
+                            b = pv;
+                            break;
+
+                        case -1:
+                            r = bri;
+                            g = pv;
+                            b = qv;
+                            break;
+
                         default:
-                            return Color.FromArgb(255, v, p, q);
+                            r = g = b = bri;
+                            break;
                     }
                 }
+
+                return Color.FromArgb((int)(r.Saturate() * 255d), (int)(g.Saturate() * 255d), (int)(b.Saturate() * 255d));
             }
         }
 
-        private static void ColorToHsv(Color color, out double hue, out double saturation, out double value) {
-            int max = Math.Max(color.R, Math.Max(color.G, color.B));
-            int min = Math.Min(color.R, Math.Min(color.G, color.B));
-
-            hue = color.GetHue();
-            saturation = max == 0 ? 0 : 1d - 1d * min / max;
-            value = max / 255d;
-        }
-
-        private const int Size = 48;
+        private const int Size = 200;
+        private const int Padding = 60;
+        private const double Threshold = 0.2;
 
         public static Color[] GetBaseColors(Bitmap bitmap) {
             if (bitmap.Width == Size && bitmap.Height == Size) {
                 return GetBaseColors48(bitmap);
             }
-            
-            using (var resized = new Bitmap(bitmap, new Size(Size, Size))) {
+
+            using (var resized = new Bitmap(Size, Size))
+            using (var graphics = Graphics.FromImage(resized)) {
+                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.DrawImage(bitmap, 0, 0, Size, Size);
                 return GetBaseColors48(resized);
             }
         }
 
         public static Color[] GetBaseColors48(Bitmap bitmap) {
-            const int skip = 4;
-            const double threshold = 0.15;
-
             var colors = new List<ColorEntry>(50);
 
-            for (var y = skip; y < Size - skip; y++) {
-                for (var x = skip; x < Size - skip; x++) {
-                    var color = bitmap.GetPixel(x, y);
+            for (var y = Padding; y < Size - Padding; y++) {
+                for (var x = Padding; x < Size - Padding; x++) {
+                    var c = bitmap.GetPixel(x, y);
+                    var h = c.GetHue();
+                    var s = c.GetSaturation();
+                    var b = c.GetBrightness();
 
-                    double h, s, v;
-                    ColorToHsv(color, out h, out s, out v);
-
-                    var w = (1.2 - Math.Abs((double)x / Size - 0.5) - Math.Abs((double)y / Size - 0.5)).Saturate();
-                    w *= v * s;
+                    var w = (1.0 - Math.Abs((double)x / Size - 0.5) - Math.Abs((double)y / Size - 0.5)).Saturate();
+                    if (b < 0.01) continue;
 
                     for (var i = 0; i < colors.Count; i++) {
                         var en = colors[i];
-                        if (en.Distance(h, s, v) > threshold) continue;
+                        if (en.Distance(h, s, b) > Threshold) continue;
 
-                        en.Add(h, s, v, w);
+                        en.Add(h, s, b, w);
                         for (var j = i + 1; j < colors.Count; j++) {
                             var em = colors[j];
-                            if (em.Distance(en.H, en.S, en.V) > threshold) continue;
+                            if (em.Distance(en.H, en.S, en.B) > Threshold) continue;
 
-                            en.Add(em.H, em.S, em.V, em.Weight);
+                            en.Add(em.H, em.S, em.B, em.Weight);
                             colors.Remove(em);
                             j--;
                         }
@@ -112,16 +191,12 @@ namespace AcTools.Utils {
                         goto loop;
                     }
 
-                    colors.Add(new ColorEntry {
-                        H = h,
-                        S = s,
-                        V = v,
-                        Weight = w
-                    });
-
+                    colors.Add(new ColorEntry(h, s, b, w));
                     loop:;
                 }
             }
+
+            if (colors.Count == 0) return new Color[0];
 
             var result = colors.OrderBy(x => -x.Weight).ToList();
             return result.Where(x => x.Weight > result.ElementAt(0).Weight * 0.1).Select(x => x.Tune()).ToArray();
@@ -129,11 +204,11 @@ namespace AcTools.Utils {
 
         [Obsolete]
         public static void CreateLivery(string outputFile, params Color[] color) {
-            using (var bitmap = new Bitmap(48, 48))
+            using (var bitmap = new Bitmap(64, 64))
             using (var graphics = Graphics.FromImage(bitmap)) {
                 var max = color.Length > 15 ? 15 : color.Length;
                 for (var i = 0; i < max; i++) {
-                    graphics.FillRectangle(new SolidBrush(color[i]), 0, (float)Math.Sqrt((double)i / max) * 48, 48, 48);
+                    graphics.FillRectangle(new SolidBrush(color[i]), 0, (float)Math.Sqrt((double)i / max) * 64, 64, 64);
                 }
 
                 bitmap.Save(outputFile, ImageFormat.Png);
@@ -142,7 +217,7 @@ namespace AcTools.Utils {
 
         [Obsolete]
         public static void GenerateLivery(string inputFile, string outputFile) {
-            using (var image = Image.FromFile(inputFile)){
+            using (var image = Image.FromFile(inputFile)) {
                 CreateLivery(outputFile, GetBaseColors((Bitmap)image));
             }
         }

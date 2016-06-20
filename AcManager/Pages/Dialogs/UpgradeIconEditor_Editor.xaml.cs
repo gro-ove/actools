@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
@@ -63,8 +64,8 @@ namespace AcManager.Pages.Dialogs {
 
             try {
                 bmp.SaveAsPng(Car.UpgradeIcon);
-            } catch (Exception) {
-                ModernDialog.ShowMessage(@"Can’t change upgrade icon.", @"Fail", MessageBoxButton.OK);
+            } catch (Exception e) {
+                NonfatalError.Notify(@"Can’t change upgrade icon", "Make sure the original file isn’t busy", e);
             }
         }
 

@@ -1,0 +1,7 @@
+﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <Grid.Effect>
+        <DropShadowEffect BlurRadius="4" Color="Black" Opacity="0.67" Direction="0" ShadowDepth="0" />
+    </Grid.Effect>
+    <TextBlock Text="{Binding Value}" FontFamily="Segoe UI" FontWeight="UltraLight" FontSize="36" TextWrapping="NoWrap"
+            VerticalAlignment="Center" TextAlignment="Center" />
+</Grid>

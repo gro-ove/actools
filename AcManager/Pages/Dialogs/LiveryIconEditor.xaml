@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Livery Icon"
-        d:DataContext="{d:DesignInstance dialogs:LiveryIconEditor}" x:Name="This" MaxWidth="99999">
+        d:DataContext="{d:DesignInstance dialogs:LiveryIconEditor}" MaxWidth="99999" Closing="OnClosing">
     <mui:ModernDialog.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </mui:ModernDialog.Resources>
@@ -12,7 +12,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <Viewbox Width="400">
+        <Viewbox Width="400" VerticalAlignment="Top">
             <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="0"
                     Source="{Binding Skin.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="1022" Height="575" />
         </Viewbox>
@@ -20,7 +20,7 @@
         <StackPanel Grid.Column="1" Margin="20 0 0 0" Style="{StaticResource SettingsPanel}" Width="240">
             <DockPanel>
                 <Label>Result:</Label>
-                <Canvas x:Name="Canvas" DataContext="{Binding Model}" Width="64" Height="64" />
+                <ContentPresenter x:Name="Result" Content="{Binding StyleObject}" Width="64" Height="64" />
             </DockPanel>
 
             <DockPanel>
@@ -28,15 +28,43 @@
                 <ComboBox ItemsSource="{Binding Styles}" SelectedItem="{Binding SelectedStyle, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
+            <DockPanel Visibility="{Binding CustomShape, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <Label>Shape:</Label>
+                <ComboBox ItemsSource="{Binding Shapes}" SelectedItem="{Binding SelectedShape, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
             <DockPanel>
                 <Label>Color:</Label>
                 <mui:ColorPicker Color="{Binding Model.ColorValue}" />
             </DockPanel>
 
-            <DockPanel>
+            <DockPanel Visibility="{Binding HasSecondaryColor, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label>Secondary color:</Label>
                 <mui:ColorPicker Color="{Binding Model.SecondaryColorValue}" />
             </DockPanel>
+
+            <DockPanel Visibility="{Binding HasTertiaryColor, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Label>Tertiary color:</Label>
+                <mui:ColorPicker Color="{Binding Model.TertiaryColorValue}" />
+            </DockPanel>
+
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Number:</TextBlock>
+            <DockPanel>
+                <Label>Style:</Label>
+                <ComboBox ItemsSource="{Binding Numbers}" SelectedItem="{Binding SelectedNumbers, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <StackPanel Visibility="{Binding SelectedNumbers.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠'}">
+                <DockPanel>
+                    <mui:ValueLabel Value="{Binding Model.Value}" Mode="Integer">Value</mui:ValueLabel>
+                    <Slider Minimum="0" Maximum="100" Value="{Binding Model.NumberValue}" TickFrequency="10" TickPlacement="BottomRight" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label>Text color:</Label>
+                    <mui:ColorPicker Color="{Binding Model.TextColorValue}" />
+                </DockPanel>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </mui:ModernDialog>

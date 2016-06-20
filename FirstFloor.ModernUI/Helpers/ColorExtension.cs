@@ -24,16 +24,6 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        /*public static double GetHue(this Color color) {
-            var min = Math.Min(color.R, Math.Min(color.G, color.B));
-            var k = color.R > color.G && color.R > color.B ?
-                    (double)(color.G - color.B) / (color.R - min) :
-                    color.G > color.B ?
-                            2d + (double)(color.B - color.R) / (color.G - min) :
-                            4d + (double)(color.R - color.G) / (color.B - min);
-            return (60d * k + 360d) % 360d;
-        }*/
-
         public static double GetHue(this Color c) {
             return System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B).GetHue();
         }

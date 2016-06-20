@@ -1,0 +1,6 @@
+﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Tag="CustomShape:True;Colors:2;Numbers:False">
+    <Rectangle Fill="{Binding Color}" />
+    <Rectangle Fill="{Binding SecondaryColor}" VerticalAlignment="Bottom" Height="12" />
+    <Image Source="Miura.png" />
+    <Rectangle Fill="{Binding Number}" />
+</Grid>
