@@ -1,0 +1,42 @@
+﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.LiveryIconEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Livery Icon"
+        d:DataContext="{d:DesignInstance dialogs:LiveryIconEditor}" x:Name="This" MaxWidth="99999">
+    <mui:ModernDialog.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+    </mui:ModernDialog.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Viewbox Width="400">
+            <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="0"
+                    Source="{Binding Skin.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="1022" Height="575" />
+        </Viewbox>
+
+        <StackPanel Grid.Column="1" Margin="20 0 0 0" Style="{StaticResource SettingsPanel}" Width="240">
+            <DockPanel>
+                <Label>Result:</Label>
+                <Canvas x:Name="Canvas" DataContext="{Binding Model}" Width="64" Height="64" />
+            </DockPanel>
+
+            <DockPanel>
+                <Label>Style:</Label>
+                <ComboBox ItemsSource="{Binding Styles}" SelectedItem="{Binding SelectedStyle, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <DockPanel>
+                <Label>Color:</Label>
+                <mui:ColorPicker Color="{Binding Model.ColorValue}" />
+            </DockPanel>
+
+            <DockPanel>
+                <Label>Secondary color:</Label>
+                <mui:ColorPicker Color="{Binding Model.SecondaryColorValue}" />
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</mui:ModernDialog>

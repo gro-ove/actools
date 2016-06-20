@@ -1,37 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
-using AcManager.Controls.ViewModels;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Dialogs {
-    /// <summary>
-    /// Interaction logic for UpgradeIconEditor_Editor.xaml
-    /// </summary>
-    public partial class UpgradeIconEditor_Editor : UserControl, IFinishableControl {
+    public partial class UpgradeIconEditor_Editor : IFinishableControl {
         private readonly string _key;
 
-        public CarObject Car { get; private set; }
+        public CarObject Car { get; }
 
         public UpgradeIconEditor_Editor() {
             var mainDialog = UpgradeIconEditor.Instance;
@@ -55,7 +39,7 @@ namespace AcManager.Pages.Dialogs {
             NewIconLabel.Focus();
         }
 
-        private readonly static Action EmptyDelegate = delegate() {};
+        private static readonly Action EmptyDelegate = delegate {};
 
         public void Finish(bool result) {
             if (!result) return;
