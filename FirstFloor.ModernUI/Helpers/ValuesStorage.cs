@@ -75,7 +75,7 @@ namespace FirstFloor.ModernUI.Helpers {
             using (var output = new MemoryStream()) {
                 output.WriteByte(DeflateFlag);
 
-                using (var gzip = new DeflateStream(output, CompressionMode.Compress)) {
+                using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
                     var bytes = Encoding.UTF8.GetBytes(s);
                     gzip.Write(bytes, 0, bytes.Length);
                 }

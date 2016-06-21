@@ -62,10 +62,6 @@ namespace AcManager.Tools.Objects {
                 Logging.Write("Car skins unhandled exception: " + e);
                 return;
             }
-
-            if (!SkinsWrappers.Any()) {
-                AddError(AcErrorType.CarSkins_SkinsAreMissing);
-            }
             
             SelectPreviousOrDefaultSkin();
         }

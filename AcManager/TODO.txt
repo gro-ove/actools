@@ -411,6 +411,7 @@ done:
         + controls
         + presets?
         + wrong resolution auto-fixing option
+        + quick switching
     + proper sharing
         + settings
         + sharing
@@ -421,10 +422,14 @@ done:
             + controls
             + ffb only
             + quick drive
+            + car setups
+            + ppfilters
     + car setups management
         + basic properties
         + rename & change track
         + watching
+        + sharing
+        × fully customizable mode
     + built-in code editor
     + replace int.TryParse in converters to something better
         + including the ones from QuickDrive_Weekend
@@ -437,6 +442,20 @@ done:
     + color picker
         + additinal switchable schemes
         + pick color from screen
+    + some livery.png editor
+        + take colors from preview
+        + number
+        + even specific shapes
+        + generate automatically
+    + error fixer
+        + missing parent
+        + showroom missing kn5 error detection
+        + missing skin preview
+        + missing skin livery
+            + combine several errors with same type into one
+        + CarSkins_SkinsAreMissing
+    + fix textboxes in settings
+    + quick setting: special online name
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -454,34 +473,22 @@ fixme:
     - switching from online tab
     - fix copying
     - race: last position isn't fixed enough
+    - initial startup: invalid presets selected
 
 todo:
-    + some livery.png editor
-        + take colors from preview
-        + number
-        + even specific shapes
-        - generate automatically based on preview and/or model
-
     - upload Content to Trello for those who doesn't have Internet connection
     - custom showroom: proper wpf-based errors handling for invalid dx and stuff
 
     - lite mode (without main form): overlays, second commands, attempts to open main form?
 
-    + proper sharing
-        + special types:
-            + car setups
-            + ppfilters
+    > proper sharing
+        > special types:
             - replays?
             - weather?
         - deleting shared
 
-    + ac options
+    > ac options
         - xbox360
-        - quick switching?
-
-    + car setups management
-        - sharing
-        - fully customizable mode?
 
     - errors & fixers for badly make ui_skin.json
 
@@ -559,26 +566,18 @@ todo:
         - drive?
         - remember selected tab
 
-    - fix textboxes in settings
-    - quick setting: special online name
-
     - autoadd country on tags cleaning
     - remove double spaces, trim strings
     - detect invalid symbols in IDs
 
     + error fixer
-        + missing parent
-        + showroom missing kn5 error detection
-        + missing skin preview
-        + missing skin livery
-            + combine several errors with same type into one
         - track missing kn5 error detection
         - missing sound detection
         - missing collider.kn5 detection
         - missing properties fixer
             + missing name error
+                - test!
             - missing brand name error
-        - CarSkins_SkinsAreMissing
 
     - new skins builder?
         - color

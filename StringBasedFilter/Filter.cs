@@ -66,8 +66,11 @@ namespace StringBasedFilter {
         private readonly FilterTreeNode _testTree;
         private string[] _properties;
 
+        public string Source { get; }
+
         internal Filter(string filter) {
-            _testTree = ParseTree(filter, out _keys);
+            Source = filter;
+            _testTree = ParseTree(Source, out _keys);
         }
 
         internal Filter(FilterTreeNode tree) {

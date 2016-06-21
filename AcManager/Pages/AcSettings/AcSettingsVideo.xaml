@@ -2,11 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-             xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
-             xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+AcVideoViewModel}">
+        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+AcVideoViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
@@ -165,6 +163,23 @@
             <CheckBox IsChecked="{Binding Video.MirrorHighQuality}">
                 <Label>High quality</Label>
             </CheckBox>
+
+            <!--effects-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">System:</TextBlock>
+
+            <CheckBox IsChecked="{Binding Graphics.AllowUnsupportedDx10}">
+                <Label>Allow unsupported DirectX 10 (use on your own risk; doesn’t work?)</Label>
+            </CheckBox>
+
+            <DockPanel ToolTip="Skybox reflection gain">
+                <mui:ValueLabel Value="{Binding Graphics.SkyboxReflectionGain}" Mode="Integer" Postfix="%">Skybox reflection</mui:ValueLabel>
+                <Slider Minimum="0" Maximum="300" Value="{Binding Graphics.SkyboxReflectionGain}" TickFrequency="30" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel ToolTip="Set negative value (like -1) to sharp the image">
+                <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Mode="Integer">Mip LOD bias</mui:ValueLabel>
+                <Slider Minimum="-4" Maximum="0" Value="{Binding Graphics.MipLodBias}" TickFrequency="1" TickPlacement="BottomRight" />
+            </DockPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

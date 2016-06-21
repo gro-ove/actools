@@ -6,7 +6,6 @@
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
     </ResourceDictionary.MergedDictionaries>
-
     <Style TargetType="ac:AcListPage">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
@@ -35,7 +34,7 @@
                                     ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel IsItemsHost="True" CacheLength="2,3" CacheLengthUnit="Page" ScrollUnit="Pixel"
+                                        <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel"
                                                 VirtualizationMode="Recycling" IsVirtualizing="True" />
                                     </ItemsPanelTemplate>
                                 </ListBox.ItemsPanel>
@@ -48,8 +47,8 @@
                         <Rectangle Grid.Column="1" Fill="{DynamicResource SeparatorBackground}" Width="1" HorizontalAlignment="Center"
                                 VerticalAlignment="Stretch"
                                 Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-
-                        <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal" />
+                        <mui:ModernFrame x:Name="PART_Frame" Grid.Column="2" Source="{TemplateBinding SelectedSource}" Margin="16 0 16 0"
+                                TransitionName="Normal" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

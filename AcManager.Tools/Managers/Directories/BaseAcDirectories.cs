@@ -16,8 +16,8 @@ namespace AcManager.Tools.Managers.Directories {
 
         protected BaseAcDirectories([NotNull] string enabledDirectory, [CanBeNull] string disabledDirectory) {
             if (enabledDirectory == null) throw new ArgumentNullException(nameof(enabledDirectory));
-            EnabledDirectory = enabledDirectory.ToLowerInvariant();
-            DisabledDirectory = disabledDirectory?.ToLowerInvariant();
+            EnabledDirectory = enabledDirectory;
+            DisabledDirectory = disabledDirectory;
             Actual = true;
         }
 

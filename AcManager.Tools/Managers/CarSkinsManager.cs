@@ -24,6 +24,14 @@ namespace AcManager.Tools.Managers {
                 return AlphanumComparatorFast.Compare(x, y);
             }
         }
+        
+        /// <summary>
+        /// Gets first enabled skin.
+        /// </summary>
+        public override CarSkinObject GetDefault() {
+            var wrapper = WrappersList.FirstOrDefault(x => x.Value.Enabled);
+            return wrapper == null ? null : EnsureWrapperLoaded(wrapper);
+        }
 
         protected override AcWrapperObservableCollection CreateCollection() {
             return new NumericSortedAcWrapperObservableCollection();

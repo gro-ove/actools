@@ -55,10 +55,12 @@ namespace AcManager.Tools.AcErrors {
                     break;
                 case AcErrorType.Data_KunosCareerWeatherIsMissing:
                     break;
+
                 case AcErrorType.CarSkins_SkinsAreMissing:
-                    break;
+                    return new CarSkins_SkinsAreMissingSolver((CarObject)obj, error);
+
                 case AcErrorType.CarSkins_DirectoryIsUnavailable:
-                    break;
+                    return null;
 
                 case AcErrorType.Font_BitmapIsMissing:
                     return new Font_BitmapIsMissingSolver((FontObject)obj, error);
@@ -70,12 +72,7 @@ namespace AcManager.Tools.AcErrors {
                     return new CarSetup_TrackIsMissingSolver((CarSetupObject)obj, error);
 
                 case AcErrorType.CarSkin_LiveryIsMissing:
-                    break;
                 case AcErrorType.CarSkin_PreviewIsMissing:
-                    break;
-
-                default:
-                    // throw new ArgumentOutOfRangeException();
                     return null;
             }
 

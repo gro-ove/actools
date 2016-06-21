@@ -232,7 +232,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public virtual void UpdateList() {
-            ((AcWrapperObservableCollection)WrappersList).Update();
+            InnerWrappersList.Update();
         }
 
         protected void RemoveFromList([NotNull]string id) {
@@ -243,6 +243,7 @@ namespace AcManager.Tools.AcManagersNew {
                 ((AcObjectNew)wrapper.Value).Outdate();
             }
             InnerWrappersList.Remove(wrapper);
+            UpdateList();
             ResetLoading();
         }
 
@@ -254,6 +255,7 @@ namespace AcManager.Tools.AcManagersNew {
                 ((AcObjectNew)wrapper.Value).Outdate();
             }
             InnerWrappersList.Replace(wrapper, newItem);
+            UpdateList();
             ResetLoading();
         }
         

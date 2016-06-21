@@ -16,6 +16,8 @@ namespace AcManager.Pages.AcSettings {
 
             public AcSettingsHolder.VideoSettings Video => AcSettingsHolder.Video;
 
+            public AcSettingsHolder.GraphicsSettings Graphics => AcSettingsHolder.Graphics;
+
             private RelayCommand _manageFiltersCommand;
 
             public RelayCommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new RelayCommand(o => {

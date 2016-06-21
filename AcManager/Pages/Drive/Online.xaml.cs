@@ -11,7 +11,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Annotations;
 using AcManager.Controls.ViewModels;
-using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
@@ -168,6 +167,8 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public IFilter<T> Second { get; set; }
+
+            public string Source => "__cmb";
 
             public bool Test(T obj) {
                 return First?.Test(obj) != false && Second?.Test(obj) != false;

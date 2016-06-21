@@ -37,8 +37,8 @@
 
         <!--content-->
         <mui:LinkGroupFilterable GroupKey="content" DisplayName="cars" Source="/Pages/Lists/CarsListPage.xaml" />
-        <mui:LinkGroupFilterable GroupKey="content" DisplayName="tracks" Source="/Pages/Lists/TracksListPage.xaml" />
-        <mui:LinkGroupFilterable GroupKey="content" DisplayName="showrooms" Source="/Pages/Lists/ShowroomsListPage.xaml" />
+        <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="tracks" Source="/Pages/Lists/TracksListPage.xaml" />
+        <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="showrooms" Source="/Pages/Lists/ShowroomsListPage.xaml" />
         <mui:LinkGroup GroupKey="content" DisplayName="miscellaneous">
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="Apps" Source="/Pages/Lists/PythonAppsListPage.xaml" />
@@ -70,7 +70,7 @@
     <mui:ModernWindow.TitleLinks>
         <mui:TitleLink DisplayName="drive" GroupKey="drive" Source="/Pages/Drive/QuickDrive.xaml" />
         <mui:TitleLink DisplayName="media" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
-        <mui:TitleLink DisplayName="content" GroupKey="content" IsEnabled="False" Source="/Pages/Lists/CarsListPage.xaml" />
+        <mui:TitleLink DisplayName="content" IsEnabled="False" GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml" />
         <mui:TitleLink DisplayName="settings" GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml" />
         <mui:TitleLink DisplayName="about" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />
         <!-- ReSharper disable once Xaml.PathError -->

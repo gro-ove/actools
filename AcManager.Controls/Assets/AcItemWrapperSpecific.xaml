@@ -54,6 +54,36 @@
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
+
+                <!-- carskinobject -->
+                <DataTemplate DataType="{x:Type acObjects:CarSkinObject}">
+                    <DockPanel HorizontalAlignment="Stretch">
+                        <Image Width="24" Height="24" DockPanel.Dock="Left" Margin="4 0 4 0" RenderOptions.BitmapScalingMode="LowQuality"
+                                Source="{Binding LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='24×'}"/>
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}"
+                                Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon" />
+                        <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="4"
+                                IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                DockPanel.Dock="Right" />
+                        <TextBlock Text="{Binding DisplayName}" Margin="10 2 2 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
+                                HorizontalAlignment="Stretch" x:Name="DisplayNameText" ToolTip="{Binding Location}" VerticalAlignment="Center" />
+                    </DockPanel>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Enabled}" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="DisplayNameText" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding NeedsMargin}" Value="True">
+                            <Setter Property="Padding" Value="20,0,0,0" TargetName="DisplayNameText" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding HasErrors}" Value="True">
+                            <Setter Property="FontWeight" Value="Bold" TargetName="DisplayNameText" />
+                            <Setter Property="Visibility" Value="Visible" TargetName="ErrorIcon" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Changed}" Value="True">
+                            <Setter Property="FontStyle" Value="Italic" TargetName="DisplayNameText" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
     </DataTemplate>

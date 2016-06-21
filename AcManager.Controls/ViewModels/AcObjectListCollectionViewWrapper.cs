@@ -10,7 +10,7 @@ namespace AcManager.Controls.ViewModels {
 
         public AcObjectListCollectionViewWrapper([NotNull] IAcManagerNew list, IFilter<T> listFilter, string key, bool allowNonSelected)
                 : base(list, listFilter, allowNonSelected) {
-            Key = key + "_" + typeof(T) + "__" + listFilter;
+            Key = key + "_" + typeof(T) + "__" + listFilter?.Source;
         }
 
         protected override string LoadCurrentId() {

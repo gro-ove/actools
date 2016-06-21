@@ -13,7 +13,7 @@ namespace AcManager {
 
         /// <summary>
         /// Affects text rendering, disabled by default, but enabled if UI scale isn’t 100%.
-        /// Example: --ideal-formatting-mode=no.
+        /// Example: --ideal-formatting-mode.
         /// </summary>
         IdealFormattingMode,
 
@@ -24,10 +24,10 @@ namespace AcManager {
         DisableLogging,
 
         /// <summary>
-        /// Saves Values.data without compressing.
-        /// Example: --disable-values-compression.
+        /// Saves Values.data without compressing. Takes less space, but slower.
+        /// Example: --enable-values-compression.
         /// </summary>
-        DisableValuesCompression,
+        EnableValuesCompression,
 
         /// <summary>
         /// Changes path to data directory (somewhere in AppData\Local by default). 

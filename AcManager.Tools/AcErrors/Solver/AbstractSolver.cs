@@ -49,24 +49,25 @@ namespace AcManager.Tools.AcErrors.Solver {
         [NotNull]
         public IReadOnlyList<Solution> Solutions => _solutions ?? (_solutions = GetSolutions().ToList());
 
-        public static IEnumerable<Solution> TryToFindRenamedFile(string baseDirectory, string filename) {
+        public static IEnumerable<Solution> TryToFindRenamedFile(string baseDirectory, string filename, bool skipOff = false) {
             return FileUtils.FindRenamedFile(baseDirectory, filename)
-                .Select(x => new Solution($@"Restore from …{ x.Substring(baseDirectory.Length)}",
-                    @"Original file will be moved to Recycle Bin if exists",
-                    () => {
-                        var directory = Path.GetDirectoryName(filename);
-                        if (directory == null) throw new IOException("directory = null");
+                            .Where(x => skipOff == false || x.EndsWith("-off", StringComparison.OrdinalIgnoreCase))
+                            .Select(x => new Solution($@"Restore from …{x.Substring(baseDirectory.Length)}",
+                                    @"Original file will be moved to Recycle Bin if exists",
+                                    () => {
+                                        var directory = Path.GetDirectoryName(filename);
+                                        if (directory == null) throw new IOException("directory = null");
 
-                        if (!Directory.Exists(directory)) {
-                            Directory.CreateDirectory(directory);
-                        }
+                                        if (!Directory.Exists(directory)) {
+                                            Directory.CreateDirectory(directory);
+                                        }
 
-                        if (File.Exists(filename)) {
-                            FileUtils.Recycle(filename);
-                        }
+                                        if (File.Exists(filename)) {
+                                            FileUtils.Recycle(filename);
+                                        }
 
-                        File.Move(x, filename);
-                    }));
+                                        File.Move(x, filename);
+                                    }));
         }
 
         public static IEnumerable<Solution> TryToFindAnyFile(string baseDirectory, string filename, string searchPattern) {

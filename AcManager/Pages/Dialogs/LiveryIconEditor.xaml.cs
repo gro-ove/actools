@@ -44,6 +44,7 @@ namespace AcManager.Pages.Dialogs {
             new SettingEntry("DoubleStripes", "Double Stripes"),
             new SettingEntry("HorizontalStripes", "Horizontal Stripes"),
             new SettingEntry("Circle", "Circle"),
+            new SettingEntry("DiagonalWithCircle", "Diagonal with Circle"),
             new SettingEntry("Carbon", "Carbon")
         };
 

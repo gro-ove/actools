@@ -28,6 +28,17 @@ namespace AcManager.Tools.Objects {
                 ScanWrapper = this
             };
             SkinsManager.Created += SkinsManager_Created;
+            SkinsManager.WrappersList.CollectionReady += Skins_CollectionReady;
+        }
+
+        private void Skins_CollectionReady(object sender, EventArgs e) {
+            var any = SkinsManager.GetDefault();
+            ErrorIf(any == null, AcErrorType.CarSkins_SkinsAreMissing);
+            if (any == null) {
+                SelectedSkin = null;
+            } else if (SelectedSkin == null) {
+                SelectedSkin = any;
+            }
         }
 
         private readonly CompositeObservableCollection<IAcError> _errors = new CompositeObservableCollection<IAcError>();
