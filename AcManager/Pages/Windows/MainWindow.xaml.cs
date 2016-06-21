@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using AcManager.Controls.Helpers;
@@ -17,6 +19,7 @@ using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Converters;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
@@ -285,5 +288,17 @@ namespace AcManager.Pages.Windows {
                 // e.Handled = true;
             }
         }
+
+        private class InnerPopupHeightConverter : IValueConverter {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                return value.AsDouble() / OptionScale - 2d;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+                throw new NotSupportedException();
+            }
+        }
+
+        public static IValueConverter PopupHeightConverter { get; } = new InnerPopupHeightConverter();
     }
 }

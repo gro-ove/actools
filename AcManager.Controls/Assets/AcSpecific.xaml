@@ -1,9 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
-        xmlns:acObjectsNew="clr-namespace:AcManager.Tools.AcObjectsNew;assembly=AcManager.Tools" xmlns:system="clr-namespace:System;assembly=mscorlib"
-        xmlns:converters="clr-namespace:AcManager.Controls.Converters" xmlns:acObjects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
-                    xmlns:userControls="clr-namespace:AcManager.Controls.UserControls">
-
+        xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:converters="clr-namespace:AcManager.Controls.Converters">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -40,7 +36,7 @@
         <Setter Property="AutoGenerateColumns" Value="False" />
         <Setter Property="SelectionUnit" Value="FullRow" />
         <Setter Property="SelectionMode" Value="Single" />
-        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
         <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
         <Setter Property="MinRowHeight" Value="24" />

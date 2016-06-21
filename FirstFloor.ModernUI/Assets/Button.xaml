@@ -242,7 +242,7 @@
     <Style x:Key="Go.Button" BasedOn="{StaticResource Go.BaseButtonStyle}" TargetType="{x:Type Button}">
         <Setter Property="FontSize" Value="16" />
         <Setter Property="FontFamily" Value="Segoe UI" />
-        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
     </Style>
 
     <Style x:Key="WrapperButton" TargetType="{x:Type Button}">

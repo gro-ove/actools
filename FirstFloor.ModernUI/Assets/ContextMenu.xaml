@@ -3,7 +3,7 @@
     <Style x:Key="{x:Type ContextMenu}" TargetType="{x:Type ContextMenu}">
         <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}"/>
         <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}"/>
-        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}"/>
         <Setter Property="Background" Value="{DynamicResource WindowBackground}"/>
         <Setter Property="Foreground" Value="{DynamicResource ItemText}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}"/>

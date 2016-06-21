@@ -87,7 +87,7 @@
         <Setter Property="Focusable" Value="False" />
         <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}" />
         <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
-        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
@@ -118,7 +118,7 @@
 
                 <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}" />
                 <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
-                <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+                <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
                 <Setter Property="Background" Value="{DynamicResource WindowBackground}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource WindowBorder}" />
                 <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />

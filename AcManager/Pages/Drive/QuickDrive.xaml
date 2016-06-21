@@ -2,10 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-             xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-             mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" Loaded="QuickDrive_Loaded" Unloaded="QuickDrive_Unloaded"
-        d:DataContext="{d:DesignInstance drive:QuickDrive+QuickDriveViewModel}" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" Loaded="QuickDrive_Loaded" Unloaded="QuickDrive_Unloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+QuickDriveViewModel}"
+        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -34,8 +33,8 @@
                         VerticalContentAlignment="Stretch">
                     <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding SelectedCar}">
                         <Image DataContext="{Binding SelectedSkin}"
-                                Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
-                                RenderOptions.BitmapScalingMode="HighQuality" Margin="-25 0 0 0" />
+                                Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='160×'}"
+                                Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" Margin="-25 0 0 0" />
                         <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding DisplayName}"
                                 Foreground="White" />
                     </Grid>
@@ -46,10 +45,10 @@
                 <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeTrackCommand}" HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch">
                     <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding SelectedTrack}">
-                        <Image Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
-                                RenderOptions.BitmapScalingMode="HighQuality" />
-                        <Image Source="{Binding OutlineImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="Uniform"
-                                RenderOptions.BitmapScalingMode="HighQuality" />
+                        <Image Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='160×'}"
+                                Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" />
+                        <Image Source="{Binding OutlineImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='160×'}"
+                                Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
                         <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Name}"
                                 Foreground="White" />
                     </Grid>

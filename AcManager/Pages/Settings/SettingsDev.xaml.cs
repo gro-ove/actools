@@ -16,6 +16,15 @@ namespace AcManager.Pages.Settings {
         }
 
         public class DevViewModel : NotifyPropertyChanged {
+            public bool? IdealFormattingMode {
+                get { return DpiAwareWindow.OptionIdealFormattingMode; }
+                set {
+                    if (Equals(value, DpiAwareWindow.OptionIdealFormattingMode)) return;
+                    DpiAwareWindow.OptionIdealFormattingMode = value;
+                    OnPropertyChanged();
+                }
+            }
+
             private AsyncCommand _magickNetMemoryLeakingCommand;
 
             public AsyncCommand MagickNetMemoryLeakingCommand => _magickNetMemoryLeakingCommand ?? (_magickNetMemoryLeakingCommand = new AsyncCommand(async o => {

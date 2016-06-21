@@ -8,11 +8,11 @@ using System.Windows.Input;
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
         public static string MultiplyForm(this int number, string valueOne, string valueTwo) {
-            return number == 1 || number > 20 && number % 10 == 1 ? valueOne : valueTwo;
+            return number == 1 ? valueOne : valueTwo;
         }
 
         public static string MultiplyForm(this long number, string valueOne, string valueTwo) {
-            return number == 1 || number > 20 && number % 10 == 1 ? valueOne : valueTwo;
+            return number == 1 ? valueOne : valueTwo;
         }
 
         public static string GetOrdinalReadable(this int value) {

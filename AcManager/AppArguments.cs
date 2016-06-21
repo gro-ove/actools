@@ -66,6 +66,11 @@ namespace AcManager {
             return defaultValue;
         }
 
+        public static double GetDouble(AppFlag flag, double defaultValue = 0d) {
+            Set(flag, ref defaultValue);
+            return defaultValue;
+        }
+
         public static void Set(AppFlag flag, ref bool option) {
             var value = Get(flag);
             if (value == null) {

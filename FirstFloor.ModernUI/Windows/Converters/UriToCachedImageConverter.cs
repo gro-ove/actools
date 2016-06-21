@@ -3,6 +3,7 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     public class UriToCachedImageConverter : IValueConverter {
@@ -42,11 +43,11 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 bi.BeginInit();
 
                 if (decodeWidth != -1) {
-                    bi.DecodePixelWidth = decodeWidth;
+                    bi.DecodePixelWidth = (int)(decodeWidth * DpiAwareWindow.OptionScale);
                 }
 
                 if (decodeHeight != -1) {
-                    bi.DecodePixelHeight = decodeHeight;
+                    bi.DecodePixelHeight = (int)(decodeHeight * DpiAwareWindow.OptionScale);
                 }
 
                 bi.CreateOptions = source.Scheme == "http" || source.Scheme == "https"

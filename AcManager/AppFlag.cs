@@ -5,6 +5,19 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// UI scale (as a temporary solution for 4K screens). Make sure ideal formatting mode
+        /// is enabled when using unusual scale.
+        /// Example: --ui-scale=1.5.
+        /// </summary>
+        UiScale,
+
+        /// <summary>
+        /// Affects text rendering, disabled by default, but enabled if UI scale isn’t 100%.
+        /// Example: --ideal-formatting-mode=no.
+        /// </summary>
+        IdealFormattingMode,
+
+        /// <summary>
         /// Disables logging.
         /// Example: --disable-logging.
         /// </summary>
@@ -62,32 +75,32 @@ namespace AcManager {
 
         /// <summary>
         /// Disable WebBrowser emulation mode even if it was disabled before.
-        /// Example: --force-disable-web-browser-emulation-mode
+        /// Example: --force-disable-web-browser-emulation-mode.
         /// </summary>
         ForceDisableWebBrowserEmulationMode,
 
         /// <summary>
         /// Don’t affect WebBrowser emulation mode at all.
-        /// Example: --prevent-disable-web-browser-emulation-mode
+        /// Example: --prevent-disable-web-browser-emulation-mode.
         /// </summary>
         PreventDisableWebBrowserEmulationMode,
 
         /// <summary>
         /// Number of servers being pinged simultaneosly (usually with pinging also goes
         /// loading of cars & cars skins information). Default value: 30.
-        /// Example: --ping-concurrency=50
+        /// Example: --ping-concurrency=50.
         /// </summary>
         PingConcurrency,
 
         /// <summary>
         /// Affects almost all objects in lists. Default value: 5.
-        /// Example: --ac-objects-loading-concurrency=25
+        /// Example: --ac-objects-loading-concurrency=25.
         /// </summary>
         AcObjectsLoadingConcurrency,
 
         /// <summary>
         /// Affects car, not always. Default value: 3.
-        /// Example: --skins-loading-concurrency=5
+        /// Example: --skins-loading-concurrency=5.
         /// </summary>
         SkinsLoadingConcurrency,
 
@@ -95,84 +108,84 @@ namespace AcManager {
         /// Use oldschool notifications instead of modern ones even in Windows 8/8.1/10.
         /// Modern notifications require for app to have its shortcut in Windows menu,
         /// could be annoying.
-        /// Example: --force-toast-fallback-mode
+        /// Example: --force-toast-fallback-mode.
         /// </summary>
         ForceToastFallbackMode,
 
         /// <summary>
         /// Timeouts for sockets using for scanning lan (ms). Default value: 200.
-        /// Example: --lan-socket-timeout=25
+        /// Example: --lan-socket-timeout=25.
         /// </summary>
         LanSocketTimeout,
 
         /// <summary>
         /// Poll timeouts for sockets using for scanning lan (ms). Default value: 100.
-        /// Example: --lan-poll-timeout=50
+        /// Example: --lan-poll-timeout=50.
         /// </summary>
         LanPollTimeout,
 
         /// <summary>
         /// Timeout for web requests for online requests (ms). Default value: 3000.
-        /// Example: --web-request-timeout=5000
+        /// Example: --web-request-timeout=5000.
         /// </summary>
         WebRequestTimeout,
 
         /// <summary>
         /// Always get server information directly from server instead of using main AC server.
         /// Should be faster and better. Default value: true.
-        /// Example: --always-get-information-directly=no
+        /// Example: --always-get-information-directly=no.
         /// </summary>
         AlwaysGetInformationDirectly,
 
         /// <summary>
         /// Less responsible UI, but could be a little bit faster.
-        /// Example: --sync-navigation
+        /// Example: --sync-navigation.
         /// </summary>
         SyncNavigation,
 
         /// <summary>
         /// Disable transition animation completely.
-        /// Example: --disable-transition-animation
+        /// Example: --disable-transition-animation.
         /// </summary>
         DisableTransitionAnimation,
 
         /// <summary>
         /// Size of queue of recently closed filters. Default value: 10.
-        /// Example: --recently-closed-queue-size=20
+        /// Example: --recently-closed-queue-size=20.
         /// </summary>
         RecentlyClosedQueueSize,
 
         /// <summary>
         /// Mark current preset as changed only if it’s actually changed, enabled by default.
         /// You can disable it to improve performance.
-        /// Example: --smart-presets-changed-handling=false
+        /// Example: --smart-presets-changed-handling=no.
         /// </summary>
         SmartPresetsChangedHandling,
 
         /// <summary>
         /// Restore original race.ini file, enabled by default. You can disable for whatever
         /// reason you want.
-        /// Example: --enable-race-ini-restoration=false
+        /// Example: --enable-race-ini-restoration=no.
         /// </summary>
         EnableRaceIniRestoration,
 
         /// <summary>
         /// Ignore skipped events (when first event is called “event5” or something like this,
         /// in other words — broken). I don’t think it'll work, but anyway.
-        /// Example: --kunos-career-ignore-skipped-events
+        /// Example: --kunos-career-ignore-skipped-events.
         /// </summary>
         KunosCareerIgnoreSkippedEvents,
 
         /// <summary>
         /// Ignore system proxy settings (from IE). Disabled by default, could work faster if 
         /// enabled.
-        /// Example: --ignore-system-proxy
+        /// Example: --ignore-system-proxy.
         /// </summary>
         IgnoreSystemProxy,
 
         /// <summary>
         /// When started using command line args, don’t show main window.
-        /// Example: --lite-startup-mode-supported
+        /// Example: --lite-startup-mode-supported.
         /// </summary>
         LiteStartupModeSupported
     }

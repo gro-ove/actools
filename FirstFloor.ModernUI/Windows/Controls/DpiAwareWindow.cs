@@ -17,6 +17,31 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// A window instance that is capable of per-monitor DPI awareness when supported.
     /// </summary>
     public abstract class DpiAwareWindow : Window {
+        private static double? _optionScale;
+
+        public static double OptionScale {
+            get {
+                if (!_optionScale.HasValue) throw new Exception("Set OptionScale first");
+                return _optionScale.Value;
+            }
+            set {
+                if (Equals(_optionScale, value)) return;
+                if (_optionScale.HasValue) throw new Exception("OptionScale already has been set");
+                _optionScale = value;
+            }
+        }
+
+        private static bool? _optionIdealFormattingMode;
+
+        public static bool? OptionIdealFormattingMode {
+            get { return _optionIdealFormattingMode; }
+            set {
+                if (Equals(_optionIdealFormattingMode, value)) return;
+                _optionIdealFormattingMode = value;
+                Application.Current.Resources["FormattingMode"] = value == true ? TextFormattingMode.Ideal : TextFormattingMode.Display;
+            }
+        }
+
         /// <summary>
         /// Occurs when the system or monitor DPI for this window has changed.
         /// </summary>
@@ -194,14 +219,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             // adjust window size constraints as well
-            if (IsFinite(MaxWidth)) {
-                MaxWidth *= relScaleX;
-            }
-
-            if (IsFinite(MaxWidth)) {
-                MaxHeight *= relScaleY;
-            }
-
+            if (IsFinite(MaxWidth)) MaxWidth *= relScaleX;
+            if (IsFinite(MaxHeight)) MaxHeight *= relScaleY;
             MinWidth *= relScaleX;
             MinHeight *= relScaleY;
 
@@ -209,10 +228,25 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Height = height;
         }
 
+        private bool _scaled;
+
+        private void RescaleIfNeeded() {
+            if (OptionScale != 1d && !_scaled) {
+                if (IsFinite(MaxWidth)) MaxWidth *= OptionScale;
+                if (IsFinite(MaxHeight)) MaxHeight *= OptionScale;
+                if (IsFinite(Width)) Width *= OptionScale;
+                if (IsFinite(Height)) Height *= OptionScale;
+                if (IsFinite(MinWidth)) MinWidth *= OptionScale;
+                if (IsFinite(MinHeight)) MinHeight *= OptionScale;
+                _scaled = true;
+            }
+        }
+
         /// <summary>
         /// Refreshes the current monitor DPI settings and update the window size and layout scale accordingly.
         /// </summary>
         protected void RefreshMonitorDpi() {
+            RescaleIfNeeded();
             if (!_isPerMonitorDpiAware) {
                 return;
             }
@@ -313,6 +347,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var key = LocationAndSizeKey;
             if (key == null) return;
 
+            RescaleIfNeeded();
+
             var locationKey = key + ".l";
             var sizeKey = key + ".s";
             var maximizedKey = key + ".m";
@@ -321,8 +357,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var location = ValuesStorage.GetPoint(locationKey, new Point(Left, Top));
             var size = ValuesStorage.GetPoint(sizeKey, new Point(Width, Height));
 
-            Left = Math.Min(Math.Max(location.X, 0), area.Width - 64);
-            Top = Math.Min(Math.Max(location.Y, 0), area.Height - 64);
+            Left = Math.Min(Math.Max(location.X, 0), area.Width - 200);
+            Top = Math.Min(Math.Max(location.Y, 0), area.Height - 200);
             if (ResizeMode == ResizeMode.CanResize || ResizeMode == ResizeMode.CanResizeWithGrip) {
                 Width = Math.Min(Math.Max(size.X, MinWidth), area.Width);
                 Height = Math.Min(Math.Max(size.Y, MinHeight), area.Height);
@@ -333,6 +369,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void SaveLocationAndSize() {
             var key = LocationAndSizeKey;
             if (key == null || WindowState == WindowState.Minimized) return;
+
+            RescaleIfNeeded();
 
             var locationKey = key + ".l";
             var sizeKey = key + ".s";

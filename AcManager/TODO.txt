@@ -646,6 +646,8 @@ todo:
     - show race params on loading screen?
 
 later:    
+    - use bgr0X.jpg for dynamic background
+
     - combine watchers for CM data directory into one?
     - changeable width of list area
     - add NVIDIA copyrights and stuff

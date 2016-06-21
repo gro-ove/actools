@@ -19,7 +19,7 @@
         <Setter Property="ResizeMode" Value="NoResize" />
         <Setter Property="SizeToContent" Value="WidthAndHeight" />
         <Setter Property="UseLayoutRounding" Value="True" />
-        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
 
         <Setter Property="Template">
             <Setter.Value>
@@ -29,6 +29,12 @@
                             <Border BorderBrush="{DynamicResource WindowBorder}" BorderThickness="1">
                                 <AdornerDecorator>
                                     <Grid>
+                                        <Grid.LayoutTransform>
+                                            <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"
+                                                    ScaleX="{x:Static controls:DpiAwareWindow.OptionScale}"
+                                                    ScaleY="{x:Static controls:DpiAwareWindow.OptionScale}" />
+                                        </Grid.LayoutTransform>
+                                        
                                         <!-- window background content -->
                                         <ContentControl Content="{TemplateBinding BackgroundContent}" />
 

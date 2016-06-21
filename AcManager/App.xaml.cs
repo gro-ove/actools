@@ -116,6 +116,8 @@ namespace AcManager {
 
             FancyBackgroundManager.Initialize();
             AppAppearanceManager.Initialize();
+            DpiAwareWindow.OptionScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
+            DpiAwareWindow.OptionIdealFormattingMode = AppArguments.GetBool(AppFlag.IdealFormattingMode, !Equals(DpiAwareWindow.OptionScale, 1d));
 
             AcObjectsUriManager.Register(new UriProvider());
             SolversManager.RegisterFactory(new UiSolversFactory());

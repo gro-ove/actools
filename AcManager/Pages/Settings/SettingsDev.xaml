@@ -13,6 +13,10 @@
 
     <ScrollViewer>
         <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
+            <CheckBox IsChecked="{Binding IdealFormattingMode}">
+                <Label>Ideal text formatting</Label>
+            </CheckBox>
+            
             <DockPanel>
                 <Label>Magick.NET leaking:</Label>
                 <Button Command="{Binding MagickNetMemoryLeakingCommand}">Test</Button>

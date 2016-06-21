@@ -177,18 +177,18 @@ namespace AcManager.Tools.Objects {
 
         protected override void LoadData(JObject json) {
             Name = json.GetStringValueOnly("skinname");
+            LoadCountry(json);
+            LoadSkinRelated(json);
+
             if (string.IsNullOrWhiteSpace(Name)) {
                 // more than usual case
                 // AddError(AcErrorType.Data_ObjectNameIsMissing);
             }
 
-            LoadTags(json);
-            LoadCountry(json);
-            LoadDescription(json);
-            LoadYear(json);
-            LoadVersionInfo(json);
-
-            LoadSkinRelated(json);
+            // LoadTags(json);
+            // LoadDescription(json);
+            // LoadYear(json);
+            // LoadVersionInfo(json);
         }
 
         public override void SaveData(JObject json) {

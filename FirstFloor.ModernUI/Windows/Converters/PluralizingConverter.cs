@@ -64,7 +64,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
         public static string Pluralize(int value, [NotNull] string s) {
             if (s == null) throw new ArgumentNullException(nameof(s));
-            return Equals(value, 1) || value > 20 && Equals(value % 10, 1) ? s : Pluralize(s);
+            return Equals(value, 1) ? s : Pluralize(s);
         }
 
         private static Regex _extRegex;
