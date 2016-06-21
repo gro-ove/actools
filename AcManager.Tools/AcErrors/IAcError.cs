@@ -1,8 +1,9 @@
+using System.ComponentModel;
 using System.Windows.Input;
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Tools.AcErrors {
-    public interface IAcError {
+    public interface IAcError : INotifyPropertyChanged {
         IAcObjectNew Target { get; }
 
         AcErrorCategory Category { get; }

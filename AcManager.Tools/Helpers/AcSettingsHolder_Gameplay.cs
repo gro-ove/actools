@@ -78,6 +78,17 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool _displayDriverNames;
+
+            public bool DisplayDriverNames {
+                get { return _displayDriverNames; }
+                set {
+                    if (Equals(value, _displayDriverNames)) return;
+                    _displayDriverNames = value;
+                    OnPropertyChanged();
+                }
+            }
             #endregion
 
             private int _steeringWheelLimit;
@@ -98,6 +109,7 @@ namespace AcManager.Tools.Helpers {
                 DisplayDamage = Ini["DAMAGE_DISPLAYER"].GetBool("IS_ACTIVE", true);
                 DisplayLeaderboard = Ini["OVERLAY_LEADERBOARD"].GetBool("ACTIVE", true);
                 DisplayMirror = Ini["VIRTUAL_MIRROR"].GetBool("ACTIVE", true);
+                DisplayDriverNames = Ini["DRIVER_NAME_DISPLAYER"].GetBool("IS_ACTIVE", false);
                 AllowOverlapping = Ini["GUI"].GetBool("ALLOW_OVERLAPPING_FORMS", true);
                 SteeringWheelLimit = Ini["STEER_ANIMATION"].GetInt("MAX_DEGREES", 0);
             }
@@ -108,6 +120,7 @@ namespace AcManager.Tools.Helpers {
                 Ini["DAMAGE_DISPLAYER"].Set("IS_ACTIVE", DisplayDamage);
                 Ini["OVERLAY_LEADERBOARD"].Set("ACTIVE", DisplayLeaderboard);
                 Ini["VIRTUAL_MIRROR"].Set("ACTIVE", DisplayMirror);
+                Ini["DRIVER_NAME_DISPLAYER"].Set("IS_ACTIVE", DisplayDriverNames);
                 Ini["GUI"].Set("ALLOW_OVERLAPPING_FORMS", AllowOverlapping);
                 Ini["STEER_ANIMATION"].Set("MAX_DEGREES", SteeringWheelLimit);
             }

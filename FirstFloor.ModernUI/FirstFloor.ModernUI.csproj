@@ -207,6 +207,7 @@
     <Compile Include="Windows\Converters\SumConverter.cs" />
     <Compile Include="Windows\Converters\ExistToVisibilityConverter.cs" />
     <Compile Include="Windows\Converters\ToTitleConverter.cs" />
+    <Compile Include="Windows\Converters\UriToCachedImageConverterOld.cs" />
     <Compile Include="Windows\Converters\UriToCachedImageConverter.cs" />
     <Compile Include="Windows\Converters\BooleanToFontWeightConverter.cs" />
     <Compile Include="Windows\Converters\BooleanToFontStyleConverter.cs" />

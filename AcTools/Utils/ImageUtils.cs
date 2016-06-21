@@ -105,7 +105,7 @@ namespace AcTools.Utils {
             }
         }
 
-        private static void ApplyPreviewImageMagick(string source, string destination, double maxWidth = 0d, double maxHeight = 0d) {
+        public static void ApplyPreviewImageMagick(string source, string destination, double maxWidth = 0d, double maxHeight = 0d) {
             using (var image = new MagickImage(source)) {
                 if (maxWidth > 0d || maxHeight > 0d) {
                     var k = Math.Max(maxHeight / image.Height, maxWidth / image.Width);
@@ -117,6 +117,15 @@ namespace AcTools.Utils {
 
                 image.Quality = 95;
                 image.Density = new MagickGeometry(96, 96);
+                if (File.Exists(destination)) {
+                    try {
+                        File.Delete(destination);
+                    } catch (UnauthorizedAccessException) {
+                        Thread.Sleep(200);
+                        File.Delete(destination);
+                    }
+                }
+
                 image.Write(destination);
             }
         }
@@ -185,6 +194,12 @@ namespace AcTools.Utils {
                 progress?.Report(new Tuple<string, double?>(id, (double)i / files.Length));
                 await Task.Run(() => { ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize); }, cancellation);
                 if (cancellation.IsCancellationRequested) return;
+            }
+
+            try {
+                Directory.Delete(source);
+            } catch (Exception) {
+                // ignored
             }
         }
 

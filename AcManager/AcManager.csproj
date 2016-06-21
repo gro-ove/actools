@@ -234,6 +234,9 @@
     <Compile Include="Pages\Selected\SelectedPythonAppPage.xaml.cs">
       <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\SettingsDev.xaml.cs">
+      <DependentUpon>SettingsDev.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\SettingsQuickSwitches.xaml.cs">
       <DependentUpon>SettingsQuickSwitches.xaml</DependentUpon>
     </Compile>
@@ -354,6 +357,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\Livery\Shapes\Carbon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Livery\Shapes\Diagonal.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -366,11 +373,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\Livery\Shapes\DoubleStripes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Livery\Shapes\Stripes.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\Livery\Shapes\StripesSide.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\Livery\Styles\Gradient.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -651,6 +666,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedWeatherPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\SettingsDev.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1094,6 +1113,12 @@
     <Resource Include="Assets\Livery\Styles\Gloss.png" />
     <Resource Include="Assets\Livery\Styles\Metallic.png" />
     <Resource Include="Assets\Livery\Styles\Miura.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Livery\Styles\Gradient.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Livery\Shapes\Carbon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -3,8 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
-                  xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-                  mc:Ignorable="d" d:DesignHeight="300"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Title="Update Previews" MinWidth="320" MinHeight="120" Width="540" Height="400" ResizeMode="NoResize" MaxWidth="1920"
         MaxHeight="1080" Closing="CarUpdatePreviewsDialog_OnClosing" SizeToContent="Manual" Loaded="CarUpdatePreviewsDialog_OnLoaded"
         d:DataContext="{d:DesignInstance dialogs:CarUpdatePreviewsDialog}" SizeChanged="CarUpdatePreviewsDialog_OnSizeChanged">
@@ -16,7 +15,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </mui:ModernDialog.Resources>
-    
+
     <Grid>
         <DockPanel Name="OptionsPhase" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <!--first two rows-->
@@ -153,11 +152,11 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Image Source="{Binding OriginalImage, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
-                        RenderOptions.BitmapScalingMode="HighQuality" Margin="0" MouseDown="OriginalPreview_OnMouseDown" />
+                <Image Source="{Binding OriginalImage, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='1022×'}"
+                        Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" Margin="0" MouseDown="OriginalPreview_OnMouseDown" />
 
-                <Image Source="{Binding UpdatedImage, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
-                        RenderOptions.BitmapScalingMode="HighQuality" Margin="0" Grid.Column="2" MouseDown="UpdatedPreview_OnMouseDown" />
+                <Image Source="{Binding UpdatedImage, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='1022×'}"
+                        Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" Margin="0" Grid.Column="2" MouseDown="UpdatedPreview_OnMouseDown" />
             </Grid>
 
             <TextBlock Text="{Binding TakenTime, StringFormat='Taken time: \{0:mm\\:ss\}'}" Margin="0 8 0 0" Style="{StaticResource Small}" />

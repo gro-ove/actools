@@ -8,7 +8,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.AcErrors {
-    public class AcError : IAcError {
+    public class AcError : NotifyPropertyChanged, IAcError {
         public IAcObjectNew Target { get; }
 
         public AcErrorCategory Category { get; }

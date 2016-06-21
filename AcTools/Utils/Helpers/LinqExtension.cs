@@ -551,6 +551,13 @@ namespace AcTools.Utils.Helpers {
             return source.FirstOrDefault(x => x.Id == id);
         }
 
+        [Pure]
+        [CanBeNull]
+        public static T GetByIdOrDefault<T>([NotNull] this IEnumerable<T> source, string id, StringComparison comparison) where T : IWithId {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            return source.FirstOrDefault(x => string.Equals(x.Id, id, comparison));
+        }
+
         [NotNull]
         [Pure]
         public static T GetById<T, TId>([NotNull] this IEnumerable<T> source, TId id) where T : IWithId<TId> {

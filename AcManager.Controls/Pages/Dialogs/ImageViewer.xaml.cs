@@ -5,11 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Path = System.IO.Path;
@@ -20,10 +22,24 @@ namespace AcManager.Controls.Pages.Dialogs {
 
         public ImageViewer(string image) : this(new[] { image }) { }
 
-        public ImageViewer(IEnumerable<object> images, int position = 0) {
-            DataContext = new ImageViewerViewModel(images, position);
+        public ImageViewer(IEnumerable<object> images, int position = 0, bool oneTrueDpi = true, int maxWidth = -1, int maxHeight = -1) {
+            var model = new ImageViewerViewModel(images, position);
+            DataContext = model;
             InitializeComponent();
             Buttons = new Button[] { };
+
+            if (maxWidth > 0) {
+                model.MaxImageWidth = maxWidth;
+                model.MaxImageHeight = maxHeight;
+            }
+
+            Image.SetBinding(Image.SourceProperty, new Binding {
+                Source = model,
+                Path = new PropertyPath(nameof(ImageViewerViewModel.CurrentImage)),
+                Mode = BindingMode.OneWay,
+                Converter = new UriToCachedImageConverter(),
+                ConverterParameter = oneTrueDpi ? "oneTrueDpi" : (maxWidth > 0 ? $"{maxWidth}×" : null)
+            });
         }
 
         private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {

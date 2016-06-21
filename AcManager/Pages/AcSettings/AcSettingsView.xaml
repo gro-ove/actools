@@ -30,6 +30,10 @@
                 <Label>Show virtual mirror</Label>
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding Gameplay.DisplayDriverNames}">
+                <Label>Show drivers’ names</Label>
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Gameplay.AllowOverlapping}">
                 <Label>Allow in-game apps overlapping</Label>
             </CheckBox>

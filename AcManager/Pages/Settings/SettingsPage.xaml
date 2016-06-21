@@ -4,7 +4,7 @@
         xmlns:internal="clr-namespace:AcManager.Internal;assembly=AcManager.Internal" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}">
     <Grid Style="{StaticResource ContentRoot}">
-        <mui:ModernTab Layout="List" SelectedSource="/Pages/Settings/SettingsGeneral.xaml" SaveKey="__SettingsPage.SelectedPage">
+        <mui:ModernTab x:Name="Tab" Layout="List" SelectedSource="/Pages/Settings/SettingsGeneral.xaml" SaveKey="__SettingsPage.SelectedPage">
             <mui:ModernTab.Links>
                 <mui:Link DisplayName="general" Source="/Pages/Settings/SettingsGeneral.xaml" />
                 <mui:Link DisplayName="addons" Source="/Pages/Settings/SettingsAddons.xaml" />

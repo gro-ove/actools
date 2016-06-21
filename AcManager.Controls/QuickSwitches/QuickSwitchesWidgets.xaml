@@ -20,17 +20,28 @@
 
     <mui:ModernToggleButton x:Key="WidgetVirtualMirror" IsChecked="{Binding DisplayMirror, Source={x:Static hs:AcSettingsHolder.Gameplay}}" Content="Mirror"
             IconData="{StaticResource MirrorIconData}" ToolTip="Display virtual mirror" />
+    <mui:ModernToggleButton x:Key="WidgetDriverNames" IsChecked="{Binding DisplayDriverNames, Source={x:Static hs:AcSettingsHolder.Gameplay}}" Content="Names"
+            IconData="{StaticResource AboveIconData}">
+        <mui:ModernToggleButton.ToolTip>Display drivers’ names</mui:ModernToggleButton.ToolTip>
+    </mui:ModernToggleButton>
     <mui:ModernToggleButton x:Key="WidgetLeaderboard" IsChecked="{Binding DisplayLeaderboard, Source={x:Static hs:AcSettingsHolder.Gameplay}}"
             Content="Leaderboard" IconData="{StaticResource LeaderboardIconData}" ToolTip="Display leaderboard" />
     <mui:ModernToggleButton x:Key="WidgetDamage" IsChecked="{Binding DisplayDamage, Source={x:Static hs:AcSettingsHolder.Gameplay}}" Content="Damage (UI)"
             IconData="{StaticResource AccidentIconData}" ToolTip="Display damage" />
 
     <mui:ModernToggleButton x:Key="WidgetProximityIndicator" IsChecked="{Binding IsEnabled, Source={x:Static hs:AcSettingsHolder.ProximityIndicator}}"
-            Content="Nearest" IconData="{StaticResource ExpandIconData}" ToolTip="Show nearest opponents with proximity indicator" />
+            Content="Nearest" IconData="{StaticResource ProximityIndicatiorIconData}" ToolTip="Show nearest opponents with proximity indicator" />
+    <mui:ModernToggleButton x:Key="WidgetFullscreen" IsChecked="{Binding Fullscreen, Source={x:Static hs:AcSettingsHolder.Video}}"
+            Content="Fullscreen" IconData="{StaticResource ExpandIconData}">
+        <mui:ModernToggleButton.ToolTip>Fullscreen mode (for example, Shadowplay won’t work without it)</mui:ModernToggleButton.ToolTip>
+    </mui:ModernToggleButton>
     <mui:ModernToggleButton x:Key="WidgetDeveloperApps" IsChecked="{Binding DeveloperApps, Source={x:Static hs:AcSettingsHolder.System}}" Content="Dev apps"
             IconData="{StaticResource RoadConeIconData}" ToolTip="Enable developer apps" />
     <mui:ModernToggleButton x:Key="WidgetFreeCamera" IsChecked="{Binding AllowFreeCamera, Source={x:Static hs:AcSettingsHolder.System}}" Content="Free camera"
             IconData="{StaticResource FreeCameraIconData}" ToolTip="Enable free camera (press F7 in-game)" />
+
+    <mui:ModernToggleButton x:Key="WidgetDifferentPlayerNameOnline" IsChecked="{Binding DifferentPlayerNameOnline, Source={x:Static hs:SettingsHolder.Drive}}"
+            Content="Online name" IconData="{StaticResource UserTieIconData}" ToolTip="Use different name online" />
 
     <!--comboboxes-->
     <local:QuickSwitchPresetsControl x:Key="WidgetUiPresets" UserPresetable="{x:Static hs:AcSettingsHolder.AppsPresets}"

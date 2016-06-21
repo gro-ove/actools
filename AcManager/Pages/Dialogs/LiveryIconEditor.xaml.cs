@@ -41,12 +41,15 @@ namespace AcManager.Pages.Dialogs {
             new SettingEntry("Diagonal", "Diagonal"),
             new SettingEntry("Stripes", "Stripes"),
             new SettingEntry("StripesSide", "Side Stripes"),
+            new SettingEntry("DoubleStripes", "Double Stripes"),
             new SettingEntry("HorizontalStripes", "Horizontal Stripes"),
-            new SettingEntry("Circle", "Circle")
+            new SettingEntry("Circle", "Circle"),
+            new SettingEntry("Carbon", "Carbon")
         };
 
         public SettingEntry[] Styles { get; } = {
             new SettingEntry("Solid", "Solid"),
+            new SettingEntry("Gradient", "Gradient"),
             new SettingEntry("Gloss", "Gloss"),
             new SettingEntry("Metallic", "Metallic"),
             new SettingEntry("Miura", "Miura"),

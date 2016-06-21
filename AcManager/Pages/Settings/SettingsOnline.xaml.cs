@@ -14,7 +14,7 @@ namespace AcManager.Pages.Settings {
             DataContext = new SettingsOnlineViewModel();
             InitializeComponent();
 
-            var list = Model.Holder.IgnoredInterfaces;
+            var list = Model.Online.IgnoredInterfaces;
             foreach (var item in Model.NetworkInterfaces.Where(x => !list.Contains(x.Id)).ToList()) {
                 IgnoredInterfacesListBox.SelectedItems.Add(item);
             }
@@ -22,11 +22,13 @@ namespace AcManager.Pages.Settings {
 
         private void IgnoredInterfacesListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
             var selected = IgnoredInterfacesListBox.SelectedItems.OfType<NetworkInterface>().Select(x => x.Id).ToList();
-            Model.Holder.IgnoredInterfaces = Model.NetworkInterfaces.Where(x => !selected.Contains(x.Id)).Select(x => x.Id);
+            Model.Online.IgnoredInterfaces = Model.NetworkInterfaces.Where(x => !selected.Contains(x.Id)).Select(x => x.Id);
         }
 
         public class SettingsOnlineViewModel : NotifyPropertyChanged {
-            public SettingsHolder.OnlineSettings Holder => SettingsHolder.Online;
+            public SettingsHolder.OnlineSettings Online => SettingsHolder.Online;
+
+            public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 
             public List<NetworkInterface> NetworkInterfaces { get; }
 

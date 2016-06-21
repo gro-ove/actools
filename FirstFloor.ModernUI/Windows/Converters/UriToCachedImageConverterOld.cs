@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Data;
 using System.Globalization;
+using System.IO;
 using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
-    public class UriToCachedImageConverter : IValueConverter {
+    public class UriToCachedImageConverterOld : IValueConverter {
         public const double OneTrueDpi = 96d;
 
         public static BitmapSource ConvertBitmapToOneTrueDpi(BitmapImage bitmapImage) {
@@ -19,8 +20,35 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             return BitmapSource.Create(width, height, OneTrueDpi, OneTrueDpi, bitmapImage.Format, null, pixelData, stride);
         }
 
-        public static BitmapSource Convert(object value, bool considerOneTrueDpi = false, int decodeWidth = -1, int decodeHeight = -1) {
+#if CACHE
+        private class CacheEntry {
+            public BitmapImage Image;
+            public DateTime ModifiedTime;
+        }
+
+        private static readonly Dictionary<string, CacheEntry> Cache = new Dictionary<string, CacheEntry>(50); 
+#endif
+
+        private static BitmapSource _brokenImageSource;
+
+        private static BitmapSource LoadBrokenImageSource() {
+            Logging.Warning("LoadBrokenImageSource()");
+
+            var bi = new BitmapImage();
+            bi.BeginInit();
+            bi.CacheOption = BitmapCacheOption.OnLoad;
+            bi.StreamSource = new MemoryStream(Resources.BrokenImage);
+            bi.EndInit();
+
+            return bi;
+        }
+
+        public static BitmapSource Convert(object value, bool considerOneTrueDpi = false) {
             if (value is BitmapSource) return value as BitmapImage;
+
+#if CACHE
+            var modifiedTime = DateTime.MinValue;
+#endif
 
             var source = value as Uri;
             if (source == null) {
@@ -28,6 +56,12 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 if (string.IsNullOrEmpty(path)) {
                     return null;
                 }
+
+#if CACHE
+                if (File.Exists(path)) {
+                    modifiedTime = new FileInfo(path).LastWriteTime;
+                }
+#endif
 
                 try {
                     source = new Uri(path);
@@ -37,29 +71,37 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 }
             }
 
+#if CACHE
+            var key = source.ToString();
+            CacheEntry entry;
+            if (Cache.TryGetValue(key, out entry) && modifiedTime <= entry.ModifiedTime) {
+                Logging.Write("[IMAGE] Cached: " + source + " (" + modifiedTime + ", " + entry.ModifiedTime + ")");
+                return entry.Image;
+            }
+#endif
+            //if (!File.Exists(source.OriginalString)) {
+            //    return _brokenImageSource ?? (_brokenImageSource = LoadBrokenImageSource());
+            //}
+
             try {
                 var bi = new BitmapImage();
                 bi.BeginInit();
-
-                if (decodeWidth != -1) {
-                    bi.DecodePixelWidth = decodeWidth;
-                }
-
-                if (decodeHeight != -1) {
-                    bi.DecodePixelHeight = decodeHeight;
-                }
-
                 bi.CreateOptions = source.Scheme == "http" || source.Scheme == "https"
-                        ? BitmapCreateOptions.None : BitmapCreateOptions.IgnoreImageCache;
+                        ? BitmapCreateOptions.None : BitmapCreateOptions.DelayCreation | BitmapCreateOptions.IgnoreImageCache;
                 bi.CacheOption = BitmapCacheOption.OnLoad;
                 bi.UriSource = source;
                 bi.EndInit();
-                bi.Freeze();
 
                 if (considerOneTrueDpi && (Math.Abs(bi.DpiX - OneTrueDpi) > 1 || Math.Abs(bi.DpiY - OneTrueDpi) > 1)) {
                     return ConvertBitmapToOneTrueDpi(bi);
                 }
 
+#if CACHE
+                Cache.Add(key, new CacheEntry {
+                    Image = bi,
+                    ModifiedTime = modifiedTime
+                });
+#endif
                 return bi;
             } catch (Exception) {
                 return null;
@@ -67,17 +109,11 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            var p = parameter as string;
-            if (p == null) return Convert(value);
-
-            var i = p.IndexOf('×');
-            return i != -1
-                    ? Convert(value, false, i == 0 ? -1 : p.Substring(0, i).AsInt(), i == p.Length - 1 ? -1 : p.Substring(i + 1).AsInt())
-                    : Convert(value, p == "oneTrueDpi");
+            return Convert(value, parameter as string == "oneTrueDpi");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            throw new NotSupportedException();
+            throw new NotImplementedException("Two way conversion is not supported.");
         }
     }
 }

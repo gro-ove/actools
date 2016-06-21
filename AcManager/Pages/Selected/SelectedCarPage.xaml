@@ -19,7 +19,7 @@
     </UserControl.Resources>
 
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_IconMouseDown"
-            Icon="{Binding SelectedObject.BrandBadge, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}">
+            Icon="{Binding SelectedObject.BrandBadge, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='24×'}">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open car's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
@@ -116,7 +116,7 @@
                             <Border BorderThickness="0" Background="Transparent" Width="32" Height="32">
                                 <Image RenderOptions.BitmapScalingMode="LowQuality" MouseDown="SelectedSkinPreview_MouseDown"
                                         ToolTip="{Binding Value.DisplayName}"
-                                        Source="{Binding Value.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
+                                        Source="{Binding Value.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='32×'}" />
                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

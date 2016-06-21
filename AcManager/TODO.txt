@@ -453,6 +453,7 @@ fixme:
     - laggy online tab
     - switching from online tab
     - fix copying
+    - race: last position isn't fixed enough
 
 todo:
     + some livery.png editor
@@ -557,6 +558,9 @@ todo:
         - showroom
         - drive?
         - remember selected tab
+
+    - fix textboxes in settings
+    - quick setting: special online name
 
     - autoadd country on tags cleaning
     - remove double spaces, trim strings

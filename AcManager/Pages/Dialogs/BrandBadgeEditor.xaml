@@ -2,8 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Title="Brand Badge" AllowDrop="True" Drop="BrandBadgeEditor_OnDrop" Width="720" Height="800"
-        LocationAndSizeKey="BrandBadgeEditor_LS_"  MaxWidth="9999" MaxHeight="9999"
-        SizeToContent="Manual" ResizeMode="CanResizeWithGrip">
+        LocationAndSizeKey="BrandBadgeEditor_LS_" MaxWidth="9999" MaxHeight="9999" SizeToContent="Manual" ResizeMode="CanResizeWithGrip">
     <ListBox SelectedItem="{Binding Selected, Mode=TwoWay}" ItemsSource="{Binding Icons}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             ScrollViewer.CanContentScroll="True">
         <ListBox.ItemsPanel>
@@ -15,8 +14,8 @@
         <ListBox.ItemTemplate>
             <DataTemplate>
                 <Image RenderOptions.BitmapScalingMode="LowQuality"
-                        Source="{Binding Filename, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="64" Height="64"
-                        ToolTip="{Binding Name}" MouseDown="BrandBadge_OnMouseDown" />
+                        Source="{Binding Filename, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='64×'}" Width="64"
+                        Height="64" ToolTip="{Binding Name}" MouseDown="BrandBadge_OnMouseDown" />
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>

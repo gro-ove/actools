@@ -7,7 +7,7 @@
         d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarSkinPage+SelectedCarSkinPageViewModel}">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_OnIconMouseDown"
-            Icon="{Binding SelectedObject.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}">
+            Icon="{Binding SelectedObject.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='24×'}">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" Command="{Binding SelectedObject.ViewInExplorerCommand}">
@@ -43,7 +43,7 @@
             <!-- data section -->
             <StackPanel Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedObject}">
                 <!-- tags -->
-                <mui:TagsList ItemsSource="{Binding Tags}" SuggestionsSource="{Binding TagsList}" MouseDown="TagsList_OnMouseDown" />
+                <!--<mui:TagsList ItemsSource="{Binding Tags}" SuggestionsSource="{Binding TagsList}" MouseDown="TagsList_OnMouseDown" />-->
 
                 <Grid Margin="0 8 8 8">
                     <Grid.ColumnDefinitions>
@@ -61,14 +61,14 @@
 
                     <!-- first row -->
                     <TextBlock Text="Country:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Year:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Year of production start" />
+                    <!--<TextBlock Text="Year:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Year of production start" />-->
 
                     <ComboBox Text="{Binding Country}" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding CountriesList}" IsTextSearchEnabled="True"
                             IsEditable="True" Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:WatermarkService.Watermark="?" />
-                    <TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
+                    <!--<TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
                             attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
-                            attached:WatermarkService.Watermark="?" />
+                            attached:WatermarkService.Watermark="?" />-->
 
                     <!-- second row -->
                     <TextBlock Text="Team:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
@@ -92,13 +92,13 @@
                             attached:WatermarkService.Watermark="?" />
 
                     <!-- last row -->
-                    <TextBlock Text="Author:" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
+                    <!--<TextBlock Text="Author:" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
                     <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" MouseDown="VersionInfoBlock_OnMouseDown" attached:WatermarkService.Watermark="?"
-                            Grid.Column="1" Grid.Row="3" />
+                            Grid.Column="1" Grid.Row="3" />-->
                 </Grid>
 
                 <!-- description -->
-                <TextBox Style="{StaticResource TextBoxAsTextBlock}" AcceptsReturn="True" Text="{Binding Description}" TextWrapping="Wrap" />
+                <!--<TextBox Style="{StaticResource TextBoxAsTextBlock}" AcceptsReturn="True" Text="{Binding Description}" TextWrapping="Wrap" />-->
             </StackPanel>
         </StackPanel>
     </ac:AcObjectBase>

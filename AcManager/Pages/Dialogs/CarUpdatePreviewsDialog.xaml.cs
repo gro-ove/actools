@@ -778,10 +778,7 @@ namespace AcManager.Pages.Dialogs {
 
         private void ImageViewer(bool showUpdated) {
             var current = (ResultPreviewComparison)ResultPreviewComparisonsView.CurrentItem;
-            var viewer = new ImageViewer(new[] { current.OriginalImage, current.UpdatedImage }, showUpdated ? 1 : 0);
-            viewer.Model.MaxImageWidth = 1022;
-            viewer.Model.MaxImageHeight = 575;
-            viewer.ShowDialog();
+            new ImageViewer(new[] { current.OriginalImage, current.UpdatedImage }, showUpdated ? 1 : 0, false, 1022, 575).ShowDialog();
         }
 
         private void OriginalPreview_OnMouseDown(object sender, MouseButtonEventArgs e) {

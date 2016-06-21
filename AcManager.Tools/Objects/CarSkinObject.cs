@@ -193,13 +193,19 @@ namespace AcManager.Tools.Objects {
 
         public override void SaveData(JObject json) {
             json["skinname"] = Name ?? string.Empty;
-            SaveTags(json);
             SaveCountry(json);
-            SaveDescription(json);
-            SaveYear(json);
-            SaveVersionInfo(json);
-
             SaveSkinRelated(json);
+
+            json.Remove("tags");
+            json.Remove("description");
+            json.Remove("author");
+            json.Remove("version");
+            json.Remove("url");
+
+            // SaveTags(json);
+            // SaveDescription(json);
+            // SaveYear(json);
+            // SaveVersionInfo(json);
         }
 
         protected override AutocompleteValuesList GetTagsList() {

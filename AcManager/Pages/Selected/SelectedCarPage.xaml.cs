@@ -282,7 +282,7 @@ namespace AcManager.Pages.Selected {
                     e.Handled = true;
                     new ImageViewer(
                         from skin in _model.SelectedObject.Skins where skin.Enabled select skin.PreviewImage,
-                        _model.SelectedObject.Skins.IndexOf(_model.SelectedObject.SelectedSkin)
+                        _model.SelectedObject.Skins.Where(x => x.Enabled).IndexOf(_model.SelectedObject.SelectedSkin)
                     ).ShowDialog();
                 }
             } else if (e.ChangedButton == MouseButton.Right) {

@@ -153,8 +153,6 @@ namespace AcManager.Tools.Managers.Online {
         public override void Load() {
         }
 
-        private string[] _originalCarIds;
-
         private void SetSomeProperties(ServerInformation information) {
             Name = Regex.Replace(information.Name.Trim(), @"\s+", " ");
 
@@ -175,11 +173,10 @@ namespace AcManager.Tools.Managers.Online {
             if (PasswordRequired) {
                 Password = ValuesStorage.GetEncryptedString(PasswordStorageKey);
             }
-
-            _originalCarIds = information.CarIds;
-            CarIds = information.CarIds.Select(x => x.ToLowerInvariant()).ToArray();
+            
+            CarIds = information.CarIds;
             CarsOrTheirIds = CarIds.Select(x => new CarOrOnlyCarIdEntry(x, GetCarWrapper(x))).ToList();
-            TrackId = information.TrackId.ToLowerInvariant();
+            TrackId = information.TrackId;
             Track = GetTrack(TrackId);
             
             SetMissingCarErrorIfNeeded();
@@ -301,8 +298,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public CarObject GetById([NotNull] string id) {
-            var l = id.ToLower(CultureInfo.InvariantCulture);
-            return CarsOrTheirIds.FirstOrDefault(x => x.CarId == l)?.CarObject;
+            return CarsOrTheirIds.FirstOrDefault(x => string.Equals(x.CarId, id, StringComparison.OrdinalIgnoreCase))?.CarObject;
         }
 
         private int _currentDriversCount;
@@ -623,8 +619,8 @@ namespace AcManager.Tools.Managers.Online {
                                                    select new CurrentDriver {
                                                        Name = x.DriverName,
                                                        Team = x.DriverTeam,
-                                                       CarId = x.CarId.ToLowerInvariant(),
-                                                       CarSkinId = x.CarSkinId.ToLowerInvariant()
+                                                       CarId = x.CarId,
+                                                       CarSkinId = x.CarSkinId
                                                    });
                 OnPropertyChanged(nameof(CurrentDrivers));
 
@@ -651,10 +647,10 @@ namespace AcManager.Tools.Managers.Online {
 
                 var cars = (from x in information.Cars
                             where x.IsEntryList // if IsEntryList means that car could be selected
-                            group x by x.CarId.ToLowerInvariant()
+                            group x by x.CarId
                             into g
                             let list = g.ToList()
-                            let carObject = carObjects.GetByIdOrDefault(list[0].CarId.ToLowerInvariant())
+                            let carObject = carObjects.GetByIdOrDefault(list[0].CarId, StringComparison.OrdinalIgnoreCase)
                             let availableSkinId = list.FirstOrDefault(y => y.IsConnected == false)?.CarSkinId
                             select carObject == null ? null : new CarEntry(carObject) {
                                 Total = list.Count,
@@ -703,7 +699,7 @@ namespace AcManager.Tools.Managers.Online {
             if (CarsView == null) return;
 
             var carId = (CarsView.CurrentItem as CarEntry)?.CarObject.Id;
-            var correctId = _originalCarIds.FirstOrDefault(x => string.Equals(x, carId, StringComparison.OrdinalIgnoreCase));
+            var correctId = CarIds.FirstOrDefault(x => string.Equals(x, carId, StringComparison.OrdinalIgnoreCase));
             var properties = new Game.StartProperties(new Game.BasicProperties {
                 CarId = carId,
                 CarSkinId = null,
