@@ -1,11 +1,19 @@
 ﻿using System;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public partial class CarObject {
         private WeakReference<CarSetupsManager> _setupsManager;
 
+        [CanBeNull]
+        public CarSetupsManager GetSetupsManagerIfInitialized() {
+            CarSetupsManager result;
+            return _setupsManager != null && _setupsManager.TryGetTarget(out result) ? result : null;
+        }
+
+        [NotNull]
         public CarSetupsManager SetupsManager {
             get {
                 CarSetupsManager result;

@@ -2,16 +2,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-                                   xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-                                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarSkinPage+SelectedCarSkinPageViewModel}">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_OnIconMouseDown"
             Icon="{Binding SelectedObject.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Folder" ToolTip="Open showroom's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+                <Button Content="Folder" Command="{Binding SelectedObject.ViewInExplorerCommand}">
+                    <Button.ToolTip>Open showroom’s folder (Ctrl+F)</Button.ToolTip>
+                </Button>
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
                 <Button Content="Analyze" IsEnabled="False" />
@@ -24,7 +25,12 @@
                 <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed json-file (Ctrl+S)" />
                 <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
                 <Separator />
-                <Button Content="Update Preview" Command="{Binding UpdatePreviewCommand}" ToolTip="Update showroom's preview (Ctrl+P)" />
+                <Button Content="Update Preview" Command="{Binding UpdatePreviewCommand}">
+                    <Button.ToolTip>Update skin’s preview (Ctrl+P)</Button.ToolTip>
+                </Button>
+                <Button Content="Change Livery" Command="{Binding ChangeLiveryCommand}">
+                    <Button.ToolTip>Change skin’s livery.png (Ctrl+L)</Button.ToolTip>
+                </Button>
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
@@ -61,14 +67,16 @@
                             IsEditable="True" Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:WatermarkService.Watermark="?" />
                     <TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer" attached:WatermarkService.Watermark="?" />
+                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
+                            attached:WatermarkService.Watermark="?" />
 
                     <!-- second row -->
                     <TextBlock Text="Team:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
                     <TextBlock Text="Driver:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
                     <ComboBox Text="{Binding Team}" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding TeamsList}" IsTextSearchEnabled="True" IsEditable="True"
-                            Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
+                            Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            attached:WatermarkService.Watermark="?" />
                     <TextBox Text="{Binding DriverName}" Grid.Column="3" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}"
                             attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
 
@@ -77,9 +85,11 @@
                     <TextBlock Text="Priority:" Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
 
                     <TextBox Text="{Binding SkinNumber}" Grid.Column="1" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer" attached:WatermarkService.Watermark="?" />
+                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
+                            attached:WatermarkService.Watermark="?" />
                     <TextBox Text="{Binding Priority, TargetNullValue=''}" Grid.Column="3" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer" attached:WatermarkService.Watermark="?" />
+                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
+                            attached:WatermarkService.Watermark="?" />
 
                     <!-- last row -->
                     <TextBlock Text="Author:" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />

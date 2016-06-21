@@ -13,7 +13,6 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Annotations;
-using AcManager.Controls;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -484,9 +483,10 @@ namespace AcManager.Pages.Dialogs {
         private DialogMode _mode;
         private bool _cancelled;
 
-        public new void ShowDialog() {
-            if (_cancelled) return;
+        public new bool ShowDialog() {
+            if (_cancelled) return false;
             base.ShowDialog();
+            return CurrentPhase == Phase.Result;
         }
 
         public bool CanBeSaved => SelectedShowroom != null && SelectedFilter != null;
@@ -670,6 +670,12 @@ namespace AcManager.Pages.Dialogs {
                     await Task.Delay(1);
                     Close();
                 }
+                return;
+            }
+
+            if (SelectedCar.Enabled == false || _skinIds?.Any(x => SelectedCar.SkinsManager.GetWrapperById(x)?.Value.Enabled == false) == true) {
+                ErrorMessage = "Can’t update previews of disabled car or skin.";
+                SelectPhase(Phase.Error);
                 return;
             }
 

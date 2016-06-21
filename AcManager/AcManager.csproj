@@ -350,6 +350,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\Livery\Shapes\Circle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Livery\Shapes\Diagonal.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -75,7 +75,11 @@
     <Compile Include="AcErrors\AcErrorCategory.cs" />
     <Compile Include="AcErrors\AcErrorType.cs" />
     <Compile Include="AcErrors\AcErrorWrapper.cs" />
+    <Compile Include="AcErrors\CombinedSolver.cs" />
+    <Compile Include="AcErrors\DefaultFactory.cs" />
     <Compile Include="AcErrors\IAcError.cs" />
+    <Compile Include="AcErrors\ISolversFactory.cs" />
+    <Compile Include="AcErrors\IUiAcErrorFixer.cs" />
     <Compile Include="AcErrors\Solver\CarSetupSolvers.cs" />
     <Compile Include="AcErrors\Solver\FontSolvers.cs" />
     <Compile Include="AcErrors\Solver\ShowroomSolvers.cs" />

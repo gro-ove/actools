@@ -10,7 +10,6 @@ using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Dialogs {
     public partial class UpgradeIconEditor_Editor : IFinishableControl {

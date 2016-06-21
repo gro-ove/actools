@@ -11,6 +11,9 @@ namespace AcManager.Tools.AcErrors {
 
                 case AcErrorType.CarSkin_PreviewIsMissing:
                     return new CarSkin_PreviewIsMissingUiSolver((CarSkinObject)obj, error);
+
+                case AcErrorType.CarSkin_LiveryIsMissing:
+                    return new CarSkin_LiveryIsMissingUiSolver((CarSkinObject)obj, error);
             }
 
             return null;

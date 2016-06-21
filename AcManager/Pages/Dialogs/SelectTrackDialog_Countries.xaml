@@ -13,10 +13,11 @@
     </UserControl.Resources>
 
     <ListBox ItemsSource="{Binding Countries}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="CountriesListBox"
-            PreviewKeyDown="CountriesListBox_OnPreviewKeyDown" ScrollViewer.CanContentScroll="False">
+            PreviewKeyDown="CountriesListBox_OnPreviewKeyDown" ScrollViewer.CanContentScroll="True">
         <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
-                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
+                <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Standard" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="76"
+                        ItemHeight="76" />
             </ItemsPanelTemplate>
         </ListBox.ItemsPanel>
         <ListBox.ItemTemplate>

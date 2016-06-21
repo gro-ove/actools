@@ -67,9 +67,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Close();
         }
 
-        public static Button CreateExtraDialogButton(string content, ICommand command) {
+        public static Button CreateExtraDialogButton(string content, ICommand command, bool isDefault = false) {
             return new Button {
                 Content = content /*.ToLower()*/,
+                IsDefault = isDefault,
                 MinHeight = 21,
                 MinWidth = 65,
                 Margin = new Thickness(4, 0, 0, 0),

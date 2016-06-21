@@ -13,7 +13,7 @@ namespace AcManager.Tools.AcErrors.Solver {
 
         void OnError(Solution selectedSolution);
 
-        IEnumerable<Solution> Solutions { get; }
+        IReadOnlyList<Solution> Solutions { get; }
     }
 
     public abstract class AbstractSolver<T> : ISolver where T : AcObjectNew {
@@ -47,7 +47,7 @@ namespace AcManager.Tools.AcErrors.Solver {
         private IReadOnlyList<Solution> _solutions;
 
         [NotNull]
-        public IEnumerable<Solution> Solutions => _solutions ?? (_solutions = GetSolutions().ToList());
+        public IReadOnlyList<Solution> Solutions => _solutions ?? (_solutions = GetSolutions().ToList());
 
         public static IEnumerable<Solution> TryToFindRenamedFile(string baseDirectory, string filename) {
             return FileUtils.FindRenamedFile(baseDirectory, filename)

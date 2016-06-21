@@ -65,11 +65,7 @@ namespace AcManager.Tools.AcErrors {
         private ICommand _startErrorFixerCommand;
 
         public ICommand StartErrorFixerCommand => _startErrorFixerCommand ?? (_startErrorFixerCommand = new RelayCommand(o => {
-            _uiAcErrorFixer?.Run((AcObjectNew)Target, this);
+            _uiAcErrorFixer?.Run((AcCommonObject)Target, this);
         }, o => _uiAcErrorFixer != null));
-    }
-
-    public interface IUiAcErrorFixer {
-        void Run(AcObjectNew acObject, AcError error);
     }
 }

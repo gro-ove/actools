@@ -24,7 +24,7 @@ namespace AcTools.Utils {
             public double Distance(double h, double s, double b) {
                 var hd = Math.Abs(H - h);
                 if (hd > 180) hd = 360 - hd;
-                return hd / 360.0 * 2.4 + Math.Abs(S - s) * 0.2 + Math.Abs(B - b) * 0.2;
+                return hd / 360.0 * 3.2 + Math.Abs(S - s) * 0.3 + Math.Abs(B - b) * 0.3;
             }
 
             public void Add(double h, double s, double b, double w) {
@@ -52,11 +52,11 @@ namespace AcTools.Utils {
             }
 
             public Color Tune() {
-                var result = ToColor(H, S, (B + Bmax) / 2.0);
+                var result = ToColor(H, Math.Sin(S * Math.PI / 2), (B * 2.0 + Bmax) / 3.0);
                 const double fixR = 1.30;
                 const double fixG = 1.11;
                 const double fixB = 1.00;
-                return Color.FromArgb((int)(result.R * fixR), (int)(result.G * fixG), (int)(result.B * fixB));
+                return Color.FromArgb((int)(result.R * fixR).Clamp(0, 255), (int)(result.G * fixG).Clamp(0, 255), (int)(result.B * fixB).Clamp(0, 255));
             }
 
             public Color Color => ToColor(H, S, B);
@@ -143,7 +143,7 @@ namespace AcTools.Utils {
         }
 
         private const int Size = 200;
-        private const int Padding = 60;
+        private const int Padding = 40;
         private const double Threshold = 0.2;
 
         public static Color[] GetBaseColors(Bitmap bitmap) {
@@ -153,7 +153,7 @@ namespace AcTools.Utils {
 
             using (var resized = new Bitmap(Size, Size))
             using (var graphics = Graphics.FromImage(resized)) {
-                graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 graphics.DrawImage(bitmap, 0, 0, Size, Size);
@@ -171,8 +171,10 @@ namespace AcTools.Utils {
                     var s = c.GetSaturation();
                     var b = c.GetBrightness();
 
-                    var w = (1.0 - Math.Abs((double)x / Size - 0.5) - Math.Abs((double)y / Size - 0.5)).Saturate();
-                    if (b < 0.01) continue;
+                    var w = (1.2 - Math.Abs((double)x / Size - 0.5) - Math.Abs((double)y / Size - 0.5)).Saturate();
+                    if (b < 0.1) continue;
+
+                    w += s;
 
                     for (var i = 0; i < colors.Count; i++) {
                         var en = colors[i];

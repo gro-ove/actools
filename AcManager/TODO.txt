@@ -434,6 +434,9 @@ done:
             + editing
             + testing
             + sharing
+    + color picker
+        + additinal switchable schemes
+        + pick color from screen
 
 fixme:
     - previews loading (could be a much more serious problem)
@@ -452,7 +455,11 @@ fixme:
     - fix copying
 
 todo:
-    - combine watchers for CM data directory into one?
+    + some livery.png editor
+        + take colors from preview
+        + number
+        + even specific shapes
+        - generate automatically based on preview and/or model
 
     - upload Content to Trello for those who doesn't have Internet connection
     - custom showroom: proper wpf-based errors handling for invalid dx and stuff
@@ -546,27 +553,33 @@ todo:
             - warning for differences
         - tracks specs editor
 
+    - skins manager
+        - showroom
+        - drive?
+        - remember selected tab
+
     - autoadd country on tags cleaning
     - remove double spaces, trim strings
     - detect invalid symbols in IDs
-
-    - some livery.png editor
-        - take color(s?) from preview
-        - number?
-        - even specific shapes?
-        - generate automatically based on preview and/or model
 
     + error fixer
         + missing parent
         + showroom missing kn5 error detection
         + missing skin preview
-        - missing skin livery
+        + missing skin livery
+            + combine several errors with same type into one
         - track missing kn5 error detection
         - missing sound detection
         - missing collider.kn5 detection
         - missing properties fixer
             + missing name error
+            - missing brand name error
         - CarSkins_SkinsAreMissing
+
+    - new skins builder?
+        - color
+        - rims color
+        - number plate editor?
 
     - auto-update track's map
     - copy sounds from other car?
@@ -584,6 +597,7 @@ todo:
             - tracks
             - showrooms
             - skins
+        - quick drive (just by clicking?)
 
     - update years database
 
@@ -623,12 +637,13 @@ todo:
     - screenshots tab
 
     + object-based reload
-        - non-json objects
-            - font
+        + non-json objects
+            - font image
     - show race params on loading screen?
 
 later:    
-    - changeable list area width
+    - combine watchers for CM data directory into one?
+    - changeable width of list area
     - add NVIDIA copyrights and stuff
 
     - option for disabling .acreplay on renaming replays in content tab
@@ -668,10 +683,6 @@ later:
 
     - some 100%-customizable mode?
         > skins, names, AI level, etc
-
-    - color picker
-        + additinal switchable schemes
-        - pick color from screen
 
     - addons directory watching?
     - reducing image footprint

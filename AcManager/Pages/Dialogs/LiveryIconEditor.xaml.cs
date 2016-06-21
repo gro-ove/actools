@@ -21,6 +21,7 @@ using JetBrains.Annotations;
 using Color = System.Windows.Media.Color;
 using Brush = System.Windows.Media.Brush;
 using Image = System.Drawing.Image;
+using Size = System.Windows.Size;
 
 namespace AcManager.Pages.Dialogs {
     public partial class LiveryIconEditor : INotifyPropertyChanged {
@@ -41,6 +42,7 @@ namespace AcManager.Pages.Dialogs {
             new SettingEntry("Stripes", "Stripes"),
             new SettingEntry("StripesSide", "Side Stripes"),
             new SettingEntry("HorizontalStripes", "Horizontal Stripes"),
+            new SettingEntry("Circle", "Circle")
         };
 
         public SettingEntry[] Styles { get; } = {
@@ -218,15 +220,20 @@ namespace AcManager.Pages.Dialogs {
                 using (var bitmap = Image.FromFile(skin.PreviewImage)) {
                     var colors = ImageUtils.GetBaseColors((Bitmap)bitmap);
                     Model.ColorValue = colors.Select(x => (System.Drawing.Color?)x).FirstOrDefault()?.ToColor() ?? Colors.White;
-                    Model.SecondaryColorValue = colors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(1)?.ToColor() ?? Colors.DarkCyan;
-                    Model.TertiaryColorValue = colors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.DarkCyan;
+                    Model.SecondaryColorValue = colors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(1)?.ToColor() ?? Colors.Black;
+                    Model.TertiaryColorValue = colors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.Black;
                 }
             } catch (Exception e) {
                 Logging.Warning("[LiveryIconEditor] Can’t find base colors: " + e);
                 Model.ColorValue = Colors.White;
-                Model.SecondaryColorValue = Colors.DarkCyan;
-                Model.TertiaryColorValue = Colors.DarkCyan;
+                Model.SecondaryColorValue = Colors.Black;
+                Model.TertiaryColorValue = Colors.Black;
             }
+        }
+
+        public new bool ShowDialog() {
+            base.ShowDialog();
+            return IsResultOk;
         }
 
         public StyleViewModel Model { get; } = new StyleViewModel();
@@ -298,10 +305,10 @@ namespace AcManager.Pages.Dialogs {
 
             public Brush Number { get; private set; }
 
-            private Color _colorValue;
+            private Color? _colorValue;
 
             public Color ColorValue {
-                get { return _colorValue; }
+                get { return _colorValue ?? Colors.Black; }
                 set {
                     if (Equals(value, _colorValue)) return;
                     _colorValue = value;
@@ -314,10 +321,10 @@ namespace AcManager.Pages.Dialogs {
 
             public SolidColorBrush Color { get; private set; }
 
-            private Color _secondaryColorValue;
+            private Color? _secondaryColorValue;
 
             public Color SecondaryColorValue {
-                get { return _secondaryColorValue; }
+                get { return _secondaryColorValue ?? Colors.Black; }
                 set {
                     if (Equals(value, _secondaryColorValue)) return;
                     _secondaryColorValue = value;
@@ -330,10 +337,10 @@ namespace AcManager.Pages.Dialogs {
 
             public SolidColorBrush SecondaryColor { get; private set; }
 
-            private Color _tertiaryColorValue;
+            private Color? _tertiaryColorValue;
 
             public Color TertiaryColorValue {
-                get { return _tertiaryColorValue; }
+                get { return _tertiaryColorValue ?? Colors.Black; }
                 set {
                     if (Equals(value, _tertiaryColorValue)) return;
                     _tertiaryColorValue = value;
@@ -363,10 +370,10 @@ namespace AcManager.Pages.Dialogs {
                 set { Value = value.ToInvariantString(); }
             }
 
-            private Color _textColorValue;
+            private Color? _textColorValue;
 
             public Color TextColorValue {
-                get { return _textColorValue; }
+                get { return _textColorValue ?? Colors.Black; }
                 set {
                     if (Equals(value, _textColorValue)) return;
                     _textColorValue = value;
@@ -385,13 +392,17 @@ namespace AcManager.Pages.Dialogs {
         private static readonly Action EmptyDelegate = delegate { };
 
         private void OnClosing(object sender, CancelEventArgs e) {
-            if (!IsResultOk) return;
-
-            Result.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
-            CreateNewIcon();
+            if (IsResultOk) {
+                CreateNewIcon().Forget();
+            }
         }
 
-        private async void CreateNewIcon() {
+        private async Task CreateNewIcon() {
+            var size = new Size(64, 64);
+            Result.Measure(size);
+            Result.Arrange(new Rect(size));
+            Result.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+
             await Task.Delay(100);
             if (Skin == null) return;
             
@@ -400,7 +411,7 @@ namespace AcManager.Pages.Dialogs {
             var bmp = new RenderTargetBitmap(64, 64, 96, 96, PixelFormats.Pbgra32);
             bmp.Render(Result);
 
-            if (Model.Value != Skin.SkinNumber &&
+            if (Model.Value != "0" && Model.Value != Skin.SkinNumber &&
                     ShowMessage($"Change skin’s number to “{Model.Value}”?", "Skin number is changed", MessageBoxButton.YesNo) ==
                             MessageBoxResult.Yes) {
                 Skin.SkinNumber = Model.Value;
@@ -411,6 +422,10 @@ namespace AcManager.Pages.Dialogs {
             } catch (Exception e) {
                 NonfatalError.Notify(@"Can’t change livery image", "Make sure the original file isn’t busy", e);
             }
+        }
+
+        public static async Task GenerateAsync(CarSkinObject target) {
+            await new LiveryIconEditor(target).CreateNewIcon();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

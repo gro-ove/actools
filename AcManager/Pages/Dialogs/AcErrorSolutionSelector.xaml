@@ -1,23 +1,30 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.AcErrorSolutionSelector" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance dialogs:AcErrorSolutionSelector}">
     <Grid>
         <Grid Name="MessageModeControl" Visibility="Collapsed">
-            <mui:BbCodeBlock Name="MessageModeBbCodeBlock" BbCode="None of solutions are available, sorry." />
+            <mui:BbCodeBlock Name="MessageModeBbCodeBlock" BbCode="None of solutions are available." />
         </Grid>
         <StackPanel Name="SelectModeControl" Visibility="Collapsed" Orientation="Vertical">
-            <TextBlock Style="{StaticResource Heading2}" Text="Available solutions:" />
-            <ListBox Name="SelectModeListBox" ItemsSource="{Binding Solver.Solutions}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="true"
-                    VirtualizingPanel.VirtualizationMode="Recycling">
+            <TextBlock Style="{StaticResource Heading2}" Text="Available solutions:" Margin="0 0 0 8" />
+            <ListBox Name="SelectModeListBox" ItemsSource="{Binding Solver.Solutions}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    VirtualizingPanel.IsVirtualizing="true" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
+                    ScrollViewer.CanContentScroll="True" SelectionChanged="SelectModeListBox_OnSelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" ToolTip="{Binding Description}" />
+                        <StackPanel Orientation="Vertical" ToolTip="{Binding Description}">
+                            <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" FontWeight="Bold" />
+                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Style="{StaticResource Small}" Margin="0 4 0 0"
+                                    Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}" />
+                            <!--<TextBlock Text="{Binding Description}" TextWrapping="Wrap" Style="{StaticResource Small}" />-->
+                        </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem" BasedOn="{StaticResource RadioListBoxItem}">
-                        <Setter Property="Margin" Value="10 2 2 2" />
+                        <Setter Property="Margin" Value="8 4 4 8" />
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>

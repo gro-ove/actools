@@ -323,9 +323,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             Left = Math.Min(Math.Max(location.X, 0), area.Width - 64);
             Top = Math.Min(Math.Max(location.Y, 0), area.Height - 64);
-            Width = Math.Min(Math.Max(size.X, MinWidth), area.Width);
-            Height = Math.Min(Math.Max(size.Y, MinHeight), area.Height);
-            WindowState = ValuesStorage.GetBool(maximizedKey) ? WindowState.Maximized : WindowState.Normal;
+            if (ResizeMode == ResizeMode.CanResize || ResizeMode == ResizeMode.CanResizeWithGrip) {
+                Width = Math.Min(Math.Max(size.X, MinWidth), area.Width);
+                Height = Math.Min(Math.Max(size.Y, MinHeight), area.Height);
+                WindowState = ValuesStorage.GetBool(maximizedKey) ? WindowState.Maximized : WindowState.Normal;
+            }
         }
 
         private void SaveLocationAndSize() {
@@ -337,8 +339,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var maximizedKey = key + ".m";
 
             ValuesStorage.Set(locationKey, new Point(Left, Top));
-            ValuesStorage.Set(sizeKey, new Point(Width, Height));
-            ValuesStorage.Set(maximizedKey, WindowState == WindowState.Maximized);
+            if (ResizeMode == ResizeMode.CanResize || ResizeMode == ResizeMode.CanResizeWithGrip) {
+                ValuesStorage.Set(sizeKey, new Point(Width, Height));
+                ValuesStorage.Set(maximizedKey, WindowState == WindowState.Maximized);
+            }
         }
     }
 }

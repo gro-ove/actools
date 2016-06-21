@@ -294,7 +294,6 @@ namespace AcManager.Pages.Selected {
         private void OpenSkinContextMenu(CarSkinObject skin) {
             if (skin == null) return;
 
-            // TODO: More commands?
             var contextMenu = new ContextMenu {
                 Items = {
                     new MenuItem {
@@ -312,10 +311,6 @@ namespace AcManager.Pages.Selected {
             item.Click += (sender, args) => CustomShowroomWrapper.StartAsync(_model.SelectedObject, skin);
             contextMenu.Items.Add(item);
 
-            // TODO
-            item = new MenuItem { Header = "Drive", IsEnabled = false };
-            contextMenu.Items.Add(item);
-
             contextMenu.Items.Add(new MenuItem {
                 Header = "Folder",
                 Command = skin.ViewInExplorerCommand
@@ -328,18 +323,15 @@ namespace AcManager.Pages.Selected {
                     SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             contextMenu.Items.Add(item);
 
-            item = new MenuItem { Header = "Update Livery" };
-            var subItem = new MenuItem { Header = "From Preview" };
-            subItem.Click += (sender, args) => ImageUtils.GenerateLivery(skin.PreviewImage, skin.LiveryImage);
-            item.Items.Add(subItem);
-            subItem = new MenuItem { Header = "Using Custom Showroom" };
-            subItem.IsEnabled = false;
-            // subItem.Click += (sender, args) => Kn5RenderWrapper.GenerateLivery(_model.SelectedObject.Location, skin.Id, skin.LiveryImage);
-            item.Items.Add(subItem);
+            item = new MenuItem { Header = "Change Livery" };
+            item.Click += (sender, args) => new LiveryIconEditor(skin).ShowDialog();
             contextMenu.Items.Add(item);
+
+            contextMenu.Items.Add(new Separator());
 
             contextMenu.Items.Add(new MenuItem {
                 Header = "Delete Skin",
+                ToolTip = "Skin will be moved to the Recycle Bin",
                 Command = skin.DeleteCommand
             });
 

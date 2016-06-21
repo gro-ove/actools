@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using AcManager.Pages.Dialogs;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
@@ -21,15 +19,17 @@ namespace AcManager.Pages.Selected {
                 Car = car;
             }
 
-            private ICommand _updatePreviewCommand;
-            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new RelayCommand(o => {
-                UpdatePreview();
-            }, o => SelectedObject.Enabled));
-
-            private void UpdatePreview() {
+            private RelayCommand _updatePreviewCommand;
+            public RelayCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new RelayCommand(o => {
                 new CarUpdatePreviewsDialog(Car, new[] { SelectedObject.Id },
                     SelectedCarPage.SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
-            }
+            }, o => SelectedObject.Enabled));
+
+            private RelayCommand _changeLiveryCommand;
+
+            public RelayCommand ChangeLiveryCommand => _changeLiveryCommand ?? (_changeLiveryCommand = new RelayCommand(o => {
+                new LiveryIconEditor(SelectedObject).ShowDialog();
+            }));
         }
 
         private string _carId, _id;
@@ -75,7 +75,8 @@ namespace AcManager.Pages.Selected {
 
             InitializeAcObjectPage(_model = new SelectedCarSkinPageViewModel(_carObject, _object));
             InputBindings.AddRange(new[] {
-                new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control))
+                new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
+                new InputBinding(_model.ChangeLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control))
             });
             InitializeComponent();
         }
@@ -84,7 +85,7 @@ namespace AcManager.Pages.Selected {
 
         private void AcObjectBase_OnIconMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
-                // new BrandBadgeEditor((CarObject)SelectedAcObject).ShowDialog();
+                _model.ChangeLiveryCommand.Execute(null);
             }
         }
     }
