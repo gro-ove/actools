@@ -1,18 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows;
-using AcManager.Controls.Helpers;
+﻿using System.Windows;
 using AcManager.Pages.Dialogs;
-using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
-using Prompt = AcManager.Controls.Pages.Dialogs.Prompt;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsGeneral {
@@ -60,21 +54,6 @@ namespace AcManager.Pages.Settings {
                         x.StartsWith("__TimezoneDeterminer_") ||
                         x.StartsWith("__upgradeiconeditor_"));
             }));
-
-            private const string KeyLogsSentTime = "GeneralViewModel.KeyLogsSentTime";
-
-            private AsyncCommand _sendLogsCommand;
-
-            public AsyncCommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new AsyncCommand(async o => {
-                try {
-                    var message = Prompt.Show("Please, describe the problem.", "What’s the Problem?", watermark: "?", multiline: true);
-                    await Task.Run(() => AppReporter.SendLogs(message));
-                    ValuesStorage.Set(KeyLogsSentTime, DateTime.Now);
-                    Toast.Show("Logs Sent", "Thank you for the help!");
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t send logs", e);
-                }
-            }, o => DateTime.Now - ValuesStorage.GetDateTimeOrEpochTime(KeyLogsSentTime) > TimeSpan.FromHours(0.0001), 3000));
         }
     }
 }

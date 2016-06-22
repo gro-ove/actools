@@ -13,6 +13,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyTheme = "appearance_theme";
         public const string KeyAccentColor = "appearance_accentColor";
         public const string KeyAccentDisplayColor = "appearance_accentColor_d";
+        public const string KeyIdealFormattingMode = "appearance_idealFormattingMode";
         public const string KeySmallFont = "appearance_smallFont";
         public const string KeyPopupToolBars = "appearance_ThemePopupToolBars";
         public const string KeyFrameAnimation = "AppAppearanceManager.FrameAnimation";
@@ -42,6 +43,17 @@ namespace AcManager.Controls.Presentation {
         }
 
         #region Font sizes
+        private bool _idealFormattingMode;
+
+        public bool IdealFormattingMode {
+            get { return _idealFormattingMode; }
+            set {
+                if (Equals(value, _idealFormattingMode)) return;
+                _idealFormattingMode = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _smallFont;
 
         public bool SmallFont {

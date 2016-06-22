@@ -147,6 +147,12 @@
     <Compile Include="AppFlag.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="PackedHelper.cs" />
+    <Compile Include="Pages\About\License.xaml.cs">
+      <DependentUpon>License.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\About\Credits.xaml.cs">
+      <DependentUpon>Credits.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\About\PieceOfInformationBlock.xaml.cs">
       <DependentUpon>PieceOfInformationBlock.xaml</DependentUpon>
     </Compile>
@@ -406,6 +412,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\Livery\Styles\Solid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\About\License.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\About\Credits.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

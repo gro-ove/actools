@@ -1,23 +1,40 @@
 ﻿<UserControl x:Class="AcManager.Pages.About.AboutPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}">
-    <StackPanel>
-        <TextBlock Style="{StaticResource Heading1}">Content Manager</TextBlock>
-        <TextBlock Margin="20 8 20 0" Style="{StaticResource Label}" Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}}"
-                   MouseLeftButtonUp="Version_OnMouseLeftButtonUp"/>
-        <mui:BbCodeBlock Margin="20">Replacement for default Assetto Corsa launcher and content management app. In development. From authors of [url="http://www.racedepartment.com/downloads/actools-cars-manager.6518/"]Cars Manager[/url].</mui:BbCodeBlock>
-        <TextBlock Style="{StaticResource Heading2}">Key features:</TextBlock>
-        <StackPanel Margin="20">
-            <TextBlock>• Quick drive, career &amp; online mode;</TextBlock>
-            <TextBlock>• Real conditions;</TextBlock>
-            <TextBlock>• Fast startup;</TextBlock>
-            <TextBlock>• Themes;</TextBlock>
-            <TextBlock>• Cars, car skins, tracks and showrooms management;</TextBlock>
-            <TextBlock>• Custom showroom for skins drawing.</TextBlock>
-        </StackPanel>
-        <TextBlock Style="{StaticResource Heading2}">Contact us:</TextBlock>
-        <mui:BbCodeBlock Margin="20">If you have any idea or suggestion about this app, or if you want to report some problem, please contact us using [url="https://trello.com/b/MwqpL8Bw"]Trello[/url] (or [url="mailto:cm-support@assettocorsa.club"]e-mail[/url]).</mui:BbCodeBlock>
-    </StackPanel>
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:about="clr-namespace:AcManager.Pages.About" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance about:AboutPage+AboutPageViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="20 8">
+                <DockPanel>
+                    <Image Source="/Assets/Icons/Icon.ico" Width="40" Height="40" DockPanel.Dock="Left" Margin="0 0 12 0" />
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Heading1}" Margin="-2 0 0 0">Content Manager</TextBlock>
+                        <mui:BbCodeBlock Style="{StaticResource Small}">A custom launcher and content management app for [url="http://www.assettocorsa.net/"]Assetto Corsa[/url]</mui:BbCodeBlock>
+                    </StackPanel>
+                </DockPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
+                    <Button Command="{Binding MoreInformationCommand}" Margin="0 0 4 0">More information</Button>
+                    <Button Command="{Binding SendLogsCommand}">Report an issue</Button>
+                </StackPanel>
+
+                <TextBlock Margin="0 20 0 40" Style="{StaticResource Label}"
+                        Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, StringFormat='{}Version: {0}'}"
+                        MouseLeftButtonUp="Version_OnMouseLeftButtonUp" />
+
+                <TextBlock Style="{StaticResource Heading2}">Contact us:</TextBlock>
+                <mui:BbCodeBlock Margin="0 8 0 0">If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please contact us using [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] or [url="https://trello.com/c/w5xT6ssZ/49-contacts"]something else[/url].</mui:BbCodeBlock>
+            </StackPanel>
+        </ScrollViewer>
+
+        <mui:BbCodeBlock Grid.Row="1" Margin="20 8" Style="{StaticResource BbCodeBlock.Small}">Copyright © 2016 AcClub. All rights reserved.
+            [br]Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source software[/url].
+            [br]Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</mui:BbCodeBlock>
+    </Grid>
 </UserControl>

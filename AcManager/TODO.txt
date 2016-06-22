@@ -456,9 +456,9 @@ done:
         + CarSkins_SkinsAreMissing
     + fix textboxes in settings
     + quick setting: special online name
+    + reducing image footprint
 
 fixme:
-    - previews loading (could be a much more serious problem)
     - notifypropertychanged for commands
     - MUI thing with Loaded/Unloaded!
     - pastload problem!
@@ -659,15 +659,13 @@ later:
         - background mode?
 
     + recent & shortcuts page
-        - solve architectural problems?
+        - solve architectural problems
         - pin & unpin servers to move them from recent to main list
         - watching
         - customizable recent size
         - sorting, grouping
         - deleting
         - find a way to make unavaliable servers visible
-
-    - try that idea with reusing selectedsomethingpage?
 
     - records, best laps, stats
         - collect and display driving stats?
@@ -690,7 +688,6 @@ later:
         > skins, names, AI level, etc
 
     - addons directory watching?
-    - reducing image footprint
 
     - custom track presets for QD
 
@@ -769,5 +766,5 @@ later:
     - tests?
     - profiles?
 
-    × 3d-viewer in-app
     × try to implement some stuff from /r/loadingicon/?
+    × try that idea with reusing selectedsomethingpage?

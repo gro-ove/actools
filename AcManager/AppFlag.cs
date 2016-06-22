@@ -24,10 +24,10 @@ namespace AcManager {
         DisableLogging,
 
         /// <summary>
-        /// Saves Values.data without compressing. Takes less space, but slower.
-        /// Example: --enable-values-compression.
+        /// Saves Values.data without compressing. Takes more space.
+        /// Example: --disable-values-compression.
         /// </summary>
-        EnableValuesCompression,
+        DisableValuesCompression,
 
         /// <summary>
         /// Changes path to data directory (somewhere in AppData\Local by default). 

@@ -26,11 +26,13 @@ namespace FirstFloor.ModernUI.Helpers {
         private readonly Dictionary<string, string> _storage;
         private readonly string _filename;
         private readonly bool _disableCompression;
+        private readonly bool _useDeflate;
 
-        private ValuesStorage(string filename = null, bool disableCompression = false) {
+        private ValuesStorage(string filename = null, bool disableCompression = false, bool useDeflate = false) {
             _storage = new Dictionary<string, string>();
             _filename = filename;
             _disableCompression = disableCompression;
+            _useDeflate = useDeflate;
 
             Load();
         }
@@ -49,8 +51,16 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private const byte DeflateFlag = 0;
+        private const byte LzfFlag = 11;
 
         private string DecodeBytes(byte[] bytes) {
+            if (bytes[0] == LzfFlag) {
+                var w = Stopwatch.StartNew();
+                var result = Encoding.UTF8.GetString(LZF.Decompress(bytes, 1, bytes.Length - 1));
+                Logging.Write($"[ValuesStorage] Loading: {w.Elapsed.TotalMilliseconds:F2} ms");
+                return result;
+            }
+
             var deflateMode = bytes[0] == DeflateFlag;
 
             if (!deflateMode && !bytes.Any(x => x < 0x20 && x != '\t' && x != '\n' && x != '\r')) {
@@ -71,17 +81,21 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private byte[] EncodeBytes(string s) {
-            if (_disableCompression) return Encoding.UTF8.GetBytes(s);
-            using (var output = new MemoryStream()) {
-                output.WriteByte(DeflateFlag);
+            var bytes = Encoding.UTF8.GetBytes(s);
+            if (_disableCompression) return bytes;
+            if (_useDeflate) {
+                using (var output = new MemoryStream()) {
+                    output.WriteByte(DeflateFlag);
 
-                using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
-                    var bytes = Encoding.UTF8.GetBytes(s);
-                    gzip.Write(bytes, 0, bytes.Length);
+                    using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
+                        gzip.Write(bytes, 0, bytes.Length);
+                    }
+
+                    return output.ToArray();
                 }
-
-                return output.ToArray();
             }
+
+            return LZF.CompressWithPrefix(bytes, LzfFlag);
         }
 
         public static string EncodeBase64([NotNull] string s) {
@@ -217,12 +231,27 @@ namespace FirstFloor.ModernUI.Helpers {
 
             var data = GetData();
             try {
-                var sw = Stopwatch.StartNew();
                 File.WriteAllBytes(_filename, EncodeBytes(data));
-                PreviosSaveTime = sw.Elapsed;
             } catch (Exception e) {
                 Logging.Write("cannot save values: " + e);
             }
+        }
+
+        private async Task SaveAsync() {
+            if (_filename == null) return;
+
+            var sw = Stopwatch.StartNew();
+
+            await Task.Run(() => {
+                var data = GetData();
+                try {
+                    File.WriteAllBytes(_filename, EncodeBytes(data));
+                } catch (Exception e) {
+                    Logging.Write("cannot save values: " + e);
+                }
+            });
+
+            PreviosSaveTime = sw.Elapsed;
         }
 
         public static void SaveBeforeExit() {
@@ -230,7 +259,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 Instance.Save();
             }
         }
-        
+
         private static bool _dirty;
 
         private static async void Dirty() {
@@ -239,7 +268,7 @@ namespace FirstFloor.ModernUI.Helpers {
             try {
                 _dirty = true;
                 await Task.Delay(5000);
-                Instance.Save();
+                await Instance.SaveAsync();
             } finally {
                 _dirty = false;
             }

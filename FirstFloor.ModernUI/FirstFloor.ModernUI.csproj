@@ -97,6 +97,7 @@
     <Compile Include="Helpers\HorizontalScrollBehavior.cs" />
     <Compile Include="Helpers\LocalizationHelper.cs" />
     <Compile Include="Helpers\Logging.cs" />
+    <Compile Include="Helpers\LZF.cs" />
     <Compile Include="Helpers\StringCipher.cs" />
     <Compile Include="Helpers\UriExtension.cs" />
     <Compile Include="Helpers\ValuesStorage_EncryptionKey.cs" />
