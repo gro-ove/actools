@@ -54,7 +54,7 @@ namespace FirstFloor.ModernUI.Presentation {
             if (sender == null)
                 return;
 
-            //If we're being removed, remove the callbacks
+            //If we’re being removed, remove the callbacks
             if (e.NewValue == null) {
                 tb.TextChanged -= onTextChanged;
                 tb.PreviewKeyDown -= onKeyDown;

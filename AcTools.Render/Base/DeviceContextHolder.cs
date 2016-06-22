@@ -53,7 +53,7 @@ namespace AcTools.Render.Base {
         private readonly Dictionary<Type, IEffectWrapper> _effects = new Dictionary<Type, IEffectWrapper>();
 
         /// <summary>
-        /// If you get effect this way, don’t call its Dispose()! It'll be
+        /// If you get effect this way, don’t call its Dispose()! It’ll be
         /// called automatically!
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -101,7 +101,7 @@ namespace AcTools.Render.Base {
         private readonly Dictionary<Type, IRenderHelper> _helpers = new Dictionary<Type, IRenderHelper>();
 
         /// <summary>
-        /// If you get helper this way, don’t call its Dispose()! It'll be
+        /// If you get helper this way, don’t call its Dispose()! It’ll be
         /// called automatically!
         /// </summary>
         /// <typeparam name="T"></typeparam>

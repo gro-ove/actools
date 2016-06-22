@@ -12,7 +12,7 @@ First one. Uses pretty weird approach, which requires to temporary remove [i]Ass
   − Unreliable: using approach could be blocked in any AC update;
   − Tricky: sadly, doesn’t work without Internet connection;
   − Incompatible: can’t be used when original launcher is running;
-  − Potentially adverse: if CM will suddenly get killed, you'll have to restore [i]AssettoCorsa.exe[/i] from [i]AssettoCorsa_backup.exe[/i] manually;
+  − Potentially adverse: if CM will suddenly get killed, you’ll have to restore [i]AssettoCorsa.exe[/i] from [i]AssettoCorsa_backup.exe[/i] manually;
   − Slow: using approach requires to wait some time at some point;
   − Limited: can’t specify version (32-bit or 64-bit).
 
@@ -33,4 +33,4 @@ Quite questionable solution. I won’t spread about it too much, just basics:
   − Not supported: doesn’t work with AC 1.6.
 
  • [b]Naive Starter[/b]
-CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you're using original Steam version — won’t work at all.
+CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you’re using original Steam version — won’t work at all.

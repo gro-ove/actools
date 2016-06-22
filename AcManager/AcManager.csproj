@@ -246,6 +246,11 @@
     <Compile Include="Pages\Settings\SettingsQuickSwitches.xaml.cs">
       <DependentUpon>SettingsQuickSwitches.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\AcErrors\Solver\CarSetupSolvers.cs" />
+    <Compile Include="Tools\AcErrors\Solver\DataSolvers.cs" />
+    <Compile Include="Tools\AcErrors\Solver\FontSolvers.cs" />
+    <Compile Include="Tools\AcErrors\Solver\JObjectRestorationSchemeProvider.cs" />
+    <Compile Include="Tools\AcErrors\Solver\ShowroomSolvers.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
     <Compile Include="Tools\TextEditing\IniFoldingStrategy.cs" />

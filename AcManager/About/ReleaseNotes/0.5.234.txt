@@ -7,7 +7,7 @@ Video, audio, gameplay, even some system settings (such as Developer apps or Fre
 
 Control settings, on the other hand, are still quite WIP — you can load and save presets, tune pedals, steering wheel, buttons, switch between wheel or keyboard modes or tune FFB, but everything about proper handling joystick changes (detaching/reattaching steering wheel, for example) is still not ready. And, of course, Xbox 360 controller (I don’t have one, so it will take some extra time).
 
-[b]Another new feature is Sharing[/b]. Now you can press that button and direct link to preset page (such as [url="http://acstuff.ru/s/smt#noauto"]this[/url]) will be copied to the clipboard (although preset page isn’t required — CM basically works with links like [mono]acmanager://shared?id=smt[/mono], without that page everybody who doesn’t have CM installed won’t see anything, not even a error message). I'm not sure how it will work in real cases (or is it a good idea at all), so let’s see. At the moment only Quick Drive and Controls presets are supported, more (such as cars setups) will be ready soon.
+[b]Another new feature is Sharing[/b]. Now you can press that button and direct link to preset page (such as [url="http://acstuff.ru/s/smt#noauto"]this[/url]) will be copied to the clipboard (although preset page isn’t required — CM basically works with links like [mono]acmanager://shared?id=smt[/mono], without that page everybody who doesn’t have CM installed won’t see anything, not even a error message). I’m not sure how it will work in real cases (or is it a good idea at all), so let’s see. At the moment only Quick Drive and Controls presets are supported, more (such as cars setups) will be ready soon.
 
  [img="http://i.imgur.com/VjS3dpw.png|360"]Shared entry page[/img]
 

@@ -35,10 +35,10 @@ namespace AcManager.Tools.AcErrors {
         [Description("File “{0}” is damaged")]
         Data_JsonIsDamaged,
         
-        [Description("Field with name is missing or empty")]
+        [Description("Name is missing")]
         Data_ObjectNameIsMissing,
         
-        [Description("Field “brand” is missing or empty")]
+        [Description("Brand name is missing")]
         Data_CarBrandIsMissing,
         
         [Description("Directory “ui” is missing")]

@@ -5,7 +5,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Tools.AcErrors.Solver {
-    public class Font_BitmapIsMissingSolver : AbstractSolver<FontObject> {
+    public class Font_BitmapIsMissingSolver : SolverBase<FontObject> {
         public Font_BitmapIsMissingSolver(FontObject target, AcError error) : base(target, error) { }
 
         protected override IEnumerable<Solution> GetSolutions() {
@@ -13,7 +13,7 @@ namespace AcManager.Tools.AcErrors.Solver {
         }
     }
 
-    public class Font_UsedButDisabledSolver : AbstractSolver<FontObject> {
+    public class Font_UsedButDisabledSolver : SolverBase<FontObject> {
         public Font_UsedButDisabledSolver(FontObject target, AcError error) : base(target, error) {}
 
         protected override IEnumerable<Solution> GetSolutions() {

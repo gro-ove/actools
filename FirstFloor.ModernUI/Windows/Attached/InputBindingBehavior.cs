@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             element.Unloaded += FrameworkElement_Unloaded;
         }
 
-        /* sadly, I don’t know how to get window from unloaded FrameworkElement, so I'm going a stupid way */
+        /* sadly, I don’t know how to get window from unloaded FrameworkElement, so I’m going a stupid way */
         private static readonly List<Window> OpenedWindows = new List<Window>(); 
 
         private static void FrameworkElement_Unloaded(object sender, RoutedEventArgs e) {

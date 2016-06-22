@@ -4,7 +4,7 @@ sid: 12_1719140425_-1493326153
 Some of important changes since 0.4.79:
 
  • [b]Mods Installation[/b]
-Just try to drag-n-drop archive on app’s window to add a new car or track or update it. Sadly, at the moment app supports only Zip, Rar (but not Rar5), 7Zip (non-encrypted only), Tar and GZip; also, unpacking for Rar-archives is pretty slow. But, if you're using WinRAR, don’t worry — you can just drag'n'drop required folder from its window to CM.
+Just try to drag-n-drop archive on app’s window to add a new car or track or update it. Sadly, at the moment app supports only Zip, Rar (but not Rar5), 7Zip (non-encrypted only), Tar and GZip; also, unpacking for Rar-archives is pretty slow. But, if you’re using WinRAR, don’t worry — you can just drag'n'drop required folder from its window to CM.
 
  • [b]Skins Manager[/b]
 Finally, it works! Just press [i]Ctrl+K[/i] on car’s page. Livery editor isn’t ready yet though.

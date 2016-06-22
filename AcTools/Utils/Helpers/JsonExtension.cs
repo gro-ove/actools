@@ -52,8 +52,8 @@ namespace AcTools.Utils.Helpers {
 
         public static string GetStringValueOnly(this JToken obj, string key) {
             var value = obj[key];
-            if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer && 
-                value.Type != JTokenType.Float) return null;
+            if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
+                    value.Type != JTokenType.Float) return null;
             var result = value.ToString();
             return string.IsNullOrEmpty(result) ? null : result;
         }
@@ -63,8 +63,8 @@ namespace AcTools.Utils.Helpers {
             if (value == null || value.Count != 2) return null;
             var lat = value[0];
             var lon = value[1];
-            if (lat == null || lat.Type != JTokenType.String || 
-                lon == null || lon.Type != JTokenType.String) return null;
+            if (lat == null || lat.Type != JTokenType.String ||
+                    lon == null || lon.Type != JTokenType.String) return null;
             return new GeoTagsEntry(lat.ToString(), lon.ToString());
         }
 
@@ -74,8 +74,8 @@ namespace AcTools.Utils.Helpers {
 
         public static int? GetIntValueOnly(this JToken obj, string key) {
             var value = obj[key];
-            if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer && 
-                value.Type != JTokenType.Float) return null;
+            if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
+                    value.Type != JTokenType.Float) return null;
             var result = value.ToString();
             if (string.IsNullOrEmpty(result)) return null;
             double val;
@@ -84,10 +84,11 @@ namespace AcTools.Utils.Helpers {
         }
 
         private static Regex _dequoteStringRegex;
+
         private static string DequoteString(string s) {
-            return (_dequoteStringRegex ?? (_dequoteStringRegex = 
-                new Regex(@"^\s*['""]|['""]\s*$|\\(?="")", RegexOptions.Compiled)
-            )).Replace(s, "");
+            return (_dequoteStringRegex ?? (_dequoteStringRegex =
+                    new Regex(@"^\s*['""]|['""]\s*$|\\(?="")", RegexOptions.Compiled)
+                    )).Replace(s, "");
         }
 
         public static JObject TryToRestore(string damagedJson, JObjectRestorationScheme scheme) {
@@ -122,7 +123,7 @@ namespace AcTools.Utils.Helpers {
 
                         case JObjectRestorationScheme.FieldType.Number:
                             var doubleValue = FlexibleParser.ParseDouble(value);
-                            if (Equals(doubleValue%1.0, 0.0)) {
+                            if (Equals(doubleValue % 1.0, 0.0)) {
                                 processedValue = (long)doubleValue;
                             } else {
                                 processedValue = doubleValue;
@@ -135,21 +136,21 @@ namespace AcTools.Utils.Helpers {
 
                         case JObjectRestorationScheme.FieldType.StringsArray:
                             processedValue = new JArray(
-                                Regex.Split(value, @"^\s*\[|(?<!\\)""\s*,?\s*""|\s*(?:,\s*\n|\n\s*,?)\s*|\]\s*$")
-                                    .Select(DequoteString)
-                                    .Where(x => x.Length > 0 && x != "[" && x != "]")
-                                    .Cast<object>().ToArray());
+                                    Regex.Split(value, @"^\s*\[|(?<!\\)""\s*,?\s*""|\s*(?:,\s*\n|\n\s*,?)\s*|\]\s*$")
+                                         .Select(DequoteString)
+                                         .Where(x => x.Length > 0 && x != "[" && x != "]")
+                                         .Cast<object>().ToArray());
                             break;
 
                         case JObjectRestorationScheme.FieldType.PairsArray:
                             processedValue = new JArray(
-                                Regex.Split(value, @"^\s*\[|(?<!\\)""\s*\]?\s*,\s*\[??\s*""|\s*\]?\s*(?:,\s*\n|\n\s*,?)\s*\[?\s*|\]\s*$")
-                                    .Select(DequoteString)
-                                    .Where(x => x.Length > 0 && x != "[" && x != "]")
-                                    .Partition(2)
-                                    .Where(x => x.Length == 2)
-                                    .Select(x => new JArray(x.Cast<object>().ToArray()))
-                                    .Cast<object>().ToArray());
+                                    Regex.Split(value, @"^\s*\[|(?<!\\)""\s*\]?\s*,\s*\[??\s*""|\s*\]?\s*(?:,\s*\n|\n\s*,?)\s*\[?\s*|\]\s*$")
+                                         .Select(DequoteString)
+                                         .Where(x => x.Length > 0 && x != "[" && x != "]")
+                                         .Partition(2)
+                                         .Where(x => x.Length == 2)
+                                         .Select(x => new JArray(x.Cast<object>().ToArray()))
+                                         .Cast<object>().ToArray());
                             break;
 
                         default:

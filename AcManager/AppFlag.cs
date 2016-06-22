@@ -171,7 +171,7 @@ namespace AcManager {
 
         /// <summary>
         /// Ignore skipped events (when first event is called “event5” or something like this,
-        /// in other words — broken). I don’t think it'll work, but anyway.
+        /// in other words — broken). I don’t think it’ll work, but anyway.
         /// Example: --kunos-career-ignore-skipped-events.
         /// </summary>
         KunosCareerIgnoreSkippedEvents,

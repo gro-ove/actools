@@ -37,6 +37,19 @@
             <CheckBox IsChecked="{Binding ProximityIndicator.IsEnabled}">
                 <Label>Show nearest opponents</Label>
             </CheckBox>
+
+            <!--proximity indicator-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Mirrors</TextBlock>
+            
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding System.MirrorsFieldOfView}" Postfix="°" ToolTip="Default value: 10°">Field of view</mui:ValueLabel>
+                <Slider Minimum="5" Maximum="55" Value="{Binding System.MirrorsFieldOfView}" TickFrequency="5" TickPlacement="BottomRight" />
+            </DockPanel>
+            
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding System.MirrorsFarPlane}" Postfix=" m" ToolTip="Default value: 400 m">Rendering distance</mui:ValueLabel>
+                <Slider Minimum="100" Maximum="1100" Value="{Binding System.MirrorsFarPlane}" TickFrequency="100" TickPlacement="BottomRight" />
+            </DockPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -182,7 +182,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void RemoveRedundantChildren() {
-            // iterate backwards through the child collection because we're going to be
+            // iterate backwards through the child collection because we’re going to be
             // removing items from it
             for (var i = Children.Count - 1; i >= 0; i--) {
                 var child = Children[i];

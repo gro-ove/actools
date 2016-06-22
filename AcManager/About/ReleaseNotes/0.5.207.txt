@@ -11,7 +11,7 @@ Some of other changes since the recent notes:
 That old thing from Cars Manager, I think it’s quite useful one. Now you can select from a range of search engines (if you need some which not in the list, please, [url="https://trello.com/c/1HrHi37u/32-other-suggestions"]tell[/url]).
 
  • [b]Weekends[/b]
-If future I'm planning to add fully customizable grids. Also, if you need Drag-races, please, tell (I’m not sure if anybody ever used them).
+If future I’m planning to add fully customizable grids. Also, if you need Drag-races, please, tell (I’m not sure if anybody ever used them).
 
  • [b]New packing system[/b]
 As a replacement for [url="http://enigmaprotector.com/en/aboutvb.html"]Enigma VB[/url] since almost all AVs (even Windows Defender) are getting angry at it. Transition still may cause some troubles (but most of them are fixed). Please, [url="https://trello.com/c/6PLhkQXe/33-other-bugs"]tell us if there is something wrong[/url].

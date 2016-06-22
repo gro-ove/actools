@@ -4,7 +4,7 @@ using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 
 namespace AcManager.Tools.AcErrors.Solver {
-    public class Showroom_Kn5IsMissingSolver : AbstractSolver<ShowroomObject> {
+    public class Showroom_Kn5IsMissingSolver : SolverBase<ShowroomObject> {
         public Showroom_Kn5IsMissingSolver(ShowroomObject target, AcError error) : base(target, error) {}
 
         protected override IEnumerable<Solution> GetSolutions() {

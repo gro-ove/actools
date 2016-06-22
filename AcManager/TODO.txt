@@ -577,7 +577,6 @@ todo:
         - missing collider.kn5 detection
         - missing properties fixer
             + missing name error
-                - test!
             - missing brand name error
 
     - new skins builder?

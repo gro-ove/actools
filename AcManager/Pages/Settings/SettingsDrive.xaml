@@ -102,12 +102,12 @@
 [br]
 [br]Examples:
 [br] [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
-[br] [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like '[w] bmw m3 e30 on brands hatch.acreplay'.
+[br] [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like “[w] bmw m3 e30 on brands hatch.acreplay”.
 [br]
-[br]If you need some other values, please, contact us and we'll add them.
+[br]If you need some other values, please, contact us and we’ll add them.
 [br]
 [br][b]Warning[/b]:
-[br] Don't use symbols like &quot;[&quot; or &quot;]&quot;!" />
+[br] Don't use symbols like “[” or “]”!" />
                         </StackPanel>
                     </ToolTip>
                 </DockPanel.ToolTip>
@@ -164,7 +164,7 @@
 [br] [b][mono]{track}[/mono][/b] — track's name;
 [br] [b][mono]{track.id}[/mono][/b] — track's id.
 [br]
-[br]If you need some other values, please, contact us and we'll add them.
+[br]If you need some other values, please, contact us and we’ll add them.
 [br]
 [br]Working directory will be set to Assetto Corsa folder in Documents." />
                         </StackPanel>
@@ -187,7 +187,7 @@
 [br] [b][mono]{track}[/mono][/b] — track's name;
 [br] [b][mono]{track.id}[/mono][/b] — track's id.
 [br]
-[br]If you need some other values, please, contact us and we'll add them.
+[br]If you need some other values, please, contact us and we’ll add them.
 [br]
 [br]Working directory will be set to Assetto Corsa folder in Documents." />
                         </StackPanel>

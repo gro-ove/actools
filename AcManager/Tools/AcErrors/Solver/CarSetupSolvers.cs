@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Tools.AcErrors.Solver {
-    public class CarSetup_TrackIsMissingSolver : AbstractSolver<CarSetupObject> {
+    public class CarSetup_TrackIsMissingSolver : SolverBase<CarSetupObject> {
         public CarSetup_TrackIsMissingSolver(CarSetupObject target, AcError error) : base(target, error) {}
 
         protected override IEnumerable<Solution> GetSolutions() {

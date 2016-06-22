@@ -145,7 +145,7 @@ namespace AcManager.Pages.Dialogs {
 
             item = new MenuItem { Header = @"Recalculate Curves Using Data Only" };
             item.Click += RecalculateCurves;
-            item.ToolTip = @"Curves will be recalculated based on engine.ini, but you'll have to provide transmission loss";
+            item.ToolTip = @"Curves will be recalculated based on engine.ini, but you’ll have to provide transmission loss";
             contextMenu.Items.Add(item);
 
             contextMenu.IsOpen = true;

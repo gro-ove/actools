@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.AcErrors;
-using AcManager.Tools.AcErrors.Solver;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -57,7 +56,7 @@ namespace AcManager.Pages.Dialogs {
 
         public List<IAcError> SimilarErrors; 
 
-        public bool MultiAppliable { get; private set; }
+        public bool MultiAppliable { get; }
 
         private void SetSelectMode(ISolver solver) {
             SelectModeControl.Visibility = Visibility.Visible;

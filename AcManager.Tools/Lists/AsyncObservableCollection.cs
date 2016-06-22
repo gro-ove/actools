@@ -31,7 +31,7 @@ namespace AcManager.Tools.Lists {
                 //Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)delegate() {
                 //    RaiseCollectionChanged(e);
                 //});
-                // I have no idea what I'm doing
+                // I have no idea what I’m doing
             } else if (SynchronizationContext.Current == _synchronizationContext) {
                 RaiseCollectionChanged(e);
             } else {

@@ -7,23 +7,15 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.AcErrors.Solver {
-    public interface ISolver {
-        void OnSuccess(Solution selectedSolution);
-
-        void OnError(Solution selectedSolution);
-
-        IReadOnlyList<Solution> Solutions { get; }
-    }
-
-    public abstract class AbstractSolver<T> : ISolver where T : AcObjectNew {
+namespace AcManager.Tools.AcErrors {
+    public abstract class SolverBase<T> : ISolver where T : AcObjectNew {
         [NotNull]
         public readonly T Target;
 
         [NotNull]
         public readonly AcError Error;
 
-        protected AbstractSolver([NotNull] T target, [NotNull] AcError error) {
+        protected SolverBase([NotNull] T target, [NotNull] AcError error) {
             if (target == null) {
                 throw new ArgumentNullException(nameof(target));
             }
@@ -38,11 +30,9 @@ namespace AcManager.Tools.AcErrors.Solver {
 
         protected abstract IEnumerable<Solution> GetSolutions();
 
-        public virtual void OnSuccess(Solution selectedSolution) {
-        }
+        public virtual void OnSuccess(Solution selectedSolution) {}
 
-        public virtual void OnError(Solution selectedSolution) {
-        }
+        public virtual void OnError(Solution selectedSolution) {}
 
         private IReadOnlyList<Solution> _solutions;
 
@@ -72,22 +62,22 @@ namespace AcManager.Tools.AcErrors.Solver {
 
         public static IEnumerable<Solution> TryToFindAnyFile(string baseDirectory, string filename, string searchPattern) {
             return Directory.GetFiles(baseDirectory, searchPattern)
-                .Select(x => new Solution($@"Restore from …{ x.Substring(baseDirectory.Length) }",
-                    @"Original file will be moved to Recycle Bin if exists",
-                    () => {
-                        var directory = Path.GetDirectoryName(filename);
-                        if (directory == null) throw new IOException("directory = null");
+                            .Select(x => new Solution($@"Restore from …{x.Substring(baseDirectory.Length)}",
+                                    @"Original file will be moved to Recycle Bin if exists",
+                                    () => {
+                                        var directory = Path.GetDirectoryName(filename);
+                                        if (directory == null) throw new IOException("directory = null");
 
-                        if (!Directory.Exists(directory)) {
-                            Directory.CreateDirectory(directory);
-                        }
+                                        if (!Directory.Exists(directory)) {
+                                            Directory.CreateDirectory(directory);
+                                        }
 
-                        if (File.Exists(filename)) {
-                            FileUtils.Recycle(filename);
-                        }
+                                        if (File.Exists(filename)) {
+                                            FileUtils.Recycle(filename);
+                                        }
 
-                        File.Move(x, filename);
-                    }));
+                                        File.Move(x, filename);
+                                    }));
         }
 
         protected static bool TryToRestoreDamagedJsonFile(string filename, JObjectRestorationScheme scheme) {

@@ -36,12 +36,11 @@ namespace AcManager.Tools.AcObjectsNew {
             Changed = false;
         }
 
-        private DateTime? _creationTime;
+        private DateTime _creationTime;
 
         public void CheckIfNew() {
             try {
-                var creationTime = _creationTime ?? (_creationTime = File.GetCreationTime(Location));
-                IsNew = DateTime.Now - creationTime < SettingsHolder.Content.NewContentPeriod.TimeSpan;
+                IsNew = DateTime.Now - _creationTime < SettingsHolder.Content.NewContentPeriod.TimeSpan;
             } catch (Exception) {
                 IsNew = false;
             }
@@ -56,6 +55,7 @@ namespace AcManager.Tools.AcObjectsNew {
             Changed = false;
             LoadingInProcess = true;
 
+            _creationTime = File.GetCreationTime(Location);
             CheckIfNew();
 
             try {
@@ -82,15 +82,12 @@ namespace AcManager.Tools.AcObjectsNew {
         public override string Name {
             get { return base.Name; }
             protected set {
+                value = value?.Trim();
+
                 if (Equals(value, base.Name)) return;
                 base.Name = value;
 
-                if (value == null && HasData) {
-                    AddError(AcErrorType.Data_ObjectNameIsMissing);
-                } else {
-                    RemoveError(AcErrorType.Data_ObjectNameIsMissing);
-                }
-
+                ErrorIf(string.IsNullOrEmpty(value) && HasData, AcErrorType.Data_ObjectNameIsMissing);
                 SortAffectingValueChanged();
 
                 OnPropertyChanged(nameof(NameEditable));

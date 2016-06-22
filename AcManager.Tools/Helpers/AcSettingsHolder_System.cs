@@ -131,6 +131,30 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private int _mirrorsFieldOfView;
+
+            public int MirrorsFieldOfView {
+                get { return _mirrorsFieldOfView; }
+                set {
+                    value = value.Clamp(1, 180);
+                    if (Equals(value, _mirrorsFieldOfView)) return;
+                    _mirrorsFieldOfView = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _mirrorsFarPlane;
+
+            public int MirrorsFarPlane {
+                get { return _mirrorsFarPlane; }
+                set {
+                    value = value.Clamp(10, 2000);
+                    if (Equals(value, _mirrorsFarPlane)) return;
+                    _mirrorsFarPlane = value;
+                    OnPropertyChanged();
+                }
+            }
             #endregion
 
             public void LoadFfbFromIni(IniFile ini) {
@@ -161,6 +185,8 @@ namespace AcManager.Tools.Helpers {
                 AllowFreeCamera = Ini["CAMERA"].GetBool("ALLOW_FREE_CAMERA", false);
                 Logging = !Ini["LOG"].GetBool("SUPPRESS", false);
                 ScreenshotFormat = Ini["SCREENSHOT"].GetEntry("FORMAT", ScreenshotFormats);
+                MirrorsFieldOfView = Ini["MIRRORS"].GetInt("FOV", 10);
+                MirrorsFarPlane = Ini["MIRRORS"].GetInt("FAR_PLANE", 400);
             }
 
             protected override void SetToIni() {
@@ -171,6 +197,8 @@ namespace AcManager.Tools.Helpers {
                 Ini["CAMERA"].Set("ALLOW_FREE_CAMERA", AllowFreeCamera);
                 Ini["LOG"].Set("SUPPRESS", !Logging);
                 Ini["SCREENSHOT"].Set("FORMAT", ScreenshotFormat);
+                Ini["MIRRORS"].Set("FOV", MirrorsFieldOfView);
+                Ini["MIRRORS"].Set("FAR_PLANE", MirrorsFarPlane);
             }
         }
 

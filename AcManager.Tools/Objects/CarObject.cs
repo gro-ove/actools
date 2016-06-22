@@ -162,15 +162,12 @@ namespace AcManager.Tools.Objects {
         public string Brand {
             get { return _brand; }
             set {
-                if (value == _brand) return;
+                value = value?.Trim();
+
+                if (Equals(value, _brand)) return;
                 _brand = value;
-
-                if (value == null && HasData) {
-                    AddError(AcErrorType.Data_CarBrandIsMissing);
-                } else {
-                    RemoveError(AcErrorType.Data_CarBrandIsMissing);
-                }
-
+                
+                ErrorIf(string.IsNullOrEmpty(value) && HasData, AcErrorType.Data_CarBrandIsMissing);
                 OnPropertyChanged(nameof(Brand));
                 Changed = true;
             }
@@ -347,6 +344,9 @@ namespace AcManager.Tools.Objects {
             base.LoadData(json);
 
             Brand = json.GetStringValueOnly("brand");
+            if (string.IsNullOrEmpty(Brand)) {
+                AddError(AcErrorType.Data_CarBrandIsMissing);
+            }
 
             if (Country == null && Brand != null) {
                 Country = AcStringValues.CountryFromBrand(Brand);

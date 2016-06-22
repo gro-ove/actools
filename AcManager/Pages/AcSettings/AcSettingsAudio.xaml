@@ -7,7 +7,7 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
     <ScrollViewer>
-        <StackPanel Style="{StaticResource SettingsPanel}" ToolTip="Switch to Low or Normal if you're experiencing problems with sound">
+        <StackPanel Style="{StaticResource SettingsPanel}" ToolTip="Switch to Low or Normal if you’re experiencing problems with sound">
             <DockPanel>
                 <Label>Latency:</Label>
                 <ComboBox ItemsSource="{Binding Audio.Latencies}" SelectedItem="{Binding Audio.Latency}" />

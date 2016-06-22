@@ -1,6 +1,7 @@
-ï»¿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AcManager.Controls.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
@@ -9,11 +10,11 @@ using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.AcErrors.Solver {
-    public class Data_JsonIsDamagedSolver : AbstractSolver<AcJsonObjectNew> {
+
+    public class Data_JsonIsDamagedSolver : SolverBase<AcJsonObjectNew> {
         public Data_JsonIsDamagedSolver(AcJsonObjectNew target, AcError error) : base(target, error) { }
 
-        public override void OnSuccess(Solution selectedSolution) {
-        }
+        public override void OnSuccess(Solution selectedSolution) { }
 
         internal static Solution CreateNewFile(AcJsonObjectNew target) {
             if (target is ShowroomObject) {
@@ -24,7 +25,7 @@ namespace AcManager.Tools.AcErrors.Solver {
                         var jObject = new JObject {
                             ["name"] = AcStringValues.NameFromId(target.Id)
                         };
-                        
+
                         FileUtils.EnsureFileDirectoryExists(target.JsonFilename);
                         File.WriteAllText(target.JsonFilename, jObject.ToString());
                     });
@@ -43,7 +44,7 @@ namespace AcManager.Tools.AcErrors.Solver {
                             ["number"] = "0",
                             ["priority"] = 1
                         };
-                        
+
                         FileUtils.EnsureFileDirectoryExists(target.JsonFilename);
                         File.WriteAllText(target.JsonFilename, jObject.ToString());
                     });
@@ -59,7 +60,7 @@ namespace AcManager.Tools.AcErrors.Solver {
                     @"App will make an attempt to read known properties from damaged JSON file (be carefull, data loss is possible)",
                     () => {
                         if (!TryToRestoreDamagedJsonFile(Target.JsonFilename, JObjectRestorationSchemeProvider.GetScheme(Target))) {
-                            throw new SolvingException("Canâ€™t restore damaged JSON");
+                            throw new SolvingException("Can’t restore damaged JSON");
                         }
                     }),
                 CreateNewFile(Target)
@@ -67,7 +68,7 @@ namespace AcManager.Tools.AcErrors.Solver {
         }
     }
 
-    public class Data_JsonIsMissingSolver : AbstractSolver<AcJsonObjectNew> {
+    public class Data_JsonIsMissingSolver : SolverBase<AcJsonObjectNew> {
         public Data_JsonIsMissingSolver(AcJsonObjectNew target, AcError error) : base(target, error) { }
 
         public override void OnSuccess(Solution selectedSolution) {
@@ -80,17 +81,25 @@ namespace AcManager.Tools.AcErrors.Solver {
         }
     }
 
-    public class Data_ObjectNameIsMissingSolver : AbstractSolver<AcCommonObject> {
-        public Data_ObjectNameIsMissingSolver([NotNull] AcCommonObject target, [NotNull] AcError error) : base(target, error) {}
+    public class Data_ObjectNameIsMissingSolver : SolverBase<AcCommonObject> {
+        public Data_ObjectNameIsMissingSolver([NotNull] AcCommonObject target, [NotNull] AcError error) : base(target, error) { }
 
         protected override IEnumerable<Solution> GetSolutions() {
             return new[] {
                 new Solution(
-                    @"Set name based on ID",
-                    $@"New name will be: {AcStringValues.NameFromId(Target.Id)}",
-                    () => {
-                        Target.NameEditable = AcStringValues.NameFromId(Target.Id);
-                    })
+                        @"Set name",
+                        @"Just set a new name",
+                        () => {
+                            var value = Prompt.Show("Enter a new name", "New Name", AcStringValues.NameFromId(Target.Id), maxLength: 200);
+                            if (value == null) throw new SolvingException();
+                            Target.NameEditable = value;
+                        }),
+                new Solution(
+                        @"Set name based on ID",
+                        $@"New name will be: “{AcStringValues.NameFromId(Target.Id)}”",
+                        () => {
+                            Target.NameEditable = AcStringValues.NameFromId(Target.Id);
+                        })
             };
         }
     }

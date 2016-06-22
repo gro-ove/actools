@@ -5,7 +5,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Tools.AcErrors.Solver {
-    public class CarSkin_PreviewIsMissingUiSolver : AbstractSolver<CarSkinObject> {
+    public class CarSkin_PreviewIsMissingUiSolver : SolverBase<CarSkinObject> {
         public CarSkin_PreviewIsMissingUiSolver(CarSkinObject target, AcError error) : base(target, error) {}
 
         protected override IEnumerable<Solution> GetSolutions() {
@@ -34,7 +34,7 @@ namespace AcManager.Tools.AcErrors.Solver {
         }
     }
 
-    public class CarSkin_LiveryIsMissingUiSolver : AbstractSolver<CarSkinObject> {
+    public class CarSkin_LiveryIsMissingUiSolver : SolverBase<CarSkinObject> {
         public CarSkin_LiveryIsMissingUiSolver(CarSkinObject target, AcError error) : base(target, error) {}
 
         protected override IEnumerable<Solution> GetSolutions() {

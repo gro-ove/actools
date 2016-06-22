@@ -1,4 +1,3 @@
-using AcManager.Tools.AcErrors.Solver;
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Tools.AcErrors {

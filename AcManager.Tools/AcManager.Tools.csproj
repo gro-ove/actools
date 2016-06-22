@@ -72,22 +72,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcErrors\SolverBase.cs" />
     <Compile Include="AcErrors\AcErrorCategory.cs" />
     <Compile Include="AcErrors\AcErrorType.cs" />
     <Compile Include="AcErrors\AcErrorWrapper.cs" />
-    <Compile Include="AcErrors\CombinedSolver.cs" />
-    <Compile Include="AcErrors\DefaultFactory.cs" />
     <Compile Include="AcErrors\IAcError.cs" />
+    <Compile Include="AcErrors\ISolver.cs" />
     <Compile Include="AcErrors\ISolversFactory.cs" />
     <Compile Include="AcErrors\IUiAcErrorFixer.cs" />
-    <Compile Include="AcErrors\Solver\CarSetupSolvers.cs" />
-    <Compile Include="AcErrors\Solver\FontSolvers.cs" />
-    <Compile Include="AcErrors\Solver\ShowroomSolvers.cs" />
-    <Compile Include="AcErrors\Solver\CarSolvers.cs" />
-    <Compile Include="AcErrors\Solver\JObjectRestorationSchemeProvider.cs" />
     <Compile Include="AcErrors\SolvingException.cs" />
     <Compile Include="AcErrors\Solution.cs" />
-    <Compile Include="AcErrors\Solver\DataSolvers.cs" />
     <Compile Include="AcManagersNew\AcItemWrapper.cs" />
     <Compile Include="AcManagersNew\AcManagerFileSpecific.cs" />
     <Compile Include="AcManagersNew\AsyncScanAcManager.cs" />
@@ -259,7 +253,6 @@
     <Compile Include="Lists\AcWrapperCollectionView.cs" />
     <Compile Include="Lists\AsyncObservableCollection.cs" />
     <Compile Include="Lists\AutocompleteValuesList.cs" />
-    <Compile Include="AcErrors\Solver\AbstractSolver.cs" />
     <Compile Include="AcErrors\SolversManager.cs" />
     <Compile Include="Lists\BetterListCollectionView.cs" />
     <Compile Include="Lists\BetterObservableCollection.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Linq;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -63,6 +64,14 @@ namespace AcManager.Tools.Helpers {
 
             nameWithoutVersion = name;
             return null;
+        }
+
+        [CanBeNull]
+        public static string BrandFromName([NotNull] string name) {
+            var key = name.Trim().ToLower();
+            return (from brand in DataProvider.Instance.BrandCountries.Keys
+                    where key.StartsWith(brand) && (char.IsWhiteSpace(key.ElementAtOrDefault(brand.Length)) || key.ElementAtOrDefault(brand.Length) == '_')
+                    select name.Trim().Substring(0, brand.Length)).FirstOrDefault();
         }
 
         [CanBeNull]

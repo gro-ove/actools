@@ -14,7 +14,7 @@ First one. Uses pretty weird approach, which requires to temporary remove [i]Ass
   − Unreliable: using approach could be blocked in any AC update;
   − Tricky: sadly, doesn’t work without Internet connection;
   − Incompatible: can’t be used when original launcher is running;
-  − Potentially adverse: if CM will suddenly get killed, you'll have to restore [i]AssettoCorsa.exe[/i] from [i]AssettoCorsa_backup.exe[/i] manually;
+  − Potentially adverse: if CM will suddenly get killed, you’ll have to restore [i]AssettoCorsa.exe[/i] from [i]AssettoCorsa_backup.exe[/i] manually;
   − Slow: using approach requires to wait some time at some point;
   − Limited: can’t specify version (32-bit or 64-bit).
 
@@ -35,7 +35,7 @@ Quite questionable solution. I won’t spread about it too much, just basics:
   − Not supported: doesn’t work with AC 1.6.
 
  • [b]Naive Starter[/b]
-CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you're using original Steam version — won’t work at all.", false),
+CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you’re using original Steam version — won’t work at all.", false),
             new PieceOfInformation(@"22_-1950881468_1645627313", null, @"Command-Line Arguments", null, @"CM has a bunch of special options you can set by using command-line arguments. Or just create a new [i]Arguments.txt[/i] file in [i]…\AppData\Local\AcTools Content Manager[/i] and write them in it (one argument per line).
 
  [img=""http://i.imgur.com/qO7oOVn.png|240""]Example of that file[/img]
@@ -151,7 +151,7 @@ It might be a pretty handy to send feedback, watch progress, report bugs and stu
 
 Of course, you can still use e-mails for a feedback though.
 
-[i]By the way, sorry to bother, but if you're going to join Trello, could you please register using [url=""https://trello.com/x4fab/recommend""]this link[/url]? Thanks in advance.[/i].", false),
+[i]By the way, sorry to bother, but if you’re going to join Trello, could you please register using [url=""https://trello.com/x4fab/recommend""]this link[/url]? Thanks in advance.[/i].", false),
             new PieceOfInformation(@"39_159912475_-1471391675", null, @"Default previews preset updated (again)", @"0.5.207", @"[i]Honestly, it’s starting to get on my nerves.[/i]
 
 Kunos previews preset changed again, now they returned to using S1-Showroom. Please, open Auto-Update Previews settings and reset to Kunos preset if you’re using their style.
@@ -162,7 +162,7 @@ Some of other changes since the recent notes:
 That old thing from Cars Manager, I think it’s quite useful one. Now you can select from a range of search engines (if you need some which not in the list, please, [url=""https://trello.com/c/1HrHi37u/32-other-suggestions""]tell[/url]).
 
  • [b]Weekends[/b]
-If future I'm planning to add fully customizable grids. Also, if you need Drag-races, please, tell (I’m not sure if anybody ever used them).
+If future I’m planning to add fully customizable grids. Also, if you need Drag-races, please, tell (I’m not sure if anybody ever used them).
 
  • [b]New packing system[/b]
 As a replacement for [url=""http://enigmaprotector.com/en/aboutvb.html""]Enigma VB[/url] since almost all AVs (even Windows Defender) are getting angry at it. Transition still may cause some troubles (but most of them are fixed). Please, [url=""https://trello.com/c/6PLhkQXe/33-other-bugs""]tell us if there is something wrong[/url].

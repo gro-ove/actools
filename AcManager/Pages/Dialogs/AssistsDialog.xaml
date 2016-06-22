@@ -63,7 +63,7 @@
 
         <!-- forth row -->
         <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="0" Margin="{StaticResource EntryMargin}"
-                ToolTip="Unrealistic, but could be helpful if you're learning how to drive or drift">
+                ToolTip="Unrealistic, but could be helpful if you’re learning how to drive or drift">
             <Grid Margin="0 0 0 5">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="_Stability control: " Target="{x:Reference StabilityControlTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
