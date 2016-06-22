@@ -31,17 +31,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private static bool? _optionIdealFormattingMode;
-
-        public static bool? OptionIdealFormattingMode {
-            get { return _optionIdealFormattingMode; }
-            set {
-                if (Equals(_optionIdealFormattingMode, value)) return;
-                _optionIdealFormattingMode = value;
-                Application.Current.Resources["FormattingMode"] = value == true ? TextFormattingMode.Ideal : TextFormattingMode.Display;
-            }
-        }
-
         /// <summary>
         /// Occurs when the system or monitor DPI for this window has changed.
         /// </summary>

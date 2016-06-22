@@ -115,9 +115,11 @@ namespace AcManager {
             }
 
             FancyBackgroundManager.Initialize();
-            AppAppearanceManager.Initialize();
             DpiAwareWindow.OptionScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
-            DpiAwareWindow.OptionIdealFormattingMode = AppArguments.GetBool(AppFlag.IdealFormattingMode, !Equals(DpiAwareWindow.OptionScale, 1d));
+            AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
+                    !Equals(DpiAwareWindow.OptionScale, 1d));
+            Logging.Write("HERE: " + AppAppearanceManager.OptionIdealFormattingModeDefaultValue);
+            AppAppearanceManager.Initialize();
 
             AcObjectsUriManager.Register(new UriProvider());
             SolversManager.RegisterFactory(new UiSolversFactory());

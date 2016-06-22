@@ -457,6 +457,7 @@ done:
     + fix textboxes in settings
     + quick setting: special online name
     + reducing image footprint
+    + add NVIDIA copyrights and stuff
 
 fixme:
     - notifypropertychanged for commands
@@ -649,7 +650,6 @@ later:
 
     - combine watchers for CM data directory into one?
     - changeable width of list area
-    - add NVIDIA copyrights and stuff
 
     - option for disabling .acreplay on renaming replays in content tab
     - description: convert html to bb and back?

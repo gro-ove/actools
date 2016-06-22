@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Lists {
@@ -20,7 +21,12 @@ namespace AcManager.Tools.Lists {
             var notify = e as NotifyCollectionChangedEventArgs;
             if (notify == null) return false;
 
-            OnCollectionChanged(sender, notify);
+            try {
+                OnCollectionChanged(sender, notify);
+            } catch (InvalidOperationException ex) {
+                Logging.Warning("[BetterListCollectionView] That exception: " + ex);
+            }
+
             return true;
         }
     }

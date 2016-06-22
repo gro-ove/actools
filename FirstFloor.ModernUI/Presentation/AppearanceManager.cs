@@ -15,6 +15,7 @@ namespace FirstFloor.ModernUI.Presentation {
         public const string KeyAccentColor = "AccentColor";
         public const string KeyAccent = "Accent";
         public const string KeyDefaultFontSize = "DefaultFontSize";
+        public const string KeyFormattingMode = "FormattingMode";
         public const string KeyFixedFontSize = "FixedFontSize";
         public const string KeySubMenuFontSize = "ModernSubMenuFontSize";
         
@@ -69,6 +70,14 @@ namespace FirstFloor.ModernUI.Presentation {
                 }
 
                 OnPropertyChanged(nameof(ThemeSource));
+            }
+        }
+
+        public bool OptionIdealFormattingMode {
+            get { return Equals(Application.Current.Resources[KeyFormattingMode] as TextFormattingMode?, TextFormattingMode.Ideal); }
+            set {
+                Application.Current.Resources[KeyFormattingMode] = value ? TextFormattingMode.Ideal : TextFormattingMode.Display;
+                OnPropertyChanged(nameof(OptionIdealFormattingMode));
             }
         }
 

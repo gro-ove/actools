@@ -40,6 +40,10 @@
                 <Label>Small font</Label>
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding AppAppearanceManager.IdealFormattingMode}">
+                <Label>Ideal text formatting</Label>
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding AppAppearanceManager.PopupToolBars}" ToolTip="Don't forget, there is a keyboard shortcut for every button">
                 <Label>Popup toolbars</Label>
             </CheckBox>

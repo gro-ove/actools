@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
-using JetBrains.Annotations;
 
 namespace AcManager.Controls.Presentation {
     public class AppAppearanceManager : NotifyPropertyChanged {
+        public static bool OptionIdealFormattingModeDefaultValue = false;
+
         public const string KeyTheme = "appearance_theme";
         public const string KeyAccentColor = "appearance_accentColor";
         public const string KeyAccentDisplayColor = "appearance_accentColor_d";
@@ -28,18 +28,26 @@ namespace AcManager.Controls.Presentation {
             return Instance = new AppAppearanceManager();
         }
 
+        private bool _loading;
+
         private AppAppearanceManager() {
             AppearanceManager.Current.Initialize();
 
             var theme = ValuesStorage.GetUri(KeyTheme);
             SelectedTheme = Themes.FirstOrDefault(x => x.Source == theme) ?? Themes.FirstOrDefault();
 
-            AccentColor = ValuesStorage.GetColor(KeyAccentColor) ?? AccentColors.First();
-            AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
-            SmallFont = ValuesStorage.GetBool(KeySmallFont);
-            LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
-            PopupToolBars = ValuesStorage.GetBool(KeyPopupToolBars);
-            FrameAnimation = FrameAnimations.FirstOrDefault(x => x.Id == ValuesStorage.GetString(KeyFrameAnimation)) ?? FrameAnimations.First();
+            try {
+                _loading = true;
+                AccentColor = ValuesStorage.GetColor(KeyAccentColor) ?? AccentColors.First();
+                AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
+                IdealFormattingMode = ValuesStorage.GetBool(KeyIdealFormattingMode, OptionIdealFormattingModeDefaultValue);
+                SmallFont = ValuesStorage.GetBool(KeySmallFont);
+                LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
+                PopupToolBars = ValuesStorage.GetBool(KeyPopupToolBars);
+                FrameAnimation = FrameAnimations.FirstOrDefault(x => x.Id == ValuesStorage.GetString(KeyFrameAnimation)) ?? FrameAnimations.First();
+            } finally {
+                _loading = false;
+            }
         }
 
         #region Font sizes
@@ -48,9 +56,17 @@ namespace AcManager.Controls.Presentation {
         public bool IdealFormattingMode {
             get { return _idealFormattingMode; }
             set {
+                if (_loading) {
+                    _idealFormattingMode = value;
+                    AppearanceManager.Current.OptionIdealFormattingMode = value;
+                    return;
+                }
+
                 if (Equals(value, _idealFormattingMode)) return;
                 _idealFormattingMode = value;
                 OnPropertyChanged();
+                AppearanceManager.Current.OptionIdealFormattingMode = value;
+                ValuesStorage.Set(KeyIdealFormattingMode, value);
             }
         }
 
@@ -59,6 +75,12 @@ namespace AcManager.Controls.Presentation {
         public bool SmallFont {
             get { return _smallFont; }
             set {
+                if (_loading) {
+                    _smallFont = value;
+                    AppearanceManager.Current.FontSize = value ? FontSize.Small : FontSize.Large;
+                    return;
+                }
+
                 if (Equals(value, _smallFont)) return;
                 _smallFont = value;
                 OnPropertyChanged();
@@ -72,6 +94,12 @@ namespace AcManager.Controls.Presentation {
         public bool LargeSubMenuFont {
             get { return _largeSubMenuFont; }
             set {
+                if (_loading) {
+                    _largeSubMenuFont = value;
+                    AppearanceManager.Current.SubMenuFontSize = value ? FontSize.Large : FontSize.Small;
+                    return;
+                }
+
                 if (Equals(value, _largeSubMenuFont)) return;
                 _largeSubMenuFont = value;
                 OnPropertyChanged();
@@ -100,11 +128,17 @@ namespace AcManager.Controls.Presentation {
         public Color AccentColor {
             get { return _accentColor; }
             set {
+                if (_loading) {
+                    _accentColor = value;
+                    AppearanceManager.Current.SetAccentColorAsync(value);
+                    return;
+                }
+
                 if (Equals(value, _accentColor)) return;
                 _accentColor = value;
                 OnPropertyChanged();
-                ValuesStorage.Set(KeyAccentColor, value);
                 AppearanceManager.Current.SetAccentColorAsync(value);
+                ValuesStorage.Set(KeyAccentColor, value);
             }
         }
 
@@ -113,6 +147,11 @@ namespace AcManager.Controls.Presentation {
         public string AccentDisplayColor {
             get { return _accentDisplayColor; }
             set {
+                if (_loading) {
+                    _accentDisplayColor = value;
+                    return;
+                }
+
                 if (Equals(value, _accentDisplayColor)) return;
                 _accentDisplayColor = value;
                 OnPropertyChanged();
@@ -155,6 +194,12 @@ namespace AcManager.Controls.Presentation {
         public bool? PopupToolBars {
             get { return _popupToolBars; }
             set {
+                if (_loading) {
+                    AppearanceManager.Current.PopupToolBars = value;
+                    _popupToolBars = value;
+                    return;
+                }
+
                 if (Equals(value, _popupToolBars)) return;
                 _popupToolBars = value;
                 OnPropertyChanged();
@@ -191,6 +236,13 @@ namespace AcManager.Controls.Presentation {
             get { return _frameAnimation; }
             set {
                 if (value == null) return;
+
+                if (_loading) {
+                    ModernFrame.OptionTransitionName = value.Id;
+                    _frameAnimation = value;
+                    return;
+                }
+
                 if (Equals(value, _frameAnimation)) return;
                 _frameAnimation = value;
                 OnPropertyChanged();
@@ -204,25 +256,6 @@ namespace AcManager.Controls.Presentation {
                 }
             }
         }
-
         #endregion
-    }
-
-    internal static class DependencyObjectExtension {
-        public static IEnumerable<T> FindVisualChildren<T>([NotNull] this DependencyObject depObj) where T : DependencyObject {
-            if (depObj == null) throw new ArgumentNullException(nameof(depObj));
-
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++) {
-                var child = VisualTreeHelper.GetChild(depObj, i);
-                var children = child as T;
-                if (children != null) {
-                    yield return children;
-                }
-
-                foreach (var childOfChild in FindVisualChildren<T>(child)) {
-                    yield return childOfChild;
-                }
-            }
-        }
     }
 }
