@@ -25,6 +25,7 @@ namespace AcManager.Tools.Managers {
             @"logo.png",
             @"ui",
             @"ui\badge.png",
+            @"ui\upgrade.png",
             @"ui\ui_car.json"
         };
 

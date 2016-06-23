@@ -51,6 +51,10 @@ namespace AcManager.Tools.Objects {
                     OnPropertyChanged(nameof(NeedsMargin));
                 }
 
+                if (HasData) {
+                    CheckUpgradeIcon();
+                }
+
                 Changed = true;
             }
         }

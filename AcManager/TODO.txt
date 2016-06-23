@@ -571,13 +571,16 @@ todo:
     - remove double spaces, trim strings
     - detect invalid symbols in IDs
 
+    - skins manager: remove json-files
     + error fixer
-        - track missing kn5 error detection
-        - missing sound detection
-        - missing collider.kn5 detection
-        - missing properties fixer
+        + missing properties fixer
             + missing name error
-            - missing brand name error
+            + missing brand name error
+        - damaged ui_skin.json fixer
+            - as an option: remove json-file
+        - track missing kn5 error detection
+        × missing sound detection
+        × missing collider.kn5 detection
 
     - new skins builder?
         - color

@@ -91,31 +91,6 @@ namespace AcManager.Tools.AcErrors {
                     // TODO
                     break;
 
-                case AcErrorType.Car_BrandBadgeIsMissing: {
-                    var car = (CarObject)error.Target;
-                    var fit = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $"{car.Brand}.png");
-                    return new ISolution[] {
-                        fit.Exists ? new MultiSolution(
-                            $"Set {car.Brand} badge",
-                            "Set the brand’s badge from Content storage",
-                            e => {
-                                var c = (CarObject)e.Target;
-                                var f = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $"{c.Brand}.png");
-                                 File.Copy(f.Filename, c.BrandBadge);
-                            }) : null, 
-                        new MultiSolution(
-                                @"Change brand’s badge",
-                                @"Select a new brand’s badge from the list",
-                                e => {
-                                    var target = (CarObject)e.Target;
-                                    new BrandBadgeEditor(target).ShowDialog();
-                                    if (!File.Exists(target.BrandBadge)) {
-                                        throw new SolvingException();
-                                    }
-                                }) { IsUiSolution = true }
-                    }.Concat(Solve.TryToFindRenamedFile(error.Target.Location, ((CarObject)error.Target).BrandBadge)).NonNull();
-                }
-
                 case AcErrorType.Car_ParentIsMissing:
                     return new[] {
                         new MultiSolution(
@@ -135,6 +110,60 @@ namespace AcManager.Tools.AcErrors {
                                     }
                                 }) { IsUiSolution = true }
                     }.Concat(Solve.TryToFindRenamedFile(error.Target.Location, ((AcJsonObjectNew)error.Target).JsonFilename)).NonNull();
+
+                case AcErrorType.Car_BrandBadgeIsMissing: {
+                    var car = (CarObject)error.Target;
+                    var fit = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $"{car.Brand}.png");
+                    return new ISolution[] {
+                        fit.Exists ? new MultiSolution(
+                            $"Set {car.Brand} badge",
+                            "Set the brand’s badge from Content storage",
+                            e => {
+                                var c = (CarObject)e.Target;
+                                var f = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $"{c.Brand}.png");
+                                if (!f.Exists) return;
+                                File.Copy(f.Filename, c.BrandBadge);
+                            }) : null, 
+                        new MultiSolution(
+                                @"Change brand’s badge",
+                                @"Select a new brand’s badge from the list",
+                                e => {
+                                    var target = (CarObject)e.Target;
+                                    new BrandBadgeEditor(target).ShowDialog();
+                                    if (!File.Exists(target.BrandBadge)) {
+                                        throw new SolvingException();
+                                    }
+                                }) { IsUiSolution = true }
+                    }.Concat(Solve.TryToFindRenamedFile(error.Target.Location, ((CarObject)error.Target).BrandBadge)).NonNull();
+                }
+
+                case AcErrorType.Car_UpgradeIconIsMissing: {
+                    var car = (CarObject)error.Target;
+                    var label = UpgradeIconEditor.TryToGuessLabel(car.DisplayName) ?? "S1";
+                    var fit = FilesStorage.Instance.GetContentFile(ContentCategory.UpgradeIcons, $"{label}.png");
+                    return new ISolution[] {
+                        fit.Exists ? new MultiSolution(
+                            $"Set “{label}” icon",
+                            "Set the upgrade icon from Content storage",
+                            e => {
+                                var c = (CarObject)e.Target;
+                                var l = UpgradeIconEditor.TryToGuessLabel(c.DisplayName) ?? "S1";
+                                var f = FilesStorage.Instance.GetContentFile(ContentCategory.UpgradeIcons, $"{l}.png");
+                                if (!f.Exists) return;
+                                File.Copy(f.Filename, c.UpgradeIcon);
+                            }) : null, 
+                        new MultiSolution(
+                                @"Change upgrade icon",
+                                @"Select or create a new upgrade icon with the editor",
+                                e => {
+                                    var target = (CarObject)e.Target;
+                                    new UpgradeIconEditor(target).ShowDialog();
+                                    if (!File.Exists(target.UpgradeIcon)) {
+                                        throw new SolvingException();
+                                    }
+                                }) { IsUiSolution = true }
+                    }.Concat(Solve.TryToFindRenamedFile(error.Target.Location, ((CarObject)error.Target).UpgradeIcon)).NonNull();
+                }
 
                 case AcErrorType.Showroom_Kn5IsMissing:
                     return new[] {

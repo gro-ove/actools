@@ -14,6 +14,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
@@ -59,10 +60,15 @@ namespace AcManager.Tools.Objects {
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
             CheckBrandBadge();
+            CheckUpgradeIcon();
         }
 
         private void CheckBrandBadge() {
             ErrorIf(!File.Exists(BrandBadge), AcErrorType.Car_BrandBadgeIsMissing);
+        }
+
+        private void CheckUpgradeIcon() {
+            ErrorIf(ParentId != null && !File.Exists(UpgradeIcon), AcErrorType.Car_UpgradeIconIsMissing);
         }
 
         public override void PastLoad() {
@@ -120,13 +126,14 @@ namespace AcManager.Tools.Objects {
 
         public override bool HandleChangedFile(string filename) {
             if (base.HandleChangedFile(filename)) return true;
-
+            
             if (FileUtils.IsAffected(filename, LogoIcon)) {
                 OnImageChanged(nameof(LogoIcon));
             } else if (FileUtils.IsAffected(filename, BrandBadge)) {
                 CheckBrandBadge();
                 OnImageChanged(nameof(BrandBadge));
             } else if (FileUtils.IsAffected(filename, UpgradeIcon)) {
+                CheckUpgradeIcon();
                 OnImageChanged(nameof(UpgradeIcon));
             }
 

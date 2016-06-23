@@ -88,6 +88,9 @@ namespace AcManager.Tools.AcErrors {
 
         [Description("Brand’s badge is missing")]
         Car_BrandBadgeIsMissing,
+
+        [Description("Upgrade icon is missing")]
+        Car_UpgradeIconIsMissing,
         
 
         [Description("Skins are missing")]

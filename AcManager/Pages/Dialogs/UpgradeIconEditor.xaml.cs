@@ -1,14 +1,28 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using Microsoft.Win32;
 
 namespace AcManager.Pages.Dialogs {
     public partial class UpgradeIconEditor {
+        [CanBeNull]
+        public static string TryToGuessLabel(string carName) {
+            if (carName == null) return null;
+            if (Regex.IsMatch(carName, @"\b(?:drift|d(?:\s*|-)spec)\b", RegexOptions.IgnoreCase)) return "D";
+            if (Regex.IsMatch(carName, @"\b(?:s|step|stage)\s*3\b", RegexOptions.IgnoreCase)) return "S3";
+            if (Regex.IsMatch(carName, @"\b(?:s|step|stage)\s*2\b", RegexOptions.IgnoreCase)) return "S2";
+            if (Regex.IsMatch(carName, @"\b(?:s|step|stage)\s*1\b", RegexOptions.IgnoreCase)) return "S1";
+            if (Regex.IsMatch(carName, @"\b(?:race|hotlap)\b", RegexOptions.IgnoreCase)) return "Race";
+            if (Regex.IsMatch(carName, @"\b(?:turbo)\b", RegexOptions.IgnoreCase)) return "Turbo";
+            return null;
+        }
+
         private static WeakReference<UpgradeIconEditor> _instance;
         public static UpgradeIconEditor Instance {
             get {
