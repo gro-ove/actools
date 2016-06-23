@@ -2,49 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AcManager.Tools.AcErrors.Solutions;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.AcErrors {
-    public abstract class SolverBase<T> : ISolver where T : AcObjectNew {
-        [NotNull]
-        public readonly T Target;
-
-        [NotNull]
-        public readonly AcError Error;
-
-        protected SolverBase([NotNull] T target, [NotNull] AcError error) {
-            if (target == null) {
-                throw new ArgumentNullException(nameof(target));
-            }
-
-            if (error == null) {
-                throw new ArgumentNullException(nameof(error));
-            }
-
-            Target = target;
-            Error = error;
-        }
-
-        protected abstract IEnumerable<Solution> GetSolutions();
-
-        public virtual void OnSuccess(Solution selectedSolution) {}
-
-        public virtual void OnError(Solution selectedSolution) {}
-
-        private IReadOnlyList<Solution> _solutions;
-
-        [NotNull]
-        public IReadOnlyList<Solution> Solutions => _solutions ?? (_solutions = GetSolutions().ToList());
-
+    public static class Solve {
         public static IEnumerable<Solution> TryToFindRenamedFile(string baseDirectory, string filename, bool skipOff = false) {
             return FileUtils.FindRenamedFile(baseDirectory, filename)
                             .Where(x => skipOff == false || x.EndsWith("-off", StringComparison.OrdinalIgnoreCase))
                             .Select(x => new Solution($@"Restore from …{x.Substring(baseDirectory.Length)}",
                                     @"Original file will be moved to Recycle Bin if exists",
-                                    () => {
+                                    e => {
                                         var directory = Path.GetDirectoryName(filename);
                                         if (directory == null) throw new IOException("directory = null");
 
@@ -64,7 +37,7 @@ namespace AcManager.Tools.AcErrors {
             return Directory.GetFiles(baseDirectory, searchPattern)
                             .Select(x => new Solution($@"Restore from …{x.Substring(baseDirectory.Length)}",
                                     @"Original file will be moved to Recycle Bin if exists",
-                                    () => {
+                                    e => {
                                         var directory = Path.GetDirectoryName(filename);
                                         if (directory == null) throw new IOException("directory = null");
 
@@ -80,7 +53,7 @@ namespace AcManager.Tools.AcErrors {
                                     }));
         }
 
-        protected static bool TryToRestoreDamagedJsonFile(string filename, JObjectRestorationScheme scheme) {
+        public static bool TryToRestoreDamagedJsonFile(string filename, JObjectRestorationScheme scheme) {
             var data = File.ReadAllText(filename);
             var jObject = JsonExtension.TryToRestore(data, scheme);
             if (jObject == null) return false;
@@ -88,6 +61,43 @@ namespace AcManager.Tools.AcErrors {
             FileUtils.Recycle(filename);
             File.WriteAllText(filename, jObject.ToString());
             return true;
+        }
+
+        public static MultiSolution TryToCreateNewFile(AcJsonObjectNew target) {
+            if (target is ShowroomObject) {
+                return new MultiSolution(
+                    @"Create a new file",
+                    @"New file will be created containing name based on ID",
+                    e => {
+                        var jObject = new JObject {
+                            ["name"] = AcStringValues.NameFromId(e.Target.Id)
+                        };
+
+                        FileUtils.EnsureFileDirectoryExists(((AcJsonObjectNew)e.Target).JsonFilename);
+                        File.WriteAllText(((AcJsonObjectNew)e.Target).JsonFilename, jObject.ToString());
+                    });
+            }
+
+            if (target is CarSkinObject) {
+                return new MultiSolution(
+                    @"Create a new file",
+                    @"New file will be created containing name based on ID",
+                    e => {
+                        var jObject = new JObject {
+                            ["skinname"] = AcStringValues.NameFromId(e.Target.Id),
+                            ["drivername"] = "",
+                            ["country"] = "",
+                            ["team"] = "",
+                            ["number"] = "0",
+                            ["priority"] = 1
+                        };
+
+                        FileUtils.EnsureFileDirectoryExists(((AcJsonObjectNew)e.Target).JsonFilename);
+                        File.WriteAllText(((AcJsonObjectNew)e.Target).JsonFilename, jObject.ToString());
+                    });
+            }
+
+            return null;
         }
     }
 }

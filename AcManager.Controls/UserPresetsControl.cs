@@ -337,7 +337,7 @@ namespace AcManager.Controls {
                     GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.UserPresetableKey), MenuItem_Click, _presetable as IPreviewProvider)));
             
             _ignoreNext = true;
-            CurrentUserPreset = presets.FirstOrDefault(x => x.Filename == SelectedPresetFilename) ?? presets.FirstOrDefault();
+            CurrentUserPreset = presets.FirstOrDefault(x => x.Filename == SelectedPresetFilename); // ?? presets.FirstOrDefault();
             _ignoreNext = false;
         }
 

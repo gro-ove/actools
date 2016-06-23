@@ -56,6 +56,15 @@ namespace AcManager.Tools.Objects {
             _errors.Remove(ac.Errors);
         }
 
+        protected override void LoadOrThrow() {
+            base.LoadOrThrow();
+            CheckBrandBadge();
+        }
+
+        private void CheckBrandBadge() {
+            ErrorIf(!File.Exists(BrandBadge), AcErrorType.Car_BrandBadgeIsMissing);
+        }
+
         public override void PastLoad() {
             base.PastLoad();
             
@@ -115,6 +124,7 @@ namespace AcManager.Tools.Objects {
             if (FileUtils.IsAffected(filename, LogoIcon)) {
                 OnImageChanged(nameof(LogoIcon));
             } else if (FileUtils.IsAffected(filename, BrandBadge)) {
+                CheckBrandBadge();
                 OnImageChanged(nameof(BrandBadge));
             } else if (FileUtils.IsAffected(filename, UpgradeIcon)) {
                 OnImageChanged(nameof(UpgradeIcon));

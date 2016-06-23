@@ -36,6 +36,8 @@ namespace AcManager.Pages.Windows {
         private readonly string _testGameDialog = null;
 
         public MainWindow() {
+            Application.Current.MainWindow = this;
+
             _cancelled = false;
 
             if (AppArguments.Values.Any()) {
@@ -256,7 +258,7 @@ namespace AcManager.Pages.Windows {
             } else if (_openOnNext){
                 if (Popup.Child == null) {
                     Popup.Child = new QuickSwitchesBlock();
-                    AcSettingsHolder.Controls.PresetLoading += Controls_PresetLoading;
+                    AcSettingsHolder.ControlsPresetLoading += Controls_PresetLoading;
                 }
 
                 Popup.IsOpen = true;

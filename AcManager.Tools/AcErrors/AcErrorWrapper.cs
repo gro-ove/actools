@@ -14,7 +14,7 @@ namespace AcManager.Tools.AcErrors {
             Message = baseError.Message;
         }
 
-        public IAcObjectNew Target { get; }
+        public AcCommonObject Target { get; }
 
         public AcErrorCategory Category { get; }
 

@@ -5,7 +5,7 @@ namespace AcManager.Tools.AcErrors {
     public class AcErrorException : Exception {
         public readonly AcError AcError;
 
-        public AcErrorException(IAcObjectNew target, AcErrorType type, params object[] args) {
+        public AcErrorException(AcCommonObject target, AcErrorType type, params object[] args) {
             AcError = new AcError(target, type, args);
         }
     }

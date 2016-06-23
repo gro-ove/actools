@@ -20,9 +20,10 @@ namespace AcManager.Pages.Selected {
             }
 
             private RelayCommand _updatePreviewCommand;
+
             public RelayCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new RelayCommand(o => {
                 new CarUpdatePreviewsDialog(Car, new[] { SelectedObject.Id },
-                    SelectedCarPage.SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
+                        SelectedCarPage.SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             }, o => SelectedObject.Enabled));
 
             private RelayCommand _changeLiveryCommand;
@@ -30,6 +31,16 @@ namespace AcManager.Pages.Selected {
             public RelayCommand ChangeLiveryCommand => _changeLiveryCommand ?? (_changeLiveryCommand = new RelayCommand(o => {
                 new LiveryIconEditor(SelectedObject).ShowDialog();
             }));
+
+            private AsyncCommand _generateLiveryCommand;
+
+            public AsyncCommand GenerateLiveryCommand
+                => _generateLiveryCommand ?? (_generateLiveryCommand = new AsyncCommand(o => LiveryIconEditor.GenerateAsync(SelectedObject)));
+
+            private AsyncCommand _generateRandomLiveryCommand;
+
+            public AsyncCommand GenerateRandomLiveryCommand
+                => _generateRandomLiveryCommand ?? (_generateRandomLiveryCommand = new AsyncCommand(o => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));
         }
 
         private string _carId, _id;
@@ -76,7 +87,8 @@ namespace AcManager.Pages.Selected {
             InitializeAcObjectPage(_model = new SelectedCarSkinPageViewModel(_carObject, _object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
-                new InputBinding(_model.ChangeLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control))
+                new InputBinding(_model.GenerateLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(_model.GenerateRandomLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Alt))
             });
             InitializeComponent();
         }

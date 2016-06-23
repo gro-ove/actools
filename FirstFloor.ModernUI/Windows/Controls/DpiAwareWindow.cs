@@ -60,26 +60,35 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        private DpiAwareWindow _dimmedOwner;
+
+        private void DimOwner() {
+            _dimmedOwner = Owner as DpiAwareWindow;
+            if (_dimmedOwner?.IsDimmed == false) {
+                _dimmedOwner.IsDimmed = true;
+            } else {
+                _dimmedOwner = null;
+            }
+        }
+
+        private void UndimOwner() {
+            if (_dimmedOwner != null) {
+                _dimmedOwner.IsDimmed = false;
+                _dimmedOwner = null;
+            }
+        }
+
         public new void ShowDialog() {
-            var owner = Owner as DpiAwareWindow;
-            if (owner?.IsDimmed == true) {
-                owner = null;
-            }
+            DimOwner();
 
-            if (owner != null) {
-                owner.IsDimmed = true;
-            }
-
-            if (owner?.Visibility == Visibility.Hidden) {
+            if (Owner == null || Owner.Visibility == Visibility.Hidden) {
                 ShowInTaskbar = true;
             }
 
             try {
                 base.ShowDialog();
             } finally {
-                if (owner != null) {
-                    owner.IsDimmed = false;
-                }
+                UndimOwner();
             }
         }
 
@@ -114,6 +123,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         /// <param name="e"></param>
         protected override void OnClosed(EventArgs e) {
+            UndimOwner();
             base.OnClosed(e);
 
             // detach global event handlers
@@ -312,7 +322,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnLocationAndSizeKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((DpiAwareWindow)o).OnLocationAndSizeKeyChanged((string)e.OldValue, (string)e.NewValue);
+            ((DpiAwareWindow)o).OnLocationAndSizeKeyChanged();
         }
 
         private bool _skipLoading;
@@ -327,7 +337,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private void OnLocationAndSizeKeyChanged(string oldValue, string newValue) {
+        private void OnLocationAndSizeKeyChanged() {
             if (_skipLoading) return;
             LoadLocationAndSize();
         }

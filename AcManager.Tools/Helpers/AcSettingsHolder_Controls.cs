@@ -22,6 +22,9 @@ using Key = System.Windows.Input.Key;
 
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
+
+        public static event EventHandler ControlsPresetLoading;
+
         public class ControlsSettings : IniSettings, IDisposable {
             public IAcControlsConflictResolver ConflictResolver { get; set; }
 
@@ -328,10 +331,8 @@ namespace AcManager.Tools.Helpers {
                 base.Save();
             }
 
-            public event EventHandler PresetLoading;
-
             public void LoadPreset(string presetFilename) {
-                PresetLoading?.Invoke(this, EventArgs.Empty);
+                ControlsPresetLoading?.Invoke(this, EventArgs.Empty);
                 new IniFile(presetFilename) {
                     ["__LAUNCHER_CM"] = {
                         ["PRESET_NAME"] = presetFilename.SubstringExt(PresetsDirectory.Length + 1),
@@ -757,7 +758,7 @@ namespace AcManager.Tools.Helpers {
 
             protected override void LoadFromIni() {
                 if (Devices.Count == 0) {
-                    RescanDevices();
+                    // RescanDevices();
                 }
 
                 InputMethod = Ini["HEADER"].GetEntry("INPUT_METHOD", InputMethods);

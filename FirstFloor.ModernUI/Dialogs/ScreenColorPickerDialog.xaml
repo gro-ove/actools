@@ -32,7 +32,7 @@
         <EventTrigger SourceName="UpperPart" RoutedEvent="FrameworkElement.MouseEnter">
             <BeginStoryboard>
                 <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" BeginTime="0:0:0.4"
+                    <DoubleAnimation Storyboard.TargetName="TitleTextBlock" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" BeginTime="0:0:0.4"
                             FillBehavior="HoldEnd" />
                 </Storyboard>
             </BeginStoryboard>
@@ -40,7 +40,7 @@
         <EventTrigger SourceName="UpperPart" RoutedEvent="FrameworkElement.MouseLeave">
             <BeginStoryboard>
                 <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" BeginTime="0:0:0.4"
+                    <DoubleAnimation Storyboard.TargetName="TitleTextBlock" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" BeginTime="0:0:0.4"
                             FillBehavior="HoldEnd" />
                 </Storyboard>
             </BeginStoryboard>
@@ -48,7 +48,8 @@
     </controls:ModernDialog.Triggers>
     <Grid Cursor="{x:Static Cursors.Cross}">
         <Image x:Name="CapturedImage" RenderOptions.BitmapScalingMode="NearestNeighbor" />
-        <TextBlock x:Name="Title" Style="{StaticResource Heading1}" Background="#55000000" VerticalAlignment="Top" HorizontalAlignment="Center" Padding="20">
+        <TextBlock x:Name="TitleTextBlock" Style="{StaticResource Heading1}" Background="#55000000" VerticalAlignment="Top" HorizontalAlignment="Center"
+                Padding="20">
             Pick a color
         </TextBlock>
         <Border x:Name="UpperPart" Background="Transparent" VerticalAlignment="Top" Height="200" />

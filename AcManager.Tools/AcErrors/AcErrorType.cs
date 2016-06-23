@@ -85,6 +85,9 @@ namespace AcManager.Tools.AcErrors {
 
         [Description("Car’s parent is missing")]
         Car_ParentIsMissing,
+
+        [Description("Brand’s badge is missing")]
+        Car_BrandBadgeIsMissing,
         
 
         [Description("Skins are missing")]

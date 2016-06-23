@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
+using AcManager.Tools.AcErrors.Solutions;
 using AcManager.Tools.AcObjectsNew;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcErrors {
     public class AcError : NotifyPropertyChanged, IAcError {
-        public IAcObjectNew Target { get; }
+        public AcCommonObject Target { get; }
 
         public AcErrorCategory Category { get; }
 
@@ -19,7 +22,7 @@ namespace AcManager.Tools.AcErrors {
 
         public Exception BaseException { get; private set; }
 
-        public AcError(IAcObjectNew target, AcErrorType type, params object[] args) {
+        public AcError(AcCommonObject target, AcErrorType type, params object[] args) {
             Target = target;
             Type = type;
             Category = CategoryFromType(type);
@@ -56,16 +59,31 @@ namespace AcManager.Tools.AcErrors {
             return AcErrorCategory.Unspecific;
         }
 
-        private static IUiAcErrorFixer _uiAcErrorFixer;
+        #region Fixer
+        private static IAcErrorFixer _acErrorFixer;
 
-        public static void Register(IUiAcErrorFixer fixer) {
-            _uiAcErrorFixer = fixer;
+        public static void RegisterFixer(IAcErrorFixer fixer) {
+            _acErrorFixer = fixer;
         }
 
         private ICommand _startErrorFixerCommand;
 
         public ICommand StartErrorFixerCommand => _startErrorFixerCommand ?? (_startErrorFixerCommand = new RelayCommand(o => {
-            _uiAcErrorFixer?.Run((AcCommonObject)Target, this);
-        }, o => _uiAcErrorFixer != null));
+            _acErrorFixer?.Run(this);
+        }, o => _acErrorFixer != null));
+        #endregion
+
+        #region Solutions
+        private static ISolutionsFactory _factory;
+
+        public static void RegisterSolutionsFactory(ISolutionsFactory factory) {
+            _factory = factory;
+        }
+
+        [NotNull]
+        public IEnumerable<ISolution> GetSolutions() {
+            return _factory?.GetSolutions(this) ?? new ISolution[0];
+        }
+        #endregion
     }
 }

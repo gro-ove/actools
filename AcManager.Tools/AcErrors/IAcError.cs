@@ -4,7 +4,7 @@ using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Tools.AcErrors {
     public interface IAcError : INotifyPropertyChanged {
-        IAcObjectNew Target { get; }
+        AcCommonObject Target { get; }
 
         AcErrorCategory Category { get; }
 

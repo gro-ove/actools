@@ -14,7 +14,6 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
-using AcManager.Pages.Windows;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -323,8 +322,18 @@ namespace AcManager.Pages.Selected {
                     SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             contextMenu.Items.Add(item);
 
+            contextMenu.Items.Add(new Separator());
+
             item = new MenuItem { Header = "Change Livery" };
             item.Click += (sender, args) => new LiveryIconEditor(skin).ShowDialog();
+            contextMenu.Items.Add(item);
+
+            item = new MenuItem { Header = "Generate Livery", ToolTip = "Generate a new livery using last settings of Livery Editor" };
+            item.Click += (sender, args) => LiveryIconEditor.GenerateAsync(skin).Forget();
+            contextMenu.Items.Add(item);
+
+            item = new MenuItem { Header = "Generate Random Livery", ToolTip = "Generate a new livery using random settings" };
+            item.Click += (sender, args) => LiveryIconEditor.GenerateRandomAsync(skin).Forget();
             contextMenu.Items.Add(item);
 
             contextMenu.Items.Add(new Separator());

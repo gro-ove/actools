@@ -55,10 +55,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         private string DecodeBytes(byte[] bytes) {
             if (bytes[0] == LzfFlag) {
-                var w = Stopwatch.StartNew();
-                var result = Encoding.UTF8.GetString(LZF.Decompress(bytes, 1, bytes.Length - 1));
-                Logging.Write($"[ValuesStorage] Loading: {w.Elapsed.TotalMilliseconds:F2} ms");
-                return result;
+                return Encoding.UTF8.GetString(LZF.Decompress(bytes, 1, bytes.Length - 1));
             }
 
             var deflateMode = bytes[0] == DeflateFlag;
@@ -173,6 +170,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private void Load() {
+            var w = Stopwatch.StartNew();
             if (_filename == null || !File.Exists(_filename)) {
                 _storage.Clear();
                 return;
@@ -188,6 +186,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             OnPropertyChanged(nameof(Count));
+            Logging.Write($"[ValuesStorage] Loading: {w.Elapsed.TotalMilliseconds:F2} ms");
         }
 
         private const int ActualVersion = 2;

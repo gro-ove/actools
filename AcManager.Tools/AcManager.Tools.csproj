@@ -72,16 +72,22 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AcErrors\SolverBase.cs" />
+    <Compile Include="AcErrors\JObjectRestorationSchemeProvider.cs" />
+    <Compile Include="AcErrors\Solutions\AsyncMultiSolution.cs" />
+    <Compile Include="AcErrors\Solutions\AsyncSolution.cs" />
+    <Compile Include="AcErrors\Solutions\IMultiSolution.cs" />
+    <Compile Include="AcErrors\Solutions\ISolution.cs" />
+    <Compile Include="AcErrors\Solutions\MultiSolution.cs" />
+    <Compile Include="AcErrors\Solutions\SolutionBase.cs" />
+    <Compile Include="AcErrors\Solve.cs" />
     <Compile Include="AcErrors\AcErrorCategory.cs" />
     <Compile Include="AcErrors\AcErrorType.cs" />
     <Compile Include="AcErrors\AcErrorWrapper.cs" />
     <Compile Include="AcErrors\IAcError.cs" />
-    <Compile Include="AcErrors\ISolver.cs" />
-    <Compile Include="AcErrors\ISolversFactory.cs" />
-    <Compile Include="AcErrors\IUiAcErrorFixer.cs" />
+    <Compile Include="AcErrors\ISolutionsFactory.cs" />
+    <Compile Include="AcErrors\IAcErrorFixer.cs" />
     <Compile Include="AcErrors\SolvingException.cs" />
-    <Compile Include="AcErrors\Solution.cs" />
+    <Compile Include="AcErrors\Solutions\Solution.cs" />
     <Compile Include="AcManagersNew\AcItemWrapper.cs" />
     <Compile Include="AcManagersNew\AcManagerFileSpecific.cs" />
     <Compile Include="AcManagersNew\AsyncScanAcManager.cs" />
@@ -253,7 +259,6 @@
     <Compile Include="Lists\AcWrapperCollectionView.cs" />
     <Compile Include="Lists\AsyncObservableCollection.cs" />
     <Compile Include="Lists\AutocompleteValuesList.cs" />
-    <Compile Include="AcErrors\SolversManager.cs" />
     <Compile Include="Lists\BetterListCollectionView.cs" />
     <Compile Include="Lists\BetterObservableCollection.cs" />
     <Compile Include="Managers\Directories\AcDirectories.cs" />

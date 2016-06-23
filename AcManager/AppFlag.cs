@@ -18,6 +18,12 @@ namespace AcManager {
         IdealFormattingMode,
 
         /// <summary>
+        /// Disables loading and saving, only for debugging purposes.
+        /// Example: --disable-saving.
+        /// </summary>
+        DisableSaving,
+
+        /// <summary>
         /// Disables logging.
         /// Example: --disable-logging.
         /// </summary>

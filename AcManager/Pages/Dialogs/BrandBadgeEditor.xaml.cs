@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Annotations;
-using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Objects;
@@ -64,7 +63,7 @@ namespace AcManager.Pages.Dialogs {
 
                 File.Copy(Selected.Filename, Car.BrandBadge);
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t change brand badge.", "Make sure car’s brand badge file is available to write.", ex);
+                NonfatalError.Notify(@"Can’t change brand’s badge.", "Make sure brand’s badge file is available to write.", ex);
             }
         }
 
@@ -80,7 +79,10 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void SelectFile() {
-            var dialog = new OpenFileDialog { Filter = FileDialogFilters.ImagesFilter, Title = "Select New Brand Badge" };
+            var dialog = new OpenFileDialog {
+                Filter = FileDialogFilters.ImagesFilter,
+                Title = "Select New Brand’s Badge"
+            };
             if (dialog.ShowDialog() == true) {
                 ApplyFile(dialog.FileName);
             }
@@ -103,7 +105,7 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            var saveAs = Controls.Pages.Dialogs.Prompt.Show(@"Add as:", @"Add into the library?", Path.GetFileNameWithoutExtension(filename));
+            var saveAs = Controls.Pages.Dialogs.Prompt.Show(@"Add as:", @"Add this file to the library?", Path.GetFileNameWithoutExtension(filename));
             if (saveAs == null) return;
 
             try {

@@ -246,11 +246,7 @@
     <Compile Include="Pages\Settings\SettingsQuickSwitches.xaml.cs">
       <DependentUpon>SettingsQuickSwitches.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\AcErrors\Solver\CarSetupSolvers.cs" />
-    <Compile Include="Tools\AcErrors\Solver\DataSolvers.cs" />
-    <Compile Include="Tools\AcErrors\Solver\FontSolvers.cs" />
-    <Compile Include="Tools\AcErrors\Solver\JObjectRestorationSchemeProvider.cs" />
-    <Compile Include="Tools\AcErrors\Solver\ShowroomSolvers.cs" />
+    <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
     <Compile Include="Tools\TextEditing\IniFoldingStrategy.cs" />
@@ -286,7 +282,6 @@
     </Compile>
     <Compile Include="Tools\About\AboutHelper.cs" />
     <Compile Include="Tools\About\PieceOfInformation.cs" />
-    <Compile Include="Tools\AcErrors\Solver\CarSkinSolvers.cs" />
     <Compile Include="Tools\NonfatalErrorNotifier.cs" />
     <Compile Include="Tools\GameWrapperUiFactory.cs" />
     <Compile Include="Pages\Dialogs\AssistsDialog.xaml.cs">
@@ -346,11 +341,9 @@
     <Compile Include="Pages\Settings\SettingsOnline.xaml.cs">
       <DependentUpon>SettingsOnline.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\AcErrors\Solver\CarSolvers.cs" />
-    <Compile Include="Tools\AcErrors\UiSolversFactory.cs" />
+    <Compile Include="Tools\AcErrors\SolutionsFactory.cs" />
     <Compile Include="Tools\TextEditing\TextEditorExtension.cs" />
     <Compile Include="Tools\UriProvider.cs" />
-    <Compile Include="Tools\AcErrors\UiAcErrorFixer.cs" />
     <Compile Include="Tools\ArgumentsHandler.cs" />
     <Page Include="Assets\Livery\Numbers\Light.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -361,6 +354,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\Livery\Numbers\Condensed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\Livery\Shapes\DiagonalLineWithCircle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

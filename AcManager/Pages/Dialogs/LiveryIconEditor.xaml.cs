@@ -45,6 +45,7 @@ namespace AcManager.Pages.Dialogs {
             new SettingEntry("HorizontalStripes", "Horizontal Stripes"),
             new SettingEntry("Circle", "Circle"),
             new SettingEntry("DiagonalWithCircle", "Diagonal with Circle"),
+            new SettingEntry("DiagonalLineWithCircle", "Diagonal line with Circle"),
             new SettingEntry("Carbon", "Carbon")
         };
 
@@ -152,7 +153,7 @@ namespace AcManager.Pages.Dialogs {
                     LoadProperties(obj, false);
                     obj.DataContext = Model;
                     Model.ShapeObject = obj;
-                    ValuesStorage.Set(KeyShape, value.Id);
+                    if (!_quickMode) ValuesStorage.Set(KeyShape, value.Id);
                 } catch (Exception e) {
                     Logging.Warning("[LiveryIconEditor] Can’t change shape: " + e);
                 }
@@ -173,7 +174,7 @@ namespace AcManager.Pages.Dialogs {
                         var obj = (FrameworkElement)Application.LoadComponent(new Uri($"/Assets/Livery/Numbers/{value.Id}.xaml", UriKind.Relative));
                         obj.DataContext = Model;
                         Model.NumbersObject = obj;
-                        ValuesStorage.Set(KeyNumbers, value.Id);
+                        if (!_quickMode) ValuesStorage.Set(KeyNumbers, value.Id);
                     } else {
                         Model.NumbersObject = null;
                     }
@@ -197,7 +198,7 @@ namespace AcManager.Pages.Dialogs {
                     LoadProperties(StyleObject, true);
                     StyleObject.DataContext = Model;
                     OnPropertyChanged(nameof(StyleObject));
-                    ValuesStorage.Set(KeyStyle, value.Id);
+                    if (!_quickMode) ValuesStorage.Set(KeyStyle, value.Id);
                 } catch (Exception e) {
                     Logging.Warning("[LiveryIconEditor] Can’t change style: " + e);
                 }
@@ -206,17 +207,27 @@ namespace AcManager.Pages.Dialogs {
 
         public FrameworkElement StyleObject { get; private set; }
 
-        public LiveryIconEditor(CarSkinObject skin) {
+        public LiveryIconEditor(CarSkinObject skin) : this (skin, false, false){ }
+
+        private readonly bool _quickMode;
+
+        private LiveryIconEditor(CarSkinObject skin, bool quickMode, bool randomMode) {
+            _quickMode = quickMode;
             Skin = skin;
 
             DataContext = this;
             InitializeComponent();
 
-            Buttons = new[] { OkButton, CancelButton };
             SelectedStyle = Styles.GetByIdOrDefault(ValuesStorage.GetString(KeyStyle)) ?? Styles.FirstOrDefault();
-            SelectedShape = Shapes.GetByIdOrDefault(ValuesStorage.GetString(KeyShape)) ?? Shapes.FirstOrDefault();
             SelectedNumbers = string.IsNullOrWhiteSpace(skin.SkinNumber) || skin.SkinNumber == "0"
                     ? Numbers.FirstOrDefault() : Numbers.GetByIdOrDefault(ValuesStorage.GetString(KeyNumbers)) ?? Numbers.FirstOrDefault();
+            if (randomMode) {
+                SelectedShape = Shapes.RandomElement();
+            } else {
+                SelectedShape = Shapes.GetByIdOrDefault(ValuesStorage.GetString(KeyShape)) ?? Shapes.FirstOrDefault();
+            }
+
+            Buttons = new[] { OkButton, CancelButton };
             Model.Value = string.IsNullOrWhiteSpace(skin.SkinNumber) ? "0" : skin.SkinNumber;
             Model.TextColorValue = Colors.White;
 
@@ -429,7 +440,11 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public static async Task GenerateAsync(CarSkinObject target) {
-            await new LiveryIconEditor(target).CreateNewIcon();
+            await new LiveryIconEditor(target, true, false).CreateNewIcon();
+        }
+
+        public static async Task GenerateRandomAsync(CarSkinObject target) {
+            await new LiveryIconEditor(target, true, true).CreateNewIcon();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

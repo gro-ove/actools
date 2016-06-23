@@ -3,7 +3,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 
-namespace AcManager.Tools.AcErrors.Solver {
+namespace AcManager.Tools.AcErrors {
     public static class JObjectRestorationSchemeProvider {
         public static JObjectRestorationScheme GetScheme(AcJsonObjectNew target) {
             if (target is ShowroomObject) {

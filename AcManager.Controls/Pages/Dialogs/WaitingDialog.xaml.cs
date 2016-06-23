@@ -51,6 +51,17 @@ namespace AcManager.Controls.Pages.Dialogs {
             }
         }
 
+        private bool _isCancelled;
+
+        public bool IsCancelled {
+            get { return _isCancelled; }
+            set {
+                if (Equals(value, _isCancelled)) return;
+                _isCancelled = value;
+                OnPropertyChanged();
+            }
+        }
+
         public WaitingDialog(string title = null) {
             Title = title;
             DataContext = this;
@@ -78,7 +89,10 @@ namespace AcManager.Controls.Pages.Dialogs {
         }
 
         private void WaitingDialog_Closing(object sender, CancelEventArgs e) {
-            _cancellationTokenSource?.Cancel();
+            if (_cancellationTokenSource != null) {
+                _cancellationTokenSource.Cancel();
+                IsCancelled = true;
+            }
         }
 
         private bool _loaded;
@@ -95,22 +109,23 @@ namespace AcManager.Controls.Pages.Dialogs {
             if (_disposed) return;
 
             _loaded = true;
-            if (!IsVisible && !_shown) {
-                _shown = true;
+            if (IsVisible || _shown) return;
 
-                await Task.Delay(500);
+            _shown = true;
+
+            // ReSharper disable once MethodSupportsCancellation
+            await Task.Delay(500);
+            if (_closed || _disposed) return;
+
+            await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
                 if (_closed || _disposed) return;
 
-                await Application.Current.Dispatcher.BeginInvoke((Action)(() => {
-                    if (_closed || _disposed) return;
-
-                    try {
-                        ShowDialog();
-                    } catch (InvalidOperationException) {
-                        Logging.Warning("Damn…");
-                    }
-                }));
-            }
+                try {
+                    ShowDialog();
+                } catch (InvalidOperationException) {
+                    Logging.Warning("Damn…");
+                }
+            }));
         }
 
         private void EnsureClosed() {

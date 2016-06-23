@@ -636,6 +636,7 @@ todo:
         - testing
         - light direction
         - additional surface?
+    - automatically update TrackObject in CarSetupObject (added, deleted)
 
     - screenshots tab
 
