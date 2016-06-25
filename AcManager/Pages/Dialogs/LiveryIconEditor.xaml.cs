@@ -46,7 +46,12 @@ namespace AcManager.Pages.Dialogs {
             new SettingEntry("Circle", "Circle"),
             new SettingEntry("DiagonalWithCircle", "Diagonal with Circle"),
             new SettingEntry("DiagonalLineWithCircle", "Diagonal line with Circle"),
-            new SettingEntry("Carbon", "Carbon")
+            new SettingEntry("Carbon", "Carbon"),
+            new SettingEntry("Carbon", "Carbon"),
+            new SettingEntry("HorizontalSplit", "Horizontal Split"),
+            new SettingEntry("VerticalSplit", "Vertical Split"),
+            new SettingEntry("TripleHorizontalSplit", "Triple Horizontal Split"),
+            new SettingEntry("TripleVerticalSplit", "Triple Vertical Split"),
         };
 
         public SettingEntry[] Styles { get; } = {
@@ -55,6 +60,7 @@ namespace AcManager.Pages.Dialogs {
             new SettingEntry("Gloss", "Gloss"),
             new SettingEntry("Metallic", "Metallic"),
             new SettingEntry("Miura", "Miura"),
+            new SettingEntry("Tesla", "Tesla"),
         };
 
         public CarSkinObject Skin { get; set; }

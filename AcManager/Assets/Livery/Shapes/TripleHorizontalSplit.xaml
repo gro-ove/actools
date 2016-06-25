@@ -1,0 +1,5 @@
+﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Tag="Colors=2" Width="64" Height="64">
+    <Rectangle Fill="{Binding Color}" />
+    <Rectangle Fill="{Binding SecondaryColor}" Height="32" VerticalAlignment="Bottom" />
+    <Rectangle Fill="{Binding TertiaryColor}" Height="16" VerticalAlignment="Bottom" />
+</Grid>

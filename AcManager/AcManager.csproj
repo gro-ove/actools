@@ -357,6 +357,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\Livery\Shapes\TripleHorizontalSplit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\Livery\Shapes\HorizontalSplit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\Livery\Shapes\TripleVerticalSplit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\Livery\Shapes\VerticalSplit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Livery\Shapes\DiagonalLineWithCircle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -402,6 +418,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\Livery\Styles\Gloss.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\Livery\Styles\Tesla.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1139,6 +1159,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Livery\Shapes\Carbon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Livery\Styles\Tesla.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
