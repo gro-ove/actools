@@ -45,7 +45,7 @@
                         <ControlTemplate TargetType="ac:AcObjectHeaderSection">
                             <StackPanel Orientation="Horizontal">
                                 <mui:BetterImage x:Name="PART_IconImage" RenderOptions.BitmapScalingMode="HighQuality" Width="24" Height="24" Margin="0 0 4 0"
-                                        FillSpace="True" DelayedCreation="True" Filename="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        Filename="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" />
                                 <TextBox Style="{StaticResource TextBoxAsTextBlock.Heading2}" Padding="1 0 1 0"
                                         attached:FocusAdvancement.AdvancesByEnterKey="True"
                                         Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"

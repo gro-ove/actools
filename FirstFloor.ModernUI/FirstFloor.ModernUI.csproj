@@ -144,7 +144,6 @@
     <Compile Include="Windows\CommandDictionary.cs" />
     <Compile Include="Windows\Controls\AlignableWrapPanel.cs" />
     <Compile Include="Windows\Controls\BbCodeImageEventArgs.cs" />
-    <Compile Include="Windows\Controls\Temp.cs" />
     <Compile Include="Windows\Controls\BetterImage.cs" />
     <Compile Include="Windows\Controls\ButtonWithComboBox.cs" />
     <Compile Include="Windows\Controls\ColorPicker.cs" />

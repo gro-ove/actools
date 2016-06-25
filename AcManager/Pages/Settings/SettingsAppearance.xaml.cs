@@ -20,12 +20,12 @@ namespace AcManager.Pages.Settings {
             public AppAppearanceManager AppAppearanceManager => AppAppearanceManager.Instance;
 
             internal AppearanceViewModel() {
+                BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
+                TextFormatting = AppAppearanceManager.IdealFormattingMode ? TextFormattings[1] : TextFormattings[0];
+
                 if (!_originalScalingMode.HasValue) {
                     _originalScalingMode = BitmapScaling.Value;
                 }
-
-                BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
-                TextFormatting = AppAppearanceManager.IdealFormattingMode ? TextFormattings[1] : TextFormattings[0];
             }
 
             public class BitmapScalingEntry : Displayable {
@@ -58,7 +58,7 @@ namespace AcManager.Pages.Settings {
                     _bitmapScaling = value;
                     OnPropertyChanged();
 
-                    if (value != null) {
+                    if (_originalScalingMode.HasValue && value != null) {
                         AppAppearanceManager.BitmapScalingMode = value.Value;
                         BitmapScalingRestartRequired = value.Value != _originalScalingMode;
                     }

@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
-                  xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
+        xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{Binding SelectedCar.DisplayName}" IconSource="{Binding SelectedCar.LogoIcon}" Loaded="SelectAndSetupCarDialog_OnLoaded"
         Unloaded="SelectAndSetupCarDialog_OnUnloaded" d:DataContext="{d:DesignInstance dialogs:SelectCarDialog}" SizeToContent="Manual"
@@ -41,7 +41,7 @@
                                             <ScrollViewer Name="DropDownScrollViewer">
                                                 <Grid RenderOptions.ClearTypeHint="Enabled">
                                                     <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                        <Rectangle Name="OpaqueRect" Height="{Binding ElementName=DropDownBorder,Path=ActualHeight}"
+                                                        <Rectangle Name="OpaqueRect" Height="{Binding ElementName=DropDownBorder, Path=ActualHeight}"
                                                                 Width="{Binding ElementName=DropDownBorder,Path=ActualWidth}"
                                                                 Fill="{Binding ElementName=DropDownBorder,Path=Background}" />
                                                     </Canvas>
@@ -58,7 +58,6 @@
                                 <Path Name="Arrow" Grid.Column="0" Grid.ColumnSpan="2" Margin="3,1,8,0" Fill="{TemplateBinding Foreground}"
                                         Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                         IsHitTestVisible="False" Visibility="Collapsed" />
-
                                 <ContentPresenter IsHitTestVisible="false" Margin="{TemplateBinding Padding}" Content="{TemplateBinding SelectionBoxItem}"
                                         ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                         ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"

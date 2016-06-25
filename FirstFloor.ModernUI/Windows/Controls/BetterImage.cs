@@ -35,14 +35,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(ShowBrokenProperty, value); }
         }
 
-        public static readonly DependencyProperty FillSpaceProperty = DependencyProperty.Register(nameof(FillSpace), typeof(bool),
-                typeof(BetterImage));
-
-        public bool FillSpace {
-            get { return (bool)GetValue(FillSpaceProperty); }
-            set { SetValue(FillSpaceProperty, value); }
-        }
-
         public static readonly DependencyProperty ClearOnChangeProperty = DependencyProperty.Register(nameof(ClearOnChange), typeof(bool),
                 typeof(BetterImage));
 
@@ -184,7 +176,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
 
                 return new BitmapEntry(bi, width, height);
-            } catch (Exception) {
+            } catch (Exception e) {
+                Logging.Warning("[BetterImage] Loading failed: " + e);
                 return new BitmapEntry();
             }
         }
@@ -203,8 +196,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return new BitmapEntry();
             }
 
+            byte[] data;
             try {
-                var data = await ReadAllBytesAsync(filename);
+                data = await ReadAllBytesAsync(filename);
+            } catch (Exception) {
+                return new BitmapEntry();
+            }
+
+            try {
                 using (var stream = new WrappingStream(new MemoryStream(data))) {
                     int width = 0, height = 0;
 
@@ -236,7 +235,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     return new BitmapEntry(bi, width, height);
                 }
-            } catch (Exception) {
+            } catch (Exception e) {
+                Logging.Warning("[BetterImage] Loading failed: " + e);
                 return new BitmapEntry();
             }
         }
@@ -310,30 +310,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Colors.Transparent);
 
         protected override Size MeasureOverride(Size constraint) {
-            if (FillSpace) {
-                _size = MeasureArrangeHelper(constraint);
-                return new Size(double.IsPositiveInfinity(constraint.Width) ? _size.Width : constraint.Width,
-                        double.IsPositiveInfinity(constraint.Height) ? _size.Height : constraint.Height);
-            }
-
-            return MeasureArrangeHelper(constraint);
+            if (Stretch == Stretch.None) return MeasureArrangeHelper(constraint);
+            _size = MeasureArrangeHelper(constraint);
+            return new Size(double.IsPositiveInfinity(constraint.Width) ? _size.Width : constraint.Width,
+                    double.IsPositiveInfinity(constraint.Height) ? _size.Height : constraint.Height);
         }
 
         protected override Size ArrangeOverride(Size arrangeSize) {
-            if (FillSpace) {
-                _size = MeasureArrangeHelper(arrangeSize);
-                _offset = new Point((arrangeSize.Width - _size.Width) / 2d, (arrangeSize.Height - _size.Height) / 2d);
-                return new Size(double.IsPositiveInfinity(arrangeSize.Width) ? _size.Width : arrangeSize.Width,
-                        double.IsPositiveInfinity(arrangeSize.Height) ? _size.Height : arrangeSize.Height);
-            }
-
-            return MeasureArrangeHelper(arrangeSize);
+            if (Stretch == Stretch.None) return MeasureArrangeHelper(arrangeSize);
+            _size = MeasureArrangeHelper(arrangeSize);
+            _offset = new Point((arrangeSize.Width - _size.Width) / 2d, (arrangeSize.Height - _size.Height) / 2d);
+            return new Size(double.IsPositiveInfinity(arrangeSize.Width) ? _size.Width : arrangeSize.Width,
+                    double.IsPositiveInfinity(arrangeSize.Height) ? _size.Height : arrangeSize.Height);
         }
 
         protected override void OnRender(DrawingContext dc) {
             if (!_loaded) ReloadImage();
 
-            if (FillSpace) {
+            if (Stretch != Stretch.None) {
                 dc.DrawRectangle(TransparentBrush, null, new Rect(new Point(), RenderSize));
                 if (_current.BitmapSource != null) {
                     dc.DrawImage(_current.BitmapSource, new Rect(_offset, _size));

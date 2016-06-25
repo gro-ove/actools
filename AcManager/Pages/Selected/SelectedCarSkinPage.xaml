@@ -40,8 +40,7 @@
 
         <StackPanel>
             <mui:BetterImage Margin="0 0 0 12" Filename="{Binding SelectedObject.PreviewImage}"
-                    services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" 
-                             MaxHeight="575" MaxWidth="1022" FillSpace="True"
+                    services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" services:ImageViewerService.MaxWidth="1022" MaxWidth="1022"
                     Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
 
             <!-- data section -->

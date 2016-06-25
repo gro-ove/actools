@@ -152,11 +152,8 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Image Source="{Binding OriginalImage, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='1022×'}"
-                        Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" Margin="0" MouseDown="OriginalPreview_OnMouseDown" />
-
-                <Image Source="{Binding UpdatedImage, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='1022×'}"
-                        Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" Margin="0" Grid.Column="2" MouseDown="UpdatedPreview_OnMouseDown" />
+                <mui:BetterImage Filename="{Binding OriginalImage}" MaxWidth="1022" MouseDown="OriginalPreview_OnMouseDown" />
+                <mui:BetterImage Source="{Binding UpdatedImage}" MaxWidth="1022" Grid.Column="2" MouseDown="UpdatedPreview_OnMouseDown" />
             </Grid>
 
             <TextBlock Text="{Binding TakenTime, StringFormat='Taken time: \{0:mm\\:ss\}'}" Margin="0 8 0 0" Style="{StaticResource Small}" />

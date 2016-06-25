@@ -1,9 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Dialogs.SelectAndSetupCarDialog_Brands" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
-             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-             mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" Loaded="SelectAndSetupCarDialog_Brands_OnLoaded" d:DataContext="{d:DesignInstance dialogs:SelectAndSetupCarDialog_Brands}">
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Loaded="SelectAndSetupCarDialog_Brands_OnLoaded" d:DataContext="{d:DesignInstance dialogs:SelectAndSetupCarDialog_Brands}">
     <ListBox ItemsSource="{Binding Brands}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="BrandsListBox"
             PreviewKeyDown="BrandsListBox_OnPreviewKeyDown" ScrollViewer.CanContentScroll="True">
         <ListBox.ItemsPanel>
@@ -15,8 +14,7 @@
         <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type dialogs:SelectAndSetupCarDialog_Brands+CarBrandInformation}">
                 <Grid Width="72" Height="72" PreviewMouseLeftButtonDown="ListItem_OnPreviewMouseLeftButtonDown" Background="Transparent">
-                    <Image RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="{Binding Icon, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='72×'}" Margin="8 8 8 24" />
+                    <mui:BetterImage Filename="{Binding Icon}" Margin="8 8 8 24" DecodeHeight="40" ClearOnChange="True" />
                     <TextBlock Style="{StaticResource LabelWithPadding}" HorizontalAlignment="Center" Text="{Binding Name}" Margin="4" Padding="0"
                             VerticalAlignment="Bottom" />
                 </Grid>

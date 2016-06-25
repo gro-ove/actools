@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.Pages.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.Services {
     public static class ImageViewerService {
@@ -49,9 +50,7 @@ namespace AcManager.Controls.Services {
 
         private static void Control_MouseDown(object sender, MouseEventArgs e) {
             var d = (DependencyObject)sender;
-            var w = GetMaxWidth(d);
-            var h = GetMaxHeight(d);
-            new ImageViewer(new[] { GetImage(d) }, double.IsPositiveInfinity(w) ? -1 : (int)w, double.IsPositiveInfinity(h) ? -1 : (int)h).ShowDialog();
+            new ImageViewer(GetImage(d), GetMaxWidth(d), GetMaxHeight(d)).ShowDialog();
         }
     }
 }

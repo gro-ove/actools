@@ -28,6 +28,7 @@ namespace AcManager.Tools.Objects {
 
         public TrackObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
+            InitializeLocationsOnce();
             try {
                 var list = GetMultiLayouts();
                 if (IsInMultiLayoutsMode(list)) {

@@ -20,18 +20,15 @@ namespace AcManager.Controls.Pages.Dialogs {
     public partial class ImageViewer {
         public ImageViewer(ImageSource imageSource) : this(new[] { imageSource }) { }
 
-        public ImageViewer(string image, int maxWidth = -1, int maxHeight = -1) : this(new[] { image }, maxWidth, maxHeight) { }
+        public ImageViewer(string image, double maxWidth = double.MaxValue, double maxHeight = double.MaxValue) : this(new[] { image }, 0, maxWidth, maxHeight) { }
 
-        public ImageViewer(IEnumerable<object> images, int position = 0, int maxWidth = -1, int maxHeight = -1) {
-            var model = new ImageViewerViewModel(images, position);
-            DataContext = model;
+        public ImageViewer(IEnumerable<object> images, int position = 0, double maxWidth = double.MaxValue, double maxHeight = double.MaxValue) {
+            DataContext = new ImageViewerViewModel(images, position) {
+                MaxImageWidth = maxWidth,
+                MaxImageHeight = maxHeight
+            };
             InitializeComponent();
             Buttons = new Button[] { };
-
-            if (maxWidth > 0) {
-                model.MaxImageWidth = maxWidth;
-                model.MaxImageHeight = maxHeight;
-            }
         }
 
         private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {

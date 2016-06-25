@@ -67,7 +67,7 @@
         </Style>
     </mui:ModernDialog.Style>
     <Grid d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}" Name="Wrapper">
-        <mui:BetterImage x:Name="Image" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="{Binding MaxImageWidth}"
-                MaxHeight="{Binding MaxImageHeight}" Source="{Binding CurrentImage}" />
+        <mui:BetterImage x:Name="Image" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" StretchDirection="DownOnly"
+                MaxWidth="{Binding MaxImageWidth}" MaxHeight="{Binding MaxImageHeight}" Source="{Binding CurrentImage}" />
     </Grid>
 </mui:ModernDialog>

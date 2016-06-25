@@ -281,7 +281,7 @@ namespace AcManager.Pages.Selected {
                 new ImageViewer(
                         from skin in _model.SelectedObject.Skins where skin.Enabled select skin.PreviewImage,
                         _model.SelectedObject.Skins.Where(x => x.Enabled).IndexOf(_model.SelectedObject.SelectedSkin),
-                        1022, 575).ShowDialog();
+                        1022).ShowDialog();
             }
         }
 
