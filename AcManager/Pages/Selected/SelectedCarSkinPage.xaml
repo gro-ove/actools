@@ -7,7 +7,7 @@
         d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarSkinPage+SelectedCarSkinPageViewModel}">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_OnIconMouseDown"
-            Icon="{Binding SelectedObject.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='24×'}">
+            Icon="{Binding SelectedObject.LiveryImage}">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" Command="{Binding SelectedObject.ViewInExplorerCommand}">
@@ -39,10 +39,10 @@
         </ac:AcObjectBase.ToolBars>
 
         <StackPanel>
-            <Image Margin="0 0 0 12" RenderOptions.BitmapScalingMode="LowQuality"
-                    Source="{Binding SelectedObject.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
-                    services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1022" MaxHeight="575"
-                    Visibility="{Binding SelectedObject.PreviewImage, Converter={StaticResource ExistToVisibilityConverter}}" />
+            <mui:BetterImage Margin="0 0 0 12" Filename="{Binding SelectedObject.PreviewImage}"
+                    services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" 
+                             MaxHeight="575" MaxWidth="1022" FillSpace="True"
+                    Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
 
             <!-- data section -->
             <StackPanel Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedObject}">

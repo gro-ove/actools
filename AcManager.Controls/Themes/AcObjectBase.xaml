@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-                    xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools">
+        xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
@@ -17,18 +17,15 @@
                             <RowDefinition />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        
                         <ac:AcObjectHeaderSection AcObject="{TemplateBinding AcObject}" ShowIcon="{TemplateBinding ShowIcon}" Icon="{TemplateBinding Icon}"
-                                x:Name="PART_Header" />
-
+                                IconSource="{TemplateBinding IconSource}" x:Name="PART_Header" />
                         <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" Margin="-8 8 -8 0">
                             <StackPanel MinWidth="500" Margin="0 0 0 40">
                                 <ac:AcObjectErrorsSection AcObject="{TemplateBinding AcObject}" />
                                 <ContentPresenter Margin="0 4 0 0" Content="{TemplateBinding Content}" />
                             </StackPanel>
                         </ScrollViewer>
-
-                        <ac:AcToolBar Grid.Row="2" x:Name="PART_ToolBar" ToolBars="{TemplateBinding ToolBars}"/>
+                        <ac:AcToolBar Grid.Row="2" x:Name="PART_ToolBar" ToolBars="{TemplateBinding ToolBars}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -39,8 +36,8 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ac:AcObjectBase">
                             <Grid>
-                                <TextBlock Margin="20" FontSize="30" Foreground="Red" Text="OUTDATED!" 
-                                           ToolTip="You weren't supposed to see this, something's gone terribly wrong" />
+                                <TextBlock Margin="20" FontSize="30" Foreground="Red" Text="OUTDATED!"
+                                        ToolTip="You weren't supposed to see this, something's gone terribly wrong" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>

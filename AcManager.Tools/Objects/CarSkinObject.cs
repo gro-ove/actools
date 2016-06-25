@@ -52,8 +52,8 @@ namespace AcManager.Tools.Objects {
 
         public override void Reload() {
             base.Reload();
-            OnImageChanged(nameof(PreviewImage));
-            OnImageChanged(nameof(LiveryImage));
+            OnImageChangedValue(PreviewImage);
+            OnImageChangedValue(LiveryImage);
         }
 
         public override bool HandleChangedFile(string filename) {
@@ -62,13 +62,13 @@ namespace AcManager.Tools.Objects {
             }
 
             if (FileUtils.IsAffected(filename, PreviewImage)) {
-                OnImageChanged(nameof(PreviewImage));
+                OnImageChangedValue(PreviewImage);
                 CheckPreview();
                 return true;
             }
 
             if (FileUtils.IsAffected(filename, LiveryImage)) {
-                OnImageChanged(nameof(LiveryImage));
+                OnImageChangedValue(LiveryImage);
                 CheckLivery();
                 return true;
             }
@@ -78,9 +78,16 @@ namespace AcManager.Tools.Objects {
 
         public override string DisplayName => string.IsNullOrWhiteSpace(Name) ? Id : Name;
 
-        public string LiveryImage => Path.Combine(Location, "livery.png");
+        protected override void InitializeLocations() {
+            base.InitializeLocations();
+            JsonFilename = Path.Combine(Location, "ui_skin.json");
+            LiveryImage = Path.Combine(Location, "livery.png");
+            PreviewImage = Path.Combine(Location, "preview.jpg");
+        }
 
-        public string PreviewImage => Path.Combine(Location, "preview.jpg");
+        public string LiveryImage { get; private set; }
+
+        public string PreviewImage { get; private set; }
 
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
@@ -95,8 +102,6 @@ namespace AcManager.Tools.Objects {
         private void CheckPreview() {
             ErrorIf(!File.Exists(PreviewImage), AcErrorType.CarSkin_PreviewIsMissing, Id);
         }
-
-        public override string JsonFilename => Path.Combine(Location, "ui_skin.json");
 
         private string _driverName;
 

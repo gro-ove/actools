@@ -218,14 +218,14 @@ namespace AcManager.Pages.Dialogs {
             DataContext = this;
             InitializeComponent();
 
-            SelectedStyle = Styles.GetByIdOrDefault(ValuesStorage.GetString(KeyStyle)) ?? Styles.FirstOrDefault();
-            SelectedNumbers = string.IsNullOrWhiteSpace(skin.SkinNumber) || skin.SkinNumber == "0"
-                    ? Numbers.FirstOrDefault() : Numbers.GetByIdOrDefault(ValuesStorage.GetString(KeyNumbers)) ?? Numbers.FirstOrDefault();
             if (randomMode) {
                 SelectedShape = Shapes.RandomElement();
             } else {
                 SelectedShape = Shapes.GetByIdOrDefault(ValuesStorage.GetString(KeyShape)) ?? Shapes.FirstOrDefault();
             }
+            SelectedStyle = Styles.GetByIdOrDefault(ValuesStorage.GetString(KeyStyle)) ?? Styles.FirstOrDefault();
+            SelectedNumbers = string.IsNullOrWhiteSpace(skin.SkinNumber) || skin.SkinNumber == "0"
+                    ? Numbers.FirstOrDefault() : Numbers.GetByIdOrDefault(ValuesStorage.GetString(KeyNumbers)) ?? Numbers.FirstOrDefault();
 
             Buttons = new[] { OkButton, CancelButton };
             Model.Value = string.IsNullOrWhiteSpace(skin.SkinNumber) ? "0" : skin.SkinNumber;

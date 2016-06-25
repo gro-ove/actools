@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Controls.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="{Binding CurrentImageName}" MouseDown="ImageViewer_OnMouseDown" KeyUp="ImageViewer_OnKeyUp" Loaded="ImageViewer_OnLoaded"
+        Title="{Binding CurrentImageName}" MouseDown="ImageViewer_OnMouseDown" KeyDown="ImageViewer_OnKeyDown" KeyUp="ImageViewer_OnKeyUp" Loaded="ImageViewer_OnLoaded"
         d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
@@ -66,9 +66,8 @@
             </Setter>
         </Style>
     </mui:ModernDialog.Style>
-
     <Grid d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}" Name="Wrapper">
-        <Image x:Name="Image" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="{Binding MaxImageWidth}"
-                MaxHeight="{Binding MaxImageHeight}" />
+        <mui:BetterImage x:Name="Image" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="{Binding MaxImageWidth}"
+                MaxHeight="{Binding MaxImageHeight}" Source="{Binding CurrentImage}" />
     </Grid>
 </mui:ModernDialog>

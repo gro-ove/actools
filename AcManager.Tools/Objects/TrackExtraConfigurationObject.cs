@@ -5,15 +5,19 @@ using AcManager.Tools.Managers;
 
 namespace AcManager.Tools.Objects {
     public class TrackExtraLayoutObject : TrackBaseObject {
-        public sealed override string Location { get; }
+        private readonly string _location;
 
         public sealed override string LayoutId { get; }
 
         public TrackExtraLayoutObject(IFileAcManager manager, string id, bool enabled, string fixedLocation)
                 : base(manager, id, enabled) {
-            Location = fixedLocation;
+            _location = fixedLocation;
             LayoutId = Path.GetFileName(fixedLocation);
             IdWithLayout = $"{Id}/{LayoutId}";
+        }
+
+        protected override string GetLocation() {
+            return _location;
         }
 
         private TrackObject _mainTrackObject;
@@ -41,11 +45,12 @@ namespace AcManager.Tools.Objects {
 
         public sealed override string IdWithLayout { get; }
 
-        public override string JsonFilename => Path.Combine(Location, "ui_track.json");
-
-        public override string PreviewImage => ImageRefreshing ?? ImageRefreshing ?? Path.Combine(Location, "preview.png");
-
-        public override string OutlineImage => ImageRefreshing ?? ImageRefreshing ?? Path.Combine(Location, "outline.png");
+        protected override void InitializeLocations() {
+            base.InitializeLocations();
+            JsonFilename = Path.Combine(Location, "ui_track.json");
+            PreviewImage = Path.Combine(Location, "preview.png");
+            OutlineImage = Path.Combine(Location, "outline.png");
+        }
 
         public override ICommand ToggleCommand => MainTrackObject.ToggleCommand;
 

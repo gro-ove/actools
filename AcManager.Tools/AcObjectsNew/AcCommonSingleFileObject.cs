@@ -6,8 +6,6 @@ namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcCommonSingleFileObject : AcCommonObject {
         public abstract string Extension { get; }
 
-        public sealed override string Location => base.Location;
-
         protected AcCommonSingleFileObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) { }
 

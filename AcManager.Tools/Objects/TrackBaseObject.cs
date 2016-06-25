@@ -16,8 +16,7 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
     public abstract partial class TrackBaseObject : AcJsonObjectNew {
-        protected TrackBaseObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) { }
+        protected TrackBaseObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) { }
 
         public override void PastLoad() {
             base.PastLoad();
@@ -37,9 +36,8 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void Reload() {
-            OnImageChanged(nameof(PreviewImage));
-            OnImageChanged(nameof(OutlineImage));
-
+            OnImageChangedValue(PreviewImage);
+            OnImageChangedValue(OutlineImage);
             base.Reload();
         }
 
@@ -47,9 +45,9 @@ namespace AcManager.Tools.Objects {
             if (base.HandleChangedFile(filename)) return true;
 
             if (FileUtils.IsAffected(filename, PreviewImage)) {
-                OnImageChanged(nameof(PreviewImage));
+                OnImageChangedValue(PreviewImage);
             } else if (FileUtils.IsAffected(filename, OutlineImage)) {
-                OnImageChanged(nameof(OutlineImage));
+                OnImageChangedValue(OutlineImage);
             }
 
             return true;
@@ -217,8 +215,8 @@ namespace AcManager.Tools.Objects {
             json["pitboxes"] = SpecsPitboxes;
         }
 
-        public abstract string PreviewImage { get; }
+        public string PreviewImage { get; protected set; }
 
-        public abstract string OutlineImage { get; }
+        public string OutlineImage { get; protected set; }
     }
 }

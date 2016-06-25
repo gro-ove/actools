@@ -102,6 +102,7 @@
     <Compile Include="Helpers\UriExtension.cs" />
     <Compile Include="Helpers\ValuesStorage_EncryptionKey.cs" />
     <Compile Include="Helpers\ValuesStorage.cs" />
+    <Compile Include="Helpers\WrappingStream.cs" />
     <Compile Include="ModernUiHelper.cs" />
     <Compile Include="Presentation\AsyncCommand.cs" />
     <Compile Include="Presentation\AutoCompleteBehavior.cs" />
@@ -143,6 +144,8 @@
     <Compile Include="Windows\CommandDictionary.cs" />
     <Compile Include="Windows\Controls\AlignableWrapPanel.cs" />
     <Compile Include="Windows\Controls\BbCodeImageEventArgs.cs" />
+    <Compile Include="Windows\Controls\Temp.cs" />
+    <Compile Include="Windows\Controls\BetterImage.cs" />
     <Compile Include="Windows\Controls\ButtonWithComboBox.cs" />
     <Compile Include="Windows\Controls\ColorPicker.cs" />
     <Compile Include="Windows\Controls\ColorPickerPanel.cs" />
@@ -222,6 +225,7 @@
     <Compile Include="Windows\ILoadableContent.cs" />
     <Compile Include="Windows\ImmediateContentLoader.cs" />
     <Compile Include="Windows\IParametrizedUriContent.cs" />
+    <Compile Include="Windows\Media\BrokenIcon.cs" />
     <Compile Include="Windows\Navigation\DefaultLinkNavigator.cs" />
     <Compile Include="Windows\Navigation\FragmentNavigationEventArgs.cs" />
     <Compile Include="Windows\IContent.cs" />

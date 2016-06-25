@@ -273,21 +273,24 @@ namespace AcManager.Pages.Selected {
 
         #region Skins
         private void SelectedSkinPreview_MouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton == MouseButton.Left) {
-                if (e.ClickCount == 2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
-                    e.Handled = true;
-                    CarOpenInShowroomDialog.Run(_model.SelectedObject, _model.SelectedObject.SelectedSkin?.Id);
-                } else if (e.ClickCount == 1 && ReferenceEquals(sender, SelectedSkinPreviewImage) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
-                    e.Handled = true;
-                    new ImageViewer(
-                        from skin in _model.SelectedObject.Skins where skin.Enabled select skin.PreviewImage,
-                        _model.SelectedObject.Skins.Where(x => x.Enabled).IndexOf(_model.SelectedObject.SelectedSkin)
-                    ).ShowDialog();
-                }
-            } else if (e.ChangedButton == MouseButton.Right) {
+            if (e.ClickCount == 2 && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
-                OpenSkinContextMenu((((FrameworkElement)sender).DataContext as AcItemWrapper)?.Value as CarSkinObject);
+                CarOpenInShowroomDialog.Run(_model.SelectedObject, _model.SelectedObject.SelectedSkin?.Id);
+            } else if (e.ClickCount == 1 && ReferenceEquals(sender, SelectedSkinPreviewImage) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
+                e.Handled = true;
+                new ImageViewer(
+                        from skin in _model.SelectedObject.Skins where skin.Enabled select skin.PreviewImage,
+                        _model.SelectedObject.Skins.Where(x => x.Enabled).IndexOf(_model.SelectedObject.SelectedSkin),
+                        1022, 575).ShowDialog();
             }
+        }
+
+        private void SelectedSkinPreview_MouseUp(object sender, MouseButtonEventArgs e) {
+            e.Handled = true;
+
+            var context = ((FrameworkElement)sender).DataContext;
+            var wrapper = context as AcItemWrapper;
+            OpenSkinContextMenu((wrapper?.Value ?? context) as CarSkinObject);
         }
 
         private void OpenSkinContextMenu(CarSkinObject skin) {

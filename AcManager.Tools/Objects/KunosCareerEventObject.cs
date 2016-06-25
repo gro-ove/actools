@@ -34,9 +34,13 @@ namespace AcManager.Tools.Objects {
             KunosCareerType = type;
         }
 
-        public override string IniFilename => Path.Combine(Location, "event.ini");
+        protected override void InitializeLocations() {
+            base.InitializeLocations();
+            IniFilename = Path.Combine(Location, "event.ini");
+            PreviewImage = Path.Combine(Location, "preview.png");
+        }
 
-        public string PreviewImage => ImageRefreshing ?? Path.Combine(Location, "preview.png");
+        public string PreviewImage { get; private set; }
 
         #region From main ini file
         private string _description;
@@ -378,8 +382,8 @@ namespace AcManager.Tools.Objects {
             CarSkinId = ini["CAR_0"].Get("SKIN");
             WeatherId = ini["WEATHER"].Get("NAME") ?? WeatherManager.Instance.GetDefault()?.Id;
 
-            TrackObject = TracksManager.Instance.GetById(TrackId);
-            Car = CarsManager.Instance.GetById(CarId);
+            TrackObject = TrackId == null ? null : TracksManager.Instance.GetById(TrackId);
+            Car = CarId == null ? null : CarsManager.Instance.GetById(CarId);
             WeatherObject = WeatherManager.Instance.GetById(WeatherId ?? string.Empty);
 
             if (TrackObject == null) {
@@ -389,7 +393,7 @@ namespace AcManager.Tools.Objects {
             if (Car == null) {
                 AddError(AcErrorType.Data_KunosCareerCarIsMissing, CarId);
             } else { 
-                CarSkin = Car.GetSkinByIdFromConfig(CarSkinId);
+                CarSkin = CarSkinId == null ? null : Car.GetSkinByIdFromConfig(CarSkinId);
 
                 if (CarSkin == null) {
                     AddError(AcErrorType.Data_KunosCareerCarSkinIsMissing, CarId, CarSkinId);

@@ -9,7 +9,7 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public partial class CarObject : IAcManagerScanWrapper {
+    public sealed partial class CarObject : IAcManagerScanWrapper {
         /* for UI car’s skins manager */
         [NotNull]
         public CarSkinsManager SkinsManager { get; }

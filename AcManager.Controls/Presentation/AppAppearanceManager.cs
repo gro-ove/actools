@@ -15,6 +15,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyAccentDisplayColor = "appearance_accentColor_d";
         public const string KeyIdealFormattingMode = "appearance_idealFormattingMode";
         public const string KeySmallFont = "appearance_smallFont";
+        public const string KeyBitmapScaling = "appearance_bitmapScaling";
         public const string KeyPopupToolBars = "appearance_ThemePopupToolBars";
         public const string KeyFrameAnimation = "AppAppearanceManager.FrameAnimation";
         public const string KeyLargeSubMenuFont = "AppAppearanceManager.LargeSubMenuFont";
@@ -42,6 +43,7 @@ namespace AcManager.Controls.Presentation {
                 AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
                 IdealFormattingMode = ValuesStorage.GetBool(KeyIdealFormattingMode, OptionIdealFormattingModeDefaultValue);
                 SmallFont = ValuesStorage.GetBool(KeySmallFont);
+                BitmapScalingMode = ValuesStorage.GetEnum(KeyBitmapScaling, BitmapScalingMode.LowQuality);
                 LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
                 PopupToolBars = ValuesStorage.GetBool(KeyPopupToolBars);
                 FrameAnimation = FrameAnimations.FirstOrDefault(x => x.Id == ValuesStorage.GetString(KeyFrameAnimation)) ?? FrameAnimations.First();
@@ -49,6 +51,26 @@ namespace AcManager.Controls.Presentation {
                 _loading = false;
             }
         }
+
+        #region Bitmap scaling
+        private BitmapScalingMode _bitmapScalingMode;
+
+        public BitmapScalingMode BitmapScalingMode {
+            get { return _bitmapScalingMode; }
+            set {
+                if (_loading) {
+                    _bitmapScalingMode = value;
+                    RenderOptions.BitmapScalingModeProperty.OverrideMetadata(typeof(BetterImage), new FrameworkPropertyMetadata(_bitmapScalingMode));
+                    return;
+                }
+
+                if (Equals(value, _bitmapScalingMode)) return;
+                _bitmapScalingMode = value;
+                OnPropertyChanged();
+                ValuesStorage.SetEnum(KeyBitmapScaling, value);
+            }
+        }
+        #endregion
 
         #region Font sizes
         private bool _idealFormattingMode;

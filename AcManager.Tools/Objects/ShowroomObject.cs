@@ -24,7 +24,7 @@ namespace AcManager.Tools.Objects {
 
         public override void Reload() {
             base.Reload();
-            OnImageChanged(nameof(PreviewImage));
+            OnImageChangedValue(PreviewImage);
         }
 
         public override bool HandleChangedFile(string filename) {
@@ -33,7 +33,7 @@ namespace AcManager.Tools.Objects {
             }
 
             if (FileUtils.IsAffected(filename, PreviewImage)) {
-                OnImageChanged(nameof(PreviewImage));
+                OnImageChangedValue(PreviewImage);
                 return true;
             }
 
@@ -78,9 +78,17 @@ namespace AcManager.Tools.Objects {
         }
         #endregion
 
-        public override string JsonFilename => Path.Combine(Location, "ui", "ui_showroom.json");
+        protected override void InitializeLocations() {
+            base.InitializeLocations();
+            JsonFilename = Path.Combine(Location, "ui", "ui_showroom.json");
+            Kn5Filename = Path.Combine(Location, Id + ".kn5");
+            SoundbankFilename = Path.Combine(Location, Id + ".bank");
+            TrackFilename = Path.Combine(Location, "track.wav");
+        }
 
-        public string PreviewImage => ImageRefreshing ?? GetPreviewImage();
+        private string _previewImage;
+
+        public string PreviewImage => _previewImage ?? (_previewImage = GetPreviewImage());
 
         private bool _previewProcessed;
 
@@ -109,11 +117,11 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public string Kn5Filename => Path.Combine(Location, Id + ".kn5");
+        public string Kn5Filename { get; private set; }
 
-        public string SoundbankFilename => Path.Combine(Location, Id + ".bank");
+        public string SoundbankFilename { get; private set; }
 
-        public string TrackFilename => Path.Combine(Location, "track.wav");
+        public string TrackFilename { get; private set; }
 
         private void CheckKn5() {
             ErrorIf(!File.Exists(Kn5Filename), AcErrorType.Showroom_Kn5IsMissing);

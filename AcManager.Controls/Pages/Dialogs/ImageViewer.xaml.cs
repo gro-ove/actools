@@ -5,24 +5,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Tools.SemiGui;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using Path = System.IO.Path;
 
 namespace AcManager.Controls.Pages.Dialogs {
-    public partial class ImageViewer { 
+    public partial class ImageViewer {
         public ImageViewer(ImageSource imageSource) : this(new[] { imageSource }) { }
 
-        public ImageViewer(string image) : this(new[] { image }) { }
+        public ImageViewer(string image, int maxWidth = -1, int maxHeight = -1) : this(new[] { image }, maxWidth, maxHeight) { }
 
-        public ImageViewer(IEnumerable<object> images, int position = 0, bool oneTrueDpi = true, int maxWidth = -1, int maxHeight = -1) {
+        public ImageViewer(IEnumerable<object> images, int position = 0, int maxWidth = -1, int maxHeight = -1) {
             var model = new ImageViewerViewModel(images, position);
             DataContext = model;
             InitializeComponent();
@@ -32,14 +32,6 @@ namespace AcManager.Controls.Pages.Dialogs {
                 model.MaxImageWidth = maxWidth;
                 model.MaxImageHeight = maxHeight;
             }
-
-            Image.SetBinding(Image.SourceProperty, new Binding {
-                Source = model,
-                Path = new PropertyPath(nameof(ImageViewerViewModel.CurrentImage)),
-                Mode = BindingMode.OneWay,
-                Converter = new UriToCachedImageConverter(),
-                ConverterParameter = oneTrueDpi ? "oneTrueDpi" : (maxWidth > 0 ? $"{maxWidth}×" : null)
-            });
         }
 
         private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {
@@ -48,14 +40,18 @@ namespace AcManager.Controls.Pages.Dialogs {
             }
         }
 
+        private void ImageViewer_OnKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Left || e.Key == Key.K) {
+                Model.CurrentPosition--;
+            } else if (e.Key == Key.Right || e.Key == Key.J) {
+                Model.CurrentPosition++;
+            }
+        }
+
         private void ImageViewer_OnKeyUp(object sender, KeyEventArgs e) {
             if (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack ||
                     e.Key == Key.Q || e.Key == Key.W && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 Close();
-            } else if (e.Key == Key.Left || e.Key == Key.K) {
-                Model.CurrentPosition--;
-            } else if (e.Key == Key.Right || e.Key == Key.J) {
-                Model.CurrentPosition++;
             } else if (e.Key == Key.Enter) {
                 IsSelected = true;
                 Close();
@@ -99,28 +95,73 @@ namespace AcManager.Controls.Pages.Dialogs {
         public ImageViewerViewModel Model => (ImageViewerViewModel)DataContext;
 
         public class ImageViewerViewModel : NotifyPropertyChanged {
-            /* TODO: cache & preload for better UX? */
+            private readonly object[] _images;
+            private readonly object[] _originalImages;
+            
+            public ImageViewerViewModel(IEnumerable<object> images, int position) {
+                _originalImages = images.ToArray();
+                _images = _originalImages.ToArray();
 
-            private readonly IReadOnlyList<object> _images;
+                CurrentPosition = position;
+                UpdateCurrent();
+            }
+
+            private async void UpdateCurrent() {
+                var position = _currentPosition;
+                var path = _images[position] as string;
+                if (path != null) {
+                    _images[position] = BetterImage.LoadBitmapSource(path, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth);
+                }
+
+                if (position < _images.Length - 1) {
+                    var next = position + 1;
+                    var nextPath = _images[next] as string;
+                    if (nextPath != null) {
+                        var loaded = await BetterImage.LoadBitmapSourceAsync(nextPath, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth);
+                        var updated = _images[next];
+                        if (updated as string != nextPath) return;
+                        _images[next] = loaded;
+                    }
+                }
+
+                if (position > 1) {
+                    var next = position - 1;
+                    var nextPath = _images[next] as string;
+                    if (nextPath != null) {
+                        var loaded = await BetterImage.LoadBitmapSourceAsync(nextPath, double.IsPositiveInfinity(MaxImageWidth) ? -1 : (int)MaxImageWidth);
+                        var updated = _images[next];
+                        if (updated as string != nextPath) return;
+                        _images[next] = loaded;
+                    }
+                }
+
+                for (var i = 0; i < position - 2; i++) {
+                    _images[i] = _originalImages[i];
+                }
+
+                for (var i = position + 3; i < _images.Length; i++) {
+                    _images[i] = _originalImages[i];
+                }
+            }
 
             private int _currentPosition;
 
             public int CurrentPosition {
                 get { return _currentPosition; }
                 set {
-                    if (Equals(value, _currentPosition) || value < 0 || value >= _images.Count) return;
+                    value = value.Clamp(0, _images.Length - 1);
+                    if (Equals(value, _currentPosition)) return;
+
                     var oldPosition = _currentPosition;
                     _currentPosition = value;
+                    UpdateCurrent();
+
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(CurrentImage));
 
-                    if (oldPosition == 0 || value == 0) {
-                        _previousCommand?.OnCanExecuteChanged();
-                    }
-
-                    var last = _images.Count - 1;
-                    if (oldPosition == last || value == last) {
-                        _nextCommand?.OnCanExecuteChanged();
+                    var last = _images.Length - 1;
+                    if (oldPosition == 0 || value == 0 || oldPosition == last || value == last) {
+                        CommandManager.InvalidateRequerySuggested();
                     }
                 }
             }
@@ -184,11 +225,6 @@ namespace AcManager.Controls.Pages.Dialogs {
                 }
             }
 
-            public ImageViewerViewModel(IEnumerable<object> images, int position) {
-                _images = images.ToList();
-                CurrentPosition = position;
-            }
-
             private RelayCommand _previousCommand;
 
             public RelayCommand PreviousCommand => _previousCommand ?? (_previousCommand = new RelayCommand(o => {
@@ -199,7 +235,7 @@ namespace AcManager.Controls.Pages.Dialogs {
 
             public RelayCommand NextCommand => _nextCommand ?? (_nextCommand = new RelayCommand(o => {
                 CurrentPosition++;
-            }, o => CurrentPosition < _images.Count - 1));
+            }, o => CurrentPosition < _images.Length - 1));
 
             private AsyncCommand _saveCommand;
 

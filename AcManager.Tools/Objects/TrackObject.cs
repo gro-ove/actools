@@ -12,8 +12,6 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class TrackObject : TrackBaseObject {
-        public sealed override string Location => base.Location;
-
         [CanBeNull]
         public sealed override string LayoutId { get; }
 
@@ -185,14 +183,14 @@ namespace AcManager.Tools.Objects {
             base.HandleChangedFile(filename);
             return true;
         }
-        
-        private string UiDirectory => _layoutLocation ?? Path.Combine(Location, "ui");
 
-        public sealed override string JsonFilename => Path.Combine(UiDirectory, "ui_track.json");
-
-        public override string PreviewImage => ImageRefreshing ?? Path.Combine(UiDirectory, "preview.png");
-
-        public override string OutlineImage => ImageRefreshing ?? Path.Combine(UiDirectory, "outline.png");
+        protected override void InitializeLocations() {
+            base.InitializeLocations();
+            var uiDirectory = _layoutLocation ?? Path.Combine(Location, "ui");
+            JsonFilename = Path.Combine(uiDirectory, "ui_track.json");
+            PreviewImage = Path.Combine(uiDirectory, "preview.png");
+            OutlineImage = Path.Combine(uiDirectory, "outline.png");
+        }
 
         public override void Save() {
             base.Save();

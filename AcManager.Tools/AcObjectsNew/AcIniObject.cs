@@ -31,7 +31,7 @@ namespace AcManager.Tools.AcObjectsNew {
             return true;
         }
 
-        public abstract string IniFilename { get; }
+        public string IniFilename { get; protected set; }
 
         private IniFile _iniObject;
 

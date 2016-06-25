@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AcManager.Tools.AcObjectsNew;
 
@@ -26,12 +27,20 @@ namespace AcManager.Controls {
             set { SetValue(ShowIconProperty, value); }
         }
 
-        public static readonly DependencyProperty IconProperty = DependencyProperty.Register(nameof(Icon), typeof(BitmapSource),
+        public static readonly DependencyProperty IconProperty = DependencyProperty.Register(nameof(Icon), typeof(string),
                 typeof(AcObjectHeaderSection));
 
-        public BitmapSource Icon {
-            get { return (BitmapSource)GetValue(IconProperty); }
+        public string Icon {
+            get { return (string)GetValue(IconProperty); }
             set { SetValue(IconProperty, value); }
+        }
+
+        public static readonly DependencyProperty IconSourceProperty = DependencyProperty.Register(nameof(IconSource), typeof(ImageSource),
+                typeof(AcObjectHeaderSection));
+
+        public ImageSource IconSource {
+            get { return (ImageSource)GetValue(IconSourceProperty); }
+            set { SetValue(IconSourceProperty, value); }
         }
 
         private UIElement _iconImage;

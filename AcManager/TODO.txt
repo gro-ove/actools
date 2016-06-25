@@ -693,6 +693,7 @@ later:
     - addons directory watching?
 
     - custom track presets for QD
+    - fix kn5 unpacking: _SUB?
 
     ? drag'n'drop tags
     ? drag'n'drop tabs

@@ -1,6 +1,7 @@
-﻿using System;
+﻿// #define LOGGING
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,9 +9,13 @@ using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.InnerHelpers;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+
+#if LOGGING
+using System.Diagnostics;
+using AcTools.Utils.Helpers;
+#endif
 
 namespace AcManager.Tools.AcManagersNew {
     /// <summary>
@@ -72,9 +77,11 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         void IWatchingChangeApplier.ApplyChange(string dir, WatchingChange change) {
+#if LOGGING
             Debug.WriteLine($"ACMGR [NEW]: IWatchingChangeApplier.ApplyChange({dir}, {change.Type})\n" +
                             $"    ORIGINAL FILENAME: {change.FullFilename}\n" +
                             $"    NEW LOCATION: {change.NewLocation}");
+#endif
             string id;
             try {
                 id = LocationToId(dir);
@@ -86,6 +93,7 @@ namespace AcManager.Tools.AcManagersNew {
             bool isFreshlyLoaded;
             var obj = GetById(id, out isFreshlyLoaded);
 
+#if LOGGING
             Debug.WriteLine($"    id: {id}; object: {obj}; location: {obj?.Location}");
             if (obj != null && !obj.Location.Equals(dir, StringComparison.OrdinalIgnoreCase)) {
                 if (change.Type == WatcherChangeTypes.Created) {
@@ -96,6 +104,14 @@ namespace AcManager.Tools.AcManagersNew {
                 }
                 obj = null;
             }
+#else
+            if (obj != null && !obj.Location.Equals(dir, StringComparison.OrdinalIgnoreCase)) {
+                if (change.Type == WatcherChangeTypes.Created) {
+                    RemoveFromList(obj.Id);
+                }
+                obj = null;
+            }
+#endif
 
             switch (change.Type) {
                 case WatcherChangeTypes.Changed:
@@ -158,7 +174,9 @@ namespace AcManager.Tools.AcManagersNew {
                     throw new ArgumentOutOfRangeException();
             }
 
+#if LOGGING
             Debug.WriteLine("    current list: " + InnerWrappersList.Select(x => x.Value.Id).JoinToString(", "));
+#endif
         }
 
         private void OnChanged(string fullPath) {

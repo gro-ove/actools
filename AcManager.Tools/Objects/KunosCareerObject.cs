@@ -213,15 +213,22 @@ namespace AcManager.Tools.Objects {
         public string DisplayRequired => (RequiredAnySeries && RequiredSeries.Length > 1 ? @"Any of " : "") +
                 RequiredSeries.Select(x => KunosCareerManager.Instance.GetById(x)?.Code ?? $"<{x}>").JoinToString(", ");
 
-        public override string IniFilename => Path.Combine(Location, "series.ini");
+        protected override void InitializeLocations() {
+            base.InitializeLocations();
+            IniFilename = Path.Combine(Location, "series.ini");
+            OpponentsIniFilename = Path.Combine(Location, "opponents.ini");
+            PreviewImage = Path.Combine(Location, "preview.png");
+            StartImage = Path.Combine(Location, "start.png");
+            StartVideo = Path.Combine(Location, "start.ogv");
+        }
 
-        public string OpponentsIniFilename => Path.Combine(Location, "opponents.ini");
+        public string OpponentsIniFilename { get; private set; }
 
-        public string PreviewImage => ImageRefreshing ?? Path.Combine(Location, "preview.png");
+        public string PreviewImage { get; private set; }
 
-        public string StartImage => ImageRefreshing ?? Path.Combine(Location, "start.png");
+        public string StartImage { get; private set; }
 
-        public string StartVideo => ImageRefreshing ?? Path.Combine(Location, "start.ogv");
+        public string StartVideo { get; private set; }
 
         #region From main ini file
         private string _description;

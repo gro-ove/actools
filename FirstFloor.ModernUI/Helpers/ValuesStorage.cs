@@ -280,6 +280,22 @@ namespace FirstFloor.ModernUI.Helpers {
             return Instance._storage.TryGetValue(key, out value) ? value : defaultValue;
         }
 
+        public static T GetEnum<T>([NotNull] string key, T defaultValue = default(T)) where T : struct, IConvertible {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            T result;
+            string value;
+            return Instance._storage.TryGetValue(key, out value) &&
+                    Enum.TryParse(value, out result) ? result : defaultValue;
+        }
+
+        public static T? GetEnumNullable<T>([NotNull] string key) where T : struct, IConvertible {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            T result;
+            string value;
+            return Instance._storage.TryGetValue(key, out value) &&
+                    Enum.TryParse(value, out result) ? result : (T?)null;
+        }
+
         public static int GetInt([NotNull] string key, int defaultValue = 0) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             int result;
@@ -520,6 +536,10 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public static void Set(string key, Color color) {
             Set(key, BitConverter.ToInt32(new[] { color.A, color.R, color.G, color.B }, 0));
+        }
+
+        public static void SetEnum<T>(string key, T value) where T : struct, IConvertible {
+            Set(key, value.ToString(CultureInfo.InvariantCulture));
         }
 
         /* I know that this is not a proper protection or anything, but I just don’t want to save some

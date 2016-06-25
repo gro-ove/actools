@@ -80,9 +80,13 @@ namespace AcManager.Tools.Objects {
             return null;
         }
 
-        public string ColorCurvesIniFilename => Path.Combine(Location, "colorCurves.ini");
+        protected override void InitializeLocations() {
+            base.InitializeLocations();
+            IniFilename = Path.Combine(Location, "weather.ini");
+            ColorCurvesIniFilename = Path.Combine(Location, "colorCurves.ini");
+        }
 
-        public override string IniFilename => Path.Combine(Location, "weather.ini");
+        public string ColorCurvesIniFilename { get; private set; }
 
         protected override void LoadData(IniFile ini) {
             Name = ini["LAUNCHER"].Get("NAME");

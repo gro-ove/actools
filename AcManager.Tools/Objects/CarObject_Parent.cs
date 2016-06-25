@@ -5,7 +5,7 @@ using AcManager.Tools.Managers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public partial class CarObject {
+    public sealed partial class CarObject {
         private void UpdateParentValues() {
             if (Parent == null) return;
             Parent?.OnPropertyChanged(nameof(Children));

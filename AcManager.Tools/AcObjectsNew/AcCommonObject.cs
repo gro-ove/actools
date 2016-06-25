@@ -4,6 +4,7 @@ using System.IO;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
@@ -14,9 +15,29 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public virtual bool NeedsMargin => false;
 
+        // ReSharper disable once NotNullMemberIsNotInitialized
         protected AcCommonObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             FileAcManager = manager;
+        }
+
+        [NotNull]
+        public string Location { get; protected set; }
+
+        protected virtual string GetLocation() {
+            return FileAcManager.Directories.GetLocation(Id, Enabled);
+        }
+
+        private bool _locationsInitialized;
+
+        protected void InitializeLocationsOnce() {
+            if (_locationsInitialized) return;
+            InitializeLocations();
+            _locationsInitialized = true;
+        }
+
+        protected virtual void InitializeLocations() {
+            Location = GetLocation();
         }
 
         private bool _isNew;
@@ -51,6 +72,8 @@ namespace AcManager.Tools.AcObjectsNew {
         protected abstract void LoadOrThrow();
 
         public sealed override void Load() {
+            InitializeLocationsOnce();
+
             ClearErrors();
             Changed = false;
             LoadingInProcess = true;
@@ -138,9 +161,6 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public abstract void Save();
 
-        [NotNull]
-        public virtual string Location => FileAcManager.Directories.GetLocation(Id, Enabled);
-
         public virtual void ViewInExplorer() {
             if (File.GetAttributes(Location).HasFlag(FileAttributes.Directory)) {
                 Process.Start("explorer", Location);
@@ -163,13 +183,13 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public virtual bool HandleChangedFile(string filename) => false;
 
-        protected string ImageRefreshing { get; private set; }
-
+        [Obsolete]
         protected void OnImageChanged(string propertyName) {
-            ImageRefreshing = string.Empty;
-            OnPropertyChanged(propertyName);
-            ImageRefreshing = null;
-            OnPropertyChanged(propertyName);
+            BetterImage.ReloadImage((string)GetType().GetProperty(propertyName).GetValue(this, null));
+        }
+
+        protected void OnImageChangedValue(string filename) {
+            BetterImage.ReloadImage(filename);
         }
     }
 }

@@ -11,18 +11,18 @@
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
             <CollectionViewSource x:Key="ShowroomPresetsItems" Source="{Binding ShowroomPresets}" />
             <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
             <CollectionViewSource x:Key="UpdatePreviewsPresetsItems" Source="{Binding UpdatePreviewsPresets}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_IconMouseDown"
-            Icon="{Binding SelectedObject.BrandBadge, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='24×'}">
+    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_IconMouseDown" Icon="{Binding SelectedObject.BrandBadge}">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Folder" ToolTip="Open car's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+                <Button Content="Folder" Command="{Binding SelectedObject.ViewInExplorerCommand}">
+                    <Button.ToolTip>Open car’s folder (Ctrl+F)</Button.ToolTip>
+                </Button>
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
                 <mui:ButtonWithComboBox Content="Showroom" ButtonToolTip="View car in showroom (Ctrl+H)" Command="{Binding OpenInShowroomCommand}"
@@ -58,7 +58,7 @@
                 <Button Content="Enable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Enable (Ctrl+D)"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed json-file (Ctrl+S)" />
-                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove car to the Recycle Bin (Ctrl+Delete)" />
                 <Separator />
                 <Button Content="Find Information" Command="{Binding FindInformationCommand}" ToolTip="Find information about car (Ctrl+I)" />
                 <mui:ButtonWithComboBox Content="Update Previews" Command="{Binding UpdatePreviewsCommand}" ButtonToolTip="Update all previews (Ctrl+P)"
@@ -88,17 +88,15 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- preview of selected skin -->
-                <Grid
-                        Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
-                        Name="SelectedSkinPreview" MinHeight="160" MaxHeight="575" MaxWidth="1022">
-                    <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="0"
-                            Source="{Binding SelectedObject.SelectedSkin.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
-                            MouseDown="SelectedSkinPreview_MouseDown" Name="SelectedSkinPreviewImage" />
-                    <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top"
-                            Source="{Binding SelectedObject.UpgradeIcon, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="64"
-                            Height="64" Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            MouseDown="UpgradeIcon_MouseDown" />
-                </Grid> 
+                <Grid Name="SelectedSkinPreview">
+                    <mui:BetterImage Name="SelectedSkinPreviewImage" DataContext="{Binding SelectedObject.SelectedSkin}" Filename="{Binding PreviewImage}"
+                            PreviewMouseLeftButtonDown="SelectedSkinPreview_MouseDown" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" MinHeight="160"
+                            MaxHeight="575" MaxWidth="1022" FillSpace="True"
+                            Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
+                    <mui:BetterImage Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Width="64" Height="64" MouseDown="UpgradeIcon_MouseDown"
+                            Filename="{Binding SelectedObject.UpgradeIcon}"
+                            Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </Grid>
 
                 <!-- skins list -->
                 <ListBox ItemsSource="{Binding SelectedObject.SkinsEnabledWrappersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -107,17 +105,14 @@
                         ScrollViewer.CanContentScroll="True">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Standard" IsVirtualizing="True"
-                                    ScrollUnit="Pixel" ItemWidth="36" ItemHeight="36" />
+                            <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel"
+                                    ItemWidth="36" ItemHeight="36" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type acManagersNew:AcItemWrapper}">
-                            <Border BorderThickness="0" Background="Transparent" Width="32" Height="32">
-                                <Image RenderOptions.BitmapScalingMode="LowQuality" MouseDown="SelectedSkinPreview_MouseDown"
-                                        ToolTip="{Binding Value.DisplayName}"
-                                        Source="{Binding Value.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, ConverterParameter='32×'}" />
-                            </Border>
+                            <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32"
+                                    ClearOnChange="True" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" FillSpace="True" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -203,6 +198,11 @@
                     </DockPanel>
 
                     <DockPanel Grid.Row="2" Grid.Column="1">
+                        <DockPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Filter By Author" Command="{Binding FilterAuthorCommand}" />
+                            </ContextMenu>
+                        </DockPanel.ContextMenu>
                         <TextBlock Text="Author:" ToolTip="Author, version, URL" />
                         <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" attached:WatermarkService.Watermark="?"
                                 MouseDown="VersionInfoBlock_OnMouseDown" />
@@ -210,7 +210,7 @@
 
                     <!-- last row -->
                     <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
-                        <TextBlock Text="Specs:" ToolTip="Author, version, URL" />
+                        <TextBlock Text="Specs:" ToolTip="Specifications" />
                         <mui:BbCodeBlock Text="{Binding SelectedObject.SpecsInfoDisplay}" attached:WatermarkService.Watermark="?"
                                 MouseDown="SpecsInfoBlock_OnMouseDown" />
                     </DockPanel>

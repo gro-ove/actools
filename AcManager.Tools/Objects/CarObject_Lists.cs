@@ -5,8 +5,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Lists;
 
 namespace AcManager.Tools.Objects {
-
-    public partial class CarObject {
+    public sealed partial class CarObject {
         private AcWrapperCollectionView _skinsEnabledWrappersListView;
         public AcWrapperCollectionView SkinsEnabledWrappersList {
             get {

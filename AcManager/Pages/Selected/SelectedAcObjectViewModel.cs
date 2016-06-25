@@ -56,6 +56,12 @@ namespace AcManager.Pages.Selected {
         public RelayCommand FilterCountryCommand => _filterCountryCommand ?? (_filterCountryCommand = new RelayCommand(o => {
             NewFilterTab($"country:{Filter.Encode((SelectedObject as AcJsonObjectNew)?.Country)}");
         }, o => SelectedObject is AcJsonObjectNew));
+
+        private RelayCommand _filterAuthorCommand;
+
+        public RelayCommand FilterAuthorCommand => _filterAuthorCommand ?? (_filterAuthorCommand = new RelayCommand(o => {
+            NewFilterTab($"author:{Filter.Encode((SelectedObject as AcJsonObjectNew)?.Author)}");
+        }, o => SelectedObject is AcJsonObjectNew));
         #endregion
     }
 }

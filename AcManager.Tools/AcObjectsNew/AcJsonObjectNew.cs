@@ -47,7 +47,7 @@ namespace AcManager.Tools.AcObjectsNew {
             return true;
         }
 
-        public abstract string JsonFilename { get; }
+        public string JsonFilename { get; protected set; }
 
         private JObject _jsonObject;
 

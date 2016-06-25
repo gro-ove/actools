@@ -2,7 +2,7 @@
     /// <summary>
     /// Provides a base implementation for objects that are displayed in the UI.
     /// </summary>
-    public abstract class Displayable : NotifyPropertyChanged {
+    public class Displayable : NotifyPropertyChanged {
         private string _displayName;
 
         /// <summary>

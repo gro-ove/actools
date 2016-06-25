@@ -4,7 +4,7 @@ using AcTools.DataFile;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public partial class CarObject {
+    public sealed partial class CarObject {
         private WeakReference<CarSetupsManager> _setupsManager;
 
         [CanBeNull]

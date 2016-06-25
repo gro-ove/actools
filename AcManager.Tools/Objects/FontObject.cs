@@ -121,7 +121,7 @@ namespace AcManager.Tools.Objects {
             if (bitmap != FontBitmap) {
                 FontBitmap = bitmap;
             } else {
-                OnImageChanged(nameof(FontBitmap));
+                OnImageChangedValue(FontBitmap);
             }
 
             ErrorIf(FontBitmap == null, AcErrorType.Font_BitmapIsMissing);

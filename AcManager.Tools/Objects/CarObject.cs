@@ -14,22 +14,32 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
-    public partial class CarObject : AcJsonObjectNew {
+    public sealed partial class CarObject : AcJsonObjectNew {
         public static int OptionSkinsLoadingConcurrency = 5;
 
         public CarObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
+            InitializeLocationsOnce();
             SkinsManager = new CarSkinsManager(Id, new InheritingAcDirectories(manager.Directories, SkinsDirectory)) {
                 ScanWrapper = this
             };
             SkinsManager.Created += SkinsManager_Created;
             SkinsManager.WrappersList.CollectionReady += Skins_CollectionReady;
+        }
+
+        protected override void InitializeLocations() {
+            base.InitializeLocations();
+
+            LogoIcon = Path.Combine(Location, "logo.png");
+            BrandBadge = Path.Combine(Location, "ui", "badge.png");
+            UpgradeIcon = Path.Combine(Location, "ui", "upgrade.png");
+            SkinsDirectory = Path.Combine(Location, "skins");
+            JsonFilename = Path.Combine(Location, "ui", "ui_car.json");
         }
 
         private void Skins_CollectionReady(object sender, EventArgs e) {
@@ -116,9 +126,9 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void Reload() {
-            OnImageChanged(nameof(LogoIcon));
-            OnImageChanged(nameof(BrandBadge));
-            OnImageChanged(nameof(UpgradeIcon));
+            OnImageChangedValue(LogoIcon);
+            OnImageChangedValue(BrandBadge);
+            OnImageChangedValue(UpgradeIcon);
 
             SkinsManager.Rescan();
             base.Reload();
@@ -128,13 +138,13 @@ namespace AcManager.Tools.Objects {
             if (base.HandleChangedFile(filename)) return true;
             
             if (FileUtils.IsAffected(filename, LogoIcon)) {
-                OnImageChanged(nameof(LogoIcon));
+                OnImageChangedValue(LogoIcon);
             } else if (FileUtils.IsAffected(filename, BrandBadge)) {
                 CheckBrandBadge();
-                OnImageChanged(nameof(BrandBadge));
+                OnImageChangedValue(BrandBadge);
             } else if (FileUtils.IsAffected(filename, UpgradeIcon)) {
                 CheckUpgradeIcon();
-                OnImageChanged(nameof(UpgradeIcon));
+                OnImageChangedValue(UpgradeIcon);
             }
 
             return true;
@@ -345,15 +355,13 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         #region Paths
-        public string LogoIcon => ImageRefreshing ?? Path.Combine(Location, "logo.png");
+        public string LogoIcon { get; private set; }
 
-        public string BrandBadge => ImageRefreshing ?? Path.Combine(Location, "ui", "badge.png");
+        public string BrandBadge { get; private set; }
 
-        public string UpgradeIcon => ImageRefreshing ?? Path.Combine(Location, "ui", "upgrade.png");
+        public string UpgradeIcon { get; private set; }
 
-        public string SkinsDirectory => Path.Combine(Location, "skins");
-
-        public override string JsonFilename => Path.Combine(Location, "ui", "ui_car.json");
+        public string SkinsDirectory { get; private set; }
         #endregion
 
         #region Loading

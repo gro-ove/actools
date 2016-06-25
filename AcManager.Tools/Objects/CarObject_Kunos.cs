@@ -6,7 +6,7 @@ using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Objects {
-    public partial class CarObject {
+    public sealed partial class CarObject {
         private static string[] _kunosCarsIds;
 
         private static bool TestIfKunosUsingGuids(string id) {

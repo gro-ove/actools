@@ -12,10 +12,8 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <Viewbox Width="400" VerticalAlignment="Top" Visibility="{Binding Skin.PreviewImage, Converter={StaticResource ExistToVisibilityConverter}}">
-            <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="0"
-                    Source="{Binding Skin.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="1022" Height="575" />
-        </Viewbox>
+        <mui:BetterImage Filename="{Binding Skin.PreviewImage}" Width="400" VerticalAlignment="Top"
+                Visibility="{Binding Skin.PreviewImage, Converter={StaticResource ExistToVisibilityConverter}}" />
 
         <StackPanel Grid.Column="1" Margin="20 0 0 0" Style="{StaticResource SettingsPanel}" Width="240">
             <DockPanel>
