@@ -1,9 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class LimitedQueue<T> : List<T> {
         public int Limit { get; }
+
+        public LimitedQueue(int limit, [NotNull] IEnumerable<T> collection) : base(collection.Take(limit)) {
+            if (limit <= 0) throw new ArgumentOutOfRangeException(nameof(limit));
+            Limit = limit;
+        }
 
         public LimitedQueue(int limit) : base(limit) {
             if (limit <= 0) throw new ArgumentOutOfRangeException(nameof(limit));

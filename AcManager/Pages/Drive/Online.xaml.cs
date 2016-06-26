@@ -163,12 +163,16 @@ namespace AcManager.Pages.Drive {
 
         public class CombinedFilter<T> : IFilter<T> {
             [CanBeNull]
-            public IFilter<T> First { get; set; }
+            public IFilter<T> First { get; }
+
+            public CombinedFilter(IFilter<T> first) {
+                First = first;
+            }
 
             [CanBeNull]
             public IFilter<T> Second { get; set; }
 
-            public string Source => "__cmb";
+            public string Source => First?.Source;
 
             public bool Test(T obj) {
                 return First?.Test(obj) != false && Second?.Test(obj) != false;
@@ -188,11 +192,8 @@ namespace AcManager.Pages.Drive {
 
             public BaseOnlineManager Manager { get; }
 
-            public readonly string KeyQuickFilter;
-            public readonly string KeySorting;
-
             private void LoadQuickFilter() {
-                var loaded = ValuesStorage.GetString(KeyQuickFilter);
+                var loaded = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, Key);
                 if (loaded == null) return;
                 FilterEmpty = loaded.Contains("drivers");
                 FilterFull = loaded.Contains("full");
@@ -202,7 +203,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void SaveQuickFilter() {
-                ValuesStorage.Set(KeyQuickFilter, GetQuickFilterString());
+                LimitedStorage.Set(LimitedSpace.OnlineQuickFilter, Key, GetQuickFilterString());
             }
 
             private string GetQuickFilterString() {
@@ -250,23 +251,18 @@ namespace AcManager.Pages.Drive {
             }
 
             private static IFilter<ServerEntry> GetFilter(string filterString) {
-                return new CombinedFilter<ServerEntry> {
-                    First = filterString == null ? null : Filter.Create(ServerEntryTester.Instance, filterString)
-                };
+                return new CombinedFilter<ServerEntry>(filterString == null ? null : Filter.Create(ServerEntryTester.Instance, filterString));
             }
 
             public CombinedFilter<ServerEntry> ServerCombinedFilter => (CombinedFilter<ServerEntry>)ListFilter;
 
             public OnlineViewModel(OnlineManagerType type, BaseOnlineManager manager, string filter)
-                    : base(manager, GetFilter(filter), "__online_" + type, false) {
+                    : base(manager, GetFilter(filter), type.ToString(), false) {
                 Type = type;
                 Manager = manager;
-
-                KeyQuickFilter = "__qf_" + Key;
-                KeySorting = "__Online.Sorting_" + Key;
-                LoadQuickFilter();
-                SortingMode = ValuesStorage.GetString(KeySorting);
                 
+                LoadQuickFilter();
+                SortingMode = LimitedStorage.Get(LimitedSpace.OnlineSorting, Key);
                 ServerCombinedFilter.Second = CreateQuickFilter();
             }
 
@@ -335,7 +331,7 @@ namespace AcManager.Pages.Drive {
                     }
 
                     OnPropertyChanged();
-                    ValuesStorage.Set(KeySorting, _sortingMode);
+                    LimitedStorage.Set(LimitedSpace.OnlineSorting, Key, _sortingMode);
                 }
             }
 

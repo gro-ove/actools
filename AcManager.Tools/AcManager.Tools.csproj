@@ -177,6 +177,7 @@
     <Compile Include="Helpers\IAcControlsConflictResolver.cs" />
     <Compile Include="Helpers\IniFileExtension.cs" />
     <Compile Include="Helpers\IUserPresetable.cs" />
+    <Compile Include="Helpers\LimitedSpace.cs" />
     <Compile Include="Helpers\Loaders\AcClubLoader.cs" />
     <Compile Include="Helpers\Loaders\AssettoDbLoader.cs" />
     <Compile Include="Helpers\Loaders\DirectLoader.cs" />

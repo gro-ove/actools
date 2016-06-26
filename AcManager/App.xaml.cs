@@ -7,12 +7,12 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using AcManager.Controls;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
+using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Properties;
@@ -102,6 +102,9 @@ namespace AcManager {
             if (!AppArguments.GetBool(AppFlag.DisableSaving)) {
                 ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
             }
+
+            LimitedSpace.Initialize();
+            LimitedStorage.Initialize();
 
             DataProvider.Initialize();
 

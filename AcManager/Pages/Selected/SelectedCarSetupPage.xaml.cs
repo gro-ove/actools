@@ -42,10 +42,10 @@ namespace AcManager.Pages.Selected {
             public SelectedCarSetupPageViewModel(CarObject car, [NotNull] CarSetupObject acObject) : base(acObject) {
                 Car = car;
 
-                var main = Car.Data.GetIniFile("car.ini");
+                var main = Car.AcdData.GetIniFile("car.ini");
                 SelectedObject.FuelMaximum = main["FUEL"].GetInt("MAX_FUEL", 0);
 
-                var tyres = Car.Data.GetIniFile("tyres.ini");
+                var tyres = Car.AcdData.GetIniFile("tyres.ini");
                 Tyres = tyres.GetSections("FRONT", -1).Select((x, i) => new SettingEntry(i, x.Get("NAME"))).ToArray();
                 SelectedTyres = Tyres.ElementAtOrDefault(SelectedObject.Tyres);
 
@@ -118,8 +118,8 @@ namespace AcManager.Pages.Selected {
                 }
 
                 await Task.Run(() => {
-                    _carObject.Data.GetIniFile("car.ini");
-                    _carObject.Data.GetIniFile("tyres.ini");
+                    _carObject.AcdData.GetIniFile("car.ini");
+                    _carObject.AcdData.GetIniFile("tyres.ini");
                 }, cancellationToken);
 
                 _object = await _carObject.SetupsManager.GetByIdAsync(_id);

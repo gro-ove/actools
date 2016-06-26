@@ -87,7 +87,6 @@
                                                                 <Button Content="{Binding DisplayName}" Command="controls:ModernWindow.NavigateTitleLink"
                                                                         CommandParameter="{Binding}" CommandTarget="{Binding ElementName=ContentFrame}"
                                                                         Style="{StaticResource SystemButtonLink}" x:Name="PART_Button" />
-
                                                                 <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right"
                                                                         Fill="{DynamicResource Go}" Margin="0 -6 -1 0" IsHitTestVisible="False"
                                                                         Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />

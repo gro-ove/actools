@@ -323,7 +323,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private Point _offset;
 
         protected override Size MeasureOverride(Size constraint) {
-            return MeasureArrangeHelper(constraint);
+            _size = MeasureArrangeHelper(constraint);
+            return new Size(Math.Min(_size.Width, constraint.Width), Math.Min(_size.Height, constraint.Height));
         }
 
         private double HorizontalContentAlignmentMultipler => HorizontalContentAlignment == HorizontalAlignment.Center ? 0.5d :
@@ -334,9 +335,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         protected override Size ArrangeOverride(Size arrangeSize) {
             _size = MeasureArrangeHelper(arrangeSize);
-            if (Filename?.Contains("preview.jpg") == true) {
-                Logging.Write(Filename + ": " + arrangeSize + "; " + _size.Width + "×" + _size.Height + $"; {_current.Width}×{_current.Height}");
-            }
             _offset = new Point((arrangeSize.Width - _size.Width) * HorizontalContentAlignmentMultipler,
                     (arrangeSize.Height - _size.Height) * VerticalContentAlignmentMultipler);
             return new Size(double.IsPositiveInfinity(arrangeSize.Width) ? _size.Width : arrangeSize.Width,

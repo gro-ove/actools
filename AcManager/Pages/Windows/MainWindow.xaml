@@ -76,7 +76,7 @@
         <!-- ReSharper disable once Xaml.PathError -->
         <mui:TitleLink DisplayName="enter key" Source="cmd://enterkey" IsAccented="True" />
     </mui:ModernWindow.TitleLinks>
-    
+
     <Popup Placement="Absolute" HorizontalOffset="{Binding Left, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
             VerticalOffset="{Binding Top, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
             Height="{Binding ActualHeight, ElementName=Window, Converter={x:Static windows:MainWindow.PopupHeightConverter}}"

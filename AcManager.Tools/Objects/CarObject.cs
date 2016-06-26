@@ -145,6 +145,8 @@ namespace AcManager.Tools.Objects {
             } else if (FileUtils.IsAffected(filename, UpgradeIcon)) {
                 CheckUpgradeIcon();
                 OnImageChangedValue(UpgradeIcon);
+            } else if (FileUtils.IsAffected(filename, Path.Combine(Location, "data.acd"))) {
+                UpdateAcdData();
             }
 
             return true;

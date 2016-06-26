@@ -163,9 +163,9 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public virtual void ViewInExplorer() {
             if (File.GetAttributes(Location).HasFlag(FileAttributes.Directory)) {
-                Process.Start("explorer", Location);
+                WindowsHelper.ViewDirectory(Location);
             } else {
-                Process.Start("explorer", "/select," + Location);
+                WindowsHelper.ViewFile(Location);
             }
         }
 

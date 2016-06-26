@@ -1163,6 +1163,9 @@
   <ItemGroup>
     <Resource Include="Assets\Livery\Styles\Tesla.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="About\ReleaseNotes\0.6.285.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)\Properties

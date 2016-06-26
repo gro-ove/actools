@@ -6,8 +6,7 @@ using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     [ContentProperty("MenuItems")]
-    public class ButtonWithComboBox
-            : Button {
+    public class ButtonWithComboBox : Button {
         public ButtonWithComboBox() {
             DefaultStyleKey = typeof(ButtonWithComboBox);
             MenuItems = new Collection<DependencyObject>();

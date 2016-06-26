@@ -240,7 +240,7 @@
                                 TextTrimming="CharacterEllipsis" Margin="2 5 2 5" Padding="2" ToolTip="{StaticResource TrackPreviewTooltip}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource Small}">
-                                    <Setter Property="Text" Value="{Binding Track.DisplayName}" />
+                                    <Setter Property="Text" Value="{Binding Track.Name}" />
                                     <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Track}" Value="{x:Null}">
@@ -343,7 +343,7 @@
                                 TextTrimming="CharacterEllipsis" Margin="2 5 2 5" Padding="2" ToolTip="{StaticResource TrackPreviewTooltip}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource Small}">
-                                    <Setter Property="Text" Value="{Binding Track.DisplayName}" />
+                                    <Setter Property="Text" Value="{Binding Track.Name}" />
                                     <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Track}" Value="{x:Null}">

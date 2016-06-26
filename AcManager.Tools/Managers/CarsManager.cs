@@ -22,6 +22,7 @@ namespace AcManager.Tools.Managers {
         }
 
         private static readonly string[] WatchedFiles = {
+            @"data.acd",
             @"logo.png",
             @"ui",
             @"ui\badge.png",

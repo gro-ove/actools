@@ -255,7 +255,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void Link_PropertyChanged(object sender, PropertyChangedEventArgs args) {
             if (args.PropertyName != nameof(Link.Source)) return;
-            SelectedSource = (sender as Link)?.Source;
+            var link = sender as Link;
+            SelectedSource = link?.Source;
+
+            if (link == null || SaveKey == null || link.NonSelectable) return;
+            var group = (from g in LinkGroups
+                         where g.Links.Contains(link)
+                         select g).FirstOrDefault();
+            if (group != null) {
+                ValuesStorage.Set($"{SaveKey}__{group.GroupKey}", link.Source);
+            }
+            ValuesStorage.Set($"{SaveKey}_link", link.Source);
         }
 
         private void OnLinkGroupsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {

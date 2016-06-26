@@ -15,6 +15,7 @@ namespace AcTools.DataFile {
             var dataAcd = Path.Combine(carDirectory, "data.acd");
             if (File.Exists(dataAcd)) {
                 _acd = Acd.FromFile(dataAcd);
+                IsPacked = true;
             } else {
                 var dataDirectory = Path.Combine(carDirectory, "data");
                 if (Directory.Exists(dataDirectory)) {
@@ -22,6 +23,8 @@ namespace AcTools.DataFile {
                 }
             }
         }
+
+        public bool IsPacked { get; }
 
         public bool IsEmpty => _acd == null;
 

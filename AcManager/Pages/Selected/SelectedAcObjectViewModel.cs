@@ -5,6 +5,7 @@ using AcManager.Annotations;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using StringBasedFilter;
 

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
@@ -39,15 +40,15 @@ namespace AcManager.Tools.Objects {
 
                 if (_selectedSkin == null) return;
                 if (_selectedSkin.Id == SkinsWrappers.FirstOrDefault()?.Value.Id) {
-                    ValuesStorage.Remove("__carobject_selectedskin_" + Id);
+                    LimitedStorage.Remove(LimitedSpace.SelectedSkin, Id);
                 } else {
-                    ValuesStorage.Set("__carobject_selectedskin_" + Id, _selectedSkin.Id);
+                    LimitedStorage.Set(LimitedSpace.SelectedSkin, Id, _selectedSkin.Id);
                 }
             }
         }
 
         private void SelectPreviousOrDefaultSkin() {
-            var selectedSkinId = ValuesStorage.GetString("__carobject_selectedskin_" + Id);
+            var selectedSkinId = LimitedStorage.Get(LimitedSpace.SelectedSkin, Id);
             SelectedSkin = (selectedSkinId == null ? null : SkinsManager.GetById(selectedSkinId)) ?? SkinsManager.GetDefault();
         }
 

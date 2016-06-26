@@ -64,14 +64,16 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                 };
 
                 var content = FileUtils.GetFilesAndDirectories(TargetDirectory).ToList();
-                foreach (var listener in _listeners) {
-                    _innerWatcher.Changed += listener.FileOrDirectoryChanged;
-                    _innerWatcher.Created += listener.FileOrDirectoryCreated;
-                    _innerWatcher.Deleted += listener.FileOrDirectoryDeleted;
-                    _innerWatcher.Renamed += listener.FileOrDirectoryRenamed;
+                lock (_listeners) {
+                    foreach (var listener in _listeners) {
+                        _innerWatcher.Changed += listener.FileOrDirectoryChanged;
+                        _innerWatcher.Created += listener.FileOrDirectoryCreated;
+                        _innerWatcher.Deleted += listener.FileOrDirectoryDeleted;
+                        _innerWatcher.Renamed += listener.FileOrDirectoryRenamed;
 
-                    foreach (var sub in content) {
-                        listener.FileOrDirectoryCreated(this, new FileSystemEventArgs(WatcherChangeTypes.Created, TargetDirectory, Path.GetFileName(sub)));
+                        foreach (var sub in content) {
+                            listener.FileOrDirectoryCreated(this, new FileSystemEventArgs(WatcherChangeTypes.Created, TargetDirectory, Path.GetFileName(sub)));
+                        }
                     }
                 }
             } else if (_innerWatcher != null) {
@@ -81,8 +83,10 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                 _innerWatcher.Dispose();
                 _innerWatcher = null;
 
-                foreach (var listener in _listeners) {
-                    listener.FileOrDirectoryDeleted(this, new FileSystemEventArgs(WatcherChangeTypes.Deleted, TargetDirectory, null));
+                lock (_listeners) {
+                    foreach (var listener in _listeners) {
+                        listener.FileOrDirectoryDeleted(this, new FileSystemEventArgs(WatcherChangeTypes.Deleted, TargetDirectory, null));
+                    }
                 }
             }
         }
@@ -98,7 +102,9 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                 _innerWatcher.Renamed += listener.FileOrDirectoryRenamed;
             }
 
-            _listeners.Add(listener);
+            lock (_listeners) {
+                _listeners.Add(listener);
+            }
         }
 
         public void Dispose() {
@@ -114,7 +120,9 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                 _helperWatcher = null;
             }
 
-            _listeners.Clear();
+            lock (_listeners) {
+                _listeners.Clear();
+            }
         }
     }
 }

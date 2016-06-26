@@ -37,13 +37,6 @@ namespace AcManager.Controls.CustomShowroom {
             Buttons = new Button[0];
         }
 
-        private void Label_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            if (e.ClickCount != 1) return;
-
-            var label = (Label)sender;
-            Keyboard.Focus(label.Target);
-        }
-
         private DispatcherTimer _timer;
 
         private void LiteShowroomTools_OnLoaded(object sender, RoutedEventArgs e) {
@@ -133,9 +126,9 @@ namespace AcManager.Controls.CustomShowroom {
                     AmbientShadowHideWheels = o.AmbientShadowHideWheels;
                     Renderer.LiveReload = o.LiveReload;
                 }, () => {
-                    AmbientShadowDiffusion = 40.0;
-                    AmbientShadowBrightness = 350.0;
-                    AmbientShadowIterations = 2000;
+                    AmbientShadowDiffusion = 60d;
+                    AmbientShadowBrightness = 230d;
+                    AmbientShadowIterations = 3200;
                     AmbientShadowHideWheels = false;
                     Renderer.LiveReload = false;
                 });
@@ -197,7 +190,7 @@ namespace AcManager.Controls.CustomShowroom {
             public double AmbientShadowDiffusion {
                 get { return _ambientShadowDiffusion; }
                 set {
-                    value = MathUtils.Clamp(value, 0.0, 100.0);
+                    value = value.Clamp(0.0, 100.0);
                     if (Equals(value, _ambientShadowDiffusion)) return;
                     _ambientShadowDiffusion = value;
                     OnPropertyChanged();
@@ -210,7 +203,7 @@ namespace AcManager.Controls.CustomShowroom {
             public double AmbientShadowBrightness {
                 get { return _ambientShadowBrightness; }
                 set {
-                    value = MathUtils.Clamp(value, 150.0, 800.0);
+                    value = value.Clamp(150.0, 800.0);
                     if (Equals(value, _ambientShadowBrightness)) return;
                     _ambientShadowBrightness = value;
                     OnPropertyChanged();
@@ -223,7 +216,7 @@ namespace AcManager.Controls.CustomShowroom {
             public int AmbientShadowIterations {
                 get { return _ambientShadowIterations; }
                 set {
-                    value = MathUtils.Clamp(value, 400, 4000);
+                    value = (int)MathUtils.Round(value, 100).Clamp(400, 4000);
                     if (Equals(value, _ambientShadowIterations)) return;
                     _ambientShadowIterations = value;
                     OnPropertyChanged();

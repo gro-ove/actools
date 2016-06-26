@@ -52,7 +52,13 @@ namespace AcManager.Pages.Settings {
                         x.StartsWith("__carobject_selectedskin_") ||
                         x.StartsWith("__trackslocator_") ||
                         x.StartsWith("__TimezoneDeterminer_") ||
-                        x.StartsWith("__upgradeiconeditor_"));
+                        x.StartsWith("__upgradeiconeditor_") ||
+                        x.StartsWith("LinkGroupFilterable.Selected_") ||
+                        x.StartsWith("LinkGroupFilterable.RecentlyClosed_") ||
+                        x.StartsWith(".") ||
+                        x.StartsWith("__qf___online_") ||
+                        x.StartsWith("__Online.Sorting__online_") ||
+                        x.StartsWith("__online_"));
             }));
         }
     }

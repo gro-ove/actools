@@ -95,6 +95,7 @@
     <Compile Include="Helpers\ContextMenuExtension.cs" />
     <Compile Include="Helpers\FileDialogFilters.cs" />
     <Compile Include="Helpers\HorizontalScrollBehavior.cs" />
+    <Compile Include="Helpers\LimitedStorage.cs" />
     <Compile Include="Helpers\LocalizationHelper.cs" />
     <Compile Include="Helpers\Logging.cs" />
     <Compile Include="Helpers\LZF.cs" />

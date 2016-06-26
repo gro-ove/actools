@@ -64,7 +64,7 @@ namespace AcManager.Tools.Helpers {
             private int? _onlineServerId;
 
             public int OnlineServerId {
-                get { return _onlineServerId ?? (_onlineServerId = ValuesStorage.GetInt("Settings.OnlineSettings.OnlineServerId", 0)).Value; }
+                get { return _onlineServerId ?? (_onlineServerId = ValuesStorage.GetInt("Settings.OnlineSettings.OnlineServerId", 1)).Value; }
                 set {
                     if (Equals(value, _onlineServerId)) return;
                     _onlineServerId = value;

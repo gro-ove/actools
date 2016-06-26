@@ -4,12 +4,23 @@ using System.Linq;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Presentation {
+    public class LinkChangedEventArgs : EventArgs {
+        public LinkChangedEventArgs(string oldValue, string newValue) {
+            OldValue = oldValue;
+            NewValue = newValue;
+        }
+
+        public string OldValue { get; }
+
+        public string NewValue { get; }
+    }
+
     public class LinkGroupFilterable : LinkGroup {
-        private string KeyGroup => "__linkGroup_" + _source;
+        private string KeyGroup => "lgf_" + _source;
 
-        private string KeySelected => "LinkGroupFilterable.Selected_" + _source;
+        private string KeySelected => ".lgf.s_" + _source;
 
-        private string KeyRecentlyClosed => "LinkGroupFilterable.RecentlyClosed" + _source;
+        private string KeyRecentlyClosed => ".lgf.rc_" + _source;
 
         private bool _initialized;
 
@@ -31,8 +42,8 @@ namespace FirstFloor.ModernUI.Presentation {
                 link.Close += Link_Close;
             }
 
-            var source = ValuesStorage.GetUri(KeySelected);
-            _selectedLink = Links.FirstOrDefault(x => x.Source == source) ?? Links.FirstOrDefault();
+            var source = ValuesStorage.GetString(KeySelected);
+            _selectedLink = Links.FirstOrDefault(x => x.DisplayName == source) ?? Links.FirstOrDefault();
 
             var rightLink = new LinkInputEmpty(Source);
             Links.Add(rightLink);
@@ -42,10 +53,9 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         private Link _selectedLink;
+
         public override Link SelectedLink {
-            get {
-                return _selectedLink;
-            }
+            get { return _selectedLink; }
             set {
                 if (_selectedLink == value) return;
                 if (_selectedLink != null) {
@@ -57,7 +67,7 @@ namespace FirstFloor.ModernUI.Presentation {
                 OnPropertyChanged();
 
                 if (value?.Source != null) {
-                    ValuesStorage.Set(KeySelected, value.Source);
+                    ValuesStorage.Set(KeySelected, value.DisplayName);
                 }
             }
         }
@@ -82,11 +92,18 @@ namespace FirstFloor.ModernUI.Presentation {
             SaveRecentlyClosed();
         }
 
+        public event EventHandler<LinkChangedEventArgs> LinkChanged;
+
         private void Link_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(LinkInput.DisplayName)) return;
 
             var link = sender as LinkInput;
             if (link == null) return;
+
+            LinkChanged?.Invoke(this, new LinkChangedEventArgs(link.PreviousValue, link.DisplayName));
+            if (ReferenceEquals(link, SelectedLink)) {
+                ValuesStorage.Set(KeySelected, link.DisplayName);
+            }
 
             var sameValue = Links.OfType<LinkInput>().FirstOrDefault(x => x.DisplayName == link.DisplayName && x != link);
             if (sameValue != null) {

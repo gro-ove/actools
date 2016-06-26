@@ -12,11 +12,15 @@ namespace FirstFloor.ModernUI.Presentation {
         private string _value;
         private readonly Uri _baseUri;
 
+        internal string PreviousValue;
+
         public override string DisplayName {
             get { return _value; }
             set {
                 value = value.Trim();
                 if (_value == value) return;
+
+                PreviousValue = _value;
                 _value = value;
 
                 if (value == "") {

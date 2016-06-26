@@ -19,11 +19,14 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
+using AcTools.AcdFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 using StringBasedFilter;
 using MenuItem = System.Windows.Controls.MenuItem;
 
@@ -223,6 +226,47 @@ namespace AcManager.Pages.Selected {
                     ShowInTaskbar = false
                 }.ShowDialogWithoutBlocking();
             }));
+
+            private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
+
+            private RelayCommand _readDataCommand;
+
+            public RelayCommand ReadDataCommand => _readDataCommand ?? (_readDataCommand = new RelayCommand(o => {
+                var source = Path.Combine(SelectedObject.Location, "data.a" + "cd");
+                try {
+                    var destination = FileUtils.EnsureUnique(DataDirectory);
+                    Acd.FromFile(source).ExportDirectory(destination);
+                    WindowsHelper.ViewDirectory(destination);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t read data", "Make sure file exists and there is enough space.", e);
+                }
+            }, o => SettingsHolder.Common.DeveloperMode && SelectedObject.AcdData.IsPacked));
+
+            private RelayCommand _packDataCommand;
+
+            public RelayCommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new RelayCommand(o => {
+                try {
+                    var destination = Path.Combine(SelectedObject.Location, "data.a" + "cd");
+                    var exists = File.Exists(destination);
+
+                    if (SelectedObject.Author == AcCommonObject.AuthorKunos && ModernDialog.ShowMessage(
+                            "You’re going to repack original Kunos data. Result most likely will differ, so you won’t be able to play online. Are you sure you want to continue?[br][br]Original “data.acd” will be moved to the Recycle Bin.",
+                            "Warning!", MessageBoxButton.YesNo) != MessageBoxResult.Yes ||
+                            SelectedObject.Author != AcCommonObject.AuthorKunos && exists && ModernDialog.ShowMessage(
+                                    "Packed data already exists. Replace it?[br][br]Original “data.acd” will be moved to the Recycle Bin.",
+                                    "Warning!", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                        return;
+                    }
+
+                    if (exists) {
+                        FileUtils.Recycle(destination);
+                    }
+                    Acd.FromDirectory(DataDirectory).Save(destination);
+                    WindowsHelper.ViewFile(destination);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t pack data", "Make sure there is enough space.", e);
+                }
+            }, o => SettingsHolder.Common.DeveloperMode && Directory.Exists(DataDirectory)));
         }
 
         private string _id;
@@ -260,13 +304,16 @@ namespace AcManager.Pages.Selected {
 
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
-
+                
                 new InputBinding(_model.OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(_model.OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
 
                 new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control)),
-                new InputBinding(_model.ManageSetupsCommand, new KeyGesture(Key.U, ModifierKeys.Control))
+                new InputBinding(_model.ManageSetupsCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
+
+                new InputBinding(_model.PackDataCommand, new KeyGesture(Key.J, ModifierKeys.Control)),
+                new InputBinding(_model.ReadDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt)),
             });
             InitializeComponent();
         }

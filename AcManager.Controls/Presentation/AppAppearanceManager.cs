@@ -43,7 +43,7 @@ namespace AcManager.Controls.Presentation {
                 AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
                 IdealFormattingMode = ValuesStorage.GetBool(KeyIdealFormattingMode, OptionIdealFormattingModeDefaultValue);
                 SmallFont = ValuesStorage.GetBool(KeySmallFont);
-                BitmapScalingMode = ValuesStorage.GetEnum(KeyBitmapScaling, BitmapScalingMode.LowQuality);
+                BitmapScalingMode = ValuesStorage.GetEnum(KeyBitmapScaling, BitmapScalingMode.HighQuality);
                 LargeSubMenuFont = ValuesStorage.GetBool(KeyLargeSubMenuFont);
                 PopupToolBars = ValuesStorage.GetBool(KeyPopupToolBars);
                 FrameAnimation = FrameAnimations.FirstOrDefault(x => x.Id == ValuesStorage.GetString(KeyFrameAnimation)) ?? FrameAnimations.First();

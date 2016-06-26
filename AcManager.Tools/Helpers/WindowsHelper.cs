@@ -11,5 +11,13 @@ namespace AcManager.Tools.Helpers {
             ProcessExtension.Start(MainExecutingFile.Location, Environment.GetCommandLineArgs().Skip(1).Prepend(RestartArg));
             Application.Current.Shutdown();
         }
+
+        public static void ViewDirectory(string directory) {
+            ProcessExtension.Start("explorer", new [] { directory });
+        }
+
+        public static void ViewFile(string filename) {
+            ProcessExtension.Start("explorer", new[] { "/select," + filename });
+        }
     }
 }

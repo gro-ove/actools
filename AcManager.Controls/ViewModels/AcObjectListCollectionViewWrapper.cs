@@ -1,5 +1,6 @@
 ﻿using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -10,15 +11,15 @@ namespace AcManager.Controls.ViewModels {
 
         public AcObjectListCollectionViewWrapper([NotNull] IAcManagerNew list, IFilter<T> listFilter, string key, bool allowNonSelected)
                 : base(list, listFilter, allowNonSelected) {
-            Key = key + "_" + typeof(T) + "__" + listFilter?.Source;
+            Key = key + "_" + typeof(T).Name + "_" + listFilter?.Source;
         }
 
         protected override string LoadCurrentId() {
-            return ValuesStorage.GetString(Key);
+            return LimitedStorage.Get(LimitedSpace.SelectedEntry, Key);
         }
 
         protected override void SaveCurrentKey(string id) {
-            ValuesStorage.Set(Key, id);
+            LimitedStorage.Set(LimitedSpace.SelectedEntry, Key, id);
         }
     }
 }

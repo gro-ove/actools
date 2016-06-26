@@ -397,17 +397,20 @@
                         </mui:BetterImage.ToolTip>
                     </mui:BetterImage>
 
-                    <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                            ScrollViewer.CanContentScroll="True" Margin="0 0 0 8" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}"
-                            MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}" VirtualizingPanel.IsVirtualizing="true"
-                            VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
-                            Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=564}">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                    </ListBox>
+                    <Border
+                            Visibility="{Binding KunosCareerUserSkin, Source={x:Static achelpers:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                ScrollViewer.CanContentScroll="True" Margin="0 0 0 8" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}"
+                                MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}" VirtualizingPanel.IsVirtualizing="true"
+                                VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
+                                Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=564}">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                    </Border>
 
                     <Grid Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top">
                         <mui:BetterImage Filename="{Binding TrackObject.PreviewImage}" Stretch="UniformToFill" MaxWidth="240" />

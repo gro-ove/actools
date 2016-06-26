@@ -167,7 +167,7 @@ namespace AcManager.Pages.Drive {
             var control = new CarBlock {
                 Car = ev.Car,
                 SelectedSkin = ev.CarSkin,
-                SelectSkin = true,
+                SelectSkin = SettingsHolder.Drive.KunosCareerUserSkin,
                 OpenShowroom = true
             };
 
@@ -184,7 +184,7 @@ namespace AcManager.Pages.Drive {
             dialog.Buttons = new[] { dialog.OkButton, dialog.CancelButton };
             dialog.ShowDialog();
 
-            if (dialog.IsResultOk) {
+            if (dialog.IsResultOk && SettingsHolder.Drive.KunosCareerUserSkin) {
                 ev.CarSkin = control.SelectedSkin;
             }
         }

@@ -13,10 +13,13 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Miscellaneous;
+using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -69,6 +72,56 @@ namespace AcManager.Pages.Windows {
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterkey"), Model.EnterKeyCommand);
             AppKeyHolder.ProceedMainWindow(this);
+            
+            foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
+                                                 .Where(x => x.Source.OriginalString.Contains("/online.xaml", StringComparison.OrdinalIgnoreCase))) {
+                result.LinkChanged += OnlineLinkChanged;
+            }
+
+            foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
+                                                 .Where(x => string.Equals(x.GroupKey, "content", StringComparison.OrdinalIgnoreCase))) {
+                result.LinkChanged += ContentLinkChanged;
+            }
+        }
+
+        /// <summary>
+        /// Temporary fix.
+        /// </summary>
+        private static void OnlineLinkChanged(object sender, LinkChangedEventArgs e) {
+            var group = (LinkGroupFilterable)sender;
+            var type = group.Source.GetQueryParamEnum<OnlineManagerType>("Mode");
+
+            var oldKey = type + "_" + typeof(ServerEntry).Name + "_" + e.OldValue;
+            var newKey = type + "_" + typeof(ServerEntry).Name + "_" + e.NewValue;
+            LimitedStorage.Move(LimitedSpace.SelectedEntry, oldKey, newKey);
+            LimitedStorage.Move(LimitedSpace.OnlineSorting, oldKey, newKey);
+            LimitedStorage.Move(LimitedSpace.OnlineQuickFilter, oldKey, newKey);
+        }
+
+        /// <summary>
+        /// Temporary fix.
+        /// </summary>
+        private static void ContentLinkChanged(object sender, LinkChangedEventArgs e) {
+            var group = (LinkGroupFilterable)sender;
+
+            Type type;
+            switch (group.DisplayName) {
+                case "cars":
+                    type = typeof(CarObject);
+                    break;
+                case "tracks":
+                    type = typeof(TrackObject);
+                    break;
+                case "showrooms":
+                    type = typeof(ShowroomObject);
+                    break;
+                default:
+                    return;
+            }
+
+            var oldKey = "Content_" + type.Name + "_" + e.OldValue;
+            var newKey = "Content_" + type.Name + "_" + e.NewValue;
+            LimitedStorage.Move(LimitedSpace.SelectedEntry, oldKey, newKey);
         }
 
         private class NavigateCommand : CommandBase {
@@ -255,7 +308,7 @@ namespace AcManager.Pages.Windows {
 
             if (Popup.IsOpen) {
                 Popup.IsOpen = false;
-            } else if (_openOnNext){
+            } else if (_openOnNext) {
                 if (Popup.Child == null) {
                     Popup.Child = new QuickSwitchesBlock();
                     AcSettingsHolder.ControlsPresetLoading += Controls_PresetLoading;

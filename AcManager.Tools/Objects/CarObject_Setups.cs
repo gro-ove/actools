@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Input;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using JetBrains.Annotations;
@@ -27,13 +28,19 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private DataWrapper _data;
+        public void UpdateAcdData() {
+            _acdData = null;
+            OnPropertyChanged(nameof(AcdData));
+            CommandManager.InvalidateRequerySuggested();
+        }
 
-        public DataWrapper Data {
+        private DataWrapper _acdData;
+
+        public DataWrapper AcdData {
             get {
-                if (_data != null) return _data;
-                _data = DataWrapper.FromFile(Location);
-                return _data;
+                if (_acdData != null) return _acdData;
+                _acdData = DataWrapper.FromFile(Location);
+                return _acdData;
             }
         }
     }
