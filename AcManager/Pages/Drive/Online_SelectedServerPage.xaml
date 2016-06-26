@@ -2,9 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Loaded="Online_SelectedServerPage_OnLoaded" Unloaded="Online_SelectedServerPage_OnUnloaded"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" Loaded="Online_SelectedServerPage_OnLoaded" Unloaded="Online_SelectedServerPage_OnUnloaded"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" PreviewMouseDown="Online_SelectedServerPage_OnPreviewMouseDown">
 
     <UserControl.Resources>
@@ -30,8 +29,8 @@
                     <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <DockPanel HorizontalAlignment="Stretch" Margin="0 12 0 0">
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
-                                x:Name="ErrorIcon" DockPanel.Dock="Right" />
+                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
+                                DockPanel.Dock="Right" />
                         <TextBlock Text="Errors:" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
                     </DockPanel>
 
@@ -83,27 +82,23 @@
                     <!-- track & car -->
                     <Grid Margin="0 0 0 20" Height="160">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
+                            <ColumnDefinition/>
                             <ColumnDefinition Width="10" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
                         <Grid ClipToBounds="True" Background="Gray" DataContext="{Binding Track}">
-                            <Image Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
-                                    RenderOptions.BitmapScalingMode="HighQuality" />
-                            <Image Source="{Binding OutlineImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="Uniform"
-                                    RenderOptions.BitmapScalingMode="HighQuality" />
-                            <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#88555555" Text="{Binding Name}"
-                                    Foreground="White" />
+                            <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill" />
+                            <mui:BetterImage Filename="{Binding OutlineImage}" ShowBroken="False" />
+                            <TextBlock Padding="4" VerticalAlignment="Bottom" Background="#88555555" Text="{Binding Name}" Foreground="White" />
                         </Grid>
 
                         <Grid ClipToBounds="True" Background="Gray" Grid.Column="2"
                                 Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Image DataContext="{Binding CarsView.CurrentItem.AvailableSkin}"
-                                    Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
-                                    RenderOptions.BitmapScalingMode="HighQuality" Margin="-25 0 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                            <mui:BetterImage DataContext="{Binding CarsView.CurrentItem.AvailableSkin}" Stretch="UniformToFill"
+                                    Filename="{Binding PreviewImage}" HorizontalAlignment="Center" />
                             <Grid Visibility="{Binding CarsView.CurrentItem.AvailableSkin, Converter={StaticResource NullToVisibilityConverter}}"
-                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#111111">
+                                    Background="#111111">
                                 <TextBlock Style="{StaticResource Heading1}" Text="Skin is missing" Foreground="#444444" HorizontalAlignment="Center"
                                         VerticalAlignment="Center" Margin="0 0 0 20" />
                             </Grid>
@@ -196,18 +191,14 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <DockPanel Width="200">
-                                            <Image RenderOptions.BitmapScalingMode="LowQuality"
-                                                    Source="{Binding CarSkin.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
-                                                    Width="16" Height="16" Margin="4">
-                                                <Image.ToolTip>
+                                            <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4">
+                                                <mui:BetterImage.ToolTip>
                                                     <StackPanel>
-                                                        <Image RenderOptions.BitmapScalingMode="LowQuality"
-                                                                Source="{Binding CarSkin.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
-                                                                Width="256" Height="144" Margin="4" />
+                                                        <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="256" Height="144" Margin="4" />
                                                         <TextBlock Text="{Binding CarSkin.DisplayName}" Margin="4" />
                                                     </StackPanel>
-                                                </Image.ToolTip>
-                                            </Image>
+                                                </mui:BetterImage.ToolTip>
+                                            </mui:BetterImage>
 
                                             <StackPanel Margin="0 2 0 2">
                                                 <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />

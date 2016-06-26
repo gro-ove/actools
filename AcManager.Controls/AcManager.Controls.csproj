@@ -126,25 +126,25 @@
     <Compile Include="Helpers\ErrorMessage.cs" />
     <Compile Include="Helpers\FancyBackgroundManager.cs" />
     <Compile Include="Helpers\PresetsMenuHelper.cs" />
-    <Compile Include="Pages\Dialogs\CarOpenInShowroomDialog.xaml.cs">
+    <Compile Include="Dialogs\CarOpenInShowroomDialog.xaml.cs">
       <DependentUpon>CarOpenInShowroomDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\KunosCareerIntro.xaml.cs">
+    <Compile Include="Dialogs\KunosCareerIntro.xaml.cs">
       <DependentUpon>KunosCareerIntro.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\Prompt.xaml.cs">
+    <Compile Include="Dialogs\Prompt.xaml.cs">
       <DependentUpon>Prompt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\VideoViewer.xaml.cs">
+    <Compile Include="Dialogs\VideoViewer.xaml.cs">
       <DependentUpon>VideoViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\ImageViewer.xaml.cs">
+    <Compile Include="Dialogs\ImageViewer.xaml.cs">
       <DependentUpon>ImageViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\UserPresetsControl_SaveDialog.xaml.cs">
+    <Compile Include="Dialogs\UserPresetsControl_SaveDialog.xaml.cs">
       <DependentUpon>UserPresetsControl_SaveDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\WaitingDialog.xaml.cs">
+    <Compile Include="Dialogs\WaitingDialog.xaml.cs">
       <DependentUpon>WaitingDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\AppAppearanceManager.cs" />
@@ -238,31 +238,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Dialogs\CarOpenInShowroomDialog.xaml">
+    <Page Include="Dialogs\CarOpenInShowroomDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Dialogs\KunosCareerIntro.xaml">
+    <Page Include="Dialogs\KunosCareerIntro.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Dialogs\Prompt.xaml">
+    <Page Include="Dialogs\Prompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Dialogs\VideoViewer.xaml">
+    <Page Include="Dialogs\VideoViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Dialogs\ImageViewer.xaml">
+    <Page Include="Dialogs\ImageViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Dialogs\UserPresetsControl_SaveDialog.xaml">
+    <Page Include="Dialogs\UserPresetsControl_SaveDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Dialogs\WaitingDialog.xaml">
+    <Page Include="Dialogs\WaitingDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

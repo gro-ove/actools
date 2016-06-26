@@ -13,7 +13,7 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Annotations;
-using AcManager.Controls.Pages.Dialogs;
+using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;

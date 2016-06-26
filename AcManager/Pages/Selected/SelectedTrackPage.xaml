@@ -2,8 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-                                   xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-                                   mc:Ignorable="d" d:DesignHeight="300"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedTrackPage+SelectedTrackPageViewModel}">
     <UserControl.Resources>
@@ -63,11 +62,10 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Grid MaxWidth="355">
-                        <Image RenderOptions.BitmapScalingMode="LowQuality" StretchDirection="DownOnly"
-                                Source="{Binding SelectedTrackConfiguration.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
-                        <Image RenderOptions.BitmapScalingMode="LowQuality" StretchDirection="DownOnly"
-                                Source="{Binding SelectedTrackConfiguration.OutlineImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" />
+                    <Grid>
+                        <mui:BetterImage StretchDirection="DownOnly" Filename="{Binding SelectedTrackConfiguration.PreviewImage}" MaxWidth="355" />
+                        <mui:BetterImage StretchDirection="DownOnly" Filename="{Binding SelectedTrackConfiguration.OutlineImage}" MaxWidth="355"
+                                ShowBroken="False" />
                     </Grid>
 
                     <TextBox Grid.Row="1" Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -87,9 +85,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <!-- using Name instead of DisplayName, because Display Name of main track layout contains number of layouts -->
-                            <Image RenderOptions.BitmapScalingMode="LowQuality"
-                                    Source="{Binding OutlineImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="80" Height="60"
-                                    ToolTip="{Binding Name}" Stretch="Uniform" />
+                            <mui:BetterImage Filename="{Binding OutlineImage}" Width="80" Height="60" ToolTip="{Binding Name}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -123,14 +119,16 @@
                             IsEditable="True" Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:WatermarkService.Watermark="?" />
                     <TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer" attached:WatermarkService.Watermark="?" />
+                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
+                            attached:WatermarkService.Watermark="?" />
 
                     <!-- second row -->
                     <TextBlock Text="City:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
                     <TextBlock Text="Author:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
 
                     <ComboBox Text="{Binding City}" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding CitiesList}" IsTextSearchEnabled="True" IsEditable="True"
-                            Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
+                            Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            attached:WatermarkService.Watermark="?" />
                     <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" MouseDown="VersionInfoBlock_OnMouseDown" attached:WatermarkService.Watermark="?"
                             Grid.Column="3" Grid.Row="1" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
 

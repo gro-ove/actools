@@ -24,7 +24,7 @@ namespace AcManager.Controls.UserControls {
         }
 
         public string Prompt(string message, string defaultValue) {
-            return Controls.Pages.Dialogs.Prompt.Show(message, "Webpage says", defaultValue);
+            return Dialogs.Prompt.Show(message, "Webpage says", defaultValue);
         }
 
         public object CmTest() {

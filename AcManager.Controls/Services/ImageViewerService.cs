@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using AcManager.Controls.Pages.Dialogs;
+using AcManager.Controls.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.Services {

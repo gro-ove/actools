@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using AcManager.Controls.Pages.Dialogs;
+using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Addons;
 using AcManager.Tools.Objects;

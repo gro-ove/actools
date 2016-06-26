@@ -61,6 +61,7 @@ namespace AcManager.Tools.Helpers.Api {
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
             request.UserAgent = InternalUtils.GetKunosUserAgent();
+            request.Headers.Add("Accept-Encoding", "gzip");
 
             if (OptionIgnoreSystemProxy) {
                 request.Proxy = null;
@@ -84,7 +85,7 @@ namespace AcManager.Tools.Helpers.Api {
                         throw new Exception("ResponseStream = null");
                     }
 
-                    if (deflated) {
+                    if (deflated || string.Equals(response.Headers.Get("Content-Encoding"), "gzip", StringComparison.OrdinalIgnoreCase)) {
                         using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
                             using (var reader = new StreamReader(deflateStream, Encoding.UTF8)) {
                                 result = reader.ReadToEnd();

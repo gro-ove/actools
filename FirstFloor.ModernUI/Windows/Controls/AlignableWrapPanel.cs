@@ -11,7 +11,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private static bool IsWidthHeightValid(object value) {
             var v = (double)value;
-            return (double.IsNaN(v)) || (v >= 0.0d && !double.IsPositiveInfinity(v));
+            return double.IsNaN(v) || (v >= 0.0d && !double.IsPositiveInfinity(v));
         }
 
         public static readonly DependencyProperty ItemWidthProperty = DependencyProperty.Register("ItemWidth", typeof(double),
@@ -67,12 +67,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             private readonly Orientation _orientation;
 
             internal double Width {
-                get { return (_orientation == Orientation.Horizontal ? U : V); }
+                get { return _orientation == Orientation.Horizontal ? U : V; }
                 private set { if (_orientation == Orientation.Horizontal) U = value; else V = value; }
             }
 
             internal double Height {
-                get { return (_orientation == Orientation.Horizontal ? V : U); }
+                get { return _orientation == Orientation.Horizontal ? V : U; }
                 private set { if (_orientation == Orientation.Horizontal) V = value; else U = value; }
             }
         }
@@ -87,8 +87,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var itemHeightSet = !double.IsNaN(itemHeight);
 
             var childConstraint = new Size(
-                    (itemWidthSet ? itemWidth : constraint.Width),
-                    (itemHeightSet ? itemHeight : constraint.Height));
+                    itemWidthSet ? itemWidth : constraint.Width,
+                    itemHeightSet ? itemHeight : constraint.Height);
 
             var children = InternalChildren;
 
@@ -102,8 +102,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 //this is the size of the child in UV space 
                 var sz = new UvSize(
                         Orientation,
-                        (itemWidthSet ? itemWidth : child.DesiredSize.Width),
-                        (itemHeightSet ? itemHeight : child.DesiredSize.Height));
+                        itemWidthSet ? itemWidth : child.DesiredSize.Width,
+                        itemHeightSet ? itemHeight : child.DesiredSize.Height);
 
                 if (curLineSize.U + sz.U > uvConstraint.U) {
                     //need to switch to another line 
@@ -136,12 +136,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var itemWidth = ItemWidth;
             var itemHeight = ItemHeight;
             double accumulatedV = 0;
-            var itemU = (Orientation == Orientation.Horizontal ? itemWidth : itemHeight);
+            var itemU = Orientation == Orientation.Horizontal ? itemWidth : itemHeight;
             var curLineSize = new UvSize(Orientation);
             var uvFinalSize = new UvSize(Orientation, finalSize.Width, finalSize.Height);
             var itemWidthSet = !double.IsNaN(itemWidth);
             var itemHeightSet = !double.IsNaN(itemHeight);
-            var useItemU = (Orientation == Orientation.Horizontal ? itemWidthSet : itemHeightSet);
+            var useItemU = Orientation == Orientation.Horizontal ? itemWidthSet : itemHeightSet;
 
             var children = InternalChildren;
 
@@ -151,8 +151,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 var sz = new UvSize(
                         Orientation,
-                        (itemWidthSet ? itemWidth : child.DesiredSize.Width),
-                        (itemHeightSet ? itemHeight : child.DesiredSize.Height));
+                        itemWidthSet ? itemWidth : child.DesiredSize.Width,
+                        itemHeightSet ? itemHeight : child.DesiredSize.Height);
 
                 if (curLineSize.U + sz.U > uvFinalSize.U) {
                     //need to switch to another line 
@@ -221,7 +221,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var child = children[i];
                 if (child == null) continue;
                 var childSize = new UvSize(Orientation, child.DesiredSize.Width, child.DesiredSize.Height);
-                var layoutSlotU = (useItemU ? itemU : childSize.U);
+                var layoutSlotU = useItemU ? itemU : childSize.U;
                 child.Arrange(new Rect(
                         isHorizontal ? u : v,
                         isHorizontal ? v : u,

@@ -73,7 +73,7 @@ namespace AcManager.Tools.AcErrors {
         /// {0}: car name or id
         /// {1}: skin id
         /// </summary>
-        [Description("Required skin “{1}” of {0} for is missing")]
+        [Description("Required skin “{1}” for {0} is missing")]
         Data_KunosCareerCarSkinIsMissing,
 
         /// <summary>

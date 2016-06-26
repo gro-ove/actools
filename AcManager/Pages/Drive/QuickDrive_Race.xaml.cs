@@ -27,7 +27,7 @@ using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using StringBasedFilter;
-using WaitingDialog = AcManager.Controls.Pages.Dialogs.WaitingDialog;
+using WaitingDialog = AcManager.Controls.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Race : IQuickDriveModeControl {

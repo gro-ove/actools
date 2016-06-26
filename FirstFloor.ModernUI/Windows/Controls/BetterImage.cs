@@ -113,14 +113,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void OnSourceChanged(object newValue) {
             if (newValue is BitmapEntry) {
                 _loading = false;
-                _loaded = true;
                 _current = (BitmapEntry)newValue;
                 InvalidateVisual();
             } else {
                 var source = newValue as ImageSource;
                 if (newValue == null || source != null) {
                     _loading = false;
-                    _loaded = true;
                     _current = source == null ? new BitmapEntry() : new BitmapEntry(source, (int)source.Width, (int)source.Height);
                     InvalidateVisual();
                 } else {
@@ -184,6 +182,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [ItemNotNull]
         private static async Task<byte[]> ReadAllBytesAsync(string filename, CancellationToken cancellation = default(CancellationToken)) {
+            if (filename.StartsWith("/")) {
+                try {
+                    var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
+                    if (stream != null) {
+                        using (stream) {
+                            var result = new byte[stream.Length];
+                            await stream.ReadAsync(result, 0, (int)stream.Length, cancellation);
+                            return result;
+                        }
+                    }
+                } catch (Exception) {
+                    // ignored
+                }
+            }
+
             using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                 var result = new byte[stream.Length];
                 await stream.ReadAsync(result, 0, (int)stream.Length, cancellation);
@@ -198,6 +211,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             byte[] data;
             try {
+                // TODO: cancellation?
                 data = await ReadAllBytesAsync(filename);
             } catch (Exception) {
                 return new BitmapEntry();
@@ -269,14 +283,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public int InnerDecodeHeight => DecodeHeight;
 
         private BitmapEntry _current;
-        private bool _loading, _loaded;
+        private bool _loading;
 
         private void ReloadImage() {
             if (DelayedCreation) {
                 ReloadImageAsync();
             } else if (!_loading) {
                 _current = LoadBitmapSource(Filename, InnerDecodeWidth, InnerDecodeHeight);
-                _loaded = true;
+                InvalidateMeasure();
                 InvalidateVisual();
             }
         }
@@ -290,7 +304,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 if (!_loading) return;
 
                 _current = current;
-                _loaded = true;
+                InvalidateMeasure();
                 InvalidateVisual();
             } finally {
                 _loading = false;
@@ -298,80 +312,68 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnFilenameChanged() {
-            _loaded = false;
-            if (ClearOnChange) {
+            ReloadImage();
+            if (DelayedCreation && ClearOnChange) {
                 _current = new BitmapEntry();
+                InvalidateVisual();
             }
-            InvalidateVisual();
         }
 
         private Size _size;
         private Point _offset;
-        private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Colors.Transparent);
 
         protected override Size MeasureOverride(Size constraint) {
-            if (Stretch == Stretch.None) return MeasureArrangeHelper(constraint);
-            _size = MeasureArrangeHelper(constraint);
-            return new Size(double.IsPositiveInfinity(constraint.Width) ? _size.Width : constraint.Width,
-                    double.IsPositiveInfinity(constraint.Height) ? _size.Height : constraint.Height);
+            return MeasureArrangeHelper(constraint);
         }
 
+        private double HorizontalContentAlignmentMultipler => HorizontalContentAlignment == HorizontalAlignment.Center ? 0.5d :
+                HorizontalContentAlignment == HorizontalAlignment.Right ? 1d : 0d;
+
+        private double VerticalContentAlignmentMultipler => VerticalContentAlignment == VerticalAlignment.Center ? 0.5d :
+                VerticalContentAlignment == VerticalAlignment.Bottom ? 1d : 0d;
+
         protected override Size ArrangeOverride(Size arrangeSize) {
-            if (Stretch == Stretch.None) return MeasureArrangeHelper(arrangeSize);
             _size = MeasureArrangeHelper(arrangeSize);
-            _offset = new Point((arrangeSize.Width - _size.Width) / 2d, (arrangeSize.Height - _size.Height) / 2d);
+            if (Filename?.Contains("preview.jpg") == true) {
+                Logging.Write(Filename + ": " + arrangeSize + "; " + _size.Width + "×" + _size.Height + $"; {_current.Width}×{_current.Height}");
+            }
+            _offset = new Point((arrangeSize.Width - _size.Width) * HorizontalContentAlignmentMultipler,
+                    (arrangeSize.Height - _size.Height) * VerticalContentAlignmentMultipler);
             return new Size(double.IsPositiveInfinity(arrangeSize.Width) ? _size.Width : arrangeSize.Width,
                     double.IsPositiveInfinity(arrangeSize.Height) ? _size.Height : arrangeSize.Height);
         }
 
         protected override void OnRender(DrawingContext dc) {
-            if (!_loaded) ReloadImage();
-
-            if (Stretch != Stretch.None) {
-                dc.DrawRectangle(TransparentBrush, null, new Rect(new Point(), RenderSize));
-                if (_current.BitmapSource != null) {
-                    dc.DrawImage(_current.BitmapSource, new Rect(_offset, _size));
-                } else if (ShowBroken && _loaded) {
-                    dc.DrawImage(BrokenIcon.ImageSource,
-                            new Rect(new Point((RenderSize.Width - BrokenIcon.Width) / 2d, (RenderSize.Height - BrokenIcon.Height) / 2d), BrokenIcon.Size));
-                }
-            } else if (_current.BitmapSource != null) {
-                dc.DrawImage(_current.BitmapSource, new Rect(new Point(), RenderSize));
-            } else if (ShowBroken && _loaded) {
+            dc.DrawRectangle(Background, null, new Rect(new Point(), RenderSize));
+            if (_current.BitmapSource != null) {
+                dc.DrawImage(_current.BitmapSource, new Rect(_offset, _size));
+            } else if (ShowBroken && !_loading) {
                 dc.DrawImage(BrokenIcon.ImageSource,
                         new Rect(new Point((RenderSize.Width - BrokenIcon.Width) / 2d, (RenderSize.Height - BrokenIcon.Height) / 2d), BrokenIcon.Size));
             }
         }
 
         private static Size ComputeScaleFactor(Size availableSize, Size contentSize, Stretch stretch, StretchDirection stretchDirection) {
-            var scaleX = 1.0;
-            var scaleY = 1.0;
-
-            var isConstrainedWidth = !double.IsPositiveInfinity(availableSize.Width);
-            var isConstrainedHeight = !double.IsPositiveInfinity(availableSize.Height);
-            if (stretch != Stretch.Uniform && stretch != Stretch.UniformToFill && stretch != Stretch.Fill || !isConstrainedWidth && !isConstrainedHeight) {
-                return new Size(scaleX, scaleY);
+            var unlimitedWidth = double.IsPositiveInfinity(availableSize.Width);
+            var unlimitedHeight = double.IsPositiveInfinity(availableSize.Height);
+            if (stretch != Stretch.Uniform && stretch != Stretch.UniformToFill && stretch != Stretch.Fill || unlimitedWidth && unlimitedHeight) {
+                return new Size(1d, 1d);
             }
-
-            scaleX = Equals(contentSize.Width, 0d) ? 0.0 : availableSize.Width / contentSize.Width;
-            scaleY = Equals(contentSize.Height, 0d) ? 0.0 : availableSize.Height / contentSize.Height;
-
-            if (!isConstrainedWidth) {
+            
+            var scaleX = Equals(contentSize.Width, 0d) ? 0.0 : availableSize.Width / contentSize.Width;
+            var scaleY = Equals(contentSize.Height, 0d) ? 0.0 : availableSize.Height / contentSize.Height;
+            if (unlimitedWidth) {
                 scaleX = scaleY;
-            } else if (!isConstrainedHeight) {
+            } else if (unlimitedHeight) {
                 scaleY = scaleX;
             } else {
                 switch (stretch) {
                     case Stretch.Uniform:
-                        var minscale = scaleX < scaleY ? scaleX : scaleY;
-                        scaleX = scaleY = minscale;
+                        scaleX = scaleY = scaleX < scaleY ? scaleX : scaleY;
                         break;
-
                     case Stretch.UniformToFill:
-                        var maxscale = scaleX > scaleY ? scaleX : scaleY;
-                        scaleX = scaleY = maxscale;
+                        scaleX = scaleY = scaleX > scaleY ? scaleX : scaleY;
                         break;
-
                     case Stretch.Fill:
                         break;
                 }
@@ -382,12 +384,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     if (scaleX < 1.0) scaleX = 1.0;
                     if (scaleY < 1.0) scaleY = 1.0;
                     break;
-
                 case StretchDirection.DownOnly:
                     if (scaleX > 1.0) scaleX = 1.0;
                     if (scaleY > 1.0) scaleY = 1.0;
                     break;
-
                 case StretchDirection.Both:
                     break;
             }
@@ -399,6 +399,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_current.BitmapSource == null) {
                 return new Size(double.IsNaN(Width) ? 0d : Width, double.IsNaN(Height) ? 0d : Height);
             }
+
             var scaleFactor = ComputeScaleFactor(inputSize, new Size(_current.Width, _current.Height), Stretch, StretchDirection);
             return new Size(_current.Width * scaleFactor.Width, _current.Height * scaleFactor.Height);
         }
@@ -412,11 +413,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure));
             StretchDirectionProperty.OverrideMetadata(typeof(BetterImage),
                     new FrameworkPropertyMetadata(StretchDirection.Both, FrameworkPropertyMetadataOptions.AffectsMeasure));
+            ClipToBoundsProperty.OverrideMetadata(typeof(BetterImage),
+                    new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
+            BackgroundProperty.OverrideMetadata(typeof(BetterImage),
+                    new FrameworkPropertyMetadata(new SolidColorBrush(Colors.Transparent), FrameworkPropertyMetadataOptions.AffectsRender));
         }
 
         private static Style CreateDefaultStyles() {
             var style = new Style(typeof(BetterImage), null);
             style.Setters.Add(new Setter(FlowDirectionProperty, FlowDirection.LeftToRight));
+            style.Setters.Add(new Setter(HorizontalContentAlignmentProperty, HorizontalAlignment.Center));
+            style.Setters.Add(new Setter(VerticalContentAlignmentProperty, VerticalAlignment.Center));
             style.Seal();
             return style;
         }

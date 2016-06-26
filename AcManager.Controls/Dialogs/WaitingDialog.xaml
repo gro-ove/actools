@@ -1,7 +1,7 @@
-﻿<mui:ModernDialog x:Class="AcManager.Controls.Pages.Dialogs.WaitingDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<mui:ModernDialog x:Class="AcManager.Controls.Dialogs.WaitingDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:dialogs="clr-namespace:AcManager.Controls.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Width="480" Height="240"
+                  mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Width="480" Height="240"
         SizeToContent="Manual" d:DataContext="{d:DesignInstance dialogs:WaitingDialog}" Initialized="OnLoaded">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>

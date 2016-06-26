@@ -29,6 +29,15 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             return result;
         }
 
+        public static int AsInt([CanBeNull] this string value) {
+            int result;
+            if (value == null || !int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
+                return 0;
+            }
+
+            return result;
+        }
+
         public static double AsDouble([CanBeNull] this object value, double defaultValue) {
             if (value is double) {
                 return (double)value;
@@ -49,6 +58,15 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
             double result;
             if (value == null || !double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
+                return 0d;
+            }
+
+            return result;
+        }
+
+        public static double AsDouble([CanBeNull] this string value) {
+            double result;
+            if (value == null || !double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)) {
                 return 0d;
             }
 

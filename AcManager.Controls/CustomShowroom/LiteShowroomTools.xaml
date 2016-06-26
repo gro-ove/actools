@@ -3,9 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:modernui="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="Tools" ShowInTaskbar="False" d:DataContext="{d:DesignInstance customShowroom:LiteShowroomTools+LiteShowroomToolsViewModel}"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" Title="Tools" ShowInTaskbar="False" d:DataContext="{d:DesignInstance customShowroom:LiteShowroomTools+LiteShowroomToolsViewModel}"
         Topmost="True" Loaded="LiteShowroomTools_OnLoaded" Unloaded="LiteShowroomTools_OnUnloaded" Width="250" SizeToContent="Height">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
@@ -111,9 +110,7 @@
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <DockPanel Height="18">
-                                <Image RenderOptions.BitmapScalingMode="LowQuality" Margin="0 0 4 0"
-                                        Source="{Binding LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="18"
-                                        Height="18" />
+                                <mui:BetterImage Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
                                 <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
                             </DockPanel>
                         </DataTemplate>
@@ -142,34 +139,17 @@
                 </DockPanel>
 
                 <DockPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Diffusion: " Target="{x:Reference DiffuseTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        <TextBox Name="DiffuseTextBox" Text="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}', UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                                attached:TextBoxAdvancement.SpecialMode="Number" />
-                        <Label Content="%" Target="{x:Reference DiffuseTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                    </StackPanel>
+                    <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top">Diffusion</mui:ValueLabel>
                     <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
                             IsSnapToTickEnabled="False" />
                 </DockPanel>
                 <DockPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Brightness: " Target="{x:Reference BrightnessTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        <TextBox Name="BrightnessTextBox" Text="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}', UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                                attached:TextBoxAdvancement.SpecialMode="Number" />
-                        <Label Content="%" Target="{x:Reference BrightnessTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                    </StackPanel>
+                    <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top">Brightness</mui:ValueLabel>
                     <Slider Minimum="150" Maximum="800" Value="{Binding AmbientShadowBrightness}" TickFrequency="130" TickPlacement="BottomRight"
                             IsSnapToTickEnabled="False" />
                 </DockPanel>
                 <DockPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Iterations: " Target="{x:Reference IterationsTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        <TextBox Name="IterationsTextBox" Text="{Binding AmbientShadowIterations, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                                attached:TextBoxAdvancement.SpecialMode="Integer" />
-                    </StackPanel>
+                    <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top">Iterations</mui:ValueLabel>
                     <Slider Minimum="400" Maximum="4000" Value="{Binding AmbientShadowIterations}" TickFrequency="720" TickPlacement="BottomRight"
                             IsSnapToTickEnabled="False" />
                 </DockPanel>
@@ -189,26 +169,13 @@
 
                     <TextBlock Text="Size" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                     <DockPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Width: " Target="{x:Reference BrightnessTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                            <TextBox Name="ShadowWidthTextBox"
-                                    Text="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}', UpdateSourceTrigger=PropertyChanged}"
-                                    Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                                    attached:TextBoxAdvancement.SpecialMode="Number" />
-                            <Label Content="m" Target="{x:Reference ShadowWidthTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        </StackPanel>
+                        <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}" Postfix=" m" Mode="Number"
+                                DockPanel.Dock="Top">Width</mui:ValueLabel>
                         <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
                     <DockPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="Length: " Target="{x:Reference BrightnessTextBox}" Padding="10 0 0 0" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                            <TextBox Name="ShadowLengthTextBox"
-                                    Text="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}', UpdateSourceTrigger=PropertyChanged}"
-                                    Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                                    attached:TextBoxAdvancement.SpecialMode="Number" />
-                            <Label Content="m" Target="{x:Reference ShadowLengthTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
-                        </StackPanel>
+                        <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}'}" Postfix=" m" Mode="Number" DockPanel.Dock="Top">Length</mui:ValueLabel>
                         <Slider Minimum="0" Maximum="6" Value="{Binding Renderer.AmbientShadowLength}" TickFrequency="1" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>

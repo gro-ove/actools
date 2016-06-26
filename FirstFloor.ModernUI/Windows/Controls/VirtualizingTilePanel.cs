@@ -16,6 +16,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private ItemsControl _itemsControl;
         private readonly Dictionary<UIElement, Rect> _childLayouts = new Dictionary<UIElement, Rect>();
 
+        public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register(nameof(Orientation), typeof(Orientation),
+                typeof(VirtualizingTilePanel), new PropertyMetadata(Orientation.Horizontal));
+
+        public Orientation Orientation {
+            get { return (Orientation)GetValue(OrientationProperty); }
+            set { SetValue(OrientationProperty, value); }
+        }
+
         public static readonly DependencyProperty ItemWidthProperty =
                 DependencyProperty.Register("ItemWidth", typeof(double), typeof(VirtualizingTilePanel), new PropertyMetadata(1.0, HandleItemDimensionChanged));
 
@@ -55,13 +63,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void Initialize() {
             _itemsControl = ItemsControl.GetItemsOwner(this);
             _itemsGenerator = (IRecyclingItemContainerGenerator)ItemContainerGenerator;
-
             InvalidateMeasure();
         }
 
         protected override void OnItemsChanged(object sender, ItemsChangedEventArgs args) {
             base.OnItemsChanged(sender, args);
-
             InvalidateMeasure();
         }
 
@@ -75,25 +81,69 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _childLayouts.Clear();
 
             var extentInfo = GetExtentInfo(availableSize);
-
             EnsureScrollOffsetIsWithinConstrains(extentInfo);
 
-            var layoutInfo = GetLayoutInfo(availableSize, ItemHeight, extentInfo);
-
+            var layoutInfo = GetLayoutInfo(availableSize, ItemWidth, ItemHeight, extentInfo);
             RecycleItems(layoutInfo);
 
             // Determine where the first item is in relation to previously realized items
             var generatorStartPosition = _itemsGenerator.GeneratorPositionFromIndex(layoutInfo.FirstRealizedItemIndex);
-
             var visualIndex = 0;
 
             var currentX = layoutInfo.FirstRealizedItemLeft;
-            var currentY = layoutInfo.FirstRealizedLineTop;
+            var currentY = layoutInfo.FirstRealizedItemTop;
+
+            var orientation = Orientation;
+            double offsetX, offsetY;
+            switch (HorizontalContentAlignment) {
+                case HorizontalAlignment.Left:
+                case HorizontalAlignment.Stretch:
+                    offsetX = 0d;
+                    break;
+                case HorizontalAlignment.Center:
+                    if (orientation == Orientation.Horizontal) {
+                        offsetX = (availableSize.Width - extentInfo.ItemsPerRow * ItemWidth) / 2d;
+                    } else {
+                        offsetX = Math.Max(availableSize.Width - extentInfo.TotalRows * ItemWidth, 0d) / 2d;
+                    }
+                    break;
+                case HorizontalAlignment.Right:
+                    if (orientation == Orientation.Horizontal) {
+                        offsetX = availableSize.Width - extentInfo.ItemsPerRow * ItemWidth;
+                    } else {
+                        offsetX = Math.Max(availableSize.Width - extentInfo.TotalRows * ItemWidth, 0d);
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            switch (VerticalContentAlignment) {
+                case VerticalAlignment.Top:
+                case VerticalAlignment.Stretch:
+                    offsetY = 0d;
+                    break;
+                case VerticalAlignment.Center:
+                    if (orientation == Orientation.Horizontal) {
+                        offsetY = Math.Max(availableSize.Height - extentInfo.TotalRows * ItemHeight, 0d) / 2d;
+                    } else {
+                        offsetY = (availableSize.Height - extentInfo.ItemsPerRow * ItemHeight) / 2d;
+                    }
+                    break;
+                case VerticalAlignment.Bottom:
+                    if (orientation == Orientation.Horizontal) {
+                        offsetY = Math.Max(availableSize.Height - extentInfo.TotalRows * ItemHeight, 0d);
+                    } else {
+                        offsetY = availableSize.Height - extentInfo.ItemsPerRow * ItemHeight;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             using (_itemsGenerator.StartAt(generatorStartPosition, GeneratorDirection.Forward, true)) {
                 for (var itemIndex = layoutInfo.FirstRealizedItemIndex; itemIndex <= layoutInfo.LastRealizedItemIndex; itemIndex++, visualIndex++) {
                     bool newlyRealized;
-
                     var child = (UIElement)_itemsGenerator.GenerateNext(out newlyRealized);
                     SetVirtualItemIndex(child, itemIndex);
 
@@ -123,15 +173,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     _itemsGenerator.PrepareItemContainer(child);
 
                     child.Measure(new Size(ItemWidth, ItemHeight));
+                    _childLayouts.Add(child, new Rect(currentX + offsetX, currentY + offsetY, ItemWidth, ItemHeight));
 
-                    _childLayouts.Add(child, new Rect(currentX, currentY, ItemWidth, ItemHeight));
-
-                    if (currentX + ItemWidth * 2 >= availableSize.Width) {
-                        // wrap to a new line
-                        currentY += ItemHeight;
-                        currentX = 0;
+                    if (orientation == Orientation.Horizontal) {
+                        if (currentX + ItemWidth * 2 >= availableSize.Width) {
+                            // wrap to a new line
+                            currentY += ItemHeight;
+                            currentX = 0;
+                        } else {
+                            currentX += ItemWidth;
+                        }
                     } else {
-                        currentX += ItemWidth;
+                        if (currentY + ItemHeight * 2 >= availableSize.Height) {
+                            // wrap to a new column
+                            currentX += ItemWidth;
+                            currentY = 0;
+                        } else {
+                            currentY += ItemHeight;
+                        }
                     }
                 }
             }
@@ -139,16 +198,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             RemoveRedundantChildren();
             UpdateScrollInfo(availableSize, extentInfo);
 
-            var desiredSize = new Size(double.IsInfinity(availableSize.Width) ? 0 : availableSize.Width,
-                    double.IsInfinity(availableSize.Height) ? 0 : availableSize.Height);
-
+            var desiredSize = new Size(double.IsInfinity(availableSize.Width) ? 0 : availableSize.Width, double.IsInfinity(availableSize.Height) ? 0 : availableSize.Height);
             _isInMeasure = false;
 
             return desiredSize;
         }
 
         private void EnsureScrollOffsetIsWithinConstrains(ExtentInfo extentInfo) {
-            _offset.Y = Clamp(_offset.Y, 0, extentInfo.MaxVerticalOffset);
+            if (Orientation == Orientation.Horizontal) {
+                _offset.Y = Clamp(_offset.Y, 0, extentInfo.MaxScrollOffset);
+            } else {
+                _offset.X = Clamp(_offset.X, 0, extentInfo.MaxScrollOffset);
+            }
         }
 
         private void RecycleItems(ItemLayoutInfo layoutInfo) {
@@ -170,14 +231,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             foreach (UIElement child in Children) {
                 child.Arrange(_childLayouts[child]);
             }
-
             return finalSize;
         }
 
         private void UpdateScrollInfo(Size availableSize, ExtentInfo extentInfo) {
             _viewportSize = availableSize;
-            _extentSize = new Size(availableSize.Width, extentInfo.ExtentHeight);
-
+            _extentSize = Orientation == Orientation.Horizontal ? new Size(availableSize.Width, extentInfo.ExtentSize) : new Size(extentInfo.ExtentSize, availableSize.Height);
             InvalidateScrollInfo();
         }
 
@@ -195,7 +254,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private ItemLayoutInfo GetLayoutInfo(Size availableSize, double itemHeight, ExtentInfo extentInfo) {
+        private ItemLayoutInfo GetLayoutInfo(Size availableSize, double itemWidth, double itemHeight, ExtentInfo extentInfo) {
             if (_itemsControl == null) {
                 return new ItemLayoutInfo();
             }
@@ -205,38 +264,49 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             // navigates up, the ListBox selects the previous item, and the scrolls that into view - and this triggers the loading of the rest of the items 
             // in that row
 
-            var firstVisibleLine = (int)Math.Floor(VerticalOffset / itemHeight);
+            if (Orientation == Orientation.Horizontal) {
+                var firstVisibleLine = (int)Math.Floor(VerticalOffset / itemHeight);
 
-            var firstRealizedIndex = Math.Max(extentInfo.ItemsPerLine * firstVisibleLine - 1, 0);
-            var firstRealizedItemLeft = firstRealizedIndex % extentInfo.ItemsPerLine * ItemWidth - HorizontalOffset;
-            // ReSharper disable once PossibleLossOfFraction
-            var firstRealizedItemTop = (firstRealizedIndex / extentInfo.ItemsPerLine) * itemHeight - VerticalOffset;
+                var firstRealizedIndex = Math.Max(extentInfo.ItemsPerRow * firstVisibleLine - 1, 0);
+                var firstRealizedItemLeft = firstRealizedIndex % extentInfo.ItemsPerRow * itemWidth - HorizontalOffset;
+                var firstRealizedItemTop = Math.Floor((double)firstRealizedIndex / extentInfo.ItemsPerRow) * itemHeight - VerticalOffset;
 
-            var firstCompleteLineTop = (firstVisibleLine == 0 ? firstRealizedItemTop : firstRealizedItemTop + ItemHeight);
-            var completeRealizedLines = (int)Math.Ceiling((availableSize.Height - firstCompleteLineTop) / itemHeight);
+                var firstCompleteLineTop = (firstVisibleLine == 0 ? firstRealizedItemTop : firstRealizedItemTop + itemHeight);
+                var completeRealizedLines = (int)Math.Ceiling((availableSize.Height - firstCompleteLineTop) / itemHeight);
 
-            var lastRealizedIndex = Math.Min(firstRealizedIndex + completeRealizedLines * extentInfo.ItemsPerLine + 2, _itemsControl.Items.Count - 1);
+                var lastRealizedIndex = Math.Min(firstRealizedIndex + completeRealizedLines * extentInfo.ItemsPerRow + 2, _itemsControl.Items.Count - 1);
+                return new ItemLayoutInfo(firstRealizedIndex, firstRealizedItemTop, firstRealizedItemLeft, lastRealizedIndex);
+            } else {
+                var firstVisibleColumn = (int)Math.Floor(HorizontalOffset / itemWidth);
 
-            return new ItemLayoutInfo {
-                FirstRealizedItemIndex = firstRealizedIndex,
-                FirstRealizedItemLeft = firstRealizedItemLeft,
-                FirstRealizedLineTop = firstRealizedItemTop,
-                LastRealizedItemIndex = lastRealizedIndex,
-            };
+                var firstRealizedIndex = Math.Max(extentInfo.ItemsPerRow * firstVisibleColumn - 1, 0);
+                var firstRealizedItemTop = firstRealizedIndex % extentInfo.ItemsPerRow * itemHeight - VerticalOffset;
+                var firstRealizedItemLeft = Math.Floor((double)firstRealizedIndex / extentInfo.ItemsPerRow) * itemWidth - HorizontalOffset;
+
+                var firstCompleteColumnLeft = (firstVisibleColumn == 0 ? firstRealizedItemLeft : firstRealizedItemLeft + itemWidth);
+                var completeRealizedColumns = (int)Math.Ceiling((availableSize.Width - firstCompleteColumnLeft) / itemWidth);
+
+                var lastRealizedIndex = Math.Min(firstRealizedIndex + completeRealizedColumns * extentInfo.ItemsPerRow + 2, _itemsControl.Items.Count - 1);
+                return new ItemLayoutInfo(firstRealizedIndex, firstRealizedItemTop, firstRealizedItemLeft, lastRealizedIndex);
+            }
         }
 
         private ExtentInfo GetExtentInfo(Size viewPortSize) {
-            if (_itemsControl == null) return new ExtentInfo();
-            var itemsPerLine = Math.Max((int)Math.Floor(viewPortSize.Width / ItemWidth), 1);
-            var totalLines = (int)Math.Ceiling((double)_itemsControl.Items.Count / itemsPerLine);
-            var extentHeight = Math.Max(totalLines * ItemHeight, viewPortSize.Height);
+            if (_itemsControl == null) {
+                return new ExtentInfo();
+            }
 
-            return new ExtentInfo {
-                ItemsPerLine = itemsPerLine,
-                TotalLines = totalLines,
-                ExtentHeight = extentHeight,
-                MaxVerticalOffset = extentHeight - viewPortSize.Height,
-            };
+            if (Orientation == Orientation.Horizontal) {
+                var itemsPerLine = Math.Max((int)Math.Floor(viewPortSize.Width / ItemWidth), 1);
+                var totalLines = (int)Math.Ceiling((double)_itemsControl.Items.Count / itemsPerLine);
+                var extentHeight = Math.Max(totalLines * ItemHeight, viewPortSize.Height);
+                return new ExtentInfo(itemsPerLine, totalLines, extentHeight, extentHeight - viewPortSize.Height);
+            } else {
+                var itemsPerColumn = Math.Max((int)Math.Floor(viewPortSize.Height / ItemHeight), 1);
+                var totalColumns = (int)Math.Ceiling((double)_itemsControl.Items.Count / itemsPerColumn);
+                var extentWidth = Math.Max(totalColumns * ItemWidth, viewPortSize.Width);
+                return new ExtentInfo(itemsPerColumn, totalColumns, extentWidth, extentWidth - viewPortSize.Width);
+            }
         }
 
         public void LineUp() {
@@ -288,21 +358,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void SetHorizontalOffset(double offset) {
-            if (_isInMeasure) return;
+            if (_isInMeasure) {
+                return;
+            }
 
-            offset = Clamp(offset, 0, ExtentWidth - ViewportWidth);
-            _offset = new Point(offset, _offset.Y);
-
+            _offset = new Point(Clamp(offset, 0, ExtentWidth - ViewportWidth), _offset.Y);
             InvalidateScrollInfo();
             InvalidateMeasure();
         }
 
         public void SetVerticalOffset(double offset) {
-            if (_isInMeasure) return;
+            if (_isInMeasure) {
+                return;
+            }
 
-            offset = Clamp(offset, 0, ExtentHeight - ViewportHeight);
-            _offset = new Point(_offset.X, offset);
-
+            _offset = new Point(_offset.X, Clamp(offset, 0, ExtentHeight - ViewportHeight));
             InvalidateScrollInfo();
             InvalidateMeasure();
         }
@@ -335,19 +405,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var offBottom = topChild < topView && bottomChild < bottomView;
             var offTop = bottomChild > bottomView && topChild > topView;
             var tooLarge = (bottomChild - topChild) > (bottomView - topView);
-
-            if (!offBottom && !offTop)
-                return topView;
-
-            if ((offBottom && !tooLarge) || (offTop && tooLarge))
-                return topChild;
-
-            return bottomChild - (bottomView - topView);
+            return offBottom || offTop ? (offBottom && !tooLarge || offTop && tooLarge ? topChild : bottomChild - (bottomView - topView)) : topView;
         }
 
 
         public ItemLayoutInfo GetVisibleItemsRange() {
-            return GetLayoutInfo(_viewportSize, ItemHeight, GetExtentInfo(_viewportSize));
+            return GetLayoutInfo(_viewportSize, ItemWidth, ItemHeight, GetExtentInfo(_viewportSize));
         }
 
         public bool CanVerticallyScroll { get; set; }
@@ -376,22 +439,65 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             (d as VirtualizingTilePanel)?.InvalidateMeasure();
         }
 
-        private double Clamp(double value, double min, double max) {
+        private static double Clamp(double value, double min, double max) {
             return Math.Min(Math.Max(value, min), max);
         }
 
-        internal class ExtentInfo {
-            public int ItemsPerLine;
-            public int TotalLines;
-            public double ExtentHeight;
-            public double MaxVerticalOffset;
+        internal struct ExtentInfo {
+            /// <summary>
+            /// Per column or line, depends on orientation.
+            /// </summary>
+            public int ItemsPerRow;
+
+            /// <summary>
+            /// Columns or lines, depends on orientation.
+            /// </summary>
+            public int TotalRows;
+
+            /// <summary>
+            /// Height or width, depends on orientation.
+            /// </summary>
+            public double ExtentSize;
+
+            /// <summary>
+            /// Vertical or horizontal offset, depends on orientation.
+            /// </summary>
+            public double MaxScrollOffset;
+
+            public ExtentInfo(int itemsPerRow, int totalRows, double extentSize, double maxScrollOffset) {
+                ItemsPerRow = itemsPerRow;
+                TotalRows = totalRows;
+                ExtentSize = extentSize;
+                MaxScrollOffset = maxScrollOffset;
+            }
         }
 
-        public class ItemLayoutInfo {
+        public struct ItemLayoutInfo {
             public int FirstRealizedItemIndex;
-            public double FirstRealizedLineTop;
+            public double FirstRealizedItemTop;
             public double FirstRealizedItemLeft;
             public int LastRealizedItemIndex;
+
+            public ItemLayoutInfo(int firstRealizedItemIndex, double firstRealizedItemTop, double firstRealizedItemLeft, int lastRealizedItemIndex) {
+                FirstRealizedItemIndex = firstRealizedItemIndex;
+                FirstRealizedItemTop = firstRealizedItemTop;
+                FirstRealizedItemLeft = firstRealizedItemLeft;
+                LastRealizedItemIndex = lastRealizedItemIndex;
+            }
+        }
+
+        public static readonly DependencyProperty HorizontalContentAlignmentProperty = DependencyProperty.Register(nameof(HorizontalContentAlignment), typeof(HorizontalAlignment), typeof(VirtualizingTilePanel), new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.AffectsArrange));
+
+        public HorizontalAlignment HorizontalContentAlignment {
+            get { return (HorizontalAlignment)GetValue(HorizontalContentAlignmentProperty); }
+            set { SetValue(HorizontalContentAlignmentProperty, value); }
+        }
+
+        public static readonly DependencyProperty VerticalContentAlignmentProperty = DependencyProperty.Register(nameof(VerticalContentAlignment), typeof(VerticalAlignment), typeof(VirtualizingTilePanel), new FrameworkPropertyMetadata(VerticalAlignment.Top, FrameworkPropertyMetadataOptions.AffectsArrange));
+
+        public VerticalAlignment VerticalContentAlignment {
+            get { return (VerticalAlignment)GetValue(VerticalContentAlignmentProperty); }
+            set { SetValue(VerticalContentAlignmentProperty, value); }
         }
     }
 }

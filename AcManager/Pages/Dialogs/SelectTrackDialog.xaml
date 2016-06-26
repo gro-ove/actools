@@ -1,11 +1,10 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.SelectTrackDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs"
-                  xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="{Binding SelectedTrackConfiguration.Name}" d:DataContext="{d:DesignInstance dialogs:SelectTrackDialog+SelectTrackDialogViewModel}"
-        SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600"
-        LocationAndSizeKey="SelectTrackDialog_LS">
+        xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{Binding SelectedTrackConfiguration.Name}"
+        d:DataContext="{d:DesignInstance dialogs:SelectTrackDialog+SelectTrackDialogViewModel}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip"
+        Width="960" MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600" LocationAndSizeKey="SelectTrackDialog_LS">
     <mui:ModernDialog.BackgroundContent>
         <Rectangle>
             <Rectangle.Fill>
@@ -41,11 +40,8 @@
 
     <mui:ModernDialog.Resources>
         <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
-
         <DataTemplate x:Key="LayoutItemTemplate">
-            <Image RenderOptions.BitmapScalingMode="LowQuality"
-                    Source="{Binding OutlineImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="80" Height="60"
-                    ToolTip="{Binding Name}" Stretch="Uniform" />
+            <mui:BetterImage Filename="{Binding OutlineImage}" Width="80" Height="60" ToolTip="{Binding Name}" />
         </DataTemplate>
     </mui:ModernDialog.Resources>
 

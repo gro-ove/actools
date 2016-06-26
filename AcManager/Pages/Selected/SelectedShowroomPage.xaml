@@ -2,10 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-                                   xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-                                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}">
+        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
@@ -15,8 +14,7 @@
                 <Button Content="Analyze" IsEnabled="False" />
             </ToolBar>
             <ToolBar Band="0" BandIndex="0">
-                <Button Content="Create New Showroom" Command="{Binding CreateNewShowroomCommand}" 
-                        ToolTip="Create new showroom from existing panorama (Ctrl+N)" />
+                <Button Content="Create New Showroom" Command="{Binding CreateNewShowroomCommand}" ToolTip="Create new showroom from existing panorama (Ctrl+N)" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
@@ -37,8 +35,7 @@
         </ac:AcObjectBase.ToolBars>
 
         <StackPanel>
-            <Image Margin="0 0 0 12" RenderOptions.BitmapScalingMode="LowQuality"
-                    Source="{Binding SelectedObject.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
+            <mui:BetterImage Margin="0 0 0 12" Filename="{Binding SelectedObject.PreviewImage}"
                     services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1022" MaxHeight="575"
                     Visibility="{Binding SelectedObject.PreviewImage, Converter={StaticResource ExistToVisibilityConverter}}" />
 
@@ -67,7 +64,8 @@
                             IsEditable="True" Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:WatermarkService.Watermark="?" />
                     <TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer" attached:WatermarkService.Watermark="?" />
+                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
+                            attached:WatermarkService.Watermark="?" />
 
                     <!-- last row -->
                     <TextBlock Text="Author:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />

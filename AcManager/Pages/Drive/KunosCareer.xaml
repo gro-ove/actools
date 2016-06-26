@@ -4,9 +4,8 @@
         xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
         xmlns:helpers="clr-namespace:FirstFloor.ModernUI.Helpers;assembly=FirstFloor.ModernUI"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:acObjectsNew="clr-namespace:AcManager.Tools.AcObjectsNew;assembly=AcManager.Tools" xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:acObjectsNew="clr-namespace:AcManager.Tools.AcObjectsNew;assembly=AcManager.Tools"
         xmlns:acObjects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
-        xmlns:modernui="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
         xmlns:effects="clr-namespace:FirstFloor.ModernUI.Effects;assembly=FirstFloor.ModernUI"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Loaded="KunosCareer_OnLoaded" Unloaded="KunosCareer_OnUnloaded" d:DataContext="{d:DesignInstance drive:KunosCareer+KunosCareerViewModel}"
@@ -33,15 +32,22 @@
 
                         <!--KunosCareerObject-->
                         <DataTemplate DataType="{x:Type acObjects:KunosCareerObject}">
-                            <Grid Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="Black">
-                                <Image RenderOptions.BitmapScalingMode="HighQuality" ToolTip="{Binding DisplayName}"
-                                        Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
-                                        Stretch="UniformToFill" StretchDirection="DownOnly" Name="Image" />
+                            <Grid Width="{StaticResource TileSize}" Height="{StaticResource TileSize}" Background="Black" ClipToBounds="True">
+                                <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding PreviewImage}" Stretch="UniformToFill"
+                                        StretchDirection="DownOnly" x:Name="Image" ClearOnChange="True" />
 
-                                <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}"
-                                        Text="{Binding DisplayName}" Foreground="White" />
+                                <TextBlock x:Name="TopPanel" Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                        Background="{StaticResource DarkenPanel}" Text="{Binding DisplayName}" Foreground="White"
+                                        FontSize="{DynamicResource SmallFontSize}" TextAlignment="Right">
+                                    <TextBlock.RenderTransform>
+                                        <TranslateTransform />
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
 
-                                <Grid VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}">
+                                <Grid x:Name="BottomPanel" VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}">
+                                    <Grid.RenderTransform>
+                                        <TranslateTransform />
+                                    </Grid.RenderTransform>
                                     <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="4" Text="{Binding Code}" Name="CodeTextBlock"
                                             FontWeight="Bold" />
                                     <TextBlock Foreground="White" HorizontalAlignment="Right" Margin="4" Name="ProgressTextBlock">
@@ -72,6 +78,29 @@
                                         Name="ErrorIcon" />
                             </Grid>
                             <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0.12" To="-40" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
+                                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                                <DoubleAnimation Duration="0:0:0.12" To="40" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
+                                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
+                                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                                <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
+                                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+
                                 <DataTrigger Binding="{Binding IsCompleted}" Value="True">
                                     <Setter TargetName="ProgressTextBlock" Property="Foreground" Value="{StaticResource Completed}" />
                                 </DataTrigger>
@@ -178,7 +207,8 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <mui:AlignableWrapPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+                        <mui:VirtualizingTilePanel Orientation="Vertical" VerticalContentAlignment="Center" ItemWidth="176" ItemHeight="176"
+                                VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel"
                                 MaxHeight="{Binding ActualHeight, ElementName=MainListWrapper}" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>

@@ -34,7 +34,7 @@
                                                     ScaleX="{x:Static controls:DpiAwareWindow.OptionScale}"
                                                     ScaleY="{x:Static controls:DpiAwareWindow.OptionScale}" />
                                         </Grid.LayoutTransform>
-                                        
+
                                         <!-- window background content -->
                                         <ContentControl Content="{TemplateBinding BackgroundContent}" />
 
@@ -52,9 +52,8 @@
 
                                             <!-- title -->
                                             <StackPanel Orientation="Horizontal">
-                                                <Image Margin="4 4 8 0" Width="28" Height="28" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform"
-                                                        StretchDirection="DownOnly"
-                                                        Source="{Binding IconSource, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}, RelativeSource={RelativeSource TemplatedParent}}"
+                                                <controls:BetterImage Margin="4 4 8 0" Width="28" Height="28" StretchDirection="DownOnly"
+                                                        Filename="{TemplateBinding IconSource}"
                                                         Visibility="{TemplateBinding IconSource, Converter={StaticResource ExistToVisibilityConverter}}" />
                                                 <TextBlock DataContext="{TemplateBinding Title}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
                                                         FontFamily="Segoe UI" FontSize="24" TextOptions.TextFormattingMode="Ideal"

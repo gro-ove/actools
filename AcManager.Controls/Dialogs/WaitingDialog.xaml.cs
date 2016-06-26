@@ -10,7 +10,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.Pages.Dialogs {
+namespace AcManager.Controls.Dialogs {
     public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<Tuple<String, Double?>>, IProgress<AsyncProgressEntry>, IDisposable {
         public static WaitingDialog Create(string reportValue) {
             var w = new WaitingDialog();

@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
-using AcManager.Controls.Pages.Dialogs;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 

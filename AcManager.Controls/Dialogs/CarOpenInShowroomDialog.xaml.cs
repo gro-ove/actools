@@ -12,7 +12,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.Pages.Dialogs {
+namespace AcManager.Controls.Dialogs {
     public partial class CarOpenInShowroomDialog {
         public const string UserPresetableKeyValue = "Showroom";
 

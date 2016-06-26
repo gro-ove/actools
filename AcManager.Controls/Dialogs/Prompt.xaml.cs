@@ -9,7 +9,7 @@ using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.Pages.Dialogs {
+namespace AcManager.Controls.Dialogs {
     public partial class Prompt {
         private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline, bool passwordMode, int maxLength,
                 IEnumerable<string> suggestions) {

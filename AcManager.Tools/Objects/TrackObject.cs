@@ -33,6 +33,8 @@ namespace AcManager.Tools.Objects {
                 var list = GetMultiLayouts();
                 if (IsInMultiLayoutsMode(list)) {
                     _layoutLocation = list[0];
+                    InitializeLocationsInner(_layoutLocation);
+
                     LayoutId = Path.GetFileName(_layoutLocation);
                     IdWithLayout = $"{Id}/{LayoutId}";
                     MultiLayouts = new BetterObservableCollection<TrackBaseObject>(
@@ -47,8 +49,15 @@ namespace AcManager.Tools.Objects {
                 AddError(e.AcError);
                 IdWithLayout = Id;
             }
-            
+
+            InitializeLocationsInner(Path.Combine(Location, "ui"));
             IdWithLayout = Id;
+        }
+
+        protected void InitializeLocationsInner(string uiDirectory) {
+            JsonFilename = Path.Combine(uiDirectory, "ui_track.json");
+            PreviewImage = Path.Combine(uiDirectory, "preview.png");
+            OutlineImage = Path.Combine(uiDirectory, "outline.png");
         }
 
         /// <summary>
@@ -183,14 +192,6 @@ namespace AcManager.Tools.Objects {
 
             base.HandleChangedFile(filename);
             return true;
-        }
-
-        protected override void InitializeLocations() {
-            base.InitializeLocations();
-            var uiDirectory = _layoutLocation ?? Path.Combine(Location, "ui");
-            JsonFilename = Path.Combine(uiDirectory, "ui_track.json");
-            PreviewImage = Path.Combine(uiDirectory, "preview.png");
-            OutlineImage = Path.Combine(uiDirectory, "outline.png");
         }
 
         public override void Save() {

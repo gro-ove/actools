@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
-using AcManager.Controls.Pages.Dialogs;
+using AcManager.Controls.Dialogs;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcErrors.Solutions;
 using AcManager.Tools.Managers;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AcManager.Internal;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Addons;
@@ -90,8 +89,9 @@ namespace AcManager.Tools.Helpers {
 
             public bool UseFastServer {
                 get {
-                    return _useFastServer ??
-                            (_useFastServer = AppKeyHolder.IsAllRight && ValuesStorage.GetBool("Settings.OnlineSettings.UseFastServer", false)).Value;
+                    return false;
+                    /*return _useFastServer ??
+                            (_useFastServer = AppKeyHolder.IsAllRight && ValuesStorage.GetBool("Settings.OnlineSettings.UseFastServer", false)).Value;*/
                 }
                 set {
                     if (Equals(value, _useFastServer)) return;

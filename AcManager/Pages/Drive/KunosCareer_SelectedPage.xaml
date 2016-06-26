@@ -1,11 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.KunosCareer_SelectedPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
-        xmlns:helpers="clr-namespace:FirstFloor.ModernUI.Helpers;assembly=FirstFloor.ModernUI"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:acObjectsNew="clr-namespace:AcManager.Tools.AcObjectsNew;assembly=AcManager.Tools" xmlns:system="clr-namespace:System;assembly=mscorlib"
-        xmlns:acObjects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
+        xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:helpers="clr-namespace:FirstFloor.ModernUI.Helpers;assembly=FirstFloor.ModernUI"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:acObjects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
         xmlns:effects="clr-namespace:FirstFloor.ModernUI.Effects;assembly=FirstFloor.ModernUI"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
@@ -16,55 +13,43 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate x:Key="ItemTemplate" DataType="{x:Type acObjects:KunosCareerEventObject}">
                 <Grid Width="200" Height="100" Background="Black" ClipToBounds="True">
-                    <Image RenderOptions.BitmapScalingMode="HighQuality" ToolTip="{Binding DisplayName}"
-                            Source="{Binding PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
-                            StretchDirection="DownOnly" Name="Image" />
+                    <mui:BetterImage x:Name="Image" ToolTip="{Binding DisplayName}" Filename="{Binding PreviewImage}" Stretch="UniformToFill"
+                            StretchDirection="DownOnly" />
 
-                    <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Name="TopPanel"
-                            Text="{Binding DisplayType}" Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}"
+                    <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayType}"
+                            Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}"
                             Visibility="{Binding KunosCareerType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.SingleEvents}}">
                         <TextBlock.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform />
-                                <SkewTransform />
-                                <RotateTransform />
-                                <TranslateTransform />
-                            </TransformGroup>
+                            <TranslateTransform />
                         </TextBlock.RenderTransform>
                     </TextBlock>
 
-                    <Grid VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}" Name="BottomPanel">
+                    <Grid VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}" x:Name="BottomPanel">
                         <Grid.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform />
-                                <SkewTransform />
-                                <RotateTransform />
-                                <TranslateTransform />
-                            </TransformGroup>
+                            <TranslateTransform />
                         </Grid.RenderTransform>
-
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0" Foreground="White" HorizontalAlignment="Left" Margin="4 4 24 0" Text="{Binding Car.DisplayName}" Name="CarName"
-                                FontSize="{DynamicResource SmallFontSize}" />
+                        <TextBlock Grid.Row="0" Foreground="White" HorizontalAlignment="Left" Margin="4 4 24 0" Text="{Binding Car.DisplayName}"
+                                x:Name="CarName" FontSize="{DynamicResource SmallFontSize}" />
                         <TextBlock Grid.Row="1" Foreground="White" HorizontalAlignment="Left" Margin="4 0 24 4" Text="{Binding TrackObject.LayoutName}"
-                                Name="TrackName" FontSize="{DynamicResource SmallFontSize}" />
+                                x:Name="TrackName" FontSize="{DynamicResource SmallFontSize}" />
                     </Grid>
 
                     <TextBlock Text="{Binding TakenPlace, Converter={StaticResource OrdinalizingConverter}}" Style="{StaticResource Heading1}" Padding="8"
-                            TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Name="TakenPlaceText"
+                            TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" x:Name="TakenPlaceText"
                             Background="{StaticResource DarkenPanel}" />
 
-                    <Grid VerticalAlignment="Bottom" Height="{Binding ActualHeight, ElementName=BottomPanel}" Name="TakenPlaceIcon">
+                    <Grid VerticalAlignment="Bottom" Height="{Binding ActualHeight, ElementName=BottomPanel}" x:Name="TakenPlaceIcon">
                         <Ellipse Width="8" Height="8" Margin="8 4" VerticalAlignment="Center" HorizontalAlignment="Right"
                                 Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
                     </Grid>
@@ -95,9 +80,9 @@
                             <BeginStoryboard>
                                 <Storyboard>
                                     <DoubleAnimation Duration="0:0:0.12" To="-40" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" />
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
                                     <DoubleAnimation Duration="0:0:0.12" To="40" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" />
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </DataTrigger.EnterActions>
@@ -105,9 +90,9 @@
                             <BeginStoryboard>
                                 <Storyboard>
                                     <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" />
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
                                     <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
-                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" />
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </DataTrigger.ExitActions>
@@ -375,7 +360,11 @@
                             </StackPanel.ToolTip>
                             <StackPanel.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="{Binding AiLevel, StringFormat='{}Recommended value: {0}%'}" StaysOpenOnClick="True" />
+                                    <MenuItem StaysOpenOnClick="True">
+                                        <MenuItem.Header>
+                                            <TextBlock Text="{Binding AiLevel, StringFormat='{}Recommended value: {0}%'}" />
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem Header="Reset to Recommended Value" Command="{Binding ResetUserAiLevelCommand}" />
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
@@ -389,15 +378,15 @@
                     HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
                     Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
                 <StackPanel>
-                    <Image Margin="0 0 0 8" Source="{Binding CarSkin.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
-                            RenderOptions.BitmapScalingMode="HighQuality" PreviewMouseLeftButtonDown="CarPreview_OnPreviewMouseLeftButtonDown">
-                        <Image.ContextMenu>
+                    <mui:BetterImage Margin="0 0 0 8" Filename="{Binding CarSkin.PreviewImage}" Width="240"
+                            PreviewMouseLeftButtonDown="CarPreview_OnPreviewMouseLeftButtonDown">
+                        <mui:BetterImage.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Change Skin" IsEnabled="{Binding Source={x:Static achelpers:SettingsHolder.Drive}, Path=KunosCareerUserSkin}"
                                         PreviewMouseLeftButtonUp="ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp" />
                             </ContextMenu>
-                        </Image.ContextMenu>
-                        <Image.ToolTip>
+                        </mui:BetterImage.ContextMenu>
+                        <mui:BetterImage.ToolTip>
                             <ToolTip>
                                 <StackPanel Margin="4 8">
                                     <TextBlock Style="{StaticResource Heading2}" Text="{Binding Car.DisplayName}" Margin="0 0 0 4" />
@@ -405,14 +394,25 @@
                                             Width="512" MaxHeight="320" />
                                 </StackPanel>
                             </ToolTip>
-                        </Image.ToolTip>
-                    </Image>
+                        </mui:BetterImage.ToolTip>
+                    </mui:BetterImage>
+
+                    <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                            ScrollViewer.CanContentScroll="True" Margin="0 0 0 8" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}"
+                            MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}" VirtualizingPanel.IsVirtualizing="true"
+                            VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
+                            Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=564}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+
                     <Grid Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top">
-                        <Image Source="{Binding TrackObject.PreviewImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
-                                RenderOptions.BitmapScalingMode="HighQuality" />
-                        <Image Source="{Binding TrackObject.OutlineImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Stretch="Uniform"
-                                RenderOptions.BitmapScalingMode="HighQuality" StretchDirection="DownOnly" MaxWidth="240" MaxHeight="135"
-                                HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <mui:BetterImage Filename="{Binding TrackObject.PreviewImage}" Stretch="UniformToFill" MaxWidth="240" />
+                        <mui:BetterImage Filename="{Binding TrackObject.OutlineImage}" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="240"
+                                MaxHeight="135" HorizontalAlignment="Center" VerticalAlignment="Center" ShowBroken="False" />
                         <Grid.ToolTip>
                             <ToolTip>
                                 <StackPanel Margin="4 8">
@@ -486,7 +486,6 @@
                                 <controls:AssistsDescription />
                             </Button.ToolTip>
                         </Button>
-
                         <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
                                 CommandParameter="{Binding Data.AssistsViewModel.GameProperties, Source={StaticResource DataContextProxy}}">Go!</Button>
                     </DockPanel>

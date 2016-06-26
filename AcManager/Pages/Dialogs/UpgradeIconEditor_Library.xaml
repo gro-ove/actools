@@ -11,8 +11,7 @@
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Image RenderOptions.BitmapScalingMode="LowQuality" Source="{Binding Filename, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}"
-                            Width="64" Height="64" ToolTip="{Binding Name}" />
+                    <mui:BetterImage Filename="{Binding Filename}" Width="64" Height="64" ToolTip="{Binding Name}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

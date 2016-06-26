@@ -18,8 +18,7 @@
             <DataTemplate DataType="{x:Type local:SelectTrackDialog_Categories+TrackCategory}">
                 <Grid Width="100" Height="100" ToolTip="{Binding Description}" Background="Transparent"
                         PreviewMouseLeftButtonDown="ListItem_OnPreviewMouseLeftButtonDown">
-                    <Image RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="{Binding Icon, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Margin="8 8 8 24" />
+                    <mui:BetterImage Filename="{Binding Icon}" Margin="8 8 8 24" DecodeHeight="68" ClearOnChange="True" />
                     <TextBlock Style="{StaticResource LabelWithPadding}" HorizontalAlignment="Center" Text="{Binding Name}" Margin="4" Padding="0"
                             VerticalAlignment="Bottom" />
                 </Grid>

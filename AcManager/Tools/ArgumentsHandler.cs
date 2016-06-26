@@ -7,7 +7,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Controls.CustomShowroom;
-using AcManager.Controls.Pages.Dialogs;
+using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;

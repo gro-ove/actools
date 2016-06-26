@@ -12,21 +12,21 @@
                 Visibility="{Binding ShowSkinsAndPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
             <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" MouseDown="PreviewImage_OnMouseDown" MaxWidth="1022"
                     Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
-            <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="4"
-                    IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding SelectedSkin}" VerticalAlignment="Top" MaxHeight="76" BorderThickness="0"
-                    Visibility="{Binding SelectSkin, Converter={StaticResource BooleanToVisibilityConverter}}"
+            <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                    Margin="4" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding SelectedSkin}" VerticalAlignment="Top" MaxHeight="76"
+                    BorderThickness="0" Visibility="{Binding SelectSkin, Converter={StaticResource BooleanToVisibilityConverter}}"
                     ItemTemplate="{StaticResource CarSkinItemTemplate}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
+                        <mui:VirtualizingTilePanel ItemWidth="36" ItemHeight="36" Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True"
+                                ScrollUnit="Pixel" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
             </ListBox>
-
             <ContentPresenter Content="{Binding PreviewContent}" />
             <Button Margin="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" PreviewMouseDown="ShowroomButton_OnMouseDown"
                     Style="{StaticResource CarBlockButton}">
-                <Image RenderOptions.BitmapScalingMode="LowQuality" Source="/Assets/Img/Showroom.png" Width="64" Height="64" />
+                <Image Source="/Assets/Img/Showroom.png" Width="64" Height="64" />
             </Button>
         </Grid>
 

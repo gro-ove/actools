@@ -16,7 +16,7 @@ using JetBrains.Annotations;
 using Microsoft.Win32;
 using Path = System.IO.Path;
 
-namespace AcManager.Controls.Pages.Dialogs {
+namespace AcManager.Controls.Dialogs {
     public partial class ImageViewer {
         public ImageViewer(ImageSource imageSource) : this(new[] { imageSource }) { }
 
@@ -38,7 +38,9 @@ namespace AcManager.Controls.Pages.Dialogs {
         }
 
         private void ImageViewer_OnKeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Left || e.Key == Key.K) {
+            if (e.Key >= Key.D1 && e.Key <= Key.D9) {
+                Model.CurrentPosition = e.Key - Key.D1;
+            } else if (e.Key == Key.Left || e.Key == Key.K) {
                 Model.CurrentPosition--;
             } else if (e.Key == Key.Right || e.Key == Key.J) {
                 Model.CurrentPosition++;

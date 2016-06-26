@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
 using AcManager.Annotations;
+using AcManager.Controls.Dialogs;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.AdditionalContentInstallation;
 using AcManager.Tools.Managers;
@@ -119,7 +120,7 @@ namespace AcManager.Pages.Dialogs {
 
             var msg = @"Archive is encrypted. Input password:";
             while (_installator.IsPasswordRequired && !_installator.IsPasswordCorrect) {
-                var password = Controls.Pages.Dialogs.Prompt.Show(msg, @"Password required", passwordMode: true);
+                var password = Prompt.Show(msg, @"Password required", passwordMode: true);
                 if (password == null) {
                     Close();
                     return;
@@ -196,7 +197,7 @@ namespace AcManager.Pages.Dialogs {
         private AsyncCommand _installCommand;
 
         public AsyncCommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(async o => {
-            using (var waiting = new Controls.Pages.Dialogs.WaitingDialog()) {
+            using (var waiting = new WaitingDialog()) {
                 foreach (var wrapper in Entries.Where(entry => entry.InstallEntry)) {
                     waiting.Title = $@"Installing {wrapper.Entry.Name}…";
                     if (waiting.CancellationToken.IsCancellationRequested) return;

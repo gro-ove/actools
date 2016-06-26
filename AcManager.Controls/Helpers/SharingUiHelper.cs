@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using AcManager.Controls.Pages.Dialogs;
+using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;

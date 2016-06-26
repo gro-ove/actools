@@ -5,8 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Annotations;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
-using AcManager.Controls.Pages.Dialogs;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
@@ -66,8 +66,7 @@ namespace AcManager.Pages.Dialogs {
 
             SelectedTunableVersion = value;
             OnPropertyChanged(nameof(SelectedCar));
-            OpenInShowroomCommand.OnCanExecuteChanged();
-            OpenInShowroomOptionsCommand.OnCanExecuteChanged();
+            CommandManager.InvalidateRequerySuggested();
 
             if (_list != null) {
                 _list.SelectedItem = value;
@@ -97,16 +96,18 @@ namespace AcManager.Pages.Dialogs {
             }
 
             _previousTunableParent = parent;
-
+            
             var children = parent.Children.Where(x => x.Enabled).ToList();
             HasChildren = children.Any();
-
             if (!HasChildren) {
                 TunableVersions.Clear();
                 return;
             }
 
             TunableVersions.ReplaceEverythingBy(new [] { parent }.Where(x => x.Enabled).Union(children));
+            if (SelectedTunableVersion == null) {
+                SelectedTunableVersion = SelectedCar;
+            }
         }
 
         public CarSkinObject SelectedSkin {
@@ -115,8 +116,7 @@ namespace AcManager.Pages.Dialogs {
                 if (Equals(value, _selectedSkin)) return;
                 _selectedSkin = value;
                 OnPropertyChanged();
-                OpenInShowroomCommand.OnCanExecuteChanged();
-                OpenInShowroomOptionsCommand.OnCanExecuteChanged();
+                CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -156,18 +156,23 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new [] { OkButton, CancelButton };
         }
 
+        private bool _loaded;
         private void SelectAndSetupCarDialog_OnLoaded(object sender, RoutedEventArgs e) {
+            if (_loaded) return;
+            _loaded = true;
             CarsManager.Instance.WrappersList.ItemPropertyChanged += List_ItemPropertyChanged;
             CarsManager.Instance.WrappersList.WrappedValueChanged += List_WrappedValueChanged;
         }
 
         private void SelectAndSetupCarDialog_OnUnloaded(object sender, RoutedEventArgs e) {
+            if (!_loaded) return;
+            _loaded = false;
             CarsManager.Instance.WrappersList.ItemPropertyChanged -= List_ItemPropertyChanged;
             CarsManager.Instance.WrappersList.WrappedValueChanged -= List_WrappedValueChanged;
         }
 
         void List_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName != "ParentId") return;
+            if (e.PropertyName != nameof(CarObject.ParentId)) return;
 
             var car = sender as CarObject;
             if (car == null || SelectedCar == null) return;
@@ -182,6 +187,7 @@ namespace AcManager.Pages.Dialogs {
             if (car == null || SelectedCar == null) return;
 
             if (car.ParentId == SelectedCar.Id) {
+                _previousTunableParent = null;
                 UpdateTunableVersions();
             }
         }

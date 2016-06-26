@@ -2,14 +2,13 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Addons;
 using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using MediaState = xZune.Vlc.Interop.Media.MediaState;
 using Path = System.IO.Path;
 
-namespace AcManager.Controls.Pages.Dialogs {
+namespace AcManager.Controls.Dialogs {
     public partial class VideoViewer {
         public string Filename { get; }
 

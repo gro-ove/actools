@@ -1,8 +1,9 @@
-﻿<mui:ModernDialog x:Class="AcManager.Controls.Pages.Dialogs.KunosCareerIntro" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<mui:ModernDialog x:Class="AcManager.Controls.Dialogs.VideoViewer" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:dialogs="clr-namespace:AcManager.Controls.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        MouseDown="ImageViewer_OnMouseDown" KeyUp="ImageViewer_OnKeyUp" d:DataContext="{d:DesignInstance dialogs:KunosCareerIntro}">
+                  xmlns:wpf="clr-namespace:xZune.Vlc.Wpf;assembly=xZune.Vlc.Wpf" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" MouseDown="ImageViewer_OnMouseDown" KeyUp="ImageViewer_OnKeyUp"
+        d:DataContext="{d:DesignInstance dialogs:VideoViewer}" Loaded="VideoViewer_OnLoaded" Closed="VideoViewer_OnClosed">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,7 +17,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="mui:ModernDialog">
-                        <Grid Background="{TemplateBinding Background}" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
+                        <Grid Background="{TemplateBinding Background}" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}"
+                                d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}">
                             <AdornerDecorator>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -35,7 +37,7 @@
                                         </Grid.RowDefinitions>
 
                                         <Button Height="{StaticResource FullscreenDialog.ButtonSize}" PreviewMouseDown="CloseButton_OnPreviewMouseDown">
-                                            <Path Data="{StaticResource CheckIconData}" />
+                                            <Path Data="{StaticResource CloseIconData}" />
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -47,18 +49,7 @@
         </Style>
     </mui:ModernDialog.Style>
 
-    <Grid d:DataContext="{d:DesignInstance dialogs:KunosCareerIntro}">
-        <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-100 0 0 0" Background="Black" Width="1240" Height="560">
-            <Image Source="{Binding CareerObject.PreviewImage, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
-                    Visibility="{Binding CareerObject.StartImage, Converter={StaticResource ExistToVisibilityConverter}, ConverterParameter=inverse}">
-                <Image.Effect>
-                    <BlurEffect Radius="160" RenderingBias="Performance" KernelType="Gaussian" />
-                </Image.Effect>
-            </Image>
-            <Image Source="{Binding CareerObject.StartImage, Converter={StaticResource UriToCachedImageConverter}}" Stretch="UniformToFill"
-                    StretchDirection="DownOnly" />
-        </Grid>
-        <TextBlock HorizontalAlignment="Right" Margin="200" Width="400" Padding="60" Foreground="Black" Background="#ddffffff"
-                Text="{Binding CareerObject.Description}" TextWrapping="Wrap" FontSize="15" />
+    <Grid d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}">
+        <wpf:VlcPlayer x:Name="Player" AspectRatio="Default" Stretch="UniformToFill" IsHitTestVisible="False" />
     </Grid>
 </mui:ModernDialog>

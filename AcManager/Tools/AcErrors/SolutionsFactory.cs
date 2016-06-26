@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using AcManager.Controls.Pages.Dialogs;
+using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
 using AcManager.Tools.AcErrors.Solutions;

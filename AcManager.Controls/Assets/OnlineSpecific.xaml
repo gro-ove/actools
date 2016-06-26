@@ -48,8 +48,7 @@
     <!--driver & car name-->
     <DataTemplate x:Key="OnlineDriverEntry">
         <DockPanel Width="200">
-            <Image RenderOptions.BitmapScalingMode="LowQuality"
-                    Source="{Binding CarSkin.LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="16" Height="16" Margin="4" />
+            <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4" ClearOnChange="True" />
             <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" DockPanel.Dock="Top" />
             <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Small}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
         </DockPanel>

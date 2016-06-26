@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
@@ -89,7 +90,7 @@ namespace AcManager.Pages.Dialogs {
 
             // Car.RefreshUpgradeIcon();
 
-            var saveAs = Controls.Pages.Dialogs.Prompt.Show(@"Add as:", @"Add into the library?", Path.GetFileNameWithoutExtension(filename));
+            var saveAs = Prompt.Show(@"Add as:", @"Add into the library?", Path.GetFileNameWithoutExtension(filename));
             if (saveAs == null) return;
 
             try {

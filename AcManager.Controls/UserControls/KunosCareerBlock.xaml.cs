@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using AcManager.Controls.Pages.Dialogs;
+using AcManager.Controls.Dialogs;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 
@@ -28,7 +28,7 @@ namespace AcManager.Controls.UserControls {
                     var videoViewer = new VideoViewer(career.StartVideo, career.Name);
                     videoViewer.ShowDialog();
                 } else {
-                    NonfatalError.Notify("Can’t play video", "Go to settings, download and enable VLC addon.");
+                    NonfatalError.Notify("Can’t play video", "Please, go to the Settings, download and enable VLC addon.");
                 }
             }
             

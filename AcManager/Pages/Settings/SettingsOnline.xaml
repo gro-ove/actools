@@ -26,9 +26,9 @@
                 <ComboBox ItemsSource="{Binding Online.OnlineServers}" SelectedItem="{Binding Online.OnlineServer}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding Online.UseFastServer}" attached:LimitedService.Limited="True">
+            <!--<CheckBox IsChecked="{Binding Online.UseFastServer}" attached:LimitedService.Limited="True">
                 <Label>Use Fast Caching Server (experimental)</Label>
-            </CheckBox>
+            </CheckBox>-->
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Adding by IP:</TextBlock>
 

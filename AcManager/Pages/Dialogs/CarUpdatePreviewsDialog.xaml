@@ -138,9 +138,7 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type objects:CarSkinObject}">
-                        <Image RenderOptions.BitmapScalingMode="LowQuality"
-                                Source="{Binding LiveryImage, IsAsync=True, Converter={StaticResource UriToCachedImageConverter}}" Width="32" Height="32"
-                                ToolTip="{Binding DisplayName}" />
+                        <mui:BetterImage Filename="{Binding LiveryImage}" Width="32" Height="32" ToolTip="{Binding DisplayName}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

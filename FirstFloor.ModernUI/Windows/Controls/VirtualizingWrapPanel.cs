@@ -31,7 +31,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Dependency Properties
-
         [TypeConverter(typeof(LengthConverter))]
         public double ItemHeight {
             get { return (double)GetValue(ItemHeightProperty); }
@@ -60,14 +59,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Methods
-
         public void SetFirstRowViewItemIndex(int index) {
-            SetVerticalOffset((index) / Math.Floor((_viewport.Width) / _childSize.Width));
-            SetHorizontalOffset((index) / Math.Floor((_viewport.Height) / _childSize.Height));
+            SetVerticalOffset(index / Math.Floor(_viewport.Width / _childSize.Width));
+            SetHorizontalOffset(index / Math.Floor(_viewport.Height / _childSize.Height));
         }
 
         private void Resizing(object sender, EventArgs e) {
-            if (Equals(_viewport.Width, 0.0)) return;
+            if (Equals(_viewport.Width, 0d)) return;
             var firstIndexCache = _firstIndex;
             _abstractPanel = null;
             MeasureOverride(_viewport);
@@ -83,15 +81,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } else {
                 section = (int)_offset.X;
             }
-            if (section > maxSection)
-                section = maxSection;
+            if (section > maxSection) section = maxSection;
             return section;
         }
 
         public int GetFirstVisibleIndex() {
             var section = GetFirstVisibleSection();
-            var item = _abstractPanel.FirstOrDefault(x => x.Section == section);
-            return item?.Index ?? 0;
+            return _abstractPanel.FirstOrDefault(x => x.Section == section)?.Index ?? 0;
         }
 
         private void CleanUpItems(int minDesiredGenerated, int maxDesiredGenerated) {
@@ -116,10 +112,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (Orientation == Orientation.Horizontal) {
                 _extent.Height = _abstractPanel.SectionCount + ViewportHeight - 1;
-
             } else {
                 _extent.Width = _abstractPanel.SectionCount + ViewportWidth - 1;
             }
+
             _owner.InvalidateScrollInfo();
         }
 
@@ -130,26 +126,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private int GetNextSectionClosestIndex(int itemIndex) {
             var abstractItem = _abstractPanel[itemIndex];
-            if (abstractItem.Section < _abstractPanel.SectionCount - 1) {
-                var ret = _abstractPanel.
+            if (abstractItem.Section >= _abstractPanel.SectionCount - 1) return itemIndex;
+            return _abstractPanel.
                     Where(x => x.Section == abstractItem.Section + 1).
                     OrderBy(x => Math.Abs(x.SectionIndex - abstractItem.SectionIndex)).
-                    First();
-                return ret.Index;
-            } else
-                return itemIndex;
+                    First().Index;
         }
 
         private int GetLastSectionClosestIndex(int itemIndex) {
             var abstractItem = _abstractPanel[itemIndex];
-            if (abstractItem.Section > 0) {
-                var ret = _abstractPanel.
+            if (abstractItem.Section <= 0) return itemIndex;
+            return _abstractPanel.
                     Where(x => x.Section == abstractItem.Section - 1).
                     OrderBy(x => Math.Abs(x.SectionIndex - abstractItem.SectionIndex)).
-                    First();
-                return ret.Index;
-            } else
-                return itemIndex;
+                    First().Index;
         }
 
         private void NavigateDown() {
@@ -162,6 +152,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 itemIndex = gen.IndexFromContainer(selected);
                 depth++;
             }
+
             DependencyObject next;
             if (Orientation == Orientation.Horizontal) {
                 var nextIndex = GetNextSectionClosestIndex(itemIndex);
@@ -172,8 +163,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     next = gen.ContainerFromIndex(nextIndex);
                 }
             } else {
-                if (itemIndex == _abstractPanel.ItemCount - 1)
-                    return;
+                if (itemIndex == _abstractPanel.ItemCount - 1) return;
                 next = gen.ContainerFromIndex(itemIndex + 1);
                 while (next == null) {
                     SetHorizontalOffset(HorizontalOffset + 1);
@@ -181,11 +171,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     next = gen.ContainerFromIndex(itemIndex + 1);
                 }
             }
+
             while (depth != 0) {
                 next = VisualTreeHelper.GetChild(next, 0);
                 depth--;
             }
-            (next as UIElement)?.Focus();
+
+            ((UIElement)next).Focus();
         }
 
         private void NavigateLeft() {
@@ -199,6 +191,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 itemIndex = gen.IndexFromContainer(selected);
                 depth++;
             }
+
             DependencyObject next;
             if (Orientation == Orientation.Vertical) {
                 var nextIndex = GetLastSectionClosestIndex(itemIndex);
@@ -209,8 +202,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     next = gen.ContainerFromIndex(nextIndex);
                 }
             } else {
-                if (itemIndex == 0)
-                    return;
+                if (itemIndex == 0) return;
                 next = gen.ContainerFromIndex(itemIndex - 1);
                 while (next == null) {
                     SetVerticalOffset(VerticalOffset - 1);
@@ -218,11 +210,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     next = gen.ContainerFromIndex(itemIndex - 1);
                 }
             }
+
             while (depth != 0) {
                 next = VisualTreeHelper.GetChild(next, 0);
                 depth--;
             }
-            (next as UIElement)?.Focus();
+
+            ((UIElement)next).Focus();
         }
 
         private void NavigateRight() {
@@ -235,6 +229,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 itemIndex = gen.IndexFromContainer(selected);
                 depth++;
             }
+
             DependencyObject next;
             if (Orientation == Orientation.Vertical) {
                 var nextIndex = GetNextSectionClosestIndex(itemIndex);
@@ -245,8 +240,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     next = gen.ContainerFromIndex(nextIndex);
                 }
             } else {
-                if (itemIndex == _abstractPanel.ItemCount - 1)
-                    return;
+                if (itemIndex == _abstractPanel.ItemCount - 1) return;
                 next = gen.ContainerFromIndex(itemIndex + 1);
                 while (next == null) {
                     SetVerticalOffset(VerticalOffset + 1);
@@ -254,11 +248,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     next = gen.ContainerFromIndex(itemIndex + 1);
                 }
             }
+
             while (depth != 0) {
                 next = VisualTreeHelper.GetChild(next, 0);
                 depth--;
             }
-            (next as UIElement)?.Focus();
+
+            ((UIElement)next).Focus();
         }
 
         private void NavigateUp() {
@@ -271,6 +267,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 itemIndex = gen.IndexFromContainer(selected);
                 depth++;
             }
+
             DependencyObject next;
             if (Orientation == Orientation.Horizontal) {
                 var nextIndex = GetLastSectionClosestIndex(itemIndex);
@@ -281,8 +278,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     next = gen.ContainerFromIndex(nextIndex);
                 }
             } else {
-                if (itemIndex == 0)
-                    return;
+                if (itemIndex == 0) return;
                 next = gen.ContainerFromIndex(itemIndex - 1);
                 while (next == null) {
                     SetHorizontalOffset(HorizontalOffset - 1);
@@ -290,11 +286,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     next = gen.ContainerFromIndex(itemIndex - 1);
                 }
             }
+
             while (depth != 0) {
                 next = VisualTreeHelper.GetChild(next, 0);
                 depth--;
             }
-            (next as UIElement)?.Focus();
+
+            ((UIElement)next).Focus();
         }
         #endregion
 
@@ -323,7 +321,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-
         protected override void OnItemsChanged(object sender, ItemsChangedEventArgs args) {
             base.OnItemsChanged(sender, args);
             _abstractPanel = null;
@@ -339,10 +336,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override Size MeasureOverride(Size availableSize) {
-            if (_itemsControl == null || _itemsControl.Items.Count == 0)
-                return availableSize;
-            if (_abstractPanel == null)
-                _abstractPanel = new WrapPanelAbstraction(_itemsControl.Items.Count);
+            if (_itemsControl == null || _itemsControl.Items.Count == 0) return availableSize;
+            if (_abstractPanel == null) _abstractPanel = new WrapPanelAbstraction(_itemsControl.Items.Count);
 
             _pixelMeasuredViewport = availableSize;
 
@@ -355,7 +350,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             var startPos = _generator.GeneratorPositionFromIndex(firstVisibleIndex);
 
-            var childIndex = (startPos.Offset == 0) ? startPos.Index : startPos.Index + 1;
+            var childIndex = startPos.Offset == 0 ? startPos.Index : startPos.Index + 1;
             var current = firstVisibleIndex;
             var visibleSections = 1;
             using (_generator.StartAt(startPos, GeneratorDirection.Forward, true)) {
@@ -380,9 +375,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         _generator.PrepareItemContainer(child);
                         child.Measure(ChildSlotSize);
                     } else {
-                        // The child has already been created, let’s be sure it’s in the right spot
+                        // The child has already been created, let's be sure it's in the right spot
                         Debug.Assert(Equals(child, _children[childIndex]), "Wrong child was generated");
                     }
+
                     _childSize = child.DesiredSize;
                     var childRect = new Rect(new Point(currentX, currentY), _childSize);
                     if (isHorizontal) {
@@ -397,8 +393,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                             currentSection++;
                             visibleSections++;
                         }
-                        if (currentY > realizedFrameSize.Height)
-                            stop = true;
+                        if (currentY > realizedFrameSize.Height) stop = true;
                         currentX = childRect.Right;
                     } else {
                         maxItemSize = Math.Max(maxItemSize, childRect.Width);
@@ -412,15 +407,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                             currentSection++;
                             visibleSections++;
                         }
-                        if (currentX > realizedFrameSize.Width)
-                            stop = true;
+                        if (currentX > realizedFrameSize.Width) stop = true;
                         currentY = childRect.Bottom;
                     }
                     _realizedChildLayout.Add(child, childRect);
                     _abstractPanel.SetItemSection(current, currentSection);
 
-                    if (stop)
-                        break;
+                    if (stop) break;
                     current++;
                     childIndex++;
                 }
@@ -431,21 +424,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             return availableSize;
         }
+
         protected override Size ArrangeOverride(Size finalSize) {
-            if (_children != null) {
-                foreach (UIElement child in _children) {
-                    var layoutInfo = _realizedChildLayout[child];
-                    child.Arrange(layoutInfo);
-                }
+            if (_children == null) return finalSize;
+            foreach (UIElement child in _children) {
+                var layoutInfo = _realizedChildLayout[child];
+                child.Arrange(layoutInfo);
             }
             return finalSize;
         }
+
         #endregion
 
         #region IScrollInfo Members
-        public bool CanHorizontallyScroll { get; set; }
+        public bool CanHorizontallyScroll { get; set; } = false;
 
-        public bool CanVerticallyScroll { get; set; }
+        public bool CanVerticallyScroll { get; set; } = false;
 
         public double ExtentHeight => _extent.Height;
 
@@ -456,31 +450,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public double VerticalOffset => _offset.Y;
 
         public void LineDown() {
-            if (Orientation == Orientation.Vertical)
-                SetVerticalOffset(VerticalOffset + 20);
-            else
-                SetVerticalOffset(VerticalOffset + 1);
+            if (Orientation == Orientation.Vertical) SetVerticalOffset(VerticalOffset + 20);
+            else SetVerticalOffset(VerticalOffset + 1);
         }
 
         public void LineLeft() {
-            if (Orientation == Orientation.Horizontal)
-                SetHorizontalOffset(HorizontalOffset - 20);
-            else
-                SetHorizontalOffset(HorizontalOffset - 1);
+            if (Orientation == Orientation.Horizontal) SetHorizontalOffset(HorizontalOffset - 20);
+            else SetHorizontalOffset(HorizontalOffset - 1);
         }
 
         public void LineRight() {
-            if (Orientation == Orientation.Horizontal)
-                SetHorizontalOffset(HorizontalOffset + 20);
-            else
-                SetHorizontalOffset(HorizontalOffset + 1);
+            if (Orientation == Orientation.Horizontal) SetHorizontalOffset(HorizontalOffset + 20);
+            else SetHorizontalOffset(HorizontalOffset + 1);
         }
 
         public void LineUp() {
-            if (Orientation == Orientation.Vertical) 
-                SetVerticalOffset(VerticalOffset - 20);
-            else
-                SetVerticalOffset(VerticalOffset - 1);
+            if (Orientation == Orientation.Vertical) SetVerticalOffset(VerticalOffset - 20);
+            else SetVerticalOffset(VerticalOffset - 1);
         }
 
         public Rect MakeVisible(Visual visual, Rect rectangle) {
@@ -494,16 +480,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var elementRect = _realizedChildLayout[element];
             if (Orientation == Orientation.Horizontal) {
                 var viewportHeight = _pixelMeasuredViewport.Height;
-                if (elementRect.Bottom > viewportHeight)
-                    _offset.Y += 1;
-                else if (elementRect.Top < 0)
-                    _offset.Y -= 1;
+                if (elementRect.Bottom > viewportHeight) _offset.Y += 1;
+                else if (elementRect.Top < 0) _offset.Y -= 1;
             } else {
                 var viewportWidth = _pixelMeasuredViewport.Width;
-                if (elementRect.Right > viewportWidth)
-                    _offset.X += 1;
-                else if (elementRect.Left < 0)
-                    _offset.X -= 1;
+                if (elementRect.Right > viewportWidth) _offset.X += 1;
+                else if (elementRect.Left < 0) _offset.X -= 1;
             }
             InvalidateMeasure();
             return elementRect;
@@ -542,6 +524,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private ScrollViewer _owner;
+
         public ScrollViewer ScrollOwner {
             get { return _owner; }
             set { _owner = value; }
@@ -574,7 +557,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             _offset.Y = offset;
             _owner?.InvalidateScrollInfo();
-
             //_trans.Y = -offset;
 
             InvalidateMeasure();
@@ -586,17 +568,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public double ViewportWidth => _viewport.Width;
         #endregion
 
-        #region helper data structures
+        #region Helper data structures
         private class ItemAbstraction {
             public ItemAbstraction(WrapPanelAbstraction panel, int index) {
                 _panel = panel;
                 Index = index;
             }
 
-            private readonly WrapPanelAbstraction _panel;
+            readonly WrapPanelAbstraction _panel;
+
             public readonly int Index;
 
             int _sectionIndex = -1;
+
             public int SectionIndex {
                 get {
                     if (_sectionIndex == -1) {
@@ -604,13 +588,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     }
                     return _sectionIndex;
                 }
-                set {
-                    if (_sectionIndex == -1)
-                        _sectionIndex = value;
-                }
+                set { if (_sectionIndex == -1) _sectionIndex = value; }
             }
 
             int _section = -1;
+
             public int Section {
                 get {
                     if (_section == -1) {
@@ -618,14 +600,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     }
                     return _section;
                 }
-                set {
-                    if (_section == -1)
-                        _section = value;
-                }
+                set { if (_section == -1) _section = value; }
             }
         }
 
-        private class WrapPanelAbstraction : IEnumerable<ItemAbstraction> {
+        class WrapPanelAbstraction : IEnumerable<ItemAbstraction> {
             public WrapPanelAbstraction(int itemCount) {
                 var items = new List<ItemAbstraction>(itemCount);
                 for (var i = 0; i < itemCount; i++) {
@@ -649,7 +628,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 get {
                     var ret = _currentSetSection + 1;
                     if (_currentSetItemIndex + 1 >= Items.Count) return ret;
-
                     var itemsLeft = Items.Count - _currentSetItemIndex;
                     ret += itemsLeft / AverageItemsPerSection + 1;
                     return ret;
@@ -661,17 +639,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public void SetItemSection(int index, int section) {
                 lock (_syncRoot) {
                     if (section > _currentSetSection + 1 || index != _currentSetItemIndex + 1) return;
-
                     _currentSetItemIndex++;
                     Items[index].Section = section;
                     if (section == _currentSetSection + 1) {
                         _currentSetSection = section;
                         if (section > 0) {
-                            AverageItemsPerSection = (index) / (section);
+                            AverageItemsPerSection = index / section;
                         }
                         _itemsInCurrentSecction = 1;
-                    } else
-                        _itemsInCurrentSecction++;
+                    } else _itemsInCurrentSecction++;
                     Items[index].SectionIndex = _itemsInCurrentSecction - 1;
                 }
             }
@@ -679,19 +655,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public ItemAbstraction this[int index] => Items[index];
 
             #region IEnumerable<ItemAbstraction> Members
-
             public IEnumerator<ItemAbstraction> GetEnumerator() {
                 return Items.GetEnumerator();
             }
-
             #endregion
 
             #region IEnumerable Members
-
             System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
                 return GetEnumerator();
             }
-
             #endregion
         }
 

@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using AcManager.Tools.Objects;
 
-namespace AcManager.Controls.Pages.Dialogs {
+namespace AcManager.Controls.Dialogs {
     public partial class KunosCareerIntro {
         public KunosCareerObject CareerObject { get; }
 

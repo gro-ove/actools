@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AcManager.Controls.Pages.Dialogs;
+using AcManager.Controls.Dialogs;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;

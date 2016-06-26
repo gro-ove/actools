@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Annotations;
+using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Objects;
@@ -105,7 +106,7 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            var saveAs = Controls.Pages.Dialogs.Prompt.Show(@"Add as:", @"Add this file to the library?", Path.GetFileNameWithoutExtension(filename));
+            var saveAs = Prompt.Show(@"Add as:", @"Add this file to the library?", Path.GetFileNameWithoutExtension(filename));
             if (saveAs == null) return;
 
             try {
