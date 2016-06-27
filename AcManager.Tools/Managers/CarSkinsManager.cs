@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
@@ -14,9 +15,10 @@ namespace AcManager.Tools.Managers {
 
         public override IAcDirectories Directories { get; }
 
-        internal CarSkinsManager(string carId, BaseAcDirectories directories) {
+        internal CarSkinsManager(string carId, BaseAcDirectories directories, EventHandler collectionReadyHandler) {
             CarId = carId;
             Directories = directories;
+            InnerWrappersList.CollectionReady += collectionReadyHandler;
         }
 
         private class NumericSortedAcWrapperObservableCollection : SortedAcWrapperObservableCollection {

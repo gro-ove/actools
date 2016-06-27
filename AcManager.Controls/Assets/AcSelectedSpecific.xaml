@@ -30,9 +30,14 @@
                         <Setter Property="attached:WatermarkService.Watermark" Value="?" />
                     </Style>
 
-                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxAsTextBlock}" />
+                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxAsTextBlock}">
+                        <Setter Property="attached:FocusAdvancement.AdvancesByEnterKey" Value="True" />
+                        <Setter Property="attached:WatermarkService.Watermark" Value="?" />
+                    </Style>
                 </Style.Resources>
             </Style>
         </Style.Resources>
     </Style>
+
+    <Style x:Key="TextBlockValue" TargetType="{x:Type TextBlock}" />
 </ResourceDictionary>

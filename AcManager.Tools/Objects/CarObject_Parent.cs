@@ -31,7 +31,7 @@ namespace AcManager.Tools.Objects {
                     } else { 
                         AddError(AcErrorType.Car_ParentIsMissing);
 
-                        if (!LoadingInProcess) {
+                        if (Loaded) {
                             UpdateParentValues();
                         }
                     }
@@ -40,22 +40,24 @@ namespace AcManager.Tools.Objects {
                     RemoveError(AcErrorType.Car_ParentIsMissing);
                 }
 
-                OnPropertyChanged(nameof(ParentId));
-                OnPropertyChanged(nameof(Parent));
-                OnPropertyChanged(nameof(ParentDisplayName));
-
-                SortAffectingValueChanged();
-
-                if (oldParentId == null || value == null) {
-                    OnPropertyChanged(nameof(IsChild));
-                    OnPropertyChanged(nameof(NeedsMargin));
-                }
-
                 if (HasData) {
                     CheckUpgradeIcon();
                 }
+                
+                if (Loaded) {
+                    OnPropertyChanged(nameof(ParentId));
+                    OnPropertyChanged(nameof(Parent));
+                    OnPropertyChanged(nameof(ParentDisplayName));
 
-                Changed = true;
+                    SortAffectingValueChanged();
+
+                    if (oldParentId == null || value == null) {
+                        OnPropertyChanged(nameof(IsChild));
+                        OnPropertyChanged(nameof(NeedsMargin));
+                    }
+
+                    Changed = true;
+                }
             }
         }
 

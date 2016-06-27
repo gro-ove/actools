@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows.Data;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -11,7 +12,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
-    public partial class CarSkinObject : AcJsonObjectNew {
+    public class CarSkinObject : AcJsonObjectNew {
         public string CarId { get; }
 
         public CarSkinObject(string carId, IFileAcManager manager, string id, bool enabled)
@@ -112,6 +113,12 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _driverName)) return;
                 _driverName = value;
                 OnPropertyChanged();
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                    SuggestionLists.RebuildCarSkinDriverNamesList();
+                }
             }
         }
 
@@ -123,7 +130,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _team)) return;
                 _team = value;
-                OnPropertyChanged();
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                    SuggestionLists.RebuildCarSkinTeamsList();
+                }
             }
         }
 
@@ -135,7 +147,11 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _skinNumber)) return;
                 _skinNumber = value;
-                OnPropertyChanged();
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
             }
         }
 
@@ -146,7 +162,11 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _priority)) return;
                 _priority = value;
-                OnPropertyChanged();
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
             }
         }
 
@@ -178,6 +198,7 @@ namespace AcManager.Tools.Objects {
             if (!Enabled) return;
 
             SuggestionLists.CarSkinTeamsList.AddUnique(Team);
+            SuggestionLists.CarSkinDriverNamesList.AddUnique(DriverName);
         }
 
         protected override void LoadData(JObject json) {
@@ -216,5 +237,7 @@ namespace AcManager.Tools.Objects {
         protected override AutocompleteValuesList GetTagsList() {
             return SuggestionLists.CarSkinTagsList;
         }
+
+        public ListCollectionView TeamsList => SuggestionLists.CarSkinDriverNamesList.View;
     }
 }

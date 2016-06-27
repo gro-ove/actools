@@ -12,6 +12,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -23,6 +24,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Microsoft.Win32;
+using StringBasedFilter;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedTrackPage : ILoadableContent, IParametrizedUriContent {
@@ -145,6 +147,37 @@ namespace AcManager.Pages.Selected {
                         NonfatalError.Notify("Can’t update preview", e);
                     }
                 }
+            }));
+
+            private RelayCommand _filterYearCommand;
+
+            public new RelayCommand FilterYearCommand => _filterYearCommand ?? (_filterYearCommand = new RelayCommand(o => {
+                NewFilterTab(SelectedTrackConfiguration.Year.HasValue ? $"year:{SelectedTrackConfiguration.Year}" : "!year>0");
+            }));
+
+            private RelayCommand _filterDecadeCommand;
+
+            public new RelayCommand FilterDecadeCommand => _filterDecadeCommand ?? (_filterDecadeCommand = new RelayCommand(o => {
+                var start = (int)Math.Floor(SelectedTrackConfiguration.Year ?? 0 / 10d) * 10;
+                NewFilterTab($"year>{start - 1} & year<{start + 10}");
+            }));
+
+            private RelayCommand _filterCountryCommand;
+
+            public new RelayCommand FilterCountryCommand => _filterCountryCommand ?? (_filterCountryCommand = new RelayCommand(o => {
+                NewFilterTab($"country:{Filter.Encode(SelectedTrackConfiguration?.Country)}");
+            }));
+
+            private RelayCommand _filterCityCommand;
+
+            public RelayCommand FilterCityCommand => _filterCityCommand ?? (_filterCityCommand = new RelayCommand(o => {
+                NewFilterTab($"city:{Filter.Encode(SelectedTrackConfiguration?.City)}");
+            }));
+
+            private RelayCommand _filterAuthorCommand;
+
+            public new RelayCommand FilterAuthorCommand => _filterAuthorCommand ?? (_filterAuthorCommand = new RelayCommand(o => {
+                NewFilterTab($"author:{Filter.Encode(SelectedTrackConfiguration?.Author)}");
             }));
         }
 

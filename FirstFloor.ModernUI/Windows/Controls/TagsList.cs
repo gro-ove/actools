@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Data;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Windows.Attached;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class TagsListItem : Control {
@@ -30,6 +31,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKey = typeof(TagsListItem);
             Value = value;
             _parent = parent;
+
+            SetValue(ContextMenuProperty, _parent.ItemContextMenu);
+            SetValue(ContextMenuAdvancement.PropagateToChildrenProperty, true);
         }
 
         public string Value {
@@ -77,6 +81,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(TagsList), null);
         public static readonly DependencyProperty ItemsProperty = ItemsPropertyKey.DependencyProperty;
 
+        public static readonly DependencyProperty ItemContextMenuProperty = DependencyProperty.Register(nameof(ItemContextMenu), typeof(ContextMenu),
+                typeof(TagsList));
+
+        public ContextMenu ItemContextMenu {
+            get { return (ContextMenu)GetValue(ItemContextMenuProperty); }
+            set { SetValue(ItemContextMenuProperty, value); }
+        }
+
         public TagsList() {
             DefaultStyleKey = typeof(TagsList);
         }
@@ -109,7 +121,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void UpdateReadOnlyCollection(ObservableCollection<string> newValue) {
             SetValue(ItemsPropertyKey, newValue == null ? null
-                : new ReadOnlyTagsListCollection(from x in newValue select new TagsListItem(x, this)));
+                    : new ReadOnlyTagsListCollection(from x in newValue select new TagsListItem(x, this)));
         }
 
         void ItemsSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {

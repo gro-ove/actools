@@ -3,9 +3,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarSkinPage+SelectedCarSkinPageViewModel}">
+    <UserControl.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
+    </UserControl.Resources>
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_OnIconMouseDown"
             Icon="{Binding SelectedObject.LiveryImage}">
         <ac:AcObjectBase.ToolBars>
@@ -44,65 +48,64 @@
                     Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
 
             <!-- data section -->
-            <StackPanel Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding SelectedObject}">
-                <!-- tags -->
-                <!--<mui:TagsList ItemsSource="{Binding Tags}" SuggestionsSource="{Binding TagsList}" MouseDown="TagsList_OnMouseDown" />-->
+            <Grid Style="{StaticResource ObjectDataGrid}" Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <Grid Margin="0 8 8 8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <!-- first row -->
+                <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                    <DockPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Filter By Country" Command="{Binding FilterCountryCommand}" />
+                        </ContextMenu>
+                    </DockPanel.ContextMenu>
+                    <TextBlock Text="Country:" />
+                    <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
+                            ItemsSource="{x:Static managers:SuggestionLists.CountriesListView}" />
+                </DockPanel>
 
-                    <!-- first row -->
-                    <TextBlock Text="Country:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                    <!--<TextBlock Text="Year:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Year of production start" />-->
+                <!-- second row -->
+                <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                    <DockPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Filter By Team" Command="{Binding FilterTeamCommand}" />
+                        </ContextMenu>
+                    </DockPanel.ContextMenu>
+                    <TextBlock Text="Team:" />
+                    <ComboBox Text="{Binding SelectedObject.Team, UpdateSourceTrigger=LostFocus}"
+                            ItemsSource="{x:Static managers:SuggestionLists.CarSkinTeamsListView}" />
+                </DockPanel>
 
-                    <ComboBox Text="{Binding Country}" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding CountriesList}" IsTextSearchEnabled="True"
-                            IsEditable="True" Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            attached:WatermarkService.Watermark="?" />
-                    <!--<TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
-                            attached:WatermarkService.Watermark="?" />-->
+                <DockPanel Grid.Row="1" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                    <DockPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Filter By Driver" Command="{Binding FilterDriverCommand}" />
+                        </ContextMenu>
+                    </DockPanel.ContextMenu>
+                    <TextBlock Text="Driver:" />
+                    <ComboBox Text="{Binding SelectedObject.DriverName, UpdateSourceTrigger=LostFocus}"
+                            ItemsSource="{x:Static managers:SuggestionLists.CarSkinDriverNamesListView}" />
+                </DockPanel>
 
-                    <!-- second row -->
-                    <TextBlock Text="Team:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Driver:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+                <!-- third row -->
+                <DockPanel Grid.Row="2" Grid.Column="0">
+                    <TextBlock Text="Number:" />
+                    <TextBox Text="{Binding SelectedObject.SkinNumber}" attached:TextBoxAdvancement.SpecialMode="Integer" />
+                </DockPanel>
 
-                    <ComboBox Text="{Binding Team}" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding TeamsList}" IsTextSearchEnabled="True" IsEditable="True"
-                            Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            attached:WatermarkService.Watermark="?" />
-                    <TextBox Text="{Binding DriverName}" Grid.Column="3" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
-
-                    <!-- third row -->
-                    <TextBlock Text="Number:" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Priority:" Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
-
-                    <TextBox Text="{Binding SkinNumber}" Grid.Column="1" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
-                            attached:WatermarkService.Watermark="?" />
-                    <TextBox Text="{Binding Priority, TargetNullValue=''}" Grid.Column="3" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
-                            attached:WatermarkService.Watermark="?" />
-
-                    <!-- last row -->
-                    <!--<TextBlock Text="Author:" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
-                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" MouseDown="VersionInfoBlock_OnMouseDown" attached:WatermarkService.Watermark="?"
-                            Grid.Column="1" Grid.Row="3" />-->
-                </Grid>
-
-                <!-- description -->
-                <!--<TextBox Style="{StaticResource TextBoxAsTextBlock}" AcceptsReturn="True" Text="{Binding Description}" TextWrapping="Wrap" />-->
-            </StackPanel>
+                <DockPanel Grid.Row="2" Grid.Column="1">
+                    <TextBlock Text="Priority:" />
+                    <TextBox Text="{Binding SelectedObject.Priority, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer" />
+                </DockPanel>
+            </Grid>
         </StackPanel>
     </ac:AcObjectBase>
 </selected:SelectedAcJsonObjectPage>

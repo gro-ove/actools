@@ -1,23 +1,97 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Data;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
 
 namespace AcManager.Tools.Managers {
     public static class SuggestionLists {
-        public static readonly AutocompleteValuesList CarBrandsList = new AutocompleteValuesList();
-        public static readonly AutocompleteValuesList CarClassesList = new AutocompleteValuesList();
-        public static readonly AutocompleteValuesList CarTagsList = new AutocompleteValuesList();
+        public static AutocompleteValuesList CarBrandsList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView CarBrandsListView => CarBrandsList.View;
 
-        public static readonly AutocompleteValuesList CarSkinTeamsList = new AutocompleteValuesList();
+        public static AutocompleteValuesList CarClassesList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView CarClassesListView => CarClassesList.View;
 
-        public static readonly AutocompleteValuesList CarSkinTagsList = new AutocompleteValuesList();
-        public static readonly AutocompleteValuesList TrackTagsList = new AutocompleteValuesList();
-        public static readonly AutocompleteValuesList ShowroomTagsList = new AutocompleteValuesList();
+        public static AutocompleteValuesList CarTagsList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView CarTagsListView => CarTagsList.View;
 
-        public static readonly AutocompleteValuesList AuthorsList = new AutocompleteValuesList { "Kunos" };
-        public static readonly AutocompleteValuesList CountriesList = new AutocompleteValuesList();
-        public static readonly AutocompleteValuesList CitiesList = new AutocompleteValuesList();
+        public static AutocompleteValuesList CarSkinTeamsList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView CarSkinTeamsListView => CarSkinTeamsList.View;
 
-        static SuggestionLists (){
+        public static AutocompleteValuesList CarSkinDriverNamesList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView CarSkinDriverNamesListView => CarSkinDriverNamesList.View;
+
+        public static AutocompleteValuesList CarSkinTagsList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView CarSkinTagsListView => CarSkinTagsList.View;
+
+        public static AutocompleteValuesList TrackTagsList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView TrackTagsListView => TrackTagsList.View;
+
+        public static AutocompleteValuesList ShowroomTagsList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView ShowroomTagsListView => ShowroomTagsList.View;
+
+        public static AutocompleteValuesList AuthorsList { get; } = new AutocompleteValuesList { "Kunos" };
+        public static ListCollectionView AuthorsListView => AuthorsList.View;
+
+        public static AutocompleteValuesList CountriesList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView CountriesListView => CountriesList.View;
+
+        public static AutocompleteValuesList CitiesList { get; } = new AutocompleteValuesList();
+        public static ListCollectionView CitiesListiew => CitiesList.View;
+
+        static SuggestionLists (){}
+
+        public static void RebuildCarBrandsList() {
+            CarBrandsList.ReplaceEverythingBy(from c in CarsManager.Instance where c.Enabled select c.Brand);
+        }
+
+        public static void RebuildCarClassesList() {
+            CarBrandsList.ReplaceEverythingBy(from c in CarsManager.Instance where c.Enabled select c.CarClass);
+        }
+
+        public static void RebuildCarTagsList() {
+            CarBrandsList.ReplaceEverythingBy(CarsManager.Instance.Where(x => x.Enabled).SelectMany(x => x.Tags));
+        }
+
+        public static void RebuildCarSkinDriverNamesList() {
+            CarSkinDriverNamesList.ReplaceEverythingBy(CarsManager.Instance.Where(x => x.Enabled).SelectMany(
+                    x => x.SkinsManager.Where(y => y.Enabled).Select(y => y.DriverName)));
+        }
+
+        public static void RebuildCarSkinTeamsList() {
+            CarSkinTeamsList.ReplaceEverythingBy(CarsManager.Instance.Where(x => x.Enabled).SelectMany(
+                    x => x.SkinsManager.Where(y => y.Enabled).Select(y => y.Team)));
+        }
+
+        public static void RebuildCarSkinTagsList() {
+            CarSkinTagsList.ReplaceEverythingBy(CarsManager.Instance.Where(x => x.Enabled).SelectMany(
+                    x => x.SkinsManager.Where(y => y.Enabled).SelectMany(y => y.Tags)));
+        }
+
+        public static void RebuildTrackTagsList() {
+            // TODO
+            TrackTagsList.ReplaceEverythingBy(TracksManager.Instance.Where(x => x.Enabled).SelectMany(x => x.Tags));
+        }
+
+        public static void RebuildShowroomTagsList() {
+            ShowroomTagsList.ReplaceEverythingBy(ShowroomsManager.Instance.Where(x => x.Enabled).SelectMany(x => x.Tags));
+        }
+
+        private static IEnumerable<AcJsonObjectNew> JsonObjects => CarsManager.Instance.OfType<AcJsonObjectNew>()
+                              .Union(TracksManager.Instance)
+                              .Union(ShowroomsManager.Instance);
+
+        public static void RebuildAuthorsList() {
+            AuthorsList.ReplaceEverythingBy(from o in JsonObjects select o.Author);
+        }
+
+        public static void RebuildCountriesList() {
+            CountriesList.ReplaceEverythingBy(from o in JsonObjects where o.Enabled select o.Country);
+        }
+
+        public static void RebuildCitiesList() {
+            // TODO
+            CitiesList.ReplaceEverythingBy(from o in TracksManager.Instance where o.Enabled select o.City);
         }
     }
 }

@@ -101,6 +101,9 @@ done:
             + arrays
             + curves
             + missing schemes
+        + missing properties fixer
+            + missing name error
+            + missing brand name error
     + view presets menu as a tree
     + update preview for only one skin
     + replays section
@@ -458,6 +461,7 @@ done:
     + quick setting: special online name
     + reducing image footprint
     + add NVIDIA copyrights and stuff
+    + proper replacement for the Image control
 
 fixme:
     - notifypropertychanged for commands
@@ -515,7 +519,7 @@ todo:
     + drive feature
         + quick drive
             - optional list mode for brands, countries, etc?
-        -customizable- fully customizable grids
+            - fully customizable grids
             - drag racing
         + online
             + custom sorting
@@ -573,9 +577,6 @@ todo:
 
     - skins manager: remove json-files
     + error fixer
-        + missing properties fixer
-            + missing name error
-            + missing brand name error
         - damaged ui_skin.json fixer
             - as an option: remove json-file
         - track missing kn5 error detection
@@ -604,6 +605,7 @@ todo:
             - showrooms
             - skins
         - quick drive (just by clicking?)
+        - fix context menu inheritance
 
     - update years database
 
@@ -747,9 +749,6 @@ later:
     - warn about stuff like "Mercedes"?
     - fix bb parsing
 
-    - image cache?
-    - proper replacement for the Image control
-
     ? get driver's name from default launcher
         ? and from Steam
 
@@ -772,3 +771,4 @@ later:
 
     × try to implement some stuff from /r/loadingicon/?
     × try that idea with reusing selectedsomethingpage?
+    × image cache?

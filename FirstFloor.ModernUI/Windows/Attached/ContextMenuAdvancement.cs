@@ -97,7 +97,9 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static void Element_PreviewMouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e) {
-            ParentContextMenu.Add((ContextMenu)((FrameworkElement)sender).GetValue(FrameworkElement.ContextMenuProperty));
+            var menu = (ContextMenu)((FrameworkElement)sender).GetValue(FrameworkElement.ContextMenuProperty);
+            if (menu == null) return;
+            ParentContextMenu.Add(menu);
         }
     }
 }

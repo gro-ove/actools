@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls.BbCode;
 using FirstFloor.ModernUI.Windows.Navigation;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
@@ -14,6 +15,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// </summary>
     [ContentProperty("BbCode")]
     public class BbCodeBlock : TextBlock {
+        public static string Encode(string value) {
+            return value?.Replace("[", "\\[");
+        }
+
+        public static string EncodeAttribute(string value) {
+            return value == null ? null : "\"" + value.Replace("\"", "\\\"") + "\"";
+        }
+
         public static event EventHandler<BbCodeImageEventArgs> ImageClicked;
 
         internal static void OnImageClicked(BbCodeImageEventArgs args) {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -57,17 +56,17 @@ namespace AcManager.Tools.AcObjectsNew {
             Changed = false;
         }
 
-        private DateTime _creationTime;
+        public DateTime CreationTime { get; private set; }
 
         public void CheckIfNew() {
             try {
-                IsNew = DateTime.Now - _creationTime < SettingsHolder.Content.NewContentPeriod.TimeSpan;
+                IsNew = DateTime.Now - CreationTime < SettingsHolder.Content.NewContentPeriod.TimeSpan;
             } catch (Exception) {
                 IsNew = false;
             }
         }
 
-        protected bool LoadingInProcess { get; private set; }
+        protected bool Loaded { get; private set; }
 
         protected abstract void LoadOrThrow();
 
@@ -76,9 +75,8 @@ namespace AcManager.Tools.AcObjectsNew {
 
             ClearErrors();
             Changed = false;
-            LoadingInProcess = true;
 
-            _creationTime = File.GetCreationTime(Location);
+            CreationTime = File.GetCreationTime(Location);
             CheckIfNew();
 
             try {
@@ -90,12 +88,12 @@ namespace AcManager.Tools.AcObjectsNew {
                 AddError(AcErrorType.Load_Base, e);
 #endif
             } finally {
-                LoadingInProcess = false;
+                Loaded = true;
             }
         }
 
         public void SortAffectingValueChanged() {
-            if (!LoadingInProcess) {
+            if (Loaded) {
                 Manager.UpdateList();
             }
         }
@@ -111,10 +109,12 @@ namespace AcManager.Tools.AcObjectsNew {
                 base.Name = value;
 
                 ErrorIf(string.IsNullOrEmpty(value) && HasData, AcErrorType.Data_ObjectNameIsMissing);
-                SortAffectingValueChanged();
 
-                OnPropertyChanged(nameof(NameEditable));
-                Changed = true;
+                if (Loaded) {
+                    SortAffectingValueChanged();
+                    OnPropertyChanged(nameof(NameEditable));
+                    Changed = true;
+                }
             }
         }
 
@@ -129,7 +129,7 @@ namespace AcManager.Tools.AcObjectsNew {
         public virtual bool Changed {
             get { return _changed; }
             protected set {
-                if (value == _changed || LoadingInProcess) return;
+                if (value == _changed || !Loaded) return;
                 _changed = value;
                 OnPropertyChanged(nameof(Changed));
             }
@@ -146,7 +146,6 @@ namespace AcManager.Tools.AcObjectsNew {
 
                 if (value == _year) return;
                 _year = value;
-                OnPropertyChanged(nameof(Year));
 
                 if (_year.HasValue && Name != null) {
                     var inName = AcStringValues.GetYearFromName(Name);
@@ -155,7 +154,10 @@ namespace AcManager.Tools.AcObjectsNew {
                     }
                 }
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(Year));
+                    Changed = true;
+                }
             }
         }
 
@@ -182,6 +184,11 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public virtual bool HandleChangedFile(string filename) => false;
+
+        /// <summary>
+        /// Using for remembering selected item when its ID is changed.
+        /// </summary>
+        public string PreviousId { get; internal set; }
 
         [Obsolete]
         protected void OnImageChanged(string propertyName) {

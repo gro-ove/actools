@@ -105,7 +105,6 @@
     <Compile Include="AcObjectsNew\AcJsonObjectNew_Commands.cs" />
     <Compile Include="AcObjectsNew\AcJsonObjectNew_Tags.cs" />
     <Compile Include="AcObjectsNew\AcJsonObjectNew.cs" />
-    <Compile Include="AcObjectsNew\AcCommonObject_Lists.cs" />
     <Compile Include="AcObjectsNew\AcObjectEventArgs.cs" />
     <Compile Include="AcObjectsNew\AcObjectEventHandler.cs" />
     <Compile Include="AcObjectsNew\AcPlaceholderNew.cs" />
@@ -210,7 +209,6 @@
     <Compile Include="Miscellaneous\SharingHelper.cs" />
     <Compile Include="Objects\CarObject_Setups.cs" />
     <Compile Include="Objects\CarSetupObject.cs" />
-    <Compile Include="Objects\CarSkinObject_Lists.cs" />
     <Compile Include="Objects\FontObject.cs" />
     <Compile Include="Objects\PythonAppObject.cs" />
     <Compile Include="SemiGui\DriverName.cs" />
@@ -305,7 +303,6 @@
     <Compile Include="Objects\TrackExtraConfigurationObject.cs" />
     <Compile Include="Objects\TrackBaseObject.cs" />
     <Compile Include="Objects\TrackObject_Lists.cs" />
-    <Compile Include="Objects\CarObject_Lists.cs" />
     <Compile Include="Objects\CarSkinObject.cs" />
     <Compile Include="Data\GraphData.cs" />
     <Compile Include="Objects\ShowroomObject.cs" />

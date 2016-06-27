@@ -1,12 +1,10 @@
 ﻿using System;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     /// <summary>
     /// The BbCode lexer.
     /// </summary>
-    internal class BbCodeLexer
-        : Lexer {
+    internal class BbCodeLexer : Lexer {
         private const string TagNewline = "br";
 
         private static readonly char[] QuoteChars = { '\'', '"' };
@@ -115,9 +113,13 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 Consume();
                 Mark();
                 while (!IsInRange(QuoteChars)) {
+                    if (La(1) == '\\') {
+                        Consume();
+                    }
+
                     Consume();
                 }
-                token = new Token(GetMark(), TokenAttribute);
+                token = new Token(GetMark().Replace("\\\"", "\"").Replace("\\'", "'"), TokenAttribute);
                 Consume();
             } else {
                 Mark();

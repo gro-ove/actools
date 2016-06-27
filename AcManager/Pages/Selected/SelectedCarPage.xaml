@@ -4,7 +4,8 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
+        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarPage+SelectedCarPageViewModel}">
     <UserControl.Resources>
@@ -80,7 +81,7 @@
             </ToolBar>
             <ToolBar Band="1" BandIndex="1"
                     Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Button Content="Pack Data" Command="{Binding PackDataCommand}" ToolTip="For a decent online (Ctrl+J)"/>
+                <Button Content="Pack Data" Command="{Binding PackDataCommand}" ToolTip="For a decent online (Ctrl+J)" />
                 <Button Content="Unpack Data" Command="{Binding ReadDataCommand}" ToolTip="For development purposes only (Alt+J)" />
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
@@ -117,6 +118,7 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type acManagersNew:AcItemWrapper}">
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                             <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32"
                                     ClearOnChange="True" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" />
                         </DataTemplate>
@@ -127,8 +129,14 @@
             <!-- data section -->
             <StackPanel Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <!-- tags -->
-                <mui:TagsList DataContext="{Binding SelectedObject, Mode=OneTime}" ItemsSource="{Binding Tags}" SuggestionsSource="{Binding TagsList}"
-                        attached:ContextMenuAdvancement.PropagateToChildren="True">
+                <mui:TagsList DataContext="{Binding SelectedObject, Mode=OneTime}" ItemsSource="{Binding Tags}"
+                        SuggestionsSource="{x:Static managers:SuggestionLists.CarTagsListView}" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                    <mui:TagsList.ItemContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Filter By Tag" />
+                            <MenuItem Header="Filter By Tag" Command="{Binding FilterTagCommand}" />
+                        </ContextMenu>
+                    </mui:TagsList.ItemContextMenu>
                     <mui:TagsList.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Clean Up Tags" Command="{Binding TagsCleanUpCommand}" />
@@ -158,7 +166,8 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="Brand:" />
-                        <ComboBox Text="{Binding SelectedObject.Brand, UpdateSourceTrigger=LostFocus}" ItemsSource="{Binding SelectedObject.BrandsList}" />
+                        <ComboBox Text="{Binding SelectedObject.Brand, UpdateSourceTrigger=LostFocus}"
+                                ItemsSource="{x:Static managers:SuggestionLists.CarBrandsListView}" />
                     </DockPanel>
 
                     <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
@@ -168,7 +177,8 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="Country:" />
-                        <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}" ItemsSource="{Binding SelectedObject.CountriesList}" />
+                        <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
+                                ItemsSource="{x:Static managers:SuggestionLists.CountriesListView}" />
                     </DockPanel>
 
                     <!-- second row -->
@@ -181,7 +191,8 @@
                         <TextBlock Text="Class:">
                             <TextBlock.ToolTip>Car class (such as “race” or “street”) in lowercase</TextBlock.ToolTip>
                         </TextBlock>
-                        <ComboBox Text="{Binding SelectedObject.CarClass, UpdateSourceTrigger=LostFocus}" ItemsSource="{Binding SelectedObject.CarClassesList}" />
+                        <ComboBox Text="{Binding SelectedObject.CarClass, UpdateSourceTrigger=LostFocus}"
+                                ItemsSource="{x:Static managers:SuggestionLists.CarClassesListView}" />
                     </DockPanel>
 
                     <DockPanel Grid.Row="1" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">

@@ -9,6 +9,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
+using StringBasedFilter;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarSkinPage : ILoadableContent, IParametrizedUriContent {
@@ -18,6 +19,18 @@ namespace AcManager.Pages.Selected {
             public SelectedCarSkinPageViewModel(CarObject car, [NotNull] CarSkinObject acObject) : base(acObject) {
                 Car = car;
             }
+
+            private RelayCommand _filterTeamCommand;
+
+            public RelayCommand FilterTeamCommand => _filterTeamCommand ?? (_filterTeamCommand = new RelayCommand(o => {
+                NewFilterTab($"team:{Filter.Encode(SelectedObject.Team)}");
+            }));
+
+            private RelayCommand _filterDriverCommand;
+
+            public RelayCommand FilterDriverCommand => _filterDriverCommand ?? (_filterDriverCommand = new RelayCommand(o => {
+                NewFilterTab($"driver:{Filter.Encode(SelectedObject.Team)}");
+            }));
 
             private RelayCommand _updatePreviewCommand;
 

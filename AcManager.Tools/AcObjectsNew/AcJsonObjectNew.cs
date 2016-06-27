@@ -219,9 +219,12 @@ namespace AcManager.Tools.AcObjectsNew {
             set {
                 if (value == _country) return;
                 _country = value;
-                OnPropertyChanged(nameof(Country));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(Country));
+                    Changed = true;
+                    SuggestionLists.RebuildCountriesList();
+                }
             }
         }
 
@@ -233,15 +236,16 @@ namespace AcManager.Tools.AcObjectsNew {
             set {
                 if (value == _description) return;
                 _description = value;
-                OnPropertyChanged(nameof(Description));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(Description));
+                    Changed = true;
+                }
             }
         } 
         #endregion
 
         #region Version info
-
         private string _author;
 
         [CanBeNull]
@@ -250,10 +254,13 @@ namespace AcManager.Tools.AcObjectsNew {
             set {
                 if (value == _author) return;
                 _author = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Author));
-                OnPropertyChanged(nameof(VersionInfoDisplay));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(Author));
+                    OnPropertyChanged(nameof(VersionInfoDisplay));
+                    Changed = true;
+                    SuggestionLists.RebuildAuthorsList();
+                }
             }
         }
 
@@ -265,10 +272,12 @@ namespace AcManager.Tools.AcObjectsNew {
             set {
                 if (value == _version) return;
                 _version = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Version));
-                OnPropertyChanged(nameof(VersionInfoDisplay));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(Version));
+                    OnPropertyChanged(nameof(VersionInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -280,39 +289,26 @@ namespace AcManager.Tools.AcObjectsNew {
             set {
                 if (value == _url) return;
                 _url = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-                OnPropertyChanged(nameof(Url));
-                OnPropertyChanged(nameof(VersionInfoDisplay));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(Url));
+                    OnPropertyChanged(nameof(VersionInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
         public string VersionInfoDisplay {
             get {
-                var url = Url;
-                var version = Version;
-                var author = Author;
-
-                if (url == null && version == null && author == null) return null;
-
-                if (version == null && author == null) {
-                    return "[url=" + url + "]" + url + "[/url]";
+                if (Version == null && Author == null) {
+                    return Url != null ? $"[url={BbCodeBlock.EncodeAttribute(Url)}]{BbCodeBlock.Encode(Url)}[/url]" : null;
                 }
 
-                var result = author == null
-                                 ? version
-                                 : version == null
-                                       ? author
-                                       : author + " (" + version + ")";
-
-                if (url != null) {
-                    result = "[url=" + url + "]" + result + "[/url]";
-                }
-
-                return result;
+                var result = Author == null ? Version
+                        : Version == null ? Author : $"{Author} ({Version})";
+                return Url != null ? $"[url={BbCodeBlock.EncodeAttribute(Url)}]{BbCodeBlock.Encode(result)}[/url]" : result;
             }
         }
-
         #endregion
     }
 }

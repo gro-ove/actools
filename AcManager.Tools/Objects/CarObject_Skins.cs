@@ -81,5 +81,37 @@ namespace AcManager.Tools.Objects {
         public CarSkinObject GetFirstSkinOrNull() {
             return SkinsManager.GetFirstOrNull();
         }
+
+        private AcWrapperCollectionView _skinsEnabledWrappersListView;
+        public AcWrapperCollectionView SkinsEnabledWrappersList {
+            get {
+                if (_skinsEnabledWrappersListView != null) return _skinsEnabledWrappersListView;
+
+                _skinsEnabledWrappersListView = new AcWrapperCollectionView(SkinsManager.WrappersAsIList) {
+                    Filter = o => (o as AcItemWrapper)?.Value.Enabled == true
+                };
+                _skinsEnabledWrappersListView.MoveCurrentTo(SelectedSkin);
+                _skinsEnabledWrappersListView.CurrentChanged += (sender, args) => {
+                    SelectedSkin = (_skinsEnabledWrappersListView.CurrentItem as AcItemWrapper)?.Loaded() as CarSkinObject;
+                };
+                return _skinsEnabledWrappersListView;
+            }
+        }
+
+        private BetterListCollectionView _skinsActualListView;
+        public BetterListCollectionView SkinsActualList {
+            get {
+                if (_skinsActualListView != null) return _skinsActualListView;
+
+                _skinsActualListView = new BetterListCollectionView(SkinsManager.LoadedOnlyCollection) {
+                    Filter = o => (o as CarSkinObject)?.Enabled == true
+                };
+                _skinsActualListView.MoveCurrentTo(SelectedSkin);
+                _skinsActualListView.CurrentChanged += (sender, args) => {
+                    SelectedSkin = _skinsActualListView.CurrentItem as CarSkinObject;
+                };
+                return _skinsActualListView;
+            }
+        }
     }
 }

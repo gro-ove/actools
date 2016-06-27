@@ -2,15 +2,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedTrackPage+SelectedTrackPageViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
             <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
         </ResourceDictionary>
     </UserControl.Resources>
-
     <controls:AcObjectBase AcObject="{Binding SelectedTrackConfiguration}" ShowIcon="False">
         <controls:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
@@ -92,17 +95,15 @@
             </Grid>
 
             <!-- data section -->
-            <StackPanel Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    DataContext="{Binding SelectedTrackConfiguration}">
+            <StackPanel Visibility="{Binding SelectedTrackConfiguration.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <!-- tags -->
-                <mui:TagsList ItemsSource="{Binding Tags}" SuggestionsSource="{Binding TagsList}" MouseDown="TagsList_OnMouseDown" />
+                <mui:TagsList ItemsSource="{Binding SelectedTrackConfiguration.Tags}" SuggestionsSource="{Binding SelectedTrackConfiguration.TagsList}"
+                        MouseDown="TagsList_OnMouseDown" />
 
-                <Grid Margin="0 8 8 8">
+                <Grid Style="{StaticResource ObjectDataGrid}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -112,39 +113,72 @@
                     </Grid.RowDefinitions>
 
                     <!-- first row -->
-                    <TextBlock Text="Country:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Year:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Year of production start" />
+                    <DockPanel Grid.Row="0" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                        <DockPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Filter By Country" Command="{Binding FilterCountryCommand}" />
+                            </ContextMenu>
+                        </DockPanel.ContextMenu>
+                        <TextBlock Text="Country:" />
+                        <ComboBox Text="{Binding SelectedTrackConfiguration.Country, UpdateSourceTrigger=LostFocus}"
+                                ItemsSource="{x:Static managers:SuggestionLists.CountriesListView}" />
+                    </DockPanel>
 
-                    <ComboBox Text="{Binding Country}" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding CountriesList}" IsTextSearchEnabled="True"
-                            IsEditable="True" Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            attached:WatermarkService.Watermark="?" />
-                    <TextBox Text="{Binding Year, TargetNullValue=''}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Integer"
-                            attached:WatermarkService.Watermark="?" />
+                    <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                        <DockPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Filter By Year" Command="{Binding FilterYearCommand}" />
+                                <MenuItem Header="Filter By Decade" Command="{Binding FilterDecadeCommand}" />
+                            </ContextMenu>
+                        </DockPanel.ContextMenu>
+                        <TextBlock Text="Year:" ToolTip="Year of production start" />
+                        <TextBox Text="{Binding SelectedTrackConfiguration.Year, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer"
+                                attached:WatermarkService.Watermark="?" />
+                    </DockPanel>
 
                     <!-- second row -->
-                    <TextBlock Text="City:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Author:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
-
-                    <ComboBox Text="{Binding City}" Grid.Column="1" Grid.Row="1" ItemsSource="{Binding CitiesList}" IsTextSearchEnabled="True" IsEditable="True"
-                            Style="{StaticResource ComboBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            attached:WatermarkService.Watermark="?" />
-                    <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" MouseDown="VersionInfoBlock_OnMouseDown" attached:WatermarkService.Watermark="?"
-                            Grid.Column="3" Grid.Row="1" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                    <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                        <DockPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Filter By City" Command="{Binding FilterCityCommand}" />
+                            </ContextMenu>
+                        </DockPanel.ContextMenu>
+                        <TextBlock Text="City:" />
+                        <ComboBox Text="{Binding SelectedTrackConfiguration.City, UpdateSourceTrigger=LostFocus}"
+                                ItemsSource="{x:Static managers:SuggestionLists.CitiesListiew}" />
+                    </DockPanel>
 
                     <!-- third row -->
-                    <TextBlock Text="Geo Tags:" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Grid.Column="1" Grid.Row="2" MouseDown="GeoTags_KeyDown" Text="{Binding GeoTags}" attached:WatermarkService.Watermark="?"
-                            TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                    <DockPanel Grid.Row="2" Grid.Column="0">
+                        <TextBlock Text="Geo Tags:" ToolTip="Geographic coordinates" />
+                        <TextBlock Text="{Binding SelectedTrackConfiguration.GeoTags, TargetNullValue=''}" MouseDown="GeoTags_KeyDown"
+                                attached:WatermarkService.Watermark="?" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                                Style="{StaticResource TextBlockValue}" />
+                    </DockPanel>
+
+                    <DockPanel Grid.Row="2" Grid.Column="1">
+                        <DockPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Filter By Author" Command="{Binding FilterAuthorCommand}" />
+                            </ContextMenu>
+                        </DockPanel.ContextMenu>
+                        <TextBlock Text="Author:" ToolTip="Author, version, URL" />
+                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" attached:WatermarkService.Watermark="?"
+                                MouseDown="VersionInfoBlock_OnMouseDown" />
+                    </DockPanel>
 
                     <!-- last row -->
-                    <TextBlock Text="Specs:" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="{Binding SpecsInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
-                            MouseDown="SpecsInfoBlock_OnMouseDown" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                    <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                        <TextBlock Text="Specs:" />
+                        <TextBlock Text="{Binding SelectedTrackConfiguration.SpecsInfoDisplay, TargetNullValue=''}" MouseDown="SpecsInfoBlock_OnMouseDown"
+                                attached:WatermarkService.Watermark="?" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
+                                Style="{StaticResource TextBlockValue}" />
+                    </DockPanel>
                 </Grid>
 
                 <!-- description -->
-                <TextBox Style="{StaticResource TextBoxAsTextBlock}" AcceptsReturn="True" Text="{Binding Description}" TextWrapping="Wrap" />
+                <TextBox Style="{StaticResource TextBoxAsTextBlock}" AcceptsReturn="True" Text="{Binding SelectedTrackConfiguration.Description}"
+                        TextWrapping="Wrap" />
             </StackPanel>
         </StackPanel>
     </controls:AcObjectBase>

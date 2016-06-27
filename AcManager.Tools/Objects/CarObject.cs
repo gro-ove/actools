@@ -25,11 +25,10 @@ namespace AcManager.Tools.Objects {
 
         public CarObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
             InitializeLocationsOnce();
-            SkinsManager = new CarSkinsManager(Id, new InheritingAcDirectories(manager.Directories, SkinsDirectory)) {
+            SkinsManager = new CarSkinsManager(Id, new InheritingAcDirectories(manager.Directories, SkinsDirectory), Skins_CollectionReady) {
                 ScanWrapper = this
             };
             SkinsManager.Created += SkinsManager_Created;
-            SkinsManager.WrappersList.CollectionReady += Skins_CollectionReady;
         }
 
         protected override void InitializeLocations() {
@@ -50,6 +49,10 @@ namespace AcManager.Tools.Objects {
             } else if (SelectedSkin == null) {
                 SelectedSkin = any;
             }
+        }
+
+        protected override AutocompleteValuesList GetTagsList() {
+            return SuggestionLists.CarTagsList;
         }
 
         private readonly CompositeObservableCollection<IAcError> _errors = new CompositeObservableCollection<IAcError>();
@@ -197,8 +200,13 @@ namespace AcManager.Tools.Objects {
                 _brand = value;
                 
                 ErrorIf(string.IsNullOrEmpty(value) && HasData, AcErrorType.Data_CarBrandIsMissing);
-                OnPropertyChanged(nameof(Brand));
-                Changed = true;
+
+                if (Loaded) {
+                    OnPropertyChanged(nameof(Brand));
+                    Changed = true;
+
+                    SuggestionLists.RebuildCarBrandsList();
+                }
             }
         }
 
@@ -210,8 +218,13 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _carClass) return;
                 _carClass = value;
-                OnPropertyChanged(nameof(CarClass));
-                Changed = true;
+
+                if (Loaded) {
+                    OnPropertyChanged(nameof(CarClass));
+                    Changed = true;
+
+                    SuggestionLists.RebuildCarClassesList();
+                }
             }
         }
         #endregion
@@ -225,9 +238,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsBhp) return;
                 _specsBhp = value;
-                OnPropertyChanged(nameof(SpecsBhp));
-                OnPropertyChanged(nameof(SpecsInfoDisplay));
-                Changed = true;
+
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsBhp));
+                    OnPropertyChanged(nameof(SpecsInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -239,10 +255,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsTorque) return;
                 _specsTorque = value;
-                OnPropertyChanged(nameof(SpecsTorque));
-                OnPropertyChanged(nameof(SpecsInfoDisplay));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsTorque));
+                    OnPropertyChanged(nameof(SpecsInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -254,10 +272,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsWeight) return;
                 _specsWeight = value;
-                OnPropertyChanged(nameof(SpecsWeight));
-                OnPropertyChanged(nameof(SpecsInfoDisplay));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsWeight));
+                    OnPropertyChanged(nameof(SpecsInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -269,10 +289,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsTopSpeed) return;
                 _specsTopSpeed = value;
-                OnPropertyChanged(nameof(SpecsTopSpeed));
-                OnPropertyChanged(nameof(SpecsInfoDisplay));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsTopSpeed));
+                    OnPropertyChanged(nameof(SpecsInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -284,10 +306,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsAcceleration) return;
                 _specsAcceleration = value;
-                OnPropertyChanged(nameof(SpecsAcceleration));
-                OnPropertyChanged(nameof(SpecsInfoDisplay));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsAcceleration));
+                    OnPropertyChanged(nameof(SpecsInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -299,10 +323,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsPwRatio) return;
                 _specsPwRatio = value;
-                OnPropertyChanged(nameof(SpecsPwRatio));
-                OnPropertyChanged(nameof(SpecsInfoDisplay));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsPwRatio));
+                    OnPropertyChanged(nameof(SpecsInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -337,8 +363,11 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsTorqueCurve) return;
                 _specsTorqueCurve = value;
-                OnPropertyChanged(nameof(SpecsTorqueCurve));
-                Changed = true;
+
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsTorqueCurve));
+                    Changed = true;
+                }
             }
         }
 
@@ -350,8 +379,11 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsPowerCurve) return;
                 _specsPowerCurve = value;
-                OnPropertyChanged(nameof(SpecsPowerCurve));
-                Changed = true;
+
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsPowerCurve));
+                    Changed = true;
+                }
             }
         }
         #endregion

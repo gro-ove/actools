@@ -3,10 +3,9 @@ using System.Linq;
 using System.Windows;
 using AcManager.Annotations;
 using AcManager.Pages.Dialogs;
-using AcManager.Pages.Windows;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Selected {
@@ -35,7 +34,7 @@ namespace AcManager.Pages.Selected {
 
         public void NewFilterTab(string filter) {
             if (FilterTabType == null) throw new NotSupportedException();
-            (Application.Current.MainWindow as MainWindow)?.MenuLinkGroups.OfType<LinkGroupFilterable>().FirstOrDefault(x =>
+            Application.Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive)?.MenuLinkGroups.OfType<LinkGroupFilterable>().FirstOrDefault(x =>
                     string.Equals(x.DisplayName, FilterTabType, StringComparison.OrdinalIgnoreCase))?.AddAndSelect(filter);
         }
 

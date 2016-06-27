@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace AcManager.Tools.AcManagersNew {
     /// Most base version of AcManager, doesn’t have concept of file (so could be used, for example, for online servers).
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class BaseAcManager<T> : BaseAcManagerNew, IAcManagerNew, IAcWrapperLoader where T : AcObjectNew {
+    public abstract class BaseAcManager<T> : BaseAcManagerNew, IAcManagerNew, IAcWrapperLoader, IEnumerable<T> where T : AcObjectNew {
         protected readonly AcWrapperObservableCollection InnerWrappersList;
         protected bool IsScanning;
         protected bool LoadingReset;
@@ -390,6 +391,14 @@ namespace AcManager.Tools.AcManagersNew {
             var wrapper = GetWrapperById(id);
             if (wrapper == null) return;
             await EnsureWrapperLoadedAsync(wrapper);
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() {
+            return InnerWrappersList.Select(x => x.Value).OfType<T>().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return InnerWrappersList.Select(x => x.Value).OfType<T>().GetEnumerator();
         }
     }
 }

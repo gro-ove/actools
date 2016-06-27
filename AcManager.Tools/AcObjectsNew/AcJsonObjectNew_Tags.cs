@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using AcManager.Tools.Data;
@@ -28,32 +27,28 @@ namespace AcManager.Tools.AcObjectsNew {
 
                 _tags.CollectionChanged += Tags_CollectionChanged;
 
-                Changed = true;
+                if (Loaded) {
+                    Changed = true;
+                    RebuildTagsList();
+                }
             }
         }
 
-        private void Tags_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            foreach (var tag in _tags) {
-                GetTagsList().AddUnique(tag);
-            }
+        protected virtual void RebuildTagsList() {
+            GetTagsList().ReplaceEverythingBy(Manager.OfType<AcJsonObjectNew>().SelectMany(x => x.Tags));
+        }
 
-            Changed = true;
+        private void Tags_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            if (Loaded) {
+                RebuildTagsList();
+                Changed = true;
+            }
         }
 
         protected abstract AutocompleteValuesList GetTagsList();
 
         public ListCollectionView TagsList => GetTagsList().View;
 
-        private static ListCollectionView _countiesListView;
-
-        public ListCollectionView CountriesList {
-            get {
-                if (_countiesListView != null) return _countiesListView;
-
-                _countiesListView = (ListCollectionView)CollectionViewSource.GetDefaultView(SuggestionLists.CountriesList);
-                _countiesListView.SortDescriptions.Add(new SortDescription());
-                return _countiesListView;
-            }
-        }
+        public ListCollectionView CountriesList => SuggestionLists.CountriesList.View;
     }
 }
