@@ -942,7 +942,7 @@
     <None Include="Assets\Data\ShowroomPanoramaTemplate.zip" />
     <None Include="Assets\Data\ShowroomPreviewSphere.zip" />
     <Resource Include="Assets\Syntax\Ini.xml" />
-    <None Include="packages.config" />
+    <None Include="Packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Img\Showroom.png" />
@@ -1165,6 +1165,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="About\ReleaseNotes\0.6.285.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Data\RsrStyle.css" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -37,8 +37,8 @@ namespace AcManager.Pages.Drive {
             WebBrowser.SetScriptProvider(new ScriptProvider(Model));
         }
 
-        public static Task RunAsync(string eventId) {
-            return new RsrViewModel() {
+        public static Task<bool> RunAsync(string eventId) {
+            return new RsrViewModel {
                 EventId = eventId
             }.Go();
         }
@@ -158,7 +158,9 @@ namespace AcManager.Pages.Drive {
                 return new Tuple<string, string>(carId, trackId);
             }
 
-            public async Task Go() {
+            public async Task<bool> Go() {
+                if (EventId == null) return false;
+
                 try {
                     var app = PythonAppsManager.Instance.GetById("RsrLiveTime");
                     if (app == null) {
@@ -225,8 +227,11 @@ namespace AcManager.Pages.Drive {
                             GhostCarAdvantage = 0d
                         }
                     });
+
+                    return true;
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t start race", e);
+                    return false;
                 }
             }
 
@@ -264,10 +269,15 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            if (e.Uri.ToString().StartsWith("http://www.radiators-champ.com/RSRLiveTiming/")) {
-                WebBrowser.UserStyle = BinaryResources.RsrStyle;
-            } else {
-                WebBrowser.UserStyle = null;
+            WebBrowser.UserStyle = uri.StartsWith("http://www.radiators-champ.com/RSRLiveTiming/") ? BinaryResources.RsrStyle : null;
+            if (uri.Contains("page=setups")) {
+                WebBrowser.Execute(@"
+window.addEventListener('load', function(){
+    var ths = document.getElementsByTagName('th');
+    for (var i=0; i<ths.length; i++) if (ths[i].innerHTML == 'Download') ths[i].innerHTML = 'Install';
+    var hs = document.getElementsByTagName('a');
+    for (var i=0, m; i<hs.length; i++) if (m = hs[i].href.match(/=download_setup&id=(\d+)/)) hs[i].href = 'acmanager://rsr/setup?id=' + m[1];
+}, false);");
             }
         }
 

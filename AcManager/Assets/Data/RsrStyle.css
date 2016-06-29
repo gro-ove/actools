@@ -61,7 +61,7 @@ h1, h2 {
     font-size: 12px !important;
 }
 
-#new_menu ul li a[href]:hover {
+    #new_menu ul li a[href]:hover {
         background: #666 !important;
     }
 
@@ -74,7 +74,7 @@ h1, h2 {
     z-index: 9999 !important;
 }
 
-#new_menu ul li ul {
+    #new_menu ul li ul {
         position: fixed !important;
     }
 
@@ -166,7 +166,7 @@ table tbody tr:hover td {
     border-radius: 0 !important;
 }
 
-.lapok a.active {
+    .lapok a.active {
         color: #888 !important;
     }
 
@@ -183,6 +183,6 @@ table tbody tr:hover td {
     border-radius: 0 !important;
 }
 
-#header, #pb_bnr, #contentRSR .right_top_name, .change_style_div {
+#header, #pb_bnr, #contentRSR .right_top_name, .change_style_div, .rank_table + br, .rank_table + br + h4 {
     display: none !important;
 }

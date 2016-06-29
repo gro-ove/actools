@@ -54,7 +54,7 @@ namespace AcManager.Controls.UserControls {
         }
 
         public void Execute(string js) {
-            WebBrowser.InvokeScript("eval", $"(function(){{ {js} }})();");
+            WebBrowser.InvokeScript("eval", "(function(){" + js + "})();");
         }
 
         public static readonly DependencyProperty UserStyleProperty = DependencyProperty.Register(nameof(UserStyle), typeof(string),

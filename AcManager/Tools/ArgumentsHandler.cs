@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -11,6 +13,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
@@ -181,8 +184,11 @@ namespace AcManager.Tools {
 
             try {
                 switch (parsed.Path) {
-                    case "setup":
-                        return await ProcessShared(parsed.Params.Get("id"));
+                    case "rsr":
+                        return await ProcessRsrEvent(parsed.Params.Get("id"));
+
+                    case "rsr/setup":
+                        return await ProcessRsrSetup(parsed.Params.Get("id"));
 
                     case "shared":
                         return await ProcessShared(parsed.Params.Get("id"));
@@ -192,8 +198,72 @@ namespace AcManager.Tools {
                         return ArgumentHandleResult.Failed;
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t process request", "Make sure data is valid", e);
+                NonfatalError.Notify("Can’t process request", "Make sure data is valid.", e);
                 return ArgumentHandleResult.Failed;
+            }
+        }
+
+        public async Task<ArgumentHandleResult> ProcessRsrEvent(string id) {
+            Logging.Write("RSR Event: " + id);
+            return await Rsr.RunAsync(id) ? ArgumentHandleResult.SuccessfulShow : ArgumentHandleResult.Failed;
+        }
+
+        public async Task<ArgumentHandleResult> ProcessRsrSetup(string id) {
+            string data, header;
+            using (var client = new WebClient {
+                Headers = {
+                        [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
+                    }
+            }) {
+                data = await client.DownloadStringTaskAsync($"http://www.radiators-champ.com/RSRLiveTiming/ajax.php?action=download_setup&id={id}");
+                header = client.ResponseHeaders["Content-Disposition"]?.Split(new[] { "filename=" }, StringSplitOptions.None).ElementAtOrDefault(1)?.Trim();
+            }
+
+            if (data == null || header == null) {
+                throw new InformativeException("Can’t install setup", "RSR has changed.");
+            }
+            
+            var match = Regex.Match(header, @"^([^_]+_.+)_\d+_\d+_\d+_(.+)\.ini$");
+            if (!match.Success) {
+                throw new InformativeException("Can’t install setup", "RSR returned file in unsupported format.");
+            }
+
+            var ids = match.Groups[1].Value;
+            var author = match.Groups[2].Value;
+
+            CarObject car = null;
+            TrackBaseObject track = null;
+
+            var splitted = ids.Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
+            for (var i = 1; i < splitted.Length - 1 && (car == null || track == null); i++) {
+                var candidateCarId = splitted.Skip(i).JoinToString('_');
+                var candidateTrackId = splitted.Take(i).JoinToString('_');
+                car = CarsManager.Instance.GetById(candidateCarId);
+                track = TracksManager.Instance.GetById(candidateTrackId);
+            }
+
+            if (car == null || track == null) {
+                throw new InformativeException("Can’t install setup", "RSR returned file in unsupported format.");
+            }
+
+            var result = ShowDialog(new SharedEntry {
+                Author = author,
+                Data = new byte[0],
+                EntryType = SharedEntryType.CarSetup,
+                Id = header,
+                Target = car.DisplayName
+            }, applyable: false, additionalButton: "Save as Generic");
+
+            switch (result) {
+                case Choise.Save:
+                case Choise.Extra:
+                    var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(car.Id),
+                            result == Choise.Save ? track.Id : CarSetupObject.GenericDirectory, header));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                    File.WriteAllText(filename, data);
+                    return ArgumentHandleResult.SuccessfulShow;
+                default:
+                    return ArgumentHandleResult.Failed;
             }
         }
 
@@ -301,14 +371,15 @@ Author: [b]{
                     var carId = metadata.GetValueOrDefault("car");
                     var trackId = metadata.GetValueOrDefault("track") ?? CarSetupObject.GenericDirectory;
                     if (carId == null) {
-                        NonfatalError.Notify("Can’t install car’s setup", "Metadata is missing.");
-                        return ArgumentHandleResult.Failed;
+                        throw new InformativeException("Can’t install car’s setup", "Metadata is missing.");
                     }
 
-                    var result = ShowDialog(shared, applyable: false);
+                    var result = ShowDialog(shared, applyable: false, additionalButton: trackId == CarSetupObject.GenericDirectory ? null : "Save as Generic");
                     switch (result) {
                         case Choise.Save:
-                            var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(carId), trackId, shared.GetFileName()));
+                        case Choise.Extra:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(carId),
+                                result == Choise.Save ? trackId : CarSetupObject.GenericDirectory, shared.GetFileName()));
                             Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                             File.WriteAllText(filename, content);
                             return ArgumentHandleResult.SuccessfulShow;
@@ -375,7 +446,10 @@ Author: [b]{
                             QuickDrive.LoadSerializedPreset(data.ToUtf8String());
                             return ArgumentHandleResult.SuccessfulShow;
                         case Choise.Extra: // just go
-                            if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) throw new InformativeException("Can’t start race", "Make sure required car & track are installed and available.");
+                            if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
+                                throw new InformativeException("Can’t start race", "Make sure required car & track are installed and available.");
+                            }
+
                             return ArgumentHandleResult.SuccessfulShow;
                         default:
                             return ArgumentHandleResult.Failed;
