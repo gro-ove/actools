@@ -8,8 +8,14 @@
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarSkinPage+SelectedCarSkinPageViewModel}">
     <UserControl.Resources>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <mui:BindingProxy x:Key="Model" Data="{Binding}" />
+        </ResourceDictionary>
     </UserControl.Resources>
+    
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_OnIconMouseDown"
             Icon="{Binding SelectedObject.LiveryImage}">
         <ac:AcObjectBase.ToolBars>
@@ -64,7 +70,8 @@
                 <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Country" Command="{Binding FilterCountryCommand}" />
+                            <MenuItem Header="Filter By Country" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                    CommandParameter="country" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="Country:" />
@@ -76,7 +83,8 @@
                 <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Team" Command="{Binding FilterTeamCommand}" />
+                            <MenuItem Header="Filter By Team" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                    CommandParameter="team" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="Team:" />
@@ -87,7 +95,7 @@
                 <DockPanel Grid.Row="1" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Driver" Command="{Binding FilterDriverCommand}" />
+                            <MenuItem Header="Filter By Team" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="driver" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="Driver:" />
@@ -97,11 +105,21 @@
 
                 <!-- third row -->
                 <DockPanel Grid.Row="2" Grid.Column="0">
+                    <DockPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Filter By Number" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="number" />
+                        </ContextMenu>
+                    </DockPanel.ContextMenu>
                     <TextBlock Text="Number:" />
                     <TextBox Text="{Binding SelectedObject.SkinNumber}" attached:TextBoxAdvancement.SpecialMode="Integer" />
                 </DockPanel>
 
                 <DockPanel Grid.Row="2" Grid.Column="1">
+                    <DockPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Filter By Priority" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="priority" />
+                        </ContextMenu>
+                    </DockPanel.ContextMenu>
                     <TextBlock Text="Priority:" />
                     <TextBox Text="{Binding SelectedObject.Priority, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer" />
                 </DockPanel>

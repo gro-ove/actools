@@ -156,6 +156,12 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new [] { OkButton, CancelButton };
         }
 
+        public static CarObject Show(CarObject car = null) {
+            var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault());
+            dialog.ShowDialog();
+            return dialog.IsResultOk ? dialog.SelectedCar : null;
+        }
+
         private bool _loaded;
         private void SelectAndSetupCarDialog_OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;

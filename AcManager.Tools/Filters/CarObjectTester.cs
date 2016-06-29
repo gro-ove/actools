@@ -62,44 +62,44 @@ namespace AcManager.Tools.Filters {
             switch (key) {
                 case "b":
                 case "brand":
-                    return obj.Brand != null && value.Test(obj.Brand);
+                    return value.Test(obj.Brand);
 
                 case "newbrand":
                     if (_list == null) {
                         _list = FilesStorage.Instance.GetContentDirectory(ContentCategory.BrandBadges).Select(x => x.Name).ToList();
                     }
-                    return obj.Brand != null && value.Test(!_list.Contains(obj.Brand));
+                    return value.Test(!_list.Contains(obj.Brand));
 
                 case "class":
-                    return obj.CarClass != null && value.Test(obj.CarClass);
+                    return value.Test(obj.CarClass);
 
                 case "parent":
-                    return obj.Parent != null && value.Test(obj.Parent.DisplayName);
+                    return value.Test(obj.Parent?.DisplayName);
 
                 case "bhp":
                 case "power":
-                    return obj.SpecsBhp != null && value.Test(obj.SpecsBhp);
+                    return value.Test(obj.SpecsBhp);
 
                 case "torque":
-                    return obj.SpecsTorque != null && value.Test(obj.SpecsTorque);
+                    return value.Test(obj.SpecsTorque);
 
                 case "weight":
                 case "mass":
-                    return obj.SpecsWeight != null && value.Test(obj.SpecsWeight);
+                    return value.Test(obj.SpecsWeight);
 
                 case "acceleration":
-                    return obj.SpecsAcceleration != null && value.Test(obj.SpecsAcceleration);
-
+                    return value.Test(obj.SpecsAcceleration);
+                    
                 case "speed":
                 case "topspeed":
-                    return obj.SpecsTopSpeed != null && value.Test(obj.SpecsTopSpeed);
+                    return value.Test(obj.SpecsTopSpeed);
 
                 case "pw":
                 case "pwratio":
-                    return obj.SpecsPwRatio != null && value.Test(obj.SpecsPwRatio);
+                    return value.Test(obj.SpecsPwRatio);
 
                 case "skins":
-                    return obj.SkinsEnabledWrappersList?.Count > 0 && value.Test(obj.SkinsEnabledWrappersList.Count);
+                    return value.Test(obj.SkinsEnabledWrappersList?.Count ?? 0);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);

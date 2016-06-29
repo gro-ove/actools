@@ -44,11 +44,11 @@ namespace AcManager.Tools.Filters {
             switch (key) {
                 case "desc":
                 case "description":
-                    return obj.Description != null && value.Test(obj.Description);
+                    return value.Test(obj.Description);
 
                 case "c":
                 case "country":
-                    return obj.Country != null && value.Test(obj.Country);
+                    return value.Test(obj.Country);
 
                 case "t":
                 case "tag":
@@ -56,17 +56,17 @@ namespace AcManager.Tools.Filters {
 
                 case "a":
                 case "author":
-                    return obj.Author != null && value.Test(obj.Author);
+                    return value.Test(obj.Author);
 
                 case "k":
                 case "kunos":
                     return value.Test(obj.Author == AcCommonObject.AuthorKunos);
 
                 case "version":
-                    return obj.Version != null && value.Test(obj.Version);
+                    return value.Test(obj.Version);
 
                 case "url":
-                    return obj.Url != null && value.Test(obj.Url);
+                    return value.Test(obj.Url);
             }
 
             return AcCommonObjectTester.Instance.Test(obj, key, value);

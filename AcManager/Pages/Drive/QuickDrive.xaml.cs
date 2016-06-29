@@ -28,7 +28,7 @@ using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive {
-        public const string UserPresetableKeyValue = "Quick Drive";
+        public const string PresetableKeyValue = "Quick Drive";
         private const string KeySaveable = "__QuickDrive_Main";
         
         private QuickDriveViewModel Model => (QuickDriveViewModel)DataContext;
@@ -441,15 +441,19 @@ namespace AcManager.Pages.Drive {
             #region Presets
             bool IUserPresetable.CanBeSaved => true;
 
-            string IUserPresetable.UserPresetableKey => UserPresetableKeyValue;
+            string IUserPresetable.PresetableCategory => PresetableKeyValue;
 
-            public string ExportToUserPresetData() {
+            string IUserPresetable.PresetableKey => PresetableKeyValue;
+
+            string IUserPresetable.DefaultPreset => null;
+
+            public string ExportToPresetData() {
                 return _saveable.ToSerializedString();
             }
 
             public event EventHandler Changed;
 
-            public void ImportFromUserPresetData(string data) {
+            public void ImportFromPresetData(string data) {
                 _saveable.FromSerializedString(data);
             }
             #endregion
@@ -659,8 +663,8 @@ namespace AcManager.Pages.Drive {
 
             private async Task Share(object o) {
                 await SharingUiHelper.ShareAsync(SharedEntryType.QuickDrivePreset,
-                        Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(UserPresetableKeyValue)), null,
-                        ExportToUserPresetData());
+                        Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(PresetableKeyValue)), null,
+                        ExportToPresetData());
             }
 
             private void OnSelectedUpdated() {
@@ -721,12 +725,12 @@ namespace AcManager.Pages.Drive {
         }
 
         public static void LoadPreset(string presetFilename) {
-            UserPresetsControl.LoadPreset(UserPresetableKeyValue, presetFilename);
+            UserPresetsControl.LoadPreset(PresetableKeyValue, presetFilename);
             NavigateToPage();
         }
 
         public static void LoadSerializedPreset(string serializedPreset) {
-            if (!UserPresetsControl.LoadSerializedPreset(UserPresetableKeyValue, serializedPreset)) {
+            if (!UserPresetsControl.LoadSerializedPreset(PresetableKeyValue, serializedPreset)) {
                 ValuesStorage.Set(KeySaveable, serializedPreset);
             }
 

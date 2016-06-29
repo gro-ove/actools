@@ -153,9 +153,13 @@ namespace AcManager.Tools.Helpers {
 
             public bool CanBeSaved => true;
 
-            public string UserPresetableKey => "In-Game Apps";
+            public string PresetableKey => "In-Game Apps";
 
-            public string ExportToUserPresetData() {
+            string IUserPresetable.PresetableCategory => PresetableKey;
+
+            string IUserPresetable.DefaultPreset => null;
+
+            public string ExportToPresetData() {
                 return JsonConvert.SerializeObject(new Saveable {
                     PythonData = Python.Export(),
                     FormsData = Forms.Export()
@@ -168,7 +172,7 @@ namespace AcManager.Tools.Helpers {
                 Changed?.Invoke(this, EventArgs.Empty);
             }
 
-            public void ImportFromUserPresetData(string data) {
+            public void ImportFromPresetData(string data) {
                 var entry = JsonConvert.DeserializeObject<Saveable>(data);
                 Python.Import(entry.PythonData);
                 Forms.Import(entry.FormsData);

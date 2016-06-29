@@ -565,6 +565,7 @@ todo:
             - special auto-sync mode
             - warning for differences
         - tracks specs editor
+        - filter by specs
 
     - skins manager
         - showroom
@@ -597,15 +598,21 @@ todo:
     - context menu for lists in aclistpages
         - reload list
     - context menu for adding new filters
-        - in this tab/as a new tab (+ctrl)?
-        - tags
-        - properties
+        + context menu inheritance
+        + tags
+        + properties
             + cars
-            - tracks
-            - showrooms
-            - skins
+            + tracks
+            + showrooms
+            + skins
+            - replays
+            - weather
+            - apps?
+            - pp filters?
+            - fonts?
+            - setups?
+        - in this tab/as a new tab (+ctrl)?
         - quick drive (just by clicking?)
-        - fix context menu inheritance
 
     - update years database
 

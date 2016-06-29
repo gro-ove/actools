@@ -111,6 +111,25 @@ namespace AcManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to body { background: black !important }
+        ///body, #cntdwn, .driver_profile { color: white !important }
+        ///* { font-family: Segoe UI, sans-serif !important }
+        ///a { color: #E20035 !important }
+        ///a:hover { color: #CA0030 !important }
+        ///a:focused, a:active { color: #CA0030 !important }
+        ///#page { background: #333 !important }
+        ///h1, h2 { font-weight: 100 !important; font-family: Segoe UI Light, Segoe UI, sans-serif !important }
+        ///.margin_top_0 { margin-top: 20px !important; }
+        ///.dd { font-size: 12px; }
+        ///#track_msdd, #car_msdd  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string RsrStyle {
+            get {
+                return ResourceManager.GetString("RsrStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] ShowroomPanoramaTemplate {

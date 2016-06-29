@@ -36,7 +36,7 @@ namespace AcManager {
                 return;
             }
 
-            var appGuid = ((GuidAttribute)Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value;
+            var appGuid = ((GuidAttribute)Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), true).GetValue(0)).Value;
             var mutexId = $@"Global\{{{appGuid}}}";
 
             if (args.Contains(WindowsHelper.RestartArg)) {

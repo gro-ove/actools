@@ -21,7 +21,7 @@ namespace AcManager.Tools.Filters {
         public bool Test(TrackObject obj, string key, ITestEntry value) {
             switch (key) {
                 case "layouts":
-                    return obj.MultiLayouts != null && value.Test(obj.MultiLayouts.Count);
+                    return value.Test(obj.MultiLayouts?.Count ?? 1);
             }
 
             return TrackBaseObjectTester.Instance.Test(obj, key, value);

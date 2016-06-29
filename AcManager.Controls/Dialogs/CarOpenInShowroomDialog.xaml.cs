@@ -14,7 +14,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Controls.Dialogs {
     public partial class CarOpenInShowroomDialog {
-        public const string UserPresetableKeyValue = "Showroom";
+        public const string PresetableKeyValue = "Showroom";
 
         public class CarOpenInShowroomDialogViewModel : NotifyPropertyChanged, IUserPresetable {
             private class SaveableData {
@@ -140,15 +140,19 @@ namespace AcManager.Controls.Dialogs {
 
             public bool CanBeSaved => SelectedShowroom != null && SelectedFilter != null;
 
-            public string UserPresetableKey => UserPresetableKeyValue;
+            string IUserPresetable.PresetableKey => PresetableKeyValue;
 
-            public string ExportToUserPresetData() {
+            string IUserPresetable.PresetableCategory => PresetableKeyValue;
+
+            string IUserPresetable.DefaultPreset => null;
+
+            public string ExportToPresetData() {
                 return _saveable.ToSerializedString();
             }
 
             public event EventHandler Changed;
 
-            public void ImportFromUserPresetData(string data) {
+            public void ImportFromPresetData(string data) {
                 _saveable.FromSerializedString(data);
             }
 

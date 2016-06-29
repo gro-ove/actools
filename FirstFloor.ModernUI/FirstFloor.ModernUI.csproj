@@ -142,6 +142,7 @@
     <Compile Include="Win32\OSVersionHelper.cs" />
     <Compile Include="Win32\RECT.cs" />
     <Compile Include="Windows\Attached\ContextMenuAdvancement.cs" />
+    <Compile Include="Windows\Controls\InheritingContextMenu.cs" />
     <Compile Include="Windows\CommandDictionary.cs" />
     <Compile Include="Windows\Controls\AlignableWrapPanel.cs" />
     <Compile Include="Windows\Controls\BbCodeImageEventArgs.cs" />

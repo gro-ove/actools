@@ -36,22 +36,22 @@ namespace AcManager.Tools.Filters {
         public bool Test(CarSkinObject obj, string key, ITestEntry value) {
             switch (key) {
                 case "skinname":
-                    return obj.Name != null && value.Test(obj.Name);
+                    return value.Test(obj.Name);
 
                 case "driver":
                 case "drivername":
-                    return obj.DriverName != null && value.Test(obj.DriverName);
+                    return value.Test(obj.DriverName);
 
                 case "team":
                 case "teamname":
-                    return obj.Team != null && value.Test(obj.Team);
+                    return value.Test(obj.Team);
 
                 case "n":
                 case "number":
-                    return obj.SkinNumber != null && value.Test(obj.SkinNumber);
+                    return value.Test(obj.SkinNumber);
 
                 case "priority":
-                    return obj.Priority.HasValue && value.Test(obj.Priority.Value);
+                    return value.Test(obj.Priority ?? 0);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);

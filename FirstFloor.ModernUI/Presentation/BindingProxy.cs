@@ -3,11 +3,9 @@ using System.Windows;
 namespace FirstFloor.ModernUI.Presentation {
     public class BindingProxy : Freezable {
         #region Overrides of Freezable
-
         protected override Freezable CreateInstanceCore() {
             return new BindingProxy();
         }
-
         #endregion
 
         public object Data {

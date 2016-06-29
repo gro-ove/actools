@@ -35,21 +35,21 @@ namespace AcManager.Tools.Filters {
         public bool Test(TrackBaseObject obj, string key, ITestEntry value) {
             switch (key) {
                 case "city":
-                    return obj.City != null && value.Test(obj.City);
+                    return value.Test(obj.City);
 
                 case "geotags":
-                    return obj.GeoTags != null && value.Test(obj.GeoTags.ToString());
+                    return value.Test(obj.GeoTags?.ToString());
 
                 case "len":
                 case "length":
-                    return obj.SpecsLength != null && value.Test(obj.SpecsLength);
+                    return  value.Test(obj.SpecsLength);
 
                 case "width":
-                    return obj.SpecsWidth != null && value.Test(obj.SpecsWidth);
+                    return value.Test(obj.SpecsWidth);
 
                 case "pits":
                 case "pitboxes":
-                    return obj.SpecsPitboxes != null && value.Test(obj.SpecsPitboxes);
+                    return value.Test(obj.SpecsPitboxes);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);

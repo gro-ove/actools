@@ -67,24 +67,62 @@ namespace AcManager.Pages.Selected {
             private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(AcCommonObject.Year):
-                        FilterDecadeCommand.OnCanExecuteChanged();
+                        FilterCommand.OnCanExecuteChanged();
                         break;
                 }
             }
 
-            #region Filter By
-            private RelayCommand _filterClassCommand;
+            private void FilterRange(string key, string value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
+                double actual;
+                if (string.IsNullOrWhiteSpace(value) || !FlexibleParser.TryParseDouble(value, out actual)) {
+                    NewFilterTab($"{key}-");
+                    return;
+                }
 
-            public RelayCommand FilterClassCommand => _filterClassCommand ?? (_filterClassCommand = new RelayCommand(o => {
-                NewFilterTab($"class:{Filter.Encode(SelectedObject.CarClass)}");
-            }));
+                var delta = (relative ? range * actual : range) / 2d;
+                var from = Math.Max(actual - delta, 0d);
+                var to = actual + delta;
 
-            private RelayCommand _filterBrandCommand;
+                NewFilterTab($"{key}>{from.Round(roundTo) - Math.Min(roundTo, 1d)} & {key}<{to.Round(roundTo) + Math.Min(roundTo, 1d)}");
+            }
+            
+            protected override void FilterExec(string type) {
+                switch (type) {
+                    case "class":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.CarClass) ? "class-" : $"class:{Filter.Encode(SelectedObject.CarClass)}");
+                        break;
 
-            public RelayCommand FilterBrandCommand => _filterBrandCommand ?? (_filterBrandCommand = new RelayCommand(o => {
-                NewFilterTab($"brand:{Filter.Encode(SelectedObject.Brand)}");
-            }));
-            #endregion
+                    case "brand":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.Brand) ? "brand-" : $"brand:{Filter.Encode(SelectedObject.Brand)}");
+                        break;
+
+                    case "power":
+                        FilterRange("power", SelectedObject.SpecsBhp);
+                        break;
+
+                    case "torque":
+                        FilterRange("torque", SelectedObject.SpecsTorque);
+                        break;
+
+                    case "weight":
+                        FilterRange("weight", SelectedObject.SpecsWeight);
+                        break;
+
+                    case "pwratio":
+                        FilterRange("pwratio", SelectedObject.SpecsPwRatio, roundTo: 0.01);
+                        break;
+
+                    case "topspeed":
+                        FilterRange("topspeed", SelectedObject.SpecsTopSpeed);
+                        break;
+
+                    case "acceleration":
+                        FilterRange("acceleration", SelectedObject.SpecsAcceleration, roundTo: 0.1);
+                        break;
+                }
+
+                base.FilterExec(type);
+            }
 
             #region Open In Showroom
             private RelayCommand _openInShowroomCommand;
@@ -188,7 +226,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
-                    ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.UserPresetableKeyValue, p => {
+                    ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.PresetableKeyValue, p => {
                         CarOpenInShowroomDialog.RunPreset(p, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
@@ -196,7 +234,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = _helper.Create(QuickDrive.UserPresetableKeyValue, p => {
+                    QuickDrivePresets = _helper.Create(QuickDrive.PresetableKeyValue, p => {
                         QuickDrive.RunPreset(p, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
@@ -204,7 +242,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeUpdatePreviewsPresets() {
                 if (UpdatePreviewsPresets == null) {
-                    UpdatePreviewsPresets = _helper.Create(CarUpdatePreviewsDialog.UserPresetableKeyValue, presetFilename => {
+                    UpdatePreviewsPresets = _helper.Create(CarUpdatePreviewsDialog.PresetableKeyValue, presetFilename => {
                         new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode(), presetFilename).ShowDialog();
                     });
                 }
@@ -267,6 +305,62 @@ namespace AcManager.Pages.Selected {
                     NonfatalError.Notify("Can’t pack data", "Make sure there is enough space.", e);
                 }
             }, o => SettingsHolder.Common.DeveloperMode && Directory.Exists(DataDirectory)));
+
+            private AsyncCommand _replaceSoundCommand;
+
+            public AsyncCommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(async o => {
+                var donor = SelectCarDialog.Show();
+                if (donor == null) return;
+
+                try {
+                    using (new WaitingDialog()) {
+                        var guids = Path.Combine(donor.Location, "sfx", "GUIDs.txt");
+                        var soundbank = Path.Combine(donor.Location, "sfx", donor.Id + ".bank");
+
+                        var newGuilds = Path.Combine(SelectedObject.Location, "sfx", "GUIDs.txt");
+                        var newSoundbank = Path.Combine(SelectedObject.Location, "sfx", SelectedObject.Id + ".bank");
+
+                        await Task.Run(() => {
+                            var destinations = new[] { newGuilds, newSoundbank }.Where(File.Exists).Select(x => new {
+                                Original = x,
+                                Backup = FileUtils.EnsureUnique(x + ".bak")
+                            }).ToList();
+
+                            foreach (var oldFile in destinations) {
+                                File.Move(oldFile.Original, oldFile.Backup);
+                            }
+
+                            try {
+                                if (File.Exists(guids) && File.Exists(soundbank)) {
+                                    File.Copy(soundbank, newSoundbank);
+                                    File.WriteAllText(newGuilds, File.ReadAllText(guids).Replace(donor.Id, SelectedObject.Id));
+                                } else if (File.Exists(soundbank) && donor.Author == AcCommonObject.AuthorKunos) {
+                                    File.Copy(soundbank, newSoundbank);
+                                    File.WriteAllText(newGuilds, File.ReadAllLines(FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
+                                                                     .Where(x => !x.Contains("} bank:/") || x.Contains("} bank:/common") ||
+                                                                             x.EndsWith("} bank:/" + donor.Id))
+                                                                     .Where(x => !x.Contains("} event:/") || x.Contains("} event:/cars/" + donor.Id + "/"))
+                                                                     .JoinToString("\r\n").Replace(donor.Id, SelectedObject.Id));
+                                } else {
+                                    throw new Exception("Selected car doesn’t have proper sound");
+                                }
+                            } catch (Exception) {
+                                foreach (var oldFile in destinations) {
+                                    if (File.Exists(oldFile.Original)) {
+                                        File.Delete(oldFile.Original);
+                                    }
+                                    File.Move(oldFile.Backup, oldFile.Original);
+                                }
+                                throw;
+                            }
+                            
+                            FileUtils.Recycle(destinations.Select(x => x.Backup).ToArray());
+                        });
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t replace car’s sound", "Make sure there is enough space and original files could be removed.", e);
+                }
+            }, o => SettingsHolder.Common.DeveloperMode));
         }
 
         private string _id;

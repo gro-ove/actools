@@ -11,9 +11,6 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new[] { CloseButton };
         }
 
-        public AssistsDialog()
-                : this(new AssistsViewModel()) {}
-
         private void Label_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             if (e.ClickCount != 1) return;
 

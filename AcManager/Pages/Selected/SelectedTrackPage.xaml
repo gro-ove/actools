@@ -12,6 +12,8 @@
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />
+
+            <mui:BindingProxy x:Key="Model" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <controls:AcObjectBase AcObject="{Binding SelectedTrackConfiguration}" ShowIcon="False">
@@ -116,7 +118,8 @@
                     <DockPanel Grid.Row="0" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Country" Command="{Binding FilterCountryCommand}" />
+                                <MenuItem Header="Filter By Country" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                        CommandParameter="country" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="Country:" />
@@ -127,8 +130,9 @@
                     <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Year" Command="{Binding FilterYearCommand}" />
-                                <MenuItem Header="Filter By Decade" Command="{Binding FilterDecadeCommand}" />
+                                <MenuItem Header="Filter By Year" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="year" />
+                                <MenuItem Header="Filter By Decade" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                        CommandParameter="decade" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="Year:" ToolTip="Year of production start" />
@@ -140,7 +144,8 @@
                     <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By City" Command="{Binding FilterCityCommand}" />
+                                <MenuItem Header="Filter By City" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                        CommandParameter="city" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="City:" />
@@ -159,7 +164,8 @@
                     <DockPanel Grid.Row="2" Grid.Column="1">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Author" Command="{Binding FilterAuthorCommand}" />
+                                <MenuItem Header="Filter By Author" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                        CommandParameter="author" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="Author:" ToolTip="Author, version, URL" />

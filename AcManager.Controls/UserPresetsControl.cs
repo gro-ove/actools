@@ -76,7 +76,7 @@ namespace AcManager.Controls {
             if (c == null) return false;
 
             c.CurrentUserPreset = null;
-            c.UserPresetable?.ImportFromUserPresetData(serialized);
+            c.UserPresetable?.ImportFromPresetData(serialized);
             return true;
         }
 
@@ -89,7 +89,7 @@ namespace AcManager.Controls {
         }
 
         private void UserPresetsControl_PresetSelected(object sender, ChangedPresetEventArgs args) {
-            if (ReferenceEquals(sender, this) || _presetable == null || _presetable.UserPresetableKey != args.Key) return;
+            if (ReferenceEquals(sender, this) || _presetable == null || _presetable.PresetableKey != args.Key) return;
             SwitchTo(args.Value);
         }
 
@@ -97,14 +97,14 @@ namespace AcManager.Controls {
 
         public string SelectedPresetFilename {
             get {
-                return _selectedPresetFilename ?? ValuesStorage.GetString("__userpresets_p_" + _presetable.UserPresetableKey) 
+                return _selectedPresetFilename ?? ValuesStorage.GetString("__userpresets_p_" + _presetable.PresetableKey) 
                     ?? string.Empty;
             }
             private set {
                 if (Equals(value, _selectedPresetFilename)) return;
                 _selectedPresetFilename = value;
                 if (_presetable != null) {
-                    ValuesStorage.Set("__userpresets_p_" + _presetable.UserPresetableKey, value);
+                    ValuesStorage.Set("__userpresets_p_" + _presetable.PresetableKey, value);
                 }
             }
         }
@@ -142,10 +142,10 @@ namespace AcManager.Controls {
             _currentUserPresetData = null;
 
             if (!_partiallyIgnoreNext && _presetable != null) {
-                PresetSelected?.Invoke(this, new ChangedPresetEventArgs(_presetable.UserPresetableKey, entry.ToString()));
+                PresetSelected?.Invoke(this, new ChangedPresetEventArgs(_presetable.PresetableKey, entry.ToString()));
 
                 try {
-                    _presetable.ImportFromUserPresetData(entry.ReadData());
+                    _presetable.ImportFromPresetData(entry.ReadData());
                 } catch (Exception) {
                     return; // TODO: Informing
                 }
@@ -171,8 +171,8 @@ namespace AcManager.Controls {
 
             var entry = CurrentUserPreset;
             string resultFilename;
-            if (!PresetsManager.Instance.SavePresetUsingDialog(_presetable.UserPresetableKey,
-                                                               _presetable.ExportToUserPresetData(),
+            if (!PresetsManager.Instance.SavePresetUsingDialog(_presetable.PresetableCategory,
+                                                               _presetable.ExportToPresetData(),
                                                                entry?.Filename,
                                                                out resultFilename)) return;
 
@@ -203,24 +203,24 @@ namespace AcManager.Controls {
 
         private void OnUserPresetableChanged(IUserPresetable oldValue, IUserPresetable newValue) {
             if (oldValue != null) {
-                Instances.Remove(oldValue.UserPresetableKey);
+                Instances.Remove(oldValue.PresetableKey);
             }
 
             Instances.RemoveDeadReferences();
 
             if (newValue != null) {
-                Instances[newValue.UserPresetableKey] = new WeakReference<UserPresetsControl>(this);
+                Instances[newValue.PresetableKey] = new WeakReference<UserPresetsControl>(this);
             }
 
             if (_presetable != null) {
-                PresetsManager.Instance.Watcher(_presetable.UserPresetableKey).Update -= Presets_Update;
+                PresetsManager.Instance.Watcher(_presetable.PresetableCategory).Update -= Presets_Update;
                 _presetable.Changed -= Presetable_Changed;
             }
 
             _presetable = newValue;
             if (_presetable == null) return;
 
-            PresetsManager.Instance.Watcher(_presetable.UserPresetableKey).Update += Presets_Update;
+            PresetsManager.Instance.Watcher(_presetable.PresetableCategory).Update += Presets_Update;
             _presetable.Changed += Presetable_Changed;
             UpdateSavedPresets();
             SetChanged();
@@ -329,15 +329,17 @@ namespace AcManager.Controls {
         private void UpdateSavedPresets() {
             if (_presetable == null) return;
 
-            var presets = PresetsManager.Instance.GetSavedPresets(_presetable.UserPresetableKey)
+            var presets = PresetsManager.Instance.GetSavedPresets(_presetable.PresetableCategory)
                     .ToIReadOnlyListIfItsNot();
 
             SetValue(SavedPresetsPropertyKey, new ObservableCollection<ISavedPresetEntry>(presets));
             SetValue(SavedPresetsGroupedPropertyKey, new ObservableCollection<MenuItem>(
-                    GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.UserPresetableKey), MenuItem_Click, _presetable as IPreviewProvider)));
+                    GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory), MenuItem_Click, _presetable as IPreviewProvider)));
             
             _ignoreNext = true;
-            CurrentUserPreset = presets.FirstOrDefault(x => x.Filename == SelectedPresetFilename); // ?? presets.FirstOrDefault();
+            var defaultPreset = _presetable.DefaultPreset;
+            CurrentUserPreset = presets.FirstOrDefault(x => x.Filename == SelectedPresetFilename) ??
+                    (defaultPreset == null ? null : presets.FirstOrDefault(x => x.DisplayName == defaultPreset));
             _ignoreNext = false;
         }
 
@@ -363,9 +365,9 @@ namespace AcManager.Controls {
         private void SetChanged(bool? value = null) {
             if (_presetable == null || Changed == value) return;
             
-            SetValue(ChangedPropertyKey, value ?? ValuesStorage.GetBool("__userpresets_c_" + _presetable.UserPresetableKey));
+            SetValue(ChangedPropertyKey, value ?? ValuesStorage.GetBool("__userpresets_c_" + _presetable.PresetableKey));
             if (value.HasValue) {
-                ValuesStorage.Set("__userpresets_c_" + _presetable.UserPresetableKey, value.Value);
+                ValuesStorage.Set("__userpresets_c_" + _presetable.PresetableKey, value.Value);
             }
         }
 
@@ -377,7 +379,7 @@ namespace AcManager.Controls {
                     _currentUserPresetData = CurrentUserPreset?.ReadData();
                 }
 
-                var actualData = _presetable.ExportToUserPresetData();
+                var actualData = _presetable.ExportToPresetData();
                 SetChanged(actualData != _currentUserPresetData);
             } else {
                 SetChanged(true);

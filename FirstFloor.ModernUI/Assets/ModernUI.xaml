@@ -54,9 +54,9 @@
     <sys:Double x:Key="ModernSubMenuFontSize">11</sys:Double>
 
     <!-- layout margins -->
-    <Thickness x:Key="RootMargin">-42,-8,-16,-16</Thickness>
-    <Thickness x:Key="ContentMargin">-42,0,-16,-16</Thickness>
-    <Thickness x:Key="ContentMarginWithPadding">-22,20,4,4</Thickness>
+    <Thickness x:Key="RootMargin">0</Thickness>
+    <Thickness x:Key="ContentMargin">0 8 0 0</Thickness>
+    <Thickness x:Key="ContentMarginWithPadding">20 28 20 20</Thickness>
     <Thickness x:Key="InnerContentMargin">16,28,16,16</Thickness>
     <Thickness x:Key="StatusMargin">16,8,0,8</Thickness>
     <Thickness x:Key="HeaderMargin">0,-28,44,0</Thickness>

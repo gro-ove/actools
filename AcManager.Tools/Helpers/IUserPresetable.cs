@@ -4,12 +4,16 @@ namespace AcManager.Tools.Helpers {
     public interface IUserPresetable {
         bool CanBeSaved { get; }
 
-        string UserPresetableKey { get; }
+        string PresetableCategory { get; }
 
-        string ExportToUserPresetData();
+        string PresetableKey { get; }
+
+        string DefaultPreset { get; }
+
+        string ExportToPresetData();
 
         event EventHandler Changed;
 
-        void ImportFromUserPresetData(string data);
+        void ImportFromPresetData(string data);
     }
 }

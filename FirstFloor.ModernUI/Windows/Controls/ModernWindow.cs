@@ -14,6 +14,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// </summary>
     [ContentProperty(nameof(AdditionalContent))]
     public class ModernWindow : DpiAwareWindow {
+        public static readonly DependencyProperty FrameMarginProperty = DependencyProperty.Register(nameof(FrameMargin), typeof(Thickness),
+                typeof(ModernWindow));
+
+        public Thickness FrameMargin {
+            get { return (Thickness)GetValue(FrameMarginProperty); }
+            set { SetValue(FrameMarginProperty, value); }
+        }
+
         /// <summary>
         /// Identifies the BackgroundContent dependency property.
         /// </summary>

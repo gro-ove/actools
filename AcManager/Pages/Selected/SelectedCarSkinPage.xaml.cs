@@ -20,17 +20,27 @@ namespace AcManager.Pages.Selected {
                 Car = car;
             }
 
-            private RelayCommand _filterTeamCommand;
+            protected override void FilterExec(string type) {
+                switch (type) {
+                    case "team":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.Team) ? "team-" : $"team:{Filter.Encode(SelectedObject.Team)}");
+                        break;
 
-            public RelayCommand FilterTeamCommand => _filterTeamCommand ?? (_filterTeamCommand = new RelayCommand(o => {
-                NewFilterTab($"team:{Filter.Encode(SelectedObject.Team)}");
-            }));
+                    case "driver":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.DriverName) ? "driver-" : $"driver:{Filter.Encode(SelectedObject.DriverName)}");
+                        break;
 
-            private RelayCommand _filterDriverCommand;
+                    case "number":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.SkinNumber) ? "number-" : $"number:{Filter.Encode(SelectedObject.SkinNumber)}");
+                        break;
 
-            public RelayCommand FilterDriverCommand => _filterDriverCommand ?? (_filterDriverCommand = new RelayCommand(o => {
-                NewFilterTab($"driver:{Filter.Encode(SelectedObject.Team)}");
-            }));
+                    case "priority":
+                        NewFilterTab(SelectedObject.Priority.HasValue ? $"priority:{SelectedObject.Priority.Value}" : "priority-");
+                        break;
+                }
+                
+                base.FilterExec(type);
+            }
 
             private RelayCommand _updatePreviewCommand;
 

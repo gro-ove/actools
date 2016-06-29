@@ -2,7 +2,7 @@
 
 namespace StringBasedFilter {
     public interface ITestEntry {
-        bool Test([CanBeNull]string value);
+        bool Test([CanBeNull] string value);
 
         bool Test(double value);
 

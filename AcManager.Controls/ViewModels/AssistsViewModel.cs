@@ -15,6 +15,8 @@ namespace AcManager.Controls.ViewModels {
     /// at Constructors region.
     /// </summary>
     public class BaseAssistsViewModel : NotifyPropertyChanged {
+        private const string DefaultKey = "AssistsDialogViewModel.SaveableData";
+
         public const string UserPresetableKeyValue = "Assists";
 
         /* values for combobox */
@@ -61,7 +63,7 @@ namespace AcManager.Controls.ViewModels {
         public double StabilityControl {
             get { return _stabilityControl; }
             set {
-                value = Math.Round(MathUtils.Clamp(value, 0d, 100d));
+                value = Math.Round(value.Clamp(0d, 100d));
                 if (Equals(value, _stabilityControl)) return;
                 _stabilityControl = value;
                 OnPropertyChanged();
@@ -110,7 +112,7 @@ namespace AcManager.Controls.ViewModels {
         public double SlipSteamMultipler {
             get { return _slipSteamMultipler; }
             set {
-                value = Math.Round(MathUtils.Clamp(value, 0d, 10d), 1);
+                value = Math.Round(value.Clamp(0d, 10d), 1);
                 if (Equals(value, _slipSteamMultipler)) return;
                 _slipSteamMultipler = value;
                 OnPropertyChanged();
@@ -190,7 +192,7 @@ namespace AcManager.Controls.ViewModels {
         public double Damage {
             get { return _damage; }
             set {
-                value = Math.Round(MathUtils.Clamp(value, 0d, 100d), 1);
+                value = Math.Round(value.Clamp(0d, 100d), 1);
                 if (Equals(value, _damage)) return;
                 _damage = value;
                 OnPropertyChanged();
@@ -209,7 +211,7 @@ namespace AcManager.Controls.ViewModels {
         public double TyreWearMultipler {
             get { return _tyreWearMultipler; }
             set {
-                value = Math.Round(MathUtils.Clamp(value, 0d, 5d), 1);
+                value = Math.Round(value.Clamp(0d, 5d), 1);
                 if (Equals(value, _tyreWearMultipler)) return;
                 _tyreWearMultipler = value;
                 OnPropertyChanged();
@@ -281,9 +283,10 @@ namespace AcManager.Controls.ViewModels {
         /// <summary>
         /// Inner constructor.
         /// </summary>
+        /// <param name="key">ValuesStorage key</param>
         /// <param name="fixedMode">Prevent saving</param>
-        private BaseAssistsViewModel(bool fixedMode) {
-            Saveable = new SaveHelper<SaveableData>("AssistsDialogViewModel.SaveableData", () => fixedMode ? null : new SaveableData {
+        protected BaseAssistsViewModel(string key, bool fixedMode) {
+            Saveable = new SaveHelper<SaveableData>(key, () => fixedMode ? null : new SaveableData {
                 IdealLine = IdealLine,
                 AutoBlip = AutoBlip,
                 StabilityControl = StabilityControl,
@@ -337,20 +340,8 @@ namespace AcManager.Controls.ViewModels {
         /// Full load-and-save mode. All changes will be saved automatically and loaded 
         /// later (only with this constuctor).
         /// </summary>
-        public BaseAssistsViewModel() : this(false) {
+        public BaseAssistsViewModel() : this(DefaultKey, false) {
             Saveable.Initialize();
-        }
-
-        /// <summary>
-        /// Load data from serialized string, but save only if specific flag is provided.
-        /// Warning! Without fixed mode previos saved data will be rewritten by new loaded data.
-        /// It’s not a problem, it’s a feature.
-        /// </summary>
-        /// <param name="serializedData">Serialized data</param>
-        /// <param name="fixedMode">Prevent saving</param>
-        public BaseAssistsViewModel(string serializedData, bool fixedMode) : this(fixedMode) {
-            Saveable.Reset();
-            Saveable.FromSerializedString(serializedData);
         }
 
         /// <summary>
@@ -360,7 +351,10 @@ namespace AcManager.Controls.ViewModels {
         /// <param name="serializedData"></param>
         /// <returns></returns>
         public static BaseAssistsViewModel CreateFixed(string serializedData) {
-            return new BaseAssistsViewModel(serializedData, true);
+            var result = new BaseAssistsViewModel(DefaultKey, true);
+            result.Saveable.Reset();
+            result.Saveable.FromSerializedString(serializedData);
+            return result;
         }
         #endregion
 
@@ -384,12 +378,18 @@ namespace AcManager.Controls.ViewModels {
     
     /// <summary>
     /// Full version with presets. Load-save-switch between presets-save as a preset, full
-    /// package. Also, now provides previews for presets!
+    /// package. Also, provides previews for presets!
     /// </summary>
     public class AssistsViewModel : BaseAssistsViewModel, IUserPresetable, IPreviewProvider {
         private static AssistsViewModel _instance;
 
-        public static AssistsViewModel Instance => _instance ?? (_instance = new AssistsViewModel());
+        public static AssistsViewModel Instance => _instance ?? (_instance = new AssistsViewModel(UserPresetableKeyValue));
+
+        private readonly string _customKey;
+
+        public AssistsViewModel(string customKey) : base(customKey, false) {
+            _customKey = customKey;
+        }
 
         protected override void SaveLater() {
             base.SaveLater();
@@ -399,15 +399,19 @@ namespace AcManager.Controls.ViewModels {
         #region Presetable
         bool IUserPresetable.CanBeSaved => true;
 
-        string IUserPresetable.UserPresetableKey => UserPresetableKeyValue;
+        string IUserPresetable.PresetableKey => _customKey;
 
-        string IUserPresetable.ExportToUserPresetData() {
+        string IUserPresetable.PresetableCategory => UserPresetableKeyValue;
+
+        string IUserPresetable.DefaultPreset => "Pro";
+
+        string IUserPresetable.ExportToPresetData() {
             return Saveable.ToSerializedString();
         }
 
         public event EventHandler Changed;
 
-        void IUserPresetable.ImportFromUserPresetData(string data) {
+        void IUserPresetable.ImportFromPresetData(string data) {
             Saveable.FromSerializedString(data);
         }
 

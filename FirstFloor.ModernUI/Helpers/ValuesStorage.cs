@@ -482,11 +482,18 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static void Set(string key, string value) {
-            lock (Instance._storage) {
-                if (Instance._storage.ContainsKey(key) && Instance._storage[key] == value) return;
-                Instance._storage[key] = value;
+            var storage = Instance._storage;
+            lock (storage) {
+                string previous;
+                var exists = storage.TryGetValue(key, out previous);
+                if (exists && previous == value) return;
+
+                storage[key] = value;
                 Dirty();
-                Instance.OnPropertyChanged(nameof(Count));
+
+                if (exists) {
+                    Instance.OnPropertyChanged(nameof(Count));
+                }
             }
         }
 

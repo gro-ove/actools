@@ -17,13 +17,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private RelayCommand _changeCommand;
 
         public RelayCommand ChangeCommand => _changeCommand ?? (_changeCommand = new RelayCommand(o => {
-            var target = (TextBox)o;
-            var originalValue = target.DataContext as string;
+            var target = o as TextBox;
+            var originalValue = target?.DataContext as string;
+            if (originalValue == null) return;
+
             var newValue = target.Text.Trim();
+            if (Equals(originalValue, newValue)) return;
+
             if (string.IsNullOrEmpty(newValue)) {
                 ItemsSource.Remove(originalValue);
             } else {
-                ItemsSource[ItemsSource.IndexOf(originalValue)] = target.Text;
+                var index = ItemsSource.IndexOf(originalValue);
+                if (index == -1) return;
+
+                ItemsSource[index] = target.Text;
             }
         }));
 

@@ -15,7 +15,7 @@
         }
 
         public bool Test(double value) {
-            return Test(value > 0.0);
+            return _value != Equals(value, 0.0);
         }
 
         public bool Test(object value) {
@@ -23,7 +23,7 @@
         }
 
         public bool Test(string value) {
-            return value != null && Test(value != "");
+            return _value != string.IsNullOrEmpty(value);
         }
     }
 }

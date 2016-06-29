@@ -153,6 +153,8 @@ namespace AcTools.Processes {
         }
 
         public class HotlapProperties : BaseModeProperties {
+            public string SessionName = "Hotlap";
+
             public bool? GhostCar = true;
 
             /// <summary>
@@ -167,7 +169,7 @@ namespace AcTools.Processes {
                 base.Set(file);
 
                 var sessionSection = file["SESSION_0"];
-                sessionSection.Set("NAME", "Hotlap");
+                sessionSection.Set("NAME", SessionName);
                 sessionSection.Set("TYPE", SessionType.Hotlap);
                 sessionSection.Set("DURATION_MINUTES", Duration);
                 sessionSection.Set("SPAWN_SET", "HOTLAP_START");

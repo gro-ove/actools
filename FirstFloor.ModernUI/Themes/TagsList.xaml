@@ -9,8 +9,9 @@
     <controls:TagsListDataTemplateSelector x:Key="TagsListDataTemplateSelector">
         <controls:TagsListDataTemplateSelector.TagDataTemplate>
             <DataTemplate>
-                <StackPanel Orientation="Horizontal" Background="{DynamicResource ButtonBackground}" Margin="0 0 4 0"
-                        ContextMenu="{Binding ItemContextMenu, RelativeSource={RelativeSource AncestorType={x:Type controls:TagsList}, Mode=FindAncestor}}">
+                <StackPanel Orientation="Horizontal" Background="{DynamicResource ButtonBackground}" Margin="0 0 4 4"
+                        ContextMenu="{Binding ItemContextMenu, RelativeSource={RelativeSource AncestorType={x:Type controls:TagsList}, Mode=FindAncestor}}"
+                        attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <TextBox x:Name="PART_TextBox" Style="{StaticResource TextBoxAsTextBlock}" Margin="8 2 2 2" Text="{Binding Mode=OneWay}"
                             Foreground="{DynamicResource ButtonText}" attached:FocusAdvancement.AdvancesByEnterKey="True">
                         <i:Interaction.Triggers>
@@ -37,30 +38,31 @@
     <Style TargetType="controls:TagsList">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Padding" Value="0" />
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:TagsList">
-                    <ItemsControl ItemTemplateSelector="{StaticResource TagsListDataTemplateSelector}">
-                        <ItemsControl.Resources>
-                            <CollectionViewSource x:Key="TagsCollection" Source="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}" />
-                        </ItemsControl.Resources>
-                        <ItemsControl.ItemsSource>
-                            <CompositeCollection>
-                                <CollectionContainer Collection="{Binding Source={StaticResource TagsCollection}}" />
-                                <ComboBox ItemsSource="{Binding SuggestionsSource, RelativeSource={RelativeSource TemplatedParent}}" MinWidth="100"
-                                        Background="Transparent" BorderThickness="0" x:Name="PART_NewTagTextBox" IsTextSearchEnabled="True" IsEditable="True"
-                                        attached:FocusAdvancement.AdvancesByEnterKey="True" />
-                            </CompositeCollection>
-                        </ItemsControl.ItemsSource>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                    <Border Background="Transparent">
+                        <ItemsControl ItemTemplateSelector="{StaticResource TagsListDataTemplateSelector}">
+                            <ItemsControl.Resources>
+                                <CollectionViewSource x:Key="TagsCollection" Source="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </ItemsControl.Resources>
+                            <ItemsControl.ItemsSource>
+                                <CompositeCollection>
+                                    <CollectionContainer Collection="{Binding Source={StaticResource TagsCollection}}" />
+                                    <ComboBox ItemsSource="{Binding SuggestionsSource, RelativeSource={RelativeSource TemplatedParent}}" MinWidth="100"
+                                            Background="Transparent" BorderThickness="0" x:Name="PART_NewTagTextBox" IsTextSearchEnabled="True"
+                                            IsEditable="True" attached:FocusAdvancement.AdvancesByEnterKey="True" />
+                                </CompositeCollection>
+                            </ItemsControl.ItemsSource>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -70,19 +72,21 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="controls:TagsList">
-                            <ItemsControl ItemsSource="{TemplateBinding ItemsSource}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding}" Background="{DynamicResource ButtonBackground}" Foreground="{DynamicResource ButtonText}"
-                                                Margin="0 0 4 0" Padding="4" />
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            <Border Background="Transparent">
+                                <ItemsControl ItemsSource="{TemplateBinding ItemsSource}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" Background="{DynamicResource ButtonBackground}"
+                                                    Foreground="{DynamicResource ButtonText}" Margin="0 0 4 0" Padding="4" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>

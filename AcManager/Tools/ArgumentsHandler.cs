@@ -364,7 +364,7 @@ Author: [b]{
                         case Choise.Save:
                         case Choise.ApplyAndSave:
                             var filename = FileUtils.EnsureUnique(Path.Combine(
-                                    PresetsManager.Instance.GetDirectory(QuickDrive.UserPresetableKeyValue), "Loaded", shared.GetFileName()));
+                                    PresetsManager.Instance.GetDirectory(QuickDrive.PresetableKeyValue), "Loaded", shared.GetFileName()));
                             Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                             File.WriteAllBytes(filename, data);
                             if (result == Choise.ApplyAndSave) {

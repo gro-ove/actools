@@ -38,30 +38,43 @@ namespace AcManager.Pages.Selected {
                     string.Equals(x.DisplayName, FilterTabType, StringComparison.OrdinalIgnoreCase))?.AddAndSelect(filter);
         }
 
-        private RelayCommand _filterYearCommand;
+        private RelayCommand _filterTagCommand;
 
-        public RelayCommand FilterYearCommand => _filterYearCommand ?? (_filterYearCommand = new RelayCommand(o => {
-            NewFilterTab(SelectedObject.Year.HasValue ? $"year:{SelectedObject.Year}" : "!year>0");
-        }));
+        public RelayCommand FilterTagCommand => _filterTagCommand ?? (_filterTagCommand = new RelayCommand(o => {
+            NewFilterTab($"tag:{Filter.Encode(o as string ?? "")}");
+        }, o => o is string));
 
-        private RelayCommand _filterDecadeCommand;
+        private RelayCommand _filterCommand;
 
-        public RelayCommand FilterDecadeCommand => _filterDecadeCommand ?? (_filterDecadeCommand = new RelayCommand(o => {
-            var start = (int)Math.Floor(SelectedObject.Year ?? 0 / 10d) * 10;
-            NewFilterTab($"year>{start - 1} & year<{start + 10}");
-        }, o => SelectedObject.Year.HasValue));
+        public RelayCommand FilterCommand => _filterCommand ?? (_filterCommand = new RelayCommand(o => FilterExec(o as string)));
 
-        private RelayCommand _filterCountryCommand;
+        protected virtual void FilterExec(string type) {
+            var jsonObject = SelectedObject as AcJsonObjectNew;
+            switch (type) {
+                case "author":
+                    if (jsonObject == null) return;
+                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Author) ? "author-" : $"author:{Filter.Encode(jsonObject.Author)}");
+                    break;
 
-        public RelayCommand FilterCountryCommand => _filterCountryCommand ?? (_filterCountryCommand = new RelayCommand(o => {
-            NewFilterTab($"country:{Filter.Encode((SelectedObject as AcJsonObjectNew)?.Country)}");
-        }, o => SelectedObject is AcJsonObjectNew));
+                case "country":
+                    if (jsonObject == null) return;
+                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Country) ? "country-" : $"country:{Filter.Encode(jsonObject.Country)}");
+                    break;
 
-        private RelayCommand _filterAuthorCommand;
+                case "year":
+                    NewFilterTab(SelectedObject.Year.HasValue ? $"year:{SelectedObject.Year}" : "year-");
+                    break;
 
-        public RelayCommand FilterAuthorCommand => _filterAuthorCommand ?? (_filterAuthorCommand = new RelayCommand(o => {
-            NewFilterTab($"author:{Filter.Encode((SelectedObject as AcJsonObjectNew)?.Author)}");
-        }, o => SelectedObject is AcJsonObjectNew));
+                case "decade":
+                    if (!SelectedObject.Year.HasValue) {
+                        NewFilterTab("year-");
+                    }
+
+                    var start = (int)Math.Floor((SelectedObject.Year ?? 0) / 10d) * 10;
+                    NewFilterTab($"year>{start - 1} & year<{start + 10}");
+                    break;
+            }
+        }
         #endregion
     }
 }

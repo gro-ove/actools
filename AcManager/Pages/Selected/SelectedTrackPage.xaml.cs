@@ -78,7 +78,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = _helper.Create(QuickDrive.UserPresetableKeyValue, p => {
+                    QuickDrivePresets = _helper.Create(QuickDrive.PresetableKeyValue, p => {
                         QuickDrive.RunPreset(p, track: SelectedTrackConfiguration);
                     });
                 }
@@ -149,36 +149,37 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private RelayCommand _filterYearCommand;
+            protected override void FilterExec(string type) {
+                switch (type) {
+                    case "author":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.Author)
+                                ? "author-" : $"author:{Filter.Encode(SelectedTrackConfiguration.Author)}");
+                        break;
 
-            public new RelayCommand FilterYearCommand => _filterYearCommand ?? (_filterYearCommand = new RelayCommand(o => {
-                NewFilterTab(SelectedTrackConfiguration.Year.HasValue ? $"year:{SelectedTrackConfiguration.Year}" : "!year>0");
-            }));
+                    case "country":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.Country)
+                                ? "country-" : $"country:{Filter.Encode(SelectedTrackConfiguration.Country)}");
+                        break;
 
-            private RelayCommand _filterDecadeCommand;
+                    case "city":
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.City)
+                                ? "city-" : $"city:{Filter.Encode(SelectedTrackConfiguration.City)}");
+                        break;
 
-            public new RelayCommand FilterDecadeCommand => _filterDecadeCommand ?? (_filterDecadeCommand = new RelayCommand(o => {
-                var start = (int)Math.Floor(SelectedTrackConfiguration.Year ?? 0 / 10d) * 10;
-                NewFilterTab($"year>{start - 1} & year<{start + 10}");
-            }));
+                    case "year":
+                        NewFilterTab(SelectedTrackConfiguration.Year.HasValue ? $"year:{SelectedTrackConfiguration.Year}" : "year-");
+                        break;
 
-            private RelayCommand _filterCountryCommand;
+                    case "decade":
+                        if (!SelectedTrackConfiguration.Year.HasValue) {
+                            NewFilterTab("year-");
+                        }
 
-            public new RelayCommand FilterCountryCommand => _filterCountryCommand ?? (_filterCountryCommand = new RelayCommand(o => {
-                NewFilterTab($"country:{Filter.Encode(SelectedTrackConfiguration?.Country)}");
-            }));
-
-            private RelayCommand _filterCityCommand;
-
-            public RelayCommand FilterCityCommand => _filterCityCommand ?? (_filterCityCommand = new RelayCommand(o => {
-                NewFilterTab($"city:{Filter.Encode(SelectedTrackConfiguration?.City)}");
-            }));
-
-            private RelayCommand _filterAuthorCommand;
-
-            public new RelayCommand FilterAuthorCommand => _filterAuthorCommand ?? (_filterAuthorCommand = new RelayCommand(o => {
-                NewFilterTab($"author:{Filter.Encode(SelectedTrackConfiguration?.Author)}");
-            }));
+                        var start = (int)Math.Floor((SelectedTrackConfiguration.Year ?? 0) / 10d) * 10;
+                        NewFilterTab($"year>{start - 1} & year<{start + 10}");
+                        break;
+                }
+            }
         }
 
         protected override void VersionInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {

@@ -491,16 +491,20 @@ namespace AcManager.Pages.Dialogs {
 
         public bool CanBeSaved => SelectedShowroom != null && SelectedFilter != null;
 
-        public const string UserPresetableKeyValue = "Previews";
+        public const string PresetableKeyValue = "Previews";
 
-        public string UserPresetableKey => UserPresetableKeyValue;
+        public string PresetableKey => PresetableKeyValue;
 
-        public string ExportToUserPresetData() {
+        string IUserPresetable.PresetableCategory => PresetableKeyValue;
+
+        string IUserPresetable.DefaultPreset => null;
+
+        public string ExportToPresetData() {
             return _saveable.ToSerializedString();
         }
 
         public event EventHandler Changed;
-        public void ImportFromUserPresetData(string data) {
+        public void ImportFromPresetData(string data) {
             _saveable.FromSerializedString(data);
         }
 
