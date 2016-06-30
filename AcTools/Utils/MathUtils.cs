@@ -27,6 +27,8 @@ namespace AcTools.Utils {
         public static float Clamp(this float v, float min, float max) => v < min ? min : v > max ? max : v;
         public static double Clamp(this double v, double min, double max) => v < min ? min : v > max ? max : v;
 
+        public static byte ClampToByte(this int v) => (byte)(v < 0 ? 0 : v > 255 ? 255 : v);
+
         public static float Saturate(this float value) => value < 0f ? 0f : value > 1f ? 1f : value;
         public static double Saturate(this double value) => value < 0d ? 0d : value > 1d ? 1d : value;
 

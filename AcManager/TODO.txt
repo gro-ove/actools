@@ -442,6 +442,15 @@ done:
             + editing
             + testing
             + sharing
+        + replays
+            + warning for cr (will be lost without renaming)
+            + show replay's size
+            + track's display name
+            + weather's display name
+            + try again to read car's id
+            + try to read car's skin
+            + filtering
+            + option to disable reading
     + color picker
         + additinal switchable schemes
         + pick color from screen
@@ -542,14 +551,15 @@ todo:
             - hud configuration
             - quickly switchable controls configs?
         - race results: total time
-        - RSR
-            - built-in part
-                - start the race
-                - install setups
+        + RSR
+            + built-in part
+                + start the race
+                + install setups
                 - share setups?
-            - chrome extension 
-                - start the race
-                - install setups
+            + chrome extension 
+                + start the race
+                + install setups
+            - option for disable RSR plugin if started without RSR event ID
     - change IDs (especially for skins)
 
     + go buttons keyboard shortcut
@@ -590,7 +600,9 @@ todo:
         - number plate editor?
 
     - auto-update track's map
-    - copy sounds from other car?
+    + copy sounds from other car
+        - remember previous selection
+        - try to filter cars by the engine
     - checkboxes
         - custom lists?
     - progress in taskbar
@@ -627,20 +639,16 @@ todo:
 
     - favorites
 
-    + additional section “miscellaneous”
-        + weather
+    > additional section “miscellaneous”
+        > replays
             - sharing?
+            × length in minutes
+        > weather
+            + filtering
             - testing?
+            × sharing
             × editing
             × base properties?
-        + replays
-            + warning for cr (will be lost without renaming)
-            - filtering
-            - try again to read car's id
-            - show replay's size
-            - length in minutes?
-            - track's display name
-            - weather's display name
 
     - improve showroom generator
         - async
@@ -659,6 +667,7 @@ todo:
 
 later:    
     - use bgr0X.jpg for dynamic background
+    - make filters truly superb just by converting “car.weight>800” to “car(weight>800)”
 
     - combine watchers for CM data directory into one?
     - changeable width of list area

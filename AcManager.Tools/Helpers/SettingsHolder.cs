@@ -338,6 +338,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _tryToLoadReplays;
+
+            public bool TryToLoadReplays {
+                get { return _tryToLoadReplays ?? (_tryToLoadReplays = ValuesStorage.GetBool("Settings.DriveSettings.TryToLoadReplays", true)).Value; }
+                set {
+                    if (Equals(value, _tryToLoadReplays)) return;
+                    _tryToLoadReplays = value;
+                    ValuesStorage.Set("Settings.DriveSettings.TryToLoadReplays", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _autoSaveReplays;
 
             public bool AutoSaveReplays {
@@ -355,7 +367,7 @@ namespace AcManager.Tools.Helpers {
             public bool AutoAddReplaysExtension {
                 get {
                     return _autoAddReplaysExtension ??
-                            (_autoAddReplaysExtension = ValuesStorage.GetBool("Settings.DriveSettings.AutoAddReplaysExtension", false)).Value;
+                            (_autoAddReplaysExtension = ValuesStorage.GetBool("Settings.DriveSettings.AutoAddReplaysExtension", true)).Value;
                 }
                 set {
                     if (Equals(value, _autoAddReplaysExtension)) return;
@@ -841,5 +853,38 @@ namespace AcManager.Tools.Helpers {
         private static SharingSettings _sharing;
 
         public static SharingSettings Sharing => _sharing ?? (_sharing = new SharingSettings());
+
+
+        public class LiveTimingSettings : NotifyPropertyChanged {
+            internal LiveTimingSettings() {}
+
+            private bool? _rsrEnabled;
+
+            public bool RsrEnabled {
+                get { return _rsrEnabled ?? (_rsrEnabled = ValuesStorage.GetBool("Settings.RsrSettings.RsrEnabled", true)).Value; }
+                set {
+                    if (Equals(value, _rsrEnabled)) return;
+                    _rsrEnabled = value;
+                    ValuesStorage.Set("Settings.RsrSettings.RsrEnabled", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _rsrCustomStyle;
+
+            public bool RsrCustomStyle {
+                get { return _rsrCustomStyle ?? (_rsrCustomStyle = ValuesStorage.GetBool("Settings.RsrSettings.RsrCustomStyle", true)).Value; }
+                set {
+                    if (Equals(value, _rsrCustomStyle)) return;
+                    _rsrCustomStyle = value;
+                    ValuesStorage.Set("Settings.RsrSettings.RsrCustomStyle", value);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private static LiveTimingSettings _liveTiming;
+
+        public static LiveTimingSettings LiveTiming => _liveTiming ?? (_liveTiming = new LiveTimingSettings());
     }
 }

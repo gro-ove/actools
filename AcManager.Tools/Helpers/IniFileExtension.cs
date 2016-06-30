@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
 using AcTools.DataFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
@@ -29,6 +31,15 @@ namespace AcManager.Tools.Helpers {
 
         public static void Set(this IniFileSection section, string key, SettingEntry entry) {
             section.Set(key, entry.Value);
+        }
+        
+        public static Color GetColor(this IniFileSection section, string key, Color defaultValue) {
+            var result = section.GetStrings(key).Select(x => FlexibleParser.ParseInt(x, 0).ClampToByte()).ToArray();
+            return result.Length == 3 ? Color.FromRgb(result[0], result[1], result[2]) : defaultValue;
+        }
+
+        public static void Set(this IniFileSection section, string key, Color entry) {
+            section.Set(key, $"{entry.R.ToInvariantString()},{entry.G.ToInvariantString()},{entry.B.ToInvariantString()}");
         }
     }
 }

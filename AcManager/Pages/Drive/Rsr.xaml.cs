@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
@@ -254,6 +255,13 @@ namespace AcManager.Pages.Drive {
             }
         }
 
+        private string GetCustomStyle() {
+            var color = AppAppearanceManager.Instance.AccentColor;
+            return BinaryResources.RsrStyle
+                                  .Replace("#E20035", color.ToHexString())
+                                  .Replace("#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
+        }
+
         private void WebBrowser_OnNavigated(object sender, NavigationEventArgs e) {
             var uri = e.Uri.ToString();
             var match = Regex.Match(uri, @"\beventId=(\d+)");
@@ -269,7 +277,9 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            WebBrowser.UserStyle = uri.StartsWith("http://www.radiators-champ.com/RSRLiveTiming/") ? BinaryResources.RsrStyle : null;
+            WebBrowser.UserStyle = SettingsHolder.LiveTiming.RsrCustomStyle && uri.StartsWith("http://www.radiators-champ.com/RSRLiveTiming/")
+                    ? GetCustomStyle() : null;
+
             if (uri.Contains("page=setups")) {
                 WebBrowser.Execute(@"
 window.addEventListener('load', function(){

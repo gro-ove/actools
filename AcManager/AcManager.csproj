@@ -240,6 +240,12 @@
     <Compile Include="Pages\Selected\SelectedPythonAppPage.xaml.cs">
       <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\SettingsReplays.xaml.cs">
+      <DependentUpon>SettingsReplays.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\SettingsRsr.xaml.cs">
+      <DependentUpon>SettingsRsr.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\SettingsDev.xaml.cs">
       <DependentUpon>SettingsDev.xaml</DependentUpon>
     </Compile>
@@ -706,6 +712,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedWeatherPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\SettingsReplays.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\SettingsRsr.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

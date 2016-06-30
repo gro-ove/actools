@@ -1,3 +1,4 @@
+using System;
 using AcManager.Tools.AcObjectsNew;
 using StringBasedFilter;
 
@@ -25,8 +26,12 @@ namespace AcManager.Tools.Filters {
             return null;
         }
 
+        public static string InheritingParameterFromKey(string key) {
+            return InnerParameterFromKey(key) ?? AcObjectTester.InheritingParameterFromKey(key);
+        }
+
         public string ParameterFromKey(string key) {
-            return InnerParameterFromKey(key) ?? AcObjectTester.InnerParameterFromKey(key);
+            return InheritingParameterFromKey(key);
         }
 
         public bool Test(AcCommonObject obj, string key, ITestEntry value) {
@@ -37,6 +42,9 @@ namespace AcManager.Tools.Filters {
 
                 case "new":
                     return value.Test(obj.IsNew);
+
+                case "age":
+                    return value.Test(obj.AgeInDays);
 
                 case "errors":
                 case "haserrors":

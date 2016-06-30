@@ -26,6 +26,9 @@
                 <Setter Property="Foreground" Value="{DynamicResource SubMenuTextSelected}" />
                 <Setter Property="FontWeight" Value="Bold" />
             </Trigger>
+            <DataTrigger Binding="{Binding IsShown}" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 
@@ -174,6 +177,9 @@
                                                         <Setter Property="IsEnabled" Value="False" />
                                                         <Setter Property="Foreground" Value="{DynamicResource MenuTextDisabled}" />
                                                         <Setter Property="attached:LimitedService.Limited" Value="True" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsShown}" Value="False">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>

@@ -20,15 +20,16 @@ namespace StringBasedFilter.Parsing {
                     _testEntry = CreateTestEntry(end, true);
                 } else if (op == "+" || op == "-") {
                     _testEntry = new BooleanTestEntry(op == "+");
-                } else {
+                } else if (end.Contains(".") || end.Contains(",")) {
                     double num;
-                    if (!FlexibleParser.TryParseDouble(end, out num)) {
-                        num = double.NaN;
-                    }
-
-                    _testEntry = new NumberTestEntry(op == "<" ? NumberTestEntry.Operator.Less :
-                            op == "=" ? NumberTestEntry.Operator.Equal :
-                                    NumberTestEntry.Operator.More, num);
+                    _testEntry = FlexibleParser.TryParseDouble(end, out num)
+                            ? new NumberTestEntry(op == "<" ? Operator.Less : op == "=" ? Operator.Equal : Operator.More, num)
+                            : (ITestEntry)new ConstTestEntry(false);
+                } else {
+                    int num;
+                    _testEntry = FlexibleParser.TryParseInt(end, out num)
+                            ? new IntTestEntry(op == "<" ? Operator.Less : op == "=" ? Operator.Equal : Operator.More, num)
+                            : (ITestEntry)new ConstTestEntry(false);
                 }
             } else {
                 _key = null;

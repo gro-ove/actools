@@ -35,7 +35,6 @@ namespace AcManager.Pages.Selected {
         public class SelectedCarPageViewModel : SelectedAcObjectViewModel<CarObject> {
             public SelectedCarPageViewModel([NotNull] CarObject acObject) : base(acObject) {
                 WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);
-                FilterTabType = "cars";
             }
 
             private void Handler(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
@@ -70,20 +69,6 @@ namespace AcManager.Pages.Selected {
                         FilterCommand.OnCanExecuteChanged();
                         break;
                 }
-            }
-
-            private void FilterRange(string key, string value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
-                double actual;
-                if (string.IsNullOrWhiteSpace(value) || !FlexibleParser.TryParseDouble(value, out actual)) {
-                    NewFilterTab($"{key}-");
-                    return;
-                }
-
-                var delta = (relative ? range * actual : range) / 2d;
-                var from = Math.Max(actual - delta, 0d);
-                var to = actual + delta;
-
-                NewFilterTab($"{key}>{from.Round(roundTo) - Math.Min(roundTo, 1d)} & {key}<{to.Round(roundTo) + Math.Min(roundTo, 1d)}");
             }
             
             protected override void FilterExec(string type) {

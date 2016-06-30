@@ -82,6 +82,20 @@ namespace AcManager.Pages.Windows {
                                                  .Where(x => string.Equals(x.GroupKey, "content", StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += ContentLinkChanged;
             }
+
+            UpdateLiveTimingTabs();
+            SettingsHolder.LiveTiming.PropertyChanged += Rsr_PropertyChanged;
+        }
+
+        private void Rsr_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(SettingsHolder.LiveTimingSettings.RsrEnabled)) {
+                UpdateLiveTimingTabs();
+            }
+        }
+
+        private void UpdateLiveTimingTabs() {
+            RsrLink.IsShown = SettingsHolder.LiveTiming.RsrEnabled;
+            LiveTimingGroup.IsShown = LiveTimingGroup.Links.Any(x => x.IsShown);
         }
 
         /// <summary>

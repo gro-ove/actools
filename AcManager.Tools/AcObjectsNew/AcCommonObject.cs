@@ -50,6 +50,8 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
+        public double AgeInDays => (DateTime.Now - CreationTime).TotalDays;
+
         public override void Reload() {
             ClearErrors();
             LoadOrThrow();

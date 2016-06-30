@@ -116,6 +116,10 @@ namespace FirstFloor.ModernUI.Helpers {
             return result.Any() ? string.Join(" ", result.Take(2)) : "0 seconds";
         }
 
+        public static double AsMegabytes(this long i) {
+            return i / 1024d / 1024d;
+        }
+
         public static string ReadableSize(this long i, int round = 2) {
             var absoluteI = i < 0 ? -i : i;
 

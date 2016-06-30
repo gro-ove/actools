@@ -1,11 +1,10 @@
 ﻿<mui:ModernWindow x:Class="AcManager.Pages.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d"
-        Title="Content Manager (Limited Mode)" IsTitleVisible="True" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False"
-        FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="MainWindow_OnDrop" DragEnter="MainWindow_OnDragEnter"
-        DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="MainWindow_OnLoaded" Unloaded="MainWindow_OnUnloaded" Closed="MainWindow_OnClosed"
-        MouseRightButtonUp="MainWindow_OnMouseRightButtonDown" PreviewMouseRightButtonUp="MainWindow_OnPreviewMouseRightButtonUp"
+        xmlns:windows="clr-namespace:AcManager.Pages.Windows" mc:Ignorable="d" Title="Content Manager (Lite Mode)" IsTitleVisible="True" MinWidth="800"
+        MinHeight="640" Width="800" Height="720" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True" Drop="MainWindow_OnDrop"
+        DragEnter="MainWindow_OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="MainWindow_OnLoaded" Unloaded="MainWindow_OnUnloaded"
+        Closed="MainWindow_OnClosed" MouseRightButtonUp="MainWindow_OnMouseRightButtonDown" PreviewMouseRightButtonUp="MainWindow_OnPreviewMouseRightButtonUp"
         PreviewMouseRightButtonDown="MainWindow_OnPreviewMouseRightButtonDown" d:DataContext="{d:DesignInstance windows:MainWindow+MainWindowViewModel}"
         AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
         LocationAndSizeKey="MainWindow_LS" Name="Window">
@@ -22,9 +21,9 @@
                 <mui:Link DisplayName="Challenges" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drive-challenge" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
-        <mui:LinkGroup GroupKey="drive" DisplayName="live timing">
+        <mui:LinkGroup x:Name="LiveTimingGroup" GroupKey="drive" DisplayName="live timing">
             <mui:LinkGroup.Links>
-                <mui:Link DisplayName="RSR" Source="/Pages/Drive/Rsr.xaml" />
+                <mui:Link x:Name="RsrLink" DisplayName="RSR" Source="/Pages/Drive/Rsr.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="online" Source="/Pages/Drive/Online.xaml" />

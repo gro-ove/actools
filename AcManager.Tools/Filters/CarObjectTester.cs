@@ -46,14 +46,17 @@ namespace AcManager.Tools.Filters {
                 case "skin":
                 case "skins":
                     return nameof(CarObject.SkinsEnabledWrappersList);
-
-                default:
-                    return null;
             }
+
+            return null;
+        }
+
+        public static string InheritingParameterFromKey(string key) {
+            return InnerParameterFromKey(key) ?? AcJsonObjectTester.InheritingParameterFromKey(key);
         }
 
         public string ParameterFromKey(string key) {
-            return InnerParameterFromKey(key) ?? AcJsonObjectTester.InnerParameterFromKey(key);
+            return InheritingParameterFromKey(key);
         }
 
         private List<string> _list;

@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media.Animation;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
@@ -92,6 +93,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public event EventHandler<NavigationEventArgs> FrameNavigated;
         private ModernMenu _menu;
         private ModernFrame _frame;
+
+        [CanBeNull]
+        public Uri CurrentSource => _frame?.Source;
+
+        public LinkGroup CurrentLinkGroup => _menu?.SelectedLinkGroup;
 
         /// <summary>
         /// When overridden in a derived class, is invoked whenever application code or internal processes call System.Windows.FrameworkElement.ApplyTemplate().

@@ -4,6 +4,8 @@ using System.Windows;
 using AcManager.Annotations;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using StringBasedFilter;
@@ -30,12 +32,8 @@ namespace AcManager.Pages.Selected {
         }, o => SelectedAcObject is AcJsonObjectNew));
 
         #region Filter Commands
-        public string FilterTabType { get; protected set; }
-
         public void NewFilterTab(string filter) {
-            if (FilterTabType == null) throw new NotSupportedException();
-            Application.Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive)?.MenuLinkGroups.OfType<LinkGroupFilterable>().FirstOrDefault(x =>
-                    string.Equals(x.DisplayName, FilterTabType, StringComparison.OrdinalIgnoreCase))?.AddAndSelect(filter);
+            (Application.Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive)?.CurrentLinkGroup as LinkGroupFilterable)?.AddAndSelect(filter);
         }
 
         private RelayCommand _filterTagCommand;
@@ -48,12 +46,33 @@ namespace AcManager.Pages.Selected {
 
         public RelayCommand FilterCommand => _filterCommand ?? (_filterCommand = new RelayCommand(o => FilterExec(o as string)));
 
+        protected void FilterRange(string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
+            var delta = (relative ? range * value : range) / 2d;
+            NewFilterTab(Equals(roundTo, 1d) && delta.Round(roundTo) < roundTo ?
+                    $"{key}={value.Round(roundTo).ToInvariantString()}" :
+                    string.Format("{0}>{1} & {0}<{2}", key, (Math.Max(value - delta, 0d).Round(roundTo) - Math.Min(roundTo, 1d)).ToInvariantString(),
+                            ((value + delta).Round(roundTo) + Math.Min(roundTo, 1d)).ToInvariantString()));
+        }
+
+        protected void FilterRange(string key, string value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
+            double actual;
+            if (!string.IsNullOrWhiteSpace(value) && FlexibleParser.TryParseDouble(value, out actual)) {
+                FilterRange(key, actual, range, relative, roundTo);
+            } else {
+                NewFilterTab($"{key}-");
+            }
+        }
+
         protected virtual void FilterExec(string type) {
             var jsonObject = SelectedObject as AcJsonObjectNew;
             switch (type) {
                 case "author":
                     if (jsonObject == null) return;
                     NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Author) ? "author-" : $"author:{Filter.Encode(jsonObject.Author)}");
+                    break;
+
+                case "age":
+                    FilterRange("age", SelectedObject.AgeInDays);
                     break;
 
                 case "country":

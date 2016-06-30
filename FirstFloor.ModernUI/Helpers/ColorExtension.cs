@@ -2,7 +2,6 @@
 using System.Drawing;
 using JetBrains.Annotations;
 using Color = System.Windows.Media.Color;
-using ColorConverter = System.Windows.Media.ColorConverter;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class ColorExtension {
@@ -29,7 +28,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static double GetBrightness(this Color c) {
-            return System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B).GetBrightness();
+            return Math.Max(c.R, Math.Max(c.G, c.B)) / 255d;
         }
 
         public static double GetSaturation(this Color c) {
@@ -39,7 +38,6 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <summary>
         /// Creates a Color from alpha, hue, saturation and brightness.
         /// </summary>
-        /// <param name="alpha">The alpha channel value.</param>
         /// <param name="hue">The hue value.</param>
         /// <param name="saturation">The saturation value.</param>
         /// <param name="brightness">The brightness value.</param>
@@ -51,11 +49,12 @@ namespace FirstFloor.ModernUI.Helpers {
             while (hue >= 360) {
                 hue -= 360;
             }
-            double R, G, B;
+
+            double r, g, b;
             if (brightness <= 0) {
-                R = G = B = 0;
+                r = g = b = 0;
             } else if (saturation <= 0) {
-                R = G = B = brightness;
+                r = g = b = brightness;
             } else {
                 var hf = hue / 60.0;
                 var i = (int)Math.Floor(hf);
@@ -65,59 +64,59 @@ namespace FirstFloor.ModernUI.Helpers {
                 var tv = brightness * (1 - saturation * (1 - f));
                 switch (i) {
                     case 0:
-                        R = brightness;
-                        G = tv;
-                        B = pv;
+                        r = brightness;
+                        g = tv;
+                        b = pv;
                         break;
 
                     case 1:
-                        R = qv;
-                        G = brightness;
-                        B = pv;
+                        r = qv;
+                        g = brightness;
+                        b = pv;
                         break;
                     case 2:
-                        R = pv;
-                        G = brightness;
-                        B = tv;
+                        r = pv;
+                        g = brightness;
+                        b = tv;
                         break;
 
                     case 3:
-                        R = pv;
-                        G = qv;
-                        B = brightness;
+                        r = pv;
+                        g = qv;
+                        b = brightness;
                         break;
 
                     case 4:
-                        R = tv;
-                        G = pv;
-                        B = brightness;
+                        r = tv;
+                        g = pv;
+                        b = brightness;
                         break;
 
                     case 5:
-                        R = brightness;
-                        G = pv;
-                        B = qv;
+                        r = brightness;
+                        g = pv;
+                        b = qv;
                         break;
 
                     case 6:
-                        R = brightness;
-                        G = tv;
-                        B = pv;
+                        r = brightness;
+                        g = tv;
+                        b = pv;
                         break;
 
                     case -1:
-                        R = brightness;
-                        G = pv;
-                        B = qv;
+                        r = brightness;
+                        g = pv;
+                        b = qv;
                         break;
 
                     default:
-                        R = G = B = brightness;
+                        r = g = b = brightness;
                         break;
                 }
             }
 
-            return Color.FromRgb(Clamp(R * 255d), Clamp(G * 255d), Clamp(B * 255d));
+            return Color.FromRgb(Clamp(r * 255d), Clamp(g * 255d), Clamp(b * 255d));
         }
 
         private static byte Clamp(double i) {

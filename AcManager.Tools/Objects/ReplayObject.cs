@@ -1,8 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
+using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     internal sealed class ReplayReader : BinaryReader {
@@ -21,6 +26,67 @@ namespace AcManager.Tools.Objects {
             return Encoding.ASCII.GetString(ReadBytes(length));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsStringCharacter(int c) {
+            return c >= 'a' && c <= 'z' || c >= '0' && c <= '9' || c == '_' || c >= 'A' && c <= 'Z';
+        }
+
+        [CanBeNull]
+        public string TryToReadNextString() {
+            var stream = BaseStream;
+
+            const int l = 2048;
+            var b = new byte[l + 4];
+            int bytesRead;
+            while ((bytesRead = stream.Read(b, 4, l)) > 0) {
+                var i = 3;
+                while (i < bytesRead) {
+                    if (!IsStringCharacter(b[i])) {
+                        i += 4;
+                    } else if (!IsStringCharacter(b[i - 1])) {
+                        i += 3;
+                    } else if (!IsStringCharacter(b[i - 2])) {
+                        i += 2;
+                    } else if (!IsStringCharacter(b[i - 3])) {
+                        ++i;
+                    } else {
+                        var sb = new StringBuilder();
+                        for (i = i - 3; i < bytesRead; i++) {
+                            var n = b[i];
+                            if (IsStringCharacter(n)) {
+                                sb.Append((char)n);
+                            } else {
+                                break;
+                            }
+                        }
+
+                        if (i == bytesRead) {
+                            int n;
+                            while ((n = stream.ReadByte()) != -1) {
+                                if (IsStringCharacter(n)) {
+                                    sb.Append((char)n);
+                                } else {
+                                    BaseStream.Seek(-1, SeekOrigin.Current);
+                                    break;
+                                }
+                            }
+                        } else {
+                            BaseStream.Seek(i - bytesRead - 4, SeekOrigin.Current);
+                        }
+
+                        return sb.ToString();
+                    }
+                }
+
+                b[0] = b[l];
+                b[1] = b[l + 1];
+                b[2] = b[l + 2];
+                b[3] = b[l + 3];
+            }
+
+            return null;
+        }
+
         public override string ReadString() {
             return ReadString(256);
         }
@@ -33,16 +99,30 @@ namespace AcManager.Tools.Objects {
         public override string Extension => ReplayExtension;
 
         public ReplayObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {}
+                : base(manager, id, enabled) { }
+
+        protected override void Rename() {
+            Rename(SettingsHolder.Drive.AutoAddReplaysExtension ? Name + Extension : Name);
+        }
+
+        public override string Name {
+            get { return base.Name; }
+            protected set {
+                ErrorIf(value.Contains("[") || value.Contains("]"), AcErrorType.Replay_InvalidName);
+                base.Name = value;
+            }
+        }
 
         protected override void LoadOrThrow() {
             base.LoadOrThrow();
 
-            Date = File.GetLastWriteTime(Location);
+            Size = new FileInfo(Location).Length;
 
             if (Id == PreviousReplayName) {
                 IsNew = true;
             }
+
+            if (!SettingsHolder.Drive.TryToLoadReplays) return;
 
             try {
                 using (var reader = new ReplayReader(Location)) {
@@ -57,19 +137,30 @@ namespace AcManager.Tools.Objects {
                     } else {
                         TrackId = reader.ReadString();
                     }
+                    
+                    ErrorIf(TracksManager.Instance.GetWrapperById(TrackId) == null, AcErrorType.Replay_TrackIsMissing, TrackId);
+
+                    CarId = reader.TryToReadNextString();
+                    try {
+                        DriverName = reader.ReadString();
+                        reader.ReadInt64();
+                        CarSkinId = reader.ReadString();
+                    } catch (Exception) {
+                        // ignored
+                    }
                 }
                 ParsedSuccessfully = true;
-            } catch (Exception) {
+            } catch (Exception e) {
                 ParsedSuccessfully = false;
-                throw;
+                throw new AcErrorException(this, AcErrorType.Load_Base, e);
             }
         }
 
-        public override string DisplayName => Id == PreviousReplayName && Name == PreviousReplayName ? "Previous Online Session" : base.DisplayName;
+        public override string DisplayName => Id == PreviousReplayName && Name == PreviousReplayName ? "Previous Session" : base.DisplayName;
 
         public override int CompareTo(AcPlaceholderNew o) {
             var or = o as ReplayObject;
-            return or != null ? Date.CompareTo(or.Date) : base.CompareTo(o);
+            return or != null ? CreationTime.CompareTo(or.CreationTime) : base.CompareTo(o);
         }
 
         #region Simple Properties
@@ -98,6 +189,39 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private string _carId;
+
+        public string CarId {
+            get { return _carId; }
+            set {
+                if (Equals(value, _carId)) return;
+                _carId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _carSkinId;
+
+        public string CarSkinId {
+            get { return _carSkinId; }
+            set {
+                if (Equals(value, _carSkinId)) return;
+                _carSkinId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _driverName;
+
+        public string DriverName {
+            get { return _driverName; }
+            set {
+                if (Equals(value, _driverName)) return;
+                _driverName = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _trackId;
 
         public string TrackId {
@@ -120,17 +244,39 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private DateTime _date;
+        private long _size;
 
-        public DateTime Date {
-            get { return _date; }
+        public long Size {
+            get { return _size; }
             set {
-                if (Equals(value, _date)) return;
-                _date = value;
-                OnPropertyChanged(nameof(Date));
-                SortAffectingValueChanged();
+                if (Equals(value, _size)) return;
+                _size = value;
+                OnPropertyChanged();
             }
         }
         #endregion
+        
+        // Bunch of temporary fields for filtering
+
+        private CarObject _car;
+
+        [CanBeNull]
+        internal CarObject Car => _car ?? (_car = CarId == null ? null : CarsManager.Instance.GetById(CarId));
+        
+        private CarSkinObject _carSkin;
+
+        [CanBeNull]
+        internal CarSkinObject CarSkin => _carSkin ?? (_carSkin = CarSkinId == null ? null : Car?.GetSkinById(CarSkinId));
+
+        private WeatherObject _weather;
+
+        [CanBeNull]
+        internal WeatherObject Weather => _weather ?? (_weather = WeatherId == null ? null : WeatherManager.Instance.GetById(WeatherId));
+
+        private TrackBaseObject _track;
+
+        [CanBeNull]
+        internal TrackBaseObject Track => _track ?? (_track = TrackId == null ? null : TrackConfiguration == null
+                ? TracksManager.Instance.GetById(TrackId) : TracksManager.Instance.GetLayoutById(TrackId, TrackConfiguration));
     }
 }

@@ -36,8 +36,12 @@ namespace AcManager.Tools.Filters {
             return null;
         }
 
+        public static string InheritingParameterFromKey(string key) {
+            return InnerParameterFromKey(key) ?? AcCommonObjectTester.InheritingParameterFromKey(key);
+        }
+
         public string ParameterFromKey(string key) {
-            return InnerParameterFromKey(key) ?? AcCommonObjectTester.InnerParameterFromKey(key);
+            return InheritingParameterFromKey(key);
         }
 
         public bool Test(AcJsonObjectNew obj, string key, ITestEntry value) {

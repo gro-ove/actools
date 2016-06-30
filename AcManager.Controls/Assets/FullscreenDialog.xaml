@@ -14,7 +14,7 @@
 
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Foreground" Value="White" />
-                    <Setter Property="Opacity" Value="0.6" />
+                    <Setter Property="Opacity" Value="0" />
                     <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="Background" Value="#00000000" />
 
@@ -31,18 +31,19 @@
                     </Setter>
 
                     <Style.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
+                        <Trigger Property="IsEnabled" Value="True">
+                            <Setter Property="Opacity" Value="0.6" />
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1" />
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
-                                    <Storyboard FillBehavior="Stop">
-                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.1" />
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:0.1" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>

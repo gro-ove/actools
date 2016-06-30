@@ -111,6 +111,7 @@
     <Compile Include="Presentation\CombinedCommand.cs" />
     <Compile Include="Presentation\CustomLink.cs" />
     <Compile Include="Presentation\LimitedQueue.cs" />
+    <Compile Include="Presentation\LinkChangedEventArgs.cs" />
     <Compile Include="Presentation\LinkGroupFilterable.cs" />
     <Compile Include="Presentation\LinkInput.cs" />
     <Compile Include="Presentation\LinkInputEmpty.cs" />

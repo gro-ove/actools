@@ -50,6 +50,34 @@
                 <mui:ValueLabel Value="{Binding System.MirrorsFarPlane}" Postfix=" m" ToolTip="Default value: 400 m">Rendering distance</mui:ValueLabel>
                 <Slider Minimum="100" Maximum="1100" Value="{Binding System.MirrorsFarPlane}" TickFrequency="100" TickPlacement="BottomRight" />
             </DockPanel>
+
+            <!--ghost DisplayColor="{Binding AppAppearanceManager.AccentDisplayColor}"  -->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Ghost car</TextBlock>
+
+            <DockPanel>
+                <Label>Color:</Label>
+                <mui:ColorPicker Color="{Binding Ghost.Color}" />
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Ghost.MaxMinutesRecording}" Postfix=" min" ToolTip="Default value: 20 min">Recording limit</mui:ValueLabel>
+                <Slider Minimum="5" Maximum="45" Value="{Binding Ghost.MaxMinutesRecording}" TickFrequency="5" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Ghost.MinDistance}" Postfix=" m" ToolTip="Default value: 10 m">Start showing at</mui:ValueLabel>
+                <Slider Minimum="0" Maximum="120" Value="{Binding Ghost.MinDistance}" TickFrequency="12" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Ghost.MaxDistance}" Postfix=" m" ToolTip="Default value: 50 m">Max opacity at</mui:ValueLabel>
+                <Slider Minimum="0" Maximum="120" Value="{Binding Ghost.MaxDistance}" TickFrequency="12" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Ghost.MaxOpacity}" Postfix="%" ToolTip="Default value: 25%">Opacity</mui:ValueLabel>
+                <Slider Minimum="0" Maximum="100" Value="{Binding Ghost.MaxOpacity}" TickFrequency="10" TickPlacement="BottomRight" />
+            </DockPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

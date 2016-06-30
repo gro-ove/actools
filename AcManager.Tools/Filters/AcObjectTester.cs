@@ -20,8 +20,12 @@ namespace AcManager.Tools.Filters {
             return null;
         }
 
-        public string ParameterFromKey(string key) {
+        public static string InheritingParameterFromKey(string key) {
             return InnerParameterFromKey(key);
+        }
+
+        public string ParameterFromKey(string key) {
+            return InheritingParameterFromKey(key);
         }
 
         public bool Test(AcObjectNew obj, string key, ITestEntry value) {

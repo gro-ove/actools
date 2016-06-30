@@ -17,8 +17,12 @@ namespace AcManager.Tools.Filters {
             return null;
         }
 
+        public static string InheritingParameterFromKey(string key) {
+            return InnerParameterFromKey(key) ?? AcJsonObjectTester.InheritingParameterFromKey(key);
+        }
+
         public string ParameterFromKey(string key) {
-            return InnerParameterFromKey(key) ?? AcJsonObjectTester.InnerParameterFromKey(key);
+            return InheritingParameterFromKey(key);
         }
 
         public bool Test(ShowroomObject obj, string key, ITestEntry value) {

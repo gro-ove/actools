@@ -13,7 +13,7 @@ namespace AcManager.Pages.Lists {
     public partial class WeatherListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new WeatherListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(AcCommonObjectTester.Instance, filter)); // TODO: proper filter
+            DataContext = new WeatherListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(WeatherObjectTester.Instance, filter));
             InitializeComponent();
         }
 

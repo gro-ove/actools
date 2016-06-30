@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
@@ -294,6 +295,30 @@ namespace AcManager.Tools.AcErrors {
                                     }
                                 }) { IsUiSolution = true }
                     };
+
+
+                case AcErrorType.Replay_TrackIsMissing:
+                    return new[] {
+                        new MultiSolution(
+                                @"Remove replay",
+                                @"Replay will be removed to the Recycle Bin",
+                                e => {
+                                    e.Target.DeleteCommand.Execute(null);
+                                })
+                    };
+
+                case AcErrorType.Replay_InvalidName:
+                    return new[] {
+                        new MultiSolution(
+                                @"Fix name",
+                                @"Remove invalid symbols",
+                                e => {
+                                    e.Target.NameEditable = Regex.Replace(e.Target.NameEditable ?? "-", @"[\[\]]", "");
+                                })
+                    };
+
+                default:
+                    return null;
             }
 
             return null;

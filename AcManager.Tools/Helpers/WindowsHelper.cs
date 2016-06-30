@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using AcTools.Utils.Helpers;
@@ -17,7 +18,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public static void ViewFile(string filename) {
-            ProcessExtension.Start("explorer", new[] { "/select," + filename });
+            Process.Start("explorer", "/select," + filename);
         }
     }
 }

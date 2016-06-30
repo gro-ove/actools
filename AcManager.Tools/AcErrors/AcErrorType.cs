@@ -120,5 +120,12 @@ namespace AcManager.Tools.AcErrors {
 
         [Description("Font is used but disabled")]
         Font_UsedButDisabled,
+
+
+        [Description("Track “{0}” is missing")]
+        Replay_TrackIsMissing,
+
+        [Description("Name shouldn't contain symbols like “[” or “]”")]
+        Replay_InvalidName,
     }
 }

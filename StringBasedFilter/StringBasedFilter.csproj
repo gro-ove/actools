@@ -55,12 +55,15 @@
     <Compile Include="Parsing\FilterTreeNodeNot.cs" />
     <Compile Include="Parsing\FilterTreeNodeOr.cs" />
     <Compile Include="Parsing\FilterTreeNodeValue.cs" />
+    <Compile Include="TestEntries\ConstTestEntry.cs" />
     <Compile Include="TestEntries\BooleanTestEntry.cs" />
     <Compile Include="IFilter.cs" />
     <Compile Include="ITester.cs" />
     <Compile Include="ITestEntry.cs" />
+    <Compile Include="TestEntries\IntTestEntry.cs" />
     <Compile Include="TestEntries\NumberTestEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestEntries\Operator.cs" />
     <Compile Include="TestEntries\StringTestEntry.cs" />
     <Compile Include="Utils\FlexibleParser.cs" />
     <Compile Include="Utils\RegexFromQuery.cs" />

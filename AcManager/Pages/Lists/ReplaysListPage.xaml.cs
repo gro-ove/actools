@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using AcManager.Controls.ViewModels;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -14,7 +13,7 @@ namespace AcManager.Pages.Lists {
     public partial class ReplaysListPage : IParametrizedUriContent {
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            DataContext = new ReplaysListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(AcCommonObjectTester.Instance, filter)); // TODO: proper filter
+            DataContext = new ReplaysListPageViewModel(string.IsNullOrEmpty(filter) ? null : Filter.Create(ReplayObjectTester.Instance, filter));
             InitializeComponent();
         }
 

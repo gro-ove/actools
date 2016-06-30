@@ -9,11 +9,26 @@ namespace AcManager.Pages.AcSettings {
         }
 
         public class AcSystemViewModel : NotifyPropertyChanged {
-            internal AcSystemViewModel() { }
+            internal AcSystemViewModel() {
+                // GhostDisplayColor = Va
+            }
 
             public AcSettingsHolder.ProximityIndicatorSettings ProximityIndicator => AcSettingsHolder.ProximityIndicator;
 
             public AcSettingsHolder.SystemSettings System => AcSettingsHolder.System;
+
+            public AcSettingsHolder.GhostSettings Ghost => AcSettingsHolder.Ghost;
+
+            private string _ghostDisplayColor;
+
+            public string GhostDisplayColor {
+                get { return _ghostDisplayColor; }
+                set {
+                    if (Equals(value, _ghostDisplayColor)) return;
+                    _ghostDisplayColor = value;
+                    OnPropertyChanged();
+                }
+            }
         }
     }
 }

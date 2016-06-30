@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcTools.Processes;
 using StringBasedFilter;
@@ -31,11 +30,13 @@ namespace AcManager.Tools.Filters {
                     return nameof(ServerEntry.CurrentDrivers);
 
                 case "track":
+                case "trackid":
                     return nameof(ServerEntry.Track);
 
                 case "a":
                 case "available":
                 case "car":
+                case "carid":
                     return nameof(ServerEntry.Cars);
 
                 case "p":
@@ -61,11 +62,15 @@ namespace AcManager.Tools.Filters {
                     return nameof(ServerEntry.SessionEnd);
             }
 
-            return AcObjectTester.InnerParameterFromKey(key);
+            return null;
+        }
+
+        public static string InheritingParameterFromKey(string key) {
+            return InnerParameterFromKey(key) ?? AcObjectTester.InheritingParameterFromKey(key);
         }
 
         public string ParameterFromKey(string key) {
-            return InnerParameterFromKey(key) ?? AcObjectTester.InnerParameterFromKey(key);
+            return InheritingParameterFromKey(key);
         }
 
         public bool Test(ServerEntry obj, string key, ITestEntry value) {
@@ -79,6 +84,9 @@ namespace AcManager.Tools.Filters {
 
                 case "ip":
                     return value.Test(obj.Ip);
+
+                case "carid":
+                    return obj.Cars?.Any(x => value.Test(x.CarObject.Id)) == true;
 
                 case "car":
                     return obj.Cars?.Any(x => value.Test(x.CarObject.Id) || value.Test(x.CarObject.Name)) == true;
@@ -94,6 +102,9 @@ namespace AcManager.Tools.Filters {
                 case "driverteam":
                 case "playerteam":
                     return obj.CurrentDrivers?.Any(x => value.Test(x.Team)) == true;
+
+                case "trackid":
+                    return value.Test(obj.Track?.Id);
 
                 case "track":
                     return value.Test(obj.Track?.Id) || value.Test(obj.Track?.Name);

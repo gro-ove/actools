@@ -1,5 +1,5 @@
 namespace AcManager.Tools.AcErrors {
     public enum AcErrorCategory {
-        Unspecific, Load, Data, Car, CarSkin, CarSetup, CarSkins, Showroom, Font
+        Unspecific, Load, Data, Car, CarSkin, CarSetup, CarSkins, Showroom, Font, Replay
     }
 }

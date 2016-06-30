@@ -78,5 +78,16 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         public LinkCollection Links { get; } = new LinkCollection();
+
+        private bool _isShown = true;
+
+        public bool IsShown {
+            get { return _isShown; }
+            set {
+                if (Equals(value, _isShown)) return;
+                _isShown = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

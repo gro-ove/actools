@@ -14,8 +14,12 @@ namespace AcManager.Tools.Filters {
             return null;
         }
 
+        public static string InheritingParameterFromKey(string key) {
+            return InnerParameterFromKey(key) ?? TrackBaseObjectTester.InheritingParameterFromKey(key);
+        }
+
         public string ParameterFromKey(string key) {
-            return InnerParameterFromKey(key) ?? TrackBaseObjectTester.InnerParameterFromKey(key);
+            return InheritingParameterFromKey(key);
         }
 
         public bool Test(TrackObject obj, string key, ITestEntry value) {

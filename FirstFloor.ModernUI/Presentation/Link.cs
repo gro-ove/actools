@@ -26,6 +26,17 @@ namespace FirstFloor.ModernUI.Presentation {
             }
         }
 
+        private bool _isShown = true;
+
+        public bool IsShown {
+            get { return _isShown; }
+            set {
+                if (Equals(value, _isShown)) return;
+                _isShown = value;
+                OnPropertyChanged();
+            }
+        }
+
         public void SetNew(bool isNew) {
             IsNew = isNew;
         }

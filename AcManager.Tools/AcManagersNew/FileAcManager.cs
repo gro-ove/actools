@@ -6,6 +6,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using JetBrains.Annotations;
 
@@ -66,7 +67,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             var currentLocation = ((AcCommonObject)wrapper.Value).Location;
             var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (path == null) throw new ToggleException("Object can’t be moved");
+            if (path == null) throw new InformativeException("Can’t do", "Sorry, you can’t disable this type of object.");
 
             var newLocation = Path.Combine(path, newId);
             if (FileUtils.Exists(newLocation)) throw new ToggleException("Place is taken");
