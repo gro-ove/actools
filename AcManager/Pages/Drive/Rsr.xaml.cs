@@ -46,10 +46,30 @@ namespace AcManager.Pages.Drive {
 
         public class RsrViewModel : NotifyPropertyChanged {
             private const string KeyGhostCar = "Rsr.GhostCar";
+            private const string KeyShowExtensionMessage = "Rsr.ExtMsg";
 
             internal RsrViewModel() {
                 GhostCar = ValuesStorage.GetBool(KeyGhostCar, true);
+                ShowExtensionMessage = ValuesStorage.GetBool(KeyShowExtensionMessage, true);
             }
+
+            private bool _showExtensionMessage;
+
+            public bool ShowExtensionMessage {
+                get { return _showExtensionMessage; }
+                set {
+                    if (Equals(value, _showExtensionMessage)) return;
+                    _showExtensionMessage = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set(KeyShowExtensionMessage, value);
+                }
+            }
+
+            private RelayCommand _gotItCommand;
+
+            public RelayCommand GotItCommand => _gotItCommand ?? (_gotItCommand = new RelayCommand(o => {
+                ShowExtensionMessage = false;
+            }));
 
             public string StartPage => "http://www.radiators-champ.com/RSRLiveTiming/index.php?page=hottest_combos";
 
@@ -194,24 +214,10 @@ namespace AcManager.Pages.Drive {
                         BasicProperties = new Game.BasicProperties {
                             CarId = Car.Id,
                             TrackId = Track.Id,
+                            TrackConfigurationId = Track.LayoutId,
                             CarSkinId = CarSkin?.Id
                         },
-                        AssistsProperties = new Game.AssistsProperties {
-                            Abs = AssistState.Off,
-                            AutoBlip = false,
-                            AutoBrake = false,
-                            AutoClutch = false,
-                            AutoShifter = false,
-                            Damage = 100,
-                            FuelConsumption = true,
-                            TyreWearMultipler = 1d,
-                            IdealLine = false,
-                            SlipSteamMultipler = 1d,
-                            StabilityControl = 0d,
-                            TractionControl = AssistState.Factory,
-                            TyreBlankets = true,
-                            VisualDamage = true
-                        },
+                        AssistsProperties = Assists.GameProperties,
                         ConditionProperties = new Game.ConditionProperties {
                             AmbientTemperature = 26d,
                             RoadTemperature = 32d,

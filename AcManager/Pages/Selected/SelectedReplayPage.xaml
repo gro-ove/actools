@@ -13,6 +13,7 @@
                 <Button Content="View in Explorer" ToolTip="View replay file in explorer (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
+                <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share replay using Google Drive (Ctrl+Page Up)" />
                 <Button Content="Play" Command="{Binding PlayCommand}" ToolTip="Run replay (Ctrl+G)" Style="{StaticResource Go.ToolBarButton}" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">

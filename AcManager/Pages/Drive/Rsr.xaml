@@ -8,12 +8,18 @@
 
     <Grid Style="{StaticResource ContentRootWithPadding}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <userControls:WebBrowserBlock Name="WebBrowser" StartPage="{Binding StartPage}" Navigated="WebBrowser_OnNavigated" />
-        <Grid Grid.Row="1" Margin="0 16 0 0">
+        <DockPanel Margin="0 0 0 20" Visibility="{Binding ShowExtensionMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}">Got It</Button>
+            <mui:BbCodeBlock>If you're using Chrome-like browser, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]here[/url] is an extension for starting RSR events directly from browser!</mui:BbCodeBlock>
+        </DockPanel>
+
+        <userControls:WebBrowserBlock Grid.Row="1" Name="WebBrowser" StartPage="{Binding StartPage}" Navigated="WebBrowser_OnNavigated" />
+        <Grid Grid.Row="2" Margin="0 16 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
@@ -72,8 +78,7 @@
                     <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
                 </DockPanel>
 
-                <DockPanel Margin="20 0 0 0"
-                        Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                <DockPanel Margin="20 0 0 0" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                     <DockPanel.ToolTip>
                         <StackPanel Margin="4 8">
                             <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
@@ -82,7 +87,7 @@
                     </DockPanel.ToolTip>
                     <mui:BetterImage Filename="{Binding Track.OutlineImage}" Height="16" Margin="0 0 4 0"
                             services:ImageViewerService.Image="{Binding Track.PreviewImage}" DockPanel.Dock="Left" />
-                    <TextBlock Text="{Binding Track.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
+                    <TextBlock Text="{Binding Track.Name}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
                 </DockPanel>
             </StackPanel>
 

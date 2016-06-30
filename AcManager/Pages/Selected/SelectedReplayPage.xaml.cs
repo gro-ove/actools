@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
+using AcManager.Internal;
 using AcManager.Tools.AcErrors;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Starters;
@@ -96,6 +98,12 @@ namespace AcManager.Pages.Selected {
 
                 base.FilterExec(type);
             }
+
+            private RelayCommand _shareCommand;
+
+            public RelayCommand ShareCommand => _shareCommand ?? (_shareCommand = new RelayCommand(o => {
+                // InternalUtils.PrepareGoogleDrive().Forget();
+            }));
 
             private ICommand _playCommand;
 

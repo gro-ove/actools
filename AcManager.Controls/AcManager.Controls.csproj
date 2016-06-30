@@ -364,6 +364,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="Assets\Data\Flags.zip" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -560,6 +560,7 @@ todo:
                 + start the race
                 + install setups
             - option for disable RSR plugin if started without RSR event ID
+            - special RSR name?
     - change IDs (especially for skins)
 
     + go buttons keyboard shortcut
