@@ -113,7 +113,7 @@ namespace AcManager.Pages.Windows {
         }
 
         /// <summary>
-        /// Temporary fix.
+        /// Temporary fix to keep selected object while editing current filter.
         /// </summary>
         private static void ContentLinkChanged(object sender, LinkChangedEventArgs e) {
             var group = (LinkGroupFilterable)sender;

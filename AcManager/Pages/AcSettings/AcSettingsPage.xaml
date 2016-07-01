@@ -12,7 +12,7 @@
                 <mui:Link DisplayName="audio" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />
                 <mui:Link DisplayName="controls" Source="/Pages/AcSettings/AcSettingsControls.xaml" />
                 <mui:Link DisplayName="miscellaneous" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
-                <mui:Link DisplayName="system" Source="/Pages/AcSettings/AcSettingsSystem.xaml" />
+                <mui:Link DisplayName="system" Source="/Pages/AcSettings/AcSettingsSystem.xaml" IsNew="True" />
             </mui:ModernTab.Links>
         </mui:ModernTab>
     </Grid>

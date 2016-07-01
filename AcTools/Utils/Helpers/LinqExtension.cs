@@ -541,7 +541,7 @@ namespace AcTools.Utils.Helpers {
             foreach (var i in source) {
                 if (Equals(i.Id, id)) return i;
             }
-            return default(T);
+            throw new Exception("Element with given ID not found");
         }
 
         [Pure]

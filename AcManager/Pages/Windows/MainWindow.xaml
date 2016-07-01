@@ -31,7 +31,7 @@
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />
 
         <!--media-->
-        <mui:LinkGroupFilterable GroupKey="media" DisplayName="screenshots" Source="/Pages/Miscellaneous/WorkInProgress.xaml?screenshots" />
+        <mui:LinkGroupFilterable GroupKey="media" DisplayName="screenshots" Source="/Pages/Lists/ScreenshotsListPage.xaml" />
         <mui:LinkGroupFilterable GroupKey="media" DisplayName="replays" Source="/Pages/Lists/ReplaysListPage.xaml" />
 
         <!--content-->

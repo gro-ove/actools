@@ -11,7 +11,8 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.Dialogs {
-    public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<Tuple<String, Double?>>, IProgress<AsyncProgressEntry>, IDisposable {
+    public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<Tuple<string, double?>>,
+            IProgress<AsyncProgressEntry>, IDisposable, IProgress<double> {
         public static WaitingDialog Create(string reportValue) {
             var w = new WaitingDialog();
             w.Report(reportValue);
@@ -66,7 +67,7 @@ namespace AcManager.Controls.Dialogs {
             Title = title;
             DataContext = this;
             InitializeComponent();
-            Buttons = new Button[] {};
+            Buttons = new Button[] { };
         }
 
         public new string Title {
@@ -135,57 +136,76 @@ namespace AcManager.Controls.Dialogs {
             }
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
+        private readonly object _lock = new object();
+
         public void Report(string value) {
-            if (Message == value) return;
-            Dispatcher.Invoke(() => {
-                if (value != null) {
-                    EnsureShown();
-                    Message = value;
-                } else {
-                    EnsureClosed();
-                }
-            });
+            lock (_lock) {
+                if (Message == value) return;
+                Dispatcher.Invoke(() => {
+                    if (value != null) {
+                        EnsureShown();
+                        Message = value;
+                    } else {
+                        EnsureClosed();
+                    }
+                });
+            }
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public void Report(double? value) {
-            if (Progress.HasValue && value.HasValue && Math.Abs(Progress.Value - value.Value) < 0.0001) return;
-            Dispatcher.Invoke(() => {
-                if (value != null) {
+            lock (_lock) {
+                if (Progress.HasValue && value.HasValue && Math.Abs(Progress.Value - value.Value) < 0.0001) return;
+                Dispatcher.Invoke(() => {
+                    if (value.HasValue) {
+                        EnsureShown();
+                        Progress = value.Value;
+                        ProgressIndetermitate = Equals(value.Value, 0d);
+                    } else {
+                        EnsureClosed();
+                    }
+                });
+            }
+        }
+
+        public void Report(double value) {
+            lock (_lock) {
+                if (Progress.HasValue && Math.Abs(Progress.Value - value) < 0.0001) return;
+                Dispatcher.Invoke(() => {
                     EnsureShown();
                     Progress = value;
-                    ProgressIndetermitate = value == 0d;
-                } else {
-                    EnsureClosed();
-                }
-            });
+                    ProgressIndetermitate = Equals(value, 0d);
+                });
+            }
         }
 
         public void Report(AsyncProgressEntry value) {
-            Dispatcher.Invoke(() => {
-                if (value.Message != null) {
-                    EnsureShown();
-                    Message = value.Message;
-                    Progress = value.Progress;
-                    ProgressIndetermitate = value.Progress == 0d;
-                } else {
-                    EnsureClosed();
-                }
-            });
+            lock (_lock) {
+                Dispatcher.Invoke(() => {
+                    if (value.Message != null) {
+                        EnsureShown();
+                        Message = value.Message;
+                        Progress = value.Progress;
+                        ProgressIndetermitate = value.Progress == 0d;
+                    } else {
+                        EnsureClosed();
+                    }
+                });
+            }
         }
 
         public void Report(Tuple<string, double?> value) {
-            Dispatcher.Invoke(() => {
-                if (value.Item1 != null) {
-                    EnsureShown();
-                    Message = value.Item1;
-                    Progress = value.Item2;
-                    ProgressIndetermitate = value.Item2 == 0d;
-                } else {
-                    EnsureClosed();
-                }
-            });
+            lock (_lock) {
+                Dispatcher.Invoke(() => {
+                    if (value.Item1 != null) {
+                        EnsureShown();
+                        Message = value.Item1;
+                        Progress = value.Item2;
+                        ProgressIndetermitate = value.Item2 == 0d;
+                    } else {
+                        EnsureClosed();
+                    }
+                });
+            }
         }
 
         void IDisposable.Dispose() {

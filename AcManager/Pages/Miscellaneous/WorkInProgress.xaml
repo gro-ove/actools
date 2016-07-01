@@ -2,10 +2,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <Grid Style="{StaticResource ContentRootWithPadding}">
         <StackPanel Orientation="Vertical">
-            <TextBlock Text="Section isn't ready yet" Style="{StaticResource Heading2}" />
-            <mui:BbCodeBlock BbCode="Work in progress and everything." />
+            <TextBlock Style="{StaticResource Heading1}">
+                <TextBlock.Text>This section isn’t ready yet</TextBlock.Text>
+            </TextBlock>
+            <mui:BbCodeBlock>If you want to know more about the development, [url="https://trello.com/b/MwqpL8Bw/content-manager"]here is a Trello board[/url] with a lot of information.</mui:BbCodeBlock>
         </StackPanel>
     </Grid>
 </UserControl>

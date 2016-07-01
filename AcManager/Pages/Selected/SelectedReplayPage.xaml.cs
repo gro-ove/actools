@@ -1,19 +1,25 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
-using AcManager.Internal;
+using AcManager.Controls.Helpers;
+using AcManager.LargeFilesSharing;
 using AcManager.Tools.AcErrors;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.Tools.Starters;
+using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
+using SharpCompress.Common;
+using SharpCompress.Writer;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Selected {
@@ -99,24 +105,65 @@ namespace AcManager.Pages.Selected {
                 base.FilterExec(type);
             }
 
-            private RelayCommand _shareCommand;
+            private string GetDescription() {
+                return Car == null
+                        ? (Track == null ? "AC replay" : $"AC replay (on {Track.DisplayName})")
+                        : (Track == null ? $"AC replay ({Car.DisplayName})" : $"AC replay ({Car.DisplayName} on {Track.DisplayName})");
+            }
 
-            public RelayCommand ShareCommand => _shareCommand ?? (_shareCommand = new RelayCommand(o => {
-                // InternalUtils.PrepareGoogleDrive().Forget();
+            private AsyncCommand _shareCommand;
+
+            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async o => {
+                UploadResult result;
+
+                try {
+                    using (var waiting = new WaitingDialog("Uploading…")) {
+                        waiting.Report("Preparing…");
+
+                        var uploader = Uploaders.List.First();
+                        await uploader.SignIn(waiting.CancellationToken);
+
+                        waiting.Report("Compressing…");
+
+                        byte[] data = null;
+                        await Task.Run(() => {
+                            using (var file = new FileStream(SelectedObject.Location, FileMode.Open, FileAccess.Read, FileShare.Read))
+                            using (var memory = new MemoryStream()) {
+                                using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
+                                    var readMe = $"{GetDescription()}\n\nTo play, unpack “{SelectedObject.Id}” to “…\\Documents\\Assetto Corsa\\replay”.";
+                                    using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(readMe))) {
+                                        writer.Write("ReadMe.txt", stream);
+                                    }
+
+                                    writer.Write(SelectedObject.Id, file, SelectedObject.CreationTime);
+                                }
+
+                                data = memory.ToArray();
+                                Logging.Write($"Compressed: {file.Length.ReadableSize()} to {data.LongLength.ReadableSize()}");
+                            }
+                        });
+
+                        result = await uploader.Upload(SelectedObject.Name ?? "AC Replay", Path.GetFileNameWithoutExtension(SelectedObject.Location) + ".zip",
+                                "application/zip", GetDescription(), data, waiting,
+                                waiting.CancellationToken);
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t share replay", "Make sure Internet-connection works.", e);
+                    return;
+                }
+
+                SharingHelper.Instance.AddToHistory(SharedEntryType.Replay, SelectedObject.Name, Car?.DisplayName, result);
+                SharingUiHelper.ShowShared(SharedEntryType.Replay, result.Url);
             }));
 
             private ICommand _playCommand;
 
             public ICommand PlayCommand => _playCommand ?? (_playCommand = new AsyncCommand(async o => {
-                using (ReplaysExtensionSetter.OnlyNewIfEnabled())
-                using (new WaitingDialog()) {
-                    await Game.StartAsync(AcsStarterFactory.Create(),
-                            new Game.StartProperties(new Game.ReplayProperties {
-                                Name = SelectedObject.Id,
-                                TrackId = SelectedObject.TrackId,
-                                TrackConfiguration = SelectedObject.TrackConfiguration
-                            }));
-                }
+                await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
+                    Name = SelectedObject.Id,
+                    TrackId = SelectedObject.TrackId,
+                    TrackConfiguration = SelectedObject.TrackConfiguration
+                }));
             }, o => !SelectedObject.HasError(AcErrorType.Replay_TrackIsMissing)));
         }
 

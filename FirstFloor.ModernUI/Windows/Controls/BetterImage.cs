@@ -51,6 +51,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(DelayedCreationProperty, value); }
         }
 
+        public static readonly DependencyProperty AdditionalDelayProperty = DependencyProperty.Register(nameof(AdditionalDelay), typeof(bool),
+                typeof(BetterImage));
+
+        public bool AdditionalDelay {
+            get { return (bool)GetValue(AdditionalDelayProperty); }
+            set { SetValue(AdditionalDelayProperty, value); }
+        }
+
         public static readonly DependencyProperty DecodeHeightProperty = DependencyProperty.Register(nameof(DecodeHeight), typeof(int),
                 typeof(BetterImage), new PropertyMetadata(-1));
 
@@ -300,6 +308,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _loading = true;
 
             try {
+                if (AdditionalDelay) {
+                    await Task.Delay(100);
+                }
+
                 var current = await LoadBitmapSourceAsync(Filename, InnerDecodeWidth, InnerDecodeHeight);
                 if (!_loading) return;
 

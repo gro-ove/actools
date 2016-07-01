@@ -53,8 +53,8 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -100,6 +100,7 @@
     <Compile Include="Helpers\Logging.cs" />
     <Compile Include="Helpers\LZF.cs" />
     <Compile Include="Helpers\StringCipher.cs" />
+    <Compile Include="Helpers\TreeViewExtension.cs" />
     <Compile Include="Helpers\UriExtension.cs" />
     <Compile Include="Helpers\ValuesStorage_EncryptionKey.cs" />
     <Compile Include="Helpers\ValuesStorage.cs" />
@@ -458,6 +459,7 @@
   <ItemGroup>
     <None Include="Assets\BrokenImage.bin" />
     <None Include="Effects\Shaders\ColorPickerBluePaletteEffect.fx" />
+    <None Include="Packages.config" />
     <Resource Include="Effects\Shaders\ColorPickerBluePaletteEffect.ps" />
     <None Include="Effects\Shaders\ColorPickerBlueSliderEffect.fx" />
     <Resource Include="Effects\Shaders\ColorPickerBlueSliderEffect.ps" />
@@ -484,7 +486,6 @@
     <None Include="Effects\Shaders\GrayscaleEffect.fx" />
     <Resource Include="Effects\Shaders\GrayscaleEffect.ps" />
     <None Include="Effects\Shaders\Include\HSV.fx" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -9,13 +9,13 @@
                 <mui:Link DisplayName="general" Source="/Pages/Settings/SettingsGeneral.xaml" />
                 <mui:Link DisplayName="addons" Source="/Pages/Settings/SettingsAddons.xaml" />
                 <mui:Link DisplayName="drive" Source="/Pages/Settings/SettingsDrive.xaml" />
-                <mui:Link DisplayName="replays" Source="/Pages/Settings/SettingsReplays.xaml" />
+                <mui:Link DisplayName="replays" Source="/Pages/Settings/SettingsReplays.xaml" IsNew="True" />
                 <mui:Link DisplayName="live timing" Source="/Pages/Settings/SettingsRsr.xaml" />
                 <mui:Link DisplayName="online" Source="/Pages/Settings/SettingsOnline.xaml" IsEnabled="{x:Static internal:AppKeyHolder.IsAllRight}" />
                 <mui:Link DisplayName="quick switches" Source="/Pages/Settings/SettingsQuickSwitches.xaml" />
                 <mui:Link DisplayName="custom showroom" Source="/Pages/Settings/SettingsCustomShowroom.xaml" />
                 <mui:Link DisplayName="content" Source="/Pages/Settings/SettingsContent.xaml" />
-                <mui:Link DisplayName="sharing" Source="/Pages/Settings/SettingsSharing.xaml" />
+                <mui:Link DisplayName="sharing" Source="/Pages/Settings/SettingsSharing.xaml" IsNew="True" />
                 <mui:Link DisplayName="appearance" Source="/Pages/Settings/SettingsAppearance.xaml" />
             </mui:ModernTab.Links>
         </mui:ModernTab>

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E9586699-505A-4349-9CBF-7E8AE1521207}</ProjectGuid>
+    <ProjectGuid>{FB438F1B-BE94-494A-BD40-B6C08F0A5598}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>StringBasedFilter</RootNamespace>
-    <AssemblyName>StringBasedFilter</AssemblyName>
+    <RootNamespace>AcManager.LargeFilesSharing</RootNamespace>
+    <AssemblyName>AcManager.LargeFilesSharing</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -32,46 +32,65 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FirstFloor.ModernUI">
+      <HintPath>..\AcManager\bin\Debug\FirstFloor.ModernUI.dll</HintPath>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parsing\FilterParser.cs" />
-    <Compile Include="Parsing\FilterTreeNode.cs" />
-    <Compile Include="Parsing\FilterTreeNodeAnd.cs" />
-    <Compile Include="Parsing\FilterTreeNodeChild.cs" />
-    <Compile Include="Parsing\FilterTreeNodeEmpty.cs" />
-    <Compile Include="Parsing\FilterTreeNodeNor.cs" />
-    <Compile Include="Parsing\FilterTreeNodeNot.cs" />
-    <Compile Include="Parsing\FilterTreeNodeOr.cs" />
-    <Compile Include="Parsing\FilterTreeNodeValue.cs" />
-    <Compile Include="TestEntries\ConstTestEntry.cs" />
-    <Compile Include="TestEntries\BooleanTestEntry.cs" />
-    <Compile Include="IFilter.cs" />
-    <Compile Include="ITester.cs" />
-    <Compile Include="ITestEntry.cs" />
-    <Compile Include="TestEntries\IntTestEntry.cs" />
-    <Compile Include="TestEntries\NumberTestEntry.cs" />
+    <Compile Include="DirectoryEntry.cs" />
+    <Compile Include="DirectoryEntryLinqExtension.cs" />
+    <Compile Include="FileUploaderBase.cs" />
+    <Compile Include="GoogleDrive\GoogleDriveUploader.cs" />
+    <Compile Include="GoogleDrive\InnerDataStore.cs" />
+    <Compile Include="GoogleDrive\OpenWindowGetter.cs" />
+    <Compile Include="GoogleDrive\Request.cs" />
+    <Compile Include="ILargeFileUploader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestEntries\Operator.cs" />
-    <Compile Include="TestEntries\StringTestEntry.cs" />
-    <Compile Include="Utils\FlexibleParser.cs" />
-    <Compile Include="Utils\RegexFromQuery.cs" />
-    <Compile Include="TestEntries\RegexTestEntry.cs" />
-    <Compile Include="Filter.cs" />
+    <Compile Include="Uploaders.cs" />
+    <Compile Include="UploadResult.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="app.config" />
+    <None Include="Packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\actools-internal\AcManager.Internal\AcManager.Internal.csproj">
+      <Project>{e1c50bb6-5b63-4917-b5e0-836f38061811}</Project>
+      <Name>AcManager.Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcManager.Controls\AcManager.Controls.csproj">
+      <Project>{b1d477c5-f639-4043-b8a6-82ea950f9890}</Project>
+      <Name>AcManager.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcManager.Tools\AcManager.Tools.csproj">
+      <Project>{764afd18-0755-4596-839c-fea3f492303b}</Project>
+      <Name>AcManager.Tools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcTools\AcTools.csproj">
+      <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>
+      <Name>AcTools</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

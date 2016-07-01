@@ -11,6 +11,7 @@ using System.Windows.Navigation;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
+using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Properties;
 using AcManager.Tools.Helpers;
@@ -154,7 +155,7 @@ namespace AcManager.Pages.Drive {
                 string page;
                 using (var client = new WebClient {
                     Headers = {
-                        [HttpRequestHeader.UserAgent] = "Assetto Corsa Launcher",
+                        [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent(),
                         ["X-User-Agent"] = CmApiProvider.UserAgent
                     }
                 }) {

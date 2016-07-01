@@ -231,7 +231,7 @@ namespace AcTools.Processes {
                             if (Path.GetDirectoryName(ReplayProperties.Filename)?.Equals(dir, StringComparison.OrdinalIgnoreCase) == true) {
                                 ReplayProperties.Name = Path.GetFileName(ReplayProperties.Filename);
                             } else {
-                                var removeLaterFilename = FileUtils.GetTempFileName(dir, ".acreplay");
+                                var removeLaterFilename = FileUtils.GetTempFileName(dir, ".tmp");
                                 ReplayProperties.Name = Path.GetFileName(removeLaterFilename);
                                 File.Copy(ReplayProperties.Filename, removeLaterFilename);
                                 _removeLater.Add(removeLaterFilename);

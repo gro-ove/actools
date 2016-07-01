@@ -20,13 +20,13 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
-using AcManager.Tools.Starters;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using ZipArchive = SharpCompress.Archive.Zip.ZipArchive;
 
 namespace AcManager.Tools {
     public enum ArgumentHandleResult {
@@ -69,10 +69,9 @@ namespace AcManager.Tools {
             var isDirectory = FileUtils.IsDirectory(filename);
             if (!isDirectory && filename.EndsWith(".acreplay", StringComparison.OrdinalIgnoreCase) ||
                     Path.GetDirectoryName(filename)?.Equals(FileUtils.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
-                Game.Start(AcsStarterFactory.Create(),
-                        new Game.StartProperties(new Game.ReplayProperties {
-                            Filename = filename
-                        }));
+                await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
+                    Filename = filename
+                }));
                 return ArgumentHandleResult.Successful;
             }
 
@@ -184,6 +183,9 @@ namespace AcManager.Tools {
 
             try {
                 switch (parsed.Path) {
+                    case "replay":
+                        return await ProcessReplay(parsed.Params.Get("url"), parsed.Params.Get("uncompressed") == null);
+
                     case "rsr":
                         return await ProcessRsrEvent(parsed.Params.Get("id"));
 
@@ -200,6 +202,62 @@ namespace AcManager.Tools {
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t process request", "Make sure data is valid.", e);
                 return ArgumentHandleResult.Failed;
+            }
+        }
+
+        public async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {
+            var path = await LoadRemoveFile(url, extension: compressed ? ".zip" : ".acreplay");
+            if (string.IsNullOrWhiteSpace(path)) return ArgumentHandleResult.FailedShow;
+
+            try {
+                if (!FileUtils.Exists(path)) return ArgumentHandleResult.FailedShow;
+            } catch (Exception) {
+                return ArgumentHandleResult.FailedShow;
+            }
+
+            try {
+                if (!compressed) {
+                    return await ProcessInputFile(path);
+                }
+
+                var filename = FileUtils.GetTempFileName(Path.GetTempPath(), ".acreplay");
+
+                /*using (var archive = ZipFile.OpenRead(path)) {
+                    foreach (var entry in archive.Entries.Where(x => !string.Equals(x.Name, "ReadMe.txt", StringComparison.OrdinalIgnoreCase))) {
+                        await Task.Run(() => {
+                            entry.ExtractToFile(filename);
+                        });
+                        break;
+                    }
+                }*/
+
+                var archive = ZipArchive.Open(path);
+                var acreplay = archive.Entries.FirstOrDefault(
+                        x => x.IsDirectory == false && !string.Equals(x.Key, "ReadMe.txt", StringComparison.OrdinalIgnoreCase));
+                if (acreplay == null) {
+                    return ArgumentHandleResult.FailedShow;
+                }
+
+                using (var stream = acreplay.OpenEntryStream())
+                using (var output = new FileStream(filename, FileMode.CreateNew)) {
+                    await stream.CopyToAsync(output);
+                }
+
+                try {
+                    return await ProcessInputFile(filename);
+                } finally {
+                    try {
+                        File.Delete(filename);
+                    } catch (Exception) {
+                        // ignored
+                    }
+                }
+            } finally {
+                try {
+                    File.Delete(path);
+                } catch (Exception) {
+                    // ignored
+                }
             }
         }
 
@@ -222,7 +280,7 @@ namespace AcManager.Tools {
             if (data == null || header == null) {
                 throw new InformativeException("Can’t install setup", "RSR has changed.");
             }
-            
+
             var match = Regex.Match(header, @"^([^_]+_.+)_\d+_\d+_\d+_(.+)\.ini$");
             if (!match.Success) {
                 throw new InformativeException("Can’t install setup", "RSR returned file in unsupported format.");
@@ -284,7 +342,7 @@ namespace AcManager.Tools {
         /// <param name="applyable">Can be applied.</param>
         /// <param name="nonSaveable">Can be applied without saving.</param>
         /// <returns>User choise.</returns>
-        private Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true, 
+        private Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true,
                 bool nonSaveable = true) {
             var description =
                     $@"Name: [b]{shared.Name ?? "[/b][i]?[/i][b]"}[/b]
@@ -347,114 +405,114 @@ Author: [b]{
 
             switch (shared.EntryType) {
                 case SharedEntryType.PpFilter: {
-                    var result = ShowDialog(shared, nonSaveable: false);
-                    switch (result) {
-                        case Choise.Save:
-                        case Choise.ApplyAndSave:
-                            var filename = FileUtils.EnsureUnique(Path.Combine(
-                                    PpFiltersManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
-                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
-                            File.WriteAllBytes(filename, data);
-                            if (result == Choise.ApplyAndSave) {
-                                AcSettingsHolder.Video.PostProcessingFilter = Path.GetFileNameWithoutExtension(filename);
-                            }
-                            return ArgumentHandleResult.SuccessfulShow;
-                        default:
-                            return ArgumentHandleResult.Failed;
+                        var result = ShowDialog(shared, nonSaveable: false);
+                        switch (result) {
+                            case Choise.Save:
+                            case Choise.ApplyAndSave:
+                                var filename = FileUtils.EnsureUnique(Path.Combine(
+                                        PpFiltersManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
+                                Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                                File.WriteAllBytes(filename, data);
+                                if (result == Choise.ApplyAndSave) {
+                                    AcSettingsHolder.Video.PostProcessingFilter = Path.GetFileNameWithoutExtension(filename);
+                                }
+                                return ArgumentHandleResult.SuccessfulShow;
+                            default:
+                                return ArgumentHandleResult.Failed;
+                        }
                     }
-                }
 
                 case SharedEntryType.CarSetup: {
-                    var content = data.ToUtf8String();
-                    var metadata = SharingHelper.GetMetadata(SharedEntryType.CarSetup, content, out content);
+                        var content = data.ToUtf8String();
+                        var metadata = SharingHelper.GetMetadata(SharedEntryType.CarSetup, content, out content);
 
-                    var carId = metadata.GetValueOrDefault("car");
-                    var trackId = metadata.GetValueOrDefault("track") ?? CarSetupObject.GenericDirectory;
-                    if (carId == null) {
-                        throw new InformativeException("Can’t install car’s setup", "Metadata is missing.");
-                    }
+                        var carId = metadata.GetValueOrDefault("car");
+                        var trackId = metadata.GetValueOrDefault("track") ?? CarSetupObject.GenericDirectory;
+                        if (carId == null) {
+                            throw new InformativeException("Can’t install car’s setup", "Metadata is missing.");
+                        }
 
-                    var result = ShowDialog(shared, applyable: false, additionalButton: trackId == CarSetupObject.GenericDirectory ? null : "Save as Generic");
-                    switch (result) {
-                        case Choise.Save:
-                        case Choise.Extra:
-                            var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(carId),
-                                result == Choise.Save ? trackId : CarSetupObject.GenericDirectory, shared.GetFileName()));
-                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
-                            File.WriteAllText(filename, content);
-                            return ArgumentHandleResult.SuccessfulShow;
-                        default:
-                            return ArgumentHandleResult.Failed;
+                        var result = ShowDialog(shared, applyable: false, additionalButton: trackId == CarSetupObject.GenericDirectory ? null : "Save as Generic");
+                        switch (result) {
+                            case Choise.Save:
+                            case Choise.Extra:
+                                var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(carId),
+                                    result == Choise.Save ? trackId : CarSetupObject.GenericDirectory, shared.GetFileName()));
+                                Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                                File.WriteAllText(filename, content);
+                                return ArgumentHandleResult.SuccessfulShow;
+                            default:
+                                return ArgumentHandleResult.Failed;
+                        }
                     }
-                }
 
                 case SharedEntryType.ControlsPreset: {
-                    var result = ShowDialog(shared, "Apply FFB Only");
-                    switch (result) {
-                        case Choise.Save:
-                        case Choise.ApplyAndSave:
-                            var filename = FileUtils.EnsureUnique(Path.Combine(
-                                    AcSettingsHolder.Controls.UserPresetsDirectory, "Loaded", shared.GetFileName()));
-                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
-                            File.WriteAllBytes(filename, data);
-                            if (result == Choise.ApplyAndSave) {
-                                AcSettingsHolder.Controls.LoadPreset(filename);
-                            }
-                            return ArgumentHandleResult.SuccessfulShow;
-                        case Choise.Apply:
-                            if (File.Exists(AcSettingsHolder.Controls.Filename)) {
-                                FileUtils.Recycle(AcSettingsHolder.Controls.Filename);
-                            }
-                            File.WriteAllBytes(AcSettingsHolder.Controls.Filename, data);
-                            return ArgumentHandleResult.SuccessfulShow;
-                        case Choise.Extra: // ffb only
-                            var ini = IniFile.Parse(data.ToUtf8String());
-                            AcSettingsHolder.Controls.LoadFfbFromIni(ini);
-                            return ArgumentHandleResult.SuccessfulShow;
-                        default:
-                            return ArgumentHandleResult.Failed;
+                        var result = ShowDialog(shared, "Apply FFB Only");
+                        switch (result) {
+                            case Choise.Save:
+                            case Choise.ApplyAndSave:
+                                var filename = FileUtils.EnsureUnique(Path.Combine(
+                                        AcSettingsHolder.Controls.UserPresetsDirectory, "Loaded", shared.GetFileName()));
+                                Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                                File.WriteAllBytes(filename, data);
+                                if (result == Choise.ApplyAndSave) {
+                                    AcSettingsHolder.Controls.LoadPreset(filename);
+                                }
+                                return ArgumentHandleResult.SuccessfulShow;
+                            case Choise.Apply:
+                                if (File.Exists(AcSettingsHolder.Controls.Filename)) {
+                                    FileUtils.Recycle(AcSettingsHolder.Controls.Filename);
+                                }
+                                File.WriteAllBytes(AcSettingsHolder.Controls.Filename, data);
+                                return ArgumentHandleResult.SuccessfulShow;
+                            case Choise.Extra: // ffb only
+                                var ini = IniFile.Parse(data.ToUtf8String());
+                                AcSettingsHolder.Controls.LoadFfbFromIni(ini);
+                                return ArgumentHandleResult.SuccessfulShow;
+                            default:
+                                return ArgumentHandleResult.Failed;
+                        }
                     }
-                }
 
                 case SharedEntryType.ForceFeedbackPreset: {
-                    var result = ShowDialog(shared, saveable: false);
-                    switch (result) {
-                        case Choise.Apply:
-                            var ini = IniFile.Parse(data.ToUtf8String());
-                            AcSettingsHolder.Controls.LoadFfbFromIni(ini);
-                            AcSettingsHolder.System.LoadFfbFromIni(ini);
-                            return ArgumentHandleResult.SuccessfulShow;
-                        default:
-                            return ArgumentHandleResult.Failed;
+                        var result = ShowDialog(shared, saveable: false);
+                        switch (result) {
+                            case Choise.Apply:
+                                var ini = IniFile.Parse(data.ToUtf8String());
+                                AcSettingsHolder.Controls.LoadFfbFromIni(ini);
+                                AcSettingsHolder.System.LoadFfbFromIni(ini);
+                                return ArgumentHandleResult.SuccessfulShow;
+                            default:
+                                return ArgumentHandleResult.Failed;
+                        }
                     }
-                }
 
                 case SharedEntryType.QuickDrivePreset: {
-                    var result = ShowDialog(shared, "Just Go");
-                    switch (result) {
-                        case Choise.Save:
-                        case Choise.ApplyAndSave:
-                            var filename = FileUtils.EnsureUnique(Path.Combine(
-                                    PresetsManager.Instance.GetDirectory(QuickDrive.PresetableKeyValue), "Loaded", shared.GetFileName()));
-                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
-                            File.WriteAllBytes(filename, data);
-                            if (result == Choise.ApplyAndSave) {
-                                QuickDrive.LoadPreset(filename);
-                            }
-                            return ArgumentHandleResult.SuccessfulShow;
-                        case Choise.Apply:
-                            QuickDrive.LoadSerializedPreset(data.ToUtf8String());
-                            return ArgumentHandleResult.SuccessfulShow;
-                        case Choise.Extra: // just go
-                            if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
-                                throw new InformativeException("Can’t start race", "Make sure required car & track are installed and available.");
-                            }
+                        var result = ShowDialog(shared, "Just Go");
+                        switch (result) {
+                            case Choise.Save:
+                            case Choise.ApplyAndSave:
+                                var filename = FileUtils.EnsureUnique(Path.Combine(
+                                        PresetsManager.Instance.GetDirectory(QuickDrive.PresetableKeyValue), "Loaded", shared.GetFileName()));
+                                Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                                File.WriteAllBytes(filename, data);
+                                if (result == Choise.ApplyAndSave) {
+                                    QuickDrive.LoadPreset(filename);
+                                }
+                                return ArgumentHandleResult.SuccessfulShow;
+                            case Choise.Apply:
+                                QuickDrive.LoadSerializedPreset(data.ToUtf8String());
+                                return ArgumentHandleResult.SuccessfulShow;
+                            case Choise.Extra: // just go
+                                if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
+                                    throw new InformativeException("Can’t start race", "Make sure required car & track are installed and available.");
+                                }
 
-                            return ArgumentHandleResult.SuccessfulShow;
-                        default:
-                            return ArgumentHandleResult.Failed;
+                                return ArgumentHandleResult.SuccessfulShow;
+                            default:
+                                return ArgumentHandleResult.Failed;
+                        }
                     }
-                }
 
                 default:
                     throw new Exception($"Unsupported yet type: “{shared.EntryType}”");

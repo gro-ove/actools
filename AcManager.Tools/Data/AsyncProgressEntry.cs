@@ -20,5 +20,14 @@ namespace AcManager.Tools.Data {
             return new AsyncProgressEntry($@"Loaded {receivedBytes.ReadableSize(1)} of {totalBytes.ReadableSize(1)}",
                     (double)receivedBytes / totalBytes);
         }
+
+        public static AsyncProgressEntry CreateUploading(long sentBytes, long totalBytes) {
+            if (totalBytes == -1) {
+                return new AsyncProgressEntry($@"Uploaded {sentBytes.ReadableSize(1)}", null);
+            }
+
+            return new AsyncProgressEntry($@"Uploaded {sentBytes.ReadableSize(1)} of {totalBytes.ReadableSize(1)}",
+                    (double)sentBytes / totalBytes);
+        }
     }
 }

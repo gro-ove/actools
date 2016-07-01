@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="AcManager.Pages.Lists.ScreenshotsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:lists="clr-namespace:AcManager.Pages.Lists" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        Loaded="ScreenshotsListPage_OnLoaded" Unloaded="ScreenshotsListPage_OnUnloaded" d:DataContext="{d:DesignInstance lists:ScreenshotsListPage+ViewModel}">
+    <Grid Style="{StaticResource ContentRootWithPadding}">
+        <ListBox ItemsSource="{Binding Screenshots}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ScrollViewer.CanContentScroll="True">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Standard" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="196"
+                            ItemHeight="112" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Width="192" Height="108" PreviewMouseLeftButtonDown="Item_OnPreviewMouseLeftButtonDown">
+                        <Grid.ToolTip>
+                            <StackPanel>
+                                <DockPanel>
+                                    <Label DockPanel.Dock="Left" Width="100">Name:</Label>
+                                    <TextBlock Text="{Binding DisplayName}" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <Label DockPanel.Dock="Left" Width="100">Date:</Label>
+                                    <TextBlock Text="{Binding CreationTime}" />
+                                </DockPanel>
+                                <DockPanel>
+                                    <Label DockPanel.Dock="Left" Width="100">Size:</Label>
+                                    <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" />
+                                </DockPanel>
+                            </StackPanel>
+                        </Grid.ToolTip>
+                        <mui:BetterImage Filename="{Binding Filename}" AdditionalDelay="True" Width="192" Background="Black" ClearOnChange="True" />
+                        <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding DisplayName}"
+                                TextTrimming="CharacterEllipsis" Foreground="White" FontSize="{DynamicResource SmallFontSize}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

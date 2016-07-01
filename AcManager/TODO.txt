@@ -451,6 +451,8 @@ done:
             + try to read car's skin
             + filtering
             + option to disable reading
+            + sharing
+            × length in minutes
     + color picker
         + additinal switchable schemes
         + pick color from screen
@@ -641,9 +643,6 @@ todo:
     - favorites
 
     > additional section “miscellaneous”
-        > replays
-            - sharing?
-            × length in minutes
         > weather
             + filtering
             - testing?

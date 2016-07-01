@@ -19,6 +19,8 @@ namespace AcManager.Tools.SemiGui {
         /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
         /// <param name="exception">Exception which caused the problem.</param>
         public static void Notify(string problemDescription, string solutionCommentary, Exception exception = null) {
+            if (exception is UserCancelledException) return;
+
             var i = exception as InformativeException;
             if (i != null) {
                 _notifier?.Notify(i.Message, i.SolutionCommentary, null);

@@ -58,7 +58,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="RadioListBoxItem" TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+    <Style x:Key="RadioBoxListItem" TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">

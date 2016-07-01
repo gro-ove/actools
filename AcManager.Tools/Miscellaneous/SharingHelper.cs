@@ -206,9 +206,13 @@ namespace AcManager.Tools.Miscellaneous {
             ValuesStorage.Set(Key, History.Select(x => x.Serialize()));
         }
 
-        private void AddToHistory(SharedEntryType type, string name, string target, InternalUtils.ShareResult result) {
+        public void AddToHistory(SharedEntryType type, string name, string target, InternalUtils.ShareResult result) {
             History.Add(new SharedEntry {
-                EntryType = type, Id = result.Id, RemovalKey = result.RemovalKey, Name = name, Target = target
+                EntryType = type,
+                Id = result.Id,
+                RemovalKey = result.RemovalKey,
+                Name = name,
+                Target = target
             });
             SaveHistory();
         }

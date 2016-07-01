@@ -31,7 +31,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource RadioListBoxItem}">
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource RadioBoxListItem}">
                         <Setter Property="Margin" Value="8 4 4 8" />
                     </Style>
                 </ListBox.ItemContainerStyle>

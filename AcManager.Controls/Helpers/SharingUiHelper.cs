@@ -81,14 +81,7 @@ namespace AcManager.Controls.Helpers {
                     if (link == null) return;
                 }
 
-                if (SettingsHolder.Sharing.CopyLinkToClipboard) {
-                    Clipboard.SetText(link);
-                }
-
-                Toast.Show(type.GetDescription().ToTitle() + " Shared", "Link copied to clipboard", () => {
-                    Process.Start(link + "#noauto");
-                });
-
+                ShowShared(type, link);
                 await Task.Delay(2000);
 
 #if WIN10_SHARE
@@ -105,6 +98,16 @@ namespace AcManager.Controls.Helpers {
             } finally {
                 _sharingInProcess = false;
             }
+        }
+
+        public static void ShowShared(SharedEntryType type, string link) {
+            if (SettingsHolder.Sharing.CopyLinkToClipboard) {
+                Clipboard.SetText(link);
+            }
+
+            Toast.Show(type.GetDescription().ToTitle() + " Shared", SettingsHolder.Sharing.CopyLinkToClipboard ? "Link copied to clipboard" : "Click to open link", () => {
+                Process.Start(link + "#noauto");
+            });
         }
 
 #if WIN10_SHARE

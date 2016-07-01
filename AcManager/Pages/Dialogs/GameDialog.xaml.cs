@@ -251,7 +251,8 @@ namespace AcManager.Pages.Dialogs {
 
         void IGameUi.OnResult(Game.Result result, ReplayHelper replayHelper) {
             if (result != null && result.NumberOfSessions == 1 && result.Sessions.Length == 1
-                    && result.Sessions[0].Type == Game.SessionType.Practice && SettingsHolder.Drive.SkipPracticeResults) {
+                    && result.Sessions[0].Type == Game.SessionType.Practice && SettingsHolder.Drive.SkipPracticeResults ||
+                    _properties.BasicProperties == null) {
                 Close();
                 return;
             }
@@ -320,7 +321,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public enum State {
-                [Description("Waiting for the result…")]
+                [Description("Waiting…")]
                 Waiting,
 
                 [Description("Finished")]
