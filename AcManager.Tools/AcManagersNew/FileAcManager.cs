@@ -23,6 +23,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         private void Content_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(SettingsHolder.ContentSettings.NewContentPeriod)) return;
+            if (!IsScanned) return;
             foreach (var entry in LoadedOnly) {
                 entry.CheckIfNew();
             }
@@ -48,7 +49,6 @@ namespace AcManager.Tools.AcManagersNew {
             var obj = CreateAndLoadAcObject(newId, newEnabled);
             obj.PreviousId = id;
             ReplaceInList(id, new AcItemWrapper(this, obj));
-            UpdateList();
         }
 
         protected virtual void DeleteInner(string id, string location) {

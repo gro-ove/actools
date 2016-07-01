@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.InnerHelpers;
@@ -66,14 +65,15 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         private readonly Dictionary<string, WatchingTask> _watchingTasks = new Dictionary<string, WatchingTask>();
-
-        [MethodImpl(MethodImplOptions.Synchronized)]
+        
         private WatchingTask GetWatchingTask(string location) {
-            if (!_watchingTasks.ContainsKey(location)) {
-                _watchingTasks[location] = new WatchingTask(location, this);
-            }
+            lock (_watchingTasks) {
+                if (!_watchingTasks.ContainsKey(location)) {
+                    _watchingTasks[location] = new WatchingTask(location, this);
+                }
 
-            return _watchingTasks[location];
+                return _watchingTasks[location];
+            }
         }
 
         void IWatchingChangeApplier.ApplyChange(string dir, WatchingChange change) {

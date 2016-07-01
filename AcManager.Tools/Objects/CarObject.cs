@@ -155,36 +155,54 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
-        public override int CompareTo(AcPlaceholderNew o) {
-            var c = o as CarObject;
-            if (c == null) return base.CompareTo(o);
-
-            var lhsEnabled = Enabled;
-            if (lhsEnabled != c.Enabled) return lhsEnabled ? -1 : 1;
-
-            var lhsParent = Parent;
-            var rhsParent = c.Parent;
-
-            if (lhsParent == null && rhsParent == null || lhsParent == rhsParent) {
-                return DisplayName.InvariantCompareTo(c.DisplayName);
-            }
-
-            if (lhsParent == c) return 1;
-            if (rhsParent == this) return -1;
-            return (lhsParent ?? this).DisplayName.InvariantCompareTo((rhsParent ?? c).DisplayName);
+        private static int Compare(CarObject l, CarObject r) {
+            var le = l.Enabled;
+            return le != r.Enabled ? (le ? -1 : 1) : l.DisplayName.InvariantCompareTo(r.DisplayName);
         }
 
+        public override int CompareTo(AcPlaceholderNew o) {
+            var r = o as CarObject;
+            if (r == null) return base.CompareTo(o);
+
+            var tp = Parent;
+            var rp = r.Parent;
+            if (rp == this) return -1;
+            if (tp == r) return 1;
+            if (tp == rp) return Compare(this, r);
+            return Compare(tp ?? this, rp ?? r);
+        }
+
+        private bool _skipRelativesToggling;
+
         protected override void Toggle() {
-            if (Parent == null) {
-                // TODO:
-                //foreach (var car in CarsManager.Instance.List.Where(x => x.ParentId == Id)) {
-                //    car.Enabled = enable;
-                //}
-            } else if (!Enabled && !Parent.Enabled) {
-                Parent.Toggle();
+            if (_skipRelativesToggling) {
+                base.Toggle();
+                return;
             }
 
-            base.Toggle();
+            var enabled = Enabled;
+            var parent = Parent;
+            if (parent == null) {
+                base.Toggle();
+                foreach (var car in Children.Where(x => x.Enabled == enabled).ToList()) {
+                    try {
+                        car._skipRelativesToggling = true;
+                        car.Toggle();
+                    } finally {
+                        car._skipRelativesToggling = false;
+                    }
+                }
+            } else if (!enabled && !parent.Enabled) {
+                try {
+                    parent._skipRelativesToggling = true;
+                    parent.Toggle();
+                } finally {
+                    parent._skipRelativesToggling = false;
+                }
+                base.Toggle();
+            } else {
+                base.Toggle();
+            }
         }
 
         #region Simple Properties

@@ -9,7 +9,7 @@
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Standard" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="196"
-                            ItemHeight="112" />
+                            ItemHeight="112" CacheLengthUnit="Item" CacheLength="80,40" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
@@ -18,15 +18,15 @@
                         <Grid.ToolTip>
                             <StackPanel>
                                 <DockPanel>
-                                    <Label DockPanel.Dock="Left" Width="100">Name:</Label>
+                                    <Label DockPanel.Dock="Left" Width="60">Name:</Label>
                                     <TextBlock Text="{Binding DisplayName}" />
                                 </DockPanel>
                                 <DockPanel>
-                                    <Label DockPanel.Dock="Left" Width="100">Date:</Label>
+                                    <Label DockPanel.Dock="Left" Width="60">Date:</Label>
                                     <TextBlock Text="{Binding CreationTime}" />
                                 </DockPanel>
                                 <DockPanel>
-                                    <Label DockPanel.Dock="Left" Width="100">Size:</Label>
+                                    <Label DockPanel.Dock="Left" Width="60">Size:</Label>
                                     <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" />
                                 </DockPanel>
                             </StackPanel>

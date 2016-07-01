@@ -641,6 +641,7 @@ todo:
         - auto-update previews
 
     - favorites
+    - commands for replays
 
     > additional section “miscellaneous”
         > weather
@@ -659,6 +660,7 @@ todo:
     - automatically update TrackObject in CarSetupObject (added, deleted)
 
     - screenshots tab
+    - setup: configuration-independent
 
     + object-based reload
         + non-json objects

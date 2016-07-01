@@ -69,7 +69,7 @@ namespace AcManager.Tools.Objects {
         public CarObject Parent {
             get {
                 if (ParentId == null) return null;
-                if (_parentGetted) return _parent;
+                if (_parentGetted && _parent?.Outdated != true) return _parent;
                 _parentGetted = true;
                 _parent = CarsManager.Instance.GetById(ParentId);
                 return _parent;
@@ -87,6 +87,6 @@ namespace AcManager.Tools.Objects {
         public bool IsChild => ParentId != null;
 
         /* TODO: find another way, this one is way too shitty */
-        public override bool NeedsMargin => Parent != null && (!Parent.Enabled || Enabled);
+        public override bool NeedsMargin => Parent != null; //  && (!Parent.Enabled || Enabled);
     }
 }

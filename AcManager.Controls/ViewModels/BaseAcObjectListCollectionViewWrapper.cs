@@ -2,6 +2,7 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
@@ -47,6 +48,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         private void List_CollectionReady(object sender, EventArgs e) {
+            // MainList.CustomSort = null;
             MainList.Refresh();
         }
 
