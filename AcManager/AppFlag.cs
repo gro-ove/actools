@@ -193,6 +193,12 @@ namespace AcManager {
         /// When started using command line args, don’t show main window.
         /// Example: --lite-startup-mode-supported.
         /// </summary>
-        LiteStartupModeSupported
+        LiteStartupModeSupported,
+
+        /// <summary>
+        /// Nothing to see here, just some thing with the names.
+        /// Example: --nfs-porsche-tribute.
+        /// </summary>
+        NfsPorscheTribute,
     }
 }

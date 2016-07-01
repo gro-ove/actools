@@ -6,7 +6,7 @@ using AcManager.Tools.Miscellaneous;
 using AcTools.Processes;
 using AcTools.Windows.Input;
 
-namespace AcManager.Tools.SemiGui {
+namespace AcManager.Tools.GameProperties {
     public class ImmediateStart : Game.GameHandler {
         private bool _cancelled;
 

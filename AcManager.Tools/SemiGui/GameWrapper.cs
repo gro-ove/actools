@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
@@ -34,11 +35,11 @@ namespace AcManager.Tools.SemiGui {
         }
 
         public static Task StartReplayAsync(Game.StartProperties properties) {
-            return StartAsync(properties, true);
+            return StartAsync(properties, false);
         }
 
         public static Task<Game.Result> StartAsync(Game.StartProperties properties) {
-            return StartAsync(properties, false);
+            return StartAsync(properties, true);
         }
 
         private static async Task<Game.Result> StartAsync(Game.StartProperties properties, bool raceMode) {
@@ -56,9 +57,9 @@ namespace AcManager.Tools.SemiGui {
             if (_factory == null) {
                 using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
                     if (raceMode) {
-                        properties.SetAdditional(new GameCommandExecutor(properties));
+                        properties.SetAdditional(new RaceCommandExecutor(properties));
                     } else {
-                        // TODO: properties.SetAdditional(new ReplayCommandExecutor(properties));
+                        properties.SetAdditional(new ReplayCommandExecutor(properties));
                     }
 
                     return await Game.StartAsync(AcsStarterFactory.Create(), properties, null, CancellationToken.None);
@@ -72,12 +73,17 @@ namespace AcManager.Tools.SemiGui {
                     Game.Result result;
                     using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
                         if (raceMode) {
-                            properties.SetAdditional(new GameCommandExecutor(properties));
+                            properties.SetAdditional(new RaceCommandExecutor(properties));
                         } else {
-                            // TODO: properties.SetAdditional(new ReplayCommandExecutor(properties));
+                            properties.SetAdditional(new ReplayCommandExecutor(properties));
                         }
 
                         result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
+                    }
+
+                    if (ui.CancellationToken.IsCancellationRequested) {
+                        ui.OnError(new UserCancelledException());
+                        return null;
                     }
 
                     if (raceMode) {

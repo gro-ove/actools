@@ -12,7 +12,6 @@ using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
-using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Properties;
@@ -20,6 +19,7 @@ using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
@@ -66,7 +66,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.LanSocketTimeout, ref KunosApiProvider.OptionLanSocketTimeout);
             AppArguments.Set(AppFlag.LanPollTimeout, ref KunosApiProvider.OptionLanPollTimeout);
             AppArguments.Set(AppFlag.WebRequestTimeout, ref KunosApiProvider.OptionWebRequestTimeout);
-            AppArguments.Set(AppFlag.CommandTimeout, ref GameCommandExecutor.OptionCommandTimeout);
+            AppArguments.Set(AppFlag.CommandTimeout, ref GameCommandExecutorBase.OptionCommandTimeout);
 
             AppArguments.Set(AppFlag.PingConcurrency, ref BaseOnlineManager.OptionConcurrentThreadsNumber);
             AppArguments.Set(AppFlag.AlwaysGetInformationDirectly, ref ServerEntry.OptionAlwaysGetInformationDirectly);

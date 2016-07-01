@@ -314,6 +314,32 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private string _preReplayCommand;
+
+            public string PreReplayCommand {
+                get { return _preReplayCommand ?? (_preReplayCommand = ValuesStorage.GetString("Settings.DriveSettings.PreReplayCommand", "")); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _preReplayCommand)) return;
+                    _preReplayCommand = value;
+                    ValuesStorage.Set("Settings.DriveSettings.PreReplayCommand", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _postReplayCommand;
+
+            public string PostReplayCommand {
+                get { return _postReplayCommand ?? (_postReplayCommand = ValuesStorage.GetString("Settings.DriveSettings.PostReplayCommand", "")); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _postReplayCommand)) return;
+                    _postReplayCommand = value;
+                    ValuesStorage.Set("Settings.DriveSettings.PostReplayCommand", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _immediateStart;
 
             public bool ImmediateStart {

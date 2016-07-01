@@ -57,8 +57,13 @@ namespace AcManager.Tools.Starters {
             }
         }
 
-        public virtual async Task RunAsync(CancellationToken cancellation) {
-            await Task.Run(() => Run(), cancellation);
+        public virtual Task RunAsync(CancellationToken cancellation) {
+            return Task.Run(() => Run(), cancellation);
+        }
+
+        private static bool IsAny() {
+            return Process.GetProcessesByName("acs.exe").Any() || Process.GetProcessesByName("acs_x86.exe").Any() ||
+                    Process.GetProcessesByName("AssettoCorsa.exe").Any();
         }
 
         public async Task WaitUntilGameAsync(CancellationToken cancellation) {
@@ -66,17 +71,24 @@ namespace AcManager.Tools.Starters {
 
             Logging.Warning("[BASESTARTER] WaitUntilGameAsync(): first stage");
 
-            for (var i = 0; i < 100; i++) {
+            var nothing = 0;
+            for (var i = 0; i < 999; i++) {
                 GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
                 if (GameProcess != null) break;
-                Logging.Warning($"[BASESTARTER] ActiveProcess '{AcsName}' == null…");
+                
+                if (IsAny()) {
+                    nothing = 0;
+                } else if (++nothing > 50) {
+                    Logging.Warning($"[BASESTARTER] WaitUntilGameAsync(): looks like the game is dead");
+                    break;
+                }
+
                 await Task.Delay(1000, cancellation);
+                if (cancellation.IsCancellationRequested) {
+                    Logging.Warning($"[BASESTARTER] WaitUntilGameAsync(): cancelled");
+                    return;
+                }
             }
-
-            Logging.Warning("[BASESTARTER] WaitUntilGameAsync(): second stage");
-
-            await Task.Delay(1000, cancellation);
-            GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         }
 
         public virtual async Task WaitGameAsync(CancellationToken cancellation) {

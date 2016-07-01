@@ -115,10 +115,15 @@ namespace AcTools.Processes {
                 await starter.WaitGameAsync(cancellation);
                 if (cancellation.IsCancellationRequested) return null;
             } finally {
-                progress?.Report(ProgressState.Finishing);
-                await starter.CleanUpAsync(cancellation);
-
                 _busy = false;
+
+                if (cancellation.IsCancellationRequested) {
+                    starter.CleanUp();
+                } else {
+                    progress?.Report(ProgressState.Finishing);
+                    await starter.CleanUpAsync(cancellation);
+                }
+
                 properties.RevertChanges();
             }
 

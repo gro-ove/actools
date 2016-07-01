@@ -778,8 +778,8 @@ namespace AcManager.Pages.Drive {
                 Game.AssistsProperties assistsProperties,
                 Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties);
 
-        protected async Task StartAsync(Game.StartProperties properties) {
-            await GameWrapper.StartAsync(properties);
+        protected Task StartAsync(Game.StartProperties properties) {
+            return GameWrapper.StartAsync(properties);
         }
 
         public virtual void OnSelectedUpdated(CarObject selectedCar, TrackBaseObject selectedTrack) {

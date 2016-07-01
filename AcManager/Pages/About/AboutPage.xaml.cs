@@ -13,9 +13,6 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.About {
-    /// <summary>
-    /// Interaction logic for About.xaml
-    /// </summary>
     public partial class AboutPage {
         private int _clicks;
 
@@ -32,11 +29,7 @@ namespace AcManager.Pages.About {
             }
         }
 
-        private AboutPageViewModel Model => (AboutPageViewModel)DataContext;
-
         public class AboutPageViewModel : NotifyPropertyChanged {
-            public AboutPageViewModel() { }
-
             private RelayCommand _moreInformationCommand;
 
             public RelayCommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new RelayCommand(o => {
@@ -49,7 +42,9 @@ namespace AcManager.Pages.About {
 
             public AsyncCommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new AsyncCommand(async o => {
                 try {
-                    var message = Prompt.Show("Please, describe the issue.", "What’s The Issue?", watermark: "?", multiline: true);
+                    var message = Prompt.Show(
+                            "Describe the issue. And, please, leave some contacts if you want to get a response (also, it could help to resolve the issue).",
+                            "What’s The Issue?", watermark: "?", multiline: true);
                     if (message == null) return;
                     await Task.Run(() => AppReporter.SendLogs(message));
                     ValuesStorage.Set(KeyLogsSentTime, DateTime.Now);

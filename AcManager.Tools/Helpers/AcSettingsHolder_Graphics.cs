@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers {
             public int MipLodBias {
                 get { return _mipLodBias; }
                 set {
-                    value = value.Clamp(-4, 0);
+                    value = value.Clamp(-400, 0);
                     if (Equals(value, _mipLodBias)) return;
                     _mipLodBias = value;
                     OnPropertyChanged();
@@ -43,14 +43,14 @@ namespace AcManager.Tools.Helpers {
             protected override void LoadFromIni() {
                 var section = Ini["DX11"];
                 AllowUnsupportedDx10 = section.GetBool("ALLOW_UNSUPPORTED_DX10", false);
-                MipLodBias = section.GetInt("MIP_LOD_BIAS", 0);
+                MipLodBias = section.GetDouble("MIP_LOD_BIAS", 0).ToIntPercentage();
                 SkyboxReflectionGain = section.GetDouble("SKYBOX_REFLECTION_GAIN", 1d).ToIntPercentage();
             }
 
             protected override void SetToIni() {
                 var section = Ini["DX11"];
                 section.Set("ALLOW_UNSUPPORTED_DX10", AllowUnsupportedDx10);
-                section.Set("MIP_LOD_BIAS", MipLodBias);
+                section.Set("MIP_LOD_BIAS", MipLodBias.ToDoublePercentage());
                 section.Set("SKYBOX_REFLECTION_GAIN", SkyboxReflectionGain.ToDoublePercentage());
             }
         }

@@ -177,8 +177,9 @@
             </DockPanel>
 
             <DockPanel ToolTip="Set negative value (like -1) to sharp the image">
-                <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Mode="Integer">Mip LOD bias</mui:ValueLabel>
-                <Slider Minimum="-4" Maximum="0" Value="{Binding Graphics.MipLodBias}" TickFrequency="1" TickPlacement="BottomRight" />
+                <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Mode="Integer" Postfix="%">Mip LOD bias</mui:ValueLabel>
+                <Slider Minimum="-400" Maximum="0" Value="{Binding Graphics.MipLodBias}" IsSnapToTickEnabled="True" TickFrequency="25"
+                        TickPlacement="BottomRight" />
             </DockPanel>
         </StackPanel>
     </ScrollViewer>

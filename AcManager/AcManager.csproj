@@ -100,8 +100,9 @@
       <HintPath>..\packages\OxyPlot.Wpf.2014.1.546\lib\net45\OxyPlot.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SharpCompress.Unsigned">
-      <HintPath>..\..\sharpcompress\bin\SharpCompress.Unsigned.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.11.6.0, Culture=neutral, PublicKeyToken=beaf6f427e128133, processorArchitecture=MSIL">
+      <HintPath>..\packages\sharpcompress.0.11.6\lib\net40\SharpCompress.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

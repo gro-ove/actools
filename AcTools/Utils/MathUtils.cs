@@ -48,6 +48,16 @@ namespace AcTools.Utils {
             return Math.Round(value / precision) * precision;
         }
 
+        /// <summary>
+        /// Round(340, 25) → 325
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="precision"></param>
+        /// <returns></returns>
+        public static int Round(this int value, int precision) {
+            return (int)(Math.Round((double)value / precision) * precision);
+        }
+
         public static float[] MatrixInverse(this float[] matrix) {
             return Matrix.Create(matrix).Invert().ToArray();
         }

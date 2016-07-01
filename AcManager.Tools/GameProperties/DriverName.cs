@@ -2,7 +2,7 @@ using AcManager.Tools.Helpers;
 using AcTools.DataFile;
 using AcTools.Processes;
 
-namespace AcManager.Tools.SemiGui {
+namespace AcManager.Tools.GameProperties {
     public class DriverName : Game.RaceIniProperties {
         public override void Set(IniFile file) {
             var drive = SettingsHolder.Drive;

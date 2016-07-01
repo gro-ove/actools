@@ -134,6 +134,7 @@
     <Compile Include="Filters\ReplayObjectTester.cs" />
     <Compile Include="Filters\TrackObjectTester.cs" />
     <Compile Include="Filters\UniqueAcObjectTester.cs" />
+    <Compile Include="GameProperties\RaceCommandExecutor.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />
@@ -213,8 +214,8 @@
     <Compile Include="Objects\CarSetupObject.cs" />
     <Compile Include="Objects\FontObject.cs" />
     <Compile Include="Objects\PythonAppObject.cs" />
-    <Compile Include="SemiGui\DriverName.cs" />
-    <Compile Include="SemiGui\GameCommandExecutor.cs" />
+    <Compile Include="GameProperties\DriverName.cs" />
+    <Compile Include="GameProperties\GameCommandExecutorBase.cs" />
     <Compile Include="SemiGui\GameEndedArgs.cs" />
     <Compile Include="SemiGui\GameFinishedArgs.cs" />
     <Compile Include="SemiGui\InformativeException.cs" />
@@ -248,7 +249,7 @@
     <Compile Include="Helpers\StringComparer.cs" />
     <Compile Include="Miscellaneous\AppReporter.cs" />
     <Compile Include="SemiGui\GameWrapper.cs" />
-    <Compile Include="SemiGui\ImmediateStart.cs" />
+    <Compile Include="GameProperties\ImmediateStart.cs" />
     <Compile Include="SemiGui\INonfatalErrorNotifier.cs" />
     <Compile Include="SemiGui\NonfatalError.cs" />
     <Compile Include="Helpers\WeatherProvider.cs" />

@@ -740,7 +740,7 @@ namespace AcManager.Pages.Drive {
                 var trackCountry = selectedTrack.Country == null
                         ? null : DataProvider.Instance.Countries.GetValueOrDefault(selectedTrack.Country.Trim().ToLower()) ?? "Italy";
 
-                if (opponentsNumber == 7) {
+                if (opponentsNumber == 7 && AppArguments.GetBool(AppFlag.NfsPorscheTribute)) {
                     nameNationalities = new[] {
                         new NameNationality { Name = "Dylan", Nationality = "Wales" },
                         new NameNationality { Name = "Parise", Nationality = "Italy" },

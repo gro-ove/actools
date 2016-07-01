@@ -31,6 +31,8 @@ namespace AcManager.Pages.Dialogs {
 
         private GameDialogViewModel Model => (GameDialogViewModel)DataContext;
 
+        private readonly CancellationTokenSource _cancellationSource;
+
         public GameDialog() {
             DataContext = new GameDialogViewModel();
             InitializeComponent();
@@ -40,7 +42,7 @@ namespace AcManager.Pages.Dialogs {
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            Buttons = new Button[] { };
+            Buttons = new [] { CancelButton };
         }
 
         protected override void OnClosing(CancelEventArgs e) {
@@ -310,8 +312,6 @@ namespace AcManager.Pages.Dialogs {
             Model.ErrorMessage = exception?.Message ?? "Undefined error";
             Buttons = new[] { CloseButton };
         }
-
-        private readonly CancellationTokenSource _cancellationSource;
 
         public CancellationToken CancellationToken { get; }
 

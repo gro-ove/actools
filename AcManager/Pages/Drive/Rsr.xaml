@@ -35,7 +35,7 @@
                     <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                     <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
                     <Border Background="{DynamicResource PopupBackground}" Padding="8">
-                        <StackPanel>
+                        <StackPanel Width="200">
                             <CheckBox IsChecked="{Binding GhostCar}">
                                 <Label>Ghost car</Label>
                             </CheckBox>
