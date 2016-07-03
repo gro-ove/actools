@@ -26,7 +26,7 @@
                                     Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}" />
                         </DockPanel>
                         <ListBox ItemsSource="{TemplateBinding InnerItemsSource}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
-                                VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="2,3"
+                                VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="1,1"
                                 VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True"
                                 SelectedItem="{TemplateBinding SelectedItem}" ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" />
                     </Grid>

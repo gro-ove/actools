@@ -907,6 +907,49 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _rsrDisableAppAutomatically;
+
+            public bool RsrDisableAppAutomatically {
+                get {
+                    return _rsrDisableAppAutomatically ??
+                            (_rsrDisableAppAutomatically = ValuesStorage.GetBool("Settings.LiveTimingSettings.RsrDisableAppAutomatically", false)).Value;
+                }
+                set {
+                    if (Equals(value, _rsrDisableAppAutomatically)) return;
+                    _rsrDisableAppAutomatically = value;
+                    ValuesStorage.Set("Settings.LiveTimingSettings.RsrDisableAppAutomatically", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _rsrDifferentPlayerName;
+
+            public bool RsrDifferentPlayerName {
+                get {
+                    return _rsrDifferentPlayerName ??
+                            (_rsrDifferentPlayerName = ValuesStorage.GetBool("Settings.LiveTimingSettings.RsrDifferentPlayerName", false)).Value;
+                }
+                set {
+                    if (Equals(value, _rsrDifferentPlayerName)) return;
+                    _rsrDifferentPlayerName = value;
+                    ValuesStorage.Set("Settings.LiveTimingSettings.RsrDifferentPlayerName", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _rsrPlayerName;
+
+            public string RsrPlayerName {
+                get { return _rsrPlayerName ?? (_rsrPlayerName = ValuesStorage.GetString("Settings.LiveTimingSettings.RsrPlayerName", Drive.PlayerName)); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _rsrPlayerName)) return;
+                    _rsrPlayerName = value;
+                    ValuesStorage.Set("Settings.LiveTimingSettings.RsrPlayerName", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static LiveTimingSettings _liveTiming;

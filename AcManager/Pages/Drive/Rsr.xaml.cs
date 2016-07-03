@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
@@ -14,6 +13,7 @@ using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Properties;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
@@ -162,10 +162,6 @@ namespace AcManager.Pages.Drive {
                     page = await client.DownloadStringTaskAsync(uri);
                 }
 
-#if DEBUG
-                File.WriteAllText(FilesStorage.Instance.GetFilename("Logs", "RSR.txt"), page);
-#endif
-
                 var carIdMatch = Regex.Match(page, @"\bdata-car=""([\w-]+)""");
                 var trackIdMatch = Regex.Match(page, @"\bdata-track=""([\w-]+)""");
                 if (!carIdMatch.Success || !trackIdMatch.Success) return null;
@@ -184,7 +180,7 @@ namespace AcManager.Pages.Drive {
                 if (EventId == null) return false;
 
                 try {
-                    var app = PythonAppsManager.Instance.GetById("RsrLiveTime");
+                    var app = PythonAppsManager.Instance.GetById(RsrMark.AppId);
                     if (app == null) {
                         throw new InformativeException("RSR app is missing", @"Download it [url=""http://www.radiators-champ.com/RSRLiveTiming/""]here[/url].");
                     }
@@ -233,6 +229,9 @@ namespace AcManager.Pages.Drive {
                             Penalties = true,
                             GhostCar = GhostCar,
                             GhostCarAdvantage = 0d
+                        },
+                        AdditionalPropertieses = {
+                            new RsrMark()
                         }
                     });
 

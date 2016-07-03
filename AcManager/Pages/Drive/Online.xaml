@@ -63,7 +63,7 @@
             </DockPanel>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="{StaticResource StatusMargin}">
-                <mui:ModernToggleButton IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}" ToolTip="Empty servers" />
+                <mui:ModernToggleButton IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}" ToolTip="Servers with booking" />
                 <mui:ModernToggleButton IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}" ToolTip="Empty servers" />
                 <mui:ModernToggleButton IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}" ToolTip="Full servers" />
                 <mui:ModernToggleButton IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}" ToolTip="Password protected" />

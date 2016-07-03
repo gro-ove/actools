@@ -6,8 +6,8 @@ namespace StringBasedFilter.Tests {
     public class EntiesTest {
         [TestMethod]
         public void StringEntryTest() {
-            var a = new StringTestEntry("aBc", false);
-            var b = new StringTestEntry("aBc", true);
+            var a = new StringTestEntry("aBc", false, false);
+            var b = new StringTestEntry("aBc", true, false);
 
             Assert.IsTrue(a.Test("abc"));
             Assert.IsTrue(a.Test("qw abc"));

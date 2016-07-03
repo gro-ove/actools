@@ -15,7 +15,7 @@
             <mui:BindingProxy x:Key="Model" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_OnIconMouseDown"
             Icon="{Binding SelectedObject.LiveryImage}">
         <ac:AcObjectBase.ToolBars>
@@ -32,8 +32,16 @@
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="Enable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Enable (Ctrl+D)"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                <Button Content="Change ID" Command="{Binding ChangeIdCommand}">
+                    <Button.ToolTip>Change skin’s ID (Ctrl+Shift+F2)</Button.ToolTip>
+                </Button>
                 <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed json-file (Ctrl+S)" />
                 <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+                <Separator />
+                <Button Content="Delete JSON-file" Command="{Binding DeleteJsonCommand}" ToolTip="Remove ui_skin.json to Recycle Bin (Alt+Delete)"
+                        Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Content="Create JSON-file" Command="{Binding CreateJsonCommand}" ToolTip="Create a new ui_skin.json file (Alt+S)"
+                        Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Separator />
                 <Button Content="Update Preview" Command="{Binding UpdatePreviewCommand}">
                     <Button.ToolTip>Update skin’s preview (Ctrl+P)</Button.ToolTip>
@@ -83,8 +91,7 @@
                 <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Team" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                    CommandParameter="team" />
+                            <MenuItem Header="Filter By Team" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="team" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="Team:" />
@@ -117,7 +124,8 @@
                 <DockPanel Grid.Row="2" Grid.Column="1">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Priority" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="priority" />
+                            <MenuItem Header="Filter By Priority" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                    CommandParameter="priority" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="Priority:" />

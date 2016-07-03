@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using AcManager.Annotations;
+using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;
 using AcTools.Utils;
@@ -30,6 +31,14 @@ namespace AcManager.Pages.Selected {
         public RelayCommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new RelayCommand(o => {
             new FindInformationDialog((AcJsonObjectNew)SelectedAcObject).ShowDialog();
         }, o => SelectedAcObject is AcJsonObjectNew));
+
+        private RelayCommand _changeIdCommand;
+
+        public RelayCommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new RelayCommand(o => {
+            var newId = Prompt.Show("Enter new ID:", "Change ID", SelectedObject.Id, "?", "Be careful, changing ID might cause some problems with online!");
+            if (string.IsNullOrWhiteSpace(newId)) return;
+            SelectedObject.ChangeIdCommand.Execute(newId);
+        }));
 
         #region Filter Commands
         public void NewFilterTab(string filter) {

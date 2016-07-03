@@ -228,14 +228,20 @@ namespace AcManager.Pages.Selected {
             }
         }
 
+        private SelectedReplayPageViewModel _model;
+
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(new SelectedReplayPageViewModel(_object) {
+            InitializeAcObjectPage(_model = new SelectedReplayPageViewModel(_object) {
                 Track = _trackObject,
                 Car = _carObject,
                 CarSkin = _carSkinObject,
                 Weather = _weather
+            });
+            InputBindings.AddRange(new[] {
+                new InputBinding(_model.PlayCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control))
             });
             InitializeComponent();
         }

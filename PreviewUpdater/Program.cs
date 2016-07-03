@@ -38,7 +38,7 @@ namespace PreviewUpdater {
 
             try {
                 filter = Filter.Create(new CarTester(acRoot), options.Ids.Select(x =>
-                        "(" + (x.EndsWith("/") ? x.Substring(0, x.Length - 1) : x) + ")").JoinToString("|"));
+                        "(" + (x.EndsWith("/") ? x.Substring(0, x.Length - 1) : x) + ")").JoinToString("|"), true);
                 if (options.FilterTest) {
                     Console.WriteLine(Directory.GetDirectories(FileUtils.GetCarsDirectory(options.AcRoot))
                                                .Select(Path.GetFileName).Where(x => filter.Test(x)).JoinToString(", "));

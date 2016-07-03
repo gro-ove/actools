@@ -18,6 +18,7 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(SelectedAcObject.ReloadCommand, new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Shift)) { CommandParameter = "full" },
                 new InputBinding(SelectedAcObject.ToggleCommand, new KeyGesture(Key.D, ModifierKeys.Control)),
                 new InputBinding(SelectedAcObject.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)),
+                new InputBinding(model.ChangeIdCommand, new KeyGesture(Key.F2, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(model.FindInformationCommand, new KeyGesture(Key.I, ModifierKeys.Control)),
                 new InputBinding(SelectedAcObject.DeleteCommand, new KeyGesture(Key.Delete, ModifierKeys.Control))
             });

@@ -30,7 +30,7 @@
 
                             <ListBox x:Name="ItemsList" IsSynchronizedWithCurrentItem="True" ItemsSource="{TemplateBinding ItemsSource}"
                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="true"
-                                    VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
+                                    VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel"
                                     ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -8,7 +7,7 @@ using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers {
-    public sealed class AcFormEntry : Displayable {
+    public sealed class AcFormEntry : Displayable, IWithId {
         public string Id { get; }
 
         public AcFormEntry(string id) {

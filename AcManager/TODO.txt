@@ -473,6 +473,11 @@ done:
     + reducing image footprint
     + add NVIDIA copyrights and stuff
     + proper replacement for the Image control
+    + screenshots tab
+    + setup: configuration-independent
+    + commands for replays
+    + change IDs (especially for skins)
+    + skins manager: remove json-files
 
 fixme:
     - notifypropertychanged for commands
@@ -481,15 +486,11 @@ fixme:
     - iconintaskbar for dialogs
     - potential error here:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
-    - replays with "[" or "]" in name
     - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
     - contextmenu on mouseup/down only
-    - setups button size
     - laggy online tab
     - switching from online tab
-    - fix copying
     - race: last position isn't fixed enough
-    - initial startup: invalid presets selected
 
 todo:
     - upload Content to Trello for those who doesn't have Internet connection
@@ -508,7 +509,7 @@ todo:
 
     - errors & fixers for badly make ui_skin.json
 
-    + lite custom showroom
+    > lite custom showroom
         - Esc to deselect/exit special mode
         - fix memory leaks!
 
@@ -547,11 +548,12 @@ todo:
         - challenges
         + handle cars without previews
             - without skins?
-        - special options
-            - syncronized steering wheel
-            - hidden steering wheel
-            - hud configuration
-            - quickly switchable controls configs?
+        + special options
+            + syncronized steering wheel
+            + hidden steering wheel
+            + hud configuration
+            + quickly switchable controls configs?
+            - specially syncronized steering wheel
         - race results: total time
         + RSR
             + built-in part
@@ -563,7 +565,6 @@ todo:
                 + install setups
             - option for disable RSR plugin if started without RSR event ID
             - special RSR name?
-    - change IDs (especially for skins)
 
     + go buttons keyboard shortcut
         + quick drive
@@ -589,7 +590,6 @@ todo:
     - remove double spaces, trim strings
     - detect invalid symbols in IDs
 
-    - skins manager: remove json-files
     + error fixer
         - damaged ui_skin.json fixer
             - as an option: remove json-file
@@ -641,7 +641,6 @@ todo:
         - auto-update previews
 
     - favorites
-    - commands for replays
 
     > additional section “miscellaneous”
         > weather
@@ -651,6 +650,15 @@ todo:
             × editing
             × base properties?
 
+    > screenshots tab
+        - find a way to optimize previews loading!
+        - cache for tiling virtualizing panel
+        - filter by type, weight, size?
+        - sharing
+        - delete
+        - convert from BMP to JPG 
+            - automatically?
+
     - improve showroom generator
         - async
         - textures as streams
@@ -658,9 +666,6 @@ todo:
         - light direction
         - additional surface?
     - automatically update TrackObject in CarSetupObject (added, deleted)
-
-    - screenshots tab
-    - setup: configuration-independent
 
     + object-based reload
         + non-json objects

@@ -10,5 +10,7 @@ namespace AcManager.Pages.Selected {
         void Unload();
 
         RelayCommand FindInformationCommand { get; }
+
+        RelayCommand ChangeIdCommand { get; }
     }
 }

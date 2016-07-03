@@ -4,6 +4,8 @@ using System.Text;
 
 namespace StringBasedFilter.Parsing {
     internal class FilterParser {
+        internal bool StrictMode;
+
         private int _pos;
         private string _filter;
         private List<string> _properties;
@@ -87,7 +89,7 @@ namespace StringBasedFilter.Parsing {
                         node = NextNode();
                         _pos++;
 
-                        node = new FilterTreeNodeChild(value, node);
+                        node = new FilterTreeNodeChild(value, node, StrictMode);
                         _properties = oldProperties;
                         s = value;
                     } else {
@@ -103,7 +105,7 @@ namespace StringBasedFilter.Parsing {
             }
 
             if (node == null) {
-                node = new FilterTreeNodeValue(buffer.ToString().Trim(), out s);
+                node = new FilterTreeNodeValue(buffer.ToString().Trim(), StrictMode, out s);
             }
 
             if (s != null) {

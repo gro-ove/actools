@@ -9,7 +9,7 @@ namespace StringBasedFilter.Parsing {
         private readonly string _key;
         private readonly ITestEntry _testEntry;
 
-        public FilterTreeNodeValue(string value, out string keyName) {
+        public FilterTreeNodeValue(string value, bool strictMode, out string keyName) {
             var match = ParsingRegex.Match(value);
             if (match.Success) {
                 _key = match.Groups[1].Value.ToLower();
@@ -17,7 +17,7 @@ namespace StringBasedFilter.Parsing {
                 var end = value.Substring(match.Length);
 
                 if (op == ":") {
-                    _testEntry = CreateTestEntry(end, true);
+                    _testEntry = CreateTestEntry(end, true, false);
                 } else if (op == "+" || op == "-") {
                     _testEntry = new BooleanTestEntry(op == "+");
                 } else if (end.Contains(".") || end.Contains(",")) {
@@ -33,17 +33,17 @@ namespace StringBasedFilter.Parsing {
                 }
             } else {
                 _key = null;
-                _testEntry = CreateTestEntry(value, false);
+                _testEntry = CreateTestEntry(value, false, strictMode);
             }
 
             keyName = _key;
         }
 
-        private static ITestEntry CreateTestEntry(string value, bool wholeMatch) {
+        private static ITestEntry CreateTestEntry(string value, bool wholeMatch, bool strictMode) {
             if (value.Contains("*") || value.Contains("?")) {
-                return new RegexTestEntry(RegexFromQuery.Create(value, wholeMatch));
+                return new RegexTestEntry(RegexFromQuery.Create(value, wholeMatch, strictMode));
             } else {
-                return new StringTestEntry(value, wholeMatch);
+                return new StringTestEntry(value, wholeMatch, strictMode);
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Presentation;
@@ -30,6 +29,19 @@ namespace AcManager.Tools.AcObjectsNew {
                     break;
             }
         }));
+
+        private ICommand _changeIdCommand;
+        public virtual ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new RelayCommand(o => {
+            try {
+                var newId = (o as string)?.Trim();
+                if (string.IsNullOrWhiteSpace(newId)) return;
+                Rename(newId);
+            } catch (ToggleException ex) {
+                NonfatalError.Notify(@"Can’t change ID: " + ex.Message, @"Make sure there is no runned app working with object’s folder.");
+            } catch (Exception ex) {
+                NonfatalError.Notify(@"Can’t change ID", @"Make sure there is no runned app working with object’s folder.", ex);
+            }
+        }, o => !string.IsNullOrWhiteSpace(o as string)));
 
         private ICommand _toggleCommand;
         public virtual ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new RelayCommand(o => {

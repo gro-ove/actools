@@ -57,10 +57,10 @@ namespace AcManager.Tools.Starters {
             if (File.Exists(launcherFilename)) {
                 try {
                     if (File.Exists(backupFilename)) {
-                        File.Delete(launcherFilename);
-                    } else {
-                        File.Move(launcherFilename, backupFilename);
+                        File.Delete(backupFilename);
                     }
+
+                    File.Move(launcherFilename, backupFilename);
                 } catch (Exception e) {
                     Logging.Warning("[STARTER+] Can’t move original file out of the way: " + e);
                     return;

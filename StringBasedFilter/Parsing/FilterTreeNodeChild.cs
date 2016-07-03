@@ -3,9 +3,9 @@ namespace StringBasedFilter.Parsing {
         private readonly string _key;
         private readonly IFilter _filter;
 
-        public FilterTreeNodeChild(string key, FilterTreeNode childNode) {
+        public FilterTreeNodeChild(string key, FilterTreeNode childNode, bool strictMode) {
             _key = key;
-            _filter = new Filter(childNode);
+            _filter = new Filter(childNode, strictMode);
         }
         public override string ToString() {
             return "{ [" + _key + "]( " + _filter + ") }";

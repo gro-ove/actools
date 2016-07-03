@@ -7,6 +7,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.SemiGui {
@@ -42,15 +43,31 @@ namespace AcManager.Tools.SemiGui {
             return StartAsync(properties, true);
         }
 
+        private static void PrepareRaceModeImmediateStart(Game.StartProperties properties) {
+            if (!SettingsHolder.Drive.ImmediateStart) return;
+            properties.SetAdditional(new ImmediateStart());
+        }
+
+        private static void PrepareRaceModeRsr(Game.StartProperties properties) {
+            if (!SettingsHolder.LiveTiming.RsrEnabled) return;
+            if (SettingsHolder.LiveTiming.RsrDisableAppAutomatically) {
+                var rsrMode = properties.GetAdditional<RsrMark>() != null;
+                var form = AcSettingsHolder.Forms.Entries.GetByIdOrDefault(RsrMark.FormId);
+                if (form != null) {
+                    form.IsVisible = rsrMode;
+                    AcSettingsHolder.Forms.SaveImmediately();
+                }
+            }
+        }
+
         private static async Task<Game.Result> StartAsync(Game.StartProperties properties, bool raceMode) {
             if (SettingsHolder.Common.FixResolutionAutomatically) {
                 AcSettingsHolder.Video.EnsureResolutionIsCorrect();
             }
 
             if (raceMode) {
-                if (SettingsHolder.Drive.ImmediateStart) {
-                    properties.SetAdditional(new ImmediateStart());
-                }
+                PrepareRaceModeImmediateStart(properties);
+                PrepareRaceModeRsr(properties);
                 properties.SetAdditional(new DriverName());
             }
 

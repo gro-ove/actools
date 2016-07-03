@@ -10,7 +10,7 @@ namespace StringBasedFilter {
     public class Filter<T> : Filter, IFilter<T> {
         private readonly ITester<T> _tester;
 
-        public Filter(ITester<T> tester, string filter) : base(filter) {
+        public Filter(ITester<T> tester, string filter, bool strictMode) : base(filter, strictMode) {
             _tester = tester;
         }
 
@@ -33,8 +33,8 @@ namespace StringBasedFilter {
     /// Untyped version with variable ITester.
     /// </summary>
     public class Filter : IFilter {
-        public static IFilter<T> Create<T>(ITester<T> tester, string filter) {
-            return new Filter<T>(tester, filter);
+        public static IFilter<T> Create<T>(ITester<T> tester, string filter, bool strictMode = false) {
+            return new Filter<T>(tester, filter, strictMode);
         }
 
         [NotNull]
@@ -68,12 +68,14 @@ namespace StringBasedFilter {
 
         public string Source { get; }
 
-        internal Filter(string filter) {
+        internal Filter(string filter, bool strictMode) {
             Source = filter;
-            _testTree = ParseTree(Source, out _keys);
+            _testTree = new FilterParser {
+                StrictMode = strictMode
+            }.Parse(filter, out _keys);
         }
 
-        internal Filter(FilterTreeNode tree) {
+        internal Filter(FilterTreeNode tree, bool strictMode) {
             _testTree = tree;
             _keys = new string[0];
         }
@@ -96,10 +98,6 @@ namespace StringBasedFilter {
 
         public bool Test<T>(ITester<T> tester, T obj) {
             return _testTree.Test(tester, obj);
-        }
-
-        private static FilterTreeNode ParseTree(string filter, out string[] properies) {
-            return new FilterParser().Parse(filter, out properies);
         }
     }
 }

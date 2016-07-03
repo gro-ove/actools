@@ -125,6 +125,8 @@ namespace AcManager.Tools.Helpers {
                 _saving = true;
                 await Task.Delay(500);
 
+                if (!_saving) return;
+
                 try {
                     SetToIni();
                     IgnoreChangesForAWhile();
@@ -134,6 +136,13 @@ namespace AcManager.Tools.Helpers {
                 } finally {
                     _saving = false;
                 }
+            }
+
+            public void SaveImmediately() {
+                SetToIni();
+                IgnoreChangesForAWhile();
+                Ini.SaveAs(Filename);
+                _saving = false;
             }
 
             protected void ForceSave() {

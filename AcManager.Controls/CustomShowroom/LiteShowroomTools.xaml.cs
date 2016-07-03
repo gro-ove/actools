@@ -216,7 +216,7 @@ namespace AcManager.Controls.CustomShowroom {
             public int AmbientShadowIterations {
                 get { return _ambientShadowIterations; }
                 set {
-                    value = (int)MathUtils.Round(value, 100).Clamp(400, 4000);
+                    value = value.Round(100).Clamp(400, 4000);
                     if (Equals(value, _ambientShadowIterations)) return;
                     _ambientShadowIterations = value;
                     OnPropertyChanged();

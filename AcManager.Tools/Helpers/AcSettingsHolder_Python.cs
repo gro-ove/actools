@@ -12,21 +12,15 @@ namespace AcManager.Tools.Helpers {
 
             private Dictionary<string, bool> _apps;
 
-            public Dictionary<string, bool> Apps {
-                get { return _apps; }
-                set {
-                    if (Equals(value, _apps)) return;
-                    _apps = value;
-                    OnPropertyChanged();
-                }
-            }
+            public IReadOnlyDictionary<string, bool> Apps => _apps;
 
             public bool IsActivated([NotNull] string appId) {
                 if (appId == null) {
                     throw new ArgumentNullException(nameof(appId));
                 }
-                
-                return Apps.GetValueOr(appId.ToLowerInvariant(), false);
+
+                bool result;
+                return _apps.TryGetValue(appId.ToLowerInvariant(), out result) && result;
             }
 
             public void SetActivated([NotNull] string appId, bool value) {
@@ -34,16 +28,17 @@ namespace AcManager.Tools.Helpers {
                     throw new ArgumentNullException(nameof(appId));
                 }
 
-                Apps[appId] = value;
+                _apps[appId.ToLowerInvariant()] = value;
                 Save();
 
                 _appsPresets?.InvokeChanged();
             }
 
             protected override void LoadFromIni() {
-                Apps = Ini.Where(x => x.Value.ContainsKey("ACTIVE")).ToDictionary(
+                _apps = Ini.Where(x => x.Value.ContainsKey("ACTIVE")).ToDictionary(
                         x => x.Key.ToLowerInvariant(),
                         x => x.Value.GetBool("ACTIVE", false));
+                OnPropertyChanged(nameof(Apps));
             }
 
             protected override void SetToIni(IniFile ini) {

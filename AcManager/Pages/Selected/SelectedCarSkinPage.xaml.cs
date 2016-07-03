@@ -1,10 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -41,6 +44,24 @@ namespace AcManager.Pages.Selected {
                 
                 base.FilterExec(type);
             }
+
+            private RelayCommand _createJsonCommand;
+
+            public RelayCommand CreateJsonCommand => _createJsonCommand ?? (_createJsonCommand = new RelayCommand(o => {
+                SelectedObject.Save();
+            }));
+
+            private RelayCommand _deleteJsonCommand;
+
+            public RelayCommand DeleteJsonCommand => _deleteJsonCommand ?? (_deleteJsonCommand = new RelayCommand(o => {
+                try {
+                    if (File.Exists(SelectedObject.JsonFilename)) {
+                        FileUtils.Recycle(SelectedObject.JsonFilename);
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t remove ui_skin.json", "Make sure file isn’t used.", e);
+                }
+            }));
 
             private RelayCommand _updatePreviewCommand;
 
@@ -111,7 +132,9 @@ namespace AcManager.Pages.Selected {
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
                 new InputBinding(_model.GenerateLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Shift)),
-                new InputBinding(_model.GenerateRandomLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Alt))
+                new InputBinding(_model.GenerateRandomLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Alt)),
+                new InputBinding(_model.DeleteJsonCommand, new KeyGesture(Key.Delete, ModifierKeys.Alt)),
+                new InputBinding(_model.CreateJsonCommand, new KeyGesture(Key.S, ModifierKeys.Alt)),
             });
             InitializeComponent();
         }

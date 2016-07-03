@@ -3,14 +3,15 @@ using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.TestEntries {
     internal class StringTestEntry : ITestEntry {
-        private readonly bool _wholeMatch;
+        private readonly bool _wholeMatch, _strictMode;
         private readonly string _str;
         private readonly double? _strAsDouble;
         private readonly bool? _strAsBool;
 
-        public StringTestEntry(string str, bool wholeMatch) {
+        public StringTestEntry(string str, bool wholeMatch, bool strictMode) {
             _str = str.ToLowerInvariant();
             _wholeMatch = wholeMatch;
+            _strictMode = strictMode;
             _strAsDouble = AsDouble(_str);
             _strAsBool = AsBool(_str);
         }
@@ -50,6 +51,10 @@ namespace StringBasedFilter.TestEntries {
 
         public bool Test(string value) {
             if (value == null) return false;
+
+            if (_strictMode) {
+                return value.Equals(_str, StringComparison.OrdinalIgnoreCase);
+            }
 
             if (_wholeMatch) {
                 return value.StartsWith(_str, StringComparison.OrdinalIgnoreCase);

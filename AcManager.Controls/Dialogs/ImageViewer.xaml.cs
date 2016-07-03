@@ -211,7 +211,9 @@ namespace AcManager.Controls.Dialogs {
 
             public object CurrentImage => _images[_currentPosition];
 
-            public string CurrentImageName => Path.GetFileName(CurrentImage as string ?? "Image");
+            public object CurrentOriginalImage => _originalImages[_currentPosition];
+
+            public string CurrentImageName => Path.GetFileName(CurrentOriginalImage as string ?? "Image");
 
             private bool _selectionMode;
 
@@ -239,7 +241,7 @@ namespace AcManager.Controls.Dialogs {
             private AsyncCommand _saveCommand;
 
             public AsyncCommand SaveCommand => _saveCommand ?? (_saveCommand = new AsyncCommand(async o => {
-                var origin = CurrentImage as string;
+                var origin = CurrentOriginalImage as string;
                 if (origin == null) {
                     throw new NotSupportedException();
                 }
@@ -261,7 +263,7 @@ namespace AcManager.Controls.Dialogs {
                 } catch (Exception ex) {
                     NonfatalError.Notify("Can’t export texture", ex);
                 }
-            }, o => CurrentImage is string));
+            }, o => CurrentOriginalImage is string));
         }
     }
 }
