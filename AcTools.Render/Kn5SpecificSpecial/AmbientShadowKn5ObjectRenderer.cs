@@ -44,6 +44,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public float UpDelta = 0.1f;
         public int Iterations = 2000;
         public bool HideWheels = true;
+        public bool Fade = true;
         public bool BlurResult = false;
         public bool DebugMode = false;
 
@@ -286,7 +287,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             // body shadow
             PrepareBuffers(BodySize + BodyPadding * 2, 1024);
             SetBodyShadowCamera();
-            Draw(BodyMultipler, BodySize, BodyPadding, true);
+            Draw(BodyMultipler, BodySize, BodyPadding, Fade);
 
             // return;
             SaveResultAs(outputDirectory, "body_shadow.png", BodySize, BodyPadding);

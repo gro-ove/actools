@@ -84,6 +84,28 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
         }
 
+        public static double GetMinValue(DependencyObject obj) {
+            return (double)obj.GetValue(MinValueProperty);
+        }
+
+        public static void SetMinValue(DependencyObject obj, double value) {
+            obj.SetValue(MinValueProperty, value);
+        }
+
+        public static readonly DependencyProperty MinValueProperty = DependencyProperty.RegisterAttached("MinValue", typeof(double),
+                typeof(TextBoxAdvancement), new UIPropertyMetadata(double.MinValue));
+
+        public static double GetMaxValue(DependencyObject obj) {
+            return (double)obj.GetValue(MaxValueProperty);
+        }
+
+        public static void SetMaxValue(DependencyObject obj, double value) {
+            obj.SetValue(MaxValueProperty, value);
+        }
+
+        public static readonly DependencyProperty MaxValueProperty = DependencyProperty.RegisterAttached("MaxValue", typeof(double),
+                typeof(TextBoxAdvancement), new UIPropertyMetadata(double.MaxValue));
+
         private static void SetTextBoxText(TextBox textBox, string text) {
             var selectionStart = textBox.SelectionStart;
             var selectionLength = textBox.SelectionLength;
@@ -92,7 +114,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             textBox.SelectionLength = selectionLength;
         }
 
-        private static string ProcessText(SpecialMode mode, string text, double delta) {
+        private static string ProcessText(SpecialMode mode, string text, double delta, double minValue, double maxValue) {
             switch (mode) {
                 case SpecialMode.Number: {
                     double value;
@@ -110,7 +132,9 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         delta *= 2.0;
                     }
 
-                    return FlexibleParser.ReplaceDouble(text, value + delta);
+                    value += delta;
+                    value = Math.Max(Math.Min(value, maxValue), minValue);
+                    return FlexibleParser.ReplaceDouble(text, value);
                 }
 
                 case SpecialMode.Integer:
@@ -131,6 +155,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         value = 1;
                     }
 
+                    value = (int)Math.Max(Math.Min(value, maxValue), minValue);
                     return FlexibleParser.ReplaceDouble(text, value);
                 }
 
@@ -151,6 +176,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                         value = 1;
                     }
 
+                    value = (int)Math.Max(Math.Min(value, maxValue), minValue);
                     return skip ? value.ToString(CultureInfo.InvariantCulture) : FlexibleParser.ReplaceDouble(text, value);
                 }
 
@@ -176,6 +202,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                     }
 
                     totalMinutes += (int)(delta * 10);
+                    totalMinutes = (int)Math.Max(Math.Min(totalMinutes, maxValue), minValue);
                     return $"{totalMinutes / 60:D}:{totalMinutes % 60:D}";
                 }
 
@@ -189,11 +216,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             var element = sender as TextBox;
             if (element == null) return;
-
-            var mode = GetSpecialMode(element);
-            var delta = e.Key == Key.Up ? 1.0 : -1.0;
-
-            var processed = ProcessText(mode, element.Text, delta);
+            
+            var processed = ProcessText(GetSpecialMode(element), element.Text, e.Key == Key.Up ? 1d : -1d, GetMinValue(element), GetMaxValue(element));
             if (processed != null) {
                 SetTextBoxText(element, processed);
             }

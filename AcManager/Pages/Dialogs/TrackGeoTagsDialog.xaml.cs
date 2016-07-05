@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows.Navigation;
@@ -20,12 +19,32 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
 
             Buttons = new[] {
+                CreateExtraDialogButton("Find It", new RelayCommand(o => {
+                    MapWebBrowser.InvokeScript("moveTo", GetQuery(Model.Track));
+                })),
                 CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, new CombinedCommand(Model.SaveCommand, CloseCommand)),
                 CancelButton
             };
 
             MapWebBrowser.ObjectForScripting = new ScriptProvider(Model);
             MapWebBrowser.Navigate(GetMapAddress(track));
+
+            Model.PropertyChanged += Model_PropertyChanged;
+        }
+
+        private static bool _skipNext;
+
+        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (_skipNext) return;
+            switch (e.PropertyName) {
+                case nameof(Model.Latitude):
+                case nameof(Model.Longitude):
+                    var pair = new GeoTagsEntry(Model.Latitude, Model.Longitude);
+                    if (!pair.IsEmptyOrInvalid) {
+                        MapWebBrowser.InvokeScript("moveTo", pair.LatitudeValue + ";" + pair.LongitudeValue);
+                    }
+                    break;
+            }
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -50,8 +69,10 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public void Update(double lat, double lng) {
-                _model.Latitude = lat;
-                _model.Longitude = lng;
+                _skipNext = true;
+                _model.Latitude = GeoTagsEntry.ToLat(lat);
+                _model.Longitude = GeoTagsEntry.ToLng(lng);
+                _skipNext = false;
             }
 
             public object CmTest() {
@@ -60,25 +81,22 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public class TrackGeoTagsDialogViewModel : NotifyPropertyChanged {
+            private string _latitude;
 
-            private double? _latitude;
-
-            public double? Latitude {
+            public string Latitude {
                 get { return _latitude; }
                 set {
-                    value = value.HasValue ? Math.Round(MathUtils.Clamp(value.Value, -90d, 90d), 5) : (double?)null;
                     if (value == _latitude) return;
                     _latitude = value;
                     OnPropertyChanged();
                     SaveCommand.OnCanExecuteChanged();
                 }
             }
-            private double? _longitude;
+            private string _longitude;
 
-            public double? Longitude {
+            public string Longitude {
                 get { return _longitude; }
                 set {
-                    value = value.HasValue ? Math.Round(MathUtils.Clamp(value.Value, -180d, 180d), 5) : (double?)null;
                     if (value == _longitude) return;
                     _longitude = value;
                     OnPropertyChanged();
@@ -90,8 +108,8 @@ namespace AcManager.Pages.Dialogs {
                 Track = track;
 
                 if (track.GeoTags != null) {
-                    Latitude = track.GeoTags.LatitudeValue;
-                    Longitude = track.GeoTags.LongitudeValue;
+                    Latitude = track.GeoTags.Latitude;
+                    Longitude = track.GeoTags.Longitude;
                 } else {
                     Latitude = null;
                     Longitude = null;
@@ -103,16 +121,19 @@ namespace AcManager.Pages.Dialogs {
             private RelayCommand _saveCommand;
 
             public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
-                Track.GeoTags = new GeoTagsEntry(Latitude ?? 0d, Longitude ?? 0d);
+                Track.GeoTags = new GeoTagsEntry(Latitude, Longitude);
             }, o => Latitude != null && Longitude != null));
         }
-        
+
+        private static string GetQuery(TrackBaseObject track) {
+            return string.IsNullOrEmpty(track.City) && string.IsNullOrEmpty(track.Country) ? track.Name :
+                    new[] { track.City, track.Country }.Where(x => x != null).JoinToString(", ");
+        }
+
         private static string GetMapAddress(TrackBaseObject track) {
-            return CmHelpersProvider.GetAddress("map") + "?t#" + (
-                    track.GeoTags?.IsEmptyOrInvalid == false ?
-                            $"{track.GeoTags.LatitudeValue};{track.GeoTags.LongitudeValue}" :
-                            string.IsNullOrEmpty(track.City) && string.IsNullOrEmpty(track.Country) ? track.Name :
-                                    new[] { track.City, track.Country }.Where(x => x != null).JoinToString(", "));
+            var tags = track.GeoTags;
+            return CmHelpersProvider.GetAddress("map") + "?t#" +
+                    (tags?.IsEmptyOrInvalid == false ? $"{tags.LatitudeValue};{tags.LongitudeValue}" : GetQuery(track));
         }
 
         private void MapWebBrowser_OnNavigated(object sender, NavigationEventArgs e) {

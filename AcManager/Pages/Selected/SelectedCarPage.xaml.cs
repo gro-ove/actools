@@ -130,10 +130,13 @@ namespace AcManager.Pages.Selected {
                 new CarOpenInShowroomDialog(SelectedObject, SelectedObject.SelectedSkin?.Id).ShowDialog();
             }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private RelayCommand _openInCustomShowroomCommand;
+            private AsyncCommand _openInCustomShowroomCommand;
 
-            public RelayCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new RelayCommand(o => {
-                CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin);
+            public AsyncCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new AsyncCommand(o => {
+                var type = o as CustomShowroomMode?;
+                return type.HasValue
+                        ? CustomShowroomWrapper.StartAsync(type.Value, SelectedObject, SelectedObject.SelectedSkin)
+                        : CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin);
             }));
 
             private RelayCommand _driveCommand;
@@ -387,6 +390,7 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(_model.OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
+                new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt | ModifierKeys.Control)),
 
                 new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control)),
                 new InputBinding(_model.ManageSetupsCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
@@ -395,6 +399,14 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.ReadDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt)),
             });
             InitializeComponent();
+
+            if (SettingsHolder.CustomShowroom.LiteByDefault) {
+                LiteCustomShowroomMenuItem.InputGestureText = "Alt+H";
+                FancyCustomShowroomMenuItem.InputGestureText = "Ctrl+Alt+H";
+            } else {
+                LiteCustomShowroomMenuItem.InputGestureText = "Ctrl+Alt+H";
+                FancyCustomShowroomMenuItem.InputGestureText = "Alt+H";
+            }
         }
 
         #region Skins

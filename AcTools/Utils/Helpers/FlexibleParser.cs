@@ -18,7 +18,7 @@ namespace AcTools.Utils.Helpers {
             }
 
             if (_parseDouble == null) {
-                _parseDouble = new Regex(@"-? *\d+([\.,]\d*)?");
+                _parseDouble = new Regex(@"-? *\d+([\.,]\d*)?", RegexOptions.Compiled);
             }
 
             var match = _parseDouble.Match(s);

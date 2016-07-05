@@ -38,14 +38,14 @@ namespace AcTools.Utils.Helpers {
             LatitudeValue = lat;
             LongitudeValue = lng;
 
-            Latitude = $"{lat:F5}° {(lat < 0d ? "S" : "N")}";
-            Longitude = $"{lng:F5}° {(lng < 0d ? "W" : "E")}";
+            Latitude = $"{lat:F4}° {(lat < 0d ? "S" : "N")}";
+            Longitude = $"{lng:F4}° {(lng < 0d ? "W" : "E")}";
         }
 
         public override string ToString() => IsEmptyOrInvalid ? "" : Latitude + ", " + Longitude;
 
-        public static string ToLat(double lat) => $"{lat:F5}° {(lat < 0 ? "S" : "N")}";
+        public static string ToLat(double lat) => $"{lat:F4}° {(lat < 0 ? "S" : "N")}";
 
-        public static string ToLng(double lng) => $"{lng:F5}° {(lng < 0 ? "W" : "E")}";
+        public static string ToLng(double lng) => $"{lng:F4}° {(lng < 0 ? "W" : "E")}";
     }
 }

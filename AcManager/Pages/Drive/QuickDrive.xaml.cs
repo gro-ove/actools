@@ -172,6 +172,7 @@ namespace AcManager.Pages.Drive {
                     SaveLater();
 
                     if (RealConditions) {
+                        ResetSettingRealConditions();
                         TryToSetRealConditions();
                     }
 
@@ -460,34 +461,47 @@ namespace AcManager.Pages.Drive {
 
             public AssistsViewModel AssistsViewModel => AssistsViewModel.Instance;
 
+            private void ResetSettingRealConditions() {
+                if (!_realConditionsInProcess) return;
+                _realConditionsInProcess = false;
+                _realTimeInProcess = false;
+                _realWeatherInProcess = false;
+            }
+
             private bool _realConditionsInProcess;
 
             public async void TryToSetRealConditions() {
                 if (_realConditionsInProcess || !RealConditions) return;
                 _realConditionsInProcess = true;
 
-                if (_selectedTrackGeoTags == null) {
-                    var geoTags = SelectedTrack.GeoTags;
-                    if (geoTags == null || geoTags.IsEmptyOrInvalid) {
-                        geoTags = await Task.Run(() => TracksLocator.TryToLocate(SelectedTrack));
-                        if (!RealConditions) {
-                            _realConditionsInProcess = false;
-                            return;
+                try {
+                    if (_selectedTrackGeoTags == null) {
+                        var track = SelectedTrack;
+                        var geoTags = track.GeoTags;
+                        if (geoTags == null || geoTags.IsEmptyOrInvalid) {
+                            geoTags = await Task.Run(() => TracksLocator.TryToLocate(track));
+                            if (track != SelectedTrack) return;
+
+                            Logging.Write($"[QuickDrive] {track.Name} geo tags: ({geoTags})");
+                            if (!RealConditions) {
+                                _realConditionsInProcess = false;
+                                return;
+                            }
+
+                            if (geoTags == null) {
+                                // TODO: Informing
+                                geoTags = InvalidGeoTagsEntry;
+                            }
                         }
 
-                        if (geoTags == null) {
-                            // TODO: Informing
-                            geoTags = InvalidGeoTagsEntry;
-                        }
+                        _selectedTrackGeoTags = geoTags;
                     }
 
-                    _selectedTrackGeoTags = geoTags;
+                    TryToSetRealTime();
+                    TryToSetRealWeather();
+                } finally {
+                    _realConditionsInProcess = false;
                 }
-
-                TryToSetRealTime();
-                TryToSetRealWeather();
-
-                _realConditionsInProcess = false;
             }
 
             #region Real Time
@@ -499,45 +513,51 @@ namespace AcManager.Pages.Drive {
                 if (_realTimeInProcess || !RealConditions) return;
                 _realTimeInProcess = true;
 
-                var now = DateTime.Now;
-                var time = now.Hour * 60 * 60 + now.Minute * 60 + now.Second;
+                try {
+                    var track = SelectedTrack;
+                    var now = DateTime.Now;
+                    var time = now.Hour * 60 * 60 + now.Minute * 60 + now.Second;
 
-                if (_selectedTrackGeoTags == null || _selectedTrackGeoTags == InvalidGeoTagsEntry) {
-                    TryToSetTime(time);
-                    return;
-                }
-
-                if (_selectedTrackTimeZone == null) {
-                    var timeZone = await Task.Run(() => TimeZoneDeterminer.TryToDetermine(_selectedTrackGeoTags));
-                    if (!RealConditions) {
-                        _realTimeInProcess = false;
+                    if (_selectedTrackGeoTags == null || _selectedTrackGeoTags == InvalidGeoTagsEntry) {
+                        TryToSetTime(time);
                         return;
                     }
 
-                    if (timeZone == null) {
-                        // TODO: Informing
-                        timeZone = InvalidTimeZoneInfo;
+                    if (_selectedTrackTimeZone == null) {
+                        var timeZone = await Task.Run(() => TimeZoneDeterminer.TryToDetermine(_selectedTrackGeoTags));
+                        if (track != SelectedTrack) return;
+
+                        if (!RealConditions) {
+                            _realTimeInProcess = false;
+                            return;
+                        }
+
+                        if (timeZone == null) {
+                            // TODO: Informing
+                            timeZone = InvalidTimeZoneInfo;
+                        }
+
+                        _selectedTrackTimeZone = timeZone;
                     }
 
-                    _selectedTrackTimeZone = timeZone;
-                }
+                    if (_selectedTrackTimeZone == null || ReferenceEquals(_selectedTrackTimeZone, InvalidTimeZoneInfo)) {
+                        TryToSetTime(time);
+                        return;
+                    }
 
-                if (_selectedTrackTimeZone == null || ReferenceEquals(_selectedTrackTimeZone, InvalidTimeZoneInfo)) {
+                    time += (int)(_selectedTrackTimeZone.BaseUtcOffset.TotalSeconds - TimeZoneInfo.Local.BaseUtcOffset.TotalSeconds);
+                    time = (time + SecondsPerDay) % SecondsPerDay;
+
                     TryToSetTime(time);
-                    return;
+                } finally {
+                    _realTimeInProcess = false;
                 }
-
-                time += (int)(_selectedTrackTimeZone.BaseUtcOffset.TotalSeconds - TimeZoneInfo.Local.BaseUtcOffset.TotalSeconds);
-                time = (time + SecondsPerDay) % SecondsPerDay;
-
-                TryToSetTime(time);
             }
 
             private void TryToSetTime(int value) {
                 var clamped = value.Clamp(TimeMinimum, TimeMaximum);
                 IsTimeClamped = clamped != value;
                 Time = clamped;
-                _realTimeInProcess = false;
             }
             #endregion
 
@@ -548,26 +568,31 @@ namespace AcManager.Pages.Drive {
 
             private async void TryToSetRealWeather() {
                 if (_realWeatherInProcess || !RealConditions) return;
-
-                if (_selectedTrackGeoTags == null || _selectedTrackGeoTags == InvalidGeoTagsEntry) {
-                    return;
-                }
+                if (_selectedTrackGeoTags == null || _selectedTrackGeoTags == InvalidGeoTagsEntry) return;
 
                 _realWeatherInProcess = true;
 
-                var weather = await Task.Run(() => WeatherProvider.TryToGetWeather(_selectedTrackGeoTags));
-                if (!RealConditions) {
-                    _realWeatherInProcess = true;
-                    return;
-                }
+                try {
+                    var track = SelectedTrack;
 
-                if (weather != null) {
-                    RealWeather = weather;
-                    TryToSetTemperature(weather.Temperature);
-                    await TryToSetWeatherType(weather.Type);
-                }
+                    var weather = await Task.Run(() => WeatherProvider.TryToGetWeather(_selectedTrackGeoTags));
+                    if (track != SelectedTrack) return;
 
-                _realWeatherInProcess = false;
+                    if (!RealConditions) {
+                        _realWeatherInProcess = true;
+                        return;
+                    }
+
+                    if (weather != null) {
+                        RealWeather = weather;
+                        TryToSetTemperature(weather.Temperature);
+                        await TryToSetWeatherType(weather.Type);
+                        if (track != SelectedTrack) return;
+                    }
+
+                } finally {
+                    _realWeatherInProcess = false;
+                }
             }
 
             private void TryToSetTemperature(double value) {

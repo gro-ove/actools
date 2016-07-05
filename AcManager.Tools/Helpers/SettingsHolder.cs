@@ -787,6 +787,33 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _smartCameraPivot;
+
+            public bool SmartCameraPivot {
+                get { return _smartCameraPivot ?? (_smartCameraPivot = ValuesStorage.GetBool("Settings.CustomShowroomSettings.SmartCameraPivot", true)).Value; }
+                set {
+                    if (Equals(value, _smartCameraPivot)) return;
+                    _smartCameraPivot = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.SmartCameraPivot", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _alternativeControlScheme;
+
+            public bool AlternativeControlScheme {
+                get {
+                    return _alternativeControlScheme ??
+                            (_alternativeControlScheme = ValuesStorage.GetBool("Settings.CustomShowroomSettings.AlternativeControlScheme", false)).Value;
+                }
+                set {
+                    if (Equals(value, _alternativeControlScheme)) return;
+                    _alternativeControlScheme = value;
+                    ValuesStorage.Set("Settings.CustomShowroomSettings.AlternativeControlScheme", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static CustomShowroomSettings _customShowroom;

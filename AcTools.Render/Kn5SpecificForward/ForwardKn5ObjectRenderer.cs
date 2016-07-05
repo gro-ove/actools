@@ -146,7 +146,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             return new CameraOrbit(MathF.ToRadians(32f)) {
                 Alpha = 0.9f,
                 Beta = 0.1f,
-                NearZ = 0.02f,
+                NearZ = 0.1f,
                 FarZ = 300f,
                 Radius = node?.BoundingBox?.GetSize().Length() ?? 4.8f,
                 Target = (node?.BoundingBox?.GetCenter() ?? Vector3.Zero) - new Vector3(0f, 0.05f, 0f)
@@ -217,8 +217,6 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim(),
                     _resetState = 0f;
                     return;
                 }
-
-                AutoAdjustTarget = true;
 
                 _resetState += (-0f - _resetState) / 10f;
                 if (_resetState <= threshold) {

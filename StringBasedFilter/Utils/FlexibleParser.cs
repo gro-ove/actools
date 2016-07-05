@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace StringBasedFilter.Utils {
@@ -6,7 +7,14 @@ namespace StringBasedFilter.Utils {
         private static Regex _parseInt, _parseDouble;
 
         public static bool TryParseInt(string s, out int value) {
-            if (int.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
+            if (s == null) {
+                value = 0;
+                return false;
+            }
+
+            if (s.StartsWith("0x", StringComparison.OrdinalIgnoreCase) &&
+                    int.TryParse(s.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value) ||
+                    int.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
                 return true;
             }
 
@@ -14,12 +22,10 @@ namespace StringBasedFilter.Utils {
                 _parseInt = new Regex(@"-? *\d+", RegexOptions.Compiled);
             }
 
-            if (s != null) {
-                var match = _parseDouble.Match(s);
-                if (match.Success) {
-                    return int.TryParse(match.Value.Replace(',', '.').Replace(" ", ""), NumberStyles.Any,
-                            CultureInfo.InvariantCulture, out value);
-                }
+            var match = _parseInt.Match(s);
+            if (match.Success) {
+                return int.TryParse(match.Value.Replace(" ", ""), NumberStyles.Any,
+                                    CultureInfo.InvariantCulture, out value);
             }
 
             value = 0;
@@ -27,6 +33,11 @@ namespace StringBasedFilter.Utils {
         }
 
         public static bool TryParseDouble(string s, out double value) {
+            if (s == null) {
+                value = 0d;
+                return false;
+            }
+
             if (double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
                 return true;
             }
@@ -34,13 +45,11 @@ namespace StringBasedFilter.Utils {
             if (_parseDouble == null) {
                 _parseDouble = new Regex(@"-? *\d+([\.,]\d*)?", RegexOptions.Compiled);
             }
-
-            if (s != null) {
-                var match = _parseDouble.Match(s);
-                if (match.Success) {
-                    return double.TryParse(match.Value.Replace(',', '.').Replace(" ", ""), NumberStyles.Any,
-                            CultureInfo.InvariantCulture, out value);
-                }
+        
+            var match = _parseDouble.Match(s);
+            if (match.Success) {
+                return double.TryParse(match.Value.Replace(',', '.').Replace(" ", ""), NumberStyles.Any,
+                        CultureInfo.InvariantCulture, out value);
             }
 
             value = 0.0;

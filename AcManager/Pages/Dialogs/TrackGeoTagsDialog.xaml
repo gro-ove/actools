@@ -16,13 +16,18 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Latitude:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Recommended format: '…° N' or '…° S'" />
-            <TextBlock Text="Longitude:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Recommended format: '…° W' or '…° E'" />
+            <TextBlock Text="Latitude:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}">
+                <TextBlock.ToolTip>Recommended format: “…° N” or “…° S”</TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Text="Longitude:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}">
+                <TextBlock.ToolTip>Recommended format: “…° W” or “…° E”</TextBlock.ToolTip>
+            </TextBlock>
 
             <TextBox Text="{Binding Latitude}" Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                    attached:TextBoxAdvancement.SpecialMode="Number" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
+                    attached:TextBoxAdvancement.SpecialMode="Number" attached:TextBoxAdvancement.MinValue="-90" attached:TextBoxAdvancement.MaxValue="90"
+                     attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
             <TextBox Text="{Binding Longitude}" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                    attached:TextBoxAdvancement.SpecialMode="Number" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
+                    attached:TextBoxAdvancement.SpecialMode="Number" attached:TextBoxAdvancement.MinValue="-180" attached:TextBoxAdvancement.MaxValue="180" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
         </Grid>
 
         <WebBrowser Name="MapWebBrowser" Width="1080" Height="640" Navigated="MapWebBrowser_OnNavigated" />

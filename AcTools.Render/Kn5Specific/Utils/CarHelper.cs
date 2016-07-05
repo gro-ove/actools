@@ -345,7 +345,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
         }
 
         public IEnumerable<IRenderableObject> LoadAmbientShadows(Kn5RenderableList node, float shadowsHeight = 0.01f) {
-            _shadowsHeight = 0.01f;
+            _shadowsHeight = shadowsHeight;
             return Data.IsEmpty ? new IRenderableObject[0] : new[] {
                 LoadBodyAmbientShadow(),
                 LoadWheelAmbientShadow(node, "WHEEL_LF", "tyre_0_shadow.png"),
@@ -385,9 +385,28 @@ namespace AcTools.Render.Kn5Specific.Utils {
             }));
         }
 
+        public float GetWheelbase(Kn5RenderableList node) {
+            var frontZ = node.GetDummyByName("WHEEL_LF")?.Matrix.GetTranslationVector().Z ?? 0f;
+            var rearZ = node.GetDummyByName("WHEEL_LR")?.Matrix.GetTranslationVector().Z ?? 0f;
+            return Math.Abs(frontZ - rearZ);
+        }
+
         public void AdjustPosition(Kn5RenderableList node) {
             node.UpdateBoundingBox();
-            node.LocalMatrix = Matrix.Translation(0, -node.BoundingBox?.Minimum.Y ?? 0f, 0) * node.LocalMatrix;
+
+            var y1 = Math.Min(node.GetDummyByName("WHEEL_LF")?.BoundingBox?.Minimum.Y ?? float.MaxValue,
+                    node.GetDummyByName("WHEEL_RF")?.BoundingBox?.Minimum.Y ?? float.MaxValue);
+            var y2 = Math.Min(node.GetDummyByName("WHEEL_LR")?.BoundingBox?.Minimum.Y ?? float.MaxValue,
+                    node.GetDummyByName("WHEEL_RR")?.BoundingBox?.Minimum.Y ?? float.MaxValue);
+
+            if (float.IsPositiveInfinity(y1) || float.IsPositiveInfinity(y2)) {
+                node.LocalMatrix = Matrix.Translation(0, -node.BoundingBox?.Minimum.Y ?? 0f, 0) * node.LocalMatrix;
+            } else {
+                var x1 = node.GetDummyByName("WHEEL_LF")?.BoundingBox?.GetCenter().Z ?? 0f;
+                var x2 = -node.GetDummyByName("WHEEL_LR")?.BoundingBox?.GetCenter().Z ?? 0f;
+                var y = y2 + x2 * (y1 - y2) / (x1 + x2);
+                node.LocalMatrix = Matrix.RotationX((float)Math.Atan2(y1 - y2, x1 + x2)) * Matrix.Translation(0, -y, 0) * node.LocalMatrix;
+            }
         }
 
         public void LoadMirrors(Kn5RenderableList node, DeviceContextHolder holder) {

@@ -93,6 +93,35 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
+            private bool _offlineModeAvailable;
+
+            public bool OfflineModeAvailable {
+                get { return _offlineModeAvailable; }
+                set {
+                    if (Equals(value, _offlineModeAvailable)) return;
+                    _offlineModeAvailable = value;
+                    OnPropertyChanged();
+                    OfflineModeCommand.OnCanExecuteChanged();
+                }
+            }
+
+            private int _attemptsCounter;
+
+            private RelayCommand _tryAgainCommand;
+
+            public RelayCommand TryAgainCommand => _tryAgainCommand ?? (_tryAgainCommand = new RelayCommand(o => {
+                _attemptsCounter++;
+                TestValue();
+            }));
+
+            private RelayCommand _offlineModeCommand;
+
+            public RelayCommand OfflineModeCommand => _offlineModeCommand ?? (_offlineModeCommand = new RelayCommand(o => {
+                OptionOfflineMode = true;
+                OfflineModeAvailable = false;
+                TestValue();
+            }, o => OfflineModeAvailable));
+
             private bool _internetConnectionRequired;
 
             public bool InternetConnectionRequired {
@@ -162,6 +191,10 @@ namespace AcManager.Pages.Dialogs {
                 } else {
                     InternetConnectionRequired = true;
                     IsValueAcceptable = false;
+
+                    if (_attemptsCounter == 1) {
+                        OfflineModeAvailable = true;
+                    }
                 }
             }
 
@@ -183,7 +216,7 @@ namespace AcManager.Pages.Dialogs {
 
             public IEnumerable GetErrors(string propertyName) {
                 return propertyName == nameof(Value) ? (string.IsNullOrWhiteSpace(Value) ? new[] { "Required value" } :
-                    IsValueAcceptable ? null : new[] { InternetConnectionRequired ? "Internet connection is required" : "Key is invalid" }) : null;
+                    IsValueAcceptable ? null : new[] { InternetConnectionRequired ? "Can’t check key" : "Key is invalid" }) : null;
             }
 
             public bool HasErrors => string.IsNullOrWhiteSpace(Value) || !IsValueAcceptable;

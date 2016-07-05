@@ -131,34 +131,45 @@
             </StackPanel>
 
             <StackPanel Visibility="{Binding AmbientShadowsMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <DockPanel>
-                    <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10" IconHeight="10"
-                            IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
-                            Command="{Binding ToggleAmbientShadowModeCommand}" ToolTip="{x:Static modernui:Resources.Back}" DockPanel.Dock="Left" />
-                    <TextBlock Text="Ambient Shadow" Style="{StaticResource Heading2}" />
-                </DockPanel>
+                <StackPanel Background="Transparent" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Reset To Recommended Values" Command="{Binding AmbientShadowResetCommand}" />
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
+                    
+                    <DockPanel>
+                        <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
+                                IconHeight="10" IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
+                                Command="{Binding ToggleAmbientShadowModeCommand}" ToolTip="{x:Static modernui:Resources.Back}" DockPanel.Dock="Left" />
+                        <TextBlock Text="Ambient Shadow" Style="{StaticResource Heading2}" />
+                    </DockPanel>
 
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top">Diffusion</mui:ValueLabel>
-                    <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
-                            IsSnapToTickEnabled="False" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top">Brightness</mui:ValueLabel>
-                    <Slider Minimum="150" Maximum="800" Value="{Binding AmbientShadowBrightness}" TickFrequency="130" TickPlacement="BottomRight"
-                            IsSnapToTickEnabled="False" />
-                </DockPanel>
-                <DockPanel>
-                    <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top">Iterations</mui:ValueLabel>
-                    <Slider Minimum="400" Maximum="4000" Value="{Binding AmbientShadowIterations}" TickFrequency="720" TickPlacement="BottomRight"
-                            IsSnapToTickEnabled="False" />
-                </DockPanel>
-                <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
-                    <Label>Hide wheels</Label>
-                </CheckBox>
-                <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}">Update</Button>
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top">Diffusion</mui:ValueLabel>
+                        <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top">Brightness</mui:ValueLabel>
+                        <Slider Minimum="150" Maximum="800" Value="{Binding AmbientShadowBrightness}" TickFrequency="130" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <DockPanel>
+                        <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top">Iterations</mui:ValueLabel>
+                        <Slider Minimum="400" Maximum="4000" Value="{Binding AmbientShadowIterations}" TickFrequency="720" TickPlacement="BottomRight"
+                                IsSnapToTickEnabled="False" />
+                    </DockPanel>
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
+                        <Label>Hide wheels</Label>
+                    </CheckBox>
+                    <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowFade}" ToolTip="Enable to avoid clipping">
+                        <Label>Fade to edges</Label>
+                    </CheckBox>
+                    <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}">Update</Button>
+                </StackPanel>
 
-                <StackPanel>
+                <StackPanel Background="Transparent" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <StackPanel.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Reset" Command="{Binding AmbientShadowSizeResetCommand}" />
@@ -169,8 +180,7 @@
 
                     <TextBlock Text="Size" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}" Postfix=" m" Mode="Number"
-                                DockPanel.Dock="Top">Width</mui:ValueLabel>
+                        <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}" Postfix=" m" Mode="Number" DockPanel.Dock="Top">Width</mui:ValueLabel>
                         <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>

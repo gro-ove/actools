@@ -563,8 +563,8 @@ todo:
             + chrome extension 
                 + start the race
                 + install setups
-            - option for disable RSR plugin if started without RSR event ID
-            - special RSR name?
+            + option for disable RSR plugin if started without RSR event ID
+            + special RSR name?
 
     + go buttons keyboard shortcut
         + quick drive
@@ -739,6 +739,11 @@ later:
             - quality analyzer:
                 - tris count
                 - wrong textures format
+        - data+kn5 analyzer
+            - wheelbase
+            - wheel radius
+            - suspension width
+            - overall size
         - sound analyzer
             - unoriginal sound detection
             - unoptimized sound detection

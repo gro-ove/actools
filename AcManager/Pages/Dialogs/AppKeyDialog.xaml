@@ -5,11 +5,19 @@
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
                   mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="App Key"
         d:DataContext="{d:DesignInstance dialogs:AppKeyDialog+AppKeyDialogViewModel}">
+    <mui:ModernDialog.ButtonsRowContent>
+        <StackPanel Orientation="Horizontal">
+            <Button Visibility="{Binding InternetConnectionRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Command="{Binding TryAgainCommand}">Try Again</Button>
+            <Button Visibility="{Binding OfflineModeAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Command="{Binding OfflineModeCommand}" Margin="4 0 0 0">Offline Mode</Button>
+        </StackPanel>
+    </mui:ModernDialog.ButtonsRowContent>
     <StackPanel>
         <TextBlock Text="Enter app key (XXXX-XXXX-…):" Style="{StaticResource Heading2}" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                 Background="Transparent" />
 
-        <TextBox Text="{Binding Value, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="360"
+        <TextBox Text="{Binding Value, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="480"
                 attached:WatermarkService.Watermark="?" ToolTip="Please, don't share key, otherwise it might get revoked!"
                 attached:FocusAdvancement.AdvancesByEnterKey="True" Margin="0 8 0 0" Name="TextBox" />
 

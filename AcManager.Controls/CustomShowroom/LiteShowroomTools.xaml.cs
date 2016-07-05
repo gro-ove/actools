@@ -94,6 +94,7 @@ namespace AcManager.Controls.CustomShowroom {
                 public double AmbientShadowDiffusion, AmbientShadowBrightness;
                 public int AmbientShadowIterations;
                 public bool AmbientShadowHideWheels;
+                public bool? AmbientShadowFade;
                 public bool LiveReload;
             }
             protected ISaveHelper Saveable { set; get; }
@@ -118,21 +119,35 @@ namespace AcManager.Controls.CustomShowroom {
                     AmbientShadowBrightness = AmbientShadowBrightness,
                     AmbientShadowIterations = AmbientShadowIterations,
                     AmbientShadowHideWheels = AmbientShadowHideWheels,
+                    AmbientShadowFade = AmbientShadowFade,
                     LiveReload = Renderer.LiveReload,
                 }, o => {
                     AmbientShadowDiffusion = o.AmbientShadowDiffusion;
                     AmbientShadowBrightness = o.AmbientShadowBrightness;
                     AmbientShadowIterations = o.AmbientShadowIterations;
                     AmbientShadowHideWheels = o.AmbientShadowHideWheels;
+                    AmbientShadowFade = o.AmbientShadowFade ?? true;
                     Renderer.LiveReload = o.LiveReload;
                 }, () => {
-                    AmbientShadowDiffusion = 60d;
-                    AmbientShadowBrightness = 230d;
-                    AmbientShadowIterations = 3200;
-                    AmbientShadowHideWheels = false;
-                    Renderer.LiveReload = false;
+                    Reset(false);
                 });
                 Saveable.Initialize();
+            }
+
+            private void Reset(bool saveLater) {
+                AmbientShadowDiffusion = 60d;
+                AmbientShadowBrightness = 230d;
+                AmbientShadowIterations = 3200;
+                AmbientShadowHideWheels = false;
+                AmbientShadowFade = true;
+
+                if (Renderer != null) {
+                    Renderer.LiveReload = false;
+                }
+
+                if (saveLater) {
+                    SaveLater();
+                }
             }
 
             private void Renderer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -236,6 +251,18 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
+            private bool _ambientShadowFade;
+
+            public bool AmbientShadowFade {
+                get { return _ambientShadowFade; }
+                set {
+                    if (Equals(value, _ambientShadowFade)) return;
+                    _ambientShadowFade = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
             private AsyncCommand _updateAmbientShadowCommand;
 
             public AsyncCommand UpdateAmbientShadowCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new AsyncCommand(async o => {
@@ -255,6 +282,7 @@ namespace AcManager.Controls.CustomShowroom {
                             renderer.SkyBrightnessLevel = (float)AmbientShadowBrightness / 100f;
                             renderer.Iterations = AmbientShadowIterations;
                             renderer.HideWheels = AmbientShadowHideWheels;
+                            renderer.Fade = AmbientShadowFade;
 
                             renderer.Initialize();
                             renderer.Shot();
@@ -296,6 +324,12 @@ namespace AcManager.Controls.CustomShowroom {
 
                 Renderer.AmbientShadowSizeChanged = false;
             }, o => Renderer?.AmbientShadowSizeChanged == true));
+
+            private RelayCommand _ambientShadowResetCommand;
+
+            public RelayCommand AmbientShadowResetCommand => _ambientShadowResetCommand ?? (_ambientShadowResetCommand = new RelayCommand(o => {
+                Reset(true);
+            }));
 
             private RelayCommand _ambientShadowSizeFitCommand;
 

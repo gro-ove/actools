@@ -9,6 +9,8 @@ using Microsoft.Win32;
 
 namespace AcManager.Tools.Helpers {
     public static class WebBrowserHelper {
+        public const int EmulationModeDisablingVersion = 4;
+
         /// <summary>
         /// Internet Explorer 11. Webpages are displayed in IE11 Standards mode, regardless of the !DOCTYPE directive.
         /// </summary>

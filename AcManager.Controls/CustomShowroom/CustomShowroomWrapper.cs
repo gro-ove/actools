@@ -4,10 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
+using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5SpecificDeferred;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Temporary;
@@ -51,6 +54,15 @@ namespace AcManager.Controls.CustomShowroom {
         private static BaseFormWrapper _last;
         private static bool _starting;
 
+        private static void SetProperties(BaseKn5FormWrapper wrapper, IKn5ObjectRenderer renderer) {
+            if (!SettingsHolder.CustomShowroom.SmartCameraPivot) {
+                wrapper.AutoAdjustTargetOnReset = false;
+                renderer.AutoAdjustTarget = false;
+            }
+
+            wrapper.InvertMouseButtons = SettingsHolder.CustomShowroom.AlternativeControlScheme;
+        }
+
         public static async Task StartLiteAsync(string kn5, string skinId = null) {
             if (_starting) return;
             _starting = true;
@@ -72,29 +84,34 @@ namespace AcManager.Controls.CustomShowroom {
                 var toolboxMode = IsSameDirectories(carObject?.Location, carDirectory);
 
                 LiteShowroomWrapper wrapper;
+                using (var waiting = new WaitingDialog()) {
+                    waiting.Report("Loading model…");
 
-                if (toolboxMode) {
-                    renderer = await Task.Run(() => new ToolsKn5ObjectRenderer(kn5, carDirectory));
-                    wrapper = new LiteShowroomWrapperWithTools((ToolsKn5ObjectRenderer)renderer, carObject, skinId);
-                } else {
-                    Logging.Warning($"Can’t find CarObject for “{carDirectory}”");
-                    Logging.Warning($"Found location: “{carObject?.Location ?? "NULL"}”");
+                    if (toolboxMode) {
+                        renderer = await Task.Run(() => new ToolsKn5ObjectRenderer(kn5, carDirectory));
+                        wrapper = new LiteShowroomWrapperWithTools((ToolsKn5ObjectRenderer)renderer, carObject, skinId);
+                    } else {
+                        Logging.Warning($"Can’t find CarObject for “{carDirectory}”");
+                        Logging.Warning($"Found location: “{carObject?.Location ?? "NULL"}”");
 
-                    renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(kn5, carDirectory));
-                    wrapper = new LiteShowroomWrapper(renderer);
+                        renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(kn5, carDirectory));
+                        wrapper = new LiteShowroomWrapper(renderer);
 
-                    if (skinId != null) {
-                        renderer.SelectSkin(skinId);
+                        if (skinId != null) {
+                            renderer.SelectSkin(skinId);
+                        }
                     }
+
+                    renderer.UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa;
+                    renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
+                    renderer.UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom;
+
+                    _last = wrapper;
+                    SetProperties(wrapper, renderer);
+
+                    wrapper.Form.Icon = Icon;
                 }
 
-                renderer.UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa;
-                renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
-                renderer.UseBloom = SettingsHolder.CustomShowroom.LiteUseBloom;
-
-                _last = wrapper;
-
-                wrapper.Form.Icon = Icon;
                 wrapper.Run(() => _starting = false);
                 
                 GC.Collect();
@@ -117,17 +134,24 @@ namespace AcManager.Controls.CustomShowroom {
             Kn5ObjectRenderer renderer = null;
 
             try {
-                renderer = await Task.Run(() => new Kn5ObjectRenderer(kn5, showroomKn5));
-                renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
+                FancyShowroomWrapper wrapper;
+                using (var waiting = new WaitingDialog()) {
+                    waiting.Report("Loading model…");
 
-                var wrapper = new FancyShowroomWrapper(renderer);
-                if (skinId != null) {
-                    renderer.SelectSkin(skinId);
+                    renderer = await Task.Run(() => new Kn5ObjectRenderer(kn5, showroomKn5));
+                    renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
+
+                    wrapper = new FancyShowroomWrapper(renderer);
+                    if (skinId != null) {
+                        renderer.SelectSkin(skinId);
+                    }
+
+                    _last = wrapper;
+                    SetProperties(wrapper, renderer);
+
+                    wrapper.Form.Icon = Icon;
                 }
 
-                _last = wrapper;
-
-                wrapper.Form.Icon = Icon;
                 wrapper.Run(() => _starting = false);
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t start Custom Showroom", e);
@@ -152,11 +176,19 @@ namespace AcManager.Controls.CustomShowroom {
         }
 
         public static Task StartAsync(string kn5, string skinId = null) {
-            return StartAsync(SettingsHolder.CustomShowroom.LiteByDefault ? CustomShowroomMode.Lite : CustomShowroomMode.Fancy, kn5, skinId);
+            var key = SettingsHolder.CustomShowroom.LiteByDefault;
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
+                key = !key;
+            }
+            return StartAsync(key ? CustomShowroomMode.Lite : CustomShowroomMode.Fancy, kn5, skinId);
         }
 
         public static Task StartAsync(CarObject car, CarSkinObject skin = null) {
             return StartAsync(FileUtils.GetMainCarFilename(car.Location), skin?.Id);
+        }
+
+        public static Task StartAsync(CustomShowroomMode mode, CarObject car, CarSkinObject skin = null) {
+            return StartAsync(mode, FileUtils.GetMainCarFilename(car.Location), skin?.Id);
         }
     }
 }

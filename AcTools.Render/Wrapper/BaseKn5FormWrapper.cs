@@ -10,6 +10,9 @@ namespace AcTools.Render.Wrapper {
     public class BaseKn5FormWrapper : BaseFormWrapper {
         public readonly IKn5ObjectRenderer Kn5ObjectRenderer;
 
+        public bool AutoAdjustTargetOnReset = true;
+        public bool InvertMouseButtons = false;
+
         public bool FormMoving;
 
         public BaseKn5FormWrapper(BaseRenderer renderer, string title, int width, int height) : base(renderer, title, width, height) {
@@ -46,7 +49,7 @@ namespace AcTools.Render.Wrapper {
                 _moved = true;
             }
 
-            if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Left && IsPressed(Keys.Space)) {
+            if (e.Button == (InvertMouseButtons ? MouseButtons.Left : MouseButtons.Middle) || e.Button == MouseButtons.Left && IsPressed(Keys.Space)) {
                 var size = 180.0f / Math.Min(Form.Height, Form.Width);
                 var dx = MathF.ToRadians(size * (e.X - _lastMousePos.X));
                 var dy = MathF.ToRadians(size * (e.Y - _lastMousePos.Y));
@@ -64,7 +67,7 @@ namespace AcTools.Render.Wrapper {
                         Renderer.IsDirty = true;
                     }
                 }
-            } else if (e.Button == MouseButtons.Left) {
+            } else if (e.Button == (InvertMouseButtons ? MouseButtons.Right : MouseButtons.Left)) {
                 if (FormMoving) {
                     Form.Left += e.X - _lastMousePos.X;
                     Form.Top += e.Y - _lastMousePos.Y;
@@ -80,7 +83,7 @@ namespace AcTools.Render.Wrapper {
                 Kn5ObjectRenderer.Camera.Yaw(Kn5ObjectRenderer.UseFpsCamera ? dx : -dx);
                 Kn5ObjectRenderer.AutoRotate = false;
                 Renderer.IsDirty = true;
-            } else if (e.Button == MouseButtons.Right) {
+            } else if (e.Button == (InvertMouseButtons ? MouseButtons.Middle : MouseButtons.Right)) {
                 var size = 180.0f / Math.Min(Form.Height, Form.Width);
                 var dy = MathF.ToRadians(size * (e.Y - _lastMousePos.Y));
                 Kn5ObjectRenderer.Camera.Zoom(dy * 3.0f);
@@ -159,6 +162,9 @@ namespace AcTools.Render.Wrapper {
                 case Keys.Home:
                     if (!args.Control && !args.Alt && !args.Shift) {
                         Kn5ObjectRenderer.ResetCamera();
+                        if (AutoAdjustTargetOnReset) {
+                            Kn5ObjectRenderer.AutoAdjustTarget = true;
+                        }
                     }
                     break;
 

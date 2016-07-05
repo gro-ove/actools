@@ -5,8 +5,9 @@
         xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
+        xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarPage+SelectedCarPageViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -41,7 +42,14 @@
                             </CompositeCollection>
                         </MenuItem.ItemsSource>
                     </MenuItem>
-                    <MenuItem Header="Custom Showroom" InputGestureText="Alt+H" />
+                    <MenuItem Header="Custom Showroom">
+                        <MenuItem x:Name="LiteCustomShowroomMenuItem" Header="Lite Custom Showroom"
+                                ToolTip="Faster and more accurate, helpful for modding or skins drawing" Command="{Binding OpenInCustomShowroomCommand}"
+                                CommandParameter="{x:Static customShowroom:CustomShowroomMode.Lite}" />
+                        <MenuItem x:Name="FancyCustomShowroomMenuItem" Header="Fancy Custom Showroom"
+                                ToolTip="Slower and less accurate, but with proper lighting and reflections" Command="{Binding OpenInCustomShowroomCommand}"
+                                CommandParameter="{x:Static customShowroom:CustomShowroomMode.Fancy}" />
+                    </MenuItem>
                 </mui:ButtonWithComboBox>
                 <mui:ButtonWithComboBox Content="Drive" ButtonToolTip="Use car in a Quick Drive session (Ctrl+G)" Command="{Binding DriveCommand}"
                         PreviewMouseDown="ToolbarButtonQuickDrive_OnPreviewMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
