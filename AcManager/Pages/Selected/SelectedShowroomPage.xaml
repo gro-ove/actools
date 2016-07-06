@@ -102,7 +102,7 @@
                         </DockPanel.ContextMenu>
                         <TextBlock Text="Author:" ToolTip="Author, version, URL" />
                         <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" attached:WatermarkService.Watermark="?"
-                                MouseDown="VersionInfoBlock_OnMouseDown" />
+                                MouseDown="VersionInfoBlock_OnMouse" />
                     </DockPanel>
                 </Grid>
 

@@ -107,6 +107,9 @@
     </Compile>
     <Compile Include="QuickSwitches\QuickSwitchPresetsControl.cs" />
     <Compile Include="QuickSwitches\QuickSwitchSlider.cs" />
+    <Compile Include="UserControls\ModernPopup.xaml.cs">
+      <DependentUpon>ModernPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\WebBrowserBlock.xaml.cs">
       <DependentUpon>WebBrowserBlock.xaml</DependentUpon>
     </Compile>
@@ -328,6 +331,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="QuickSwitches\QuickSwitchesBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ModernPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

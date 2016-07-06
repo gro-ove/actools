@@ -146,55 +146,62 @@ namespace AcManager.Tools.Helpers {
                 var footprint = GetFootprint(devices);
                 if (footprint == _devicesFootprint) return;
 
-                var newDevices = devices.Select((x, i) => DirectInputDevice.Create(_directInput, x, i)).NonNull().ToList();
-                _devicesFootprint = GetFootprint(newDevices.Select(x => x.Device));
+                _skip = true;
 
-                foreach (var entry in WheelAxleEntries) {
-                    if (entry.Input == null) continue;
-                    if (entry.Input.Device is PlaceholderInputDevice) {
-                        var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id);
-                        if (replacement != null) {
-                            entry.Input = replacement.GetAxle(entry.Input.Id);
+                try {
+                    var newDevices = devices.Select((x, i) => DirectInputDevice.Create(_directInput, x, i)).NonNull().ToList();
+                    _devicesFootprint = GetFootprint(newDevices.Select(x => x.Device));
+
+                    foreach (var entry in WheelAxleEntries) {
+                        if (entry.Input == null) continue;
+                        if (entry.Input.Device is PlaceholderInputDevice) {
+                            var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id);
+                            if (replacement != null) {
+                                entry.Input = replacement.GetAxle(entry.Input.Id);
+                            }
+                        } else if (entry.Input.Device is DirectInputDevice && !newDevices.Contains(entry.Input.Device)) {
+                            entry.Input = GetPlaceholderDevice((DirectInputDevice)entry.Input.Device).GetAxle(entry.Input.Id);
                         }
-                    } else if (entry.Input.Device is DirectInputDevice && !newDevices.Contains(entry.Input.Device)) {
-                        entry.Input = GetPlaceholderDevice((DirectInputDevice)entry.Input.Device).GetAxle(entry.Input.Id);
                     }
-                }
 
-                foreach (var entry in WheelButtonEntries.Select(x => x.WheelButton).Union(WheelHShifterButtonEntries)) {
-                    if (entry.Input == null) continue;
-                    if (entry.Input.Device is PlaceholderInputDevice) {
-                        var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id);
-                        if (replacement != null) {
-                            entry.Input = replacement.GetButton(entry.Input.Id);
+                    foreach (var entry in WheelButtonEntries.Select(x => x.WheelButton).Union(WheelHShifterButtonEntries)) {
+                        if (entry.Input == null) continue;
+                        if (entry.Input.Device is PlaceholderInputDevice) {
+                            var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id);
+                            if (replacement != null) {
+                                entry.Input = replacement.GetButton(entry.Input.Id);
+                            }
+                        } else if (entry.Input.Device is DirectInputDevice && !newDevices.Contains(entry.Input.Device)) {
+                            entry.Input = GetPlaceholderDevice((DirectInputDevice)entry.Input.Device).GetButton(entry.Input.Id);
                         }
-                    } else if (entry.Input.Device is DirectInputDevice && !newDevices.Contains(entry.Input.Device)) {
-                        entry.Input = GetPlaceholderDevice((DirectInputDevice)entry.Input.Device).GetButton(entry.Input.Id);
-                    }
-                }
-
-                foreach (var device in Devices) {
-                    foreach (var button in device.Buttons) {
-                        button.PropertyChanged -= DeviceButtonEventHandler;
                     }
 
-                    foreach (var axle in device.Axles) {
-                        axle.PropertyChanged -= DeviceAxleEventHandler;
+                    foreach (var device in Devices) {
+                        foreach (var button in device.Buttons) {
+                            button.PropertyChanged -= DeviceButtonEventHandler;
+                        }
+
+                        foreach (var axle in device.Axles) {
+                            axle.PropertyChanged -= DeviceAxleEventHandler;
+                        }
+
+                        device.Dispose();
                     }
 
-                    device.Dispose();
-                }
-                
-                Devices.ReplaceEverythingBy(newDevices);
+                    Devices.ReplaceEverythingBy(newDevices);
 
-                foreach (var device in Devices) {
-                    foreach (var button in device.Buttons) {
-                        button.PropertyChanged += DeviceButtonEventHandler;
-                    }
+                    foreach (var device in Devices) {
+                        foreach (var button in device.Buttons) {
+                            button.PropertyChanged += DeviceButtonEventHandler;
+                        }
 
-                    foreach (var axle in device.Axles) {
-                        axle.PropertyChanged += DeviceAxleEventHandler;
+                        foreach (var axle in device.Axles) {
+                            axle.PropertyChanged += DeviceAxleEventHandler;
+                        }
                     }
+                } finally {
+                    _skip = false;
+                    UpdateWheelHShifterDevice();
                 }
             }
 
@@ -662,7 +669,10 @@ namespace AcManager.Tools.Helpers {
                         .Union(WheelHShifterButtonEntries)
                         .Union(KeyboardSpecificButtonEntries);
 
+            private bool _skip;
+
             private void EntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
+                if (_skip) return;
                 if (e.PropertyName == nameof(WheelHShifterButtonEntry.Input) && sender is WheelHShifterButtonEntry) {
                     UpdateWheelHShifterDevice();
                 } else if (e.PropertyName != nameof(WheelAxleEntry.Value)) {
@@ -863,12 +873,13 @@ namespace AcManager.Tools.Helpers {
                 section.Set("MOUSE_SPEED", KeyboardMouseSteeringSpeed);
 
                 section = Ini["__LAUNCHER_CM"];
+                section.Set("PRESET_NAME", CurrentPresetName);
                 section.Set("PRESET_CHANGED", CurrentPresetChanged);
 
                 SaveControllers();
 
 #if DEBUG
-                Logging.Write("Controls saving time: " + sw.ElapsedMilliseconds + " ms");
+                Logging.Write($"Controls saving time: {sw.Elapsed.TotalMilliseconds:F2} ms");
 #endif
             }
 

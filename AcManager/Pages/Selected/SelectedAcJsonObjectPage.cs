@@ -1,6 +1,7 @@
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Pages.Dialogs;
+using AcManager.Controls.UserControls;
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Pages.Selected {
@@ -14,10 +15,14 @@ namespace AcManager.Pages.Selected {
             });
         }
 
-        protected virtual void VersionInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        protected virtual void VersionInfoBlock_OnMouse(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
-                new VersionInfoEditor(SelectedAcJsonObject).ShowDialog();
+
+                new ModernPopup {
+                    Content = new PopupAuthor((ISelectedAcObjectViewModel)DataContext),
+                    PlacementTarget = sender as UIElement
+                }.IsOpen = true;
             }
         }
 

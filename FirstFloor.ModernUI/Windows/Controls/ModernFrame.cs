@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,8 +12,7 @@ using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public class ModernFrame
-        : ContentControl {
+    public class ModernFrame : ContentControl {
         public static readonly DependencyProperty TransitionNameProperty = DependencyProperty.Register("TransitionName", typeof(string),
             typeof(ModernFrame));
 

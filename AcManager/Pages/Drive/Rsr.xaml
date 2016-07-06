@@ -28,42 +28,34 @@
 
             <ToggleButton x:Name="Button" Content="Options"
                     IsHitTestVisible="{Binding ElementName=Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
-            <Popup x:Name="Popup" PlacementTarget="{Binding ElementName=Button}" Placement="Top" HorizontalOffset="0"
-                    IsOpen="{Binding IsChecked, ElementName=Button, Mode=TwoWay}" VerticalOffset="-1" StaysOpen="False" AllowsTransparency="True"
-                    PopupAnimation="Slide">
-                <Grid Margin="4" HorizontalAlignment="Center">
-                    <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                    <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-                    <Border Background="{DynamicResource PopupBackground}" Padding="8">
-                        <StackPanel Width="200">
-                            <CheckBox IsChecked="{Binding GhostCar}">
-                                <Label>Ghost car</Label>
+            <userControls:ModernPopup x:Name="Popup" PlacementTarget="{Binding ElementName=Button}"
+                    IsOpen="{Binding IsChecked, ElementName=Button, Mode=TwoWay}">
+                <StackPanel Width="200">
+                    <CheckBox IsChecked="{Binding GhostCar}">
+                        <Label>Ghost car</Label>
+                    </CheckBox>
+
+                    <Grid Margin="0 8 0 0" DataContext="{x:Static drive:Rsr.Assists}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <controls:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 10" />
+                        <DockPanel Grid.Row="1">
+                            <Button DockPanel.Dock="Right" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp">
+                                …
+                                <Button.ToolTip>
+                                    <controls:AssistsDescription />
+                                </Button.ToolTip>
+                            </Button>
+                            <CheckBox IsChecked="{Binding TyreBlankets}">
+                                <Label>_Tyre blankets</Label>
                             </CheckBox>
-
-                            <Grid Margin="0 8 0 0" DataContext="{x:Static drive:Rsr.Assists}">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <controls:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 10" />
-                                <DockPanel Grid.Row="1">
-                                    <Button DockPanel.Dock="Right" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp">
-                                        …
-                                        <Button.ToolTip>
-                                            <controls:AssistsDescription />
-                                        </Button.ToolTip>
-                                    </Button>
-                                    <CheckBox IsChecked="{Binding TyreBlankets}">
-                                        <Label>_Tyre blankets</Label>
-                                    </CheckBox>
-                                </DockPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-                    <Border BorderBrush="{DynamicResource Accent}" BorderThickness="1" />
-                </Grid>
-            </Popup>
+                        </DockPanel>
+                    </Grid>
+                </StackPanel>
+            </userControls:ModernPopup>
 
             <StackPanel Grid.Column="1" Margin="20 0" Orientation="Horizontal" VerticalAlignment="Center">
                 <DockPanel Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">

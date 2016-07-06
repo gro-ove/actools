@@ -241,6 +241,9 @@
     <Compile Include="Pages\Lists\ScreenshotsListPage.xaml.cs">
       <DependentUpon>ScreenshotsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Selected\PopupAuthor.xaml.cs">
+      <DependentUpon>PopupAuthor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Selected\SelectedPythonAppPage.xaml.cs">
       <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
     </Compile>
@@ -686,6 +689,10 @@
     <Page Include="Pages\Miscellaneous\WorkInProgress.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Selected\PopupAuthor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Selected\SelectedCarSetupPage.xaml">
       <SubType>Designer</SubType>

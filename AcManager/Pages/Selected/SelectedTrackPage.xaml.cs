@@ -182,7 +182,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        protected override void VersionInfoBlock_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        protected override void VersionInfoBlock_OnMouse(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 e.Handled = true;
                 new VersionInfoEditor(_model.SelectedTrackConfiguration).ShowDialog();

@@ -20,8 +20,12 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 return textBox.Padding.Left < 0 ? "Watermark.TextBoxAsTextBlock" : "Watermark.TextBox";
             }
 
-            return adornedElement is ComboBox ? "Watermark.ComboBox" : 
-                "Watermark";
+            var comboBox = adornedElement as ComboBox;
+            if (comboBox != null) {
+                return comboBox.Padding.Left < 0 ? "Watermark.ComboBoxAsTextBlock" : "Watermark.ComboBox";
+            }
+
+            return "Watermark";
         }
 
         /// <summary>

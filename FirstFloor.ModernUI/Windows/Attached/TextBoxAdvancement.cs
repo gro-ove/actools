@@ -59,7 +59,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public enum SpecialMode {
-            None, Number, Integer, IntegerOrZeroLabel, Positive, Time
+            None, Number, Integer, IntegerOrZeroLabel, Positive, Time, Version
         }
 
         public static SpecialMode GetSpecialMode(DependencyObject obj) {
@@ -204,6 +204,34 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                     totalMinutes += (int)(delta * 10);
                     totalMinutes = (int)Math.Max(Math.Min(totalMinutes, maxValue), minValue);
                     return $"{totalMinutes / 60:D}:{totalMinutes % 60:D}";
+                }
+
+                case SpecialMode.Version: {
+                    var splitted = text.Split('.');
+                    var index = splitted.Length - 1;
+
+                    if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
+                        index--;
+                    }
+
+                    if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) {
+                        index--;
+                    }
+
+                    if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) {
+                        index--;
+                    }
+
+                    if (index < 0) {
+                        index = 0;
+                    }
+
+                    int value;
+                    if (FlexibleParser.TryParseInt(splitted[index], out value)) {
+                        splitted[index] = FlexibleParser.ReplaceDouble(splitted[index], value);
+                    }
+
+                    return string.Join(".", splitted);
                 }
 
                 default:
