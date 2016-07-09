@@ -44,7 +44,7 @@ namespace AcManager.Pages.Drive {
         }
 
         public void Initialize() {
-            DataContext = new Online_SelectedServerPageViewModel(_entry);
+            DataContext = new ViewModel(_entry);
             InitializeComponent();
 
             if (Model.Entry == null) return;
@@ -56,7 +56,7 @@ namespace AcManager.Pages.Drive {
 
         private DispatcherTimer _timer;
 
-        public Online_SelectedServerPageViewModel Model => (Online_SelectedServerPageViewModel)DataContext;
+        public ViewModel Model => (ViewModel)DataContext;
 
         private void Timer_Tick(object sender, EventArgs e) {
             Model.Entry.OnTick();
@@ -89,10 +89,10 @@ namespace AcManager.Pages.Drive {
             ToolBar.IsActive = false;
         }
 
-        public class Online_SelectedServerPageViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             public ServerEntry Entry { get; }
 
-            public Online_SelectedServerPageViewModel(ServerEntry entry) {
+            public ViewModel(ServerEntry entry) {
                 Entry = entry;
                 FancyBackgroundManager.Instance.ChangeBackground(Entry.Track?.PreviewImage);
             }

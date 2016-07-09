@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -25,8 +24,6 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public class ServerEntry : AcObjectNew, IComparer {
-        public static bool OptionAlwaysGetInformationDirectly = true;
-
         public class Session {
             public bool IsActive { get; set; }
 
@@ -219,7 +216,6 @@ namespace AcManager.Tools.Managers.Online {
                     Port != information.Port ||
                     PortC != information.PortC ||
                     PortT != information.PortT) return false;
-
             SetSomeProperties(information);
             return true;
         }
@@ -574,7 +570,7 @@ namespace AcManager.Tools.Managers.Online {
                 OnPropertyChanged(nameof(CurrentDrivers));
 
                 if (mode == UpdateMode.Full) {
-                    var newInformation = await Task.Run(() => IsLan || OptionAlwaysGetInformationDirectly ?
+                    var newInformation = await Task.Run(() => IsLan || SettingsHolder.Online.LoadServerInformationDirectly ?
                             KunosApiProvider.TryToGetInformationDirect(Ip, PortC) :
                             KunosApiProvider.TryToGetInformation(Ip, Port));
                     if (newInformation == null) {
@@ -596,17 +592,19 @@ namespace AcManager.Tools.Managers.Online {
                     return;
                 }
 
-                var ping = await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port));
-                if (ping.HasValue) {
-                    Ping = (long)ping.Value.TotalMilliseconds;
+                var pair = SettingsHolder.Online.ThreadsPing
+                        ? await Task.Run(() => KunosApiProvider.TryToPingServer(Ip, Port, SettingsHolder.Online.PingTimeout))
+                        : await KunosApiProvider.TryToPingServerAsync(Ip, Port, SettingsHolder.Online.PingTimeout);
+                if (pair != null) {
+                    Ping = (long)pair.Item2.TotalMilliseconds;
                 } else {
                     Ping = null;
                     Status = ServerStatus.Error;
-                    ErrorMessage += @"Server is unavailable (“ping” failed)." + "\n";
+                    ErrorMessage += @"Server is unavailable (ping failed)." + "\n";
                     return;
                 }
 
-                var information = await Task.Run(() => KunosApiProvider.TryToGetCurrentInformation(Ip, PortC));
+                var information = await KunosApiProvider.TryToGetCurrentInformationAsync(Ip, PortC);
                 if (information == null) {
                     Status = ServerStatus.Error;
                     ErrorMessage = @"Server is unavailable.";

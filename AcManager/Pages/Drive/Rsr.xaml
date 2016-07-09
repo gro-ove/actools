@@ -4,7 +4,7 @@
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance drive:Rsr+RsrViewModel}">
+        d:DataContext="{d:DesignInstance drive:Rsr+ViewModel}">
 
     <Grid Style="{StaticResource ContentRootWithPadding}">
         <Grid.RowDefinitions>

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using AcManager.Controls.Helpers;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -70,6 +71,8 @@ namespace AcManager.Controls.Dialogs {
             Buttons = new Button[] { };
         }
 
+        private TaskbarProgress _taskbarProgress;
+
         public new string Title {
             get { return base.Title; }
             set { base.Title = value ?? "Please, wait…"; }
@@ -94,6 +97,8 @@ namespace AcManager.Controls.Dialogs {
                 _cancellationTokenSource.Cancel();
                 IsCancelled = true;
             }
+
+            DisposeHelper.Dispose(ref _taskbarProgress);
         }
 
         private bool _loaded;
@@ -152,14 +157,29 @@ namespace AcManager.Controls.Dialogs {
             }
         }
 
+        private void SetProgress(double value) {
+            Progress = value;
+            ProgressIndetermitate = Equals(value, 0d);
+
+            if (_taskbarProgress == null) {
+                _taskbarProgress = new TaskbarProgress(this);
+            }
+
+            if (ProgressIndetermitate) {
+                _taskbarProgress.Set(TaskbarState.Indeterminate);
+            } else {
+                _taskbarProgress.Set(TaskbarState.Normal);
+                _taskbarProgress.Set(value);
+            }
+        }
+
         public void Report(double? value) {
             lock (_lock) {
                 if (Progress.HasValue && value.HasValue && Math.Abs(Progress.Value - value.Value) < 0.0001) return;
                 Dispatcher.Invoke(() => {
                     if (value.HasValue) {
                         EnsureShown();
-                        Progress = value.Value;
-                        ProgressIndetermitate = Equals(value.Value, 0d);
+                        SetProgress(value.Value);
                     } else {
                         EnsureClosed();
                     }
@@ -172,8 +192,7 @@ namespace AcManager.Controls.Dialogs {
                 if (Progress.HasValue && Math.Abs(Progress.Value - value) < 0.0001) return;
                 Dispatcher.Invoke(() => {
                     EnsureShown();
-                    Progress = value;
-                    ProgressIndetermitate = Equals(value, 0d);
+                    SetProgress(value);
                 });
             }
         }
@@ -184,8 +203,7 @@ namespace AcManager.Controls.Dialogs {
                     if (value.Message != null) {
                         EnsureShown();
                         Message = value.Message;
-                        Progress = value.Progress;
-                        ProgressIndetermitate = value.Progress == 0d;
+                        SetProgress(value.Progress ?? 0d);
                     } else {
                         EnsureClosed();
                     }
@@ -199,8 +217,7 @@ namespace AcManager.Controls.Dialogs {
                     if (value.Item1 != null) {
                         EnsureShown();
                         Message = value.Item1;
-                        Progress = value.Item2;
-                        ProgressIndetermitate = value.Item2 == 0d;
+                        SetProgress(value.Item2 ?? 0d);
                     } else {
                         EnsureClosed();
                     }

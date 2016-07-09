@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Annotations;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
@@ -139,13 +140,16 @@ namespace AcManager.Pages.Drive {
         }
 
         private bool _loaded;
+        private TaskbarProgress _taskbarProgress;
 
         private void Online_OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;
 
+            Model.Manager.PropertyChanged += Manager_PropertyChanged;
             Model.Load();
 
+            _taskbarProgress = new TaskbarProgress();
             _timer = new DispatcherTimer {
                 Interval = TimeSpan.FromSeconds(1),
                 IsEnabled = true
@@ -157,8 +161,30 @@ namespace AcManager.Pages.Drive {
             if (!_loaded) return;
             _loaded = false;
 
+            Model.Manager.PropertyChanged -= Manager_PropertyChanged;
             Model.Unload();
+
+            _taskbarProgress?.Dispose();
             _timer?.Stop();
+        }
+
+        private void Manager_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(BaseOnlineManager.BackgroundLoading):
+                    _taskbarProgress.Set(Model.Manager.BackgroundLoading ? TaskbarState.Indeterminate : TaskbarState.NoProgress);
+                    break;
+
+                case nameof(BaseOnlineManager.PingingInProcess):
+                    _taskbarProgress.Set(Model.Manager.PingingInProcess ? TaskbarState.Normal : TaskbarState.NoProgress);
+                    break;
+
+                case nameof(BaseOnlineManager.Pinged):
+                    if (Model.Manager.PingingInProcess) {
+                        _taskbarProgress.Set(TaskbarState.Normal);
+                        _taskbarProgress.Set(Model.Manager.Pinged, Model.Manager.WrappersList.Count);
+                    }
+                    break;
+            }
         }
 
         public class CombinedFilter<T> : IFilter<T> {
@@ -262,13 +288,15 @@ namespace AcManager.Pages.Drive {
                 Manager = manager;
                 
                 LoadQuickFilter();
-                SortingMode = LimitedStorage.Get(LimitedSpace.OnlineSorting, Key);
+                SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key)) ?? SortingModes[0];
                 ServerCombinedFilter.Second = CreateQuickFilter();
             }
 
             private CancellationTokenSource _pingingSource;
 
             public override void Load() {
+                if (Loaded) return;
+
                 base.Load();
                 CurrentChanged();
 
@@ -285,14 +313,40 @@ namespace AcManager.Pages.Drive {
 
                 base.Unload();
             }
-
+            
             private class SortingDriversCount : IComparer {
                 public int Compare(object x, object y) {
                     var xs = (x as AcItemWrapper)?.Value as ServerEntry;
                     var ys = (y as AcItemWrapper)?.Value as ServerEntry;
-                    const int def = 0;
-                    return -(xs?.CurrentDriversCount.CompareTo(ys?.CurrentDriversCount ?? def) ??
-                            (ys == null ? 0 : def.CompareTo(ys.CurrentDriversCount)));
+                    if (xs == null) return ys == null ? 0 : 1;
+                    if (ys == null) return -1;
+
+                    var dif = -xs.CurrentDriversCount.CompareTo(ys.CurrentDriversCount);
+                    return dif == 0 ? string.Compare(xs.DisplayName, ys.DisplayName, StringComparison.Ordinal) : dif;
+                }
+            }
+
+            private class SortingCapacityCount : IComparer {
+                public int Compare(object x, object y) {
+                    var xs = (x as AcItemWrapper)?.Value as ServerEntry;
+                    var ys = (y as AcItemWrapper)?.Value as ServerEntry;
+                    if (xs == null) return ys == null ? 0 : 1;
+                    if (ys == null) return -1;
+
+                    var dif = -xs.Capacity.CompareTo(ys.Capacity);
+                    return dif == 0 ? string.Compare(xs.DisplayName, ys.DisplayName, StringComparison.Ordinal) : dif;
+                }
+            }
+
+            private class SortingCarsNumberCount : IComparer {
+                public int Compare(object x, object y) {
+                    var xs = (x as AcItemWrapper)?.Value as ServerEntry;
+                    var ys = (y as AcItemWrapper)?.Value as ServerEntry;
+                    if (xs == null) return ys == null ? 0 : 1;
+                    if (ys == null) return -1;
+
+                    var dif = -xs.CarIds.Length.CompareTo(ys.CarIds.Length);
+                    return dif == 0 ? string.Compare(xs.DisplayName, ys.DisplayName, StringComparison.Ordinal) : dif;
                 }
             }
 
@@ -300,59 +354,77 @@ namespace AcManager.Pages.Drive {
                 public int Compare(object x, object y) {
                     var xs = (x as AcItemWrapper)?.Value as ServerEntry;
                     var ys = (y as AcItemWrapper)?.Value as ServerEntry;
-                    const long def = long.MaxValue;
-                    return xs?.Ping?.CompareTo(ys?.Ping ?? def) ??
-                            (ys == null ? 0 : def.CompareTo(ys.Ping));
+                    if (xs == null) return ys == null ? 0 : 1;
+                    if (ys == null) return -1;
+
+                    const long maxPing = 999999;
+                    var dif = (xs.Ping ?? maxPing).CompareTo(ys.Ping ?? maxPing);
+                    return dif == 0 ? string.Compare(xs.DisplayName, ys.DisplayName, StringComparison.Ordinal) : dif;
                 }
             }
 
-            private string _sortingMode;
+            private SettingEntry _sortingMode;
 
-            public string SortingMode {
+            public SettingEntry SortingMode {
                 get { return _sortingMode; }
                 set {
+                    if (!SortingModes.Contains(value)) value = SortingModes[0];
                     if (Equals(value, _sortingMode)) return;
 
-                    switch (value) {
+                    switch (value.Value) {
                         case "drivers":
-                            _sortingMode = value;
                             MainList.CustomSort = new SortingDriversCount();
                             break;
 
+                        case "capacity":
+                            MainList.CustomSort = new SortingCapacityCount();
+                            break;
+
+                        case "cars":
+                            MainList.CustomSort = new SortingCarsNumberCount();
+                            break;
+
                         case "ping":
-                            _sortingMode = value;
                             MainList.CustomSort = new SortingPing();
                             break;
 
                         default:
-                            _sortingMode = null;
                             MainList.CustomSort = this;
                             break;
                     }
 
+                    _sortingMode = value;
                     OnPropertyChanged();
-                    LimitedStorage.Set(LimitedSpace.OnlineSorting, Key, _sortingMode);
+                    LimitedStorage.Set(LimitedSpace.OnlineSorting, Key, _sortingMode.Id);
                 }
             }
+
+            public SettingEntry[] SortingModes { get; } = {
+                new SettingEntry(null, "Name"),
+                new SettingEntry("drivers", "Drivers"),
+                new SettingEntry("capacity", "Capacity"),
+                new SettingEntry("cars", "Cars Number"),
+                new SettingEntry("ping", "Ping"),
+            };
 
             private RelayCommand _changeSortingCommand;
 
             public RelayCommand ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new RelayCommand(o => {
-                SortingMode = o as string;
+                SortingMode = SortingModes.GetByIdOrDefault(o as string) ?? SortingModes[0];
             }));
 
             private AsyncCommand _addNewServerCommand;
 
             public AsyncCommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new AsyncCommand(async o => {
-                var address = Prompt.Show("Server address (IP & HTTP or TCP Port):", "Add a New Server", "",
-                    "127.0.0.1:8081", "Port could be omitted, in this case app will scan all specific ports");
+                var address = Prompt.Show("Server address (IP & HTTP or TCP Port):", "Add a New Server", "85.114.129.100", // TODO
+                        "127.0.0.1:8081", "Port could be omitted, in this case app will scan all specific ports");
                 if (address == null) return;
 
                 foreach (var s in address.Split(',').Select(x => x.Trim())) {
                     try {
                         using (var waiting = new WaitingDialog()) {
                             waiting.Report("Adding server…");
-                            await RecentManager.Instance.AddServer(s, waiting);
+                            await RecentManager.Instance.AddServer(s, waiting, waiting.CancellationToken);
                         }
                     } catch (Exception e) {
                         NonfatalError.Notify("Can’t add server", e);

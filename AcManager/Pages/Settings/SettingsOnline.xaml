@@ -21,22 +21,58 @@
                 <Label>Remember passwords</Label>
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding Online.CompactUi}">
+                <Label>Compact UI</Label>
+            </CheckBox>
+
+            <!--connection-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Connection:</TextBlock>
+            
             <DockPanel>
                 <Label>Server:</Label>
                 <ComboBox ItemsSource="{Binding Online.OnlineServers}" SelectedItem="{Binding Online.OnlineServer}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <CheckBox IsChecked="{Binding Online.LoadServerInformationDirectly}">
+                <CheckBox.ToolTip>Load server information directly instead of using AC servers; could be faster and more actual, but some information (such as active session) will be missing</CheckBox.ToolTip>
+                <Label>Load server information directly</Label>
+            </CheckBox>
+
+            <!--pinging-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Pinging:</TextBlock>
+
+            <CheckBox IsChecked="{Binding Online.ThreadsPing}" ToolTip="The most correct pinging, but the slowest one">
+                <Label>Use threads instead of asynchronous API</Label>
+            </CheckBox>
+
+            <DockPanel IsEnabled="{Binding Online.ThreadsPing, Converter={StaticResource InvertBooleanConverter}}">
+                <DockPanel.ToolTip>Increase value to make pinging of the whole list go faster, but it’ll be less accurate</DockPanel.ToolTip>
+                <mui:ValueLabel Value="{Binding Online.PingConcurrency}" Mode="Integer">Ping concurrency</mui:ValueLabel>
+                <Slider Minimum="10" Maximum="300" Value="{Binding Online.PingConcurrency}" TickFrequency="29" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Online.PingTimeout}" Mode="Integer" Postfix=" ms">Ping timeout</mui:ValueLabel>
+                <Slider Minimum="200" Maximum="5000" Value="{Binding Online.PingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>
 
             <!--<CheckBox IsChecked="{Binding Online.UseFastServer}" attached:LimitedService.Limited="True">
                 <Label>Use Fast Caching Server (experimental)</Label>
             </CheckBox>-->
 
+            <!--adding by ip-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Adding by IP:</TextBlock>
-
+            
             <DockPanel>
                 <Label>Scan ports:</Label>
                 <TextBox Text="{Binding Online.PortsEnumeration}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True">
                     <TextBox.ToolTip>Some enumeration like “9000-10000”</TextBox.ToolTip>
                 </TextBox>
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Online.ScanPingTimeout}" Mode="Integer" Postfix=" ms">Scan timeout</mui:ValueLabel>
+                <Slider Minimum="200" Maximum="5000" Value="{Binding Online.ScanPingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">LAN:</TextBlock>

@@ -12,9 +12,7 @@ namespace AcManager.Tools.Helpers {
         public static async Task WhenAll(IEnumerable<Task> tasks, int limit, CancellationToken cancellation = default(CancellationToken)) {
             var list = new List<Task>(limit);
             foreach (var task in tasks) {
-                if (cancellation.IsCancellationRequested) {
-                    return;
-                }
+                if (cancellation.IsCancellationRequested) return;
 
                 list.Add(task);
                 if (list.Count == limit) {

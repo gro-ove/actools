@@ -2,50 +2,58 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" Loaded="Online_SelectedServerPage_OnLoaded" Unloaded="Online_SelectedServerPage_OnUnloaded"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" PreviewMouseDown="Online_SelectedServerPage_OnPreviewMouseDown">
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:online="clr-namespace:AcManager.Tools.Managers.Online;assembly=AcManager.Tools" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
+        xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
+        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Loaded="Online_SelectedServerPage_OnLoaded" Unloaded="Online_SelectedServerPage_OnUnloaded"
+        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" PreviewMouseDown="Online_SelectedServerPage_OnPreviewMouseDown"
+        d:DataContext="{d:DesignInstance drive:Online_SelectedServerPage+ViewModel}">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/OnlineSpecific.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid DataContext="{Binding Entry}">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <DockPanel DataContext="{Binding Entry}">
+        <controls:AcToolBar x:Name="ToolBar" IsActive="True" DockPanel.Dock="Bottom" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
+            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
+                <Button Content="Refresh" ToolTip="Refresh server information (Ctrl+R)" Command="{Binding RefreshCommand}" />
+                <Separator />
+                <Button Content="Join" Command="{Binding JoinCommand}" ToolTip="Join server (Ctrl+G)" Style="{StaticResource Go.ToolBarButton}" />
+            </ToolBar>
+        </controls:AcToolBar>
 
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="-8 0 -8 0">
-            <Grid Margin="0 0 0 120">
-                <!-- error -->
-                <StackPanel Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Error}">
-                    <!-- server's name -->
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+        <Grid>
+            <!-- error -->
+            <StackPanel Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Error}">
+                <!-- server's name -->
+                <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
-                    <DockPanel HorizontalAlignment="Stretch" Margin="0 12 0 0">
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
-                                DockPanel.Dock="Right" />
-                        <TextBlock Text="Errors:" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
-                    </DockPanel>
+                <DockPanel HorizontalAlignment="Stretch" Margin="0 12 0 0">
+                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
+                            DockPanel.Dock="Right" />
+                    <TextBlock Text="Errors:" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
+                </DockPanel>
 
-                    <!--<TextBlock Style="{StaticResource Heading1}" Text="Error" />-->
-                    <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="40 0 0 12" />
-                    <Button Command="{Binding RefreshCommand}" Content="Try again" Margin="20 0 0 0" />
-                </StackPanel>
+                <!--<TextBlock Style="{StaticResource Heading1}" Text="Error" />-->
+                <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="40 0 0 12" />
+                <Button Command="{Binding RefreshCommand}" Content="Try again" Margin="20 0 0 0" />
+            </StackPanel>
 
-                <!-- loading -->
-                <Grid Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Loading}">
-                    <mui:ModernProgressRing Margin="10" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Grid>
+            <!-- loading -->
+            <Grid Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Loading}">
+                <mui:ModernProgressRing Margin="10" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
 
-                <!-- content -->
-                <StackPanel Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Ready}">
+            <!-- content -->
+            <DockPanel Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Ready}">
+                <StackPanel DockPanel.Dock="Top">
                     <!-- server's name -->
                     <TextBox Text="{Binding Name, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
 
@@ -82,25 +90,47 @@
                     <!-- track & car -->
                     <Grid Margin="0 0 0 20" Height="160">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
+                            <ColumnDefinition />
                             <ColumnDefinition Width="10" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
-                        <Grid ClipToBounds="True" Background="Gray" DataContext="{Binding Track}">
-                            <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill" />
-                            <mui:BetterImage Filename="{Binding OutlineImage}" ShowBroken="False" />
-                            <TextBlock Padding="4" VerticalAlignment="Bottom" Background="#88555555" Text="{Binding Name}" Foreground="White" />
+                        <Grid ClipToBounds="True" Background="Gray">
+                            <Grid.ToolTip>
+                                <ToolTip>
+                                    <StackPanel Margin="4 8">
+                                        <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
+                                        <userControls:TrackBlock Track="{Binding Track}" ShowPreview="False" Width="512" MaxHeight="320" />
+                                    </StackPanel>
+                                </ToolTip>
+                            </Grid.ToolTip>
+                            <mui:BetterImage Filename="{Binding Track.PreviewImage}" Stretch="UniformToFill"
+                                    services:ImageViewerService.Image="{Binding Track.PreviewImage}" />
+                            <mui:BetterImage Filename="{Binding Track.OutlineImage}" ShowBroken="False" IsHitTestVisible="False" />
+                            <TextBlock Padding="4" VerticalAlignment="Bottom" Background="#88555555" Text="{Binding Track.Name}" Foreground="White"
+                                    IsHitTestVisible="False" />
                         </Grid>
 
                         <Grid ClipToBounds="True" Background="Gray" Grid.Column="2"
                                 Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <mui:BetterImage DataContext="{Binding CarsView.CurrentItem.AvailableSkin}" Stretch="UniformToFill"
-                                    Filename="{Binding PreviewImage}" HorizontalAlignment="Center" />
+                            <mui:BetterImage Stretch="UniformToFill" Filename="{Binding CarsView.CurrentItem.AvailableSkin.PreviewImage}"
+                                    HorizontalAlignment="Center" />
                             <Grid Visibility="{Binding CarsView.CurrentItem.AvailableSkin, Converter={StaticResource NullToVisibilityConverter}}"
                                     Background="#111111">
                                 <TextBlock Style="{StaticResource Heading1}" Text="Skin is missing" Foreground="#444444" HorizontalAlignment="Center"
                                         VerticalAlignment="Center" Margin="0 0 0 20" />
+                            </Grid>
+                            <Grid DataContext="{Binding CarsView.CurrentItem}" Background="Transparent"
+                                    services:ImageViewerService.Image="{Binding AvailableSkin.PreviewImage}">
+                                <Grid.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel Margin="4 8">
+                                            <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />
+                                            <userControls:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512"
+                                                    MaxHeight="320" />
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Grid.ToolTip>
                             </Grid>
                             <ComboBox ItemsSource="{Binding CarsView}" Background="#88555555" Foreground="White" Padding="4" VerticalAlignment="Bottom"
                                     BorderThickness="0" IsSynchronizedWithCurrentItem="True">
@@ -133,7 +163,7 @@
 
                         <!-- first row -->
                         <TextBlock Text="Country:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                        <TextBlock Text="Clients:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Year of production start" />
+                        <TextBlock Text="Clients:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
 
                         <DockPanel Grid.Column="1" Grid.Row="0">
                             <Image Source="{Binding CountryId, IsAsync=True, Converter={StaticResource CountryIdToImageConverter}}" HorizontalAlignment="Right"
@@ -144,7 +174,7 @@
 
                         <!-- second row -->
                         <TextBlock Text="Time:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
-                        <TextBlock Text="Left:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="Year of production start" />
+                        <TextBlock Text="Left:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
                         <TextBlock Text="{Binding Time}" Grid.Column="1" Grid.Row="1" />
                         <TextBlock Name="TimeLeftTextBlock" Text="{Binding DisplayTimeLeft}" Grid.Column="3" Grid.Row="1" />
@@ -152,9 +182,9 @@
 
                     <!-- sessions list -->
                     <TextBlock Text="Sessions:" Style="{StaticResource LabelWithPadding}" />
-                    <ItemsControl ItemsSource="{Binding Sessions}" Margin="20 10 0 20">
+                    <ItemsControl ItemsSource="{Binding Sessions}" Margin="20 8 0 20">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="{x:Type online:ServerEntry+Session}">
                                 <Grid Name="Main">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
@@ -176,51 +206,43 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
-                    <!-- current drivers list -->
-                    <StackPanel Visibility="{Binding CurrentDrivers.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=≠0}"
-                            Margin="0 0 0 20">
-                        <TextBlock Text="Drivers online:" Style="{StaticResource LabelWithPadding}" />
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="160">
-                            <ItemsControl ItemsSource="{Binding CurrentDrivers}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="20 10 0 20">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <DockPanel Width="200">
-                                            <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4">
-                                                <mui:BetterImage.ToolTip>
-                                                    <StackPanel>
-                                                        <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="256" Height="144" Margin="4" />
-                                                        <TextBlock Text="{Binding CarSkin.DisplayName}" Margin="4" />
-                                                    </StackPanel>
-                                                </mui:BetterImage.ToolTip>
-                                            </mui:BetterImage>
-
-                                            <StackPanel Margin="0 2 0 2">
-                                                <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                                                <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Small}" TextWrapping="NoWrap"
-                                                        TextTrimming="CharacterEllipsis" />
-                                            </StackPanel>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </StackPanel>
                 </StackPanel>
-            </Grid>
-        </ScrollViewer>
 
-        <controls:AcToolBar x:Name="ToolBar" IsActive="True" Grid.Row="1" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
-            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Refresh" ToolTip="Refresh server information (Ctrl+R)" Command="{Binding RefreshCommand}" />
-                <Separator />
-                <Button Content="Join" Command="{Binding JoinCommand}" ToolTip="Join server (Ctrl+G)" Style="{StaticResource Go.ToolBarButton}" />
-            </ToolBar>
-        </controls:AcToolBar>
-    </Grid>
+                <!-- current drivers list -->
+                <DockPanel Visibility="{Binding CurrentDrivers.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=≠0}">
+                    <TextBlock Text="Drivers online:" Style="{StaticResource LabelWithPadding}" DockPanel.Dock="Top" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="20 8 0 0">
+                        <ItemsControl ItemsSource="{Binding CurrentDrivers}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                ScrollViewer.CanContentScroll="True">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0 0 0 20" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type online:ServerEntry+CurrentDriver}">
+                                    <DockPanel Width="200">
+                                        <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4" ClearOnChange="True">
+                                            <mui:BetterImage.ToolTip>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding CarSkin.DisplayName}" Margin="4" />
+                                                    <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="256" Height="144" Margin="4" />
+                                                </StackPanel>
+                                            </mui:BetterImage.ToolTip>
+                                        </mui:BetterImage>
+
+                                        <StackPanel Margin="0 2 0 2">
+                                            <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Small}" TextWrapping="NoWrap"
+                                                    TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
 </UserControl>

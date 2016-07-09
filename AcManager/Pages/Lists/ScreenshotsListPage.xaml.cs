@@ -33,6 +33,11 @@ namespace AcManager.Pages.Lists {
         private static readonly Regex Filter = new Regex(@"\.(jpe?g|gif|bmp|png)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private static Screenshot[] GetFiles(string filter) {
+            var directory = FileUtils.GetDocumentsScreensDirectory();
+            if (!Directory.Exists(directory)) {
+                return new Screenshot[0];
+            }
+
             return new DirectoryInfo(FileUtils.GetDocumentsScreensDirectory()).GetFiles(filter).Where(x => Filter.IsMatch(x.Name))
                 .OrderByDescending(x => x.CreationTime)
                 .Select(x => new Screenshot(x.FullName, x.CreationTime, x.Length)).ToArray();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -35,7 +35,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private const string KeySavedServers = "RecentManager.SavedServers";
         
-        public async Task AddServer([NotNull] string address, IProgress<string> progress = null) {
+        public async Task AddServer([NotNull] string address, IProgress<string> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             if (address == null) throw new ArgumentNullException(nameof(address));
 
             // assume address is something like [HOSTNAME]:[HTTP PORT]
@@ -47,15 +47,19 @@ namespace AcManager.Tools.Managers.Online {
 
             if (port > 0) {
                 progress?.Report("Getting direct information…");
-                var information = await Task.Run(() => KunosApiProvider.TryToGetInformationDirect(ip, port));
+                var information = await KunosApiProvider.TryToGetInformationDirectAsync(ip, port);
+                if (cancellation.IsCancellationRequested) return;
 
                 // assume address is [HOSTNAME]:[TCP PORT]
                 if (information == null) {
                     progress?.Report("Trying to ping to find out HTTP port…");
-                    var httpPort = 0;
-                    if (await Task.Run(() => KunosApiProvider.TryToPingServer(ip, port, out httpPort)) != null) {
+                    var pair = await KunosApiProvider.TryToPingServerAsync(ip, port, SettingsHolder.Online.PingTimeout);
+                    if (cancellation.IsCancellationRequested) return;
+
+                    if (pair != null) {
                         progress?.Report("Getting direct information (second attempt)…");
-                        information = await Task.Run(() => KunosApiProvider.TryToGetInformationDirect(ip, httpPort));
+                        information = await KunosApiProvider.TryToGetInformationDirectAsync(ip, pair.Item1);
+                        if (cancellation.IsCancellationRequested) return;
                     }
                 }
 
@@ -75,18 +79,23 @@ namespace AcManager.Tools.Managers.Online {
 
                 await TaskExtension.WhenAll(
                         SettingsHolder.Online.PortsEnumeration.ToPortsDiapason().Select(async p => {
-                            var httpPort = 0;
-                            if (await Task.Run(() => KunosApiProvider.TryToPingServer(ip, p, OptionScanPingTimeout, out httpPort)) != null && httpPort > 1024 &&
-                                    httpPort < 65536) {
-                                var information = await Task.Run(() => KunosApiProvider.TryToGetInformationDirect(ip, httpPort));
+                            var pair = await KunosApiProvider.TryToPingServerAsync(ip, p, SettingsHolder.Online.ScanPingTimeout);
+                            if (pair != null && pair.Item1 > 1024 && pair.Item1 < 65536) {
+                                if (cancellation.IsCancellationRequested) return;
+
+                                var information = await KunosApiProvider.TryToGetInformationDirectAsync(ip, pair.Item1);
+                                if (cancellation.IsCancellationRequested) return;
+
                                 if (information != null) {
-                                    AddToSavedList(ip, httpPort);
+                                    AddToSavedList(ip, pair.Item1);
                                     found++;
 
                                     try {
                                         CreateAndAddEntry(information);
                                     } catch (Exception e) {
-                                        Logging.Warning("[RECENTMANAGER] Scan add error: " + e);
+                                        if (e.Message != "ID is taken") {
+                                            Logging.Warning("[RECENTMANAGER] Scan add error: " + e);
+                                        }
                                     }
                                 }
                             }
@@ -94,7 +103,7 @@ namespace AcManager.Tools.Managers.Online {
                             scanned++;
                             if (progress == null) return;
                             progress.Report($"Scanning ({scanned}/{total}), {found} {PluralizingConverter.Pluralize(found, "server")} found…");
-                        }), OptionConcurrentThreadsNumber);
+                        }), 200, cancellation);
 
                 if (found == 0) {
                     throw new Exception("Nothing found");
@@ -130,18 +139,23 @@ namespace AcManager.Tools.Managers.Online {
             return LoadAndFilterList(MainListFilename).Union(LoadAndFilterList(RecentListFilename));
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
+        private readonly object _saved = new object();
+        
         private void AddToSavedList(string ip, int httpPort) {
-            // TODO: watcher
-            using (var writer = new StreamWriter(MainListFilename, true)) {
-                writer.WriteLine($"{ip}:{httpPort}");
+            lock (_saved) {
+                using (var writer = new StreamWriter(MainListFilename, true)) {
+                    writer.WriteLine($"{ip}:{httpPort}");
+                }
             }
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
+        private readonly object _recent = new object();
+
         private void AddToRecentList(string ip, int httpPort) {
-            var filename = RecentListFilename;
-            File.WriteAllLines(filename, LoadAndFilterList(filename).Append($"{ip}:{httpPort}").TakeLast(25));
+            lock (_recent) {
+                var filename = RecentListFilename;
+                File.WriteAllLines(filename, LoadAndFilterList(filename).Append($"{ip}:{httpPort}").TakeLast(25));
+            }
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
@@ -180,7 +194,7 @@ namespace AcManager.Tools.Managers.Online {
                 } catch (Exception e) {
                     Logging.Warning("[LANMANAGER] Cannot create ServerEntry: " + e);
                 }
-            }), OptionConcurrentThreadsNumber);
+            }), SettingsHolder.Online.PingConcurrency);
 
             BackgroundLoading = false;
         }

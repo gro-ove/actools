@@ -28,10 +28,10 @@ namespace AcManager.Pages.Drive {
     public partial class Rsr {
         public static AssistsViewModel Assists { get; } = new AssistsViewModel("rsrassists");
 
-        private RsrViewModel Model => (RsrViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         public Rsr() {
-            DataContext = new RsrViewModel();
+            DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control))
             });
@@ -40,16 +40,16 @@ namespace AcManager.Pages.Drive {
         }
 
         public static Task<bool> RunAsync(string eventId) {
-            return new RsrViewModel {
+            return new ViewModel {
                 EventId = eventId
             }.Go();
         }
 
-        public class RsrViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private const string KeyGhostCar = "Rsr.GhostCar";
             private const string KeyShowExtensionMessage = "Rsr.ExtMsg";
 
-            internal RsrViewModel() {
+            internal ViewModel() {
                 GhostCar = ValuesStorage.GetBool(KeyGhostCar, true);
                 ShowExtensionMessage = ValuesStorage.GetBool(KeyShowExtensionMessage, true);
             }
@@ -250,9 +250,9 @@ namespace AcManager.Pages.Drive {
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         [ComVisible(true)]
         public class ScriptProvider : BaseScriptProvider {
-            private readonly RsrViewModel _model;
+            private readonly ViewModel _model;
 
-            public ScriptProvider(RsrViewModel model) {
+            public ScriptProvider(ViewModel model) {
                 _model = model;
             }
 

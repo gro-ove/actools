@@ -163,6 +163,7 @@
     <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\ZipContentInstallator.cs" />
     <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
+    <Compile Include="Helpers\Api\KillerOrder.cs" />
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>

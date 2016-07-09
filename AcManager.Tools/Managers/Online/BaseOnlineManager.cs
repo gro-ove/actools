@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Lists;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using StringBasedFilter;
 
@@ -42,10 +44,7 @@ namespace AcManager.Tools.Managers.Online {
             throw new ArgumentOutOfRangeException();
         }
 
-        public static int OptionConcurrentThreadsNumber = 30;
-
-        protected BaseOnlineManager() {
-        }
+        protected BaseOnlineManager() {}
         
         protected override ServerEntry CreateAcObject(string id, bool enabled) {
             throw new NotSupportedException();
@@ -97,32 +96,51 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private bool _pingEverythingInProcess;
+        private bool _pingingInProcess;
+
+        public bool PingingInProcess {
+            get { return _pingingInProcess; }
+            private set {
+                if (Equals(value, _pingingInProcess)) return;
+                _pingingInProcess = value;
+                OnPropertyChanged();
+            }
+        }
 
         public async Task PingEverything(IFilter<ServerEntry> priorityFilter, CancellationToken cancellation = default(CancellationToken)) {
-            Pinged = 0;
-            if (_pingEverythingInProcess) {
-                return;
-            }
-            _pingEverythingInProcess = true;
+            if (PingingInProcess) return;
+            Pinged = LoadedOnly.Count(x => x.Status != ServerStatus.Unloaded);
 
-            if (priorityFilter != null) {
-                await TaskExtension.WhenAll(LoadedOnly.Where(priorityFilter.Test).Select(async x => {
+            try {
+                PingingInProcess = true;
+                var w = Stopwatch.StartNew();
+
+                if (priorityFilter != null) {
+                    await TaskExtension.WhenAll(LoadedOnly.Where(priorityFilter.Test).Select(async x => {
+                        if (cancellation.IsCancellationRequested) return;
+                        if (x.Status == ServerStatus.Unloaded) {
+                            await x.Update(ServerEntry.UpdateMode.Lite);
+                            Pinged++;
+                        }
+                    }), SettingsHolder.Online.PingConcurrency, cancellation);
+                    UpdateList();
+
+                    if (cancellation.IsCancellationRequested) return;
+                }
+
+                await TaskExtension.WhenAll(LoadedOnly.Select(async x => {
+                    if (cancellation.IsCancellationRequested) return;
                     if (x.Status == ServerStatus.Unloaded) {
                         await x.Update(ServerEntry.UpdateMode.Lite);
+                        Pinged++;
                     }
-                    Pinged++;
-                }), OptionConcurrentThreadsNumber, cancellation);
+                }), SettingsHolder.Online.PingConcurrency, cancellation);
+                UpdateList();
+
+                Logging.Write($"[OnlineManager] Pinging {Pinged} servers: {w.Elapsed.TotalMilliseconds:F2} ms");
+            } finally {
+                PingingInProcess = false;
             }
-
-            await TaskExtension.WhenAll(LoadedOnly.Select(async x => {
-                if (x.Status == ServerStatus.Unloaded) {
-                    await x.Update(ServerEntry.UpdateMode.Lite);
-                }
-                Pinged++;
-            }), OptionConcurrentThreadsNumber, cancellation);
-
-            _pingEverythingInProcess = false;
         }
 
         private AsyncCommand _refreshCommand;

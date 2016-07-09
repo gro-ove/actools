@@ -97,6 +97,7 @@
     <Compile Include="Helpers\DragAdorner.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
     <Compile Include="Helpers\ShellLink.cs" />
+    <Compile Include="Helpers\TaskbarProgress.cs" />
     <Compile Include="Helpers\Toast.cs" />
     <Compile Include="Helpers\ToastWin8Helper.cs" />
     <Compile Include="IPreviewProvider.cs" />

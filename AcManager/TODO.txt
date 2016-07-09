@@ -491,8 +491,13 @@ fixme:
     - laggy online tab
     - switching from online tab
     - race: last position isn't fixed enough
+    - are async requests killed by timeout?!
+    - practice: gold medals
 
 todo:
+    - rename addons to plugins
+    - pack content and addons to main exe-file!
+
     - upload Content to Trello for those who doesn't have Internet connection
     - custom showroom: proper wpf-based errors handling for invalid dx and stuff
 

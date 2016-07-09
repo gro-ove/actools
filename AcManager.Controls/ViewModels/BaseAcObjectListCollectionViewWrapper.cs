@@ -26,7 +26,7 @@ namespace AcManager.Controls.ViewModels {
         [NotNull]
         public AcWrapperCollectionView MainList {
             get {
-                if (!_loaded) {
+                if (!Loaded) {
                     Load();
                 }
 
@@ -52,14 +52,16 @@ namespace AcManager.Controls.ViewModels {
             MainList.Refresh();
         }
 
-        private bool _loaded, _second;
+        protected bool Loaded { get; private set; }
+
+        private bool _second;
 
         /// <summary>
         /// Don’t forget to use me!
         /// </summary>
         public virtual void Load() {
-            if (_loaded) return;
-            _loaded = true;
+            if (Loaded) return;
+            Loaded = true;
 
             if (ListFilter != null) {
                 _list.ItemPropertyChanged += List_ItemPropertyChanged;
@@ -89,8 +91,8 @@ namespace AcManager.Controls.ViewModels {
         /// Don’t forget to use me!
         /// </summary>
         public virtual void Unload() {
-            if (!_loaded) return;
-            _loaded = false;
+            if (!Loaded) return;
+            Loaded = false;
             
             if (ListFilter != null) {
                 _list.ItemPropertyChanged -= List_ItemPropertyChanged;

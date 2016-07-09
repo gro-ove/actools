@@ -13,6 +13,14 @@ namespace AcManager.Controls.UserControls {
             InnerTrackBlockPanel.DataContext = this;
         }
 
+        public static readonly DependencyProperty ShowPreviewProperty = DependencyProperty.Register(nameof(ShowPreview), typeof(bool),
+                typeof(TrackBlock), new PropertyMetadata(true));
+
+        public bool ShowPreview {
+            get { return (bool)GetValue(ShowPreviewProperty); }
+            set { SetValue(ShowPreviewProperty, value); }
+        }
+
         public static readonly DependencyProperty TrackProperty = DependencyProperty.Register(nameof(Track), typeof(TrackBaseObject),
                 typeof(TrackBlock));
 

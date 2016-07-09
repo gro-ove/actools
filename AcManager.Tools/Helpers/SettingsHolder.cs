@@ -73,6 +73,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _compactUi;
+
+            public bool CompactUi {
+                get { return _compactUi ?? (_compactUi = ValuesStorage.GetBool("Settings.OnlineSettings.CompactUi", false)).Value; }
+                set {
+                    if (Equals(value, _compactUi)) return;
+                    _compactUi = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.CompactUi", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _rememberPasswords;
 
             public bool RememberPasswords {
@@ -85,18 +97,66 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _useFastServer;
+            private bool? _loadServerInformationDirectly;
 
-            public bool UseFastServer {
+            public bool LoadServerInformationDirectly {
                 get {
-                    return false;
-                    /*return _useFastServer ??
-                            (_useFastServer = AppKeyHolder.IsAllRight && ValuesStorage.GetBool("Settings.OnlineSettings.UseFastServer", false)).Value;*/
+                    return _loadServerInformationDirectly ??
+                            (_loadServerInformationDirectly = ValuesStorage.GetBool("Settings.OnlineSettings.LoadServerInformationDirectly", false)).Value;
                 }
                 set {
-                    if (Equals(value, _useFastServer)) return;
-                    _useFastServer = value;
-                    ValuesStorage.Set("Settings.OnlineSettings.UseFastServer", value);
+                    if (Equals(value, _loadServerInformationDirectly)) return;
+                    _loadServerInformationDirectly = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.LoadServerInformationDirectly", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _pingingWithThreads;
+
+            public bool ThreadsPing {
+                get { return _pingingWithThreads ?? (_pingingWithThreads = ValuesStorage.GetBool("Settings.OnlineSettings.ThreadsPing", false)).Value; }
+                set {
+                    if (Equals(value, _pingingWithThreads)) return;
+                    _pingingWithThreads = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ThreadsPing", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private int? _pingingConcurrency;
+
+            public int PingConcurrency {
+                get { return _pingingConcurrency ?? (_pingingConcurrency = ValuesStorage.GetInt("Settings.OnlineSettings.PingConcurrency", 30)).Value; }
+                set {
+                    value = value.Clamp(1, 1000);
+                    if (Equals(value, _pingingConcurrency)) return;
+                    _pingingConcurrency = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.PingConcurrency", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private int? _pingTimeout;
+
+            public int PingTimeout {
+                get { return _pingTimeout ?? (_pingTimeout = ValuesStorage.GetInt("Settings.OnlineSettings.PingTimeout", 2000)).Value; }
+                set {
+                    if (Equals(value, _pingTimeout)) return;
+                    _pingTimeout = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.PingTimeout", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private int? _scanPingTimeout;
+
+            public int ScanPingTimeout {
+                get { return _scanPingTimeout ?? (_scanPingTimeout = ValuesStorage.GetInt("Settings.OnlineSettings.ScanPingTimeout", 1000)).Value; }
+                set {
+                    if (Equals(value, _scanPingTimeout)) return;
+                    _scanPingTimeout = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ScanPingTimeout", value);
                     OnPropertyChanged();
                 }
             }

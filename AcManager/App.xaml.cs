@@ -59,17 +59,13 @@ namespace AcManager {
             AppArguments.Set(AppFlag.RecentlyClosedQueueSize, ref LinkGroupFilterable.OptionRecentlyClosedQueueSize);
 
             AppArguments.Set(AppFlag.ForceSteamId, ref SteamIdHelper.OptionForceValue);
-
-            AppArguments.Set(AppFlag.PingTimeout, ref KunosApiProvider.OptionPingTimeout);
+            
             AppArguments.Set(AppFlag.IgnoreSystemProxy, ref KunosApiProvider.OptionIgnoreSystemProxy);
             AppArguments.Set(AppFlag.ScanPingTimeout, ref RecentManager.OptionScanPingTimeout);
             AppArguments.Set(AppFlag.LanSocketTimeout, ref KunosApiProvider.OptionLanSocketTimeout);
             AppArguments.Set(AppFlag.LanPollTimeout, ref KunosApiProvider.OptionLanPollTimeout);
             AppArguments.Set(AppFlag.WebRequestTimeout, ref KunosApiProvider.OptionWebRequestTimeout);
             AppArguments.Set(AppFlag.CommandTimeout, ref GameCommandExecutorBase.OptionCommandTimeout);
-
-            AppArguments.Set(AppFlag.PingConcurrency, ref BaseOnlineManager.OptionConcurrentThreadsNumber);
-            AppArguments.Set(AppFlag.AlwaysGetInformationDirectly, ref ServerEntry.OptionAlwaysGetInformationDirectly);
 
             AppArguments.Set(AppFlag.DisableAcRootChecking, ref AcRootDirectory.OptionDisableChecking);
             AppArguments.Set(AppFlag.AcObjectsLoadingConcurrency, ref BaseAcManagerNew.OptionAcObjectsLoadingConcurrency);

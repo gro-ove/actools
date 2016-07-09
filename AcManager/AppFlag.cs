@@ -56,12 +56,6 @@ namespace AcManager {
         DisableAcRootChecking,
 
         /// <summary>
-        /// Ping timeout for online mode in milliseconds. Default value: 2000.
-        /// Example: --ping-timeout=5000.
-        /// </summary>
-        PingTimeout,
-
-        /// <summary>
         /// Ping timeout for scanning while manual adding new server in online mode, in milliseconds. Default value: 200.
         /// Example: --scan-ping-timeout=500.
         /// </summary>
@@ -90,13 +84,6 @@ namespace AcManager {
         /// Example: --prevent-disable-web-browser-emulation-mode.
         /// </summary>
         PreventDisableWebBrowserEmulationMode,
-
-        /// <summary>
-        /// Number of servers being pinged simultaneosly (usually with pinging also goes
-        /// loading of cars & cars skins information). Default value: 30.
-        /// Example: --ping-concurrency=50.
-        /// </summary>
-        PingConcurrency,
 
         /// <summary>
         /// Affects almost all objects in lists. Default value: 5.
@@ -135,13 +122,6 @@ namespace AcManager {
         /// Example: --web-request-timeout=5000.
         /// </summary>
         WebRequestTimeout,
-
-        /// <summary>
-        /// Always get server information directly from server instead of using main AC server.
-        /// Should be faster and better. Default value: true.
-        /// Example: --always-get-information-directly=no.
-        /// </summary>
-        AlwaysGetInformationDirectly,
 
         /// <summary>
         /// Less responsible UI, but could be a little bit faster.

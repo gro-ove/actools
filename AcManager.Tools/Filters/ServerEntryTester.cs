@@ -186,7 +186,7 @@ namespace AcManager.Tools.Filters {
             }
 
             var session = obj.Sessions.FirstOrDefault(x => x.Type == sessionType);
-            return session != null && value.Test(session.Duration / 60d);
+            return value.Test(session?.Duration / 60d ?? 0d);
         }
 
         public bool TestChild(ServerEntry obj, string key, IFilter filter) {

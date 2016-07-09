@@ -7,10 +7,12 @@
     <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--car & track previews-->
-    <ToolTip x:Key="CarPreviewTooltip">
+    <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance online:ServerEntry+CarOrOnlyCarIdEntry}">
         <Grid>
             <StackPanel Margin="4 8" Visibility="{Binding CarExists, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObjectWrapper.Value.DisplayName}" Margin="0 0 0 4" />
@@ -27,7 +29,7 @@
         </Grid>
     </ToolTip>
 
-    <ToolTip x:Key="TrackPreviewTooltip">
+    <ToolTip x:Key="TrackPreviewTooltip" d:DataContext="{d:DesignInstance online:ServerEntry}">
         <Grid>
             <StackPanel Margin="4 8" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                 <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
@@ -46,7 +48,7 @@
 
     <!--online-->
     <!--driver & car name-->
-    <DataTemplate x:Key="OnlineDriverEntry">
+    <DataTemplate x:Key="OnlineDriverEntry" DataType="{x:Type online:ServerEntry+CurrentDriver}">
         <DockPanel Width="200">
             <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4" ClearOnChange="True" />
             <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" DockPanel.Dock="Top" />
@@ -55,7 +57,7 @@
     </DataTemplate>
 
     <!--tooltips for clients-->
-    <ToolTip x:Key="ClientsTooltip">
+    <ToolTip x:Key="ClientsTooltip" d:DataContext="{d:DesignInstance online:ServerEntry}">
         <StackPanel Visibility="{Binding CurrentDrivers.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" Margin="4">
             <TextBlock Text="Drivers online:" Style="{StaticResource Label}" />
             <ItemsControl ItemsSource="{Binding CurrentDrivers}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxHeight="480" MaxWidth="450"
@@ -64,7 +66,7 @@
     </ToolTip>
 
     <!--session block-->
-    <DataTemplate x:Key="SessionItem">
+    <DataTemplate x:Key="SessionItem" DataType="{x:Type online:ServerEntry+Session}">
         <TextBlock Text="{Binding DisplayTypeShort}" Name="TextBlock" Foreground="{DynamicResource ButtonText}" Style="{StaticResource Label}"
                 Background="{DynamicResource ButtonBackground}" Height="20" Width="20" TextAlignment="Center" Padding="0 2 0 0">
             <TextBlock.ToolTip>
@@ -429,6 +431,43 @@
                                 Visibility="{TemplateBinding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True"
                                 Margin="-2" />
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextHover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextPressed}" />
+                            <Setter TargetName="IconPath" Property="Fill" Value="{DynamicResource ModernButtonIconForegroundPressed}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextDisabled}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--quick filter buttons (big)-->
+    <Style x:Key="BigButton" TargetType="{x:Type mui:ModernToggleButton}" BasedOn="{StaticResource {x:Type mui:ModernButton}}">
+        <Setter Property="Width" Value="48" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="EllipseDiameter" Value="24" />
+        <Setter Property="Margin" Value="0 0 8 0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type mui:ModernToggleButton}">
+                    <DockPanel Background="Transparent">
+                        <TextBlock TextAlignment="Center" Margin="0 4 0 0" Text="{TemplateBinding Content}" Style="{StaticResource Label}"
+                                   DockPanel.Dock="Bottom" />
+                        <Grid Margin="{TemplateBinding Padding}" Width="{TemplateBinding EllipseDiameter}" Height="{TemplateBinding EllipseDiameter}">
+                            <Path x:Name="IconPath" Data="{TemplateBinding IconData}" Fill="{TemplateBinding Foreground}" Stretch="Uniform"
+                                    SnapsToDevicePixels="True" />
+                            <Path Data="F1 M 60,0 L0,60 L4,64 L64,4 Z" Fill="Red" Stretch="Uniform"
+                                    Visibility="{TemplateBinding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}" SnapsToDevicePixels="True"
+                                    Margin="-2" />
+                        </Grid>
+                    </DockPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextHover}" />

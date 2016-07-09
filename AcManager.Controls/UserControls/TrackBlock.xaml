@@ -60,7 +60,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <Grid VerticalAlignment="Center">
+        <Grid VerticalAlignment="Center" Visibility="{Binding ShowPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid Width="355" Height="200" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <mui:BetterImage Filename="{Binding Track.PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" Width="355" Height="200" />
                 <mui:BetterImage Filename="{Binding Track.OutlineImage}" StretchDirection="DownOnly" MaxWidth="355" MaxHeight="200" HorizontalAlignment="Center"
