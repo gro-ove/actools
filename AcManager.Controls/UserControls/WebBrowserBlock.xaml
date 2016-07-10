@@ -28,5 +28,5 @@
         <TextBox Name="UrlTextBox" PreviewKeyDown="UrlTextBox_OnPreviewKeyDown" PreviewKeyUp="UrlTextBox_KeyUp" />
     </DockPanel>
 
-    <WebBrowser Name="WebBrowser" Navigating="WebBrowser_OnNavigating" Navigated="WebBrowser_OnNavigated" />
+    <WebBrowser Name="WebBrowser" Navigating="WebBrowser_OnNavigating" Navigated="WebBrowser_OnNavigated" LoadCompleted="WebBrowser_OnLoadCompleted" />
 </DockPanel>

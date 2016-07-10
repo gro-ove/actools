@@ -190,6 +190,10 @@ namespace AcTools.Processes {
             public T GetAdditional<T>() {
                 return AdditionalPropertieses.OfType<T>().FirstOrDefault();
             }
+            
+            public bool HasAdditional<T>() {
+                return AdditionalPropertieses.OfType<T>().Any();
+            }
 
             private List<IDisposable> _disposeLater;
             private List<string> _removeLater;

@@ -223,6 +223,9 @@
     <Compile Include="Pages\Drive\QuickDrive_Weekend.xaml.cs">
       <DependentUpon>QuickDrive_Weekend.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\Srs.xaml.cs">
+      <DependentUpon>Srs.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\Rsr.xaml.cs">
       <DependentUpon>Rsr.xaml</DependentUpon>
     </Compile>
@@ -250,8 +253,8 @@
     <Compile Include="Pages\Settings\SettingsReplays.xaml.cs">
       <DependentUpon>SettingsReplays.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\SettingsRsr.xaml.cs">
-      <DependentUpon>SettingsRsr.xaml</DependentUpon>
+    <Compile Include="Pages\Settings\SettingsLive.xaml.cs">
+      <DependentUpon>SettingsLive.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SettingsDev.xaml.cs">
       <DependentUpon>SettingsDev.xaml</DependentUpon>
@@ -618,6 +621,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Drive\Srs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Drive\Rsr.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -734,7 +741,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Settings\SettingsRsr.xaml">
+    <Page Include="Pages\Settings\SettingsLive.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1201,6 +1208,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Data\RsrStyle.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Data\SrsStyle.css" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

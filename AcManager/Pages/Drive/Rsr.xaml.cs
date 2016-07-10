@@ -283,7 +283,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            WebBrowser.UserStyle = SettingsHolder.LiveTiming.RsrCustomStyle && uri.StartsWith("http://www.radiators-champ.com/RSRLiveTiming/")
+            WebBrowser.UserStyle = SettingsHolder.Live.RsrCustomStyle && uri.StartsWith("http://www.radiators-champ.com/RSRLiveTiming/")
                     ? GetCustomStyle() : null;
 
             if (uri.Contains("page=setups")) {

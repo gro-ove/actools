@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -76,11 +77,12 @@ namespace AcTools.Utils.Helpers {
             var value = obj[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
+
             var result = value.ToString();
             if (string.IsNullOrEmpty(result)) return null;
+
             double val;
-            if (!double.TryParse(result, out val)) return null;
-            return (int)val;
+            return !double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out val) ? (int?)null : (int)val;
         }
 
         private static Regex _dequoteStringRegex;

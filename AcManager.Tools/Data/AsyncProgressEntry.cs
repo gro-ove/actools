@@ -12,6 +12,11 @@ namespace AcManager.Tools.Data {
             Progress = progress;
         }
 
+        public AsyncProgressEntry(string message, int value, int total) {
+            Message = message;
+            Progress = (double)value / total + 0.000001;
+        }
+
         public static AsyncProgressEntry CreateDownloading(long receivedBytes, long totalBytes) {
             if (totalBytes == -1) {
                 return new AsyncProgressEntry($@"Loaded {receivedBytes.ReadableSize(1)}", null);

@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="AcManager.Pages.Drive.Srs" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
+        xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance drive:Srs+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" x:Name="This">
+
+    <Grid Style="{StaticResource ContentRootWithPadding}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--<DockPanel Margin="0 0 0 20" Visibility="{Binding ShowExtensionMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}">Got It</Button>
+            <mui:BbCodeBlock>If you're using Chrome-like browser, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]here[/url] is an extension for starting RSR events directly from browser!</mui:BbCodeBlock>
+        </DockPanel>-->
+
+        <userControls:WebBrowserBlock Grid.Row="1" Name="WebBrowser" UserAgent="Assetto Corsa Launcher" StartPage="{Binding StartPage}" Navigated="WebBrowser_OnNavigated" />
+        <Grid Grid.Row="2" Margin="0 16 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Background="Transparent">
+                <DockPanel Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                    <DockPanel.ToolTip>
+                        <StackPanel Margin="4 8">
+                            <TextBlock Style="{StaticResource Heading2}" Text="{Binding Car.DisplayName}" Margin="0 0 0 4" />
+                            <userControls:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
+                        </StackPanel>
+                    </DockPanel.ToolTip>
+                    <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" DockPanel.Dock="Left"
+                            services:ImageViewerService.Image="{Binding CarSkin.PreviewImage}" />
+                    <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
+                </DockPanel>
+
+                <DockPanel Margin="20 0 0 0" DataContext="{Binding Player}"
+                        Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Background="Transparent">
+                    <DockPanel.ToolTip>
+                        <StackPanel Margin="4 6" Width="240">
+                            <StackPanel Orientation="Horizontal" Margin="0 2">
+                                <TextBlock Style="{StaticResource Label}" Width="80">Name:</TextBlock>
+                                <TextBlock Text="{Binding DisplayName, TargetNullValue='?'}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0 2">
+                                <TextBlock Style="{StaticResource Label}" Width="80">Team:</TextBlock>
+                                <TextBlock Text="{Binding Team, TargetNullValue='?'}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0 2">
+                                <TextBlock Style="{StaticResource Label}" Width="80">Nationality:</TextBlock>
+                                <TextBlock Text="{Binding Nationality, TargetNullValue='?'}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel.ToolTip>
+                    <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
+                </DockPanel>
+
+                <DockPanel Margin="20 0 0 0" DataContext="{Binding Server}"
+                        Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Background="Transparent">
+                    <DockPanel.ToolTip>
+                        <StackPanel Margin="4 6" Width="240">
+                            <StackPanel Orientation="Horizontal" Margin="0 2">
+                                <TextBlock Style="{StaticResource Label}" Width="80">Name:</TextBlock>
+                                <TextBlock Text="{Binding DisplayName, TargetNullValue='?'}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0 2">
+                                <TextBlock Style="{StaticResource Label}" Width="80">IP:</TextBlock>
+                                <TextBlock Text="{Binding Ip, TargetNullValue='?'}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0 2">
+                                <TextBlock Style="{StaticResource Label}" Width="80">Port:</TextBlock>
+                                <TextBlock Text="{Binding Port, TargetNullValue='?'}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel.ToolTip>
+                    <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
+                </DockPanel>
+
+                <DockPanel Margin="20 0 0 0" Visibility="{Binding StartTime, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                        Background="Transparent">
+                    <DockPanel.ToolTip>
+                        <StackPanel Margin="4 6" Width="240">
+                            <StackPanel Orientation="Horizontal" Margin="0 2">
+                                <TextBlock Style="{StaticResource Label}" Width="100">Start at:</TextBlock>
+                                <TextBlock Text="{Binding StartTime, TargetNullValue='?'}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel.ToolTip>
+                    <TextBlock Text="{Binding LeftTime, StringFormat='{}{0:hh}:{0:mm}:{0:ss}'}" Style="{StaticResource Heading2}" VerticalAlignment="Center"
+                            Margin="0 -2 0 0" />
+                </DockPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                <Button Visibility="{Binding CanQuit, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Command="{Binding QuitCommand, ElementName=This}" ToolTip="Quit registration" Margin="0 0 4 0">Quit</Button>
+                <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)">Go!</Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

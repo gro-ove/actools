@@ -73,21 +73,6 @@ done:
     + specs editor
         + specs clearer?
         + graphs editor
-    + drive feature
-        + quick drive
-            + switch skins
-            + select car by brands
-            + select track
-            + condition fields
-            + conditions to race.ini values
-            + autoupdate conditions
-            + presets
-            + tracks by countries
-            + select car by brands
-                + brands cache!
-            + weekends
-            + increase maximum laps number
-        + auto saving replays
     + select something legit as a default weather/car/track/etc
     + fix presets combobox
     + skip reloading on app changes!
@@ -120,6 +105,18 @@ done:
     + Go! style for buttons (with disabled version)
     + drive feature
         + quick drive
+            + switch skins
+            + select car by brands
+            + select track
+            + condition fields
+            + conditions to race.ini values
+            + autoupdate conditions
+            + presets
+            + tracks by countries
+            + select car by brands
+                + brands cache!
+            + weekends
+            + increase maximum laps number
             + select car by brands
                 + fix car brands selection
                 + switch between parent+childs
@@ -203,6 +200,17 @@ done:
             + select skin
             + force exit from event page if selected career isn't available
             + pass errors to careerobject level
+        + RSR
+            + built-in part
+                + start the race
+                + install setups
+                - share setups?
+            + chrome extension 
+                + start the race
+                + install setups
+            + option for disable RSR plugin if started without RSR event ID
+            + special RSR name?
+        + auto saving replays
     + find Kunos content
         + cars
         + tracks
@@ -502,6 +510,8 @@ todo:
     - custom showroom: proper wpf-based errors handling for invalid dx and stuff
 
     - lite mode (without main form): overlays, second commands, attempts to open main form?
+    - automatically fix name, brand name and badge for URD-cars
+        - optional!
 
     > proper sharing
         > special types:
@@ -560,16 +570,17 @@ todo:
             + quickly switchable controls configs?
             - specially syncronized steering wheel
         - race results: total time
-        + RSR
-            + built-in part
-                + start the race
-                + install setups
-                - share setups?
-            + chrome extension 
-                + start the race
-                + install setups
-            + option for disable RSR plugin if started without RSR event ID
-            + special RSR name?
+        - SRS
+            + built-in browser
+            + view even properties
+            + custom style
+            + time counter
+            ? start the race
+            - quit
+            - set to limited only for now
+            - notifications about coming race
+            - update status in background
+            - some widget?
 
     + go buttons keyboard shortcut
         + quick drive

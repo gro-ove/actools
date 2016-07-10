@@ -84,18 +84,20 @@ namespace AcManager.Pages.Windows {
             }
 
             UpdateLiveTimingTabs();
-            SettingsHolder.LiveTiming.PropertyChanged += Rsr_PropertyChanged;
+            SettingsHolder.Live.PropertyChanged += Rsr_PropertyChanged;
         }
 
         private void Rsr_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(SettingsHolder.LiveTimingSettings.RsrEnabled)) {
+            if (e.PropertyName == nameof(SettingsHolder.LiveSettings.RsrEnabled) ||
+                    e.PropertyName == nameof(SettingsHolder.LiveSettings.SrsEnabled)) {
                 UpdateLiveTimingTabs();
             }
         }
 
         private void UpdateLiveTimingTabs() {
-            RsrLink.IsShown = SettingsHolder.LiveTiming.RsrEnabled;
-            LiveTimingGroup.IsShown = LiveTimingGroup.Links.Any(x => x.IsShown);
+            RsrLink.IsShown = SettingsHolder.Live.RsrEnabled;
+            SrsLink.IsShown = SettingsHolder.Live.SrsEnabled;
+            LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown);
         }
 
         /// <summary>

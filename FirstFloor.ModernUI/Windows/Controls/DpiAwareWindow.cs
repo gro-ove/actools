@@ -92,6 +92,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        public new void Close() {
+            try {
+                base.Close();
+            } catch (InvalidOperationException e) {
+                Logging.Warning("[DpiAwareWindow] Close error: " + e.Message);
+            } catch (Exception e) {
+                Logging.Warning("[DpiAwareWindow] Close error: " + e);
+            }
+        }
+
         protected override void OnInitialized(EventArgs e) {
             base.OnInitialized(e);
             LoadLocationAndSize();

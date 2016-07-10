@@ -706,7 +706,9 @@ namespace AcManager.Tools.Managers.Online {
             }, null, null, null, new Game.OnlineProperties {
                 RequestedCar = correctId,
                 ServerIp = Ip,
+                ServerName = DisplayName,
                 ServerPort = PortT,
+                ServerHttpPort = PortC,
                 Guid = SteamIdHelper.Instance.Value,
                 Password = Password
             });

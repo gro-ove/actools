@@ -9,6 +9,7 @@ using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using StringBasedFilter;
 
 namespace AcManager.Tools.SemiGui {
     public static class GameWrapper {
@@ -49,8 +50,8 @@ namespace AcManager.Tools.SemiGui {
         }
 
         private static void PrepareRaceModeRsr(Game.StartProperties properties) {
-            if (!SettingsHolder.LiveTiming.RsrEnabled) return;
-            if (SettingsHolder.LiveTiming.RsrDisableAppAutomatically) {
+            if (!SettingsHolder.Live.RsrEnabled) return;
+            if (SettingsHolder.Live.RsrDisableAppAutomatically) {
                 var rsrMode = properties.GetAdditional<RsrMark>() != null;
                 var form = AcSettingsHolder.Forms.Entries.GetByIdOrDefault(RsrMark.FormId);
                 if (form != null) {
@@ -58,6 +59,35 @@ namespace AcManager.Tools.SemiGui {
                     AcSettingsHolder.Forms.SaveImmediately();
                 }
             }
+        }
+
+        private class StringTester : ITester<string> {
+            public string ParameterFromKey(string key) {
+                return null;
+            }
+
+            public bool Test(string obj, string key, ITestEntry value) {
+                return key == null && value.Test(obj);
+            }
+        }
+
+        private static void PrepareRaceDriverName(Game.StartProperties properties) {
+            if (properties.HasAdditional<SrsMark>()) return;
+
+            var online = properties.ModeProperties as Game.OnlineProperties;
+            if (online != null && SettingsHolder.Live.SrsEnabled && SettingsHolder.Live.SrsAutoMode) {
+                var filter = Filter.Create(new StringTester(), SettingsHolder.Live.SrsAutoMask, true);
+                if (filter.Test(online.ServerName)) {
+                    properties.SetAdditional(new SrsMark {
+                        Name = SrsMark.GetName(),
+                        Nationality = "",
+                        Team = ""
+                    });
+                    return;
+                }
+            }
+
+            properties.SetAdditional(new DriverName());
         }
 
         private static async Task<Game.Result> StartAsync(Game.StartProperties properties, bool raceMode) {
@@ -68,7 +98,7 @@ namespace AcManager.Tools.SemiGui {
             if (raceMode) {
                 PrepareRaceModeImmediateStart(properties);
                 PrepareRaceModeRsr(properties);
-                properties.SetAdditional(new DriverName());
+                PrepareRaceDriverName(properties);
             }
 
             if (_factory == null) {
@@ -119,6 +149,8 @@ namespace AcManager.Tools.SemiGui {
                         (result == null || param.Cancel ? Cancelled : Finished)?.Invoke(null, new GameFinishedArgs(properties, result));
 
                         ui.OnResult(result, replayHelper);
+                    } else {
+                        ui.OnResult(null, null);
                     }
 
                     return result;

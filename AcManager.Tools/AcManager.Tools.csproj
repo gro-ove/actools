@@ -136,6 +136,7 @@
     <Compile Include="Filters\UniqueAcObjectTester.cs" />
     <Compile Include="GameProperties\RaceCommandExecutor.cs" />
     <Compile Include="GameProperties\RsrMark.cs" />
+    <Compile Include="GameProperties\SrsMark.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />

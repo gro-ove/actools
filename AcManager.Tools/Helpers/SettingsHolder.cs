@@ -968,8 +968,57 @@ namespace AcManager.Tools.Helpers {
         public static SharingSettings Sharing => _sharing ?? (_sharing = new SharingSettings());
 
 
-        public class LiveTimingSettings : NotifyPropertyChanged {
-            internal LiveTimingSettings() {}
+        public class LiveSettings : NotifyPropertyChanged {
+            internal LiveSettings() {}
+
+            private bool? _srsEnabled;
+
+            public bool SrsEnabled {
+                get { return _srsEnabled ?? (_srsEnabled = ValuesStorage.GetBool("Settings.LiveSettings.SrsEnabled", true)).Value; }
+                set {
+                    if (Equals(value, _srsEnabled)) return;
+                    _srsEnabled = value;
+                    ValuesStorage.Set("Settings.LiveSettings.SrsEnabled", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _srsCustomStyle;
+
+            public bool SrsCustomStyle {
+                get { return _srsCustomStyle ?? (_srsCustomStyle = ValuesStorage.GetBool("Settings.LiveSettings.SrsCustomStyle", true)).Value; }
+                set {
+                    if (Equals(value, _srsCustomStyle)) return;
+                    _srsCustomStyle = value;
+                    ValuesStorage.Set("Settings.LiveSettings.SrsCustomStyle", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _srsAutoMode;
+
+            public bool SrsAutoMode {
+                get { return _srsAutoMode ?? (_srsAutoMode = ValuesStorage.GetBool("Settings.LiveSettings.SrsAutoMode", true)).Value; }
+                set {
+                    if (Equals(value, _srsAutoMode)) return;
+                    _srsAutoMode = value;
+                    ValuesStorage.Set("Settings.LiveSettings.SrsAutoMode", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _srsAutoMask;
+
+            public string SrsAutoMask {
+                get { return _srsAutoMask ?? (_srsAutoMask = ValuesStorage.GetString("Settings.LiveSettings.SrsAutoMask", "SimRacingSystem*")); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _srsAutoMask)) return;
+                    _srsAutoMask = value;
+                    ValuesStorage.Set("Settings.LiveSettings.SrsAutoMask", value);
+                    OnPropertyChanged();
+                }
+            }
 
             private bool? _rsrEnabled;
 
@@ -1039,8 +1088,8 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        private static LiveTimingSettings _liveTiming;
+        private static LiveSettings _live;
 
-        public static LiveTimingSettings LiveTiming => _liveTiming ?? (_liveTiming = new LiveTimingSettings());
+        public static LiveSettings Live => _live ?? (_live = new LiveSettings());
     }
 }

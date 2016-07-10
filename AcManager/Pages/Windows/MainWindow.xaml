@@ -21,12 +21,17 @@
                 <mui:Link DisplayName="Challenges" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drive-challenge" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
-        <mui:LinkGroup x:Name="LiveTimingGroup" GroupKey="drive" DisplayName="live timing">
+        <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="live">
             <mui:LinkGroup.Links>
                 <mui:Link x:Name="RsrLink" DisplayName="RSR" Source="/Pages/Drive/Rsr.xaml" />
+                <mui:Link x:Name="SrsLink" DisplayName="SRS" IsEnabled="False" Source="/Pages/Drive/Srs.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
-        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="online" Source="/Pages/Drive/Online.xaml" />
+        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="online" Source="/Pages/Drive/Online.xaml">
+            <!--<mui:LinkGroupFilterable.Links>
+                <mui:Link DisplayName="RECENT" Source="/Pages/Drive/Online.xaml?Filter=recent+" />
+            </mui:LinkGroupFilterable.Links>-->
+        </mui:LinkGroupFilterable>
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="lan" Source="/Pages/Drive/Online.xaml?Mode=Lan" />
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts" Source="/Pages/Drive/Online.xaml?Mode=Recent" />
 

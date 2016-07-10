@@ -111,17 +111,45 @@ namespace AcManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to body { background: black !important }
-        ///body, #cntdwn, .driver_profile { color: white !important }
-        ///* { font-family: Segoe UI, sans-serif !important }
-        ///a { color: #E20035 !important }
-        ///a:hover { color: #CA0030 !important }
-        ///a:focused, a:active { color: #CA0030 !important }
-        ///#page { background: #333 !important }
-        ///h1, h2 { font-weight: 100 !important; font-family: Segoe UI Light, Segoe UI, sans-serif !important }
-        ///.margin_top_0 { margin-top: 20px !important; }
-        ///.dd { font-size: 12px; }
-        ///#track_msdd, #car_msdd  [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to body {
+        ///background:#000!important;
+        ///}
+        ///
+        ///body,#cntdwn,.driver_profile {
+        ///color:#FFF!important;
+        ///}
+        ///
+        ///* {
+        ///font-family:Segoe UI, sans-serif!important;
+        ///}
+        ///
+        ///a {
+        ///color:#E20035!important;
+        ///}
+        ///
+        ///#page {
+        ///background:#333!important;
+        ///}
+        ///
+        ///h1,h2 {
+        ///font-weight:100!important;
+        ///font-family:Segoe UI Light, Segoe UI, sans-serif!important;
+        ///}
+        ///
+        ///.margin_top_0 {
+        ///margin-top:20px!important;
+        ///}
+        ///
+        ///.dd {
+        ///font-size:12px;
+        ///}
+        ///
+        ///#track_msdd,#car_msdd {
+        ///width:300px!important;
+        ///}
+        ///
+        ///#car_msdd ~ .submit_button {
+        ///margin-left: [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string RsrStyle {
             get {
@@ -146,6 +174,27 @@ namespace AcManager.Properties {
             get {
                 object obj = ResourceManager.GetObject("ShowroomPreviewSphere", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #content &gt; div &gt; div + div,.header .logo,.header .mainmenu,.newmenucenter,.menu.bottom_links,#footer .lower,.newmenu + .wrapper,div[id^=Box_jbeeb_] {
+        ///display:none!important;
+        ///}
+        ///
+        ///.unav &gt; li &gt; ul li ul, .unav li &gt;ul li, .unav &gt; li &gt; .fulldrop, .unav &gt; li &gt; .coldrop, .unav &gt; li &gt; ul, .unav &gt; li, .nav2 &gt; li &gt; ul li ul, .nav2 li &gt;ul li, .nav2 &gt; li &gt; .fulldrop, .nav2 &gt; li &gt; .coldrop, .nav2 &gt; li &gt; ul, .nav2 &gt; li {
+        ///transition:none;
+        ///-webkit-transition:none;
+        ///}
+        ///
+        ///html {
+        ///background:#000;
+        ///height:100%;
+        ///text-ali [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SrsStyle {
+            get {
+                return ResourceManager.GetString("SrsStyle", resourceCulture);
             }
         }
     }

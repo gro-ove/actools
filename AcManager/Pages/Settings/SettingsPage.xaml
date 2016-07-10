@@ -10,7 +10,7 @@
                 <mui:Link DisplayName="addons" Source="/Pages/Settings/SettingsAddons.xaml" />
                 <mui:Link DisplayName="drive" Source="/Pages/Settings/SettingsDrive.xaml" />
                 <mui:Link DisplayName="replays" Source="/Pages/Settings/SettingsReplays.xaml" IsNew="True" />
-                <mui:Link DisplayName="live timing" Source="/Pages/Settings/SettingsRsr.xaml" />
+                <mui:Link DisplayName="live" Source="/Pages/Settings/SettingsLive.xaml" />
                 <mui:Link DisplayName="online" Source="/Pages/Settings/SettingsOnline.xaml" IsEnabled="{x:Static internal:AppKeyHolder.IsAllRight}" />
                 <mui:Link DisplayName="quick switches" Source="/Pages/Settings/SettingsQuickSwitches.xaml" />
                 <mui:Link DisplayName="custom showroom" Source="/Pages/Settings/SettingsCustomShowroom.xaml" />

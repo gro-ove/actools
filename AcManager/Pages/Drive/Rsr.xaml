@@ -58,7 +58,7 @@
             </userControls:ModernPopup>
 
             <StackPanel Grid.Column="1" Margin="20 0" Orientation="Horizontal" VerticalAlignment="Center">
-                <DockPanel Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                <DockPanel Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Background="Transparent">
                     <DockPanel.ToolTip>
                         <StackPanel Margin="4 8">
                             <TextBlock Style="{StaticResource Heading2}" Text="{Binding Car.DisplayName}" Margin="0 0 0 4" />
@@ -70,7 +70,8 @@
                     <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
                 </DockPanel>
 
-                <DockPanel Margin="20 0 0 0" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                <DockPanel Margin="20 0 0 0" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                        Background="Transparent">
                     <DockPanel.ToolTip>
                         <StackPanel Margin="4 8">
                             <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />

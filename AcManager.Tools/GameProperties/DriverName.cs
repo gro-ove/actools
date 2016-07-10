@@ -9,13 +9,15 @@ namespace AcManager.Tools.GameProperties {
         public override void Set(IniFile file) {
             var drive = SettingsHolder.Drive;
             if (file["REMOTE"].GetBool("ACTIVE", false)) {
-                file["REMOTE"].Set("NAME", drive.DifferentPlayerNameOnline ? drive.PlayerNameOnline : drive.PlayerName);
+                var driverName = drive.DifferentPlayerNameOnline ? drive.PlayerNameOnline : drive.PlayerName;
+                file["REMOTE"].Set("NAME", driverName);
+                file["CAR_0"].Set("DRIVER_NAME", driverName);
             } else {
                 var playerName = drive.PlayerName;
-                if (SettingsHolder.LiveTiming.RsrEnabled && SettingsHolder.LiveTiming.RsrDifferentPlayerName &&
+                if (SettingsHolder.Live.RsrEnabled && SettingsHolder.Live.RsrDifferentPlayerName &&
                         AcSettingsHolder.Forms.Entries.GetByIdOrDefault(RsrMark.FormId)?.IsVisible == true) {
                     Logging.Write("[DriverName] RSR driver name");
-                    playerName = SettingsHolder.LiveTiming.RsrPlayerName;
+                    playerName = SettingsHolder.Live.RsrPlayerName;
                 } else {
                     Logging.Write("[DriverName] Single-player driver name");
                 }
