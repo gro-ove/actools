@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using AcManager.Controls.Dialogs;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Properties;
@@ -28,8 +29,6 @@ using RoutedEventArgs = System.Windows.RoutedEventArgs;
 
 namespace AcManager.Pages.Drive {
     public partial class Srs {
-        private static WeakReference<Srs> Instance; 
-
         private ViewModel Model => (ViewModel)DataContext;
 
         public Srs() {
@@ -39,7 +38,6 @@ namespace AcManager.Pages.Drive {
             });
             InitializeComponent();
             WebBrowser.SetScriptProvider(new ScriptProvider(Model));
-            Instance = new WeakReference<Srs>(this);
         }
 
         public sealed class ServerInformation : Displayable {
@@ -135,6 +133,7 @@ namespace AcManager.Pages.Drive {
                     _player = value;
                     OnPropertyChanged();
                     _goCommand?.OnCanExecuteChanged();
+                    Update();
                 }
             }
 
@@ -147,6 +146,21 @@ namespace AcManager.Pages.Drive {
                     _server = value;
                     OnPropertyChanged();
                     _goCommand?.OnCanExecuteChanged();
+                    Update();
+                }
+            }
+
+            private bool _available;
+
+            private void Update() {
+                var available = GoCommand.CanExecute(null);
+                if (available == _available) return;
+
+                _available = available;
+                if (_available) {
+                    Toast.Show("SRS Server Is Ready", "Click to join the race", () => {
+                        Go().Forget();
+                    });
                 }
             }
 
@@ -184,6 +198,7 @@ namespace AcManager.Pages.Drive {
                     _goCommand?.OnCanExecuteChanged();
 
                     CarSkin = null;
+                    Update();
                 }
             }
 
@@ -240,7 +255,8 @@ namespace AcManager.Pages.Drive {
 
             private AsyncCommand _goCommand;
 
-            public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(o => Go(), o => Server?.Ip != null && Player != null && CarId != null));
+            public AsyncCommand GoCommand => _goCommand ?? (_goCommand =
+                    new AsyncCommand(o => Go(), o => _server?.Ip != null && _server.Port.HasValue && _player != null && _carId != null));
         }
 
         private AsyncCommand _quitCommand;
@@ -252,6 +268,12 @@ namespace AcManager.Pages.Drive {
             await Task.Delay(500);
         }, o => Model.CanQuit));
 
+        private RelayCommand _testCommand;
+
+        public RelayCommand TestCommand => _testCommand ?? (_testCommand = new RelayCommand(o => {
+            WebBrowser.Execute("location.reload(true)");
+        }));
+
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         [ComVisible(true)]
         public class ScriptProvider : BaseScriptProvider {
@@ -262,10 +284,7 @@ namespace AcManager.Pages.Drive {
             }
 
             public async void SetCars(string json) {
-                if (json == null) return;
-
-                Srs instance;
-                if (!Instance.TryGetTarget(out instance)) return;
+                if (json == null || Associated == null) return;
 
                 var ids = JArray.Parse(json).ToObject<string[]>();
                 var i = 0;
@@ -288,7 +307,7 @@ namespace AcManager.Pages.Drive {
                                     $"<img data-skin-id='{HttpUtility.HtmlEncode(x.Id)}' width=24 style='margin-left:2px' src='data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(x.LiveryImage))}'>");
                         }
 
-                        instance.WebBrowser.Execute($@"
+                        Associated.Execute($@"
 document.querySelector('[id^=""{id}1""]').innerHTML = ""<img width=280 style='margin-right:10px' src='data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(skin.PreviewImage))}'>"";
 document.querySelector('[id^=""{id}2""]').innerHTML = ""{HttpUtility.HtmlEncode(car.DisplayName)}<img width=48 style='margin-left:2px;margin-right:10px;margin-top:-10px;float:left' src='data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(car.LogoIcon))}'>"";
 document.querySelector('[id^=""{id}3""]').innerHTML = ""{liveries}"";
@@ -310,10 +329,7 @@ for (var i = 0; i < l.length; i++){{
             }
 
             public async void UpdatePreview(string carId, string skinId) {
-                if (carId == null) return;
-
-                Srs instance;
-                if (!Instance.TryGetTarget(out instance)) return;
+                if (carId == null || skinId == null || Associated == null) return;
 
                 var car = await CarsManager.Instance.GetByIdAsync(carId);
                 if (car == null) return;
@@ -321,7 +337,7 @@ for (var i = 0; i < l.length; i++){{
                 var skin = await car.SkinsManager.GetByIdAsync(skinId);
                 if (skin == null) return;
 
-                instance.WebBrowser.Execute($@"document.querySelector('[id^=""{carId}1""] img').src = 'data:image/png;base64,{
+                Associated.Execute($@"document.querySelector('[id^=""{carId}1""] img').src = 'data:image/png;base64,{
                         Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(skin.PreviewImage))}';");
             }
 
@@ -367,8 +383,8 @@ for (var i = 0; i < l.length; i++){{
                                   .Replace("#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
         }
 
-        private void WebBrowser_OnNavigated(object sender, NavigationEventArgs e) {
-            var uri = e.Uri.ToString();
+        private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
+            var uri = e.Url;
             if (uri.StartsWith("http://www.simracingsystem.com/select.php?", StringComparison.OrdinalIgnoreCase)) {
                 WebBrowser.Execute(@"
 var g = document.getElementById('gui');

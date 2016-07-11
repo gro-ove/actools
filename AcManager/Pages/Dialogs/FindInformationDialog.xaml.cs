@@ -4,6 +4,7 @@ using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using AcManager.Controls.UserControls;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -146,7 +147,7 @@ namespace AcManager.Pages.Dialogs {
                     $"https://duckduckgo.com/?q=site%3Awikipedia.org+{Uri.EscapeDataString(obj.DisplayName)}&ia=web";
         }
 
-        private void WebBrowser_OnNavigated(object sender, NavigationEventArgs e) {
+        private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
             WebBrowser.Inner.InvokeScript("eval", @"(function(){
     window.onerror = function(err){
         window.external.Log('' + err);

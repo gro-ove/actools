@@ -6,14 +6,35 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
+    public class PageLoadedEventArgs : EventArgs {
+        public PageLoadedEventArgs(string url) {
+            Url = url;
+        }
+
+        public string Url { get; }
+    }
+
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     [ComVisible(true)]
     public abstract class BaseScriptProvider {
+        private WeakReference<WebBrowserBlock> _lastAssociatedWebBrowser;
+
+        [CanBeNull]
+        public WebBrowserBlock Associated {
+            get {
+                WebBrowserBlock res = null;
+                return _lastAssociatedWebBrowser?.TryGetTarget(out res) == true ? res : null;
+            }
+            set { _lastAssociatedWebBrowser = value == null ? null : new WeakReference<WebBrowserBlock>(value); }
+        }
+
         public void NavigateTo(string url) {
             Process.Start(url);
         }
@@ -28,6 +49,10 @@ namespace AcManager.Controls.UserControls {
 
         public string Prompt(string message, string defaultValue) {
             return Dialogs.Prompt.Show(message, "Webpage says", defaultValue);
+        }
+
+        public void FixPage() {
+            Associated?.ModifyPage();
         }
 
         public object CmTest() {
@@ -52,8 +77,9 @@ namespace AcManager.Controls.UserControls {
 
         public WebBrowser Inner => WebBrowser;
 
-        public void SetScriptProvider(object provider) {
+        public void SetScriptProvider(BaseScriptProvider provider) {
             WebBrowser.ObjectForScripting = provider;
+            provider.Associated = this;
         }
 
         public void Execute(string js, bool onload = false) {
@@ -61,8 +87,12 @@ namespace AcManager.Controls.UserControls {
                 WebBrowser.InvokeScript("eval", onload ?
                         "window.addEventListener('load', function(){" + js + "}, false);" :
                         "(function(){" + js + "})();");
+            } catch (InvalidOperationException e) {
+                Logging.Warning("[WebBrowserBlock] Execute() InvalidOperationException: " + e.Message);
             } catch (COMException e) {
-                Logging.Warning("[WebBrowserBlock] Execute: " + e);
+                Logging.Warning("[WebBrowserBlock] Execute() COMException: " + e.Message);
+            } catch (Exception e) {
+                Logging.Warning("[WebBrowserBlock] Execute(): " + e);
             }
         }
 
@@ -87,10 +117,10 @@ namespace AcManager.Controls.UserControls {
         }
 
         private static void OnUserStyleChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((WebBrowserBlock)o).OnUserStyleChanged((string)e.OldValue, (string)e.NewValue);
+            ((WebBrowserBlock)o).OnUserStyleChanged((string)e.NewValue);
         }
 
-        private void OnUserStyleChanged(string oldValue, string newValue) {
+        private void OnUserStyleChanged(string newValue) {
             SetUserStyle(newValue);
         }
 
@@ -110,7 +140,7 @@ var s = document.getElementById('__cm_style');
 if (s) s.parentNode.removeChild(s);
 s = document.createElement('style');
 s.id = '__cm_style';
-s.innerHTML = '" + (userStyle.Replace("\r", "").Replace("\n", "\\n").Replace("'", "\\'") ?? "") + @"';
+s.innerHTML = '" + (userStyle.Replace("\r", "").Replace("\n", "\\n").Replace("'", "\\'")) + @"';
 if (document.body){
     document.body.appendChild(s);
     " + (jsPart ?? "") + @"
@@ -143,10 +173,10 @@ if (document.body){
         }
 
         private static void OnStartPageChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((WebBrowserBlock)o).OnStartPageChanged((string)e.OldValue, (string)e.NewValue);
+            ((WebBrowserBlock)o).OnStartPageChanged((string)e.NewValue);
         }
 
-        private void OnStartPageChanged(string oldValue, string newValue) {
+        private void OnStartPageChanged(string newValue) {
             Navigate(newValue);
         }
 
@@ -168,7 +198,7 @@ if (document.body){
             }
         }
 
-        public event NavigatedEventHandler Navigated;
+        public event EventHandler<PageLoadedEventArgs> PageLoaded;
 
         private void UrlTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter) {
@@ -183,11 +213,8 @@ if (document.body){
             }
         }
 
-        private DateTime _lastNavigated;
-
-        private void WebBrowser_OnNavigated(object sender, NavigationEventArgs e) {
+        internal void ModifyPage() {
             WebBrowserHelper.SetSilent(WebBrowser, true);
-            UrlTextBox.Text = e.Uri.OriginalString;
             CommandManager.InvalidateRequerySuggested();
             Execute(@"window.__cm_loaded = true;
 window.onerror = function(err, url, lineNumber){ window.external.Log('error: `' + err + '` script: `' + url + '` line: ' + lineNumber); };
@@ -208,16 +235,15 @@ document.addEventListener('mousedown', function(e){
     }
 }, false);");
             SetUserStyle(UserStyle);
-            Navigated?.Invoke(sender, e);
-
-            _lastNavigated = DateTime.Now;
+            PageLoaded?.Invoke(WebBrowser, new PageLoadedEventArgs(WebBrowser.Source.OriginalString));
         }
 
-        private void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e) {
-            /*Execute(@"if (!window.__cm_loaded){ window.external.Log('NOT LOADED!'); } else {
-window.external.Log('everything’s fine');
-}");*/
+        private void WebBrowser_OnNavigated(object sender, NavigationEventArgs e) {
+            UrlTextBox.Text = e.Uri.OriginalString;
+            ModifyPage();
         }
+
+        private void WebBrowser_OnLoadCompleted(object sender, NavigationEventArgs e) {}
 
         private void WebBrowser_OnNavigating(object sender, NavigatingCancelEventArgs e) {}
 
@@ -230,7 +256,7 @@ window.external.Log('everything’s fine');
         }
 
         private void BrowseForward_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = ((WebBrowser != null) && (WebBrowser.CanGoForward));
+            e.CanExecute = (WebBrowser != null) && WebBrowser.CanGoForward;
         }
 
         private void BrowseForward_Executed(object sender, ExecutedRoutedEventArgs e) {
@@ -251,6 +277,28 @@ window.external.Log('everything’s fine');
 
         private void BrowseHome_Executed(object sender, ExecutedRoutedEventArgs e) {
             Navigate(StartPage);
+        }
+
+        private DispatcherTimer _timer;
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            if (_timer != null) return;
+            _timer = new DispatcherTimer {
+                Interval = TimeSpan.FromSeconds(0.5),
+                IsEnabled = true
+            };
+
+            _timer.Tick += OnTick;
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            if (_timer == null) return;
+            _timer.IsEnabled = false;
+            _timer = null;
+        }
+
+        private void OnTick(object sender, EventArgs e) {
+            Execute(@"if (!window.__cm_loaded){ window.external.FixPage(); }");
         }
     }
 }

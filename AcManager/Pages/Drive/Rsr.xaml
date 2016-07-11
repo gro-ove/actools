@@ -18,7 +18,7 @@
             <mui:BbCodeBlock>If you're using Chrome-like browser, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]here[/url] is an extension for starting RSR events directly from browser!</mui:BbCodeBlock>
         </DockPanel>
 
-        <userControls:WebBrowserBlock Grid.Row="1" Name="WebBrowser" StartPage="{Binding StartPage}" Navigated="WebBrowser_OnNavigated" />
+        <userControls:WebBrowserBlock Grid.Row="1" Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" />
         <Grid Grid.Row="2" Margin="0 16 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />

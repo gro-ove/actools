@@ -268,8 +268,8 @@ namespace AcManager.Pages.Drive {
                                   .Replace("#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
         }
 
-        private void WebBrowser_OnNavigated(object sender, NavigationEventArgs e) {
-            var uri = e.Uri.ToString();
+        private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
+            var uri = e.Url;
             var match = Regex.Match(uri, @"\beventId=(\d+)");
             if (match.Success) {
                 Model.EventId = match.Groups[1].Value;

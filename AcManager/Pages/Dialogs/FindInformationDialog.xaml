@@ -9,7 +9,7 @@
         <Button Command="{Binding SaveCommand}" Content="{Binding SaveLabel}" />
     </mui:ModernDialog.ButtonsRowContent>
     <StackPanel Margin="0 0 0 -36">
-        <userControls:WebBrowserBlock Name="WebBrowser" StartPage="{Binding StartPage}" Navigated="WebBrowser_OnNavigated" Width="1080" Height="640" />
+        <userControls:WebBrowserBlock Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" Width="1080" Height="640" />
         <TextBlock FontStyle="Italic" Margin="8">Select year or description and press OK; hold Ctrl to extend description instead of replacing it.</TextBlock>
     </StackPanel>
 </mui:ModernDialog>
