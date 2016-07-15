@@ -25,7 +25,7 @@ namespace AcManager.Controls.Presentation {
         public static AppAppearanceManager Instance { get; private set; }
 
         public static AppAppearanceManager Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new AppAppearanceManager();
         }
 

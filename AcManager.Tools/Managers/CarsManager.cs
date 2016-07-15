@@ -11,7 +11,7 @@ namespace AcManager.Tools.Managers {
         public static CarsManager Instance { get; private set; }
 
         public static CarsManager Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new CarsManager();
         }
 

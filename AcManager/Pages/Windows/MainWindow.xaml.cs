@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
@@ -22,6 +24,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
@@ -85,6 +88,34 @@ namespace AcManager.Pages.Windows {
 
             UpdateLiveTimingTabs();
             SettingsHolder.Live.PropertyChanged += Rsr_PropertyChanged;
+
+            OfficialStarterNotification();
+        }
+
+        private const string KeyOfficialStarterNotification = "mw.osn";
+
+        private void OfficialStarterNotification() {
+            if (ValuesStorage.GetBool(KeyOfficialStarterNotification)) return;
+
+            if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.OfficialStarterType) {
+                ValuesStorage.Set(KeyOfficialStarterNotification, true);
+                return;
+            }
+
+            var launcher = FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
+            if (FileVersionInfo.GetVersionInfo(launcher).FileVersion.IsVersionOlderThan("0.16.714")) {
+                return;
+            }
+
+            Toast.Show("Now With Official Support!", "New starter is ready, now without any patching at all", () => {
+                if (ModernDialog.ShowMessage(
+                        "Since 1.7 Kunos added an official support for custom launchers. Basically, it works like Starter+, but now CM doesn't have to replace AssettoCorsa.exe, and it's great! Would you like to switch to a new Official Starter?",
+                        "Good news!", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                    SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.OfficialStarterType;
+                }
+
+                ValuesStorage.Set(KeyOfficialStarterNotification, true);
+            });
         }
 
         private void Rsr_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

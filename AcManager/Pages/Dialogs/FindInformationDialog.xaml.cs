@@ -3,13 +3,11 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
-using System.Windows.Navigation;
 using AcManager.Controls.UserControls;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -26,36 +24,20 @@ namespace AcManager.Pages.Dialogs {
                 CloseButton
             };
 
-            WebBrowser.Inner.ObjectForScripting = new ScriptProvider(Model);
+            WebBrowser.SetScriptProvider(new ScriptProvider(Model));
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         [ComVisible(true)]
-        public class ScriptProvider {
+        public class ScriptProvider : BaseScriptProvider {
             private readonly FindInformationViewModel _model;
 
             public ScriptProvider(FindInformationViewModel model) {
                 _model = model;
             }
 
-            public void Log(string message) {
-                Logging.Write("[ScriptProvider] " + message);
-            }
-
-            public void Alert(string message) {
-                ShowMessage(message);
-            }
-
-            public string Prompt(string message, string defaultValue) {
-                return Controls.Dialogs.Prompt.Show(message, "Webpage says", defaultValue);
-            }
-
             public void Update(string selected) {
                 _model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim();
-            }
-
-            public object CmTest() {
-                return true;
             }
         }
 
@@ -148,21 +130,16 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
-            WebBrowser.Inner.InvokeScript("eval", @"(function(){
-    window.onerror = function(err){
-        window.external.Log('' + err);
-    };
+            WebBrowser.Execute(@"
+document.addEventListener('mouseup', function(){
+    window.external.Update(window.getSelection().toString());
+}, false);
 
-    document.addEventListener('mouseup', function(){
-        window.external.Update(window.getSelection().toString());
-    }, false);
-
-    document.addEventListener('mousedown', function(e){
-        if (e.target.getAttribute('target') == '_blank'){
-            e.target.setAttribute('target', '_parent');
-        }
-    }, false);
-})();");
+document.addEventListener('mousedown', function(e){
+    if (e.target.getAttribute('target') == '_blank'){
+        e.target.setAttribute('target', '_parent');
+    }
+}, false);");
         }
     }
 }

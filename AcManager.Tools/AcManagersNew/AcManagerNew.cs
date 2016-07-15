@@ -1,4 +1,4 @@
-﻿// #define LOGGING
+﻿#define LOGGING
 
 using System;
 using System.Collections.Generic;
@@ -207,6 +207,17 @@ namespace AcManager.Tools.AcManagersNew {
 
         void IDirectoryListener.FileOrDirectoryCreated(object sender, FileSystemEventArgs e) {
             if (ShouldIgnoreChanges()) return;
+
+            // special case for whole directory being created
+            if (e.Name == null) {
+                Application.Current.Dispatcher.InvokeAsync(() => {
+                    foreach (var f in FileUtils.GetFilesAndDirectories(e.FullPath)) {
+                        OnCreated(f);
+                    }
+                });
+                return;
+            }
+
             OnCreated(e.FullPath);
         }
 

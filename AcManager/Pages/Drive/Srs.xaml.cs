@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Input;
-using System.Windows.Navigation;
 using System.Windows.Threading;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
@@ -224,10 +223,13 @@ namespace AcManager.Pages.Drive {
                                 @"Make sure all required mods are installed.");
                     }
 
+                    var anyTrack = TracksManager.Instance.GetDefault();
                     await GameWrapper.StartAsync(new Game.StartProperties {
                         BasicProperties = new Game.BasicProperties {
                             CarId = CarId,
-                            CarSkinId = CarSkin?.Id
+                            CarSkinId = CarSkin?.Id,
+                            TrackId = anyTrack?.Id,
+                            TrackConfigurationId = anyTrack?.LayoutId
                         },
                         ModeProperties = new Game.OnlineProperties {
                             ServerName = Server.DisplayName,
@@ -342,6 +344,8 @@ for (var i = 0; i < l.length; i++){{
             }
 
             public void SetParams(string json) {
+                Logging.Write("SetParams(): " + json);
+
                 if (json == null) {
                     _model.Reset();
                     return;
@@ -387,10 +391,19 @@ for (var i = 0; i < l.length; i++){{
             var uri = e.Url;
             if (uri.StartsWith("http://www.simracingsystem.com/select.php?", StringComparison.OrdinalIgnoreCase)) {
                 WebBrowser.Execute(@"
+var s = document.createElement('style');
+s.innerHTML = '#content { display: none !important }';
+s.setAttribute('id', '__cm_style_tmp');
+document.head.appendChild(s);");
+
+                WebBrowser.Execute(@"
 var g = document.getElementById('gui');
 if (g){
     g.innerHTML = '" + (SteamIdHelper.Instance.Value ?? "") + @"';
     window.external.Log('GUID set: ' + g.innerHTML);
+
+    var s = document.getElementById('__cm_style_tmp');
+    if (s) s.parentNode.removeChild(s);
 } else {
     window.external.Log('Nothing to set GUID to!');
 }
@@ -400,7 +413,9 @@ var b = document.querySelectorAll('[onclick*=""./regsrs.php?""]');
 for (var i = 0; i < b.length; i++){ var c = (b[i].getAttribute('onclick').match(/&h=(\w+)/)||{})[1]; if (c) a.push(c); }
 window.external.SetCars(JSON.stringify(a));", true);
             } else if (uri.StartsWith("http://www.simracingsystem.com/race.php", StringComparison.OrdinalIgnoreCase)) {
+                Logging.Write("WebBrowser_OnPageLoaded(): " + uri);
                 WebBrowser.Execute(@"
+window.external.Log('Here');
 var b = document.querySelector('[onclick*=""REMOTE/REQUESTED_CAR""]');
 if (!b){
     window.external.SetParams(null);

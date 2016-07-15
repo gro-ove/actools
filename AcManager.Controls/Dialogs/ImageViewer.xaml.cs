@@ -69,7 +69,7 @@ namespace AcManager.Controls.Dialogs {
         public string ShowDialogInSelectFileMode() {
             Model.SelectionMode = true;
             ShowDialog();
-            return IsSelected ? Model.CurrentImage as string : null;
+            return IsSelected ? Model.CurrentOriginalImage as string : null;
         }
 
         private void ApplyButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {

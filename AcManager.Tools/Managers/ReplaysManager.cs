@@ -10,7 +10,7 @@ namespace AcManager.Tools.Managers {
         public static ReplaysManager Instance { get; private set; }
 
         public static ReplaysManager Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new ReplaysManager();
         }
 

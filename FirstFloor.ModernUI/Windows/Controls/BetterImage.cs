@@ -291,13 +291,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public int InnerDecodeHeight => DecodeHeight;
 
         private BitmapEntry _current;
-        private bool _loading;
+        private bool _loading, _broken;
 
         private void ReloadImage() {
             if (DelayedCreation) {
                 ReloadImageAsync();
             } else if (!_loading) {
                 _current = LoadBitmapSource(Filename, InnerDecodeWidth, InnerDecodeHeight);
+                _broken = _current.BitmapSource == null;
                 InvalidateMeasure();
                 InvalidateVisual();
             }
@@ -306,6 +307,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private async void ReloadImageAsync() {
             if (_loading) return;
             _loading = true;
+            _broken = false;
 
             try {
                 if (AdditionalDelay) {
@@ -316,6 +318,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 if (!_loading) return;
 
                 _current = current;
+                _broken = _current.BitmapSource == null;
+
                 InvalidateMeasure();
                 InvalidateVisual();
             } finally {
@@ -357,7 +361,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             dc.DrawRectangle(Background, null, new Rect(new Point(), RenderSize));
             if (_current.BitmapSource != null) {
                 dc.DrawImage(_current.BitmapSource, new Rect(_offset, _size));
-            } else if (ShowBroken && !_loading) {
+            } else if (ShowBroken && _broken) {
                 dc.DrawImage(BrokenIcon.ImageSource,
                         new Rect(new Point((RenderSize.Width - BrokenIcon.Width) / 2d, (RenderSize.Height - BrokenIcon.Height) / 2d), BrokenIcon.Size));
             }

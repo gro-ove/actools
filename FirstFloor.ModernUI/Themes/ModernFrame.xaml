@@ -24,7 +24,7 @@
                         <!-- render a nicely formatted error page when content is an exception -->
                         <DataTemplate DataType="{x:Type sys:Exception}">
                             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
+                                <StackPanel Margin="20">
                                     <TextBlock Text="NAVIGATION FAILED" Style="{StaticResource Heading1}" />
                                     <TextBlock Text="{Binding Message}" FontWeight="Bold" Foreground="#e51400" Margin="0,0,0,8" TextWrapping="Wrap" />
                                     <TextBlock Text="Source" FontWeight="Bold" />

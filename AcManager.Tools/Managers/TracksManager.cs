@@ -12,7 +12,7 @@ namespace AcManager.Tools.Managers {
         public static TracksManager Instance { get; private set; }
 
         public static TracksManager Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new TracksManager();
         }
 

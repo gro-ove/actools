@@ -27,12 +27,16 @@ namespace AcManager.Tools.Helpers.Loaders {
             var loader = CreateLoader(argument);
 
             try {
+                // TODO: Timeout?
                 using (var client = new CookieAwareWebClient {
                     Headers = {
                         [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
                     }
                 }) {
                     progress?.Report(AsyncProgressEntry.Indetermitate);
+
+                    cancellation.ThrowIfCancellationRequested();
+                    cancellation.Register(client.CancelAsync);
 
                     if (!await loader.PrepareAsync(client, cancellation) ||
                             cancellation.IsCancellationRequested) return null;

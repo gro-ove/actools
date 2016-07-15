@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using Application = System.Windows.Application;
 
 namespace AcManager.Controls.Helpers {
     public static class Toast {
@@ -68,7 +69,9 @@ namespace AcManager.Controls.Helpers {
             }) {
                 notifyIcon.Visible = true;
                 if (click != null) {
-                    notifyIcon.BalloonTipClicked += (sender, args) => click();
+                    notifyIcon.BalloonTipClicked += (sender, args) => {
+                        Application.Current.Dispatcher.Invoke(click);
+                    };
                 }
                 notifyIcon.ShowBalloonTip(5000, title, message, ToolTipIcon.Info);
                 notifyIcon.Visible = false;

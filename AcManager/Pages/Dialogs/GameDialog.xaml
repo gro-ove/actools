@@ -34,7 +34,7 @@
                 <TextBlock Text="Error:" Style="{StaticResource Heading1}" />
             </DockPanel>
             <TextBlock Text="{Binding ErrorMessage, StringFormat='{}{0}.'}" Margin="0 0 0 12" />
-            <TextBlock Text="More information in MainLog.txt." FontStyle="Italic" />
+            <TextBlock Text="{Binding ErrorDescription}" FontStyle="Italic" />
         </StackPanel>
 
         <Grid

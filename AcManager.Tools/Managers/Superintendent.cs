@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using AcManager.Tools.AcManagersNew;
 using FirstFloor.ModernUI.Helpers;
 
@@ -8,7 +9,7 @@ namespace AcManager.Tools.Managers {
         public static Superintendent Instance { get; private set; }
 
         public static Superintendent Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new Superintendent();
         }
 
@@ -36,11 +37,12 @@ namespace AcManager.Tools.Managers {
         }
 
         private void RescanManagers() {
-            var start = DateTime.Now;
+            var w = Stopwatch.StartNew();
             foreach (var manager in _managers) {
                 manager.Rescan();
             }
-            Logging.Write("SUPERINTENDENT: rescanning finished: {0} managers, {1}", _managers.Count, DateTime.Now - start);
+
+            Logging.Write($"[Superintendent] Rescanning finished: {_managers.Count} managers, {w.Elapsed.TotalMilliseconds:F2} ms");
         }
 
         void AcRootDirectory_Changed(object sender, AcRootDirectoryEventArgs e) {

@@ -1,4 +1,4 @@
-﻿<DockPanel x:Class="AcManager.Controls.UserControls.WebBrowserBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<DockPanel x:Class="AcManager.Controls.UserControls.WebBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:modernui="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
@@ -28,6 +28,4 @@
                 ToolTip="{x:Static modernui:Resources.Go}" DockPanel.Dock="Right" Command="NavigationCommands.GoToPage" />
         <TextBox Name="UrlTextBox" PreviewKeyDown="UrlTextBox_OnPreviewKeyDown" PreviewKeyUp="UrlTextBox_KeyUp" />
     </DockPanel>
-
-    <WebBrowser Name="WebBrowser" Navigating="WebBrowser_OnNavigating" Navigated="WebBrowser_OnNavigated" LoadCompleted="WebBrowser_OnLoadCompleted" />
 </DockPanel>

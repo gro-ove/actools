@@ -69,7 +69,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public static void RebuildTrackTagsList() {
-            // TODO
+            // TODO: layouts
             TrackTagsList.ReplaceEverythingBy(TracksManager.Instance.Where(x => x.Enabled).SelectMany(x => x.Tags));
         }
 
@@ -82,15 +82,17 @@ namespace AcManager.Tools.Managers {
                               .Union(ShowroomsManager.Instance);
 
         public static void RebuildAuthorsList() {
+            // TODO: layouts
             AuthorsList.ReplaceEverythingBy(from o in JsonObjects select o.Author);
         }
 
         public static void RebuildCountriesList() {
+            // TODO: layouts
             CountriesList.ReplaceEverythingBy(from o in JsonObjects where o.Enabled select o.Country);
         }
 
         public static void RebuildCitiesList() {
-            // TODO
+            // TODO: layouts
             CitiesList.ReplaceEverythingBy(from o in TracksManager.Instance where o.Enabled select o.City);
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AcTools.Utils;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcTools.Utils.Helpers;
 
@@ -20,7 +21,7 @@ namespace AcTools.Processes {
             private bool _prepared;
 
             private readonly List<IDisposable> _changes = new List<IDisposable>();
-            private KeyboardManager _keyboardManager;
+            private readonly KeyboardManager _keyboardManager;
 
             protected BaseShotter() {
                 _keyboardManager = new KeyboardManager();
@@ -95,6 +96,10 @@ namespace AcTools.Processes {
 
         public abstract class BaseIterableShooter : BaseShotter {
             public abstract void Shot(string skinId);
+
+            public virtual Task ShotAsync(string skinId) {
+                return Task.Run(() => Shot(skinId));
+            }
 
             public override void ShotAll() {
                 Prepare();

@@ -1,28 +1,18 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Addons;
+using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Starters {
-    public class StarterPlus : BaseStarter, IAcsPrepareableStarter {
+    public class StarterPlus : BaseStarter, IAcsPrepareableStarter, IPluginWrapper {
         public const string AddonId = "StarterPlus";
 
-        public static void Initialize() {
-            AppAddonsManager.Instance.AddonEnabled += (sender, args) => {
-                if (args.AddonId != AddonId) return;
-                Patch();
-            };
-
-            AppAddonsManager.Instance.AddonDisabled += (sender, args) => {
-                if (args.AddonId != AddonId) return;
-                RollBack();
-            };
-        }
+        public string Id => AddonId;
 
         private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 
@@ -36,7 +26,9 @@ namespace AcManager.Tools.Starters {
             return AcRootDirectory.Instance.Value != null && IsPatched(LauncherFilename);
         }
 
-        private static void Patch() {
+        public void Enable() {
+            if (AcRootDirectory.Instance == null) return;
+
             Logging.Warning("[STARTER+] Patch()");
             if (IsPatched()) return;
 
@@ -45,7 +37,7 @@ namespace AcManager.Tools.Starters {
                 return;
             }
 
-            var addon = AppAddonsManager.Instance.GetById(AddonId);
+            var addon = PluginsManager.Instance.GetById(AddonId);
             if (addon?.IsReady != true) {
                 Logging.Warning("[STARTER+] Addon is not installed or enabled.");
                 return;
@@ -76,14 +68,14 @@ namespace AcManager.Tools.Starters {
             } catch (Exception e) {
                 Logging.Warning("[STARTER+] Can’t extract file: " + e);
                 Logging.Warning("[STARTER+] Rollback!");
-                RollBack();
+                Disable();
                 return;
             }
 
             Logging.Write("[STARTER+] Enabled.");
         }
 
-        private static void RollBack() {
+        public void Disable() {
             Logging.Warning("[STARTER+] RollBack()");
             if (!IsPatched()) return;
 
@@ -124,7 +116,7 @@ namespace AcManager.Tools.Starters {
 
         public bool TryToPrepare() {
             if (IsPatched()) return true;
-            Patch();
+            Enable();
             return IsPatched();
         }
 

@@ -7,7 +7,7 @@
         <mui:ModernTab x:Name="Tab" Layout="List" SelectedSource="/Pages/Settings/SettingsGeneral.xaml" SaveKey="__SettingsPage.SelectedPage">
             <mui:ModernTab.Links>
                 <mui:Link DisplayName="general" Source="/Pages/Settings/SettingsGeneral.xaml" />
-                <mui:Link DisplayName="addons" Source="/Pages/Settings/SettingsAddons.xaml" />
+                <mui:Link DisplayName="plugins" Source="/Pages/Settings/SettingsPlugins.xaml" />
                 <mui:Link DisplayName="drive" Source="/Pages/Settings/SettingsDrive.xaml" />
                 <mui:Link DisplayName="replays" Source="/Pages/Settings/SettingsReplays.xaml" IsNew="True" />
                 <mui:Link DisplayName="live" Source="/Pages/Settings/SettingsLive.xaml" />

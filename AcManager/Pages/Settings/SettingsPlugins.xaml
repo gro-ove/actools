@@ -1,8 +1,8 @@
-﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsAddons" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsPlugins" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance settings:SettingsAddons+AddonsViewModel}">
+        d:DataContext="{d:DesignInstance settings:SettingsPlugins+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -43,17 +43,29 @@
                                 <!--description-->
                                 <DockPanel
                                         Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}"
-                                            Stretch="Uniform" x:Name="ErrorIcon" DockPanel.Dock="Left" />
+                                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
+                                            x:Name="ErrorIcon" DockPanel.Dock="Left" />
                                     <TextBlock Text="{Binding AppVersion, StringFormat='{}Not available, required app version is {0}.'}"
                                             Style="{StaticResource Small}" FontWeight="Bold" Margin="0 4 0 8" />
                                 </DockPanel>
 
                                 <StackPanel Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <!--installation button-->
-                                    <Button Command="{Binding Path=InstallCommand}"
-                                            Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                                    <Button Command="{Binding InstallCommand}"
+                                            Visibility="{Binding AvailableToInstall, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <TextBlock Text="{Binding DisplaySize, StringFormat='Download and Install ({0})'}" />
+                                    </Button>
+
+                                    <!--cancel button-->
+                                    <Button Command="{Binding CancellationCommand}"
+                                            Visibility="{Binding InstallationInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="2 1 2 3">
+                                        <Grid>
+                                            <TextBlock Text="Cancel" TextAlignment="Center" VerticalAlignment="Center" />
+                                            <ProgressBar Height="2" Minimum="0" Maximum="1" Value="{Binding DownloadProgress}"
+                                                    IsIndeterminate="{Binding DownloadProgressIndeterminate}" VerticalAlignment="Bottom" Margin="0"
+                                                    DockPanel.Dock="Bottom" />
+                                        </Grid>
                                     </Button>
 
                                     <!--update button-->

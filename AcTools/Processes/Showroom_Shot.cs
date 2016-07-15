@@ -107,35 +107,39 @@ namespace AcTools.Processes {
         }
 
         [ItemCanBeNull]
-        public static async Task<string> ShotAsync(ShotProperties properties, IProgress<ShootingProgress> progress,
-                                                   CancellationToken cancellationToken) {
-            using (var shooter = CreateShooter(properties)) {
-                var iterableShooter = shooter as BaseIterableShooter;
-                if (iterableShooter == null) {
-                    await Task.Run(() => {
+        public static async Task<string> ShotAsync(ShotProperties properties, IProgress<ShootingProgress> progress, CancellationToken cancellation) {
+            var shooter = CreateShooter(properties);
+
+            var iterableShooter = shooter as BaseIterableShooter;
+            if (iterableShooter == null) {
+                return await Task.Run(() => {
+                    try {
                         shooter.ShotAll();
-                    }, cancellationToken);
-                } else {
-                    var skins = iterableShooter.CarSkins.ToIReadOnlyListIfItsNot();
-                    var position = 0;
-                    foreach (var carSkin in skins) {
-                        if (cancellationToken.IsCancellationRequested) {
-                            return null;
-                        }
-
-                        progress.Report(new ShootingProgress {
-                            SkinId = carSkin,
-                            SkinNumber = position++,
-                            TotalSkins = skins.Count
-                        });
-
-                        await Task.Run(() => {
-                            iterableShooter.Shot(carSkin);
-                        }, cancellationToken);
+                        return shooter.OutputDirectory;
+                    } finally {
+                        shooter.Dispose();
                     }
+                }, cancellation);
+            }
+
+            try {
+                var skins = iterableShooter.CarSkins.ToIReadOnlyListIfItsNot();
+                var position = 0;
+                foreach (var carSkin in skins) {
+                    if (cancellation.IsCancellationRequested) return null;
+
+                    progress.Report(new ShootingProgress {
+                        SkinId = carSkin,
+                        SkinNumber = position++,
+                        TotalSkins = skins.Count
+                    });
+
+                    await iterableShooter.ShotAsync(carSkin);
                 }
 
-                return shooter.OutputDirectory;
+                return iterableShooter.OutputDirectory;
+            } finally {
+                iterableShooter.Dispose();
             }
         }
     }

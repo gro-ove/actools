@@ -62,8 +62,6 @@ namespace AcManager.Pages.Dialogs {
         void IGameUi.Show(Game.StartProperties properties) {
             _properties = properties;
 
-            Logging.Write("[GAMEDIALOG] Show()");
-
             ShowDialogWithoutBlocking();
             Model.WaitingStatus = @"Initializing…";
         }
@@ -298,7 +296,7 @@ namespace AcManager.Pages.Dialogs {
                     Model.CurrentState = GameDialogViewModel.State.Finished;
                     Model.FinishedData = GetFinishedData(_properties, result);
                 } catch (Exception e) {
-                    Logging.Warning("[GAMEDIALOG] Exception: " + e);
+                    Logging.Warning("[GameDialog] IGameUi.OnResult(): " + e);
 
                     Model.CurrentState = GameDialogViewModel.State.Error;
                     Model.ErrorMessage = "Result processing error";
@@ -311,6 +309,11 @@ namespace AcManager.Pages.Dialogs {
             Model.CurrentState = GameDialogViewModel.State.Error;
             Model.ErrorMessage = exception?.Message ?? "Undefined error";
             Buttons = new[] { CloseButton };
+
+            var ie = exception as InformativeException;
+            if (ie != null) {
+                Model.ErrorDescription = ie.SolutionCommentary;
+            }
         }
 
         public CancellationToken CancellationToken { get; }
@@ -366,6 +369,17 @@ namespace AcManager.Pages.Dialogs {
                 set {
                     if (Equals(value, _errorMessage)) return;
                     _errorMessage = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _errorDescription = "More information in MainLog.txt.";
+
+            public string ErrorDescription {
+                get { return _errorDescription; }
+                set {
+                    if (Equals(value, _errorDescription)) return;
+                    _errorDescription = value;
                     OnPropertyChanged();
                 }
             }

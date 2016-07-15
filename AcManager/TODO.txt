@@ -486,6 +486,10 @@ done:
     + commands for replays
     + change IDs (especially for skins)
     + skins manager: remove json-files
+    + rename addons to plugins
+    + chromium engine
+        + as a plugin
+        + transparent switching
 
 fixme:
     - notifypropertychanged for commands
@@ -495,19 +499,27 @@ fixme:
     - potential error here:
         http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
     - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
-    - contextmenu on mouseup/down only
-    - laggy online tab
-    - switching from online tab
     - race: last position isn't fixed enough
-    - are async requests killed by timeout?!
+    - race: something's wrong with the laps number
+    - race: last position vs nth position (also last)
+    - are all async requests killed by timeout?
     - practice: gold medals
+    - watermark disabling in showroom!
+    - change "Author:" to "Version:" or "URL:" if author is missing
+    - SRS: missing track
+    - SRS: three minutes instead of five
+    - accent color on a fresh start
+    - find information dialog
+    - RSR: popup padding
 
 todo:
-    - rename addons to plugins
-    - pack content and addons to main exe-file!
+    - open new links in find information dialog in same tab
+    - official starter
 
+    - notification for plugins
     - upload Content to Trello for those who doesn't have Internet connection
     - custom showroom: proper wpf-based errors handling for invalid dx and stuff
+    - online: proper refresh button
 
     - lite mode (without main form): overlays, second commands, attempts to open main form?
     - automatically fix name, brand name and badge for URD-cars
@@ -527,6 +539,9 @@ todo:
     > lite custom showroom
         - Esc to deselect/exit special mode
         - fix memory leaks!
+        - camera editor
+        - load and play animations
+            - animated skinned meshes
 
     - showroom from Online
     - car setups: warn about "last"
@@ -690,7 +705,11 @@ todo:
 
 later:    
     - use bgr0X.jpg for dynamic background
-    - make filters truly superb just by converting “car.weight>800” to “car(weight>800)”
+
+    - improve filters
+        - make them truly superb just by converting “car.weight>800” to “car(weight>800)”
+        - also, don't forget to add option to use regular expressions or exact value
+        - and replace brand filters by exact value
 
     - combine watchers for CM data directory into one?
     - changeable width of list area

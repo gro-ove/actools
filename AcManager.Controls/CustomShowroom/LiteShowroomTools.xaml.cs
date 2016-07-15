@@ -9,7 +9,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers.Addons;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
@@ -369,7 +369,7 @@ namespace AcManager.Controls.CustomShowroom {
                 if (Renderer?.Kn5 == null) return;
 
                 try {
-                    Kn5.FbxConverterLocation = AppAddonsManager.Instance.GetAddonFilename("FbxConverter", "FbxConverter.exe");
+                    Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename("FbxConverter", "FbxConverter.exe");
 
                     var destination = Path.Combine(Car.Location, "unpacked");
 
@@ -399,7 +399,7 @@ namespace AcManager.Controls.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t unpack KN5", e);
                 }
-            }, o => SettingsHolder.Common.DeveloperMode && AppAddonsManager.Instance.IsAddonEnabled("FbxConverter") && Renderer?.Kn5 != null));
+            }, o => SettingsHolder.Common.DeveloperMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.Kn5 != null));
             #endregion
 
             #region Materials & Textures

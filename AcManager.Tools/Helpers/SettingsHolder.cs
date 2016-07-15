@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.Managers.Addons;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Starters;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -310,7 +310,7 @@ namespace AcManager.Tools.Helpers {
 
                 public string DisplayName { get; }
 
-                public bool IsAvailable => RequiredAddonId == null || AppAddonsManager.Instance.IsAddonEnabled(RequiredAddonId);
+                public bool IsAvailable => RequiredAddonId == null || PluginsManager.Instance.IsPluginEnabled(RequiredAddonId);
 
                 internal StarterType(string displayName, string requiredAddonId = null) {
                     Id = displayName;
@@ -320,6 +320,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            public static readonly StarterType OfficialStarterType = new StarterType("Official (Recommended)");
             public static readonly StarterType TrickyStarterType = new StarterType("Tricky");
             public static readonly StarterType StarterPlusType = new StarterType("Starter+", StarterPlus.AddonId);
             public static readonly StarterType SseStarterType = new StarterType("SSE", SseStarter.AddonId);
@@ -345,7 +346,7 @@ namespace AcManager.Tools.Helpers {
             private StarterType[] _starterTypes;
 
             public StarterType[] StarterTypes => _starterTypes ?? (_starterTypes = new[] {
-                TrickyStarterType, StarterPlusType, SseStarterType, NaiveStarterType
+                OfficialStarterType, TrickyStarterType, StarterPlusType, SseStarterType, NaiveStarterType
             });
 
             private string _preCommand;
@@ -726,7 +727,7 @@ namespace AcManager.Tools.Helpers {
             public SearchEngineEntry[] SearchEngines => _searchEngines ?? (_searchEngines = new[] {
                 new SearchEngineEntry { DisplayName = "DuckDuckGo", Value = "https://duckduckgo.com/?q={0}&ia=web" },
                 new SearchEngineEntry { DisplayName = "Bing", Value = "http://www.bing.com/search?q={0}" },
-                new SearchEngineEntry { DisplayName = "Google", Value = "https://www.google.ru/search?q={0}&ie=UTF-8" },
+                new SearchEngineEntry { DisplayName = "Google", Value = "https://www.google.com/search?q={0}&ie=UTF-8" },
                 new SearchEngineEntry { DisplayName = "Yandex", Value = "https://yandex.ru/search/?text={0}" },
                 new SearchEngineEntry { DisplayName = "Baidu", Value = "http://www.baidu.com/s?ie=utf-8&wd={0}" }
             });

@@ -18,7 +18,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Addons;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
@@ -523,7 +523,7 @@ namespace AcManager.Pages.Dialogs {
                 try {
                     await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews, waiting, waiting.CancellationToken);
                 } catch (OutOfMemoryException e) {
-                    NonfatalError.Notify("Can’t save previews", AppAddonsManager.Instance.IsAddonEnabled("Magick")
+                    NonfatalError.Notify("Can’t save previews", PluginsManager.Instance.IsPluginEnabled("Magick")
                             ? "Please, report this bug to developers." : "I recommend to enable Magick.NET addon.", e);
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t save previews", e);

@@ -14,6 +14,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
+using AcManager.Plugins;
 using AcManager.Properties;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
@@ -23,7 +24,7 @@ using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Addons;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
@@ -31,7 +32,6 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -136,9 +136,22 @@ namespace AcManager {
             SharingHelper.Initialize();
             SharingUiHelper.Initialize();
 
-            AppAddonsManager.Initialize(FilesStorage.Instance.GetDirectory("Addons"));
-            StarterPlus.Initialize();
-            InitializeMagickAddonAsync().Forget();
+            var addonsDir = FilesStorage.Instance.GetFilename("Addons");
+            var pluginsDir = FilesStorage.Instance.GetFilename("Plugins");
+            if (Directory.Exists(addonsDir) && !Directory.Exists(pluginsDir)) {
+                Directory.Move(addonsDir, pluginsDir);
+            } else {
+                pluginsDir = FilesStorage.Instance.GetDirectory("Plugins");
+            }
+
+            PluginsManager.Initialize(pluginsDir);
+            PluginsWrappers.Initialize(
+                    new MagickPluginWrapper(),
+                    new AwesomiumPluginWrapper(),
+                    new StarterPlus());
+            if (PluginsManager.Instance.HasAnyNew()) {
+                Toast.Show("Don’t forget to install some plugins!", "");
+            }
 
             SteamIdHelper.Initialize();
             OnlineManager.Initialize();
@@ -241,38 +254,6 @@ namespace AcManager {
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, "Assists", "Gamer");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, "Assists", "Intermediate");
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, "Assists", "Pro");
-        }
-
-        private static void LoadMagick() {
-            try {
-                ImageUtils.LoadImageMagickAssembly(AppAddonsManager.Instance.GetAddonFilename("Magick", "Magick.NET-x86.dll"));
-                Logging.Write("magick test: " + ImageUtils.TestImageMagick());
-            } catch (Exception e) {
-                Logging.Warning("cannot load magick: " + e);
-            }
-        }
-
-        private static void UnloadMagick() {
-            ImageUtils.UnloadImageMagickAssembly();
-        }
-
-        private static async Task InitializeMagickAddonAsync() {
-            await Task.Run(() => InitializeMagickAddon());
-        }
-
-        private static void InitializeMagickAddon() {
-            if (AppAddonsManager.Instance.IsAddonEnabled("Magick")) {
-                LoadMagick();
-            }
-
-            AppAddonsManager.Instance.AddonEnabled += (sender, args) => {
-                if (args.AddonId != "Magick") return;
-                LoadMagick();
-            };
-            AppAddonsManager.Instance.AddonDisabled += (sender, args) => {
-                if (args.AddonId != "Magick") return;
-                UnloadMagick();
-            };
         }
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {

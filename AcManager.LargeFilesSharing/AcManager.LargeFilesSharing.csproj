@@ -33,9 +33,6 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FirstFloor.ModernUI">
-      <HintPath>..\AcManager\bin\Debug\FirstFloor.ModernUI.dll</HintPath>
-    </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
@@ -91,6 +88,10 @@
     <ProjectReference Include="..\AcTools\AcTools.csproj">
       <Project>{55b65fb4-92cb-42ef-b4bf-f287810986e1}</Project>
       <Name>AcTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FirstFloor.ModernUI\FirstFloor.ModernUI.csproj">
+      <Project>{9a653a28-fe46-40e8-a14f-48b0e325165d}</Project>
+      <Name>FirstFloor.ModernUI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.Managers.InnerHelpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Directories {
@@ -81,7 +82,7 @@ namespace AcManager.Tools.Managers.Directories {
 
         public bool CheckIfEnabled(string location) {
             // TODO: What if disabled directory is in enabled (like …/content/cars and …/content/ca)
-            return DisabledDirectory == null || !location.StartsWith(DisabledDirectory);
+            return DisabledDirectory == null || !location.StartsWith(DisabledDirectory, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

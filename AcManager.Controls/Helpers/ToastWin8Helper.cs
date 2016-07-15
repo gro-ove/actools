@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Windows;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 using AcManager.Tools.Helpers;
@@ -69,7 +70,9 @@ namespace AcManager.Controls.Helpers {
                     tempIcon + "\"/><text id=\"1\">" + title + "</text><text id=\"2\">" + message + "</text></binding></visual></toast>");
             var notification = new ToastNotification(content);
             if (click != null) {
-                notification.Activated += (sender, args) => click();
+                notification.Activated += (sender, args) => {
+                    Application.Current.Dispatcher.Invoke(click);
+                };
             }
             ToastNotifier.Show(notification);
         }

@@ -21,7 +21,7 @@ namespace AcManager.Tools.Managers {
         public static KunosCareerManager Instance { get; private set; }
 
         public static KunosCareerManager Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new KunosCareerManager();
         }
 

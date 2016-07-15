@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers.Addons;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 using Path = System.IO.Path;

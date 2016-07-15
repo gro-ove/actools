@@ -43,12 +43,6 @@
             </CheckBox>
 
             <DockPanel attached:LimitedService.Limited="True">
-                <Label>Theme:</Label>
-                <ComboBox ItemsSource="{Binding AppAppearanceManager.Themes}" SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}"
-                        DisplayMemberPath="DisplayName" />
-            </DockPanel>
-
-            <DockPanel attached:LimitedService.Limited="True">
                 <Label>Text rendering:</Label>
                 <ComboBox ItemsSource="{Binding TextFormattings}" SelectedItem="{Binding TextFormatting, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
             </DockPanel>

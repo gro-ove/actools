@@ -76,6 +76,14 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Awesomium.Core">
+      <HintPath>..\..\..\WPF\Awesomium\Awesomium.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Awesomium.Windows.Controls">
+      <HintPath>..\..\..\WPF\Awesomium\Awesomium.Windows.Controls.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>True</Private>
@@ -262,6 +270,8 @@
     <Compile Include="Pages\Settings\SettingsQuickSwitches.xaml.cs">
       <DependentUpon>SettingsQuickSwitches.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\AwesomiumPluginWrapper.cs" />
+    <Compile Include="Plugins\MagickPluginWrapper.cs" />
     <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
@@ -749,7 +759,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Settings\SettingsAddons.xaml">
+    <Page Include="Pages\Settings\SettingsPlugins.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -830,8 +840,8 @@
       <DependentUpon>WorkInProgress.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\SelectedAcObjectPage.cs" />
-    <Compile Include="Pages\Settings\SettingsAddons.xaml.cs">
-      <DependentUpon>SettingsAddons.xaml</DependentUpon>
+    <Compile Include="Pages\Settings\SettingsPlugins.xaml.cs">
+      <DependentUpon>SettingsPlugins.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

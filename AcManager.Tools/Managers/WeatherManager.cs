@@ -10,7 +10,7 @@ namespace AcManager.Tools.Managers {
         public static WeatherManager Instance { get; private set; }
 
         public static WeatherManager Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new WeatherManager();
         }
 

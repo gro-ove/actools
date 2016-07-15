@@ -38,7 +38,7 @@ h1, h2 {
 #car_msdd ~ .submit_button {
   margin-left: 10px !important;
   display: inline-block !important;
-  height: 64px !important;
+  height: 63px !important;
   vertical-align: top;
   margin-bottom: 0 !important;
 }

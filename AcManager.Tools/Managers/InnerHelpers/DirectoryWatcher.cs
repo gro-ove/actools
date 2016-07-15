@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -25,7 +23,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
             var parentDirectory = Path.GetDirectoryName(TargetDirectory);
             if (parentDirectory == null || !Directory.Exists(parentDirectory)) {
                 _failed = true;
-                Logging.Warning("DIRECTORY WATCHER FAILED DUE TO PARENT DIRECTORY MISSING: " + TargetDirectory);
+                Logging.Error("[DirectoryWatcher] FAILED DUE TO PARENT DIRECTORY MISSING: " + TargetDirectory);
                 return;
             }
 
@@ -63,7 +61,6 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                     IncludeSubdirectories = true
                 };
 
-                var content = FileUtils.GetFilesAndDirectories(TargetDirectory).ToList();
                 lock (_listeners) {
                     foreach (var listener in _listeners) {
                         _innerWatcher.Changed += listener.FileOrDirectoryChanged;
@@ -71,9 +68,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                         _innerWatcher.Deleted += listener.FileOrDirectoryDeleted;
                         _innerWatcher.Renamed += listener.FileOrDirectoryRenamed;
 
-                        foreach (var sub in content) {
-                            listener.FileOrDirectoryCreated(this, new FileSystemEventArgs(WatcherChangeTypes.Created, TargetDirectory, Path.GetFileName(sub)));
-                        }
+                        listener.FileOrDirectoryCreated(this, new FileSystemEventArgs(WatcherChangeTypes.Created, TargetDirectory, null));
                     }
                 }
             } else if (_innerWatcher != null) {
@@ -82,7 +77,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
                 _innerWatcher.EnableRaisingEvents = false;
                 _innerWatcher.Dispose();
                 _innerWatcher = null;
-
+                
                 lock (_listeners) {
                     foreach (var listener in _listeners) {
                         listener.FileOrDirectoryDeleted(this, new FileSystemEventArgs(WatcherChangeTypes.Deleted, TargetDirectory, null));

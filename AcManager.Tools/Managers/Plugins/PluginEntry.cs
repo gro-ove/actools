@@ -1,4 +1,7 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -8,9 +11,9 @@ using Newtonsoft.Json;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 
-namespace AcManager.Tools.Managers.Addons {
+namespace AcManager.Tools.Managers.Plugins {
     [JsonObject(MemberSerialization.OptIn)]
-    public class AppAddonInformation : NotifyPropertyChanged, IWithId {
+    public class PluginEntry : NotifyPropertyChanged, IWithId, IProgress<double?> {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; private set; }
 
@@ -50,14 +53,21 @@ namespace AcManager.Tools.Managers.Addons {
 
         public string KeyEnabled => "_appAddon__" + Id + "__enabled";
 
+        public bool AvailableToInstall => !IsInstalled && !InstallationInProgress;
+
         public bool IsInstalled => _installedVersion != null;
 
         public bool IsEnabled {
-            get { return ValuesStorage.GetBool(KeyEnabled); }
+            get { return ValuesStorage.GetBool(KeyEnabled, true); }
             set {
                 if (value == IsEnabled) return;
-                ValuesStorage.Set(KeyEnabled, value);
-                AppAddonsManager.Instance.OnAddonEnabled(this, value);
+                if (value) {
+                    ValuesStorage.Remove(KeyEnabled);
+                } else {
+                    ValuesStorage.Set(KeyEnabled, false);
+                }
+
+                PluginsManager.Instance.OnPluginEnabled(this, value);
             }
         }
 
@@ -86,6 +96,7 @@ namespace AcManager.Tools.Managers.Addons {
                 _installedVersion = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsInstalled));
+                OnPropertyChanged(nameof(AvailableToInstall));
             }
         }
 
@@ -116,36 +127,92 @@ namespace AcManager.Tools.Managers.Addons {
             }
         }
 
-        private AppAddonInformation(string id) {
+        private bool _installationInProgress;
+
+        public bool InstallationInProgress {
+            get { return _installationInProgress; }
+            set {
+                if (Equals(value, _installationInProgress)) return;
+                _installationInProgress = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AvailableToInstall));
+            }
+        }
+
+        private bool _downloadProgressIndeterminate;
+
+        public bool DownloadProgressIndeterminate {
+            get { return _downloadProgressIndeterminate; }
+            set {
+                if (Equals(value, _downloadProgressIndeterminate)) return;
+                _downloadProgressIndeterminate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _downloadProgress;
+
+        public double DownloadProgress {
+            get { return _downloadProgress; }
+            set {
+                if (Equals(value, _downloadProgress)) return;
+                _downloadProgress = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public void Report(double? value) {
+            var v = value ?? 0d;
+            DownloadProgressIndeterminate = Equals(v, 0d);
+            DownloadProgress = v;
+        }
+
+        private PluginEntry(string id) {
             Id = id;
             AppVersion = "0";
         }
 
         [JsonConstructor]
         [UsedImplicitly]
-        private AppAddonInformation() { }
+        private PluginEntry() { }
 
         private ICommand _installCommand;
         private bool _isInstalling;
 
-        public ICommand InstallCommand => _installCommand ??
-                (_installCommand = new RelayCommand(x => InstallAddon(), x => CanInstall()));
+        public ICommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(
+                Install,
+                x => !IsInstalled && !IsInstalling));
+
+        private CancellationTokenSource _cancellation;
+
+        private async Task Install(object x) {
+            using (_cancellation = new CancellationTokenSource()) {
+                Report(0d);
+
+                InstallationInProgress = true;
+
+                try {
+                    await PluginsManager.Instance.InstallPlugin(this, this, _cancellation.Token);
+                } finally {
+                    InstallationInProgress = false;
+                }
+            }
+            _cancellation = null;
+        }
+
+        private RelayCommand _cancellationCommand;
+
+        public RelayCommand CancellationCommand => _cancellationCommand ?? (_cancellationCommand = new RelayCommand(o => {
+            _cancellation?.Cancel();
+        }));
 
         public bool IsAllRight => Id != null && Name != null && Version != null;
 
         [JsonIgnore]
-        public string Directory => AppAddonsManager.Instance.GetAddonDirectory(Id);
+        public string Directory => PluginsManager.Instance.GetPluginDirectory(Id);
         
         public string GetFilename(string fileId) {
-            return AppAddonsManager.Instance.GetAddonFilename(Id, fileId);
-        }
-
-        private bool CanInstall() {
-            return !IsInstalled && !IsInstalling;
-        }
-
-        private void InstallAddon() {
-            AppAddonsManager.Instance.InstallAppAddon(this).Forget();
+            return PluginsManager.Instance.GetPluginFilename(Id, fileId);
         }
     }
 }

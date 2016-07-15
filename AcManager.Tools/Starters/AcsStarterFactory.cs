@@ -10,6 +10,10 @@ namespace AcManager.Tools.Starters {
         [NotNull]
         private static IAcsStarter CreateFromSettings() {
             var type = SettingsHolder.Drive.SelectedStarterType;
+            if (type == SettingsHolder.DriveSettings.OfficialStarterType) {
+                return new OfficialStarter();
+            }
+
             if (type == SettingsHolder.DriveSettings.NaiveStarterType) {
                 return new NaiveStarter();
             }

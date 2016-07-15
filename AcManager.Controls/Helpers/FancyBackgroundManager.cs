@@ -26,7 +26,7 @@ namespace AcManager.Controls.Helpers {
         public static FancyBackgroundManager Instance { get; private set; }
 
         public static FancyBackgroundManager Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new FancyBackgroundManager();
         }
 

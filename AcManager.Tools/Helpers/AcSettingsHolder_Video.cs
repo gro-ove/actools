@@ -12,23 +12,58 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
         public class VideoSettings : IniSettings {
-            public sealed class ResolutionEntry : Displayable, IEquatable<ResolutionEntry> {
-                public int Width { get; }
+            public class ResolutionEntry : Displayable, IEquatable<ResolutionEntry> {
+                private readonly bool _custom;
 
-                public int Height { get; }
+                private int _width;
+                private int _height;
+                private int _framerate;
 
-                public int Framerate { get; }
+                public int Width {
+                    get { return _width; }
+                    set {
+                        value = value.Clamp(0, 131072);
+                        if (value == _width) return;
+                        _width = value;
+                        OnPropertyChanged();
+                    }
+                }
+
+                public int Height {
+                    get { return _height; }
+                    set {
+                        value = value.Clamp(0, 131072);
+                        if (value == _height) return;
+                        _height = value;
+                        OnPropertyChanged();
+                    }
+                }
+
+                public int Framerate {
+                    get { return _framerate; }
+                    set {
+                        if (value == _framerate) return;
+                        _framerate = value;
+                        OnPropertyChanged();
+                    }
+                }
+
+                public sealed override string DisplayName { get; set; }
+
+                internal ResolutionEntry() {
+                    _custom = true;
+                    DisplayName = "Custom";
+                }
 
                 internal ResolutionEntry(int width, int height, int framerate) {
-                    Width = width;
-                    Height = height;
-                    Framerate = framerate;
-
+                    _width = width;
+                    _height = height;
+                    _framerate = framerate;
                     DisplayName = $"{Width}×{Height}, {Framerate} Hz";
                 }
 
                 public bool Equals(ResolutionEntry other) {
-                    return other != null && Width == other.Width && Height == other.Height && Framerate == other.Framerate;
+                    return other != null && _custom == other._custom && Width == other.Width && Height == other.Height && Framerate == other.Framerate;
                 }
 
                 public override bool Equals(object obj) {
@@ -37,15 +72,25 @@ namespace AcManager.Tools.Helpers {
 
                 public override int GetHashCode() {
                     unchecked {
-                        var hashCode = Width;
-                        hashCode = (hashCode * 397) ^ Height;
-                        hashCode = (hashCode * 397) ^ Framerate;
+                        var hashCode = _custom.GetHashCode();
+                        if (_custom) return hashCode;
+
+                        // Those members are readonly if it’s not a custom entry
+                        // ReSharper disable NonReadonlyMemberInGetHashCode
+                        hashCode = (hashCode * 397) ^ _width;
+                        hashCode = (hashCode * 397) ^ _height;
+                        hashCode = (hashCode * 397) ^ _framerate;
+                        // ReSharper restore NonReadonlyMemberInGetHashCode
                         return hashCode;
                     }
                 }
             }
 
-            internal VideoSettings() : base("video") {}
+            internal VideoSettings() : base("video") {
+                CustomResolution.PropertyChanged += (sender, args) => {
+                    Save();
+                };
+            }
 
             #region Entries lists
             public SettingEntry[] CameraModes { get; } = {
@@ -143,6 +188,7 @@ namespace AcManager.Tools.Helpers {
                     if (ReferenceEquals(value, _resolutions)) return;
                     _resolutions = value;
                     OnPropertyChanged(false);
+                    OnPropertyChanged(nameof(UseCustomResolution));
                 }
             }
 
@@ -150,23 +196,27 @@ namespace AcManager.Tools.Helpers {
                 var r = Resolution;
                 var d = new User32.DEVMODE();
                 var l = LinqExtension.RangeFrom()
-                                           .Select(i => User32.EnumDisplaySettings(null, i, ref d)
-                                                   ? new ResolutionEntry(d.dmPelsWidth, d.dmPelsHeight, d.dmDisplayFrequency) : null)
-                                           .TakeWhile(x => x != null).ToArray();
-                // if (Resolutions?.JoinToString(",") == l.JoinToString(",")) return;
+                                     .Select(i => User32.EnumDisplaySettings(null, i, ref d)
+                                             ? new ResolutionEntry(d.dmPelsWidth, d.dmPelsHeight, d.dmDisplayFrequency) : null)
+                                     .TakeWhile(x => x != null)
+                                     .Append(Fullscreen ? null : CustomResolution)
+                                     .NonNull().ToArray();
                 Resolutions = l;
                 Resolution = Resolutions.FirstOrDefault(x => x.Equals(r));
             }
+
+            public ResolutionEntry CustomResolution { get; } = new ResolutionEntry();
 
             private ResolutionEntry _resolution;
 
             public ResolutionEntry Resolution {
                 get { return _resolution; }
                 set {
-                    if (!Resolutions.Contains(value)) value = Resolutions.MaxEntry(x => x.Width);
+                    if (!Resolutions.Contains(value)) value = Resolutions.ApartFrom(CustomResolution).MaxEntry(x => x.Width);
                     if (ReferenceEquals(value, _resolution)) return;
                     _resolution = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(UseCustomResolution));
                 }
             }
 
@@ -214,6 +264,12 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _fullscreen)) return;
                     _fullscreen = value;
                     OnPropertyChanged();
+
+                    if (ReferenceEquals(Resolution, CustomResolution) && value) {
+                        Resolution = null;
+                    }
+
+                    UpdateResolutionsList();
                 }
             }
 
@@ -250,6 +306,8 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            public bool UseCustomResolution => ReferenceEquals(CustomResolution, Resolution);
             #endregion
 
             #region Quality
@@ -544,21 +602,24 @@ namespace AcManager.Tools.Helpers {
             }
 
             protected override void LoadFromIni() {
-                UpdateResolutionsList();
-
                 // VIDEO
                 var section = Ini["VIDEO"];
-                var loaded = new ResolutionEntry(section.GetInt("WIDTH", 0), section.GetInt("HEIGHT", 0), section.GetInt("REFRESH", 0));
-                var resolution = Resolutions.FirstOrDefault(x => x.Equals(loaded));
-                if (resolution == null) {
-                    Resolution = Resolutions.FirstOrDefault(x => x.Width == loaded.Width && x.Height == loaded.Height);
-                    ForceSave();
-                    Logging.Warning($"RESOLUTION ({loaded.DisplayName}) IS INVALID, CHANGED TO ({Resolution?.DisplayName})");
-                } else {
+                Fullscreen = section.GetBool("FULLSCREEN", true);
+                UpdateResolutionsList();
+                
+                CustomResolution.Width = section.GetInt("WIDTH", 0);
+                CustomResolution.Height = section.GetInt("HEIGHT", 0);
+                CustomResolution.Framerate = section.GetInt("REFRESH", 0);
+
+                var resolution = Resolutions.FirstOrDefault(x => x.Equals(CustomResolution));
+                if (resolution != null) {
                     Resolution = resolution;
+                } else if (Fullscreen) {
+                    Resolution = Resolutions.FirstOrDefault(x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height);
+                    ForceSave();
+                    Logging.Warning($"RESOLUTION ({CustomResolution.DisplayName}) IS INVALID, CHANGED TO ({Resolution?.DisplayName})");
                 }
 
-                Fullscreen = section.GetBool("FULLSCREEN", true);
                 VerticalSyncronization = section.GetBool("VSYNC", false);
                 AntiAliasingLevel = section.GetEntry("AASAMPLES", AntiAliasingLevels);
                 AnisotropicLevel = section.GetEntry("ANISOTROPIC", AnisotropicLevels, "8");

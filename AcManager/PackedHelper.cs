@@ -9,8 +9,6 @@ using System.Runtime.CompilerServices;
 
 namespace AcManager {
     internal class PackedHelper {
-        private readonly string _appId;
-        private readonly string _referencesId;
         private readonly bool _logging;
         private readonly string _temporaryDirectory;
         private readonly ResourceManager _references;
@@ -34,8 +32,6 @@ namespace AcManager {
         internal ResolveEventHandler Handler { get; }
 
         internal PackedHelper(string appId, string referencesId, bool logging) {
-            _appId = appId;
-            _referencesId = referencesId;
             _logging = logging;
             _temporaryDirectory = Path.Combine(Path.GetTempPath(), appId + "_libs");
             Directory.CreateDirectory(_temporaryDirectory);

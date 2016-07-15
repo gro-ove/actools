@@ -17,7 +17,7 @@
             <mui:BbCodeBlock>Just in case, if you can't join using this section (or missed joining time), use Online section instead.</mui:BbCodeBlock>
         </DockPanel>
 
-        <userControls:WebBrowserBlock Grid.Row="1" Name="WebBrowser" UserAgent="Assetto Corsa Launcher" StartPage="{Binding StartPage}"
+        <userControls:WebBlock Grid.Row="1" Name="WebBrowser" UserAgent="Assetto Corsa Launcher" StartPage="{Binding StartPage}"
                 PageLoaded="WebBrowser_OnPageLoaded" />
         <Grid Grid.Row="2" Margin="0 16 0 0">
             <Grid.ColumnDefinitions>

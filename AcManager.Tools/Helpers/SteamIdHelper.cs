@@ -23,7 +23,7 @@ namespace AcManager.Tools.Helpers {
         public static SteamIdHelper Instance { get; private set; }
 
         public static SteamIdHelper Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new SteamIdHelper();
         }
 

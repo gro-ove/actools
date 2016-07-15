@@ -31,7 +31,6 @@ namespace AcManager.Tools.SemiGui {
             }
 
             public void Report(Game.ProgressState value) {
-                Logging.Write("[GAMEWRAPPER] Progress: " + value);
                 _ui.OnProgress(value);
             }
         }
@@ -155,6 +154,7 @@ namespace AcManager.Tools.SemiGui {
 
                     return result;
                 } catch (Exception e) {
+                    Logging.Warning("[GameWrapper] StartAsync(): " + e);
                     ui.OnError(e);
                     return null;
                 }

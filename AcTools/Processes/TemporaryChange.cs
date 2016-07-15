@@ -7,7 +7,7 @@ using AcTools.Utils;
 namespace AcTools.Processes {
     internal class VideoIniChange : IDisposable {
         private readonly string _filename, _backup, _originalContent;
-        private bool _changed;
+        private readonly bool _changed;
 
         public VideoIniChange(string ppFilter, bool? fxaa, bool specialResolution, bool maximizeSettings) {
             _filename = FileUtils.GetCfgVideoFilename();

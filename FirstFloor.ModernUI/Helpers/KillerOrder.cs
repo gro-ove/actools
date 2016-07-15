@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows.Threading;
 
-namespace AcManager.Tools.Helpers.Api {
+namespace FirstFloor.ModernUI.Helpers {
     public class KillerOrder<T> : KillerOrder {
         public new T Victim => (T)base.Victim;
 
@@ -13,7 +13,8 @@ namespace AcManager.Tools.Helpers.Api {
 
     public class KillerOrder : IDisposable {
         public readonly object Victim;
-        public readonly DateTime KillAfter;
+        public readonly TimeSpan Timeout;
+        public DateTime KillAfter;
         public bool Killed;
 
         public static KillerOrder<T> Create<T>(T victim, long timeout) {
@@ -26,9 +27,14 @@ namespace AcManager.Tools.Helpers.Api {
 
         public KillerOrder(object victim, TimeSpan timeout) {
             Victim = victim;
+            Timeout = timeout;
             KillAfter = DateTime.Now + timeout;
 
             Register(this);
+        }
+
+        public void Delay() {
+            KillAfter = DateTime.Now + Timeout;
         }
 
         public void Dispose() {

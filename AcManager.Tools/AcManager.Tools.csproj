@@ -164,7 +164,6 @@
     <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />
     <Compile Include="Helpers\AdditionalContentInstallation\ZipContentInstallator.cs" />
     <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
-    <Compile Include="Helpers\Api\KillerOrder.cs" />
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>
@@ -205,6 +204,8 @@
     <Compile Include="Managers\Online\OnlineManagerType.cs" />
     <Compile Include="Managers\Online\RecentManager.cs" />
     <Compile Include="Managers\Online\ServerStatus.cs" />
+    <Compile Include="Managers\Plugins\IPluginWrapper.cs" />
+    <Compile Include="Managers\Plugins\PluginsWrappers.cs" />
     <Compile Include="Managers\Presets\BuiltInPresetEntry.cs" />
     <Compile Include="Managers\Presets\ISavedPresetEntry.cs" />
     <Compile Include="Managers\Presets\SavedPresetEntry.cs" />
@@ -270,8 +271,8 @@
     <Compile Include="Managers\Directories\AcDirectories.cs" />
     <Compile Include="Helpers\SteamIdHelper.cs" />
     <Compile Include="Managers\AcRootDirectory.cs" />
-    <Compile Include="Managers\Addons\AppAddonInformation.cs" />
-    <Compile Include="Managers\Addons\AppAddonsManager.cs" />
+    <Compile Include="Managers\Plugins\PluginEntry.cs" />
+    <Compile Include="Managers\Plugins\PluginsManager.cs" />
     <Compile Include="Managers\InnerHelpers\IDirectoryListener.cs" />
     <Compile Include="Managers\InnerHelpers\IWatchingChangeApplier.cs" />
     <Compile Include="Managers\InnerHelpers\WatchingChange.cs" />
@@ -324,6 +325,7 @@
     <Compile Include="Starters\IAcsPlatformSpecificStarter.cs" />
     <Compile Include="Starters\IAcsPrepareableStarter.cs" />
     <Compile Include="Starters\NaiveStarter.cs" />
+    <Compile Include="Starters\OfficialStarter.cs" />
     <Compile Include="Starters\StarterPlus.cs" />
     <Compile Include="Starters\SseStarter.cs" />
   </ItemGroup>

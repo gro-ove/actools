@@ -28,7 +28,7 @@ namespace AcManager.Tools.Managers {
         public static AcRootDirectory Instance { get; private set; }
 
         public static AcRootDirectory Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new AcRootDirectory();
         }
 

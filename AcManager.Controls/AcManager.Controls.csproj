@@ -34,6 +34,16 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Awesomium.Core, Version=1.7.5.1, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\WPF\Awesomium\Awesomium.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Awesomium.Windows.Controls, Version=1.7.5.1, Culture=neutral, PublicKeyToken=7a34e179b8b61c39, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\WPF\Awesomium\Awesomium.Windows.Controls.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>True</Private>
@@ -93,6 +103,8 @@
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="ChangedPresetEventArgs.cs" />
+    <Compile Include="Helpers\AwesomiumResolverService.cs" />
+    <Compile Include="Helpers\BetterWebControl.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
     <Compile Include="Helpers\DragAdorner.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
@@ -108,11 +120,15 @@
     </Compile>
     <Compile Include="QuickSwitches\QuickSwitchPresetsControl.cs" />
     <Compile Include="QuickSwitches\QuickSwitchSlider.cs" />
+    <Compile Include="UserControls\AwesomiumWrapper.cs" />
+    <Compile Include="UserControls\BaseScriptProvider.cs" />
+    <Compile Include="UserControls\IWebSomething.cs" />
     <Compile Include="UserControls\ModernPopup.xaml.cs">
       <DependentUpon>ModernPopup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\WebBrowserBlock.xaml.cs">
-      <DependentUpon>WebBrowserBlock.xaml</DependentUpon>
+    <Compile Include="UserControls\PageLoadedEventArgs.cs" />
+    <Compile Include="UserControls\WebBlock.xaml.cs">
+      <DependentUpon>WebBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\KunosCareerTypeToIconConverter.cs" />
     <Compile Include="Converters\PlaceToColorConverter.cs" />
@@ -166,6 +182,7 @@
     <Compile Include="UserControls\CarBlock.xaml.cs">
       <DependentUpon>CarBlock.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\WebBrowserWrapper.cs" />
     <Compile Include="UserPresetsControl.cs" />
     <Compile Include="AcObjectListBox.cs" />
     <Compile Include="Helpers\AcObjectsUriProvider.cs" />
@@ -351,7 +368,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\WebBrowserBlock.xaml">
+    <Page Include="UserControls\WebBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

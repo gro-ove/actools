@@ -70,9 +70,13 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _city) return;
                 _city = value;
-                OnPropertyChanged(nameof(City));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(City));
+                    Changed = true;
+
+                    SuggestionLists.RebuildCitiesList();
+                }
             }
         }
 
@@ -84,9 +88,11 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _geoTags) return;
                 _geoTags = value;
-                OnPropertyChanged(nameof(GeoTags));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(GeoTags));
+                    Changed = true;
+                }
             }
         }
 
@@ -98,9 +104,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsLength) return;
                 _specsLength = value;
-                OnPropertyChanged(nameof(SpecsLength));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsLength));
+                    OnPropertyChanged(nameof(SpecsInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -112,9 +121,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsWidth) return;
                 _specsWidth = value;
-                OnPropertyChanged(nameof(SpecsWidth));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsWidth));
+                    OnPropertyChanged(nameof(SpecsInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -126,9 +138,12 @@ namespace AcManager.Tools.Objects {
             set {
                 if (value == _specsPitboxes) return;
                 _specsPitboxes = value;
-                OnPropertyChanged(nameof(SpecsPitboxes));
 
-                Changed = true;
+                if (Loaded) {
+                    OnPropertyChanged(nameof(SpecsPitboxes));
+                    OnPropertyChanged(nameof(SpecsInfoDisplay));
+                    Changed = true;
+                }
             }
         }
 
@@ -144,7 +159,7 @@ namespace AcManager.Tools.Objects {
                 foreach (var val in new[] {
                     SpecsLength, 
                     SpecsWidth, 
-                    string.IsNullOrWhiteSpace(SpecsPitboxes) ? "" : SpecsPitboxes + LocalizationHelper.MultiplyForm(pitboxes, @" pit", @" pits")
+                    string.IsNullOrWhiteSpace(SpecsPitboxes) ? "" : SpecsPitboxes + pitboxes.MultiplyForm(@" pit", @" pits")
                 }.Where(val => !string.IsNullOrWhiteSpace(val))) {
                     if (result.Length > 0) {
                         result.Append(@", ");

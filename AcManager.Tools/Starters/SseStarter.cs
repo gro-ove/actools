@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Addons;
+using AcManager.Tools.Managers.Plugins;
 using AcTools.DataFile;
 
 namespace AcManager.Tools.Starters {
@@ -16,7 +16,7 @@ namespace AcManager.Tools.Starters {
 
         public override void Run() {
             var acRoot = AcRootDirectory.Instance.RequireValue;
-            var addon = AppAddonsManager.Instance.GetById(AddonId);
+            var addon = PluginsManager.Instance.GetById(AddonId);
             if (addon?.IsReady != true) throw new Exception("Addon isn’t ready");
 
             _filename = addon.GetFilename(ConfigName);

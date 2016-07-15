@@ -11,7 +11,7 @@ namespace AcManager.Tools.Managers {
         public static ShowroomsManager Instance { get; private set; }
 
         public static ShowroomsManager Initialize() {
-            if (Instance != null) throw new Exception("already initialized");
+            if (Instance != null) throw new Exception("Already initialized");
             return Instance = new ShowroomsManager();
         }
 

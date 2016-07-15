@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Tools.Managers.Addons;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using MediaState = xZune.Vlc.Interop.Media.MediaState;
@@ -26,8 +26,8 @@ namespace AcManager.Controls.Dialogs {
             _loaded = true;
 
             try {
-                Logging.Write("[VLC] Initialization: " + AppAddonsManager.Instance.GetAddonDirectory("VLC"));
-                Player.Initialize(AppAddonsManager.Instance.GetAddonDirectory("VLC"), "--ignore-config", "--no-video-title", "--no-sub-autodetect-file");
+                Logging.Write("[VLC] Initialization: " + PluginsManager.Instance.GetPluginDirectory("VLC"));
+                Player.Initialize(PluginsManager.Instance.GetPluginDirectory("VLC"), "--ignore-config", "--no-video-title", "--no-sub-autodetect-file");
                 Logging.Write("[VLC] Player.BeginStop()");
                 Player.BeginStop(Stopped);
             } catch (Exception ex) {
@@ -65,7 +65,7 @@ namespace AcManager.Controls.Dialogs {
         }
 
         public static bool IsSupported() {
-            return AppAddonsManager.Instance.IsAddonEnabled("VLC");
+            return PluginsManager.Instance.IsPluginEnabled("VLC");
         }
 
         private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {
