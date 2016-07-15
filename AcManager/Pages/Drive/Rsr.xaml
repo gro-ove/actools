@@ -26,10 +26,10 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <ToggleButton x:Name="Button" Content="Options"
+            <ToggleButton Grid.Column="0" x:Name="Button" Content="Options"
                     IsHitTestVisible="{Binding ElementName=Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
-            <userControls:ModernPopup x:Name="Popup" PlacementTarget="{Binding ElementName=Button}"
-                    IsOpen="{Binding IsChecked, ElementName=Button, Mode=TwoWay}">
+            <userControls:ModernPopup Grid.Column="0" x:Name="Popup" PlacementTarget="{Binding ElementName=Button}"
+                    IsOpen="{Binding IsChecked, ElementName=Button, Mode=TwoWay}" Padding="8">
                 <StackPanel Width="200">
                     <CheckBox IsChecked="{Binding GhostCar}">
                         <Label>Ghost car</Label>

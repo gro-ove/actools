@@ -16,7 +16,7 @@
             <mui:BindingProxy x:Key="Model" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <controls:AcObjectBase AcObject="{Binding SelectedTrackConfiguration}" ShowIcon="False">
+    <controls:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <controls:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open track's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
@@ -54,47 +54,37 @@
         </controls:AcObjectBase.ToolBars>
 
         <StackPanel>
+            <DockPanel Margin="8 0 0 8" Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock DockPanel.Dock="Left" Style="{StaticResource Label}" Margin="0 2 8 0">Layout Name:</TextBlock>
+                <TextBox Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource TextBoxAsTextBlock}" Text="{Binding SelectedTrackConfiguration.LayoutName}"
+                        attached:FocusAdvancement.AdvancesByEnterKey="True" />
+            </DockPanel>
+
             <!-- layouts, previews -->
-            <Grid Margin="0 0 0 12" MaxHeight="512">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <Grid Name="SelectedTrackConfigurationPreview">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="200" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <Grid>
-                        <mui:BetterImage StretchDirection="DownOnly" Filename="{Binding SelectedTrackConfiguration.PreviewImage}" MaxWidth="355" />
-                        <mui:BetterImage StretchDirection="DownOnly" Filename="{Binding SelectedTrackConfiguration.OutlineImage}" MaxWidth="355"
-                                ShowBroken="False" />
-                    </Grid>
-
-                    <TextBox Grid.Row="1" Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            Style="{StaticResource TextBoxAsTextBlock}" Margin="8 8 0 0" Text="{Binding SelectedTrackConfiguration.LayoutName}"
-                            attached:FocusAdvancement.AdvancesByEnterKey="True" />
-                </Grid>
-
-                <ListBox Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1"
+            <StackPanel Margin="0 0 0 12" Height="240" Orientation="Horizontal" HorizontalAlignment="Center">
+                <ListBox Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                         ItemsSource="{Binding SelectedObject.MultiLayouts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Width="180"
-                        SelectedItem="{Binding SelectedTrackConfiguration}" Height="{Binding ElementName=SelectedTrackConfigurationPreview, Path=ActualHeight,
-                                            Converter={StaticResource SumConverter}, ConverterParameter=4}" Margin="4 -2 0 -2">
+                        SelectedItem="{Binding SelectedTrackConfiguration}" Margin="4 -2 0 -2" ScrollViewer.CanContentScroll="True">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" />
+                            <mui:VirtualizingTilePanel Orientation="Horizontal" ItemWidth="84" ItemHeight="64" VirtualizationMode="Recycling"
+                                    IsVirtualizing="True" ScrollUnit="Pixel" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <!-- using Name instead of DisplayName, because Display Name of main track layout contains number of layouts -->
-                            <mui:BetterImage Filename="{Binding OutlineImage}" Width="80" Height="60" ToolTip="{Binding Name}" />
+                            <mui:BetterImage Filename="{Binding OutlineImage}" Width="80" Height="60" ToolTip="{Binding Name}" ClearOnChange="True" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </Grid>
+
+                <Grid Height="200" VerticalAlignment="Center" Margin="20 0 0 0">
+                    <mui:BetterImage StretchDirection="DownOnly" Filename="{Binding SelectedTrackConfiguration.PreviewImage}" MaxWidth="355" />
+                    <mui:BetterImage StretchDirection="DownOnly" Filename="{Binding SelectedTrackConfiguration.OutlineImage}" MaxWidth="355" />
+                </Grid>
+            </StackPanel>
 
             <!-- data section -->
             <StackPanel Visibility="{Binding SelectedTrackConfiguration.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -144,8 +134,7 @@
                     <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By City" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                        CommandParameter="city" />
+                                <MenuItem Header="Filter By City" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="city" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="City:" />

@@ -72,8 +72,8 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == "SelectedItem") {
-                Model.SelectedTrackConfiguration = _list.SelectedItem as TrackBaseObject;
+            if (e.PropertyName == nameof(_list.SelectedItem)) {
+                Model.SelectedTrackConfiguration = (_list.SelectedItem as TrackObject)?.SelectedLayout ?? _list.SelectedItem as TrackBaseObject;
             }
         }
 
@@ -110,6 +110,7 @@ namespace AcManager.Pages.Dialogs {
 
             public SelectTrackDialogViewModel(TrackBaseObject selectedTrackConfiguration) {
                 _selectedTrackConfiguration = new DelayedPropertyWrapper<TrackBaseObject>(v => {
+                    v.MainTrackObject.SelectedLayout = v;
                     CurrentPreviewImage = v.PreviewImage;
 
                     OnPropertyChanged(nameof(SelectedTrackConfiguration));

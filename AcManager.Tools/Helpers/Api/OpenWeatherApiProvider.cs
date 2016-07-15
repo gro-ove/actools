@@ -11,7 +11,7 @@ using FirstFloor.ModernUI.Helpers;
 // try-catch will catch them and return null, relax
 
 namespace AcManager.Tools.Helpers.Api {
-    public partial class OpenWeatherApiProvider {
+    public class OpenWeatherApiProvider {
         public enum OpenWeatherType {
             ThunderstormWithLightRain = 200,
             ThunderstormWithRain = 201,
@@ -264,8 +264,11 @@ namespace AcManager.Tools.Helpers.Api {
                         return new WeatherDescription(type, temperature, description, iconUri);
                     }
                 }
+            } catch (WebException e) {
+                Logging.Warning("[OpenWeatherApiProvider] TryToGetWeather(): {0}, {1}", requestUri, e.Message);
+                return null;
             } catch (Exception e) {
-                Logging.Warning("cannot get weather using openweather: {0}\n{1}", requestUri, e);
+                Logging.Warning("[OpenWeatherApiProvider] TryToGetWeather(): {0}\n{1}", requestUri, e);
                 return null;
             }
         }

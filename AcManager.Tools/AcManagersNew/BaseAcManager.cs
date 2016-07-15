@@ -25,7 +25,9 @@ namespace AcManager.Tools.AcManagersNew {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class BaseAcManager<T> : BaseAcManagerNew, IAcManagerNew, IAcWrapperLoader, IEnumerable<T> where T : AcObjectNew {
+        [NotNull]
         protected readonly AcWrapperObservableCollection InnerWrappersList;
+
         protected bool IsScanning;
         protected bool LoadingReset;
         private bool _isScanned;
@@ -59,6 +61,7 @@ namespace AcManager.Tools.AcManagersNew {
         /// Called in constructor! So, you know, no weird business.
         /// </summary>
         /// <returns>Collection (could be something different from AcWrapperObservableCollection for some special cases)</returns>
+        [NotNull]
         protected virtual AcWrapperObservableCollection CreateCollection() {
             return new AcWrapperObservableCollection();
         }
@@ -145,6 +148,7 @@ namespace AcManager.Tools.AcManagersNew {
             if (!IsScanned) {
                 Scan();
             }
+
             if (!IsLoaded) {
                 Load();
             }
@@ -156,6 +160,7 @@ namespace AcManager.Tools.AcManagersNew {
             if (!IsScanned) {
                 Scan();
             }
+
             if (!IsLoaded) {
                 await (_loadingTask ?? (_loadingTask = LoadAsync()));
                 _loadingTask = null;

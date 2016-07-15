@@ -490,6 +490,8 @@ done:
     + chromium engine
         + as a plugin
         + transparent switching
+    + official starter
+    + remember track's layout
 
 fixme:
     - notifypropertychanged for commands
@@ -510,11 +512,9 @@ fixme:
     - SRS: three minutes instead of five
     - accent color on a fresh start
     - find information dialog
-    - RSR: popup padding
 
 todo:
     - open new links in find information dialog in same tab
-    - official starter
 
     - notification for plugins
     - upload Content to Trello for those who doesn't have Internet connection
@@ -524,6 +524,15 @@ todo:
     - lite mode (without main form): overlays, second commands, attempts to open main form?
     - automatically fix name, brand name and badge for URD-cars
         - optional!
+
+    - servers configs editor
+        - load existing configs
+        - edit properly
+        - save changes
+        - run servers
+        - sharing
+        - packing (for VDS and stuff)?
+        - plugins support?
 
     > proper sharing
         > special types:

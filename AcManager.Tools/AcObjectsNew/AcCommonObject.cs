@@ -114,7 +114,9 @@ namespace AcManager.Tools.AcObjectsNew {
 
                 if (Loaded) {
                     SortAffectingValueChanged();
+                    OnPropertyChanged(nameof(Name));
                     OnPropertyChanged(nameof(NameEditable));
+                    OnPropertyChanged(nameof(DisplayName));
                     Changed = true;
                 }
             }

@@ -5,9 +5,11 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -52,6 +54,31 @@ namespace AcManager.Tools.Objects {
 
             InitializeLocationsInner(Path.Combine(Location, "ui"));
             IdWithLayout = Id;
+        }
+
+        private TrackBaseObject _selectedLayout;
+
+        [NotNull]
+        public TrackBaseObject SelectedLayout {
+            get {
+                if (!MultiLayoutMode) return this;
+                if (_selectedLayout == null) {
+                    var layoutId = LimitedStorage.Get(LimitedSpace.SelectedSkin, Id);
+                    _selectedLayout = layoutId == null ? this : (GetLayoutByLayoutId(layoutId) ?? this);
+                }
+                return _selectedLayout;
+            }
+            set {
+                if (!MultiLayoutMode || Equals(value, _selectedLayout)) return;
+                _selectedLayout = value;
+                OnPropertyChanged();
+
+                if (value == this) {
+                    LimitedStorage.Remove(LimitedSpace.SelectedSkin, Id);
+                } else {
+                    LimitedStorage.Set(LimitedSpace.SelectedSkin, Id, value.LayoutId);
+                }
+            }
         }
 
         protected void InitializeLocationsInner(string uiDirectory) {

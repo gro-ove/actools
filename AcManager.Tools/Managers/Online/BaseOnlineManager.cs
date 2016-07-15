@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
@@ -43,8 +44,6 @@ namespace AcManager.Tools.Managers.Online {
 
             throw new ArgumentOutOfRangeException();
         }
-
-        protected BaseOnlineManager() {}
         
         protected override ServerEntry CreateAcObject(string id, bool enabled) {
             throw new NotSupportedException();
@@ -143,11 +142,11 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private AsyncCommand _refreshCommand;
+        private ICommand _refreshCommand;
 
-        public AsyncCommand RefreshListCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(async o => {
+        public ICommand RefreshListCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(o => {
             InnerWrappersList.Clear();
-            await RescanAsync();
+            return RescanAsync();
         }, o => !ErrorFatal));
     }
 }

@@ -34,7 +34,7 @@ namespace AcManager.Tools.Objects {
                 return _selectedSkin;
             }
             set {
-                if (value == _selectedSkin) return;
+                if (Equals(value, _selectedSkin)) return;
                 _selectedSkin = value;
                 OnPropertyChanged(nameof(SelectedSkin));
 

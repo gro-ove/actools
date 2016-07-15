@@ -60,13 +60,16 @@ namespace AcManager.Pages.Dialogs {
         private void SelectedCarChanged(CarObject value) {
             if (value != null) {
                 value.SkinsManager.EnsureLoadedAsync().Forget();
-                SelectedSkin = value.SelectedSkin;
                 UpdateTunableVersions();
             }
 
             SelectedTunableVersion = value;
             OnPropertyChanged(nameof(SelectedCar));
             CommandManager.InvalidateRequerySuggested();
+
+            if (value != null) {
+                SelectedSkin = value.SelectedSkin;
+            }
 
             if (_list != null) {
                 _list.SelectedItem = value;

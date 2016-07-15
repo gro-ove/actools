@@ -75,7 +75,7 @@ namespace AcManager.Tools.Managers.Plugins {
             _locallyLoaded = true;
         }
 
-        public async void UpdateList() {
+        public async Task UpdateList() {
             if (!_locallyLoaded) {
                 ReloadLocalList();
             }

@@ -65,17 +65,17 @@ namespace AcManager.Tools.Objects {
         }
 
         private static WeatherType? TryToDetectWeatherTypeById(string id) {
-            var lid = id.ToLower();
+            var l = id.ToLower();
 
-            if (lid.Contains("mid_clear")) return WeatherType.FewClouds;
-            if (lid.Contains("light_clouds")) return WeatherType.ScatteredClouds;
-            if (lid.Contains("heavy_clouds")) return WeatherType.OvercastClouds;
+            if (l.Contains("mid_clear")) return WeatherType.FewClouds;
+            if (l.Contains("light_clouds")) return WeatherType.ScatteredClouds;
+            if (l.Contains("heavy_clouds")) return WeatherType.OvercastClouds;
 
-            if (lid.Contains("clouds")) return WeatherType.BrokenClouds;
-            if (lid.Contains("clear")) return WeatherType.Clear;
+            if (l.Contains("clouds")) return WeatherType.BrokenClouds;
+            if (l.Contains("clear")) return WeatherType.Clear;
             
-            if (lid.Contains("light_fog")) return WeatherType.Mist;
-            if (lid.Contains("fog")) return WeatherType.Fog;
+            if (l.Contains("light_fog")) return WeatherType.Mist;
+            if (l.Contains("fog")) return WeatherType.Fog;
 
             return null;
         }

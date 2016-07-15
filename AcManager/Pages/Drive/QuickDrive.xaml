@@ -31,10 +31,10 @@
             <StackPanel Orientation="Vertical" Margin="0 0 20 0" Background="Gray">
                 <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeCarCommand}" HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch">
-                    <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding SelectedCar}">
-                        <mui:BetterImage DataContext="{Binding SelectedSkin}" Filename="{Binding PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-                        <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding DisplayName}"
-                                Foreground="White" />
+                    <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
+                        <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+                        <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
+                                Text="{Binding SelectedCar.DisplayName}" Foreground="White" />
                     </Grid>
                 </Button>
             </StackPanel>
@@ -128,14 +128,16 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Style="{StaticResource Small}" Text="Actual temperature:" Margin="0 0 0 12" />
+                                    <TextBlock Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" FontStyle="Italic" VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}">Loading failed</TextBlock>
                                     <TextBlock Grid.Row="1" Style="{StaticResource Heading2}"
-                                            Text="{Binding RealWeather.Description, Converter={StaticResource ToTitleConverter}}" />
-                                    <TextBlock Grid.Row="2" Style="{StaticResource Heading1}" Text="{Binding RealWeather.Temperature, StringFormat='{}{0} °C'}"
-                                            Margin="8" />
-
+                                            Text="{Binding RealWeather.Description, Converter={StaticResource ToTitleConverter}, TargetNullValue='?'}" />
+                                    <TextBlock Grid.Row="2" Style="{StaticResource Heading1}"
+                                            Text="{Binding RealWeather.Temperature, StringFormat='{}{0} °C', TargetNullValue='?'}" Margin="8" />
                                     <Image Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Source="{Binding RealWeather.Icon, IsAsync=True}" MaxWidth="36"
-                                            Height="36" Stretch="Uniform" Margin="8 0 0 0" ToolTip="{Binding RealWeather.FullDescription}"
-                                            HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
+                                            Height="36" Stretch="Uniform" Margin="8 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            RenderOptions.BitmapScalingMode="HighQuality" />
                                 </Grid>
                             </Grid>
                         </Grid.ToolTip>

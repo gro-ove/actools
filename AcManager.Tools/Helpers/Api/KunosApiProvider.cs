@@ -33,7 +33,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         private static void NextServer() {
             InternalUtils.MoveToNextKunosServer();
-            Logging.Warning("[KUNOSAPIPROVIDER] Fallback to: " + (ServerUri ?? "NULL"));
+            Logging.Warning("[KunosApiProvider] Fallback to: " + (ServerUri ?? "NULL"));
         }
 
         private static HttpRequestCachePolicy _cachePolicy;
@@ -183,7 +183,7 @@ namespace AcManager.Tools.Helpers.Api {
         public static ServerInformation[] TryToGetList() {
             if (SteamIdHelper.Instance.Value == null) throw new Exception("Steam ID is missing");
 
-            while (ServerUri != null) {
+            for (var i = 0; i < ServersNumber && ServerUri != null; i++) {
                 var uri = ServerUri;
                 var requestUri = $"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
                 try {
@@ -193,12 +193,12 @@ namespace AcManager.Tools.Helpers.Api {
                     watch.Restart();
                     var parsed = JsonConvert.DeserializeObject<ServerInformation[]>(data);
                     var parsingTime = watch.Elapsed;
-                    Logging.Write($"[KUNOSAPIPROVIDER] List (loading/parsing): {loadTime.TotalMilliseconds:F1} ms/{parsingTime.TotalMilliseconds:F1} ms");
+                    Logging.Write($"[KunosApiProvider] List (loading/parsing): {loadTime.TotalMilliseconds:F1} ms/{parsingTime.TotalMilliseconds:F1} ms");
                     return parsed;
                 } catch (WebException e) {
-                    Logging.Warning("cannot get servers list: {0}, {1}", requestUri, e.Message);
+                    Logging.Warning("Cannot get servers list: {0}, {1}", requestUri, e.Message);
                 } catch (Exception e) {
-                    Logging.Warning("cannot get servers list: {0}\n{1}", requestUri, e);
+                    Logging.Warning("Cannot get servers list: {0}\n{1}", requestUri, e);
                 }
 
                 NextServer();
@@ -220,9 +220,9 @@ namespace AcManager.Tools.Helpers.Api {
                     }
                     return result;
                 } catch (WebException e) {
-                    Logging.Warning("cannot get server information: {0}, {1}", requestUri, e.Message);
+                    Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
                 } catch (Exception e) {
-                    Logging.Warning("cannot get server information: {0}\n{1}", requestUri, e);
+                    Logging.Warning("Cannot get server information: {0}\n{1}", requestUri, e);
                 }
 
                 NextServer();
@@ -270,10 +270,10 @@ namespace AcManager.Tools.Helpers.Api {
                 }
                 return result;
             } catch (WebException e) {
-                Logging.Warning("cannot get server information: {0}, {1}", requestUri, e.Message);
+                Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("cannot get server information: {0}\n{1}", requestUri, e);
+                Logging.Warning("Cannot get server information: {0}\n{1}", requestUri, e);
                 return null;
             }
         }
@@ -289,10 +289,10 @@ namespace AcManager.Tools.Helpers.Api {
                 }
                 return result;
             } catch (WebException e) {
-                Logging.Warning("cannot get server information: {0}, {1}", requestUri, e.Message);
+                Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("cannot get server information: {0}\n{1}", requestUri, e);
+                Logging.Warning("Cannot get server information: {0}\n{1}", requestUri, e);
                 return null;
             }
         }
@@ -305,10 +305,10 @@ namespace AcManager.Tools.Helpers.Api {
             try {
                 return JsonConvert.DeserializeObject<ServerActualInformation>(await LoadAsync(requestUri));
             } catch (WebException e) {
-                Logging.Warning("cannot get server information: {0}, {1}", requestUri, e.Message);
+                Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("cannot get actual server information: {0}\n{1}", requestUri, e);
+                Logging.Warning("Cannot get actual server information: {0}\n{1}", requestUri, e);
                 return null;
             }
         }
@@ -321,10 +321,10 @@ namespace AcManager.Tools.Helpers.Api {
             try {
                 return JsonConvert.DeserializeObject<ServerActualInformation>(Load(requestUri));
             } catch (WebException e) {
-                Logging.Warning("cannot get server information: {0}, {1}", requestUri, e.Message);
+                Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("cannot get actual server information: {0}\n{1}", requestUri, e);
+                Logging.Warning("Cannot get actual server information: {0}\n{1}", requestUri, e);
                 return null;
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class Logging {
@@ -50,14 +51,17 @@ namespace FirstFloor.ModernUI.Helpers {
             WriteInner('→', s);
         }
 
+        [StringFormatMethod("format")]
         public static void Write(string format, params object[] args) {
             Write(args.Length == 0 ? format : string.Format(format, args));
         }
 
+        [StringFormatMethod("format")]
         public static void Warning(string format, params object[] args) {
             WriteInner('⚠', args.Length == 0 ? format : string.Format(format, args));
         }
 
+        [StringFormatMethod("format")]
         public static void Error(string format, params object[] args) {
             WriteInner('×', args.Length == 0 ? format : string.Format(format, args));
         }

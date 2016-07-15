@@ -73,6 +73,8 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public override void ActualScan() {
+            Logging.Warning("[AsyncScanAcManager] Syncronized version of scanning just was called!");
+
             _cancellationTokenSource?.Cancel();
             _scanAsyncTask = null;
 
@@ -112,6 +114,7 @@ namespace AcManager.Tools.AcManagersNew {
                 InnerWrappersList.Clear();
                 Status = AsyncScanManagerStatus.Error;
                 ErrorMessage = e.Message;
+                IsScanned = true;
                 return;
             }
 
@@ -124,7 +127,7 @@ namespace AcManager.Tools.AcManagersNew {
                 InnerWrappersList.AddRange(entries.Select(x => new AcItemWrapper(this, x)));
                 Status = AsyncScanManagerStatus.Ready;
             } catch (Exception e) {
-                Logging.Error($"[MANAGER ({GetType()})] Scanning error: {e}");
+                Logging.Error($"[{GetType().Name}] ActualScanAsync(): {e}");
 
                 InnerWrappersList.Clear();
                 Status = AsyncScanManagerStatus.Error;

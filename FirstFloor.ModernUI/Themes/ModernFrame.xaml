@@ -56,8 +56,8 @@
                                     Transition="{TemplateBinding TransitionName}" />
 
                             <!-- display progress bar while content is being loaded -->
-                            <ProgressBar IsIndeterminate="{TemplateBinding IsLoadingContent}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4"
-                                    Margin="20 -4 20 0" Visibility="{TemplateBinding IsLoadingContent, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4" Margin="20 0 20 0"
+                                    Visibility="{TemplateBinding IsLoadingContent, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </Grid>
                     </Border>
                 </ControlTemplate>

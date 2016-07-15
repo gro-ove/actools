@@ -29,7 +29,7 @@ namespace AcManager.Pages.Selected {
     public partial class SelectedTrackPage : ILoadableContent, IParametrizedUriContent {
         public class SelectedTrackPageViewModel : SelectedAcObjectViewModel<TrackObject> {
             public SelectedTrackPageViewModel([NotNull] TrackObject acObject) : base(acObject) {
-                SelectedTrackConfiguration = acObject;
+                SelectedTrackConfiguration = acObject.SelectedLayout;
             }
 
             private TrackBaseObject _selectedTrackConfiguration;
@@ -40,6 +40,8 @@ namespace AcManager.Pages.Selected {
                     if (Equals(value, _selectedTrackConfiguration)) return;
                     _selectedTrackConfiguration = value;
                     OnPropertyChanged();
+
+                    SelectedObject.SelectedLayout = value;
                 }
             }
 

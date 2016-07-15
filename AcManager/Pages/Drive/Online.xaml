@@ -12,6 +12,10 @@
     </UserControl.Resources>
 
     <Grid Style="{StaticResource ContentRoot}">
+        <!-- loading -->
+        <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4" Margin="20 0 20 0"
+                Visibility="{Binding Manager.Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acManagersNew:AsyncScanManagerStatus.Loading}}" />
+
         <!-- error -->
         <StackPanel Visibility="{Binding Manager.Status, Converter={StaticResource EnumToVisibilityConverter}, 
                 ConverterParameter={x:Static acManagersNew:AsyncScanManagerStatus.Error}}" Margin="40 0 40 0">

@@ -621,7 +621,7 @@ namespace AcManager.Pages.Drive {
                     }
                 } catch (Exception e) {
                     IsWeatherNotSupported = true;
-                    Logging.Warning("[QUICKDRIVE] FindClosestWeather exception: " + e);
+                    Logging.Warning("[QuickDrive] TryToSetWeatherType(): " + e);
                 }
             }
             #endregion
@@ -633,8 +633,10 @@ namespace AcManager.Pages.Drive {
                 dialog.ShowDialog();
                 if (!dialog.IsResultOk || dialog.SelectedCar == null) return;
 
-                SelectedCar = dialog.SelectedCar;
-                SelectedCar.SelectedSkin = dialog.SelectedSkin;
+                var car = dialog.SelectedCar;
+                car.SelectedSkin = dialog.SelectedSkin;
+
+                SelectedCar = car;
             }));
 
             private ICommand _changeTrackCommand;
