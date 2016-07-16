@@ -41,7 +41,7 @@
             <mui:ModernTab.Links>
                 <mui:Link DisplayName="Basic" Source="/Pages/ServerPreset/Basic.xaml" />
                 <mui:Link DisplayName="Assists &amp; Realism" Source="/Pages/ServerPreset/Assists.xaml" />
-                <mui:Link DisplayName="Sessions &amp; Conditions" Source="/Pages/ServerPreset/Sessions.xaml" />
+                <mui:Link DisplayName="Sessions &amp; Conditions" Source="/Pages/ServerPreset/SessionsWip.xaml" />
             </mui:ModernTab.Links>
         </mui:ModernTab>
     </ac:AcObjectBase>

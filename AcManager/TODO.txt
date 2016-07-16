@@ -513,6 +513,7 @@ fixme:
     - find information dialog
     - replays layout
     - smart textbox with version
+    - 1ff opponent?!
 
 todo:
     - open new links in find information dialog in same tab

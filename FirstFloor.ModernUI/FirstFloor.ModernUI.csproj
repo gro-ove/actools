@@ -456,6 +456,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources.ru-RU.resx" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Fonts\Segoe Condensed Bold.ttf" />

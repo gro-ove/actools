@@ -118,88 +118,72 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Back" xml:space="preserve">
-    <value>Back</value>
-  </data>
-  <data name="Forward" xml:space="preserve">
-    <value>Forward</value>
+    <value>Назад</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Отмена</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Close</value>
+    <value>Закрыть</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Вперёд</value>
   </data>
   <data name="Go" xml:space="preserve">
-    <value>Go</value>
+    <value>Перейти</value>
   </data>
   <data name="Home" xml:space="preserve">
-    <value>Home</value>
+    <value>Домой</value>
   </data>
   <data name="Maximize" xml:space="preserve">
-    <value>Maximize</value>
+    <value>Развернуть</value>
   </data>
   <data name="Minimize" xml:space="preserve">
-    <value>Minimize</value>
-  </data>
-  <data name="NavigateLink" xml:space="preserve">
-    <value>Navigate link</value>
+    <value>Свернуть</value>
   </data>
   <data name="NavigationFailed" xml:space="preserve">
-    <value>Navigation failed</value>
+    <value>Не удалось перейти</value>
   </data>
   <data name="NavigationFailedFrameNotFound" xml:space="preserve">
-    <value>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</value>
+    <value>Нельзя перейти к {0}</value>
   </data>
   <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
-    <value>Unable to navigate to {0}, no source specified</value>
+    <value>Нельзя перейти к {0}</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>No</value>
+    <value>Нет</value>
   </data>
   <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Restore" xml:space="preserve">
-    <value>Restore</value>
-  </data>
-  <data name="UIThreadRequired" xml:space="preserve">
-    <value>Operation requires the UI thread</value>
-  </data>
-  <data name="UnexpectedToken" xml:space="preserve">
-    <value>Unexpected token</value>
-  </data>
-  <data name="UnknownOS" xml:space="preserve">
-    <value>Unknown operating system</value>
-  </data>
-  <data name="UnknownTokenType" xml:space="preserve">
-    <value>Unknown token type</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Yes</value>
-  </data>
-  <data name="UpdateAvailable" xml:space="preserve">
-    <value>Newer version {0} is ready to be installed</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BrokenImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>assets\brokenimage.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>ОК</value>
   </data>
   <data name="PickColorFromScreen" xml:space="preserve">
-    <value>Pick any color from screen</value>
+    <value>Выберите любой цвет с экрана</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Восстановить</value>
   </data>
   <data name="SelectColor" xml:space="preserve">
-    <value>Select a color</value>
+    <value>Выберите цвет</value>
   </data>
   <data name="Source" xml:space="preserve">
-    <value>Source</value>
-  </data>
-  <data name="StackTrace" xml:space="preserve">
-    <value>Stack Trace</value>
+    <value>Путь</value>
   </data>
   <data name="Suggestions" xml:space="preserve">
-    <value>Suggestions</value>
+    <value>Что дальше?</value>
   </data>
   <data name="SuggestionsMessage" xml:space="preserve">
-    <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</value>
+    <value>[url=cmd://copy]Скопируйте[/url] информацию в буфер обмена. Попробуйте [url=cmd://refresh]обновить[/url] страницу или перейти [url=cmd://browseback]назад[/url].</value>
+  </data>
+  <data name="UIThreadRequired" xml:space="preserve">
+    <value>Требуется UI-поток</value>
+  </data>
+  <data name="UnknownOS" xml:space="preserve">
+    <value>Неизвестная система</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Новая версия {0} готова к установке</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Да</value>
   </data>
 </root>

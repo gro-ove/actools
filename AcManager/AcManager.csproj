@@ -261,6 +261,9 @@
     <Compile Include="Pages\Selected\SelectedPythonAppPage.xaml.cs">
       <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ServerPreset\Sessions.xaml.cs">
+      <DependentUpon>Sessions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ServerPreset\Assists.xaml.cs">
       <DependentUpon>Assists.xaml</DependentUpon>
     </Compile>
@@ -756,6 +759,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedFontPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ServerPreset\Sessions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
