@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
 using System.Windows;
 
-namespace FirstFloor.ModernUI.Windows.Converters
-{
+namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts a boolean value to a font weight (false: normal, true: bold)
     /// </summary>
-    public class BooleanToFontWeightConverter
-        : IValueConverter
-    {
+    public class BooleanToFontWeightConverter : IValueConverter {
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -23,9 +17,8 @@ namespace FirstFloor.ModernUI.Windows.Converters
         /// <returns>
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            bool inverse = (parameter as string) == "inverse";
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            bool inverse = parameter as string == "inverse";
 
             var bold = value as bool?;
             if (bold.HasValue && bold.Value) {
@@ -44,8 +37,7 @@ namespace FirstFloor.ModernUI.Windows.Converters
         /// <returns>
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             throw new NotSupportedException();
         }
     }

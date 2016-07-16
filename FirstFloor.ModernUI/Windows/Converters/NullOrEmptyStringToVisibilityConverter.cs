@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows;
 
-namespace FirstFloor.ModernUI.Windows.Converters
-{
+namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts a null or empty string value to Visibility.Visible and any other value to Visibility.Collapsed
     /// </summary>
-    public class NullOrEmptyStringToVisibilityConverter
-        : IValueConverter
-    {
+    public class NullOrEmptyStringToVisibilityConverter : IValueConverter {
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -24,20 +18,16 @@ namespace FirstFloor.ModernUI.Windows.Converters
         /// <returns>
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var flag = value == null;
-            if (value is string) {
-                flag = string.IsNullOrEmpty((string)value);
-            }
-            var inverse = (parameter as string) == "inverse";
 
-            if (inverse) {
-                return (flag ? Visibility.Collapsed : Visibility.Visible);
+            var s = value as string;
+            if (s != null) {
+                flag = string.IsNullOrEmpty(s);
             }
-            else {
-                return (flag ? Visibility.Visible : Visibility.Collapsed);
-            }
+
+            var inverse = parameter as string == "inverse";
+            return inverse ? (flag ? Visibility.Collapsed : Visibility.Visible) : (flag ? Visibility.Visible : Visibility.Collapsed);
         }
 
         /// <summary>
@@ -50,8 +40,7 @@ namespace FirstFloor.ModernUI.Windows.Converters
         /// <returns>
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             throw new NotSupportedException();
         }
     }

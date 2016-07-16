@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
 using System.Globalization;
 using System.Windows;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
-    public class BooleanToFontStyleConverter
-        : IValueConverter {
+    public class BooleanToFontStyleConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var flag = false;
             if (value is bool) {

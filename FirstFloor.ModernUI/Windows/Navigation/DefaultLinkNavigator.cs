@@ -10,19 +10,16 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
     /// The default link navigator with support for loading frame content, external link navigation using the default browser and command execution.
     /// </summary>
     public class DefaultLinkNavigator : ILinkNavigator {
-        private CommandDictionary _commands = new CommandDictionary();
-        private string[] _externalSchemes = { Uri.UriSchemeHttp, Uri.UriSchemeHttps, Uri.UriSchemeMailto };
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultLinkNavigator"/> class.
         /// </summary>
         public DefaultLinkNavigator() {
             // register navigation _commands
-            _commands.Add(new Uri("cmd://browseback"), NavigationCommands.BrowseBack);
-            _commands.Add(new Uri("cmd://refresh"), NavigationCommands.Refresh);
+            Commands.Add(new Uri("cmd://browseback"), NavigationCommands.BrowseBack);
+            Commands.Add(new Uri("cmd://refresh"), NavigationCommands.Refresh);
 
             // register application _commands
-            _commands.Add(new Uri("cmd://copy"), ApplicationCommands.Copy);
+            Commands.Add(new Uri("cmd://copy"), ApplicationCommands.Copy);
         }
 
         /// <summary>
@@ -31,18 +28,12 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
         /// <remarks>
         /// Default schemes are http, https and mailto.
         /// </remarks>
-        public string[] ExternalSchemes {
-            get { return _externalSchemes; }
-            set { _externalSchemes = value; }
-        }
+        public string[] ExternalSchemes { get; set; } = { Uri.UriSchemeHttp, Uri.UriSchemeHttps, Uri.UriSchemeMailto };
 
         /// <summary>
         /// Gets or sets the navigable _commands.
         /// </summary>
-        public CommandDictionary Commands {
-            get { return _commands; }
-            set { _commands = value; }
-        }
+        public CommandDictionary Commands { get; set; } = new CommandDictionary();
 
         /// <summary>
         /// Performs navigation to specified link.
@@ -57,12 +48,12 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
 
             // first check if uri refers to a command
             ICommand command;
-            if (_commands != null && _commands.TryGetValue(uri, out command)) {
+            if (Commands != null && Commands.TryGetValue(uri, out command)) {
                 // note: not executed within BbCodeBlock context, Hyperlink instance has Command and CommandParameter set
                 if (command.CanExecute(parameter)) {
                     command.Execute(parameter);
                 }
-            } else if (uri.IsAbsoluteUri && _externalSchemes != null && _externalSchemes.Any(s => uri.Scheme.Equals(s, StringComparison.OrdinalIgnoreCase))) {
+            } else if (uri.IsAbsoluteUri && ExternalSchemes != null && ExternalSchemes.Any(s => uri.Scheme.Equals(s, StringComparison.OrdinalIgnoreCase))) {
                 // uri is external, load in default browser
                 Process.Start(uri.AbsoluteUri);
             } else {

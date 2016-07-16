@@ -84,7 +84,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(VisiblePasswordProperty, value); }
         }
 
-        public static readonly DependencyProperty TogglePasswordVisibilityCommandProperty = DependencyProperty.Register(nameof(TogglePasswordVisibilityCommand), typeof(RelayCommand),
+        public static readonly DependencyProperty TogglePasswordVisibilityCommandProperty = DependencyProperty.Register(
+                nameof(TogglePasswordVisibilityCommand), typeof(RelayCommand),
                 typeof(ProperPasswordBox));
 
         public RelayCommand TogglePasswordVisibilityCommand {

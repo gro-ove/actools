@@ -1,10 +1,11 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:modernUi="clr-namespace:FirstFloor.ModernUI">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="LimitedMarkStyle" TargetType="TextBlock" BasedOn="{StaticResource Label}">
-        <Setter Property="Text" Value="LIMITED" />
+        <Setter Property="Text" Value="{x:Static modernUi:Resources.MarkLimited}" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="FontSize" Value="10" />
@@ -15,7 +16,7 @@
     </Style>
 
     <Style x:Key="NewMarkStyle" TargetType="TextBlock" BasedOn="{StaticResource Label}">
-        <Setter Property="Text" Value="NEW" />
+        <Setter Property="Text" Value="{x:Static modernUi:Resources.MarkNew}" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="FontSize" Value="10" />

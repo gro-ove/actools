@@ -5,8 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FirstFloor.ModernUI.Win32
-{
+namespace FirstFloor.ModernUI.Win32 {
     // Taken from http://www.codeproject.com/Articles/707502/Version-Helper-API-for-NET
     // License: The Code Project Open License
 
@@ -14,16 +13,14 @@ namespace FirstFloor.ModernUI.Win32
     /// .NET wrapper for Version Helper functions.
     /// http://msdn.microsoft.com/library/windows/desktop/dn424972.aspx
     /// </summary>
-    public static class OSVersionHelper
-    {
+    public static class OSVersionHelper {
         #region Supplementary data types
 
         /// <summary>
         /// Operating systems, the information which is stored within
         /// the class <seealso cref="OSVersionHelper"/>.
         /// </summary>
-        public enum KnownOS
-        {
+        public enum KnownOS {
             /// <summary>
             /// Windows XP.
             /// </summary>
@@ -83,8 +80,7 @@ namespace FirstFloor.ModernUI.Win32
         /// <summary>
         /// Information about operating system.
         /// </summary>
-        private sealed class OsEntry
-        {
+        private sealed class OsEntry {
             #region Properties
 
             /// <summary>
@@ -128,8 +124,7 @@ namespace FirstFloor.ModernUI.Win32
             /// Service Pack 3, the major version number is 3. If no Service
             /// Pack has been installed, the value is zero.</param>
             public OsEntry(uint majorVersion, uint minorVersion,
-                ushort servicePackMajor)
-            {
+                    ushort servicePackMajor) {
                 this.MajorVersion = majorVersion;
                 this.MinorVersion = minorVersion;
                 this.ServicePackMajor = servicePackMajor;
@@ -147,8 +142,7 @@ namespace FirstFloor.ModernUI.Win32
         /// http://msdn.microsoft.com/library/windows/desktop/ms724833.aspx
         /// </summary>
         [StructLayout(LayoutKind.Sequential)]
-        private struct OsVersionInfoEx
-        {
+        private struct OsVersionInfoEx {
             /// <summary>
             /// The size of this data structure, in bytes.
             /// </summary>
@@ -251,7 +245,7 @@ namespace FirstFloor.ModernUI.Win32
         /// <returns>Condition mask value.</returns>
         [DllImport("kernel32.dll")]
         private static extern ulong VerSetConditionMask(ulong dwlConditionMask,
-           uint dwTypeBitMask, byte dwConditionMask);
+                uint dwTypeBitMask, byte dwConditionMask);
 
         /// <summary>
         /// <para>
@@ -276,8 +270,8 @@ namespace FirstFloor.ModernUI.Win32
         /// requirements; otherwise, false.</returns>
         [DllImport("kernel32.dll")]
         private static extern bool VerifyVersionInfo(
-            [In] ref OsVersionInfoEx lpVersionInfo,
-            uint dwTypeMask, ulong dwlConditionMask);
+                [In] ref OsVersionInfoEx lpVersionInfo,
+                uint dwTypeMask, ulong dwlConditionMask);
 
         #endregion // PInvoke declarations
 
@@ -297,8 +291,7 @@ namespace FirstFloor.ModernUI.Win32
         /// <summary>
         /// Initializes dictionary of operating systems.
         /// </summary>
-        static OSVersionHelper()
-        {
+        static OSVersionHelper() {
             osEntries = new Dictionary<KnownOS, OsEntry>();
             osEntries.Add(KnownOS.WindowsXP, new OsEntry(5, 1, 0));
             osEntries.Add(KnownOS.WindowsXPSP1, new OsEntry(5, 1, 1));
@@ -331,8 +324,7 @@ namespace FirstFloor.ModernUI.Win32
         /// than, the specified version information; otherwise, false.
         /// </returns>
         internal static bool IsWindowsVersionOrGreater(
-            uint majorVersion, uint minorVersion, ushort servicePackMajor)
-        {
+                uint majorVersion, uint minorVersion, ushort servicePackMajor) {
             OsVersionInfoEx osvi = new OsVersionInfoEx();
             osvi.OSVersionInfoSize = (uint)Marshal.SizeOf(osvi);
             osvi.MajorVersion = majorVersion;
@@ -348,20 +340,20 @@ namespace FirstFloor.ModernUI.Win32
 
             if (!versionOrGreaterMask.HasValue) {
                 versionOrGreaterMask = VerSetConditionMask(
-                    VerSetConditionMask(
                         VerSetConditionMask(
-                            0, VER_MAJORVERSION, VER_GREATER_EQUAL),
-                        VER_MINORVERSION, VER_GREATER_EQUAL),
-                    VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+                                VerSetConditionMask(
+                                        0, VER_MAJORVERSION, VER_GREATER_EQUAL),
+                                VER_MINORVERSION, VER_GREATER_EQUAL),
+                        VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
             }
 
             if (!versionOrGreaterTypeMask.HasValue) {
                 versionOrGreaterTypeMask = VER_MAJORVERSION |
-                    VER_MINORVERSION | VER_SERVICEPACKMAJOR;
+                        VER_MINORVERSION | VER_SERVICEPACKMAJOR;
             }
 
             return VerifyVersionInfo(ref osvi, versionOrGreaterTypeMask.Value,
-                versionOrGreaterMask.Value);
+                    versionOrGreaterMask.Value);
         }
 
         /// <summary>
@@ -371,19 +363,17 @@ namespace FirstFloor.ModernUI.Win32
         /// <param name="os">OS to compare running OS to.</param>
         /// <returns>True if the the running OS matches, or is greater
         /// than, the specified OS; otherwise, false.</returns>
-        public static bool IsWindowsVersionOrGreater(KnownOS os)
-        {
+        public static bool IsWindowsVersionOrGreater(KnownOS os) {
             try {
                 OsEntry osEntry = osEntries[os];
                 if (!osEntry.MatchesOrGreater.HasValue) {
                     osEntry.MatchesOrGreater = IsWindowsVersionOrGreater(
-                        osEntry.MajorVersion, osEntry.MinorVersion,
-                        osEntry.ServicePackMajor);
+                            osEntry.MajorVersion, osEntry.MinorVersion,
+                            osEntry.ServicePackMajor);
                 }
 
                 return osEntry.MatchesOrGreater.Value;
-            }
-            catch (KeyNotFoundException e) {
+            } catch (KeyNotFoundException e) {
                 throw new ArgumentException(Resources.UnknownOS, e);
             }
         }
@@ -396,8 +386,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows XP version.
         /// </summary>
-        public static bool IsWindowsXPOrGreater
-        {
+        public static bool IsWindowsXPOrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.WindowsXP); }
         }
 
@@ -405,8 +394,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows XP with Service Pack 1 (SP1) version.
         /// </summary>
-        public static bool IsWindowsXPSP1OrGreater
-        {
+        public static bool IsWindowsXPSP1OrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.WindowsXPSP1); }
         }
 
@@ -414,8 +402,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows XP with Service Pack 2 (SP2) version.
         /// </summary>
-        public static bool IsWindowsXPSP2OrGreater
-        {
+        public static bool IsWindowsXPSP2OrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.WindowsXPSP2); }
         }
 
@@ -423,8 +410,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows XP with Service Pack 3 (SP3) version.
         /// </summary>
-        public static bool IsWindowsXPSP3OrGreater
-        {
+        public static bool IsWindowsXPSP3OrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.WindowsXPSP3); }
         }
 
@@ -432,8 +418,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows Vista version.
         /// </summary>
-        public static bool IsWindowsVistaOrGreater
-        {
+        public static bool IsWindowsVistaOrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.WindowsVista); }
         }
 
@@ -441,8 +426,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows Vista with Service Pack 1 (SP1) version.
         /// </summary>
-        public static bool IsWindowsVistaSP1OrGreater
-        {
+        public static bool IsWindowsVistaSP1OrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.WindowsVistaSP1); }
         }
 
@@ -450,8 +434,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows Vista with Service Pack 2 (SP2) version.
         /// </summary>
-        public static bool IsWindowsVistaSP2OrGreater
-        {
+        public static bool IsWindowsVistaSP2OrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.WindowsVistaSP2); }
         }
 
@@ -459,8 +442,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows 7 version.
         /// </summary>
-        public static bool IsWindows7OrGreater
-        {
+        public static bool IsWindows7OrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.Windows7); }
         }
 
@@ -468,8 +450,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows 7 with Service Pack 1 (SP1) version.
         /// </summary>
-        public static bool IsWindows7SP1OrGreater
-        {
+        public static bool IsWindows7SP1OrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.Windows7SP1); }
         }
 
@@ -477,8 +458,7 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows 8 version.
         /// </summary>
-        public static bool IsWindows8OrGreater
-        {
+        public static bool IsWindows8OrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.Windows8); }
         }
 
@@ -486,18 +466,15 @@ namespace FirstFloor.ModernUI.Win32
         /// Indicates if the current OS version matches, or is greater than,
         /// the Windows 8.1 version.
         /// </summary>
-        public static bool IsWindows8Point1OrGreater
-        {
+        public static bool IsWindows8Point1OrGreater {
             get { return IsWindowsVersionOrGreater(KnownOS.Windows8Point1); }
         }
 
         /// <summary>
         /// Indicates if the current OS is a Windows Server release.
         /// </summary>
-        public static bool IsWindowsServer
-        {
-            get
-            {
+        public static bool IsWindowsServer {
+            get {
                 if (!isServer.HasValue) {
                     // These constants initialized with corresponding
                     // definitions in winnt.h (part of Windows SDK)
@@ -509,10 +486,10 @@ namespace FirstFloor.ModernUI.Win32
                     osvi.OSVersionInfoSize = (uint)Marshal.SizeOf(osvi);
                     osvi.ProductType = VER_NT_WORKSTATION;
                     ulong dwlConditionMask = VerSetConditionMask(
-                        0, VER_PRODUCT_TYPE, VER_EQUAL);
+                            0, VER_PRODUCT_TYPE, VER_EQUAL);
 
                     return !VerifyVersionInfo(
-                        ref osvi, VER_PRODUCT_TYPE, dwlConditionMask);
+                            ref osvi, VER_PRODUCT_TYPE, dwlConditionMask);
                 }
 
                 return isServer.Value;

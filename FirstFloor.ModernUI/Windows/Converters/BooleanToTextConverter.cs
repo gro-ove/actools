@@ -3,8 +3,7 @@ using System.Windows.Data;
 using System.Globalization;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
-    public class BooleanToTextConverter
-        : IValueConverter {
+    public class BooleanToTextConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var flag = false;
             if (value is bool) {
@@ -15,7 +14,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 flag = !flag;
             }
 
-            return flag ? "Yes" : "No";
+            return flag ? Resources.Yes : Resources.No;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

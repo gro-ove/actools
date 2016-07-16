@@ -403,7 +403,21 @@
     <value>All</value>
     <comment>Title of default tab (showing everything, on the far left) in content section</comment>
   </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Hide Password</value>
+    <comment>For password-input boxes</comment>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>LIMITED</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>NEW</value>
+  </data>
   <data name="PickColor" xml:space="preserve">
     <value>Pick a color</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Show Password</value>
+    <comment>For password-input boxes</comment>
   </data>
 </root>

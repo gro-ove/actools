@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts string values to upper case.
     /// </summary>
-    public class ToUpperSpecialConverter
-        : IValueConverter {
+    public class ToUpperSpecialConverter : IValueConverter {
         /// <summary>
         /// Converts a value.
         /// </summary>

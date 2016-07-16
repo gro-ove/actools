@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Input;
 
+// Localize me!
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
         private static string MultiplyFormEn(this int number, string valueOne, string valueTwo) {

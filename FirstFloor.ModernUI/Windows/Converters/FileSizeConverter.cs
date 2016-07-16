@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 number = 0;
             }
 
-            return LocalizationHelper.ReadableSize(number);
+            return number.ReadableSize();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

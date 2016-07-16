@@ -168,7 +168,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel IsItemsHost="True" CacheLength="2,3" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling" IsVirtualizing="True" />
+                    <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling" IsVirtualizing="True" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>

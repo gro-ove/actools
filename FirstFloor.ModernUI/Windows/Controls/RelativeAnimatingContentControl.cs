@@ -12,23 +12,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace FirstFloor.ModernUI.Windows.Controls
-{
+namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// The platform does not currently support relative sized translation values. 
     /// This primitive control walks through visual state animation storyboards
     /// and looks for identifying values to use as percentages.
     /// </summary>
-    public class RelativeAnimatingContentControl : ContentControl
-    {
+    public class RelativeAnimatingContentControl : ContentControl {
         /// <summary>
         /// A simple Epsilon-style value used for trying to determine if a double
         /// has an identifying value. 
@@ -55,8 +49,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// Initializes a new instance of the RelativeAnimatingContentControl
         /// type.
         /// </summary>
-        public RelativeAnimatingContentControl()
-        {
+        public RelativeAnimatingContentControl() {
             SizeChanged += OnSizeChanged;
         }
 
@@ -65,8 +58,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// </summary>
         /// <param name="sender">The source object.</param>
         /// <param name="e">The event arguments.</param>
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             if (e != null && e.NewSize.Height > 0 && e.NewSize.Width > 0) {
                 _knownWidth = e.NewSize.Width;
                 _knownHeight = e.NewSize.Height;
@@ -80,8 +72,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// may contain identifying values, storing them for future
         /// use and updates.
         /// </summary>
-        private void UpdateAnyAnimationValues()
-        {
+        private void UpdateAnyAnimationValues() {
             if (_knownHeight > 0 && _knownWidth > 0) {
                 // Initially, before any special animations have been found,
                 // the visual state groups of the control must be explored. 
@@ -107,8 +98,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
                                         DoubleAnimationUsingKeyFrames dakeys = timeline as DoubleAnimationUsingKeyFrames;
                                         if (da != null) {
                                             ProcessDoubleAnimation(da);
-                                        }
-                                        else if (dakeys != null) {
+                                        } else if (dakeys != null) {
                                             ProcessDoubleAnimationWithKeys(dakeys);
                                         }
                                     }
@@ -133,7 +123,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
                             if (sb != null) {
                                 // need to kick the storyboard, otherwise new values are not taken into account.
                                 // it’s sad, really don’t want to start storyboards in vsm, but I see no other option
-                                sb.Begin(this);     
+                                sb.Begin(this);
                             }
                         }
                     }
@@ -145,8 +135,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// Walks through all special animations, updating based on the current
         /// size of the control.
         /// </summary>
-        private void UpdateKnownAnimations()
-        {
+        private void UpdateKnownAnimations() {
             foreach (AnimationValueAdapter adapter in _specialAnimations) {
                 adapter.UpdateWithNewDimension(_knownWidth, _knownHeight);
             }
@@ -157,8 +146,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// special values to store with an adapter.
         /// </summary>
         /// <param name="da">The double animation using key frames instance.</param>
-        private void ProcessDoubleAnimationWithKeys(DoubleAnimationUsingKeyFrames da)
-        {
+        private void ProcessDoubleAnimationWithKeys(DoubleAnimationUsingKeyFrames da) {
             // Look through all keyframes in the instance.
             foreach (DoubleKeyFrame frame in da.KeyFrames) {
                 var d = DoubleAnimationFrameAdapter.GetDimensionFromIdentifyingValue(frame.Value);
@@ -172,8 +160,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// Processes a double animation looking for special values.
         /// </summary>
         /// <param name="da">The double animation instance.</param>
-        private void ProcessDoubleAnimation(DoubleAnimation da)
-        {
+        private void ProcessDoubleAnimation(DoubleAnimation da) {
             // Look for a special value in the To property.
             if (da.To.HasValue) {
                 var d = DoubleAnimationToAdapter.GetDimensionFromIdentifyingValue(da.To.Value);
@@ -195,8 +182,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// <summary>
         /// A selection of dimensions of interest for updating an animation.
         /// </summary>
-        private enum DoubleAnimationDimension
-        {
+        private enum DoubleAnimationDimension {
             /// <summary>
             /// The width (horizontal) dimension.
             /// </summary>
@@ -213,8 +199,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// animation instance and its properties. Able to update the values at
         /// runtime.
         /// </summary>
-        private abstract class AnimationValueAdapter
-        {
+        private abstract class AnimationValueAdapter {
             /// <summary>
             /// Gets or sets the original double value.
             /// </summary>
@@ -224,8 +209,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// Initializes a new instance of the AnimationValueAdapter type.
             /// </summary>
             /// <param name="dimension">The dimension of interest for updates.</param>
-            public AnimationValueAdapter(DoubleAnimationDimension dimension)
-            {
+            public AnimationValueAdapter(DoubleAnimationDimension dimension) {
                 Dimension = dimension;
             }
 
@@ -244,8 +228,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             public abstract void UpdateWithNewDimension(double width, double height);
         }
 
-        private abstract class GeneralAnimationValueAdapter<T> : AnimationValueAdapter
-        {
+        private abstract class GeneralAnimationValueAdapter<T> : AnimationValueAdapter {
             /// <summary>
             /// Stores the animation instance.
             /// </summary>
@@ -283,8 +266,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// <param name="d">The dimension of interest.</param>
             /// <param name="instance">The animation type instance.</param>
             public GeneralAnimationValueAdapter(DoubleAnimationDimension d, T instance)
-                : base(d)
-            {
+                    : base(d) {
                 Instance = instance;
 
                 InitialValue = StripIdentifyingValueOff(GetValue());
@@ -297,8 +279,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// <param name="number">The initial number.</param>
             /// <returns>Returns a double with an adjustment for the identifying
             /// value portion of the number.</returns>
-            public double StripIdentifyingValueOff(double number)
-            {
+            public double StripIdentifyingValueOff(double number) {
                 return Dimension == DoubleAnimationDimension.Width ? number - .1 : number - .2;
             }
 
@@ -309,8 +290,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// <param name="number">The double value.</param>
             /// <returns>Returns a double animation dimension if the number was
             /// contained an identifying value; otherwise, returns null.</returns>
-            public static DoubleAnimationDimension? GetDimensionFromIdentifyingValue(double number)
-            {
+            public static DoubleAnimationDimension? GetDimensionFromIdentifyingValue(double number) {
                 double floor = Math.Floor(number);
                 double remainder = number - floor;
 
@@ -329,8 +309,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// </summary>
             /// <param name="width">The width of the control.</param>
             /// <param name="height">The height of the control.</param>
-            public override void UpdateWithNewDimension(double width, double height)
-            {
+            public override void UpdateWithNewDimension(double width, double height) {
                 double size = Dimension == DoubleAnimationDimension.Width ? width : height;
                 UpdateValue(size);
             }
@@ -340,8 +319,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// </summary>
             /// <param name="sizeToUse">The size of interest to use with a ratio
             /// computation.</param>
-            private void UpdateValue(double sizeToUse)
-            {
+            private void UpdateValue(double sizeToUse) {
                 SetValue(sizeToUse * _ratio);
             }
         }
@@ -349,14 +327,12 @@ namespace FirstFloor.ModernUI.Windows.Controls
         /// <summary>
         /// Adapter for DoubleAnimation’s To property.
         /// </summary>
-        private class DoubleAnimationToAdapter : GeneralAnimationValueAdapter<DoubleAnimation>
-        {
+        private class DoubleAnimationToAdapter : GeneralAnimationValueAdapter<DoubleAnimation> {
             /// <summary>
             /// Gets the value of the underlying property of interest.
             /// </summary>
             /// <returns>Returns the value of the property.</returns>
-            protected override double GetValue()
-            {
+            protected override double GetValue() {
                 return (double)Instance.To;
             }
 
@@ -364,8 +340,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// Sets the value for the underlying property of interest.
             /// </summary>
             /// <param name="newValue">The new value for the property.</param>
-            protected override void SetValue(double newValue)
-            {
+            protected override void SetValue(double newValue) {
                 Instance.To = newValue;
             }
 
@@ -375,22 +350,18 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// <param name="dimension">The dimension of interest.</param>
             /// <param name="instance">The instance of the animation type.</param>
             public DoubleAnimationToAdapter(DoubleAnimationDimension dimension, DoubleAnimation instance)
-                : base(dimension, instance)
-            {
-            }
+                    : base(dimension, instance) {}
         }
 
         /// <summary>
         /// Adapter for DoubleAnimation’s From property.
         /// </summary>
-        private class DoubleAnimationFromAdapter : GeneralAnimationValueAdapter<DoubleAnimation>
-        {
+        private class DoubleAnimationFromAdapter : GeneralAnimationValueAdapter<DoubleAnimation> {
             /// <summary>
             /// Gets the value of the underlying property of interest.
             /// </summary>
             /// <returns>Returns the value of the property.</returns>
-            protected override double GetValue()
-            {
+            protected override double GetValue() {
                 return (double)Instance.From;
             }
 
@@ -398,8 +369,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// Sets the value for the underlying property of interest.
             /// </summary>
             /// <param name="newValue">The new value for the property.</param>
-            protected override void SetValue(double newValue)
-            {
+            protected override void SetValue(double newValue) {
                 Instance.From = newValue;
             }
 
@@ -410,22 +380,18 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// <param name="dimension">The dimension of interest.</param>
             /// <param name="instance">The instance of the animation type.</param>
             public DoubleAnimationFromAdapter(DoubleAnimationDimension dimension, DoubleAnimation instance)
-                : base(dimension, instance)
-            {
-            }
+                    : base(dimension, instance) {}
         }
 
         /// <summary>
         /// Adapter for double key frames.
         /// </summary>
-        private class DoubleAnimationFrameAdapter : GeneralAnimationValueAdapter<DoubleKeyFrame>
-        {
+        private class DoubleAnimationFrameAdapter : GeneralAnimationValueAdapter<DoubleKeyFrame> {
             /// <summary>
             /// Gets the value of the underlying property of interest.
             /// </summary>
             /// <returns>Returns the value of the property.</returns>
-            protected override double GetValue()
-            {
+            protected override double GetValue() {
                 return Instance.Value;
             }
 
@@ -433,8 +399,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// Sets the value for the underlying property of interest.
             /// </summary>
             /// <param name="newValue">The new value for the property.</param>
-            protected override void SetValue(double newValue)
-            {
+            protected override void SetValue(double newValue) {
                 Instance.Value = newValue;
             }
 
@@ -445,9 +410,7 @@ namespace FirstFloor.ModernUI.Windows.Controls
             /// <param name="dimension">The dimension of interest.</param>
             /// <param name="frame">The instance of the animation type.</param>
             public DoubleAnimationFrameAdapter(DoubleAnimationDimension dimension, DoubleKeyFrame frame)
-                : base(dimension, frame)
-            {
-            }
+                    : base(dimension, frame) {}
         }
         #endregion
     }

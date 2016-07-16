@@ -2,14 +2,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Data;
 
-namespace FirstFloor.ModernUI.Windows.Converters
-{
+namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts string values to lower case.
     /// </summary>
-    public class ToLowerConverter
-        : IValueConverter
-    {
+    public class ToLowerConverter : IValueConverter {
         /// <summary>
         /// Converts a value.
         /// </summary>
@@ -21,15 +18,8 @@ namespace FirstFloor.ModernUI.Windows.Converters
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
         [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (value != null) {
-                var strValue = value.ToString();
-
-                
-                return strValue.ToLowerInvariant();
-            }
-            return null;
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+            return value?.ToString().ToLowerInvariant();
         }
 
         /// <summary>
@@ -42,8 +32,7 @@ namespace FirstFloor.ModernUI.Windows.Converters
         /// <returns>
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             throw new NotSupportedException();
         }
     }

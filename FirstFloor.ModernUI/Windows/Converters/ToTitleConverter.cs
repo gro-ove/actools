@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 
+// Localize me!
 namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts string values to upper case.
@@ -18,8 +19,8 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         /// <returns>
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            if (value == null) return null;
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            if (value == null || culture.Name == "ru-RU") return value;
             return string.Join(" ", value.ToString()
                                          .Split(new [] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                                          .Select(x => x.Substring(0, 1).ToUpper(CultureInfo.CurrentCulture) + (x.Length == 1 ? "" : x.Substring(1))));

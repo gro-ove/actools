@@ -218,12 +218,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (relScaleX == 1.0 && relScaleY == 1.0) return;
 
             if (!IsFinite(relScaleX)) {
-                Logging.Warning("[DPIAWAREWINDOW] relScaleX is NaN: " + relScaleX + ", " + width + ", " + Width);
+                Logging.Warning("[DpiAwareWindow] relScaleX is NaN: " + relScaleX + ", " + width + ", " + Width);
                 return;
             }
 
             if (!IsFinite(relScaleY)) {
-                Logging.Warning("[DPIAWAREWINDOW] relScaleY is NaN: " + relScaleY + ", " + width + ", " + Width);
+                Logging.Warning("[DpiAwareWindow] relScaleY is NaN: " + relScaleY + ", " + width + ", " + Width);
                 return;
             }
 

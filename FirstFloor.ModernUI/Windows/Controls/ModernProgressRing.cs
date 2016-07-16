@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     [TemplateVisualState(GroupName = GroupActiveStates, Name = StateInactive)]
     [TemplateVisualState(GroupName = GroupActiveStates, Name = StateActive)]
     public class ModernProgressRing
-        : Control {
+            : Control {
         private const string GroupActiveStates = "ActiveStates";
         private const string StateInactive = "Inactive";
         private const string StateActive = "Active";
@@ -21,17 +21,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Identifies the IsActive property.
         /// </summary>
-        public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool), typeof(ModernProgressRing), new PropertyMetadata(false, OnIsActiveChanged));
+        public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool), typeof(ModernProgressRing),
+                new PropertyMetadata(false, OnIsActiveChanged));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModernProgressRing"/> class.
         /// </summary>
         public ModernProgressRing() {
-            this.DefaultStyleKey = typeof(ModernProgressRing);
+            DefaultStyleKey = typeof(ModernProgressRing);
         }
 
         private void GotoCurrentState(bool animate) {
-            var state = this.IsActive ? StateActive : StateInactive;
+            var state = IsActive ? StateActive : StateInactive;
 
             VisualStateManager.GoToState(this, state, animate);
         }

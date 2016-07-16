@@ -1,10 +1,7 @@
 ﻿using FirstFloor.ModernUI.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using System.Windows;
-using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI {
     /// <summary>

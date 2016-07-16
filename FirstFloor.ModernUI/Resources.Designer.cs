@@ -125,6 +125,15 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide Password.
+        /// </summary>
+        public static string HidePassword {
+            get {
+                return ResourceManager.GetString("HidePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
         public static string Home {
@@ -683,6 +692,24 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to LIMITED.
+        /// </summary>
+        public static string MarkLimited {
+            get {
+                return ResourceManager.GetString("MarkLimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NEW.
+        /// </summary>
+        public static string MarkNew {
+            get {
+                return ResourceManager.GetString("MarkNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maximize.
         /// </summary>
         public static string Maximize {
@@ -787,6 +814,15 @@ namespace FirstFloor.ModernUI {
         public static string SelectColor {
             get {
                 return ResourceManager.GetString("SelectColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Password.
+        /// </summary>
+        public static string ShowPassword {
+            get {
+                return ResourceManager.GetString("ShowPassword", resourceCulture);
             }
         }
         

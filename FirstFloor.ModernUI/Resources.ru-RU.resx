@@ -135,11 +135,20 @@
   <data name="Go" xml:space="preserve">
     <value>Перейти</value>
   </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Скрыть пароль</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Домой</value>
   </data>
   <data name="ImagesFilter" xml:space="preserve">
     <value>Изображения|*.jpg;*.jpeg;*.png;*.gif;*.tif|Все файлы (*.*)|*.*</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>ОГРАНИЧЕНО</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>НОВОЕ</value>
   </data>
   <data name="Maximize" xml:space="preserve">
     <value>Развернуть</value>
@@ -173,6 +182,9 @@
   </data>
   <data name="SelectColor" xml:space="preserve">
     <value>Выберите цвет</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Показать пароль</value>
   </data>
   <data name="Source" xml:space="preserve">
     <value>Путь</value>
