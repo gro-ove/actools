@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -7,17 +8,88 @@ using System.Windows.Input;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
-        public static string MultiplyForm(this int number, string valueOne, string valueTwo) {
+        private static string MultiplyFormEn(this int number, string valueOne, string valueTwo) {
             return number == 1 ? valueOne : valueTwo;
         }
 
-        public static string MultiplyForm(this long number, string valueOne, string valueTwo) {
-            return number == 1 ? valueOne : valueTwo;
+        private static string MultiplyFormRu(this int number, string valueOne, string valueTwo, string valueFive) {
+            if (number == 1 || number > 20 && number % 10 == 1) {
+                return valueOne;
+            }
+
+            if (number > 1 && number < 5 || number > 20 && number % 10 < 5) {
+                return valueTwo;
+            }
+
+            return valueFive;
         }
+
+        private static readonly bool CultureRu = CultureInfo.CurrentUICulture.Name == "ru-RU";
 
         public static string GetOrdinalReadable(this int value) {
+            if (CultureRu) {
+                return GetOrdinalReadableRu(value);
+            } else {
+                return GetOrdinalReadableEn(value);
+            }
+        }
+
+        public static string GetOrdinalReadableRu(int value) {
             if (value < 0) {
-                return "Minus " + GetOrdinalReadable(-value).ToLowerInvariant();
+                return "Минус " + GetOrdinalReadableRu(-value).ToLowerInvariant();
+            }
+
+            switch (value) {
+                case 0:
+                    return "Нулевой";
+                case 1:
+                    return "Первый";
+                case 2:
+                    return "Второй";
+                case 3:
+                    return "Третий";
+                case 4:
+                    return "Четвёртый";
+                case 5:
+                    return "Пятый";
+                case 6:
+                    return "Шестой";
+                case 7:
+                    return "Седьмой";
+                case 8:
+                    return "Восьмой";
+                case 9:
+                    return "Девятый";
+                case 10:
+                    return "Десятый";
+                case 11:
+                    return "Одиннадцатый";
+                case 12:
+                    return "Двенадцатый";
+                case 13:
+                    return "Тринадцатый";
+                case 14:
+                    return "Четырнадцатый";
+                case 15:
+                    return "Пятнадцатый";
+                case 16:
+                    return "Шестнадцатый";
+                case 17:
+                    return "Семнадцатый";
+                case 18:
+                    return "Восемнадцатый";
+                case 19:
+                    return "Девятнадцатый";
+                case 20:
+                    return "Двадцатый";
+                default:
+                    return value + "-й";
+            }
+        }
+
+        public static string GetOrdinalReadableEn(int value) {
+            if (value < 0) {
+                return "Minus " + GetOrdinalReadableEn(-value).ToLowerInvariant();
             }
 
             switch (value) {
@@ -95,22 +167,54 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ReadableTime(this TimeSpan span) {
+            if (CultureRu) {
+                return ReadableTimeRu(span);
+            } else {
+                return ReadableTimeEn(span);
+            }
+        }
+
+        public static string ReadableTimeRu(this TimeSpan span) {
             var result = new List<string>();
 
-            if (span.Days > 0) {
-                result.Add(span.Days + MultiplyForm(span.Days, " day", " days"));
+            var days = (int)span.TotalDays;
+            if (days > 0) {
+                result.Add(days + MultiplyFormRu(days, " день", " дня", "дней"));
             }
 
             if (span.Hours > 0) {
-                result.Add(span.Hours + MultiplyForm(span.Hours, " hour", " hours"));
+                result.Add(span.Hours + MultiplyFormRu(span.Hours, " час", " часа", " часов"));
             }
 
             if (span.Minutes > 0) {
-                result.Add(span.Minutes + MultiplyForm(span.Minutes, " minute", " minutes"));
+                result.Add(span.Minutes + MultiplyFormRu(span.Minutes, " минута", " минуты", " минут"));
             }
 
             if (span.Seconds > 0) {
-                result.Add(span.Seconds + MultiplyForm(span.Seconds, " second", " seconds"));
+                result.Add(span.Seconds + MultiplyFormRu(span.Seconds, " секунда", " секунды", " секунд"));
+            }
+
+            return result.Any() ? string.Join(" ", result.Take(2)) : "0 секунд";
+        }
+
+        public static string ReadableTimeEn(this TimeSpan span) {
+            var result = new List<string>();
+
+            var days = (int)span.TotalDays;
+            if (days > 0) {
+                result.Add(days + MultiplyFormEn(days, " day", " days"));
+            }
+
+            if (span.Hours > 0) {
+                result.Add(span.Hours + MultiplyFormEn(span.Hours, " hour", " hours"));
+            }
+
+            if (span.Minutes > 0) {
+                result.Add(span.Minutes + MultiplyFormEn(span.Minutes, " minute", " minutes"));
+            }
+
+            if (span.Seconds > 0) {
+                result.Add(span.Seconds + MultiplyFormEn(span.Seconds, " second", " seconds"));
             }
 
             return result.Any() ? string.Join(" ", result.Take(2)) : "0 seconds";
@@ -126,25 +230,25 @@ namespace FirstFloor.ModernUI.Helpers {
             string suffix;
             double readable;
             if (absoluteI >= 0x1000000000000000) {
-                suffix = "EB";
+                suffix = Resources.LocalizationHelper_ReadableSize_EB;
                 readable = i >> 50;
             } else if (absoluteI >= 0x4000000000000) {
-                suffix = "PB";
+                suffix = Resources.LocalizationHelper_ReadableSize_PB;
                 readable = i >> 40;
             } else if (absoluteI >= 0x10000000000) {
-                suffix = "TB";
+                suffix = Resources.LocalizationHelper_ReadableSize_TB;
                 readable = i >> 30;
             } else if (absoluteI >= 0x40000000) {
-                suffix = "GB";
+                suffix = Resources.LocalizationHelper_ReadableSize_GB;
                 readable = i >> 20;
             } else if (absoluteI >= 0x100000) {
-                suffix = "MB";
+                suffix = Resources.LocalizationHelper_ReadableSize_MB;
                 readable = i >> 10;
             } else if (absoluteI >= 0x400) {
-                suffix = "KB";
+                suffix = Resources.LocalizationHelper_ReadableSize_KB;
                 readable = i;
             } else {
-                return i.ToString("0 B");
+                return i.ToString(@"0 " + Resources.LocalizationHelper_ReadableSize_B);
             }
 
             readable = readable / 1024;
@@ -152,19 +256,19 @@ namespace FirstFloor.ModernUI.Helpers {
             string format;
             switch (round) {
                 case 1:
-                    format = "0.# ";
+                    format = @"0.# ";
                     break;
 
                 case 2:
-                    format = "0.## ";
+                    format = @"0.## ";
                     break;
 
                 case 3:
-                    format = "0.### ";
+                    format = @"0.### ";
                     break;
 
                 default:
-                    format = "0 ";
+                    format = @"0 ";
                     break;
             }
 
@@ -172,6 +276,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ToTitle(this string s) {
+            if (CultureRu) return s;
             return Regex.Replace(s, @"\b[a-z]", x => x.Value.ToUpper());
         }
 
@@ -210,57 +315,57 @@ namespace FirstFloor.ModernUI.Helpers {
                 case Keys.D0:
                     return "0";
                 case Keys.NumPad0:
-                    return "Number Pad 0";
+                    return string.Format(Resources.KeyNumberPad, 0);
                 case Keys.D1:
                     return "1";
                 case Keys.NumPad1:
-                    return "Number Pad 1";
+                    return string.Format(Resources.KeyNumberPad, 1);
                 case Keys.D2:
                     return "2";
                 case Keys.NumPad2:
-                    return "Number Pad 2";
+                    return string.Format(Resources.KeyNumberPad, 2);
                 case Keys.D3:
                     return "3";
                 case Keys.NumPad3:
-                    return "Number Pad 3";
+                    return string.Format(Resources.KeyNumberPad, 3);
                 case Keys.D4:
                     return "4";
                 case Keys.NumPad4:
-                    return "Number Pad 4";
+                    return string.Format(Resources.KeyNumberPad, 4);
                 case Keys.D5:
                     return "5";
                 case Keys.NumPad5:
-                    return "Number Pad 5";
+                    return string.Format(Resources.KeyNumberPad, 5);
                 case Keys.D6:
                     return "6";
                 case Keys.NumPad6:
-                    return "Number Pad 6";
+                    return string.Format(Resources.KeyNumberPad, 6);
                 case Keys.D7:
                     return "7";
                 case Keys.NumPad7:
-                    return "Number Pad 7";
+                    return string.Format(Resources.KeyNumberPad, 7);
                 case Keys.D8:
                     return "8";
                 case Keys.NumPad8:
-                    return "Number Pad 8";
+                    return string.Format(Resources.KeyNumberPad, 8);
                 case Keys.D9:
                     return "9";
                 case Keys.NumPad9:
-                    return "Number Pad 9";
+                    return string.Format(Resources.KeyNumberPad, 9);
 
                 //punctuation
                 case Keys.Add:
-                    return "Number Pad +";
+                    return string.Format(Resources.KeyNumberPad, "+");
                 case Keys.Subtract:
-                    return "Number Pad -";
+                    return string.Format(Resources.KeyNumberPad, "-");
                 case Keys.Divide:
-                    return "Number Pad /";
+                    return string.Format(Resources.KeyNumberPad, "/");
                 case Keys.Multiply:
-                    return "Number Pad *";
+                    return string.Format(Resources.KeyNumberPad, "*");
                 case Keys.Space:
-                    return "Spacebar";
+                    return Resources.KeySpace;
                 case Keys.Decimal:
-                    return "Number Pad .";
+                    return string.Format(Resources.KeyNumberPad, ".");
 
                 //function
                 case Keys.F1:
@@ -291,109 +396,109 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //navigation
                 case Keys.Up:
-                    return "Up Arrow";
+                    return Resources.KeyUpArrow;
                 case Keys.Down:
-                    return "Down Arrow";
+                    return Resources.KeyDownArrow;
                 case Keys.Left:
-                    return "Left Arrow";
+                    return Resources.KeyLeftArrow;
                 case Keys.Right:
-                    return "Right Arrow";
+                    return Resources.KeyRightArrow;
                 case Keys.Prior:
-                    return "Page Up";
+                    return Resources.KeyPageUp;
                 case Keys.Next:
-                    return "Page Down";
+                    return Resources.KeyPageDown;
                 case Keys.Home:
-                    return "Home";
+                    return Resources.KeyHome;
                 case Keys.End:
-                    return "End";
+                    return Resources.KeyEnd;
 
                 //control keys
                 case Keys.Back:
-                    return "Backspace";
+                    return Resources.KeyBackspace;
                 case Keys.Tab:
-                    return "Tab";
+                    return Resources.KeyTab;
                 case Keys.Escape:
-                    return "Escape";
+                    return Resources.KeyEscape;
                 case Keys.Enter:
-                    return "Enter";
+                    return Resources.KeyEnter;
                 case Keys.Shift:
                 case Keys.ShiftKey:
-                    return "Shift";
+                    return Resources.KeyShift;
                 case Keys.LShiftKey:
-                    return "Shift (Left)";
+                    return Resources.KeyShiftLeft;
                 case Keys.RShiftKey:
-                    return "Shift (Right)";
+                    return Resources.KeyShiftRight;
                 case Keys.Control:
                 case Keys.ControlKey:
-                    return "Control";
+                    return Resources.KeyControl;
                 case Keys.LControlKey:
-                    return "Control (Left)";
+                    return Resources.KeyControlLeft;
                 case Keys.RControlKey:
-                    return "Control (Right)";
+                    return Resources.KeyControlRight;
                 case Keys.Menu:
                 case Keys.Alt:
-                    return "Alt";
+                    return Resources.KeyAlt;
                 case Keys.LMenu:
-                    return "Alt (Left)";
+                    return Resources.KeyAltLeft;
                 case Keys.RMenu:
-                    return "Alt (Right)";
+                    return Resources.KeyAltRight;
                 case Keys.Pause:
-                    return "Pause";
+                    return Resources.KeyPause;
                 case Keys.CapsLock:
-                    return "Caps Lock";
+                    return Resources.KeyCapsLock;
                 case Keys.NumLock:
-                    return "Num Lock";
+                    return Resources.KeyNumLock;
                 case Keys.Scroll:
-                    return "Scroll Lock";
+                    return Resources.KeyScrollLock;
                 case Keys.PrintScreen:
-                    return "Print Screen";
+                    return Resources.KeyPrintScreen;
                 case Keys.Insert:
-                    return "Insert";
+                    return Resources.KeyInsert;
                 case Keys.Delete:
-                    return "Delete";
+                    return Resources.KeyDelete;
                 case Keys.Help:
-                    return "Help";
+                    return Resources.KeyHelp;
                 case Keys.LWin:
-                    return "Windows (Left)";
+                    return Resources.KeyWindowsLeft;
                 case Keys.RWin:
-                    return "Windows (Right)";
+                    return Resources.KeyWindowsRight;
                 case Keys.Apps:
-                    return "Context Menu";
+                    return Resources.KeyContextMenu;
 
                 //browser keys
                 case Keys.BrowserBack:
-                    return "Browser Back";
+                    return Resources.KeyBrowserBack;
                 case Keys.BrowserFavorites:
-                    return "Browser Favorites";
+                    return Resources.KeyBrowserFavorites;
                 case Keys.BrowserForward:
-                    return "Browser Forward";
+                    return Resources.KeyBrowserForward;
                 case Keys.BrowserHome:
-                    return "Browser Home";
+                    return Resources.KeyBrowserHome;
                 case Keys.BrowserRefresh:
-                    return "Browser Refresh";
+                    return Resources.KeyBrowserRefresh;
                 case Keys.BrowserSearch:
-                    return "Browser Search";
+                    return Resources.KeyBrowserSearch;
                 case Keys.BrowserStop:
-                    return "Browser Stop";
+                    return Resources.KeyBrowserStop;
 
                 //media keys
                 case Keys.VolumeDown:
-                    return "Volume Down";
+                    return Resources.KeyVolumeDown;
                 case Keys.VolumeMute:
-                    return "Volume Mute";
+                    return Resources.KeyVolumeMute;
                 case Keys.VolumeUp:
-                    return "Volume Up";
+                    return Resources.KeyVolumeUp;
                 case Keys.MediaNextTrack:
-                    return "Next Track";
+                    return Resources.KeyMediaNextTrack;
                 case Keys.Play:
                 case Keys.MediaPlayPause:
-                    return "Play";
+                    return Resources.KeyMediaPlayPause;
                 case Keys.MediaPreviousTrack:
-                    return "Previous Track";
+                    return Resources.KeyMediaPreviousTrack;
                 case Keys.MediaStop:
-                    return "Stop";
+                    return Resources.KeyMediaStop;
                 case Keys.SelectMedia:
-                    return "Select Media";
+                    return Resources.KeySelectMedia;
 
                 //IME keys
                 case Keys.HanjaMode:
@@ -408,13 +513,13 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //special keys
                 case Keys.LaunchMail:
-                    return "Launch Mail";
+                    return Resources.KeyLaunchMail;
                 case Keys.LaunchApplication1:
-                    return "Launch Favorite Application 1";
+                    return Resources.KeyLaunchApplication1;
                 case Keys.LaunchApplication2:
-                    return "Launch Favorite Application 2";
+                    return Resources.KeyLaunchApplication2;
                 case Keys.Zoom:
-                    return "Zoom";
+                    return Resources.KeyZoom;
 
                 //oem keys 
                 case Keys.OemSemicolon: //oem1
@@ -514,57 +619,57 @@ namespace FirstFloor.ModernUI.Helpers {
                 case Key.D0:
                     return "0";
                 case Key.NumPad0:
-                    return "Number Pad 0";
+                    return string.Format(Resources.KeyNumberPad, 0);
                 case Key.D1:
                     return "1";
                 case Key.NumPad1:
-                    return "Number Pad 1";
+                    return string.Format(Resources.KeyNumberPad, 1);
                 case Key.D2:
                     return "2";
                 case Key.NumPad2:
-                    return "Number Pad 2";
+                    return string.Format(Resources.KeyNumberPad, 2);
                 case Key.D3:
                     return "3";
                 case Key.NumPad3:
-                    return "Number Pad 3";
+                    return string.Format(Resources.KeyNumberPad, 3);
                 case Key.D4:
                     return "4";
                 case Key.NumPad4:
-                    return "Number Pad 4";
+                    return string.Format(Resources.KeyNumberPad, 4);
                 case Key.D5:
                     return "5";
                 case Key.NumPad5:
-                    return "Number Pad 5";
+                    return string.Format(Resources.KeyNumberPad, 5);
                 case Key.D6:
                     return "6";
                 case Key.NumPad6:
-                    return "Number Pad 6";
+                    return string.Format(Resources.KeyNumberPad, 6);
                 case Key.D7:
                     return "7";
                 case Key.NumPad7:
-                    return "Number Pad 7";
+                    return string.Format(Resources.KeyNumberPad, 7);
                 case Key.D8:
                     return "8";
                 case Key.NumPad8:
-                    return "Number Pad 8";
+                    return string.Format(Resources.KeyNumberPad, 8);
                 case Key.D9:
                     return "9";
                 case Key.NumPad9:
-                    return "Number Pad 9";
+                    return string.Format(Resources.KeyNumberPad, 9);
 
                 //punctuation
                 case Key.Add:
-                    return "Number Pad +";
+                    return string.Format(Resources.KeyNumberPad, "+");
                 case Key.Subtract:
-                    return "Number Pad -";
+                    return string.Format(Resources.KeyNumberPad, "-");
                 case Key.Divide:
-                    return "Number Pad /";
+                    return string.Format(Resources.KeyNumberPad, "/");
                 case Key.Multiply:
-                    return "Number Pad *";
+                    return string.Format(Resources.KeyNumberPad, "*");
                 case Key.Space:
-                    return "Spacebar";
+                    return Resources.KeySpace;
                 case Key.Decimal:
-                    return "Number Pad .";
+                    return string.Format(Resources.KeyNumberPad, ".");
 
                 //function
                 case Key.F1:
@@ -595,100 +700,100 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //navigation
                 case Key.Up:
-                    return "Up Arrow";
+                    return Resources.KeyUpArrow;
                 case Key.Down:
-                    return "Down Arrow";
+                    return Resources.KeyDownArrow;
                 case Key.Left:
-                    return "Left Arrow";
+                    return Resources.KeyLeftArrow;
                 case Key.Right:
-                    return "Right Arrow";
+                    return Resources.KeyRightArrow;
                 case Key.Prior:
-                    return "Page Up";
+                    return Resources.KeyPageUp;
                 case Key.Next:
-                    return "Page Down";
+                    return Resources.KeyPageDown;
                 case Key.Home:
-                    return "Home";
+                    return Resources.KeyHome;
                 case Key.End:
-                    return "End";
+                    return Resources.KeyEnd;
 
                 //control Key
                 case Key.Back:
-                    return "Backspace";
+                    return Resources.KeyBackspace;
                 case Key.Tab:
-                    return "Tab";
+                    return Resources.KeyTab;
                 case Key.Escape:
-                    return "Escape";
+                    return Resources.KeyEscape;
                 case Key.Enter:
-                    return "Enter";
+                    return Resources.KeyEnter;
                 case Key.LeftShift:
-                    return "Shift (Left)";
+                    return Resources.KeyShiftLeft;
                 case Key.RightShift:
-                    return "Shift (Right)";
+                    return Resources.KeyShiftRight;
                 case Key.LeftCtrl:
-                    return "Control (Left)";
+                    return Resources.KeyControlLeft;
                 case Key.RightCtrl:
-                    return "Control (Right)";
+                    return Resources.KeyControlRight;
                 case Key.LeftAlt:
-                    return "Alt (Left)";
+                    return Resources.KeyAltLeft;
                 case Key.RightAlt:
-                    return "Alt (Right)";
+                    return Resources.KeyAltRight;
                 case Key.Pause:
-                    return "Pause";
+                    return Resources.KeyPause;
                 case Key.CapsLock:
-                    return "Caps Lock";
+                    return Resources.KeyCapsLock;
                 case Key.NumLock:
-                    return "Num Lock";
+                    return Resources.KeyNumLock;
                 case Key.Scroll:
-                    return "Scroll Lock";
+                    return Resources.KeyScrollLock;
                 case Key.PrintScreen:
-                    return "Print Screen";
+                    return Resources.KeyPrintScreen;
                 case Key.Insert:
-                    return "Insert";
+                    return Resources.KeyInsert;
                 case Key.Delete:
-                    return "Delete";
+                    return Resources.KeyDelete;
                 case Key.Help:
-                    return "Help";
+                    return Resources.KeyHelp;
                 case Key.LWin:
-                    return "Windows (Left)";
+                    return Resources.KeyWindowsLeft;
                 case Key.RWin:
-                    return "Windows (Right)";
+                    return Resources.KeyWindowsRight;
                 case Key.Apps:
-                    return "Context Menu";
+                    return Resources.KeyContextMenu;
 
                 //browser Key
                 case Key.BrowserBack:
-                    return "Browser Back";
+                    return Resources.KeyBrowserBack;
                 case Key.BrowserFavorites:
-                    return "Browser Favorites";
+                    return Resources.KeyBrowserFavorites;
                 case Key.BrowserForward:
-                    return "Browser Forward";
+                    return Resources.KeyBrowserForward;
                 case Key.BrowserHome:
-                    return "Browser Home";
+                    return Resources.KeyBrowserHome;
                 case Key.BrowserRefresh:
-                    return "Browser Refresh";
+                    return Resources.KeyBrowserRefresh;
                 case Key.BrowserSearch:
-                    return "Browser Search";
+                    return Resources.KeyBrowserSearch;
                 case Key.BrowserStop:
-                    return "Browser Stop";
+                    return Resources.KeyBrowserStop;
 
                 //media Key
                 case Key.VolumeDown:
-                    return "Volume Down";
+                    return Resources.KeyVolumeDown;
                 case Key.VolumeMute:
-                    return "Volume Mute";
+                    return Resources.KeyVolumeMute;
                 case Key.VolumeUp:
-                    return "Volume Up";
+                    return Resources.KeyVolumeUp;
                 case Key.MediaNextTrack:
-                    return "Next Track";
+                    return Resources.KeyMediaNextTrack;
                 case Key.Play:
                 case Key.MediaPlayPause:
-                    return "Play";
+                    return Resources.KeyMediaPlayPause;
                 case Key.MediaPreviousTrack:
-                    return "Previous Track";
+                    return Resources.KeyMediaPreviousTrack;
                 case Key.MediaStop:
-                    return "Stop";
+                    return Resources.KeyMediaStop;
                 case Key.SelectMedia:
-                    return "Select Media";
+                    return Resources.KeySelectMedia;
 
                 //IME Key
                 case Key.HanjaMode:
@@ -699,13 +804,13 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //special Key
                 case Key.LaunchMail:
-                    return "Launch Mail";
+                    return Resources.KeyLaunchMail;
                 case Key.LaunchApplication1:
-                    return "Launch Favorite Application 1";
+                    return Resources.KeyLaunchApplication1;
                 case Key.LaunchApplication2:
-                    return "Launch Favorite Application 2";
+                    return Resources.KeyLaunchApplication2;
                 case Key.Zoom:
-                    return "Zoom";
+                    return Resources.KeyZoom;
 
                 //oem Key 
                 case Key.OemSemicolon:

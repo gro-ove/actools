@@ -87,7 +87,7 @@ namespace AcManager.Pages.Dialogs {
 
             public ICommand SelectPanoramaFileCommand => _selectPanoramaFileCommand ?? (_selectPanoramaFileCommand = new RelayCommand(o => {
                 var dialog = new OpenFileDialog {
-                    Filter = FileDialogFilters.TextureFilter,
+                    Filter = FileDialogFilters.TexturesFilter,
                     FileName = PanoramaFilename,
                     Title = "Select a Panorama File"
                 };

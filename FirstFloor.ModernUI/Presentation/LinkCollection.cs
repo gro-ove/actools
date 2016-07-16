@@ -7,13 +7,11 @@ namespace FirstFloor.ModernUI.Presentation {
     /// <summary>
     /// Represents an observable collection of links.
     /// </summary>
-    public class LinkCollection
-        : ObservableCollection<Link> {
+    public class LinkCollection : ObservableCollection<Link> {
         /// <summary>
         /// Initializes a new instance of the <see cref="LinkCollection"/> class.
         /// </summary>
-        public LinkCollection() {
-        }
+        public LinkCollection() {}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LinkCollection"/> class that contains specified links.

@@ -184,6 +184,69 @@
   <data name="BrokenImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>assets\brokenimage.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ImagesFilter" xml:space="preserve">
+    <value>Image Files|*.jpg;*.jpeg;*.png;*.gif;*.tif|All files (*.*)|*.*</value>
+  </data>
+  <data name="KeyBackspace" xml:space="preserve">
+    <value>Backspace</value>
+  </data>
+  <data name="KeyControl" xml:space="preserve">
+    <value>Control</value>
+  </data>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>Control (Left)</value>
+  </data>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>Control (Right)</value>
+  </data>
+  <data name="KeyDownArrow" xml:space="preserve">
+    <value>Down Arrow</value>
+  </data>
+  <data name="KeyEnd" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="KeyEnter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="KeyEscape" xml:space="preserve">
+    <value>Escape</value>
+  </data>
+  <data name="KeyHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="KeyLeftArrow" xml:space="preserve">
+    <value>Left Arrow</value>
+  </data>
+  <data name="KeyNumberPad" xml:space="preserve">
+    <value>Number Pad {0}</value>
+  </data>
+  <data name="KeyPageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="KeyPageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="KeyRightArrow" xml:space="preserve">
+    <value>Right Arrow</value>
+  </data>
+  <data name="KeyShift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>Shift (Left)</value>
+  </data>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>Shift (Right)</value>
+  </data>
+  <data name="KeySpace" xml:space="preserve">
+    <value>Space</value>
+  </data>
+  <data name="KeyTab" xml:space="preserve">
+    <value>Tab</value>
+  </data>
+  <data name="KeyUpArrow" xml:space="preserve">
+    <value>Up Arrow</value>
+  </data>
   <data name="PickColorFromScreen" xml:space="preserve">
     <value>Pick any color from screen</value>
   </data>
@@ -201,5 +264,146 @@
   </data>
   <data name="SuggestionsMessage" xml:space="preserve">
     <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</value>
+  </data>
+  <data name="TexturesFilter" xml:space="preserve">
+    <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
+  </data>
+  <data name="KeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (Left)</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt (Right)</value>
+  </data>
+  <data name="KeyPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="KeyCapsLock" xml:space="preserve">
+    <value>Caps Lock</value>
+  </data>
+  <data name="KeyNumLock" xml:space="preserve">
+    <value>Num Lock</value>
+  </data>
+  <data name="KeyScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="KeyPrintScreen" xml:space="preserve">
+    <value>Print Screen</value>
+  </data>
+  <data name="KeyInsert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="KeyDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="KeyHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="KeyWindowsLeft" xml:space="preserve">
+    <value>Windows (Left)</value>
+  </data>
+  <data name="KeyWindowsRight" xml:space="preserve">
+    <value>Windows (Right)</value>
+  </data>
+  <data name="KeyContextMenu" xml:space="preserve">
+    <value>Context Menu</value>
+  </data>
+  <data name="KeyBrowserBack" xml:space="preserve">
+    <value>Browser Back</value>
+  </data>
+  <data name="KeyBrowserFavorites" xml:space="preserve">
+    <value>Browser Favorites</value>
+  </data>
+  <data name="KeyBrowserForward" xml:space="preserve">
+    <value>Browser Forward</value>
+  </data>
+  <data name="KeyBrowserHome" xml:space="preserve">
+    <value>Browser Home</value>
+  </data>
+  <data name="KeyBrowserRefresh" xml:space="preserve">
+    <value>Browser Refresh</value>
+  </data>
+  <data name="KeyBrowserSearch" xml:space="preserve">
+    <value>Browser Search</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>Browser Stop</value>
+  </data>
+  <data name="KeyVolumeDown" xml:space="preserve">
+    <value>Volume Down</value>
+  </data>
+  <data name="KeyVolumeMute" xml:space="preserve">
+    <value>Volume Mute</value>
+  </data>
+  <data name="KeyVolumeUp" xml:space="preserve">
+    <value>Volume Up</value>
+  </data>
+  <data name="KeyMediaNextTrack" xml:space="preserve">
+    <value>Next Track</value>
+  </data>
+  <data name="KeyMediaPlayPause" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="KeyMediaPreviousTrack" xml:space="preserve">
+    <value>Previous Track</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="KeySelectMedia" xml:space="preserve">
+    <value>Select Media</value>
+  </data>
+  <data name="KeyLaunchMail" xml:space="preserve">
+    <value>Launch Mail</value>
+  </data>
+  <data name="KeyLaunchApplication1" xml:space="preserve">
+    <value>Launch Favorite Application 1</value>
+  </data>
+  <data name="KeyLaunchApplication2" xml:space="preserve">
+    <value>Launch Favorite Application 2</value>
+  </data>
+  <data name="KeyZoom" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
+    <value>EB</value>
+    <comment>Exabyte</comment>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
+    <value>PB</value>
+    <comment>Petabyte
+</comment>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
+    <value>TB</value>
+    <comment>Terabyte
+
+</comment>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
+    <value>GB</value>
+    <comment>Gygabyte</comment>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
+    <value>MB</value>
+    <comment>Megabyte
+</comment>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
+    <value>KB</value>
+    <comment>Kilobyte</comment>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
+    <value>B</value>
+    <comment>Byte</comment>
+  </data>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>All</value>
+    <comment>Title of default tab (showing everything, on the far left) in content section</comment>
+  </data>
+  <data name="PickColor" xml:space="preserve">
+    <value>Pick a color</value>
   </data>
 </root>

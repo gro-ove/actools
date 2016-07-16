@@ -19,7 +19,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
             Links.Clear();
             Links.Add(new Link {
-                DisplayName = "All",
+                DisplayName = Resources.FiltersLinkAll,
                 Source = _source
             });
 

@@ -98,6 +98,15 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string FiltersLinkAll {
+            get {
+                return ResourceManager.GetString("FiltersLinkAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Forward.
         /// </summary>
         public static string Forward {
@@ -121,6 +130,555 @@ namespace FirstFloor.ModernUI {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image Files|*.jpg;*.jpeg;*.png;*.gif;*.tif|All files (*.*)|*.*.
+        /// </summary>
+        public static string ImagesFilter {
+            get {
+                return ResourceManager.GetString("ImagesFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alt.
+        /// </summary>
+        public static string KeyAlt {
+            get {
+                return ResourceManager.GetString("KeyAlt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alt (Left).
+        /// </summary>
+        public static string KeyAltLeft {
+            get {
+                return ResourceManager.GetString("KeyAltLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alt (Right).
+        /// </summary>
+        public static string KeyAltRight {
+            get {
+                return ResourceManager.GetString("KeyAltRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backspace.
+        /// </summary>
+        public static string KeyBackspace {
+            get {
+                return ResourceManager.GetString("KeyBackspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browser Back.
+        /// </summary>
+        public static string KeyBrowserBack {
+            get {
+                return ResourceManager.GetString("KeyBrowserBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browser Favorites.
+        /// </summary>
+        public static string KeyBrowserFavorites {
+            get {
+                return ResourceManager.GetString("KeyBrowserFavorites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browser Forward.
+        /// </summary>
+        public static string KeyBrowserForward {
+            get {
+                return ResourceManager.GetString("KeyBrowserForward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browser Home.
+        /// </summary>
+        public static string KeyBrowserHome {
+            get {
+                return ResourceManager.GetString("KeyBrowserHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browser Refresh.
+        /// </summary>
+        public static string KeyBrowserRefresh {
+            get {
+                return ResourceManager.GetString("KeyBrowserRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browser Search.
+        /// </summary>
+        public static string KeyBrowserSearch {
+            get {
+                return ResourceManager.GetString("KeyBrowserSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browser Stop.
+        /// </summary>
+        public static string KeyBrowserStop {
+            get {
+                return ResourceManager.GetString("KeyBrowserStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caps Lock.
+        /// </summary>
+        public static string KeyCapsLock {
+            get {
+                return ResourceManager.GetString("KeyCapsLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Context Menu.
+        /// </summary>
+        public static string KeyContextMenu {
+            get {
+                return ResourceManager.GetString("KeyContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control.
+        /// </summary>
+        public static string KeyControl {
+            get {
+                return ResourceManager.GetString("KeyControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control (Left).
+        /// </summary>
+        public static string KeyControlLeft {
+            get {
+                return ResourceManager.GetString("KeyControlLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control (Right).
+        /// </summary>
+        public static string KeyControlRight {
+            get {
+                return ResourceManager.GetString("KeyControlRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string KeyDelete {
+            get {
+                return ResourceManager.GetString("KeyDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Down Arrow.
+        /// </summary>
+        public static string KeyDownArrow {
+            get {
+                return ResourceManager.GetString("KeyDownArrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End.
+        /// </summary>
+        public static string KeyEnd {
+            get {
+                return ResourceManager.GetString("KeyEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter.
+        /// </summary>
+        public static string KeyEnter {
+            get {
+                return ResourceManager.GetString("KeyEnter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Escape.
+        /// </summary>
+        public static string KeyEscape {
+            get {
+                return ResourceManager.GetString("KeyEscape", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        public static string KeyHelp {
+            get {
+                return ResourceManager.GetString("KeyHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string KeyHome {
+            get {
+                return ResourceManager.GetString("KeyHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert.
+        /// </summary>
+        public static string KeyInsert {
+            get {
+                return ResourceManager.GetString("KeyInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launch Favorite Application 1.
+        /// </summary>
+        public static string KeyLaunchApplication1 {
+            get {
+                return ResourceManager.GetString("KeyLaunchApplication1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launch Favorite Application 2.
+        /// </summary>
+        public static string KeyLaunchApplication2 {
+            get {
+                return ResourceManager.GetString("KeyLaunchApplication2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launch Mail.
+        /// </summary>
+        public static string KeyLaunchMail {
+            get {
+                return ResourceManager.GetString("KeyLaunchMail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left Arrow.
+        /// </summary>
+        public static string KeyLeftArrow {
+            get {
+                return ResourceManager.GetString("KeyLeftArrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next Track.
+        /// </summary>
+        public static string KeyMediaNextTrack {
+            get {
+                return ResourceManager.GetString("KeyMediaNextTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play.
+        /// </summary>
+        public static string KeyMediaPlayPause {
+            get {
+                return ResourceManager.GetString("KeyMediaPlayPause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous Track.
+        /// </summary>
+        public static string KeyMediaPreviousTrack {
+            get {
+                return ResourceManager.GetString("KeyMediaPreviousTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        public static string KeyMediaStop {
+            get {
+                return ResourceManager.GetString("KeyMediaStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number Pad {0}.
+        /// </summary>
+        public static string KeyNumberPad {
+            get {
+                return ResourceManager.GetString("KeyNumberPad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Num Lock.
+        /// </summary>
+        public static string KeyNumLock {
+            get {
+                return ResourceManager.GetString("KeyNumLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page Down.
+        /// </summary>
+        public static string KeyPageDown {
+            get {
+                return ResourceManager.GetString("KeyPageDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page Up.
+        /// </summary>
+        public static string KeyPageUp {
+            get {
+                return ResourceManager.GetString("KeyPageUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause.
+        /// </summary>
+        public static string KeyPause {
+            get {
+                return ResourceManager.GetString("KeyPause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print Screen.
+        /// </summary>
+        public static string KeyPrintScreen {
+            get {
+                return ResourceManager.GetString("KeyPrintScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right Arrow.
+        /// </summary>
+        public static string KeyRightArrow {
+            get {
+                return ResourceManager.GetString("KeyRightArrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scroll Lock.
+        /// </summary>
+        public static string KeyScrollLock {
+            get {
+                return ResourceManager.GetString("KeyScrollLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Media.
+        /// </summary>
+        public static string KeySelectMedia {
+            get {
+                return ResourceManager.GetString("KeySelectMedia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shift.
+        /// </summary>
+        public static string KeyShift {
+            get {
+                return ResourceManager.GetString("KeyShift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shift (Left).
+        /// </summary>
+        public static string KeyShiftLeft {
+            get {
+                return ResourceManager.GetString("KeyShiftLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shift (Right).
+        /// </summary>
+        public static string KeyShiftRight {
+            get {
+                return ResourceManager.GetString("KeyShiftRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Space.
+        /// </summary>
+        public static string KeySpace {
+            get {
+                return ResourceManager.GetString("KeySpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tab.
+        /// </summary>
+        public static string KeyTab {
+            get {
+                return ResourceManager.GetString("KeyTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up Arrow.
+        /// </summary>
+        public static string KeyUpArrow {
+            get {
+                return ResourceManager.GetString("KeyUpArrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume Down.
+        /// </summary>
+        public static string KeyVolumeDown {
+            get {
+                return ResourceManager.GetString("KeyVolumeDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume Mute.
+        /// </summary>
+        public static string KeyVolumeMute {
+            get {
+                return ResourceManager.GetString("KeyVolumeMute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume Up.
+        /// </summary>
+        public static string KeyVolumeUp {
+            get {
+                return ResourceManager.GetString("KeyVolumeUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows (Left).
+        /// </summary>
+        public static string KeyWindowsLeft {
+            get {
+                return ResourceManager.GetString("KeyWindowsLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows (Right).
+        /// </summary>
+        public static string KeyWindowsRight {
+            get {
+                return ResourceManager.GetString("KeyWindowsRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom.
+        /// </summary>
+        public static string KeyZoom {
+            get {
+                return ResourceManager.GetString("KeyZoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to B.
+        /// </summary>
+        public static string LocalizationHelper_ReadableSize_B {
+            get {
+                return ResourceManager.GetString("LocalizationHelper_ReadableSize_B", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EB.
+        /// </summary>
+        public static string LocalizationHelper_ReadableSize_EB {
+            get {
+                return ResourceManager.GetString("LocalizationHelper_ReadableSize_EB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GB.
+        /// </summary>
+        public static string LocalizationHelper_ReadableSize_GB {
+            get {
+                return ResourceManager.GetString("LocalizationHelper_ReadableSize_GB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KB.
+        /// </summary>
+        public static string LocalizationHelper_ReadableSize_KB {
+            get {
+                return ResourceManager.GetString("LocalizationHelper_ReadableSize_KB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MB.
+        /// </summary>
+        public static string LocalizationHelper_ReadableSize_MB {
+            get {
+                return ResourceManager.GetString("LocalizationHelper_ReadableSize_MB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PB.
+        /// </summary>
+        public static string LocalizationHelper_ReadableSize_PB {
+            get {
+                return ResourceManager.GetString("LocalizationHelper_ReadableSize_PB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TB.
+        /// </summary>
+        public static string LocalizationHelper_ReadableSize_TB {
+            get {
+                return ResourceManager.GetString("LocalizationHelper_ReadableSize_TB", resourceCulture);
             }
         }
         
@@ -197,6 +755,15 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pick a color.
+        /// </summary>
+        public static string PickColor {
+            get {
+                return ResourceManager.GetString("PickColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pick any color from screen.
         /// </summary>
         public static string PickColorFromScreen {
@@ -256,6 +823,15 @@ namespace FirstFloor.ModernUI {
         public static string SuggestionsMessage {
             get {
                 return ResourceManager.GetString("SuggestionsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*.
+        /// </summary>
+        public static string TexturesFilter {
+            get {
+                return ResourceManager.GetString("TexturesFilter", resourceCulture);
             }
         }
         

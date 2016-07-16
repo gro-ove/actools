@@ -232,7 +232,7 @@ namespace FirstFloor.ModernUI.Helpers {
             try {
                 File.WriteAllBytes(_filename, EncodeBytes(data));
             } catch (Exception e) {
-                Logging.Write("cannot save values: " + e);
+                Logging.Write("Cannot save values: " + e);
             }
         }
 
@@ -246,7 +246,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 try {
                     File.WriteAllBytes(_filename, EncodeBytes(data));
                 } catch (Exception e) {
-                    Logging.Write("cannot save values: " + e);
+                    Logging.Write("Cannot save values: " + e);
                 }
             });
 
@@ -459,7 +459,7 @@ namespace FirstFloor.ModernUI.Helpers {
             try {
                 return new Uri(Instance._storage[key], UriKind.RelativeOrAbsolute);
             } catch (Exception e) {
-                Logging.Warning("cannot load uri: " + e);
+                Logging.Warning("Cannot load uri: " + e);
                 return defaultValue;
             }
         }
@@ -471,7 +471,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 var bytes = BitConverter.GetBytes(GetInt(key));
                 return Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]);
             } catch (Exception e) {
-                Logging.Warning("cannot load uri: " + e);
+                Logging.Warning("Cannot load uri: " + e);
                 return defaultValue;
             }
         }
