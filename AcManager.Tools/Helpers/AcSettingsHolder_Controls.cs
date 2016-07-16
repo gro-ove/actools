@@ -403,8 +403,9 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            public class WheelButtonCombined {
-                public WheelButtonCombined(string id, string displayName) {
+            public class WheelButtonCombined : NotifyPropertyChanged {
+                public WheelButtonCombined(string id, string displayName, bool isNew = false) {
+                    IsNew = isNew;
                     WheelButton = new WheelButtonEntry(id, displayName);
                     KeyboardButton = new KeyboardButtonEntry(id, displayName);
                 }
@@ -412,6 +413,8 @@ namespace AcManager.Tools.Helpers {
                 public WheelButtonEntry WheelButton { get; }
 
                 public KeyboardButtonEntry KeyboardButton { get; }
+
+                public bool IsNew { get; }
             }
 
             public WheelButtonCombined[] WheelGearsButtonEntries { get; } = {
@@ -460,13 +463,45 @@ namespace AcManager.Tools.Helpers {
             };
 
             public WheelButtonCombined[] WheelCarButtonEntries { get; } = {
-                new WheelButtonCombined("BALANCEUP", "Brake balance to front"),
-                new WheelButtonCombined("BALANCEDN", "Brake balance to rear"),
                 new WheelButtonCombined("KERS", "KERS activation"),
                 new WheelButtonCombined("DRS", "DRS activation"),
                 new WheelButtonCombined("HANDBRAKE", "Handbrake"),
                 new WheelButtonCombined("ACTION_HEADLIGHTS", "Headlights"),
-                new WheelButtonCombined("ACTION_HORN", "Horn")
+                new WheelButtonCombined("ACTION_HEADLIGHTS_FLASH", "Flash Headlights"),
+                new WheelButtonCombined("ACTION_HORN", "Horn"),
+            };
+
+            public WheelButtonCombined[] WheelCarBrakeButtonEntries { get; } = {
+                new WheelButtonCombined("BALANCEUP", "Move to front"),
+                new WheelButtonCombined("BALANCEDN", "Move to rear"),
+            };
+
+            public WheelButtonCombined[] WheelCarTurboButtonEntries { get; } = {
+                new WheelButtonCombined("TURBOUP", "Increase"),
+                new WheelButtonCombined("TURBODN", "Decrease"),
+            };
+
+            public WheelButtonCombined[] WheelCarTractionControlButtonEntries { get; } = {
+                new WheelButtonCombined("TCUP", "Increase"),
+                new WheelButtonCombined("TCDN", "Decrease"),
+            };
+
+            public WheelButtonCombined[] WheelCarAbsButtonEntries { get; } = {
+                new WheelButtonCombined("ABSUP", "Increase"),
+                new WheelButtonCombined("ABSDN", "Decrease"),
+            };
+
+            public WheelButtonCombined[] WheelCarEngineBrakeButtonEntries { get; } = {
+                new WheelButtonCombined("ENGINE_BRAKE_UP", "Increase"),
+                new WheelButtonCombined("ENGINE_BRAKE_DN", "Decrease"),
+            };
+
+            public WheelButtonCombined[] WheelCarMgukButtonEntries { get; } = {
+                new WheelButtonCombined("MGUK_DELIVERY_UP", "Increase Delivery"),
+                new WheelButtonCombined("MGUK_DELIVERY_DN", "Decrease Delivery"),
+                new WheelButtonCombined("MGUK_RECOVERY_UP", "Increase Recovery"),
+                new WheelButtonCombined("MGUK_RECOVERY_DN", "Decrease Recovery"),
+                new WheelButtonCombined("MGUH_MODE", "MGU-H Mode")
             };
 
             public WheelButtonCombined[] WheelViewButtonEntries { get; } = {
@@ -481,11 +516,19 @@ namespace AcManager.Tools.Helpers {
                 new WheelButtonCombined("ACTION_CLAIM", "Complain")
             };
 
-            private IEnumerable<WheelButtonCombined> WheelButtonEntries
-                => WheelGearsButtonEntries
-                        .Union(WheelCarButtonEntries)
-                        .Union(WheelViewButtonEntries)
-                        .Union(WheelGesturesButtonEntries);
+            private WheelButtonCombined[] _wheelButtonEntries;
+
+            private IEnumerable<WheelButtonCombined> WheelButtonEntries => _wheelButtonEntries ?? (_wheelButtonEntries = WheelGearsButtonEntries
+                    .Union(WheelCarButtonEntries)
+                    .Union(WheelCarBrakeButtonEntries)
+                    .Union(WheelCarTurboButtonEntries)
+                    .Union(WheelCarTractionControlButtonEntries)
+                    .Union(WheelCarAbsButtonEntries)
+                    .Union(WheelCarEngineBrakeButtonEntries)
+                    .Union(WheelCarMgukButtonEntries)
+                    .Union(WheelViewButtonEntries)
+                    .Union(WheelGesturesButtonEntries)
+                    .ToArray());
             #endregion
 
             #region Wheel FFB

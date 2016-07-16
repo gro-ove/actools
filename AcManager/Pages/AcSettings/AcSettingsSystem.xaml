@@ -38,7 +38,20 @@
                 <Label>Show nearest opponents</Label>
             </CheckBox>
 
-            <!--proximity indicator-->
+            <!--skidmarks-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Skidmarks</TextBlock>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Skidmarks.QuantityMultipler}" Postfix="%">Quantity</mui:ValueLabel>
+                <Slider Minimum="0" Maximum="250" Value="{Binding Skidmarks.QuantityMultipler}" TickFrequency="25" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+                <mui:ValueLabel Value="{Binding Skidmarks.Height}" Postfix=" m" Mode="Number">Height from the ground</mui:ValueLabel>
+                <Slider Minimum="0" Maximum="0.04" Value="{Binding Skidmarks.Height}" TickFrequency="0.004" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <!--mirrors-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Mirrors</TextBlock>
             
             <DockPanel>

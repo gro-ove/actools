@@ -22,38 +22,22 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static void OnLimitedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            // TODO: dynamic change?
             if (OptionNonLimited) return;
 
             var u = d as FrameworkElement;
-            if (u == null) return;
-
-            u.Loaded += Control_Loaded;
+            if (u != null) {
+                u.Loaded += Control_Loaded;
+            }
         }
 
         private static void Control_Loaded(object sender, RoutedEventArgs e) {
             if (OptionNonLimited) return;
 
-            var c = (UIElement)sender;
+            var c = (FrameworkElement)sender;
+            c.Loaded -= Control_Loaded;
             if (GetLimited(c)) {
-                Add(c);
+                AdornerLayer.GetAdornerLayer(c)?.Add(new LimitedMarkAdorner(c));
                 c.IsEnabled = false;
-            }
-        }
-
-        private static void Add(UIElement control) {
-            AdornerLayer.GetAdornerLayer(control)?.Add(new LimitedAdorner(control));
-        }
-
-        private static void Remove(UIElement control) {
-            var layer = AdornerLayer.GetAdornerLayer(control);
-
-            var adorners = layer?.GetAdorners(control);
-            if (adorners == null) return;
-
-            foreach (var adorner in adorners.OfType<LimitedAdorner>()) {
-                adorner.Visibility = Visibility.Hidden;
-                layer.Remove(adorner);
             }
         }
     }

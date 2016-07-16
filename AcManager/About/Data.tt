@@ -12,6 +12,7 @@
 <#@ import namespace="System.Xml.Linq" #>
 <#@ import namespace="System.Collections" #>
 <#@ import namespace="System.Collections.Generic" #>using AcManager.Tools.About;
+using System.Linq;
 
 namespace AcManager.About {<#   
     var location = Path.GetDirectoryName(this.Host.TemplateFile);
@@ -21,7 +22,7 @@ namespace AcManager.About {<#
         #>
 
     public static class <#= className #> {
-        public static readonly PieceOfInformation[] Entries = {<#
+        public static readonly PieceOfInformation[] Entries = new []{<#
             
         foreach (var entry in Directory.GetFiles(sub, "*.txt")
                 .Select(x => new FileInfo(x))
@@ -33,6 +34,7 @@ namespace AcManager.About {<#
             string name = Path.GetFileNameWithoutExtension(entry);
             string version = null;
             bool limited = false;
+            bool hidden = false;
 
             var skip = 0;
             foreach (var s in lines.Select(x => Regex.Match(x, @"^([a-z]+):\s*(.+)$")).TakeWhile(x => x.Success)){
@@ -44,6 +46,7 @@ namespace AcManager.About {<#
                     case "id": id = v; break;
                     case "version": version = v; break;
                     case "limited": limited = v == "true"; break;
+                    case "hidden": hidden = v == "true"; break;
                     case "name": {
                         if (version == null){
                             version = name;
@@ -62,12 +65,12 @@ namespace AcManager.About {<#
             }
             #>
 
-            new PieceOfInformation(<#= O(sid) #>, <#= O(id) #>, <#= O(name) #>, <#= O(version) #>, <#= O(content) #>, <#= O(limited) #>),<#
+            new PieceOfInformation(<#= O(sid) #>, <#= O(id) #>, <#= O(name) #>, <#= O(version) #>, <#= O(content) #>, <#= O(limited) #>, <#= O(hidden) #>),<#
         }
 
         #>
 
-        };
+        }.Where(x => !x.IsHidden).ToArray();
     }
 <# 
 }

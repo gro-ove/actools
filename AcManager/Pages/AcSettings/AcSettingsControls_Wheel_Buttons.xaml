@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Unloaded="AcSettingsControls_Wheel_Buttons_OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -27,15 +29,38 @@
 
             <StackPanel Background="{DynamicResource WindowBackground}" Margin="20 0 20 20" IsEnabled="{Binding WheelUseHShifter}">
                 <TextBlock Text="{Binding WheelHShifterDevice.DisplayName, StringFormat='{}Device: {0}', FallbackValue='?'}" Style="{StaticResource Small}"
-                        HorizontalAlignment="Left" Margin="2" />
-                <ItemsControl ItemsSource="{Binding WheelHShifterButtonEntries}" Margin="2" ItemTemplate="{StaticResource HShifterButtonEntryTemplate}"
-                        ItemsPanel="{StaticResource TwoColumnsPanel}" />
+                        HorizontalAlignment="Left" Margin="4" />
+                <ItemsControl ItemsSource="{Binding WheelHShifterButtonEntries}" Margin="4 0 4 4" ItemTemplate="{StaticResource HShifterButtonEntryTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <mui:UniformGridWithOrientation Orientation="Vertical" Rows="4" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
             </StackPanel>
 
             <DockPanel Margin="0 0 0 20" ToolTip="Prevents accidental gearshifts due to faulty hardware">
                 <mui:ValueLabel Value="{Binding DebouncingInterval}" Postfix=" ms" DockPanel.Dock="Left" VerticalAlignment="Center" Width="200">Gear shift debouncing</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="250" Value="{Binding DebouncingInterval}" TickFrequency="25" TickPlacement="BottomRight" />
             </DockPanel>
+
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Brake balance:</TextBlock>
+            <ItemsControl ItemsSource="{Binding WheelCarBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">Turbo:</TextBlock>
+            <ItemsControl ItemsSource="{Binding WheelCarTurboButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">Traction control:</TextBlock>
+            <ItemsControl ItemsSource="{Binding WheelCarTractionControlButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">ABS:</TextBlock>
+            <ItemsControl ItemsSource="{Binding WheelCarAbsButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">Engine brake:</TextBlock>
+            <ItemsControl ItemsSource="{Binding WheelCarEngineBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">MGU-K:</TextBlock>
+            <ItemsControl ItemsSource="{Binding WheelCarMgukButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Miscellaneous:</TextBlock>
             <ItemsControl ItemsSource="{Binding WheelCarButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />

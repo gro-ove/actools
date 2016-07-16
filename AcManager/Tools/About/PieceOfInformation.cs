@@ -6,7 +6,7 @@ namespace AcManager.Tools.About {
     public sealed class PieceOfInformation : Displayable, IWithId {
         private readonly string _sid;
 
-        public PieceOfInformation(string sid, string id, string displayName, string version, string content, bool limited) {
+        public PieceOfInformation(string sid, string id, string displayName, string version, string content, bool limited, bool hidden) {
             _sid = "PieceOfInformation.IsNotNew_" + sid;
             Id = id;
 
@@ -16,6 +16,7 @@ namespace AcManager.Tools.About {
             IsLimited = limited;
 
             IsNew = !ValuesStorage.GetBool(_sid);
+            IsHidden = IsNew && hidden;
         }
 
         public string Id { get; }
@@ -25,6 +26,8 @@ namespace AcManager.Tools.About {
         public string Content { get; }
 
         public bool IsLimited { get; }
+
+        public bool IsHidden { get; }
 
         private bool _isNew;
 

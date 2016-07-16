@@ -29,7 +29,7 @@
         <ResourceDictionary Source="TreeView.xaml" />
 
         <ResourceDictionary Source="FancyScroll.xaml" />
-        <ResourceDictionary Source="LimitedMark.xaml" />
+        <ResourceDictionary Source="Marks.xaml" />
         <ResourceDictionary Source="ProperPasswordBox.xaml" />
         <ResourceDictionary Source="Watermark.xaml" />
     </ResourceDictionary.MergedDictionaries>

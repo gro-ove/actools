@@ -27,7 +27,6 @@
 
             <!--connection-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Connection:</TextBlock>
-            
             <DockPanel>
                 <Label>Server:</Label>
                 <ComboBox ItemsSource="{Binding Online.OnlineServers}" SelectedItem="{Binding Online.OnlineServer}" DisplayMemberPath="DisplayName" />
@@ -62,7 +61,7 @@
 
             <!--adding by ip-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Adding by IP:</TextBlock>
-            
+
             <DockPanel>
                 <Label>Scan ports:</Label>
                 <TextBox Text="{Binding Online.PortsEnumeration}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True">
@@ -91,7 +90,7 @@
             <DockPanel>
                 <Label>Scan using connections:</Label>
                 <ListBox Name="IgnoredInterfacesListBox" ItemsSource="{Binding NetworkInterfaces}" SelectionMode="Multiple"
-                        SelectionChanged="IgnoredInterfacesListBox_OnSelectionChanged">
+                        SelectionChanged="IgnoredInterfacesListBox_OnSelectionChanged" ItemContainerStyle="{StaticResource CheckBoxListBoxItem}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="networkInformation:NetworkInterface">
                             <StackPanel>
@@ -102,6 +101,12 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </DockPanel>
+
+            <!--connection-->
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" attached:NewMarkService.New="True">Server presets manager:</TextBlock>
+            <CheckBox IsChecked="{Binding Online.ServerPresetsManaging}" attached:LimitedService.Limited="True">
+                <Label>Enable</Label>
+            </CheckBox>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

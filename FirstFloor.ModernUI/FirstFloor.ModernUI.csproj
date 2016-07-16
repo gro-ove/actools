@@ -145,6 +145,8 @@
     <Compile Include="Win32\OSVersionHelper.cs" />
     <Compile Include="Win32\RECT.cs" />
     <Compile Include="Windows\Attached\ContextMenuAdvancement.cs" />
+    <Compile Include="Windows\Attached\NewMarkAdorner.cs" />
+    <Compile Include="Windows\Attached\NewMarkService.cs" />
     <Compile Include="Windows\Controls\InheritingContextMenu.cs" />
     <Compile Include="Windows\CommandDictionary.cs" />
     <Compile Include="Windows\Controls\AlignableWrapPanel.cs" />
@@ -159,7 +161,7 @@
     <Compile Include="Windows\Controls\DpiAwareWindow.cs" />
     <Compile Include="Windows\Controls\DpiInformation.cs" />
     <Compile Include="Windows\Attached\LimitedService.cs" />
-    <Compile Include="Windows\Attached\LimitedAdorner.cs" />
+    <Compile Include="Windows\Attached\LimitedMarkAdorner.cs" />
     <Compile Include="Windows\Controls\ModernMenu_Helpers.cs" />
     <Compile Include="Windows\Controls\ModernToggleButton.cs" />
     <Compile Include="Windows\Controls\OutlinedTextBlock.cs" />
@@ -190,6 +192,7 @@
     <Compile Include="Windows\Controls\TagsList.cs" />
     <Compile Include="Windows\Controls\TextBoxEnterKeyUpdateBehavior.cs" />
     <Compile Include="Windows\Controls\TransitioningContentControl.cs" />
+    <Compile Include="Windows\Controls\UniformGridWithOrientation.cs" />
     <Compile Include="Windows\Controls\ValueLabel.cs" />
     <Compile Include="Windows\Controls\VirtualizingTilePanel.cs" />
     <Compile Include="Windows\Controls\VirtualizingWrapPanel.cs" />
@@ -278,7 +281,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Assets\LimitedMark.xaml">
+    <Page Include="Assets\Marks.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -23,11 +23,9 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.ServerPreset {
     public partial class SelectedPage : ILoadableContent, IParametrizedUriContent {
-        public static ServerPresetAssistState[] AssistStates { get; } = {
-            ServerPresetAssistState.Denied,
-            ServerPresetAssistState.Factory,
-            ServerPresetAssistState.Forced
-        };
+        public static ServerPresetAssistState[] AssistStates { get; } = Enum.GetValues(typeof(ServerPresetAssistState)).OfType<ServerPresetAssistState>().ToArray();
+
+        public static ServerPresetJumpStart[] JumpStarts { get; } = Enum.GetValues(typeof(ServerPresetJumpStart)).OfType<ServerPresetJumpStart>().ToArray();
 
         private class ProgressCapacityConverterInner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {

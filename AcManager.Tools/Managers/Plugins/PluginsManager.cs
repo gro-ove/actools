@@ -155,7 +155,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
         public bool HasAnyNew() {
             // TODO
-            return true;
+            return false;
         }
     }
 

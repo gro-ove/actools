@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcTools.DataFile;
@@ -11,6 +12,17 @@ namespace AcManager.Tools.Objects {
         Denied = 0,
         Factory = 1,
         Forced = 2
+    }
+
+    public enum ServerPresetJumpStart {
+        [Description("Car Locked")]
+        CarLocked = 0,
+
+        [Description("Teleport To Pit")]
+        TeleportToPit = 1,
+
+        [Description("DriveThrough")]
+        DriveThrough = 2
     }
 
     public class ServerPresetObject : AcIniObject {
@@ -243,7 +255,10 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _abs)) return;
                 _abs = value;
-                OnPropertyChanged();
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
             }
         }
 
@@ -254,7 +269,10 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _tractionControl)) return;
                 _tractionControl = value;
-                OnPropertyChanged();
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
             }
         }
 
@@ -313,6 +331,110 @@ namespace AcManager.Tools.Objects {
                 }
             }
         }
+
+        private int _fuelRate;
+
+        public int FuelRate {
+            get { return _fuelRate; }
+            set {
+                value = value.Clamp(0, 500);
+                if (Equals(value, _fuelRate)) return;
+                _fuelRate = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private int _damageRate;
+
+        public int DamageRate {
+            get { return _damageRate; }
+            set {
+                value = value.Clamp(0, 400);
+                if (Equals(value, _damageRate)) return;
+                _damageRate = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private int _tyreWearRate;
+
+        public int TyreWearRate {
+            get { return _tyreWearRate; }
+            set {
+                value = value.Clamp(0, 500);
+                if (Equals(value, _tyreWearRate)) return;
+                _tyreWearRate = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private int _allowTyresOut;
+
+        public int AllowTyresOut {
+            get { return _allowTyresOut; }
+            set {
+                value = value.Clamp(0, 4);
+                if (Equals(value, _allowTyresOut)) return;
+                _allowTyresOut = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private int _maxBallast;
+
+        public int MaxBallast {
+            get { return _maxBallast; }
+            set {
+                value = value.Clamp(0, 300);
+                if (Equals(value, _maxBallast)) return;
+                _maxBallast = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private int _qualifyLimitPercentage;
+
+        public int QualifyLimitPercentage {
+            get { return _qualifyLimitPercentage; }
+            set {
+                value = value.Clamp(1, 65535);
+                if (Equals(value, _qualifyLimitPercentage)) return;
+                _qualifyLimitPercentage = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private ServerPresetJumpStart _jumpStart;
+
+        public ServerPresetJumpStart JumpStart {
+            get { return _jumpStart; }
+            set {
+                if (Equals(value, _jumpStart)) return;
+                _jumpStart = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
         #endregion
 
         protected override void LoadData(IniFile ini) {
@@ -341,6 +463,14 @@ namespace AcManager.Tools.Objects {
             AutoClutch = section.GetBool("AUTOCLUTCH_ALLOWED", false);
             TyreBlankets = section.GetBool("TYRE_BLANKETS_ALLOWED", false);
             ForceVirtualMirror = section.GetBool("FORCE_VIRTUAL_MIRROR", true);
+
+            FuelRate = section.GetInt("FUEL_RATE", 100);
+            DamageRate = section.GetInt("DAMAGE_MULTIPLIER", 100);
+            TyreWearRate = section.GetInt("TYRE_WEAR_RATE", 100);
+            AllowTyresOut = section.GetInt("ALLOWED_TYRES_OUT", 2);
+            MaxBallast = section.GetInt("MAX_BALLAST_KG", 0);
+            QualifyLimitPercentage = section.GetInt("QUALIFY_MAX_WAIT_PERC", 120);
+            JumpStart = section.GetIntEnum("START_RULE", ServerPresetJumpStart.CarLocked);
         }
 
         public override void SaveData(IniFile ini) {
@@ -369,6 +499,14 @@ namespace AcManager.Tools.Objects {
             section.Set("AUTOCLUTCH_ALLOWED", AutoClutch);
             section.Set("TYRE_BLANKETS_ALLOWED", TyreBlankets);
             section.Set("FORCE_VIRTUAL_MIRROR", ForceVirtualMirror);
+
+            section.Set("FUEL_RATE", FuelRate);
+            section.Set("DAMAGE_MULTIPLIER", DamageRate);
+            section.Set("TYRE_WEAR_RATE", TyreWearRate);
+            section.Set("ALLOWED_TYRES_OUT", AllowTyresOut);
+            section.Set("MAX_BALLAST_KG", MaxBallast);
+            section.Set("QUALIFY_MAX_WAIT_PERC", QualifyLimitPercentage);
+            section.SetIntEnum("START_RULE", JumpStart);
         }
     }
 }

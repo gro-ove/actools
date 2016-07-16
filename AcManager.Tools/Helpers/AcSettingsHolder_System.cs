@@ -352,5 +352,49 @@ namespace AcManager.Tools.Helpers {
         private static GhostSettings _ghost;
 
         public static GhostSettings Ghost => _ghost ?? (_ghost = new GhostSettings());
+
+        public class SkidmarksSettings : IniSettings {
+            internal SkidmarksSettings() : base("skidmarks", systemConfig: true) {}
+
+            private double _height;
+
+            public double Height {
+                get { return _height; }
+                set {
+                    value = value.Clamp(0, 0.1d);
+                    if (Equals(value, _height)) return;
+                    _height = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _quantityMultipler;
+
+            public int QuantityMultipler {
+                get { return _quantityMultipler; }
+                set {
+                    value = value.Clamp(0, 1000);
+                    if (Equals(value, _quantityMultipler)) return;
+                    _quantityMultipler = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            protected override void LoadFromIni() {
+                var section = Ini["GRAPHICS"];
+                Height = section.GetDouble("HEIGHT_FROM_GROUND", 0.02);
+                QuantityMultipler = section.GetDouble("QUANTITY_MULT", 1d).ToIntPercentage();
+            }
+
+            protected override void SetToIni() {
+                var section = Ini["GRAPHICS"];
+                section.Set("HEIGHT_FROM_GROUND", Height);
+                section.GetDouble("QUANTITY_MULT", QuantityMultipler.ToDoublePercentage());
+            }
+        }
+
+        private static SkidmarksSettings _skidmarks;
+
+        public static SkidmarksSettings Skidmarks => _skidmarks ?? (_skidmarks = new SkidmarksSettings());
     }
 }

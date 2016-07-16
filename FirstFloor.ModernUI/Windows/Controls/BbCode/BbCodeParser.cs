@@ -20,6 +20,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         private const string TagColor = "color";
         private const string TagItalic = "i";
         private const string TagSize = "size";
+        private const string TagStrike = "s";
         private const string TagUnderline = "u";
         private const string TagUrl = "url";
         private const string TagImage = "img";
@@ -124,6 +125,8 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 }
             } else if (tag == TagUnderline) {
                 context.TextDecorations = start ? TextDecorations.Underline : null;
+            } else if (tag == TagStrike) {
+                context.TextDecorations = start ? TextDecorations.Strikethrough : null;
             } else if (tag == TagImage) {
                 if (start) {
                     var token = La(1);

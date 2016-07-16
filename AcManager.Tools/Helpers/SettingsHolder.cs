@@ -97,6 +97,21 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _serverPresetsManaging;
+
+            public bool ServerPresetsManaging {
+                get {
+                    return _serverPresetsManaging ??
+                            (_serverPresetsManaging = ValuesStorage.GetBool("Settings.OnlineSettings.ServerPresetsManaging", false)).Value;
+                }
+                set {
+                    if (Equals(value, _serverPresetsManaging)) return;
+                    _serverPresetsManaging = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsManaging", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _loadServerInformationDirectly;
 
             public bool LoadServerInformationDirectly {

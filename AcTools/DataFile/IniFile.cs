@@ -50,7 +50,7 @@ namespace AcTools.DataFile {
 
             if (_splitRegex == null) {
                 _splitRegex = new Regex(@"\r?\n|\r|(?=\[[A-Z])", RegexOptions.Compiled);
-                _commentRegex = new Regex(@"//|(?<!\S);", RegexOptions.CultureInvariant | RegexOptions.Compiled);
+                _commentRegex = new Regex(@"//|(?<!\S);|;(?!\S)", RegexOptions.CultureInvariant | RegexOptions.Compiled);
             }
 
             IniFileSection currentSection = null;

@@ -1097,7 +1097,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Data.cs</LastGenOutput>
     </None>
-    <None Include="About\ImportantTips\I Need Your Help!.txt" />
+    <None Include="About\ImportantTips\Thank you!.txt" />
     <None Include="About\ImportantTips\Track Previews How-To.txt" />
     <None Include="About\ImportantTips\Starters.txt" />
     <None Include="About\ImportantTips\Command-Line Arguments.txt" />
@@ -1249,6 +1249,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Data\SrsStyle.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="About\ReleaseNotes\0.7.336.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

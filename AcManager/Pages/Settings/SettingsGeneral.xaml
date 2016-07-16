@@ -30,9 +30,9 @@
                 <TextBlock Text="{Binding Source={x:Static internal:AppKeyHolder.KeySafe}, Mode=OneTime}" attached:WatermarkService.Watermark="?" />
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding CommonSettings.CreateStartMenuShortcutIfMissing}"
-                    ToolTip="Create Start Menu shortcut if it's missing, might be able to help if there are no popup notifications">
-                <Label>Start Menu shortcut</Label>
+            <CheckBox IsChecked="{Binding CommonSettings.CreateStartMenuShortcutIfMissing}">
+                <CheckBox.ToolTip>Create Start Menu shortcut if it’s missing; required for showing proper notifications in Windows 8 and 10</CheckBox.ToolTip>
+                <Label>Start Menu shortcut (for modern notifications)</Label>
             </CheckBox>
 
             <!--versions-->

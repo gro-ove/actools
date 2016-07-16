@@ -2,14 +2,19 @@ name: Quick Switches & Livery Editor
 sid: 30_-116839_1723148843
 
 Some of important recent changes:
+
  • [b]Quick Switches[/b]
 Just a special popup menu for changing popular settings quickly (for example, you can switch between set of apps or control preset in two clicks). If you want some specific settings, [url="https://trello.com/c/ad89Y9rL/71-quick-switches"]tell us[/url].
+
  • [b]Livery Editor[/b]
 If you want to see some different style, shape or numbers style, tell me and I’ll try to add them.
 Also, of course, if you’re familiar with WPF, you can add them yourself using [url="https://github.com/gro-ove/actools/tree/master/AcManager/Assets/Livery"]this syntax[/url]. Either make a push request or, as an option, I think I could add some dynamic loading from “Content (User)” folder. No problem, just ask. :)
+
  • [b]New image rendering code[/b]
 Now you can see if image is missing or not. I hope it will load images faster and smoother than before. And another thing: now you can choose level of quality for image drawing. Maybe it could help fix some performance issues if you have any.
+
  • [b]Optimized values storage[/b]
 Theoretically, now it won’t grow so fast as it used to do. But still, use special button in CM settings to optimize it if you have performance troubles.
+
  • [b]Errors fixing[/b]
 App still misses some solution schemes from Cars Manager, but some other are even better now.

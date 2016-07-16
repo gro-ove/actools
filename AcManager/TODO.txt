@@ -508,10 +508,11 @@ fixme:
     - practice: gold medals
     - watermark disabling in showroom!
     - change "Author:" to "Version:" or "URL:" if author is missing
-    - SRS: missing track
     - SRS: three minutes instead of five
     - accent color on a fresh start
     - find information dialog
+    - replays layout
+    - smart textbox with version
 
 todo:
     - open new links in find information dialog in same tab
@@ -533,7 +534,7 @@ todo:
                     - pickup mode, loop mode, race over time
                 + advanced
                 - dynamic track
-                - assists
+                + assists
                 - realism
                 - voting
                 - description?
@@ -562,7 +563,6 @@ todo:
         - run servers
         - sharing
         - packing (for VDS and stuff)?
-        - plugins support?
 
     > proper sharing
         > special types:

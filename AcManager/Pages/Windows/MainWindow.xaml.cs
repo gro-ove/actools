@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -16,6 +17,7 @@ using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -51,7 +53,7 @@ namespace AcManager.Pages.Windows {
             }
 
             if (_testGameDialog != null) {
-                Logging.Write("[MAINWINDOW] Testing mode");
+                Logging.Write("[MainWindow] Testing mode");
                 var ui = new GameDialog();
                 ui.ShowDialogWithoutBlocking();
                 ((IGameUi)ui).OnResult(JsonConvert.DeserializeObject<Game.Result>(FileUtils.ReadAllText(_testGameDialog)), null);
@@ -86,25 +88,40 @@ namespace AcManager.Pages.Windows {
                 result.LinkChanged += ContentLinkChanged;
             }
 
-            UpdateLiveTimingTabs();
-            SettingsHolder.Live.PropertyChanged += Rsr_PropertyChanged;
+            UpdateLiveTabs();
+            SettingsHolder.Live.PropertyChanged += Live_PropertyChanged;
 
-            OfficialStarterNotification();
+            UpdateServerTab();
+            SettingsHolder.Online.PropertyChanged += Online_PropertyChanged;
+
+            if (!OfficialStarterNotification() && PluginsManager.Instance.HasAnyNew()) {
+                Toast.Show("Don’t forget to install some plugins!", "");
+            }
+        }
+
+        private void Online_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(SettingsHolder.OnlineSettings.ServerPresetsManaging)) {
+                UpdateServerTab();
+            }
+        }
+
+        private void UpdateServerTab() {
+            ServerGroup.IsShown = SettingsHolder.Online.ServerPresetsManaging;
         }
 
         private const string KeyOfficialStarterNotification = "mw.osn";
 
-        private void OfficialStarterNotification() {
-            if (ValuesStorage.GetBool(KeyOfficialStarterNotification)) return;
+        private bool OfficialStarterNotification() {
+            if (ValuesStorage.GetBool(KeyOfficialStarterNotification)) return false;
 
             if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.OfficialStarterType) {
                 ValuesStorage.Set(KeyOfficialStarterNotification, true);
-                return;
+                return false;
             }
 
             var launcher = FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
             if (FileVersionInfo.GetVersionInfo(launcher).FileVersion.IsVersionOlderThan("0.16.714")) {
-                return;
+                return false;
             }
 
             Toast.Show("Now With Official Support!", "New starter is ready, now without any patching at all", () => {
@@ -116,16 +133,17 @@ namespace AcManager.Pages.Windows {
 
                 ValuesStorage.Set(KeyOfficialStarterNotification, true);
             });
+            return true;
         }
 
-        private void Rsr_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void Live_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(SettingsHolder.LiveSettings.RsrEnabled) ||
                     e.PropertyName == nameof(SettingsHolder.LiveSettings.SrsEnabled)) {
-                UpdateLiveTimingTabs();
+                UpdateLiveTabs();
             }
         }
 
-        private void UpdateLiveTimingTabs() {
+        private void UpdateLiveTabs() {
             RsrLink.IsShown = SettingsHolder.Live.RsrEnabled;
             SrsLink.IsShown = SettingsHolder.Live.SrsEnabled;
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown);
@@ -196,7 +214,7 @@ namespace AcManager.Pages.Windows {
 
             var cancelled = true;
             foreach (var arg in AppArguments.Values) {
-                Logging.Write("[MAINWINDOW] Input: " + arg);
+                Logging.Write("[MainWindow] Input: " + arg);
 
                 var result = await _argumentsHandler.ProcessArgument(arg);
                 if (result == ArgumentHandleResult.FailedShow) {
@@ -216,7 +234,7 @@ namespace AcManager.Pages.Windows {
 
         public new void Show() {
             if (_cancelled) {
-                Logging.Write("[MAINWINDOW] Cancelled");
+                Logging.Write("[MainWindow] Cancelled");
                 return;
             }
 

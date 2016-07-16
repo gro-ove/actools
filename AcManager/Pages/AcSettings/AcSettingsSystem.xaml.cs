@@ -15,6 +15,8 @@ namespace AcManager.Pages.AcSettings {
 
             public AcSettingsHolder.ProximityIndicatorSettings ProximityIndicator => AcSettingsHolder.ProximityIndicator;
 
+            public AcSettingsHolder.SkidmarksSettings Skidmarks => AcSettingsHolder.Skidmarks;
+
             public AcSettingsHolder.SystemSettings System => AcSettingsHolder.System;
 
             public AcSettingsHolder.GhostSettings Ghost => AcSettingsHolder.Ghost;

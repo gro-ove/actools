@@ -149,9 +149,6 @@ namespace AcManager {
                     new MagickPluginWrapper(),
                     new AwesomiumPluginWrapper(),
                     new StarterPlus());
-            if (PluginsManager.Instance.HasAnyNew()) {
-                Toast.Show("Don’t forget to install some plugins!", "");
-            }
 
             SteamIdHelper.Initialize();
             OnlineManager.Initialize();

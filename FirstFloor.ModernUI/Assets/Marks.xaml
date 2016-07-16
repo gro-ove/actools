@@ -13,4 +13,15 @@
         <Setter Property="Foreground" Value="White" />
         <Setter Property="Padding" Value="2" />
     </Style>
+
+    <Style x:Key="NewMarkStyle" TargetType="TextBlock" BasedOn="{StaticResource Label}">
+        <Setter Property="Text" Value="NEW" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Margin" Value="0 4 2 0" />
+        <Setter Property="Background" Value="{DynamicResource Accent}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="2" />
+    </Style>
 </ResourceDictionary>

@@ -100,6 +100,9 @@
                                                             <DataTrigger Binding="{Binding IsEnabled}" Value="False">
                                                                 <Setter Property="attached:LimitedService.Limited" Value="True" />
                                                             </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsShown}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
                                                             <DataTrigger Binding="{Binding IsAccented}" Value="True">
                                                                 <Setter Property="Foreground" Value="#FFdc000c" TargetName="PART_Button" />
                                                                 <Setter Property="FontWeight" Value="Bold" TargetName="PART_Button" />

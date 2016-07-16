@@ -16,9 +16,9 @@ namespace AcManager.Tools.Starters {
 
         private static string LauncherFilename => FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
 
-        private static string BackupFilename => LauncherFilename.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_sp.exe";
+        public static string BackupFilename => LauncherFilename.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_sp.exe";
 
-        private static bool IsPatched(string filename) {
+        public static bool IsPatched(string filename) {
             return File.Exists(filename) && FileVersionInfo.GetVersionInfo(filename).FileDescription.Contains("(Patched for CM)");
         }
 
