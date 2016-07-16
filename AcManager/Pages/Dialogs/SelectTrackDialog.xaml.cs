@@ -44,6 +44,12 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new[] { OkButton, CancelButton };
         }
 
+        public static TrackBaseObject Show(TrackBaseObject track) {
+            var dialog = new SelectTrackDialog(track);
+            dialog.ShowDialog();
+            return !dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null ? track : dialog.Model.SelectedTrackConfiguration;
+        }
+
         private int _state;
 
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e) {

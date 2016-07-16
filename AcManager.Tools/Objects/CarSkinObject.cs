@@ -112,7 +112,6 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _driverName)) return;
                 _driverName = value;
-                OnPropertyChanged();
 
                 if (Loaded) {
                     OnPropertyChanged();

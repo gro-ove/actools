@@ -51,10 +51,12 @@ namespace AcTools.DataFile {
                     string.Equals(value, "yes", StringComparison.OrdinalIgnoreCase) || string.Equals(value, "y", StringComparison.OrdinalIgnoreCase);
         }
 
-        public IEnumerable<string> GetStrings(string key) {
-            return Get(key)?.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0) ?? new string[0];
+        [NotNull]
+        public string[] GetStrings(string key, char delimiter = ',') {
+            return Get(key)?.Split(delimiter).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray() ?? new string[0];
         }
-        
+
+        [NotNull]
         public double[] GetVector3(string key) {
             var result = GetStrings(key).Select(x => FlexibleParser.ParseDouble(x, 0d)).ToArray();
             return result.Length == 3 ? result : new double[3];
@@ -139,6 +141,15 @@ namespace AcTools.DataFile {
             return Enum.TryParse(Get(key), ignoreCase, out result) ? result : defaultValue;
         }
 
+        public T GetIntEnum<T>(string key, T defaultValue) where T : struct, IConvertible {
+            if (!typeof(T).IsEnum) {
+                throw new ArgumentException("T must be an enumerated type");
+            }
+
+            var i = GetInt(key, Convert.ToInt32(defaultValue));
+            return Enum.IsDefined(typeof(T), i) ? (T)Enum.ToObject(typeof(T), i) : defaultValue;
+        }
+
         private static void Set(string key, object value) {
             throw new Exception($"Type is not supported: {value?.GetType().ToString() ?? "null"} (key: “{key}”)");
         }
@@ -148,9 +159,9 @@ namespace AcTools.DataFile {
             base[key] = value;
         }
 
-        public void Set<T>(string key, IEnumerable<T> value) {
+        public void Set<T>(string key, IEnumerable<T> value, char delimiter = ',') {
             if (value == null) return;
-            Set(key, value.Select(x => x.ToInvariantString()).JoinToString(','));
+            Set(key, value.Select(x => x.ToInvariantString()).JoinToString(delimiter));
         }
 
         public void SetId(string key, string value) {
@@ -160,6 +171,10 @@ namespace AcTools.DataFile {
 
         public void Set(string key, Enum value) {
             base[key] = Convert.ToDouble(value).ToString(CultureInfo.InvariantCulture);
+        }
+
+        public void SetIntEnum(string key, Enum value) {
+            base[key] = Convert.ToInt32(value).ToString(CultureInfo.InvariantCulture);
         }
 
         public void Set(string key, int value) {

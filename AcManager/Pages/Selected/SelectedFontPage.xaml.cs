@@ -25,8 +25,8 @@ using WaitingDialog = AcManager.Controls.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedFontPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedFontPageViewModel : SelectedAcObjectViewModel<FontObject> {
-            public SelectedFontPageViewModel([NotNull] FontObject acObject) : base(acObject) { }
+        public class ViewModel : SelectedAcObjectViewModel<FontObject> {
+            public ViewModel([NotNull] FontObject acObject) : base(acObject) { }
 
             public FontsManager Manager => FontsManager.Instance;
 
@@ -92,7 +92,7 @@ namespace AcManager.Pages.Selected {
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(new SelectedFontPageViewModel(_object));
+            InitializeAcObjectPage(new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.CreateNewFontCommand, new KeyGesture(Key.N, ModifierKeys.Control)),
                 new InputBinding(Model.UsingsRescanCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
@@ -103,7 +103,7 @@ namespace AcManager.Pages.Selected {
 
         private string KeyTestText = "SelectedFontPage.TestText";
 
-        private SelectedFontPageViewModel Model => (SelectedFontPageViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         private void TestTextBox_OnTextChanged(object sender, TextChangedEventArgs e) {
             ValuesStorage.Set(KeyTestText, TextBox.Text);

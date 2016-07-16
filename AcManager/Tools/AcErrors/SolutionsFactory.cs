@@ -258,7 +258,7 @@ namespace AcManager.Tools.AcErrors {
                                     var carId = ((CarSkinObject)list[0].Target).CarId;
                                     var skinIds = list.Select(x => x.Target.Id).ToArray();
                                     if (!new CarUpdatePreviewsDialog(CarsManager.Instance.GetById(carId), skinIds,
-                                            SelectedCarPage.SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog()) {
+                                            SelectedCarPage.ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog()) {
                                         throw new SolvingException();
                                     }
                                 }) { IsUiSolution = true },

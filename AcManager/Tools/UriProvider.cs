@@ -49,6 +49,10 @@ namespace AcManager.Tools {
                 return UriExtension.Create("/Pages/Selected/SelectedCarSetupPage.xaml?Id={0}&CarId={1}", carSetupObject.Id, carSetupObject.CarId);
             }
 
+            if (obj is ServerPresetObject) {
+                return UriExtension.Create("/Pages/ServerPreset/SelectedPage.xaml?Id={0}", obj.Id);
+            }
+
             throw new NotImplementedException("Not supported type: " + obj.GetType());
         }
     }

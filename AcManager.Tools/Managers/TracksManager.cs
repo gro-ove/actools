@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
@@ -36,6 +37,12 @@ namespace AcManager.Tools.Managers {
         public TrackBaseObject GetLayoutById([NotNull] string trackId, [CanBeNull] string layoutId) {
             if (trackId == null) throw new ArgumentNullException(nameof(trackId));
             return layoutId == null ? GetById(trackId) : GetById(trackId)?.GetLayoutByLayoutId(layoutId);
+        }
+
+        [ItemCanBeNull]
+        public async Task<TrackBaseObject> GetLayoutByIdAsync([NotNull] string trackId, [CanBeNull] string layoutId) {
+            if (trackId == null) throw new ArgumentNullException(nameof(trackId));
+            return layoutId == null ? await GetByIdAsync(trackId) : (await GetByIdAsync(trackId))?.GetLayoutByLayoutId(layoutId);
         }
 
         protected override TrackObject CreateAcObject(string id, bool enabled) {

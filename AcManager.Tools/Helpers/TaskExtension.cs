@@ -9,7 +9,7 @@ namespace AcManager.Tools.Helpers {
 
         public static void Forget<T>(this Task<T> task) { }
 
-        public static async Task WhenAll(IEnumerable<Task> tasks, int limit, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task WhenAll(this IEnumerable<Task> tasks, int limit, CancellationToken cancellation = default(CancellationToken)) {
             var list = new List<Task>(limit);
             foreach (var task in tasks) {
                 if (cancellation.IsCancellationRequested) return;
@@ -25,7 +25,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public static async Task<IEnumerable<T>> WhenAll<T>(IEnumerable<Task<T>> tasks, int limit) {
+        public static async Task<IEnumerable<T>> WhenAll<T>(this IEnumerable<Task<T>> tasks, int limit) {
             var list = new List<Task<T>>(limit);
             var result = new List<T>();
 

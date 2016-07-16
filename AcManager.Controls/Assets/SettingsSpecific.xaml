@@ -61,6 +61,50 @@
         </Style.Resources>
     </Style>
 
+    <Style x:Key="SettingsCompactPanel" TargetType="{x:Type StackPanel}">
+        <Setter Property="Margin" Value="0 0 20 20" />
+        <Setter Property="MinWidth" Value="200" />
+
+        <Style.Resources>
+            <Style TargetType="{x:Type DockPanel}">
+                <Setter Property="Margin" Value="0 0 0 8" />
+
+                <Style.Resources>
+                    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
+                        <Setter Property="Margin" Value="0 4 16 0" />
+                        <Setter Property="Width" Value="100" />
+                        <Setter Property="VerticalAlignment" Value="Top" />
+                        <Setter Property="DockPanel.Dock" Value="Left" />
+                    </Style>
+
+                    <Style TargetType="{x:Type mui:ValueLabel}" BasedOn="{StaticResource {x:Type mui:ValueLabel}}">
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0 0 16 0" />
+                        <Setter Property="Width" Value="100" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="DockPanel.Dock" Value="Left" />
+                    </Style>
+
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="Margin" Value="8 0 0 0" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="DockPanel.Dock" Value="Right" />
+                    </Style>
+
+                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+
+                    <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource SettingsCheckBox}" />
+                </Style.Resources>
+            </Style>
+
+            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource SettingsCheckBox}">
+                <Setter Property="Margin" Value="0 0 0 8" />
+            </Style>
+        </Style.Resources>
+    </Style>
+
     <Style x:Key="SettingsPanel.Heading2.First" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Heading2}">
         <Setter Property="Margin" Value="0 0 0 8" />
     </Style>

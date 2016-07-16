@@ -24,8 +24,8 @@ using StringBasedFilter;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedReplayPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedReplayPageViewModel : SelectedAcObjectViewModel<ReplayObject> {
-            public SelectedReplayPageViewModel([NotNull] ReplayObject acObject) : base(acObject) {
+        public class ViewModel : SelectedAcObjectViewModel<ReplayObject> {
+            public ViewModel([NotNull] ReplayObject acObject) : base(acObject) {
                 DisplayParsed = acObject.ParsedSuccessfully ? "Yes" : "No";
             }
 
@@ -228,12 +228,12 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private SelectedReplayPageViewModel _model;
+        private ViewModel _model;
 
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(_model = new SelectedReplayPageViewModel(_object) {
+            InitializeAcObjectPage(_model = new ViewModel(_object) {
                 Track = _trackObject,
                 Car = _carObject,
                 CarSkin = _carSkinObject,

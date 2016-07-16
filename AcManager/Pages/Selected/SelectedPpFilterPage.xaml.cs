@@ -17,8 +17,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedPpFilterPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedPpFilterPageViewModel : SelectedAcObjectViewModel<PpFilterObject> {
-            public SelectedPpFilterPageViewModel([NotNull] PpFilterObject acObject) : base(acObject) { }
+        public class ViewModel : SelectedAcObjectViewModel<PpFilterObject> {
+            public ViewModel([NotNull] PpFilterObject acObject) : base(acObject) { }
 
             public PpFiltersManager Manager => PpFiltersManager.Instance;
 
@@ -58,12 +58,12 @@ namespace AcManager.Pages.Selected {
             _object?.PrepareForEditing();
         }
 
-        private SelectedPpFilterPageViewModel _model;
+        private ViewModel _model;
 
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(_model = new SelectedPpFilterPageViewModel(_object));
+            InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),

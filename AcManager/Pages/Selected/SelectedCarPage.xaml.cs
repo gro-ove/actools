@@ -32,8 +32,8 @@ using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedCarPageViewModel : SelectedAcObjectViewModel<CarObject> {
-            public SelectedCarPageViewModel([NotNull] CarObject acObject) : base(acObject) {
+        public class ViewModel : SelectedAcObjectViewModel<CarObject> {
+            public ViewModel([NotNull] CarObject acObject) : base(acObject) {
                 WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);
             }
 
@@ -373,12 +373,12 @@ namespace AcManager.Pages.Selected {
             _object?.SkinsManager.EnsureLoaded();
         }
 
-        private SelectedCarPageViewModel _model;
+        private ViewModel _model;
 
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(_model = new SelectedCarPageViewModel(_object));
+            InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewsCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
                 new InputBinding(_model.UpdatePreviewsOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
@@ -460,7 +460,7 @@ namespace AcManager.Pages.Selected {
 
             item = new MenuItem { Header = "Update Preview" };
             item.Click += (sender, args) => new CarUpdatePreviewsDialog(_model.SelectedObject, new[] { skin.Id },
-                    SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
+                    ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             contextMenu.Items.Add(item);
 
             contextMenu.Items.Add(new Separator());

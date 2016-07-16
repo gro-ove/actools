@@ -128,6 +128,7 @@
     <Compile Include="Filters\CarSetupObjectTester.cs" />
     <Compile Include="Filters\CarSkinObjectTester.cs" />
     <Compile Include="Filters\ServerEntryTester.cs" />
+    <Compile Include="Filters\ServerPresetObjectTester.cs" />
     <Compile Include="Filters\WeatherObjectTester.cs" />
     <Compile Include="Filters\ShowroomObjectTester.cs" />
     <Compile Include="Filters\TrackBaseObjectTester.cs" />
@@ -195,6 +196,7 @@
     <Compile Include="Lists\CompositeObservableCollection.cs" />
     <Compile Include="Managers\CarSetupsDirectories.cs" />
     <Compile Include="Managers\CarSetupsManager.cs" />
+    <Compile Include="Managers\ServerPresetsManager.cs" />
     <Compile Include="Managers\Directories\BaseAcDirectories.cs" />
     <Compile Include="Managers\Directories\IAcDirectories.cs" />
     <Compile Include="Managers\Directories\InheritingAcDirectories.cs" />
@@ -220,6 +222,7 @@
     <Compile Include="Objects\PythonAppObject.cs" />
     <Compile Include="GameProperties\DriverName.cs" />
     <Compile Include="GameProperties\GameCommandExecutorBase.cs" />
+    <Compile Include="Objects\ServerPresetObject.cs" />
     <Compile Include="SemiGui\GameEndedArgs.cs" />
     <Compile Include="SemiGui\GameFinishedArgs.cs" />
     <Compile Include="SemiGui\InformativeException.cs" />

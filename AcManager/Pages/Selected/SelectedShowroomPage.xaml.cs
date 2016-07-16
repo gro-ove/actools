@@ -18,8 +18,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedShowroomPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedShowroomPageViewModel : SelectedAcObjectViewModel<ShowroomObject> {
-            public SelectedShowroomPageViewModel([NotNull] ShowroomObject acObject) : base(acObject) {}
+        public class ViewModel : SelectedAcObjectViewModel<ShowroomObject> {
+            public ViewModel([NotNull] ShowroomObject acObject) : base(acObject) {}
             
             private ICommand _updatePreviewCommand;
             public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new RelayCommand(o => {
@@ -114,7 +114,7 @@ namespace AcManager.Pages.Selected {
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(_model = new SelectedShowroomPageViewModel(_object));
+            InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
                 new InputBinding(_model.CreateNewShowroomCommand, new KeyGesture(Key.N, ModifierKeys.Control)),
@@ -123,6 +123,6 @@ namespace AcManager.Pages.Selected {
             InitializeComponent();
         }
 
-        private SelectedShowroomPageViewModel _model;
+        private ViewModel _model;
     }
 }

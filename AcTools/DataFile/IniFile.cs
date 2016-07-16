@@ -43,23 +43,20 @@ namespace AcTools.DataFile {
             set { Content[key] = value; }
         }
 
-        private static Regex _splitRegex;
+        private static Regex _splitRegex, _commentRegex;
 
         protected override void ParseString(string data) {
             Clear();
 
             if (_splitRegex == null) {
                 _splitRegex = new Regex(@"\r?\n|\r|(?=\[[A-Z])", RegexOptions.Compiled);
+                _commentRegex = new Regex(@"//|(?<!\S);", RegexOptions.CultureInvariant | RegexOptions.Compiled);
             }
 
             IniFileSection currentSection = null;
             foreach (var line in _splitRegex.Split(data).Select(x => {
-                var i = x.IndexOf(';');
-                var j = x.IndexOf("//", StringComparison.Ordinal);
-                if (j != -1 && (i == -1 || i > j)) {
-                    i = j;
-                }
-                return i < 0 ? x.Trim() : x.Substring(0, i).Trim();
+                var m = _commentRegex.Match(x);
+                return (m.Success ? x.Substring(0, m.Index) : x).Trim();
             }).Where(x => x.Length > 0)) {
                 if (line[0] == '[' && line[line.Length - 1] == ']') {
                     this[line.Substring(1, line.Length - 2)] = currentSection = new IniFileSection();

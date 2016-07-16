@@ -23,8 +23,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedWeatherPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedWeatherPageViewModel : SelectedAcObjectViewModel<WeatherObject> {
-            public SelectedWeatherPageViewModel([NotNull] WeatherObject acObject) : base(acObject) { }
+        public class ViewModel : SelectedAcObjectViewModel<WeatherObject> {
+            public ViewModel([NotNull] WeatherObject acObject) : base(acObject) { }
 
             #region Weather types
             public WeatherType?[] WeatherTypes { get; } = WeatherTypesArray;
@@ -130,12 +130,12 @@ namespace AcManager.Pages.Selected {
             //_object?.PrepareForEditing();
         }
 
-        private SelectedWeatherPageViewModel _model;
+        private ViewModel _model;
 
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(_model = new SelectedWeatherPageViewModel(_object));
+            InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),

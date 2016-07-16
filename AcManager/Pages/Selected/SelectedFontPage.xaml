@@ -4,7 +4,7 @@
         xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance selected:SelectedFontPage+SelectedFontPageViewModel}" Loaded="SelectedFontPage_OnLoaded">
+        d:DataContext="{d:DesignInstance selected:SelectedFontPage+ViewModel}" Loaded="SelectedFontPage_OnLoaded">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconSource="{Binding SelectedObject.IconBitmap}" IconMouseDown="AcObjectBase_OnIconMouseDown">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">

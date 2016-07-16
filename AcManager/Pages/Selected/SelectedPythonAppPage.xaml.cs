@@ -13,8 +13,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedPythonAppPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedPythonAppPageViewModel : SelectedAcObjectViewModel<PythonAppObject> {
-            public SelectedPythonAppPageViewModel([NotNull] PythonAppObject acObject) : base(acObject) {
+        public class ViewModel : SelectedAcObjectViewModel<PythonAppObject> {
+            public ViewModel([NotNull] PythonAppObject acObject) : base(acObject) {
                 IsActivated = AcSettingsHolder.Python.IsActivated(SelectedObject.Id);
                 AcSettingsHolder.Python.PropertyChanged += Python_PropertyChanged;
             }
@@ -71,12 +71,12 @@ namespace AcManager.Pages.Selected {
             _object = PythonAppsManager.Instance.GetById(_id);
         }
 
-        private SelectedPythonAppPageViewModel _model;
+        private ViewModel _model;
 
         void ILoadableContent.Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(_model = new SelectedPythonAppPageViewModel(_object));
+            InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control))
             });

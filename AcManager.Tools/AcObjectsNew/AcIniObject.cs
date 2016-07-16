@@ -6,6 +6,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.AcObjectsNew {
@@ -73,7 +74,11 @@ namespace AcManager.Tools.AcObjectsNew {
                 return;
             }
 
-            LoadData(IniObject);
+            try {
+                LoadData(IniObject);
+            } catch (Exception e) {
+                Logging.Warning("[AcIniObject] LoadIniOrThrow(): " + e);
+            }
         }
 
         protected abstract void LoadData(IniFile ini);
@@ -91,7 +96,5 @@ namespace AcManager.Tools.AcObjectsNew {
             Changed = false;
         }
         #endregion
-
-        
     }
 }

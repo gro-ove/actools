@@ -27,8 +27,8 @@ using StringBasedFilter;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedTrackPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedTrackPageViewModel : SelectedAcObjectViewModel<TrackObject> {
-            public SelectedTrackPageViewModel([NotNull] TrackObject acObject) : base(acObject) {
+        public class ViewModel : SelectedAcObjectViewModel<TrackObject> {
+            public ViewModel([NotNull] TrackObject acObject) : base(acObject) {
                 SelectedTrackConfiguration = acObject.SelectedLayout;
             }
 
@@ -226,7 +226,7 @@ namespace AcManager.Pages.Selected {
         public void Initialize() {
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(_model = new SelectedTrackPageViewModel(_object));
+            InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
                 new InputBinding(_model.UpdatePreviewDirectCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
@@ -237,7 +237,7 @@ namespace AcManager.Pages.Selected {
             InitializeComponent();
         }
 
-        private SelectedTrackPageViewModel _model;
+        private ViewModel _model;
 
         private void ToolbarButtonQuickDrive_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
             _model.InitializeQuickDrivePresets();

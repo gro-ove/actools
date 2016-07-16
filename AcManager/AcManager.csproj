@@ -252,11 +252,23 @@
     <Compile Include="Pages\Lists\ScreenshotsListPage.xaml.cs">
       <DependentUpon>ScreenshotsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\ServerPresetsListPage.xaml.cs">
+      <DependentUpon>ServerPresetsListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Selected\PopupAuthor.xaml.cs">
       <DependentUpon>PopupAuthor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Selected\SelectedPythonAppPage.xaml.cs">
       <DependentUpon>SelectedPythonAppPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ServerPreset\Assists.xaml.cs">
+      <DependentUpon>Assists.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ServerPreset\Basic.xaml.cs">
+      <DependentUpon>Basic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ServerPreset\SelectedPage.xaml.cs">
+      <DependentUpon>SelectedPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SettingsReplays.xaml.cs">
       <DependentUpon>SettingsReplays.xaml</DependentUpon>
@@ -667,6 +679,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Lists\ServerPresetsListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Lists\WeatherListPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -740,6 +756,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedFontPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ServerPreset\Assists.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ServerPreset\Basic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ServerPreset\SelectedPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

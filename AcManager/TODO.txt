@@ -515,6 +515,7 @@ fixme:
 
 todo:
     - open new links in find information dialog in same tab
+    - weather: test button
 
     - notification for plugins
     - upload Content to Trello for those who doesn't have Internet connection
@@ -526,9 +527,38 @@ todo:
         - optional!
 
     - servers configs editor
-        - load existing configs
-        - edit properly
-        - save changes
+        - load, edit and save, step-by-step
+            - settings
+                + basic
+                    - pickup mode, loop mode, race over time
+                + advanced
+                - dynamic track
+                - assists
+                - realism
+                - voting
+                - description?
+            - sessions/weather
+                - sessions
+                - weather
+            + tracks
+                + track selection
+                + capacity with calculation
+            - cars/entry list
+                - enable/disable cars
+                - modify entry list
+                    - preview
+                    - extended
+                    - drivers list (names)
+            - advanced options
+                - legal tyres
+                - server plugin
+                - fixed setups
+                - external server
+                - create manager package?
+                - welcome message?
+                - ftp data?
+        - filtering
+        - create new presets
         - run servers
         - sharing
         - packing (for VDS and stuff)?

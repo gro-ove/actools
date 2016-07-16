@@ -8,7 +8,7 @@
         xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
         xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance selected:SelectedCarPage+SelectedCarPageViewModel}">
+        d:DataContext="{d:DesignInstance selected:SelectedCarPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

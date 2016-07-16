@@ -16,10 +16,10 @@ using StringBasedFilter;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarSkinPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedCarSkinPageViewModel : SelectedAcObjectViewModel<CarSkinObject> {
+        public class ViewModel : SelectedAcObjectViewModel<CarSkinObject> {
             public CarObject Car { get; }
 
-            public SelectedCarSkinPageViewModel(CarObject car, [NotNull] CarSkinObject acObject) : base(acObject) {
+            public ViewModel(CarObject car, [NotNull] CarSkinObject acObject) : base(acObject) {
                 Car = car;
             }
 
@@ -67,7 +67,7 @@ namespace AcManager.Pages.Selected {
 
             public RelayCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new RelayCommand(o => {
                 new CarUpdatePreviewsDialog(Car, new[] { SelectedObject.Id },
-                        SelectedCarPage.SelectedCarPageViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
+                        SelectedCarPage.ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             }, o => SelectedObject.Enabled));
 
             private RelayCommand _changeLiveryCommand;
@@ -128,7 +128,7 @@ namespace AcManager.Pages.Selected {
             if (_carObject == null) throw new ArgumentException("Can’t find car with provided ID");
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(_model = new SelectedCarSkinPageViewModel(_carObject, _object));
+            InitializeAcObjectPage(_model = new ViewModel(_carObject, _object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
                 new InputBinding(_model.GenerateLiveryCommand, new KeyGesture(Key.L, ModifierKeys.Control | ModifierKeys.Shift)),
@@ -139,7 +139,7 @@ namespace AcManager.Pages.Selected {
             InitializeComponent();
         }
 
-        private SelectedCarSkinPageViewModel _model;
+        private ViewModel _model;
 
         private void AcObjectBase_OnIconMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {

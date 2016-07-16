@@ -21,7 +21,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedCarSetupPage : ILoadableContent, IParametrizedUriContent {
-        public class SelectedCarSetupPageViewModel : SelectedAcObjectViewModel<CarSetupObject> {
+        public class ViewModel : SelectedAcObjectViewModel<CarSetupObject> {
             public CarObject Car { get; }
 
             public SettingEntry[] Tyres { get; }
@@ -39,7 +39,7 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            public SelectedCarSetupPageViewModel(CarObject car, [NotNull] CarSetupObject acObject) : base(acObject) {
+            public ViewModel(CarObject car, [NotNull] CarSetupObject acObject) : base(acObject) {
                 Car = car;
 
                 var main = Car.AcdData.GetIniFile("car.ini");
@@ -142,7 +142,7 @@ namespace AcManager.Pages.Selected {
             if (_carObject == null) throw new ArgumentException("Can’t find car with provided ID");
             if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
 
-            InitializeAcObjectPage(_model = new SelectedCarSetupPageViewModel(_carObject, _object));
+            InitializeAcObjectPage(_model = new ViewModel(_carObject, _object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
@@ -150,6 +150,6 @@ namespace AcManager.Pages.Selected {
             InitializeComponent();
         }
 
-        private SelectedCarSetupPageViewModel _model;
+        private ViewModel _model;
     }
 }
