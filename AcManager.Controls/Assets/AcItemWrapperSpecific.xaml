@@ -18,7 +18,7 @@
             <ContentControl.Resources>
                 <!-- placeholder -->
                 <DataTemplate DataType="{x:Type acObjectsNew:AcPlaceholderNew}">
-                    <TextBlock Text="{Binding DisplayName}" Margin="10,2,2,2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
+                    <TextBlock Text="{Binding DisplayName}" Margin="10 2 2 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
                             HorizontalAlignment="Stretch" x:Name="DisplayNameText" />
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding Enabled}" Value="False">
@@ -35,7 +35,7 @@
                         <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="4"
                                 IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 DockPanel.Dock="Right" />
-                        <TextBlock Text="{Binding DisplayName}" Margin="10,2,2,2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
+                        <TextBlock Text="{Binding DisplayName}" Margin="10 2 2 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
                                 HorizontalAlignment="Stretch" x:Name="DisplayNameText" ToolTip="{Binding Location}" />
                     </DockPanel>
                     <DataTemplate.Triggers>
@@ -43,7 +43,7 @@
                             <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="DisplayNameText" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding NeedsMargin}" Value="True">
-                            <Setter Property="Padding" Value="20,0,0,0" TargetName="DisplayNameText" />
+                            <Setter Property="Padding" Value="20 0 0 0" TargetName="DisplayNameText" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding HasErrors}" Value="True">
                             <Setter Property="FontWeight" Value="Bold" TargetName="DisplayNameText" />
@@ -72,7 +72,7 @@
                             <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="DisplayNameText" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding NeedsMargin}" Value="True">
-                            <Setter Property="Padding" Value="20,0,0,0" TargetName="DisplayNameText" />
+                            <Setter Property="Padding" Value="20 0 0 0" TargetName="DisplayNameText" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding HasErrors}" Value="True">
                             <Setter Property="FontWeight" Value="Bold" TargetName="DisplayNameText" />

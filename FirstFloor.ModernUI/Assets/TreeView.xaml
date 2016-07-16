@@ -15,7 +15,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                    <Border Width="16" Height="16" Background="Transparent" Padding="5,5,5,5">
+                    <Border Width="16" Height="16" Background="Transparent" Padding="5 5 5 5">
                         <Path x:Name="ExpandPath" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}"
                                 StrokeThickness="{TemplateBinding BorderThickness}" Data="F1 M.5,.5, .5,6.5 6.5,.5 Z" UseLayoutRounding="True"
                                 SnapsToDevicePixels="True">
@@ -87,28 +87,28 @@
                         <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}"
                                 IsChecked="{Binding Path=IsExpanded,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" />
                         <Border Name="Bd" Grid.Row="0" Grid.Column="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                             <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Border>
                         <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsExpanded" Value="false">
+                        <Trigger Property="IsExpanded" Value="False">
                             <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed" />
                         </Trigger>
-                        <Trigger Property="HasItems" Value="false">
+                        <Trigger Property="HasItems" Value="False">
                             <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
                         </Trigger>
                         <Trigger SourceName="Bd" Property="IsMouseOver" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
                             <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
                         </Trigger>
-                        <Trigger Property="IsSelected" Value="true">
+                        <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
                             <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
                         </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -116,7 +116,7 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <Trigger Property="VirtualizingStackPanel.IsVirtualizing" Value="true">
+            <Trigger Property="VirtualizingStackPanel.IsVirtualizing" Value="True">
                 <Setter Property="ItemsPanel">
                     <Setter.Value>
                         <ItemsPanelTemplate>

@@ -514,6 +514,7 @@ fixme:
     - replays layout
     - smart textbox with version
     - 1ff opponent?!
+    - settins/live: rsr-srs margin
 
 todo:
     - open new links in find information dialog in same tab

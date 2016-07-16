@@ -133,6 +133,6 @@
     <SolidColorBrush x:Key="WindowText" Color="#333333" />
     <SolidColorBrush x:Key="WindowTextReadOnly" Color="#919191" />
 
-    <Rectangle x:Key="WindowBackgroundContent" x:Shared="false" Height="96" Fill="{StaticResource WindowHeaderGradient}" VerticalAlignment="Top" />
-    <Rectangle x:Key="DialogBackgroundContent" x:Shared="false" />
+    <Rectangle x:Key="WindowBackgroundContent" x:Shared="False" Height="96" Fill="{StaticResource WindowHeaderGradient}" VerticalAlignment="Top" />
+    <Rectangle x:Key="DialogBackgroundContent" x:Shared="False" />
 </ResourceDictionary>

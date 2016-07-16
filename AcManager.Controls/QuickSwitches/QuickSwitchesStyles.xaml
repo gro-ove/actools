@@ -133,7 +133,7 @@
                 <ControlTemplate TargetType="{x:Type qs:QuickSwitchComboBox}">
                     <DockPanel>
                         <Grid Name="MainGrid" SnapsToDevicePixels="True" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="0 0 0 4">
-                            <Popup Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" Placement="Bottom" Margin="1"
+                            <Popup Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" Placement="Bottom" Margin="1"
                                     IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                     PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                                 <Grid Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">

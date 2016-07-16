@@ -71,7 +71,7 @@
                                                     Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                                             <!-- title links -->
-                                            <ItemsControl Grid.Column="1" ItemsSource="{TemplateBinding TitleLinks}" Margin="0,0,24,0"
+                                            <ItemsControl Grid.Column="1" ItemsSource="{TemplateBinding TitleLinks}" Margin="0 0 24 0"
                                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
@@ -177,7 +177,7 @@
                                             </Grid.ColumnDefinitions>
 
                                             <!-- back button -->
-                                            <controls:ModernButton Margin="8,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="24"
+                                            <controls:ModernButton Margin="8 10 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="24"
                                                     IconWidth="12" IconHeight="12"
                                                     IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
                                                     Command="NavigationCommands.BrowseBack" CommandTarget="{Binding ElementName=ContentFrame}"

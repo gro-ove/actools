@@ -11,7 +11,7 @@
         <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
         <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="7,3,8,3" />
+        <Setter Property="Padding" Value="7 3 8 3" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -26,13 +26,13 @@
                     <Border Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                             VerticalAlignment="Stretch">
-                        <Grid Name="MainGrid" SnapsToDevicePixels="true">
+                        <Grid Name="MainGrid" SnapsToDevicePixels="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0" />
                             </Grid.ColumnDefinitions>
 
-                            <Path Name="Arrow" Grid.ColumnSpan="2" Margin="3,1,8,0" Fill="{TemplateBinding Foreground}"
+                            <Path Name="Arrow" Grid.ColumnSpan="2" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}"
                                     Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
 
                             <ContentPresenter Grid.Column="0" ContentSource="Header" RecognizesAccessKey="False" Margin="{TemplateBinding Padding}"
@@ -54,7 +54,7 @@
                                         <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
 
                                         <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}"
-                                                BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" Margin="0,-1,0,0">
+                                                BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" Margin="0 -1 0 0">
                                             <!-- popup border thickness not dependent on BorderThickness property-->
                                             <ScrollViewer Name="DropDownScrollViewer">
                                                 <Grid RenderOptions.ClearTypeHint="Enabled">
@@ -95,7 +95,7 @@
     </Style>
 
     <ControlTemplate x:Key="SpecialMenuItemHeaderControlTemplate" TargetType="{x:Type MenuItem}">
-        <Grid SnapsToDevicePixels="true">
+        <Grid SnapsToDevicePixels="True">
             <Rectangle Name="Bg" Fill="{TemplateBinding MenuItem.Background}" />
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -104,9 +104,9 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGTColumnGroup" />
                     <ColumnDefinition Width="17" />
                 </Grid.ColumnDefinitions>
-                <ContentPresenter Grid.Column="0" ContentSource="Header" Margin="7,2,8,2" RecognizesAccessKey="True"
+                <ContentPresenter Grid.Column="0" ContentSource="Header" Margin="7 2 8 2" RecognizesAccessKey="True"
                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                <Path x:Name="RightArrow" Grid.Column="3" VerticalAlignment="Center" Margin="4,0,0,0" Fill="{TemplateBinding MenuItem.Foreground}"
+                <Path x:Name="RightArrow" Grid.Column="3" VerticalAlignment="Center" Margin="4 0 0 0" Fill="{TemplateBinding MenuItem.Foreground}"
                         Data="{StaticResource RightArrow}" />
             </Grid>
             <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Right" VerticalOffset="-3" HorizontalOffset="-2"
@@ -118,11 +118,11 @@
                         <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
                     </Grid>
                     <Border x:Name="SubMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                            BorderThickness="1" Margin="0,-1,0,0">
+                            BorderThickness="1" Margin="0 -1 0 0">
                         <ScrollViewer Name="SubMenuScrollViewer" CanContentScroll="True" Foreground="{DynamicResource ItemText}">
                             <Grid RenderOptions.ClearTypeHint="Enabled">
                                 <ItemsPresenter Name="ItemsPresenter" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle"
-                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.IsSharedSizeScope="true" />
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.IsSharedSizeScope="True" />
                             </Grid>
                         </ScrollViewer>
                     </Border>
@@ -158,7 +158,7 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGTColumnGroup" />
                     <ColumnDefinition Width="17" />
                 </Grid.ColumnDefinitions>
-                <ContentPresenter Grid.Column="0" ContentSource="Header" Margin="7,2,8,2" RecognizesAccessKey="True"
+                <ContentPresenter Grid.Column="0" ContentSource="Header" Margin="7 2 8 2" RecognizesAccessKey="True"
                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ToolTip="{x:Null}" />
             </Grid>
         </Grid>
@@ -187,11 +187,11 @@
         <Setter Property="IsTextSearchEnabled" Value="True" />
         <Style.Triggers>
             <Trigger Property="Role" Value="TopLevelHeader">
-                <Setter Property="Padding" Value="7,2,8,2" />
+                <Setter Property="Padding" Value="7 2 8 2" />
                 <Setter Property="Template" Value="{StaticResource SpecialMenuItemHeaderControlTemplate}" />
             </Trigger>
             <Trigger Property="Role" Value="SubmenuHeader">
-                <Setter Property="Padding" Value="2,3,2,3" />
+                <Setter Property="Padding" Value="2 3 2 3" />
                 <Setter Property="Template" Value="{StaticResource SpecialMenuItemHeaderControlTemplate}" />
             </Trigger>
         </Style.Triggers>

@@ -9,7 +9,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Padding" Value="0,6,0,6" />
+        <Setter Property="Padding" Value="0 6 0 6" />
         <Setter Property="MinWidth" Value="150" />
         <Setter Property="Grid.IsSharedSizeScope" Value="True" />
         <Setter Property="ScrollViewer.PanningMode" Value="Both" />
@@ -24,7 +24,7 @@
                         <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
 
                         <Border x:Name="ContextMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                                BorderThickness="1" Margin="0,-1,0,0">
+                                BorderThickness="1" Margin="0 -1 0 0">
                             <ScrollViewer Name="ContextMenuScrollViewer">
                                 <Grid RenderOptions.ClearTypeHint="Enabled">
                                     <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">

@@ -9,12 +9,12 @@
     <Color x:Key="GoColor">GreenYellow</Color>
 
     <Color x:Key="WindowBackgroundColor">#111111</Color>
-    <Rectangle x:Key="WindowBackgroundContent" x:Shared="false">
+    <Rectangle x:Key="WindowBackgroundContent" x:Shared="False">
         <Rectangle.Fill>
             <ImageBrush Opacity=".15" ImageSource="/AcManager.Controls;component/Assets/Background.jpg" Stretch="UniformToFill" AlignmentX="Center"
                     AlignmentY="Center" />
         </Rectangle.Fill>
     </Rectangle>
 
-    <Rectangle x:Key="DialogBackgroundContent" x:Shared="false" />
+    <Rectangle x:Key="DialogBackgroundContent" x:Shared="False" />
 </ResourceDictionary>

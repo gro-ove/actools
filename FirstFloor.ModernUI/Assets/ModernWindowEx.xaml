@@ -63,7 +63,7 @@
                                                     </Grid>
                                                 </Button.Content>
                                             </Button>
-                                            <Grid Margin="1,0,1,0">
+                                            <Grid Margin="1 0 1 0">
                                                 <Button x:Name="Restore" Command="{Binding Source={x:Static SystemCommands.RestoreWindowCommand}}"
                                                         ToolTip="{x:Static modernui:Resources.Restore}" Style="{StaticResource SystemButton}"
                                                         Visibility="Hidden">

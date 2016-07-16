@@ -401,7 +401,7 @@
                             Visibility="{Binding KunosCareerUserSkin, Source={x:Static achelpers:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                 ScrollViewer.CanContentScroll="True" Margin="0 0 0 8" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}"
-                                MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}" VirtualizingPanel.IsVirtualizing="true"
+                                MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}" VirtualizingPanel.IsVirtualizing="True"
                                 VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
                                 Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=564}">
                             <ListBox.ItemsPanel>

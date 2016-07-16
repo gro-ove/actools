@@ -14,17 +14,17 @@
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
         <Setter Property="Foreground" Value="{DynamicResource MenuText}" />
-        <Setter Property="Margin" Value="12,0,0,0" />
+        <Setter Property="Margin" Value="12 0 0 0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                     <ContentPresenter x:Name="Presenter" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
+                        <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource MenuTextHover}" />
                         </Trigger>
-                        <Trigger Property="IsSelected" Value="true">
+                        <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -138,16 +138,16 @@
                                                             <Border Name="Bd" Background="{TemplateBinding Background}"
                                                                     BorderBrush="{TemplateBinding BorderBrush}"
                                                                     BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}"
-                                                                    SnapsToDevicePixels="true">
+                                                                    SnapsToDevicePixels="True">
                                                                 <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                                             </Border>
                                                             <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="true">
+                                                                <Trigger Property="IsMouseOver" Value="True">
                                                                     <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
                                                                 </Trigger>
-                                                                <Trigger Property="IsSelected" Value="true">
+                                                                <Trigger Property="IsSelected" Value="True">
                                                                     <Setter TargetName="Bd" Property="Background"
                                                                             Value="{DynamicResource ItemBackgroundSelected}" />
                                                                 </Trigger>
@@ -164,7 +164,7 @@
                                         </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" Margin="10,2,2,2"
+                                                <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" Margin="10 2 2 2"
                                                         FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" Width="200" />
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
@@ -177,7 +177,7 @@
                                     <!-- content -->
                                     <controls:ModernFrame Grid.Column="2" x:Name="PART_Frame"
                                             Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                            ContentLoader="{TemplateBinding ContentLoader}" Margin="32,0,0,0" />
+                                            ContentLoader="{TemplateBinding ContentLoader}" Margin="32 0 0 0" />
                                 </Grid>
                             </ControlTemplate>
                         </Setter.Value>

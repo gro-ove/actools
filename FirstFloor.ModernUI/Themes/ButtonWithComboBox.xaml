@@ -25,7 +25,7 @@
                             BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                             VerticalAlignment="Stretch">
                         <Grid VerticalAlignment="Stretch">
-                            <Path x:Name="Arrow" Fill="{TemplateBinding Foreground}" VerticalAlignment="Bottom" Margin="2,3,2,3"
+                            <Path x:Name="Arrow" Fill="{TemplateBinding Foreground}" VerticalAlignment="Bottom" Margin="2 3 2 3"
                                     Data="M -0.5 3 L 5.5 3 L 2.5 6 Z" />
                             <ContentPresenter />
                             <Popup IsOpen="{Binding Path=IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom"
@@ -42,7 +42,7 @@
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
                             <Setter Property="Visibility" Value="Hidden" />
                         </Trigger>
@@ -107,7 +107,7 @@
                         </StackPanel>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -120,7 +120,7 @@
                             <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
                             <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
                         </Trigger>
-                        <Trigger Property="IsFocused" Value="true">
+                        <Trigger Property="IsFocused" Value="True">
                             <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>

@@ -12,8 +12,8 @@
         <Setter Property="Background" Value="{DynamicResource InputBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="2,1,1,1" />
-        <Setter Property="AllowDrop" Value="true" />
+        <Setter Property="Padding" Value="2 1 1 1" />
+        <Setter Property="AllowDrop" Value="True" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst" />
         <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
@@ -27,10 +27,10 @@
                                 <AdornedElementPlaceholder x:Name="adorner" Margin="-1" />
                             </Grid>
                         </Border>
-                        <Border x:Name="errorBorder" Background="#FFdc000c" Margin="120,0,0,0" Opacity="0" CornerRadius="0" IsHitTestVisible="False"
+                        <Border x:Name="errorBorder" Background="#FFdc000c" Margin="120 0 0 0" Opacity="0" CornerRadius="0" IsHitTestVisible="False"
                                 MinHeight="24">
                             <TextBlock Text="{Binding ElementName=adorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" Foreground="White"
-                                    Margin="8,2,8,3" TextWrapping="Wrap" VerticalAlignment="Center" />
+                                    Margin="8 2 8 3" TextWrapping="Wrap" VerticalAlignment="Center" />
                         </Border>
                     </StackPanel>
                     <ControlTemplate.Triggers>
@@ -62,15 +62,15 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBoxBase}">
                     <Border x:Name="Bd" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}"
-                            Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                         <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled"
                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
                         </Trigger>
-                        <Trigger Property="IsReadOnly" Value="true">
+                        <Trigger Property="IsReadOnly" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
                         </Trigger>
                         <MultiTrigger>
@@ -131,7 +131,7 @@
                     <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                             Margin="{TemplateBinding Padding}" />
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
                         </Trigger>
                     </ControlTemplate.Triggers>

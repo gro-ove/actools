@@ -10,7 +10,7 @@
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Rectangle SnapsToDevicePixels="true" Margin="4" Stroke="Black" StrokeDashArray="1 2" StrokeThickness="1" />
+                    <Rectangle SnapsToDevicePixels="True" Margin="4" Stroke="Black" StrokeDashArray="1 2" StrokeThickness="1" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -31,17 +31,17 @@
                     </Grid>
 
                     <!--ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" Value="true">
+                        <Trigger Property="IsPressed" Value="True">
                             <Setter Property="BorderStyle" TargetName="chrome" Value="RaisedPressed" />
                             <Setter Property="Visibility" TargetName="chrome" Value="Visible" />
                         </Trigger>
-                        <Trigger Property="ToggleButton.IsChecked" Value="true">
+                        <Trigger Property="ToggleButton.IsChecked" Value="True">
                             <Setter Property="BorderStyle" TargetName="chrome" Value="RaisedPressed" />
                         </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Path.Stroke" TargetName="Cp" Value="#ADADAD" />
                             <Setter Property="Path.Fill" TargetName="Cp" Value="#ADADAD" />
                         </Trigger>
@@ -74,42 +74,42 @@
                                     <ColumnDefinition Width="16" />
                                 </Grid.ColumnDefinitions>
 
-                                <Border x:Name="Bd" Margin="1,1,2,1">
+                                <Border x:Name="Bd" Margin="1 1 2 1">
                                     <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}"
                                             RecognizesAccessKey="True" />
                                 </Border>
 
-                                <Rectangle x:Name="rect" Grid.Column="2" Width="1" Margin="0,-2,0,-2" VerticalAlignment="Stretch" HorizontalAlignment="Left"
+                                <Rectangle x:Name="rect" Grid.Column="2" Width="1" Margin="0 -2 0 -2" VerticalAlignment="Stretch" HorizontalAlignment="Left"
                                         Stroke="DarkGray" />
 
-                                <Path x:Name="path" Data="M0,0L3,3 6,0z" Margin="0,1,0,0" Grid.Column="1" Stroke="{TemplateBinding Foreground}"
+                                <Path x:Name="path" Data="M0,0L3,3 6,0z" Margin="0 1 0 0" Grid.Column="1" Stroke="{TemplateBinding Foreground}"
                                         Fill="{TemplateBinding Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <Button x:Name="PART_DropDown" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"
                                         BorderThickness="{TemplateBinding BorderThickness}" Foreground="{TemplateBinding Foreground}"
-                                        VerticalAlignment="Stretch" Grid.Column="1" Margin="1,-3,-3,-3"><!--Style="{DynamicResource classicDropDownStyle}"-->
+                                        VerticalAlignment="Stretch" Grid.Column="1" Margin="1 -3 -3 -3"><!--Style="{DynamicResource classicDropDownStyle}"-->
 
-                                    <Path Data="M0,0L3,3 6,0z" Margin="0,1,0,0" Grid.Column="1" Stroke="{TemplateBinding Foreground}"
+                                    <Path Data="M0,0L3,3 6,0z" Margin="0 1 0 0" Grid.Column="1" Stroke="{TemplateBinding Foreground}"
                                             Fill="{TemplateBinding Foreground}" />
                                 </Button>
                             </Grid>
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsKeyboardFocused" Value="true">
+                        <Trigger Property="IsKeyboardFocused" Value="True">
                             <Setter Property="BorderBrush" TargetName="buttonChrome" Value="Orange" />
                         </Trigger>
-                        <Trigger Property="IsContextMenuOpen" Value="true">
+                        <Trigger Property="IsContextMenuOpen" Value="True">
                             <Setter Property="BorderBrush" TargetName="buttonChrome" Value="DarkCyan" />
                         </Trigger>
-                        <Trigger Property="ToggleButton.IsChecked" Value="true">
+                        <Trigger Property="ToggleButton.IsChecked" Value="True">
                             <Setter Property="BorderBrush" TargetName="buttonChrome" Value="Yellow" />
                         </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                         <Trigger Property="Mode" Value="Dropdown">

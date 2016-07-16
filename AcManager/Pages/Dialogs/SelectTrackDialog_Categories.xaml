@@ -7,7 +7,7 @@
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" d:DataContext="{d:DesignInstance local:SelectTrackDialog_Categories+SelectTrackDialog_CategoriesViewModel}">
-    <ListBox ItemsSource="{Binding Categories}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="true"
+    <ListBox ItemsSource="{Binding Categories}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
             VirtualizingPanel.VirtualizationMode="Recycling" Name="CategoriesListBox" PreviewKeyDown="CategoriesListBox_OnPreviewKeyDown">
         <ListBox.ItemsPanel>
             <ItemsPanelTemplate>

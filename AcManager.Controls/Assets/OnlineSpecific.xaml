@@ -389,7 +389,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
                     <Border Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                         <Grid>
                             <Rectangle Name="Bd" Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -397,10 +397,10 @@
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
+                        <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Bd" Property="Fill" Value="{DynamicResource ItemBackgroundHover}" />
                         </Trigger>
-                        <Trigger Property="IsSelected" Value="true">
+                        <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Bd" Property="Fill" Value="{DynamicResource ItemBackgroundSelected}" />
                         </Trigger>
                     </ControlTemplate.Triggers>

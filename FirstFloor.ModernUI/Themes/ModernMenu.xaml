@@ -157,7 +157,7 @@
                                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                                     <Setter Property="VerticalContentAlignment" Value="Center" />
                                     <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
-                                    <Setter Property="Margin" Value="0,0,12,0" />
+                                    <Setter Property="Margin" Value="0 0 12 0" />
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="ListBoxItem">
@@ -167,10 +167,10 @@
                                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                                 <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="true">
+                                                    <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Foreground" Value="{DynamicResource MenuTextHover}" />
                                                     </Trigger>
-                                                    <Trigger Property="IsSelected" Value="true">
+                                                    <Trigger Property="IsSelected" Value="True">
                                                         <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" />
                                                     </Trigger>
                                                     <DataTrigger Binding="{Binding IsEnabled}" Value="False">

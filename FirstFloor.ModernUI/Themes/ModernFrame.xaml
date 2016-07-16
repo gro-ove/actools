@@ -28,12 +28,12 @@
                                     <TextBlock
                                             Text="{Binding Source={x:Static modernUi:Resources.NavigationFailed}, Converter={StaticResource ToUpperConverter}}"
                                             Style="{StaticResource Heading1}" />
-                                    <TextBlock Text="{Binding Message}" FontWeight="Bold" Foreground="#e51400" Margin="0,0,0,8" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding Message}" FontWeight="Bold" Foreground="#e51400" Margin="0 0 0 8" TextWrapping="Wrap" />
                                     <TextBlock Text="{x:Static modernUi:Resources.Source}" FontWeight="Bold" />
                                     <TextBlock Text="{Binding Source, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:ModernFrame}}"
-                                            Margin="0,0,0,8" />
+                                            Margin="0 0 0 8" />
                                     <TextBlock Text="{x:Static modernUi:Resources.StackTrace}" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding}" Style="{StaticResource Fixed}" Margin="0,0,0,16" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding}" Style="{StaticResource Fixed}" Margin="0 0 0 16" TextWrapping="Wrap" />
                                     <TextBlock Text="{x:Static modernUi:Resources.Suggestions}" FontWeight="Bold" />
                                     <controls:BbCodeBlock
                                             BbCode="{x:Static modernUi:Resources.SuggestionsMessage}">

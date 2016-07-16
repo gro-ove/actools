@@ -80,7 +80,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
-            // CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("ru-RU");
+#if DEBUG
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("ru-RU");
+#endif
 
             NonfatalError.Register(new NonfatalErrorNotifier());
 

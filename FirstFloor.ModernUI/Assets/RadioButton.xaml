@@ -6,7 +6,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RadioButton}">
                     <StackPanel x:Name="LayoutRoot" Orientation="Horizontal" Margin="{TemplateBinding Padding}">
-                        <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0,1,4,0" Background="{DynamicResource ButtonBackground}"
+                        <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0 1 4 0" Background="{DynamicResource ButtonBackground}"
                                 BorderBrush="{DynamicResource ButtonBorder}" BorderThickness="1" CornerRadius="8">
                             <Ellipse x:Name="CheckMark" Width="8" Height="8" Margin="2" Fill="{TemplateBinding Foreground}" Visibility="Collapsed" />
                         </Border>
@@ -29,7 +29,7 @@
                             <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}" />
                             <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource ButtonTextPressed}" />
                         </Trigger>
-                        <Trigger Property="IsFocused" Value="true">
+                        <Trigger Property="IsFocused" Value="True">
                             <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>

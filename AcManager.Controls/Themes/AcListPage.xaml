@@ -29,7 +29,7 @@
                             </Grid.RowDefinitions>
 
                             <ListBox x:Name="ItemsList" IsSynchronizedWithCurrentItem="True" ItemsSource="{TemplateBinding ItemsSource}"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="true"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
                                     VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel"
                                     ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}">
                                 <ListBox.ItemsPanel>

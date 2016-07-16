@@ -128,7 +128,7 @@
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
-                        <Trigger Property="IsIndeterminate" Value="true">
+                        <Trigger Property="IsIndeterminate" Value="True">
                             <Setter Property="Visibility" TargetName="IndeterminateRoot" Value="Visible" />
                             <Setter Property="Visibility" TargetName="DeterminateRoot" Value="Collapsed" />
                             <Setter Property="Background" TargetName="PART_Track" Value="Transparent" />

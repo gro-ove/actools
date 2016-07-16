@@ -2,9 +2,9 @@
         xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
 
     <Style x:Key="SliderRepeatButtonStyle" TargetType="RepeatButton">
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="IsTabStop" Value="false" />
-        <Setter Property="Focusable" Value="false" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Focusable" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
@@ -15,9 +15,9 @@
     </Style>
 
     <Style x:Key="BaseSliderThumbStyle" TargetType="Thumb">
-        <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="Focusable" Value="false" />
-        <Setter Property="IsTabStop" Value="false" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Background" Value="{DynamicResource SliderThumbBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource SliderThumbBorder}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -57,13 +57,13 @@
 
     <Style TargetType="Slider">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Slider">
                     <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -96,20 +96,20 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="TickPlacement" Value="TopLeft">
                             <Setter TargetName="TopTick" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="TrackBackground" Property="Margin" Value="5,2,5,0" />
+                            <Setter TargetName="TrackBackground" Property="Margin" Value="5 2 5 0" />
                         </Trigger>
                         <Trigger Property="TickPlacement" Value="BottomRight">
                             <Setter TargetName="BottomTick" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="TrackBackground" Property="Margin" Value="5,0,5,2" />
+                            <Setter TargetName="TrackBackground" Property="Margin" Value="5 0 5 2" />
                         </Trigger>
                         <Trigger Property="TickPlacement" Value="Both">
                             <Setter TargetName="TopTick" Property="Visibility" Value="Visible" />
                             <Setter TargetName="BottomTick" Property="Visibility" Value="Visible" />
                         </Trigger>
-                        <Trigger Property="IsSelectionRangeEnabled" Value="true">
+                        <Trigger Property="IsSelectionRangeEnabled" Value="True">
                             <Setter TargetName="PART_SelectionRange" Property="Visibility" Value="Visible" />
                         </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="TopTick" Property="Fill" Value="{DynamicResource SliderTickDisabled}" />
                             <Setter TargetName="BottomTick" Property="Fill" Value="{DynamicResource SliderTickDisabled}" />
                         </Trigger>
@@ -123,7 +123,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Slider}">
                             <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                                    BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -160,20 +160,20 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="TickPlacement" Value="TopLeft">
                                     <Setter TargetName="TopTick" Property="Visibility" Value="Visible" />
-                                    <Setter TargetName="TrackBackground" Property="Margin" Value="2,5,0,5" />
+                                    <Setter TargetName="TrackBackground" Property="Margin" Value="2 5 0 5" />
                                 </Trigger>
                                 <Trigger Property="TickPlacement" Value="BottomRight">
                                     <Setter TargetName="BottomTick" Property="Visibility" Value="Visible" />
-                                    <Setter TargetName="TrackBackground" Property="Margin" Value="0,5,2,5" />
+                                    <Setter TargetName="TrackBackground" Property="Margin" Value="0 5 2 5" />
                                 </Trigger>
                                 <Trigger Property="TickPlacement" Value="Both">
                                     <Setter TargetName="TopTick" Property="Visibility" Value="Visible" />
                                     <Setter TargetName="BottomTick" Property="Visibility" Value="Visible" />
                                 </Trigger>
-                                <Trigger Property="IsSelectionRangeEnabled" Value="true">
+                                <Trigger Property="IsSelectionRangeEnabled" Value="True">
                                     <Setter TargetName="PART_SelectionRange" Property="Visibility" Value="Visible" />
                                 </Trigger>
-                                <Trigger Property="IsEnabled" Value="false">
+                                <Trigger Property="IsEnabled" Value="False">
                                     <Setter TargetName="TopTick" Property="Fill" Value="{DynamicResource SliderTickDisabled}" />
                                     <Setter TargetName="BottomTick" Property="Fill" Value="{DynamicResource SliderTickDisabled}" />
                                 </Trigger>

@@ -31,7 +31,7 @@
                             <TextBlock DataContext="{TemplateBinding Content}"
                                     Visibility="{Binding Converter={StaticResource NullOrEmptyStringToVisibilityConverter}, ConverterParameter=inverse}"
                                     Text="{Binding Converter={StaticResource ToLowerConverter}}" TextTrimming="CharacterEllipsis"
-                                    Foreground="{TemplateBinding Foreground}" Margin="4,-1,8,0" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    Foreground="{TemplateBinding Foreground}" Margin="4 -1 8 0" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -45,11 +45,11 @@
                             <Setter TargetName="ellipse" Property="Fill" Value="{DynamicResource ModernButtonIconBackgroundPressed}" />
                             <Setter TargetName="icon" Property="Fill" Value="{DynamicResource ModernButtonIconForegroundPressed}" />
                         </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
+                        <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextDisabled}" />
                             <Setter TargetName="ellipse" Property="Stroke" Value="{DynamicResource ModernButtonBorderDisabled}" />
                         </Trigger>
-                        <Trigger Property="IsFocused" Value="true">
+                        <Trigger Property="IsFocused" Value="True">
                             <Setter TargetName="ellipse" Property="Stroke" Value="{DynamicResource Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
