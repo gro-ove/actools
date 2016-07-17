@@ -169,4 +169,384 @@
     <value>Invalid location</value>
     <comment>I don't think this error could happen, but just in case</comment>
   </data>
+  <data name="FontObject_Disabling_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>There are some cars which need this font. Are you sure you want to disable it?</value>
+  </data>
+  <data name="FontObject_DisableFont" xml:space="preserve">
+    <value>Disable Font</value>
+  </data>
+  <data name="AcObject_Disabling_MakeSureNoRunnedApps" xml:space="preserve">
+    <value>Make sure there is no runned app working with object’s folder.</value>
+  </data>
+  <data name="AcObject_CannotToggleExt" xml:space="preserve">
+    <value>Can’t toggle: {0}</value>
+  </data>
+  <data name="AcObject_CannotToggle" xml:space="preserve">
+    <value>Can’t toggle</value>
+  </data>
+  <data name="AcObject_CannotDelete" xml:space="preserve">
+    <value>Can’t delete</value>
+  </data>
+  <data name="FontObject_DeleteFont" xml:space="preserve">
+    <value>Delete Font</value>
+  </data>
+  <data name="FontObject_Deleting_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>There are some cars which need this font. Are you sure you want to delete it?</value>
+  </data>
+  <data name="KunosCareer_Championship" xml:space="preserve">
+    <value>Championship</value>
+    <comment>For Kunos career</comment>
+  </data>
+  <data name="KunosCareer_SingleEvents" xml:space="preserve">
+    <value>Single events</value>
+    <comment>For Kunos career</comment>
+  </data>
+  <data name="PpFilterObject_CannotSave" xml:space="preserve">
+    <value>Can’t save PP filter</value>
+  </data>
+  <data name="PpFilterObject_MakeSureCouldBeOverwritten" xml:space="preserve">
+    <value>Make sure its file could be overwritten.</value>
+  </data>
+  <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
+    <value>Unsupported format</value>
+  </data>
+  <data name="ReplayObject_PreviousSession" xml:space="preserve">
+    <value>Previous Session</value>
+  </data>
+  <data name="JumpStart_CarLocked" xml:space="preserve">
+    <value>Car Locked</value>
+    <comment>For server preset, jump start value</comment>
+  </data>
+  <data name="JumpStart_DriveThrough" xml:space="preserve">
+    <value>DriveThrough</value>
+    <comment>For server preset, jump start value</comment>
+  </data>
+  <data name="JumpStart_TeleportToPit" xml:space="preserve">
+    <value>Teleport To Pit</value>
+    <comment>For server preset, jump start value</comment>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">
+    <value>Can’t toggle sound</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
+    <value>Make sure there is no runned app working with showroom’s sound files.</value>
+  </data>
+  <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
+    <value>{0} pit</value>
+    <comment>Last word should be pluralized automatically, see LocatiozationHelper</comment>
+  </data>
+  <data name="LogHelper_CannotConnectToRemoteServer" xml:space="preserve">
+    <value>Can’t connect to remote server</value>
+  </data>
+  <data name="LogHelper_DriverIsMissing" xml:space="preserve">
+    <value>Driver model is probably missing</value>
+  </data>
+  <data name="LogHelper_PasswordIsInvalid" xml:space="preserve">
+    <value>Password is invalid</value>
+  </data>
+  <data name="LogHelper_SuspensionIsMissing" xml:space="preserve">
+    <value>Suspension objects (SUSP_LF, SUSP_LR, …) are missing</value>
+  </data>
+  <data name="LogHelper_WheelsAreMissing" xml:space="preserve">
+    <value>Wheels objects (WHEEL_LF, WHEEL_LR, …) are missing</value>
+  </data>
+  <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
+    <value>Unpacked version doesn’t support auto-updating.</value>
+  </data>
+  <data name="AppUpdater_UnhandledError" xml:space="preserve">
+    <value>Some unhandled error happened.</value>
+  </data>
+  <data name="AppUpdater_CannotDownloadInformation" xml:space="preserve">
+    <value>Can’t download information about latest version.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
+    <value>Can’t update app</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
+    <value>Access is denied</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
+    <value>Can’t update app due to lack of permissions. Please, update it manually.</value>
+  </data>
+  <data name="AppUpdater_CannotLoad" xml:space="preserve">
+    <value>Can’t load the new version</value>
+  </data>
+  <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
+    <value>Make sure internet connection is working and app has write permissions to its folder.</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
+    <value>Can’t update app due to lack of permissions.</value>
+  </data>
+  <data name="AppUpdater_CannotLoadShort" xml:space="preserve">
+    <value>Can’t load the new version.</value>
+  </data>
+  <data name="AppUpdater_UpdateFailed" xml:space="preserve">
+    <value>Update failed</value>
+  </data>
+  <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
+    <value>Can’t remove original file “{0}” to install update. Try to remove it manually and then run “{1}”.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
+    <value>Can’t process update: {0}. Try to install a new version manually, sorry.</value>
+  </data>
+  <data name="Shared_CarSetup" xml:space="preserve">
+    <value>Car setup</value>
+  </data>
+  <data name="Shared_ControlsPreset" xml:space="preserve">
+    <value>Controls preset</value>
+  </data>
+  <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
+    <value>Force Feedback preset</value>
+  </data>
+  <data name="Shared_PpFilter" xml:space="preserve">
+    <value>PP filter</value>
+  </data>
+  <data name="Shared_QuickDrivePreset" xml:space="preserve">
+    <value>Quick Drive preset</value>
+  </data>
+  <data name="Shared_Replay" xml:space="preserve">
+    <value>Replay</value>
+  </data>
+  <data name="Shared_Weather" xml:space="preserve">
+    <value>Weather</value>
+  </data>
+  <data name="SharingHelper_CannotGetShared" xml:space="preserve">
+    <value>Can’t get shared entry</value>
+  </data>
+  <data name="SharingHelper_CannotGetShared_Commentary" xml:space="preserve">
+    <value>Make sure Internet connection works.</value>
+  </data>
+  <data name="SharingHelper_NotSupported_Commentary" xml:space="preserve">
+    <value>Make sure you have the latest version of CM.</value>
+  </data>
+  <data name="SharingHelper_NotSupported" xml:space="preserve">
+    <value>Can’t get shared entry, its type {0} is not supported</value>
+  </data>
+  <data name="AcObject_CannotBeDisabled" xml:space="preserve">
+    <value>Cannot be disabled</value>
+  </data>
+  <data name="AcObject_NotValidAnymore" xml:space="preserve">
+    <value>Not valid anymore</value>
+  </data>
+  <data name="OnlineManage_IdIsTaken" xml:space="preserve">
+    <value>ID is taken</value>
+  </data>
+  <data name="CannotFindSteamId" xml:space="preserve">
+    <value>Can’t find Steam ID</value>
+  </data>
+  <data name="Online_CannotLoadData" xml:space="preserve">
+    <value>Can’t load data</value>
+  </data>
+  <data name="Online_CannotLoadData_Commentary" xml:space="preserve">
+    <value>Make sure internet-connection is working.</value>
+  </data>
+  <data name="Online_CannotParseAddress" xml:space="preserve">
+    <value>Can’t parse address</value>
+  </data>
+  <data name="Online_GettingInformationDirectly" xml:space="preserve">
+    <value>Getting information directly…</value>
+  </data>
+  <data name="Online_TryingToFindOutHttpPort" xml:space="preserve">
+    <value>Trying to ping to find out HTTP port…</value>
+  </data>
+  <data name="Online_GettingInformationDirectly_SecondAttempt" xml:space="preserve">
+    <value>Getting information directly (second attempt)…</value>
+  </data>
+  <data name="Online_CannotAccessServer" xml:space="preserve">
+    <value>Can’t access server</value>
+  </data>
+  <data name="Online_Scanning" xml:space="preserve">
+    <value>Scanning…</value>
+  </data>
+  <data name="Online_ScanningNothingFound" xml:space="preserve">
+    <value>Nothing found</value>
+  </data>
+  <data name="Online_ScanningNothingFound_Commentary" xml:space="preserve">
+    <value>Make sure server's address is correct and server itself is accessible.</value>
+  </data>
+  <data name="Online_ScanningProgress" xml:space="preserve">
+    <value>Scanning ({0}/{1}), {2} found…</value>
+  </data>
+  <data name="Online_ScanningProgress_Found" xml:space="preserve">
+    <value>{0} server</value>
+    <comment>Number of found serves, will be pluralized automatically</comment>
+  </data>
+  <data name="Online_Session_LapsDuration" xml:space="preserve">
+    <value>{0} lap</value>
+    <comment>Number of laps of race session, will be pluralized automatically</comment>
+  </data>
+  <data name="Online_Server_CarIsMissing" xml:space="preserve">
+    <value>Car {0} is missing.</value>
+  </data>
+  <data name="Online_Server_CarsAreMissing" xml:space="preserve">
+    <value>Cars {0} are missing.</value>
+  </data>
+  <data name="Online_Server_TrackIsMissing" xml:space="preserve">
+    <value>Track {0} is missing.</value>
+  </data>
+  <data name="Online_Server_CountryNA" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="Online_Server_SessionEnded" xml:space="preserve">
+    <value>ended</value>
+    <comment>Keep it short if you can</comment>
+  </data>
+  <data name="Online_Server_MissingCarBbCode" xml:space="preserve">
+    <value>“[url="http://assetto-db.com/car/{0}"]{0}[/url]”</value>
+    <comment>Replace quotes if needed</comment>
+  </data>
+  <data name="Online_Server_MissingTrackBbCode" xml:space="preserve">
+    <value>“[url="http://assetto-db.com/track/{0}"]{0}[/url]”</value>
+    <comment>Replace quotes if needed</comment>
+  </data>
+  <data name="Online_Server_CannotRefresh" xml:space="preserve">
+    <value>Can’t refresh server information.
+</value>
+  </data>
+  <data name="Online_Server_NotImplemented" xml:space="preserve">
+    <value>Not implemented.
+</value>
+  </data>
+  <data name="Online_Server_CannotPing" xml:space="preserve">
+    <value>Server is unavailable (ping failed).
+</value>
+  </data>
+  <data name="Online_Server_Unavailable" xml:space="preserve">
+    <value>Server is unavailable.</value>
+  </data>
+  <data name="Online_Server_CarsDoNotMatch" xml:space="preserve">
+    <value>Cars don’t match.</value>
+    <comment>In case server went crazy and returns different cars in /JSON and in /INFO responses</comment>
+  </data>
+  <data name="Online_Server_UnhandledError" xml:space="preserve">
+    <value>Unhandled error.</value>
+  </data>
+  <data name="Plugins_CannotInstall" xml:space="preserve">
+    <value>Can’t install plugin</value>
+  </data>
+  <data name="Presets_FileFilter" xml:space="preserve">
+    <value>Presets (*{0})|*{0}</value>
+  </data>
+  <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
+    <value>Please, choose a file in initial directory or some subdirectory.</value>
+  </data>
+  <data name="Presets_CannotDo" xml:space="preserve">
+    <value>Can’t Do</value>
+  </data>
+  <data name="AcRootDirectory_Required" xml:space="preserve">
+    <value>AcRootDirectory is required</value>
+  </data>
+  <data name="AcRootDirectory_NotDefined" xml:space="preserve">
+    <value>Directory is not defined</value>
+  </data>
+  <data name="AcRootDirectory_Missing" xml:space="preserve">
+    <value>Directory is missing</value>
+  </data>
+  <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
+    <value>Directory “{0}” is missing</value>
+  </data>
+  <data name="AcRootDirectory_MissingFile" xml:space="preserve">
+    <value>File “{0}” is missing</value>
+  </data>
+  <data name="AcObject_IdIsWrong" xml:space="preserve">
+    <value>ID is wrong</value>
+  </data>
+  <data name="AcObject_CannotBeMoved" xml:space="preserve">
+    <value>Object can’t be moved</value>
+  </data>
+  <data name="AcObject_PlaceIsTaken" xml:space="preserve">
+    <value>Place is taken</value>
+  </data>
+  <data name="Fonts_RescanUsings" xml:space="preserve">
+    <value>Can’t rescan cars</value>
+  </data>
+  <data name="Replay_CannotRenameReplays" xml:space="preserve">
+    <value>Can’t rename replays</value>
+  </data>
+  <data name="Replay_CannotRenameReplays_Commentary" xml:space="preserve">
+    <value>Make sure none of those files are busy at the moment.</value>
+  </data>
+  <data name="AdditionalContent_Car" xml:space="preserve">
+    <value>car</value>
+  </data>
+  <data name="AdditionalContent_CarSkin" xml:space="preserve">
+    <value>car skin</value>
+  </data>
+  <data name="AdditionalContent_Font" xml:space="preserve">
+    <value>font</value>
+  </data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>showroom</value>
+  </data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>track</value>
+  </data>
+  <data name="AdditionalContent_Weather" xml:space="preserve">
+    <value>weather</value>
+  </data>
+  <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
+    <value>File not found</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
+    <value>Password is required</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
+    <value>Password is invalid</value>
+  </data>
+  <data name="ArchiveInstallator_InitializationFault" xml:space="preserve">
+    <value>Extractor wasn’t initialized</value>
+  </data>
+  <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
+    <value>Sorry, but {0} encryption isn’t supported</value>
+  </data>
+  <data name="Installator_UpdateEverything" xml:space="preserve">
+    <value>Update Everytything</value>
+  </data>
+  <data name="Installator_RemoveExistingFirst" xml:space="preserve">
+    <value>Remove Existing First</value>
+  </data>
+  <data name="Installator_KeepUiInformation" xml:space="preserve">
+    <value>Keep UI Information</value>
+  </data>
+  <data name="Installator_KeepSkinsPreviews" xml:space="preserve">
+    <value>Keep Skins Previews</value>
+  </data>
+  <data name="Installator_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
+    <value>Keep UI Information &amp; Skins Previews</value>
+  </data>
+  <data name="Installator_KeepSkinPreview" xml:space="preserve">
+    <value>Keep Skin Preview</value>
+  </data>
+  <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
+    <value>Keep UI Information &amp; Skin Preview</value>
+  </data>
+  <data name="Input_Axle" xml:space="preserve">
+    <value>Axle {0}</value>
+  </data>
+  <data name="Input_Button" xml:space="preserve">
+    <value>Button {0}</value>
+  </data>
+  <data name="Common_CannotDownloadFile" xml:space="preserve">
+    <value>Can’t download file</value>
+  </data>
+  <data name="DirectLoader_AcClubChanged" xml:space="preserve">
+    <value>AssettoCorsa.club is changed.</value>
+  </data>
+  <data name="DirectLoader_RecursionDetected" xml:space="preserve">
+    <value>Recursion detected</value>
+    <comment>When loader gets trapped into endless loop of redirects
+</comment>
+  </data>
+  <data name="DirectLoader_AssettoDbChanged" xml:space="preserve">
+    <value>Assetto-DB.com is changed.</value>
+  </data>
+  <data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
+    <value>Make sure Internet connection is available.</value>
+  </data>
+  <data name="DirectLoader_GoogleDriveChanged" xml:space="preserve">
+    <value>Google Drive is changed.</value>
+  </data>
+  <data name="DirectLoader_RdChanged" xml:space="preserve">
+    <value>RaceDepartment is changed.</value>
+  </data>
 </root>

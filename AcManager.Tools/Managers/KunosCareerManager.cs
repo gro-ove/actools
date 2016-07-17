@@ -8,11 +8,9 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
-using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
@@ -88,7 +86,7 @@ namespace AcManager.Tools.Managers {
             var career = GetById(careerProperties.CareerId);
             var ev = career?.GetEventById(careerProperties.EventId);
             if (ev == null) {
-                Logging.Warning("[KUNOSCAREERMANAGER] Can’t find career or event by ID.");
+                Logging.Warning("[KunosCareerManager] Can’t find career or event by ID.");
                 return;
             }
 
@@ -99,7 +97,7 @@ namespace AcManager.Tools.Managers {
                 case KunosCareerObjectType.SingleEvents:
                     var conditionProperties = e.StartProperties.GetAdditional<PlaceConditions>();
                     if (conditionProperties == null) {
-                        Logging.Warning("[KUNOSCAREERMANAGER] PlaceConditionsProperties are missing.");
+                        Logging.Warning("[KunosCareerManager] PlaceConditionsProperties are missing.");
                         return;
                     }
 
@@ -215,7 +213,7 @@ namespace AcManager.Tools.Managers {
         protected override bool Filter(string filename) {
             var name = Path.GetFileName(filename);
             if (name == null) return false;
-            return name != "series0" && name.StartsWith("series");
+            return name != @"series0" && name.StartsWith(@"series");
         }
 
         public override void ActualScan() {
@@ -225,13 +223,13 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {
-            return Directories.GetSubDirectories("series*").Where(Filter).Select(dir => CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
+            return Directories.GetSubDirectories(@"series*").Where(Filter).Select(dir => CreateAcPlaceholder(LocationToId(dir), Directories.CheckIfEnabled(dir)));
         }
 
         public override IAcDirectories Directories => AcRootDirectory.Instance.KunosCareerDirectories;
 
         public override KunosCareerObject GetDefault() {
-            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains("series0"));
+            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"series0"));
             return v != null ? EnsureWrapperLoaded(v) : base.GetDefault();
         }
 

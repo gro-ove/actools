@@ -11,11 +11,9 @@ namespace AcManager.Tools.Managers.Directories {
     /// Standart version with usual file system watchers.
     /// </summary>
     public class AcDirectories : BaseAcDirectories {
-        public AcDirectories([NotNull] string enabledDirectory, string disabledDirectory)
-                : base(enabledDirectory, disabledDirectory) { }
+        public AcDirectories([NotNull] string enabledDirectory, string disabledDirectory) : base(enabledDirectory, disabledDirectory) {}
 
-        public AcDirectories([NotNull] string enabledDirectory)
-                : base(enabledDirectory) { }
+        public AcDirectories([NotNull] string enabledDirectory) : base(enabledDirectory) {}
 
 
         private static readonly List<DirectoryWatcher> Watchers = new List<DirectoryWatcher>();

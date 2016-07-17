@@ -2,9 +2,9 @@ using System.Text;
 
 namespace AcManager.Tools.Managers.Presets {
     internal class BuiltInPresetEntry : ISavedPresetEntry {
-        public byte[] Data { get; private set; }
+        public byte[] Data { get; }
 
-        public string BaseDirectory { get; private set; }
+        public string BaseDirectory { get; }
 
         public string Filename { get; internal set; }
 

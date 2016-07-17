@@ -3,46 +3,11 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 // Localize me!
 namespace FirstFloor.ModernUI.Windows.Converters {
-    internal static class PluralizingDictionary {
-        [CanBeNull]
-        public static string PluralizeEn(string s) {
-            switch (s) {
-                case "child": return "children";
-                case "person": return "people";
-                case "man": return "men";
-            }
-
-            if (s.EndsWith("o")) {
-                return null;
-            }
-
-            if (s.EndsWith("s") || s.EndsWith("x") || s.EndsWith("ch") || s.EndsWith("sh")) {
-                return s + "es";
-            }
-
-            if (s.EndsWith("y")) {
-                return s.Substring(0, s.Length - 1) + "ies";
-            }
-
-            return s + "s";
-        }
-
-        [CanBeNull]
-        public static string PluralizeRu(string s, bool two) {
-            switch (s) {
-                case "круг": return two ? "круга" : "кругов";
-                case "оппонент": return two ? "оппонента" : "оппонентов";
-                case "противник": return two ? "противника" : "противников";
-            }
-
-            return null;
-        }
-    }
-    
     public class PluralizingConverter : IValueConverter {
         public static string PluralizeEn([NotNull] string input) {
             if (input == null) throw new ArgumentNullException(nameof(input));
@@ -85,19 +50,21 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
             if ((culture ?? CultureInfo.CurrentUICulture).Name == "ru-RU") {
                 return value == 1 || value > 20 && value % 10 == 1 ? s :
-                        PluralizeRu(s, value > 1 && value < 5 || value > 20 && value % 10 < 5);
+                        PluralizeRu(s, value > 1 && value < 5 || value > 20 && value % 10 > 1 && value % 10 < 5);
             } else {
                 return Equals(value, 1) ? s : PluralizeEn(s);
             }
         }
 
         private static Regex _extRegex;
+        private static Regex _lastRegex;
 
         public static string PluralizeExt(int value, [NotNull] string s, CultureInfo culture = null) {
             if (s == null) throw new ArgumentNullException(nameof(s));
 
             if (_extRegex == null) {
                 _extRegex = new Regex(@"\{([^\d\s].*)\}", RegexOptions.Compiled);
+                _lastRegex = new Regex(@"([^\d\s]+)\s*$", RegexOptions.Compiled);
             }
 
             var found = false;
@@ -107,7 +74,12 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             });
 
             if (!found) {
-                s = Pluralize(value, s, culture);
+                s = _lastRegex.Replace(s, match => {
+                    found = true;
+                    return Pluralize(value, match.Groups[1].Value, culture);
+                });
+
+                if (!found) return Pluralize(value, s);
             }
             
             return s.Contains('{') ? string.Format(s, value) : s;

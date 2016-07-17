@@ -19,25 +19,25 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Miscellaneous {
     public enum SharedEntryType {
-        [Description("Controls preset")]
+        [LocalizedDescription("Shared_ControlsPreset")]
         ControlsPreset,
 
-        [Description("Force Feedback preset")]
+        [LocalizedDescription("Shared_ForceFeedbackPreset")]
         ForceFeedbackPreset,
 
-        [Description("Quick Drive preset")]
+        [LocalizedDescription("Shared_QuickDrivePreset")]
         QuickDrivePreset,
 
-        [Description("Replay")]
+        [LocalizedDescription("Shared_Replay")]
         Replay,
 
-        [Description("Car setup")]
+        [LocalizedDescription("Shared_CarSetup")]
         CarSetup,
 
-        [Description("PP filter")]
+        [LocalizedDescription("Shared_PpFilter")]
         PpFilter,
 
-        [Description("Weather")]
+        [LocalizedDescription("Shared_Weather")]
         Weather
     }
 
@@ -169,7 +169,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return null;
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t get shared entry", "Make sure Internet connection works.", e);
+                NonfatalError.Notify(Resources.SharingHelper_CannotGetShared, Resources.SharingHelper_CannotGetShared_Commentary, e);
                 return null;
             }
 
@@ -177,8 +177,8 @@ namespace AcManager.Tools.Miscellaneous {
             try {
                 entryType = (SharedEntryType)Enum.Parse(typeof(SharedEntryType), loaded.EntryType);
             } catch (Exception) {
-                NonfatalError.Notify($"Can’t get shared entry, its type {loaded.EntryType} is not supported", "Make sure you have the latest version of CM.");
-                Logging.Warning("[SHARER] Unsupported entry type: " + loaded.EntryType);
+                NonfatalError.Notify(string.Format(Resources.SharingHelper_NotSupported, loaded.EntryType), Resources.SharingHelper_NotSupported_Commentary);
+                Logging.Warning("[SharingHelper] Unsupported entry type: " + loaded.EntryType);
                 return null;
             }
 

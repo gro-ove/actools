@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AcManager.Tools.Managers.InnerHelpers;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Directories {
@@ -22,9 +21,7 @@ namespace AcManager.Tools.Managers.Directories {
             Actual = true;
         }
 
-        protected BaseAcDirectories([NotNull] string enabledDirectory)
-                : this(enabledDirectory, enabledDirectory + "-off") {
-        }
+        protected BaseAcDirectories([NotNull] string enabledDirectory) : this(enabledDirectory, enabledDirectory + "-off") {}
 
         public void CreateIfMissing() {
             Directory.CreateDirectory(EnabledDirectory);
@@ -32,13 +29,13 @@ namespace AcManager.Tools.Managers.Directories {
 
         public string GetLocation(string id, bool enabled) {
             if (id == null) throw new ArgumentNullException(nameof(id));
-            if (!Actual) throw new Exception("Not valid anymore");
-            if (DisabledDirectory == null && !enabled) throw new Exception("Cannot be disabled");
+            if (!Actual) throw new Exception(Resources.AcObject_NotValidAnymore);
+            if (DisabledDirectory == null && !enabled) throw new Exception(Resources.AcObject_CannotBeDisabled);
             return Path.Combine(enabled ? EnabledDirectory : DisabledDirectory, id);
         }
 
         private IEnumerable<string> GetSubSomething(Func<string, string[]> selector) {
-            if (!Actual) throw new Exception("Not valid anymore");
+            if (!Actual) throw new Exception(Resources.AcObject_NotValidAnymore);
 
             List<string> enabled;
             if (Directory.Exists(EnabledDirectory)) {

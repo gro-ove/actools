@@ -109,7 +109,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         public async Task CheckAndUpdateIfNeeded() {
             if (!MainExecutingFile.IsPacked) {
-                LatestError = "Unpacked version doesn’t support auto-updating.";
+                LatestError = Resources.AppUpdater_UnpackedVersionMessage;
                 IsSupported = false;
                 return;
             }
@@ -129,14 +129,14 @@ namespace AcManager.Tools.Miscellaneous {
                     return;
                 }
 
-                Logging.Write($"[APPUPDATED] Latest version: {latest} (current: {BuildInformation.AppVersion})");
+                Logging.Write($"[AppUpdater] Latest version: {latest} (current: {BuildInformation.AppVersion})");
 
                 if (latest.IsVersionNewerThan(BuildInformation.AppVersion)) {
                     await LoadAndPrepare();
                 }
             } catch (Exception e) {
-                LatestError = "Some unhandled error happened.";
-                Logging.Warning("[APPUPDATED] Cannot check and update app: " + e);
+                LatestError = Resources.AppUpdater_UnhandledError;
+                Logging.Warning("[AppUpdater] Cannot check and update app: " + e);
             } finally {
                 CheckingInProcess = false;
                 CheckAndPrepareIfNeededCommand.OnCanExecuteChanged();
@@ -174,8 +174,8 @@ namespace AcManager.Tools.Miscellaneous {
                 var data = await CmApiProvider.GetStringAsync($"app/manifest/{Branch}");
                 return data == null ? null : VersionFromData(data);
             } catch (Exception e) {
-                LatestError = "Can’t download information about latest version.";
-                Logging.Warning("[APPUPDATED] Cannot get app/manifest.json: " + e);
+                LatestError = Resources.AppUpdater_CannotDownloadInformation;
+                Logging.Warning("[AppUpdater] Cannot get app/manifest.json: " + e);
                 return null;
             } finally {
                 IsGetting = false;
@@ -208,8 +208,8 @@ namespace AcManager.Tools.Miscellaneous {
 
         private async Task LoadAndPrepare() {
             if (!MainExecutingFile.IsPacked) {
-                NonfatalError.Notify(@"Can’t update app", "Sadly, unpacked version doesn’t support auto-updating.");
-                LatestError = "Unpacked version doesn’t support auto-updating.";
+                NonfatalError.Notify(Resources.AppUpdater_CannotUpdateApp, Resources.AppUpdater_UnpackedVersionMessage);
+                LatestError = Resources.AppUpdater_UnpackedVersionMessage;
                 return;
             }
 
@@ -231,19 +231,19 @@ namespace AcManager.Tools.Miscellaneous {
                         preparedVersion = VersionFromData(archive.GetEntry("Manifest.json").Open().ReadAsStringAndDispose());
 
                         archive.GetEntry("Content Manager.exe").ExtractToFile(UpdateLocation);
-                        Logging.Write($"[APPUPDATED] New version {preparedVersion} was extracted to “{UpdateLocation}”");
+                        Logging.Write($"[AppUpdater] New version {preparedVersion} was extracted to “{UpdateLocation}”");
                     }
                 });
 
                 UpdateIsReady = preparedVersion;
             } catch (UnauthorizedAccessException) {
-                NonfatalError.Notify(@"Access is denied",
-                        @"Can’t update app due to lack of permissions. Please, update it manually.");
-                LatestError = "Can’t update app due to lack of permissions.";
+                NonfatalError.Notify(Resources.AppUpdater_AccessIsDenied,
+                        Resources.AppUpdater_AccessIsDenied_Commentary);
+                LatestError = Resources.AppUpdater_AccessIsDenied_Short;
             } catch (Exception e) {
-                NonfatalError.Notify(@"Can’t load the new version",
-                        @"Make sure internet connection is working and app has write permissions to its folder.", e);
-                LatestError = "Can’t load the new version.";
+                NonfatalError.Notify(Resources.AppUpdater_CannotLoad,
+                        Resources.AppUpdater_CannotLoad_Commentary, e);
+                LatestError = Resources.AppUpdater_CannotLoadShort;
             } finally {
                 _isPreparing = false;
             }
@@ -280,15 +280,15 @@ namespace AcManager.Tools.Miscellaneous {
 
                 return false;
             } catch (Exception e) {
-                MessageBox.Show($"Can’t process update: {e.Message}. Try to install a new version manually, sorry.", "Update failed", MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                MessageBox.Show(string.Format(Resources.AppUpdater_CannotUpdate_Message, e.Message), Resources.AppUpdater_UpdateFailed,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
 
         private static void RunUpdateExeAndExitIfExists() {
             if (!File.Exists(UpdateLocation)) return;
-            Logging.Write($"starting “{UpdateLocation}”…");
+            Logging.Write($"Starting “{UpdateLocation}”…");
             ProcessExtension.Start(UpdateLocation, Environment.GetCommandLineArgs().Skip(1));
             Environment.Exit(0);
         }
@@ -341,9 +341,10 @@ namespace AcManager.Tools.Miscellaneous {
                 }
 
                 if (File.Exists(originalFilename)) {
-                    MessageBox.Show($"Can’t remove original file “{Path.GetFileName(originalFilename)}” to install update. " +
-                            $"Try to remove it manually and then run “{Path.GetFileName(MainExecutingFile.Location)}”.", "Update failed", MessageBoxButton.OK,
-                            MessageBoxImage.Error);
+                    MessageBox.Show(
+                            string.Format(Resources.AppUpdater_CannotUpdate_HelpNeeded, Path.GetFileName(originalFilename),
+                                    Path.GetFileName(MainExecutingFile.Location)),
+                            Resources.AppUpdater_UpdateFailed, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }

@@ -18,7 +18,7 @@ namespace AcManager.Tools.Managers {
         public override IAcDirectories Directories => AcRootDirectory.Instance.CarsDirectories;
 
         public override CarObject GetDefault() {
-            return GetById("abarth500") ?? base.GetDefault();
+            return GetById(@"abarth500") ?? base.GetDefault();
         }
 
         private static readonly string[] WatchedFiles = {
@@ -44,9 +44,9 @@ namespace AcManager.Tools.Managers {
                 return false;
             }
 
-            if (!inner.StartsWith("skins\\") || // sfx\…, data\…
+            if (!inner.StartsWith(@"skins\") || // sfx\…, data\…
                     inner.Count(x => x == '\\') > 2 || // skins\abc\def\file.png
-                    inner.EndsWith(".dds", StringComparison.OrdinalIgnoreCase)) {
+                    inner.EndsWith(@".dds", StringComparison.OrdinalIgnoreCase)) {
                 return true;
             }
 

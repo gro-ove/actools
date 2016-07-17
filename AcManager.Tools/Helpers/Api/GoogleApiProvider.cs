@@ -40,7 +40,7 @@ namespace AcManager.Tools.Helpers.Api {
                     }
                 }
             } catch (Exception e) {
-                Logging.Warning("cannot determine timezone using google: {0}\n{1}", requestUri, e);
+                Logging.Warning("Cannot determine timezone using google: {0}\n{1}", requestUri, e);
                 return null;
             }
         }

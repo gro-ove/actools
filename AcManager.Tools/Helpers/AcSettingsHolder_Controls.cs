@@ -28,7 +28,7 @@ namespace AcManager.Tools.Helpers {
         public class ControlsSettings : IniSettings, IDisposable {
             public IAcControlsConflictResolver ConflictResolver { get; set; }
 
-            internal ControlsSettings() : base("controls", false) {
+            internal ControlsSettings() : base(@"controls", false) {
                 try {
                     KeyboardButtonEntries = WheelButtonEntries.Select(x => x.KeyboardButton).ToArray();
                     KeyboardSpecificButtonEntries = new[] {

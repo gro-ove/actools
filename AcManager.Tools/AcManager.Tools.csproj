@@ -194,6 +194,7 @@
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Lists\CompositeObservableCollection.cs" />
+    <Compile Include="LocalizedDescriptionAttribute.cs" />
     <Compile Include="Managers\CarSetupsDirectories.cs" />
     <Compile Include="Managers\CarSetupsManager.cs" />
     <Compile Include="Managers\ServerPresetsManager.cs" />
@@ -223,6 +224,11 @@
     <Compile Include="GameProperties\DriverName.cs" />
     <Compile Include="GameProperties\GameCommandExecutorBase.cs" />
     <Compile Include="Objects\ServerPresetObject.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SemiGui\GameEndedArgs.cs" />
     <Compile Include="SemiGui\GameFinishedArgs.cs" />
     <Compile Include="SemiGui\InformativeException.cs" />
@@ -362,7 +368,14 @@
     <None Include="App.config" />
     <None Include="Packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.ru-RU.resx" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

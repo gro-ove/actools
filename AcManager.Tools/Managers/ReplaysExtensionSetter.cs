@@ -28,7 +28,7 @@ namespace AcManager.Tools.Managers {
                                 .Where(file => !file.EndsWith(ReplayObject.ReplayExtension) && !string.Equals(Path.GetFileName(file), "cr",
                                         StringComparison.OrdinalIgnoreCase));
             } catch (Exception e) {
-                Logging.Error("[REPLAYSEXTENSIONSETTER] Can’t get files without extension: " + e);
+                Logging.Error("[ReplaysExtensionSetter] Can’t get files without extension: " + e);
                 return new string[0];
             }
         } 
@@ -39,7 +39,7 @@ namespace AcManager.Tools.Managers {
                     File.Move(file, file + ReplayObject.ReplayExtension);
                 }
             } catch (Exception e) {
-                Logging.Error("[REPLAYSEXTENSIONSETTER] Can’t rename new: " + e);
+                Logging.Error("[ReplaysExtensionSetter] Can’t rename new: " + e);
             }
         }
 
@@ -49,7 +49,7 @@ namespace AcManager.Tools.Managers {
                     File.Move(file, file + ReplayObject.ReplayExtension);
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t rename replays", "Make sure none of those files are busy at the moment.", e);
+                NonfatalError.Notify(Resources.Replay_CannotRenameReplays, Resources.Replay_CannotRenameReplays_Commentary, e);
             }
         }
 
@@ -61,7 +61,7 @@ namespace AcManager.Tools.Managers {
             try {
                 return Directory.GetFiles(FileUtils.GetReplaysDirectory()).Any(file => file.EndsWith(ReplayObject.ReplayExtension));
             } catch (Exception e) {
-                Logging.Error("[REPLAYSEXTENSIONSETTER] Can’t get files with extension: " + e);
+                Logging.Error("[ReplaysExtensionSetter] Can’t get files with extension: " + e);
                 return false;
             }
         }

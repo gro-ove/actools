@@ -35,12 +35,12 @@ namespace AcManager.Tools.Managers {
             return filename.StartsWith(Directories.EnabledDirectory + Path.DirectorySeparatorChar) ? filename : null;
         }
 
-        public virtual string SearchPattern => "*.ini";
+        public virtual string SearchPattern => @"*.ini";
 
         private Regex _regex;
 
-        protected override bool Filter(string filename) => SearchPattern == "*" || (_regex ?? (_regex = new Regex(
-                SearchPattern.Replace(".", "[.]").Replace("*", ".*").Replace("?", "."))))
+        protected override bool Filter(string filename) => SearchPattern == @"*" || (_regex ?? (_regex = new Regex(
+                SearchPattern.Replace(@".", @"[.]").Replace(@"*", @".*").Replace(@"?", @"."))))
                 .IsMatch(Path.GetFileName(filename) ?? "");
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {

@@ -68,7 +68,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                     case "ui_car.json": {
                         type = AdditionalContentType.Car;
                         var directory = Path.GetDirectoryName(fileInfo.Filename);
-                        if (!string.Equals(Path.GetFileName(directory), "ui", StringComparison.OrdinalIgnoreCase)) continue;
+                        if (!string.Equals(Path.GetFileName(directory), @"ui", StringComparison.OrdinalIgnoreCase)) continue;
                         entryDirectory = Path.GetDirectoryName(directory);
                         break;
                     }
@@ -84,10 +84,10 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                     case "ui_track.json": {
                         type = AdditionalContentType.Track;
                         var directory = Path.GetDirectoryName(fileInfo.Filename);
-                        if (!string.Equals(Path.GetFileName(directory), "ui", StringComparison.OrdinalIgnoreCase)) {
+                        if (!string.Equals(Path.GetFileName(directory), @"ui", StringComparison.OrdinalIgnoreCase)) {
                             directory = Path.GetDirectoryName(directory);
                         }
-                        if (!string.Equals(Path.GetFileName(directory), "ui", StringComparison.OrdinalIgnoreCase)) continue;
+                        if (!string.Equals(Path.GetFileName(directory), @"ui", StringComparison.OrdinalIgnoreCase)) continue;
                         entryDirectory = Path.GetDirectoryName(directory);
                         break;
                     }
@@ -95,7 +95,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                     case "ui_showroom.json": {
                         type = AdditionalContentType.Showroom;
                         var directory = Path.GetDirectoryName(fileInfo.Filename);
-                        if (!string.Equals(Path.GetFileName(directory), "ui", StringComparison.OrdinalIgnoreCase)) continue;
+                        if (!string.Equals(Path.GetFileName(directory), @"ui", StringComparison.OrdinalIgnoreCase)) continue;
                         entryDirectory = Path.GetDirectoryName(directory);
                         break;
                     }
@@ -136,7 +136,8 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                             into filename
                             let directory = Path.GetDirectoryName(filename)
                                     // only something in fonts/ or directly in root
-                            where string.IsNullOrWhiteSpace(directory) || Path.GetFileName(directory) == "fonts"
+                            where string.IsNullOrWhiteSpace(directory) ||
+                                    String.Equals(Path.GetFileName(directory), @"fonts", StringComparison.OrdinalIgnoreCase)
                                     // only something ends on .txt
                             where filename.EndsWith(FontObject.FontExtension, StringComparison.OrdinalIgnoreCase)
                             let withoutExtension = filename.ApartFromLast(FontObject.FontExtension)
@@ -164,7 +165,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                         if (entry.Path != string.Empty && !FileUtils.IsAffected(entry.Path, filename)) continue;
 
                         var subFilename = filename.SubstringExt(entry.Path.Length);
-                        if (subFilename.StartsWith("\\")) subFilename = subFilename.Substring(1);
+                        if (subFilename.StartsWith(@"\")) subFilename = subFilename.Substring(1);
 
                         if (filter == null || filter(subFilename)) {
                             progress?.Report(subFilename);

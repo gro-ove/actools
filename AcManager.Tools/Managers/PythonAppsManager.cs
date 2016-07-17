@@ -15,11 +15,11 @@ namespace AcManager.Tools.Managers {
         }
 
         protected override bool Filter(string filename) {
-            return !string.Equals(Path.GetFileName(filename), "system", StringComparison.OrdinalIgnoreCase);
+            return !string.Equals(Path.GetFileName(filename), @"system", StringComparison.OrdinalIgnoreCase);
         }
 
         public override PythonAppObject GetDefault() {
-            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains("Chat"));
+            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"Chat"));
             return v == null ? base.GetDefault() : EnsureWrapperLoaded(v);
         }
 

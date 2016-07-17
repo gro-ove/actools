@@ -27,7 +27,7 @@ namespace AcManager.Tools.Objects {
 
         public const string FontExtension = ".txt";
 
-        public static readonly string[] BitmapExtensions = { ".bmp", ".png" };
+        public static readonly string[] BitmapExtensions = { @".bmp", @".png" };
 
         public override string Extension => FontExtension;
 
@@ -38,7 +38,7 @@ namespace AcManager.Tools.Objects {
             IsUsed = _usingsCarsIds.Any();
         }
 
-        public override string DisplayName => Id.ApartFromLast(".txt", StringComparison.OrdinalIgnoreCase);
+        public override string DisplayName => Id.ApartFromLast(@".txt", StringComparison.OrdinalIgnoreCase);
 
         public override bool HasData => true;
 
@@ -83,15 +83,15 @@ namespace AcManager.Tools.Objects {
         private ICommand _toggleCommand;
         public override ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new RelayCommand(o => {
             if (Enabled && UsingsCarsIds.Length > 0 &&
-                ModernDialog.ShowMessage("There are some cars which need this font. Are you sure you want to disable it?", "Disable Font",
+                ModernDialog.ShowMessage(Resources.FontObject_Disabling_SomeCarsNeedThisFont, Resources.FontObject_DisableFont,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
             try {
                 Toggle();
             } catch (ToggleException ex) {
-                NonfatalError.Notify(@"Can’t toggle: " + ex.Message, @"Make sure there is no runned app working with object’s folder.");
+                NonfatalError.Notify(string.Format(Resources.AcObject_CannotToggleExt, ex.Message), Resources.AcObject_Disabling_MakeSureNoRunnedApps);
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t toggle", @"Make sure there is no runned app working with object’s folder.", ex);
+                NonfatalError.Notify(Resources.AcObject_CannotToggle, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
             }
         }));
 
@@ -99,13 +99,13 @@ namespace AcManager.Tools.Objects {
 
         public override ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
             if (Enabled && UsingsCarsIds.Length > 0 &&
-                ModernDialog.ShowMessage("There are some cars which need this font. Are you sure you want to delete it?", "Delete Font",
+                ModernDialog.ShowMessage(Resources.FontObject_Deleting_SomeCarsNeedThisFont, Resources.FontObject_DeleteFont,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
             try {
                 Delete();
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t delete", @"Make sure there is no runned app working with object’s folder.", ex);
+                NonfatalError.Notify(Resources.AcObject_CannotDelete, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
             }
         }));
 
@@ -140,7 +140,7 @@ namespace AcManager.Tools.Objects {
                 try {
                     _fontList = File.ReadAllLines(Location).Select(line => double.Parse(line, CultureInfo.InvariantCulture)).ToList();
                 } catch (Exception e) {
-                    Logging.Warning("[FONTOBJECT] File damaged: " + e);
+                    Logging.Warning("[FontObject] File damaged: " + e);
                 }
             }
 
@@ -164,7 +164,7 @@ namespace AcManager.Tools.Objects {
             return new CroppedBitmap(_fontBitmapImage, rect);
         }
 
-        private string KeyUsingsCarsIds => "__tmp_FontObject.UsingsCarsIds_" + Id;
+        private string KeyUsingsCarsIds => @"__tmp_FontObject.UsingsCarsIds_" + Id;
 
         [NotNull]
         private string[] _usingsCarsIds;

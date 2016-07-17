@@ -58,7 +58,7 @@ namespace AcManager.Tools.Managers {
 
         protected override async Task LoadAsync() {
             LoadingReset = false;
-            await TaskExtension.WhenAll(WrappersList.Where(x => !x.IsLoaded).Select(async x => {
+            await WrappersList.Where(x => !x.IsLoaded).Select(async x => {
                 var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
                 if (x.IsLoaded) return;
 
@@ -66,7 +66,7 @@ namespace AcManager.Tools.Managers {
 
                 x.Value = loaded;
                 loaded.PastLoad();
-            }), SettingsHolder.Content.LoadingConcurrency);
+            }).WhenAll(SettingsHolder.Content.LoadingConcurrency);
 
             IsLoaded = true;
             ListReady();

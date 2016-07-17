@@ -36,7 +36,7 @@ namespace AcManager.Tools.Managers {
             Value = ValuesStorage.GetString(Key);
             if (Value == null || CheckDirectory(Value)) return;
 
-            Logging.Warning("ac root directory '{0}' is not valid anymore", Value);
+            Logging.Warning("AC root directory '{0}' is not valid anymore", Value);
             Value = null;
         }
 
@@ -101,7 +101,7 @@ namespace AcManager.Tools.Managers {
         [NotNull]
         public string RequireValue {
             get {
-                if (_value == null) throw new Exception("AcRootDirectory is required");
+                if (_value == null) throw new Exception(Resources.AcRootDirectory_Required);
                 return _value;
             }
         }
@@ -138,59 +138,59 @@ namespace AcManager.Tools.Managers {
 
         public static bool CheckDirectory(string directory, out string reason) {
             if (directory == null) {
-                reason = "Directory is not defined";
+                reason = Resources.AcRootDirectory_NotDefined;
                 return false;
             }
 
             if (!OptionDisableChecking) {
                 if (!Directory.Exists(directory)) {
-                    reason = "Directory is missing";
+                    reason = Resources.AcRootDirectory_Missing;
                     return false;
                 }
 
-                if (!Directory.Exists(Path.Combine(directory, "apps"))) {
-                    reason = "Directory “apps” is missing";
+                if (!Directory.Exists(Path.Combine(directory, @"apps"))) {
+                    reason = string.Format(Resources.AcRootDirectory_MissingDirectory, @"apps");
                     return false;
                 }
 
-                if (!Directory.Exists(Path.Combine(directory, "content"))) {
-                    reason = "Directory “content” is missing";
+                if (!Directory.Exists(Path.Combine(directory, @"content"))) {
+                    reason = string.Format(Resources.AcRootDirectory_MissingDirectory, @"content");
                     return false;
                 }
 
-                if (!Directory.Exists(Path.Combine(directory, "content", "cars"))) {
-                    reason = "Directory “content/cars” is missing";
+                if (!Directory.Exists(Path.Combine(directory, @"content", @"cars"))) {
+                    reason = string.Format(Resources.AcRootDirectory_MissingDirectory, @"content\cars");
                     return false;
                 }
 
-                if (!Directory.Exists(Path.Combine(directory, "content", "tracks"))) {
-                    reason = "Directory “content/tracks” is missing";
+                if (!Directory.Exists(Path.Combine(directory, @"content", @"tracks"))) {
+                    reason = string.Format(Resources.AcRootDirectory_MissingDirectory, @"content\tracks");
                     return false;
                 }
 
-                if (!File.Exists(Path.Combine(directory, "acs.exe"))) {
-                    reason = "File “acs.exe” is missing";
+                if (!File.Exists(Path.Combine(directory, @"acs.exe"))) {
+                    reason = string.Format(Resources.AcRootDirectory_MissingFile, @"acs.exe");
                     return false;
                 }
             }
 
             var launcher = Path.Combine(directory, "AssettoCorsa.exe");
             if (!File.Exists(launcher)) {
-                var backup = launcher.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_ts.exe";
+                var backup = launcher.ApartFromLast(@".exe", StringComparison.OrdinalIgnoreCase) + @"_backup_ts.exe";
                 if (File.Exists(backup)) {
                     TryToFix(backup, launcher);
                 }
             }
 
             if (!File.Exists(launcher)) {
-                var backup = launcher.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase) + "_backup_sp.exe";
+                var backup = launcher.ApartFromLast(@".exe", StringComparison.OrdinalIgnoreCase) + @"_backup_sp.exe";
                 if (File.Exists(backup)) {
                     TryToFix(backup, launcher);
                 }
             }
 
             if (!File.Exists(launcher)) {
-                reason = "File “AssettoCorsa.exe” is missing";
+                reason = string.Format(Resources.AcRootDirectory_MissingFile, @"AssettoCorsa.exe");
                 return false;
             }
 
@@ -199,7 +199,7 @@ namespace AcManager.Tools.Managers {
         }
 
         public static string TryToFind() {
-            Logging.Write("trying to find ac dir from steam");
+            Logging.Write("Trying to find AC dir from Steam…");
             try {
                 var regKey = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam");
                 if (regKey == null) return null;
@@ -208,17 +208,17 @@ namespace AcManager.Tools.Managers {
 
                 var installPath = Path.GetDirectoryName(regKey.GetValue("SourceModInstallPath").ToString());
                 searchCandidates.Add(installPath);
-                Logging.Write("- search candidate: {0}", installPath);
+                Logging.Write("- Search candidate: {0}", installPath);
 
                 var steamPath = regKey.GetValue("SteamPath").ToString();
-                var config = File.ReadAllText(Path.Combine(steamPath, "config", "config.vdf"));
+                var config = File.ReadAllText(Path.Combine(steamPath, @"config", @"config.vdf"));
 
                 var match = Regex.Match(config, "\"BaseInstallFolder_\\d\"\\s+\"(.+?)\"");
                 while (match.Success) {
                     if (match.Groups.Count > 1) {
                         var candidate = Path.Combine(match.Groups[1].Value.Replace(@"\\", @"\"), "SteamApps");
                         searchCandidates.Add(candidate);
-                        Logging.Write("- search candidate: {0}", candidate);
+                        Logging.Write("- Search candidate: {0}", candidate);
                     }
                     match = match.NextMatch();
                 }
@@ -226,12 +226,12 @@ namespace AcManager.Tools.Managers {
                 var result = (
                     from searchCandidate in searchCandidates
                     where searchCandidate != null && Directory.Exists(searchCandidate)
-                    select Path.Combine(searchCandidate, "common", "assettocorsa")
+                    select Path.Combine(searchCandidate, @"common", @"assettocorsa")
                 ).FirstOrDefault(Directory.Exists);
-                Logging.Write("- result: {0}", result);
+                Logging.Write("- Result: {0}", result);
                 return result;
             } catch (Exception exception) {
-                Logging.Write("- error: {0}", exception);
+                Logging.Write("- Error: {0}", exception);
                 return null;
             }
         }

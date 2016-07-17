@@ -19,24 +19,24 @@ namespace AcManager.Tools.Helpers.Api {
         #endregion
 
         [CanBeNull]
-        public static string GetString(string url) {
+        public static string GetString([LocalizationRequired(false)] string url) {
             try {
                 var result = InternalUtils.CmGetData(url, UserAgent);
                 return result == null ? null : Encoding.UTF8.GetString(result);
             } catch (Exception e) {
-                Logging.Warning($"[CMAPIPROVIDER] Cannot read as UTF8 from {url}: " + e);
+                Logging.Warning($"[CmApiProvider] Cannot read as UTF8 from {url}: " + e);
                 return null;
             }
         }
 
         [ItemCanBeNull]
-        public static async Task<string> GetStringAsync(string url, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> GetStringAsync([LocalizationRequired(false)] string url, CancellationToken cancellation = default(CancellationToken)) {
             try {
                 var result = await InternalUtils.CmGetDataAsync(url, UserAgent, null, cancellation);
                 if (cancellation.IsCancellationRequested) return null;
                 return result == null ? null : Encoding.UTF8.GetString(result);
             } catch (Exception e) {
-                Logging.Warning($"[CMAPIPROVIDER] Cannot read as UTF8 from {url}: " + e);
+                Logging.Warning($"[CmApiProvider] Cannot read as UTF8 from {url}: " + e);
                 return null;
             }
         }
@@ -46,7 +46,7 @@ namespace AcManager.Tools.Helpers.Api {
                 var json = GetString(url);
                 return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
             } catch (Exception e) {
-                Logging.Warning($"[CMAPIPROVIDER] Cannot read as JSON from {url}: " + e);
+                Logging.Warning($"[CmApiProvider] Cannot read as JSON from {url}: " + e);
                 return default(T);
             }
         }
@@ -57,7 +57,7 @@ namespace AcManager.Tools.Helpers.Api {
                 if (cancellation.IsCancellationRequested) return default(T);
                 return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
             } catch (Exception e) {
-                Logging.Warning($"[CMAPIPROVIDER] Cannot read as JSON from {url}: " + e);
+                Logging.Warning($"[CmApiProvider] Cannot read as JSON from {url}: " + e);
                 return default(T);
             }
         }

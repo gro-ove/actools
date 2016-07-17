@@ -51,7 +51,7 @@ namespace AcManager.Tools.Managers.Online {
 
         protected ServerEntry CreateAndAddEntry(ServerInformation information, bool withPastLoad = true) {
             var entry = new ServerEntry(this, information);
-            if (GetById(entry.Id) != null) throw new Exception("ID is taken");
+            if (GetById(entry.Id) != null) throw new Exception(Resources.OnlineManage_IdIsTaken);
 
             entry.Load();
             if (withPastLoad) {
@@ -115,25 +115,25 @@ namespace AcManager.Tools.Managers.Online {
                 var w = Stopwatch.StartNew();
 
                 if (priorityFilter != null) {
-                    await TaskExtension.WhenAll(LoadedOnly.Where(priorityFilter.Test).Select(async x => {
+                    await LoadedOnly.Where(priorityFilter.Test).Select(async x => {
                         if (cancellation.IsCancellationRequested) return;
                         if (x.Status == ServerStatus.Unloaded) {
                             await x.Update(ServerEntry.UpdateMode.Lite);
                             Pinged++;
                         }
-                    }), SettingsHolder.Online.PingConcurrency, cancellation);
+                    }).WhenAll(SettingsHolder.Online.PingConcurrency, cancellation);
                     UpdateList();
 
                     if (cancellation.IsCancellationRequested) return;
                 }
 
-                await TaskExtension.WhenAll(LoadedOnly.Select(async x => {
+                await LoadedOnly.Select(async x => {
                     if (cancellation.IsCancellationRequested) return;
                     if (x.Status == ServerStatus.Unloaded) {
                         await x.Update(ServerEntry.UpdateMode.Lite);
                         Pinged++;
                     }
-                }), SettingsHolder.Online.PingConcurrency, cancellation);
+                }).WhenAll(SettingsHolder.Online.PingConcurrency, cancellation);
                 UpdateList();
 
                 Logging.Write($"[OnlineManager] Pinging {Pinged} servers: {w.Elapsed.TotalMilliseconds:F2} ms");

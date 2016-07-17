@@ -1,3 +1,4 @@
+using System;
 using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Helpers.DirectInput {
@@ -5,7 +6,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public DirectInputButton(IDirectInputDevice device, int id) : base(id) {
             Device = device;
             ShortName = (id + 1).ToInvariantString();
-            DisplayName = $"Button {ShortName}";
+            DisplayName = string.Format(Resources.Input_Button, ShortName);
         }
 
         public IDirectInputDevice Device { get; }

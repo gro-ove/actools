@@ -18,7 +18,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 return valueOne;
             }
 
-            if (number > 1 && number < 5 || number > 20 && number % 10 < 5) {
+            if (number > 1 && number < 5 || number > 20 && number % 10 > 1 && number % 10 < 5) {
                 return valueTwo;
             }
 

@@ -19,10 +19,10 @@ namespace AcManager.Tools.Managers {
             return GetById(v + PpFilterObject.FileExtension);
         }
 
-        public override string SearchPattern => "*.ini";
+        public override string SearchPattern => @"*.ini";
 
         public override PpFilterObject GetDefault() {
-            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains("default"));
+            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"default"));
             return v == null ? base.GetDefault() : EnsureWrapperLoaded(v);
         }
 

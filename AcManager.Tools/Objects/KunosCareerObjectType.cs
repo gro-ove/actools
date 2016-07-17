@@ -1,11 +1,9 @@
-using System.ComponentModel;
-
 namespace AcManager.Tools.Objects {
     public enum KunosCareerObjectType {
-        [Description("Championship")]
+        [LocalizedDescription("KunosCareer_Championship")]
         Championship,
 
-        [Description("Single events")]
+        [LocalizedDescription("KunosCareer_SingleEvents")]
         SingleEvents
     }
 }

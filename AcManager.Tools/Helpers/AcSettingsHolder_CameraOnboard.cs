@@ -5,7 +5,7 @@ using FirstFloor.ModernUI.Helpers;
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
         public class CameraOnboardSettings : IniSettings {
-            internal CameraOnboardSettings() : base("camera_onboard") { }
+            internal CameraOnboardSettings() : base(@"camera_onboard") { }
 
             private int _fieldOfView;
 

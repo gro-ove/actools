@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcTools.Utils.Helpers {
@@ -43,7 +44,7 @@ namespace AcTools.Utils.Helpers {
     }
 
     public static class JsonExtension {
-        public static JObject Parse(string data) {
+        public static JObject Parse([LocalizationRequired(false)] string data) {
             try {
                 return JObject.Parse(data);
             } catch (Exception) {
@@ -51,7 +52,7 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        public static string GetStringValueOnly(this JToken obj, string key) {
+        public static string GetStringValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
@@ -59,7 +60,7 @@ namespace AcTools.Utils.Helpers {
             return string.IsNullOrEmpty(result) ? null : result;
         }
 
-        public static GeoTagsEntry GetGeoTagsValueOnly(this JToken obj, string key) {
+        public static GeoTagsEntry GetGeoTagsValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key] as JArray;
             if (value == null || value.Count != 2) return null;
             var lat = value[0];
@@ -73,7 +74,7 @@ namespace AcTools.Utils.Helpers {
             return new JArray(geoTagsEntry.Latitude, geoTagsEntry.Longitude);
         }
 
-        public static int? GetIntValueOnly(this JToken obj, string key) {
+        public static int? GetIntValueOnly(this JToken obj, [LocalizationRequired(false)] string key) {
             var value = obj[key];
             if (value == null || value.Type != JTokenType.String && value.Type != JTokenType.Integer &&
                     value.Type != JTokenType.Float) return null;
@@ -87,13 +88,13 @@ namespace AcTools.Utils.Helpers {
 
         private static Regex _dequoteStringRegex;
 
-        private static string DequoteString(string s) {
+        private static string DequoteString([LocalizationRequired(false)] string s) {
             return (_dequoteStringRegex ?? (_dequoteStringRegex =
                     new Regex(@"^\s*['""]|['""]\s*$|\\(?="")", RegexOptions.Compiled)
                     )).Replace(s, "");
         }
 
-        public static JObject TryToRestore(string damagedJson, JObjectRestorationScheme scheme) {
+        public static JObject TryToRestore([LocalizationRequired(false)] string damagedJson, JObjectRestorationScheme scheme) {
             var result = new JObject();
 
             var input = Regex.Replace(damagedJson, @"\r?\n|\n", "\n").Trim();

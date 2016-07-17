@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                 case ArchiveType.Tar:
                 case ArchiveType.SevenZip:
                 case ArchiveType.GZip:
-                    throw new NotSupportedException("Sorry, but " + archive.Type + " encryption isn’t supported");
+                    throw new NotSupportedException(string.Format(Resources.ArchiveInstallator_UnsupportedEncryption, archive.Type));
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -38,7 +38,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
             } catch (CryptographicException) {
                 return true;
             } catch (Exception e) {
-                Logging.Write("SharpCompressExtension.HasAnyEncryptedFiles exception: " + e);
+                Logging.Write("[SharpCompressExtension] HasAnyEncryptedFiles(): " + e);
                 return true;
             }
         }

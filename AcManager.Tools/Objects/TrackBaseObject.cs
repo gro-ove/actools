@@ -8,7 +8,6 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
@@ -160,7 +159,7 @@ namespace AcManager.Tools.Objects {
                 foreach (var val in new[] {
                     SpecsLength, 
                     SpecsWidth, 
-                    string.IsNullOrWhiteSpace(SpecsPitboxes) ? "" : PluralizingConverter.PluralizeExt(pitboxes, "{0} pit")
+                    string.IsNullOrWhiteSpace(SpecsPitboxes) ? "" : PluralizingConverter.PluralizeExt(pitboxes, Resources.TrackBaseObject_Specs_PitsNumber)
                 }.Where(val => !string.IsNullOrWhiteSpace(val))) {
                     if (result.Length > 0) {
                         result.Append(@", ");

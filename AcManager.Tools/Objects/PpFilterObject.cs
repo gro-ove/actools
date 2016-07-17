@@ -76,7 +76,7 @@ namespace AcManager.Tools.Objects {
                 File.WriteAllText(Location, Content);
                 return true;
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t save PP filter", "Make sure its file could be overwritten.", e);
+                NonfatalError.Notify(Resources.PpFilterObject_CannotSave, Resources.PpFilterObject_MakeSureCouldBeOverwritten, e);
                 return false;
             }
         }

@@ -2,19 +2,22 @@
 
 namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
     public enum AdditionalContentType {
-        [Description("car")]
+        [LocalizedDescription("AdditionalContent_Car")]
         Car,
 
-        [Description("car skin")]
+        [LocalizedDescription("AdditionalContent_CarSkin")]
         CarSkin,
 
-        [Description("track")]
+        [LocalizedDescription("AdditionalContent_Track")]
         Track,
 
-        [Description("showroom")]
+        [LocalizedDescription("AdditionalContent_Showroom")]
         Showroom,
 
-        [Description("font")]
-        Font
+        [LocalizedDescription("AdditionalContent_Font")]
+        Font,
+
+        [LocalizedDescription("AdditionalContent_Weather")]
+        Weather
     }
 }

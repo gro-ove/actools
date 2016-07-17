@@ -84,13 +84,15 @@
         <Grid DockPanel.Dock="Left" Margin="0 0 8 0">
             <mui:TextBlockAutoShrink Style="{StaticResource CodeStyle}" Text="{Binding Code}" TextAlignment="Center" Width="64" VerticalAlignment="Center"
                     Visibility="{Binding Code, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-            <Path Grid.Column="0" Data="{Binding Type, Converter={StaticResource KunosCareerTypeToIconConverter}}" Fill="{DynamicResource WindowText}"
-                    SnapsToDevicePixels="True" Width="16" Height="16" Stretch="Uniform" Margin="4 8"
-                    ToolTip="{Binding Type, Converter={StaticResource EnumToDescriptionConverter}}" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                <Path.Effect>
-                    <DropShadowEffect Opacity="1" BlurRadius="3" ShadowDepth="0" />
-                </Path.Effect>
-            </Path>
+            <Border Background="Transparent" Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="4 8"
+                    ToolTip="{Binding Type, Converter={StaticResource EnumToDescriptionConverter}}">
+                <Path Data="{Binding Type, Converter={StaticResource KunosCareerTypeToIconConverter}}" Fill="{DynamicResource WindowText}"
+                        SnapsToDevicePixels="True" Stretch="Uniform">
+                    <Path.Effect>
+                        <DropShadowEffect Opacity="1" BlurRadius="3" ShadowDepth="0" />
+                    </Path.Effect>
+                </Path>
+            </Border>
         </Grid>
 
         <StackPanel VerticalAlignment="Bottom">

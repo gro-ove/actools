@@ -324,7 +324,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         [CanBeNull]
-        public T GetById([NotNull]string id, out bool isFreshlyLoaded) {
+        public T GetById([NotNull, LocalizationRequired(false)] string id, out bool isFreshlyLoaded) {
             var wrapper = GetWrapperById(id);
             if (wrapper != null) {
                 return EnsureWrapperLoaded(wrapper, out isFreshlyLoaded);
@@ -335,17 +335,17 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         [CanBeNull]
-        public virtual T GetById([NotNull]string id) {
+        public virtual T GetById([NotNull, LocalizationRequired(false)] string id) {
             var wrapper = GetWrapperById(id);
             return wrapper == null ? null : EnsureWrapperLoaded(wrapper);
         }
 
-        public bool CheckIfIdExists([NotNull]string id) {
+        public bool CheckIfIdExists([NotNull, LocalizationRequired(false)] string id) {
             return GetWrapperById(id) != null;
         }
 
         [ItemCanBeNull]
-        public virtual async Task<T> GetByIdAsync([NotNull]string id) {
+        public virtual async Task<T> GetByIdAsync([NotNull, LocalizationRequired(false)] string id) {
             var wrapper = GetWrapperById(id);
             return wrapper != null ? await EnsureWrapperLoadedAsync(wrapper) : null;
         }
@@ -366,7 +366,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         [NotNull]
-        protected virtual T CreateAndLoadAcObject([NotNull] string id, bool enabled, bool withPastLoad = true) {
+        protected virtual T CreateAndLoadAcObject([NotNull, LocalizationRequired(false)] string id, bool enabled, bool withPastLoad = true) {
             var result = CreateAcObject(id, enabled);
             result.Load();
             if (withPastLoad) {
@@ -377,7 +377,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         [NotNull]
-        protected AcPlaceholderNew CreateAcPlaceholder([NotNull] string id, bool enabled) {
+        protected AcPlaceholderNew CreateAcPlaceholder([NotNull, LocalizationRequired(false)] string id, bool enabled) {
             return new AcPlaceholderNew(id, enabled);
         }
 

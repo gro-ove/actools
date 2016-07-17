@@ -185,8 +185,8 @@ namespace AcManager.Tools.Objects {
             try {
                 ToggleSound();
             } catch (ToggleException ex) {
-                NonfatalError.Notify(@"Cannot toggle sound",
-                    @"Make sure there is no runned app working with showroom’s sound files.", ex);
+                NonfatalError.Notify(Resources.ShowroomObject_CannotToggleSound,
+                    Resources.ShowroomObject_CannotToggleSound_Commentary, ex);
             }
         }, o => HasSound));
     }

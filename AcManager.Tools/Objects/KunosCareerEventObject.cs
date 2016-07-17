@@ -30,7 +30,7 @@ namespace AcManager.Tools.Objects {
         public KunosCareerEventObject(string kunosCareerId, KunosCareerObjectType type, IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             KunosCareerId = kunosCareerId;
-            EventNumber = FlexibleParser.ParseInt(id.Substring("event".Length)) - 1;
+            EventNumber = FlexibleParser.ParseInt(id.Substring(@"event".Length)) - 1;
             KunosCareerType = type;
         }
 
@@ -437,7 +437,7 @@ namespace AcManager.Tools.Objects {
 
                 if (conditions.Count != 3 || conditions[0].Type == null ||
                         conditions.Any(x => x.Value == null || x.Type != null && x.Type != conditions[0].Type)) {
-                    Logging.Warning("[KUNOSCAREEREVENTOBJECT] Unsupported conditions: " + conditions.Select(x => $"type: {x.Type}, value: {x.Type}").JoinToString("\n"));
+                    Logging.Warning("[KunosCareerEventObject] Unsupported conditions: " + conditions.Select(x => $"type: {x.Type}, value: {x.Type}").JoinToString("\n"));
                     AddError(AcErrorType.Data_KunosCareerConditions);
                 } else {
                     ConditionType = conditions[0].Type.Value;

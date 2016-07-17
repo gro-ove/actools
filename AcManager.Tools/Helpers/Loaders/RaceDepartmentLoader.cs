@@ -18,7 +18,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
             var match = Regex.Match(downloadPage, @"href=""(downloads/[^""]+\?version=[^""]+)");
             if (!match.Success) {
-                NonfatalError.Notify("Can’t download file", "Assetto-DB.com is changed.");
+                NonfatalError.Notify(Resources.Common_CannotDownloadFile, Resources.DirectLoader_RdChanged);
                 return false;
             }
 

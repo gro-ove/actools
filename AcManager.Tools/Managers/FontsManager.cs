@@ -37,10 +37,10 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        public override string SearchPattern => "*.txt";
+        public override string SearchPattern => @"*.txt";
 
         public override FontObject GetDefault() {
-            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains("arial"));
+            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"arial"));
             return v == null ? base.GetDefault() : EnsureWrapperLoaded(v);
         }
 
@@ -92,17 +92,17 @@ namespace AcManager.Tools.Managers {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException(@"ID is wrong", nameof(id));
+            if (wrapper == null) throw new ArgumentException(Resources.AcObject_IdIsWrong, nameof(id));
 
             var currentLocation = ((AcCommonObject)wrapper.Value).Location;
             var currentBitmapLocation = ((FontObject)wrapper.Value).FontBitmap;
             var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (path == null) throw new ToggleException("Object can’t be moved");
+            if (path == null) throw new ToggleException(Resources.AcObject_CannotBeMoved);
 
             var newLocation = Path.Combine(path, newFileName);
             var newBitmapLocation = currentBitmapLocation == null
                     ? null : Path.Combine(path, Path.GetFileNameWithoutExtension(newLocation) + Path.GetExtension(currentBitmapLocation));
-            if (FileUtils.Exists(newLocation) || currentBitmapLocation != null && File.Exists(newBitmapLocation)) throw new ToggleException("Place is taken");
+            if (FileUtils.Exists(newLocation) || currentBitmapLocation != null && File.Exists(newBitmapLocation)) throw new ToggleException(Resources.AcObject_PlaceIsTaken);
 
             try {
                 using (IgnoreChanges()) {
@@ -128,7 +128,7 @@ namespace AcManager.Tools.Managers {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var obj = GetById(id);
-            if (obj == null) throw new ArgumentException(@"ID is wrong", nameof(id));
+            if (obj == null) throw new ArgumentException(Resources.AcObject_IdIsWrong, nameof(id));
 
             using (IgnoreChanges()) {
                 FileUtils.Recycle(obj.Location, obj.FontBitmap);
@@ -161,16 +161,16 @@ namespace AcManager.Tools.Managers {
                 await CarsManager.Instance.EnsureLoadedAsync();
                 if (cancellation.IsCancellationRequested) return null;
 
-                var list = (await TaskExtension.WhenAll(CarsManager.Instance.LoadedOnly.Select(async car => {
+                var list = (await CarsManager.Instance.LoadedOnly.Select(async car => {
                     if (cancellation.IsCancellationRequested) return null;
 
                     progress?.Report(car.Id);
                     return new {
                         CarId = car.Id,
-                        FontIds = (await Task.Run(() => new IniFile(car.Location, "digital_instruments.ini"), cancellation))
+                        FontIds = (await Task.Run(() => new IniFile(car.Location, @"digital_instruments.ini"), cancellation))
                                 .Values.Select(x => x.Get("FONT")?.ToLowerInvariant()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList()
                     };
-                }), 12)).Where(x => x != null && x.FontIds.Count > 0).ToListIfItsNot();
+                }).WhenAll(12)).Where(x => x != null && x.FontIds.Count > 0).ToListIfItsNot();
 
                 if (cancellation.IsCancellationRequested) return null;
                 foreach (var fontObject in LoadedOnly) {
@@ -181,7 +181,7 @@ namespace AcManager.Tools.Managers {
             } catch (TaskCanceledException) {
                 return null;
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t rescan cars", e);
+                NonfatalError.Notify(Resources.Fonts_RescanUsings, e);
                 return null;
             } finally {
                 LastUsingsRescan = DateTime.Now;

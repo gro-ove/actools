@@ -41,7 +41,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
 
             public async Task CopyTo(string destination) {
                 if (!File.Exists(_filename)) {
-                    throw new FileNotFoundException("File not found!", _filename);
+                    throw new FileNotFoundException(Resources.DirectoryInstallator_FileNotFound, _filename);
                 }
 
                 using (var input = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))

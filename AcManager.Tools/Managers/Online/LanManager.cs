@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.Online {
@@ -26,7 +24,7 @@ namespace AcManager.Tools.Managers.Online {
                 try {
                     result.Add(new ServerEntry(this, i));
                 } catch (Exception e) {
-                    Logging.Warning("[LANMANAGER] Cannot create ServerEntry: " + e);
+                    Logging.Warning("[LanManager] Cannot create ServerEntry: " + e);
                 }
             });
             
@@ -52,7 +50,7 @@ namespace AcManager.Tools.Managers.Online {
                         }
                         Pinged++;
                     } catch (Exception e) {
-                        Logging.Warning("[LANMANAGER] Cannot create ServerEntry: " + e);
+                        Logging.Warning("[LanManager] Cannot create ServerEntry: " + e);
                     }
                 });
             });

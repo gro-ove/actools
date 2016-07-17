@@ -19,12 +19,12 @@ namespace AcTools.DataFile {
         }
 
         [CanBeNull]
-        public string Get(string key) {
+        public string Get([NotNull, LocalizationRequired(false)] string key) {
             return ContainsKey(key) ? base[key] : null;
         }
 
         [CanBeNull]
-        public string Get(string key, string defaultValue) {
+        public string Get([NotNull, LocalizationRequired(false)] string key, string defaultValue) {
             return ContainsKey(key) ? base[key] : defaultValue;
         }
 
@@ -32,19 +32,19 @@ namespace AcTools.DataFile {
         /// Warning! Throws exception if value is missing!
         /// </summary>
         [Obsolete]
-        public bool GetBool(string key) {
+        public bool GetBool([NotNull, LocalizationRequired(false)] string key) {
             if (!ContainsKey(key)) throw new Exception("Value is missing!");
             var value = Get(key);
             return value == "1";
         }
 
-        public bool GetBool(string key, bool defaultValue) {
+        public bool GetBool([NotNull, LocalizationRequired(false)] string key, bool defaultValue) {
             if (!ContainsKey(key)) return defaultValue;
             var value = Get(key);
             return value == "1";
         }
 
-        public bool? GetBoolNullable(string key) {
+        public bool? GetBoolNullable([NotNull, LocalizationRequired(false)] string key) {
             if (!ContainsKey(key)) return null;
             var value = Get(key);
             return value == "1" || string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) ||
@@ -52,12 +52,12 @@ namespace AcTools.DataFile {
         }
 
         [NotNull]
-        public string[] GetStrings(string key, char delimiter = ',') {
+        public string[] GetStrings([NotNull, LocalizationRequired(false)] string key, char delimiter = ',') {
             return Get(key)?.Split(delimiter).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray() ?? new string[0];
         }
 
         [NotNull]
-        public double[] GetVector3(string key) {
+        public double[] GetVector3([NotNull, LocalizationRequired(false)] string key) {
             var result = GetStrings(key).Select(x => FlexibleParser.ParseDouble(x, 0d)).ToArray();
             return result.Length == 3 ? result : new double[3];
         }
@@ -66,15 +66,15 @@ namespace AcTools.DataFile {
         /// Warning! Throws exception if value is missing!
         /// </summary>
         [Obsolete]
-        public double GetDouble(string key) {
+        public double GetDouble([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.ParseDouble(Get(key));
         }
 
-        public double? GetDoubleNullable(string key) {
+        public double? GetDoubleNullable([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.TryParseDouble(Get(key));
         }
 
-        public double GetDouble(string key, double defaultValue) {
+        public double GetDouble([NotNull, LocalizationRequired(false)] string key, double defaultValue) {
             return FlexibleParser.ParseDouble(Get(key), defaultValue);
         }
 
@@ -82,15 +82,15 @@ namespace AcTools.DataFile {
         /// Warning! Throws exception if value is missing!
         /// </summary>
         [Obsolete]
-        public int GetInt(string key) {
+        public int GetInt([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.ParseInt(Get(key));
         }
 
-        public int? GetIntNullable(string key) {
+        public int? GetIntNullable([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.TryParseInt(Get(key));
         }
 
-        public int GetInt(string key, int defaultValue) {
+        public int GetInt([NotNull, LocalizationRequired(false)] string key, int defaultValue) {
             return FlexibleParser.TryParseInt(Get(key)) ?? defaultValue;
         }
 
@@ -98,15 +98,15 @@ namespace AcTools.DataFile {
         /// Warning! Throws exception if value is missing!
         /// </summary>
         [Obsolete]
-        public long GetLong(string key) {
+        public long GetLong([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.ParseLong(Get(key));
         }
 
-        public long? GetLongNullable(string key) {
+        public long? GetLongNullable([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.TryParseLong(Get(key));
         }
 
-        public long GetLong(string key, int defaultValue) {
+        public long GetLong([NotNull, LocalizationRequired(false)] string key, int defaultValue) {
             return FlexibleParser.TryParseLong(Get(key)) ?? defaultValue;
         }
 
@@ -114,7 +114,7 @@ namespace AcTools.DataFile {
         /// Warning! Throws exception if value is missing!
         /// </summary>
         [Obsolete]
-        public T GetEnum<T>(string key, bool ignoreCase = true) where T : struct, IConvertible {
+        public T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
             }
@@ -123,7 +123,7 @@ namespace AcTools.DataFile {
             return (T)Enum.Parse(typeof(T), value ?? "", ignoreCase);
         }
 
-        public T? GetEnumNullable<T>(string key, bool ignoreCase = true) where T : struct, IConvertible {
+        public T? GetEnumNullable<T>([NotNull, LocalizationRequired(false)] string key, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
             }
@@ -132,7 +132,7 @@ namespace AcTools.DataFile {
             return Enum.TryParse(Get(key), ignoreCase, out result) ? result : (T?)null;
         }
 
-        public T GetEnum<T>(string key, T defaultValue, bool ignoreCase = true) where T : struct, IConvertible {
+        public T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
             }
@@ -141,7 +141,7 @@ namespace AcTools.DataFile {
             return Enum.TryParse(Get(key), ignoreCase, out result) ? result : defaultValue;
         }
 
-        public T GetIntEnum<T>(string key, T defaultValue) where T : struct, IConvertible {
+        public T GetIntEnum<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
             }
@@ -150,74 +150,74 @@ namespace AcTools.DataFile {
             return Enum.IsDefined(typeof(T), i) ? (T)Enum.ToObject(typeof(T), i) : defaultValue;
         }
 
-        private static void Set(string key, object value) {
+        private static void Set([NotNull, LocalizationRequired(false)] string key, object value) {
             throw new Exception($"Type is not supported: {value?.GetType().ToString() ?? "null"} (key: “{key}”)");
         }
 
-        public void Set(string key, string value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, [LocalizationRequired(false)] string value) {
             if (value == null) return;
             base[key] = value;
         }
 
-        public void Set<T>(string key, IEnumerable<T> value, char delimiter = ',') {
+        public void Set<T>([NotNull, LocalizationRequired(false)] string key, IEnumerable<T> value, char delimiter = ',') {
             if (value == null) return;
             Set(key, value.Select(x => x.ToInvariantString()).JoinToString(delimiter));
         }
 
-        public void SetId(string key, string value) {
+        public void SetId([NotNull, LocalizationRequired(false)] string key, string value) {
             if (value == null) return;
             base[key] = value.ToLowerInvariant();
         }
 
-        public void Set(string key, Enum value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, Enum value) {
             base[key] = Convert.ToDouble(value).ToString(CultureInfo.InvariantCulture);
         }
 
-        public void SetIntEnum(string key, Enum value) {
+        public void SetIntEnum([NotNull, LocalizationRequired(false)] string key, Enum value) {
             base[key] = Convert.ToInt32(value).ToString(CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, int value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, int value) {
             base[key] = value.ToString(CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, int? value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, int? value) {
             if (!value.HasValue) return;
             base[key] = value.Value.ToString(CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, long value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, long value) {
             base[key] = value.ToString(CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, long? value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, long? value) {
             if (!value.HasValue) return;
             base[key] = value.Value.ToString(CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, double value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, double value) {
             base[key] = value.ToString(CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, double? value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, double? value) {
             if (!value.HasValue) return;
             base[key] = value.Value.ToString(CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, double value, string format) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, double value, string format) {
             base[key] = value.ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, double? value, string format) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, double? value, string format) {
             if (!value.HasValue) return;
             base[key] = value.Value.ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public void Set(string key, bool value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, bool value) {
             base[key] = value ? "1" : "0";
         }
 
-        public void Set(string key, bool? value) {
+        public void Set([NotNull, LocalizationRequired(false)] string key, bool? value) {
             if (!value.HasValue) return;
             base[key] = value.Value ? "1" : "0";
         }

@@ -22,7 +22,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                     return BitConverter.ToInt32(bytes, 0) == ZipLeadBytes;
                 }
             } catch (Exception e) {
-                Logging.Warning("AdditionalContentInstallation.IsZipArchive exception: " + e);
+                Logging.Warning("[AdditionalContentInstallation] IsZipArchive(): " + e);
                 return false;
             }
         }

@@ -62,7 +62,7 @@ namespace AcManager.Tools.Managers.Presets {
 
             var dialog = new SaveFileDialog {
                 InitialDirectory = presetsDirectory,
-                Filter = string.Format(@"Presets (*{0})|*{0}", FileExtension),
+                Filter = string.Format(Resources.Presets_FileFilter, FileExtension),
                 DefaultExt = FileExtension
             };
 
@@ -79,8 +79,8 @@ namespace AcManager.Tools.Managers.Presets {
             filename = dialog.FileName;
 
             if (!filename.StartsWith(presetsDirectory)) {
-                if (ModernDialog.ShowMessage("Please, choose a file in initial directory or some subdirectory.",
-                                             "Can’t Do", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                if (ModernDialog.ShowMessage(Resources.Presets_ChooseFileInInitialDirectory,
+                                             Resources.Presets_CannotDo, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                     SavePresetUsingDialog(category, data, filename, out resultFilename);
                 } else {
                     resultFilename = null;

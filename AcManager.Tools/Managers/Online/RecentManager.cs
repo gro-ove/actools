@@ -10,6 +10,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
+using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -42,71 +43,71 @@ namespace AcManager.Tools.Managers.Online {
             string ip;
             int port;
             if (!KunosApiProvider.ParseAddress(address, out ip, out port)) {
-                throw new Exception("Can’t parse address");
+                throw new Exception(Resources.Online_CannotParseAddress);
             }
 
             if (port > 0) {
-                progress?.Report("Getting direct information…");
+                progress?.Report(Resources.Online_GettingInformationDirectly);
                 var information = await KunosApiProvider.TryToGetInformationDirectAsync(ip, port);
                 if (cancellation.IsCancellationRequested) return;
 
                 // assume address is [HOSTNAME]:[TCP PORT]
                 if (information == null) {
-                    progress?.Report("Trying to ping to find out HTTP port…");
+                    progress?.Report(Resources.Online_TryingToFindOutHttpPort);
                     var pair = await KunosApiProvider.TryToPingServerAsync(ip, port, SettingsHolder.Online.PingTimeout);
                     if (cancellation.IsCancellationRequested) return;
 
                     if (pair != null) {
-                        progress?.Report("Getting direct information (second attempt)…");
+                        progress?.Report(Resources.Online_GettingInformationDirectly_SecondAttempt);
                         information = await KunosApiProvider.TryToGetInformationDirectAsync(ip, pair.Item1);
                         if (cancellation.IsCancellationRequested) return;
                     }
                 }
 
                 if (information == null) {
-                    throw new Exception("Can’t access server");
+                    throw new Exception(Resources.Online_CannotAccessServer);
                 }
 
                 AddToSavedList(information.Ip, information.PortC);
                 CreateAndAddEntry(information);
             } else {
                 // assume address is [HOSTNAME]
-                progress?.Report("Scanning…");
+                progress?.Report(Resources.Online_Scanning);
 
                 var scanned = 0;
                 var found = 0;
                 var total = SettingsHolder.Online.PortsEnumeration.ToPortsDiapason().Count();
 
-                await TaskExtension.WhenAll(
-                        SettingsHolder.Online.PortsEnumeration.ToPortsDiapason().Select(async p => {
-                            var pair = await KunosApiProvider.TryToPingServerAsync(ip, p, SettingsHolder.Online.ScanPingTimeout);
-                            if (pair != null && pair.Item1 > 1024 && pair.Item1 < 65536) {
-                                if (cancellation.IsCancellationRequested) return;
+                await SettingsHolder.Online.PortsEnumeration.ToPortsDiapason().Select(async p => {
+                    var pair = await KunosApiProvider.TryToPingServerAsync(ip, p, SettingsHolder.Online.ScanPingTimeout);
+                    if (pair != null && pair.Item1 > 1024 && pair.Item1 < 65536) {
+                        if (cancellation.IsCancellationRequested) return;
 
-                                var information = await KunosApiProvider.TryToGetInformationDirectAsync(ip, pair.Item1);
-                                if (cancellation.IsCancellationRequested) return;
+                        var information = await KunosApiProvider.TryToGetInformationDirectAsync(ip, pair.Item1);
+                        if (cancellation.IsCancellationRequested) return;
 
-                                if (information != null) {
-                                    AddToSavedList(ip, pair.Item1);
-                                    found++;
+                        if (information != null) {
+                            AddToSavedList(ip, pair.Item1);
+                            found++;
 
-                                    try {
-                                        CreateAndAddEntry(information);
-                                    } catch (Exception e) {
-                                        if (e.Message != "ID is taken") {
-                                            Logging.Warning("[RECENTMANAGER] Scan add error: " + e);
-                                        }
-                                    }
+                            try {
+                                CreateAndAddEntry(information);
+                            } catch (Exception e) {
+                                if (e.Message != Resources.OnlineManage_IdIsTaken) {
+                                    Logging.Warning("[RecentManager] Scan add error: " + e);
                                 }
                             }
+                        }
+                    }
 
-                            scanned++;
-                            if (progress == null) return;
-                            progress.Report($"Scanning ({scanned}/{total}), {found} {PluralizingConverter.Pluralize(found, "server")} found…");
-                        }), 200, cancellation);
+                    scanned++;
+                    if (progress == null) return;
+                    progress.Report(string.Format(Resources.Online_ScanningProgress, scanned, total,
+                            PluralizingConverter.PluralizeExt(found, Resources.Online_ScanningProgress_Found)));
+                }).WhenAll(200, cancellation);
 
                 if (found == 0) {
-                    throw new Exception("Nothing found");
+                    throw new InformativeException(Resources.Online_ScanningNothingFound, Resources.Online_ScanningNothingFound_Commentary);
                 }
             }
         }

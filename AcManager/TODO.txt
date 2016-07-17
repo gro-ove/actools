@@ -515,14 +515,17 @@ fixme:
     - smart textbox with version
     - 1ff opponent?!
     - settins/live: rsr-srs margin
+    - fix brands list (removed brands)
 
 todo:
     - open new links in find information dialog in same tab
     - weather: test button
+    - managers: loading progress
 
     - make project localizable
         - .mui
         - .tools
+        - .LargeFilesSharing
         - .controls
         - main project
     - changeable locale

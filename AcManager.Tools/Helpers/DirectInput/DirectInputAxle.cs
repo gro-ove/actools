@@ -1,3 +1,4 @@
+using System;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 
@@ -6,7 +7,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public DirectInputAxle(IDirectInputDevice device, int id) : base(id) {
             Device = device;
             ShortName = (id + 1).ToInvariantString();
-            DisplayName = $"Axle {ShortName}";
+            DisplayName = string.Format(Resources.Input_Axle, ShortName);
         }
 
         public IDirectInputDevice Device { get; }

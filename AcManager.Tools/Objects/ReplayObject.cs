@@ -20,7 +20,7 @@ namespace AcManager.Tools.Objects {
         public string ReadString(int limit) {
             var length = ReadInt32();
             if (length > limit) {
-                throw new Exception("Unsupported format");
+                throw new Exception(Resources.ReplayReader_UnsupportedFormat);
             }
 
             return Encoding.ASCII.GetString(ReadBytes(length));
@@ -93,7 +93,7 @@ namespace AcManager.Tools.Objects {
     }
 
     public class ReplayObject : AcCommonSingleFileObject {
-        public static string PreviousReplayName => "cr";
+        public static string PreviousReplayName => @"cr";
         public const string ReplayExtension = ".acreplay";
 
         public override string Extension => ReplayExtension;
@@ -108,7 +108,7 @@ namespace AcManager.Tools.Objects {
         public override string Name {
             get { return base.Name; }
             protected set {
-                ErrorIf(value.Contains("[") || value.Contains("]"), AcErrorType.Replay_InvalidName);
+                ErrorIf(value == null || value.Contains("[") || value.Contains("]"), AcErrorType.Replay_InvalidName);
                 base.Name = value;
             }
         }
@@ -156,7 +156,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override string DisplayName => Id == PreviousReplayName && Name == PreviousReplayName ? "Previous Session" : base.DisplayName;
+        public override string DisplayName => Id == PreviousReplayName && Name == PreviousReplayName ? Resources.ReplayObject_PreviousSession : base.DisplayName;
 
         public override int CompareTo(AcPlaceholderNew o) {
             var or = o as ReplayObject;

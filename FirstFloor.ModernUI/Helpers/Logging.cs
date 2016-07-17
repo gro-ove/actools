@@ -47,22 +47,22 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public static void Write(string s) {
+        public static void Write([LocalizationRequired(false)] string s) {
             WriteInner('→', s);
         }
 
         [StringFormatMethod("format")]
-        public static void Write(string format, params object[] args) {
+        public static void Write([LocalizationRequired(false)] string format, [LocalizationRequired(false)] params object[] args) {
             Write(args.Length == 0 ? format : string.Format(format, args));
         }
 
         [StringFormatMethod("format")]
-        public static void Warning(string format, params object[] args) {
+        public static void Warning([LocalizationRequired(false)] string format, [LocalizationRequired(false)] params object[] args) {
             WriteInner('⚠', args.Length == 0 ? format : string.Format(format, args));
         }
 
         [StringFormatMethod("format")]
-        public static void Error(string format, params object[] args) {
+        public static void Error([LocalizationRequired(false)] string format, [LocalizationRequired(false)] params object[] args) {
             WriteInner('×', args.Length == 0 ? format : string.Format(format, args));
         }
     }

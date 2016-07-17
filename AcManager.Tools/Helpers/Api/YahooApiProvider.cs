@@ -48,7 +48,7 @@ namespace AcManager.Tools.Helpers.Api {
                     }
                 }
             } catch (Exception e) {
-                Logging.Warning("cannot locate city using yahoo: {0}\n{1}", requestUri, e);
+                Logging.Warning("Cannot locate city using yahoo: {0}\n{1}", requestUri, e);
                 return null;
             }
         }

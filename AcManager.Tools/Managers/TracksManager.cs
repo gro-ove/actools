@@ -20,7 +20,7 @@ namespace AcManager.Tools.Managers {
         public override IAcDirectories Directories => AcRootDirectory.Instance.TracksDirectories;
 
         public override TrackObject GetDefault() {
-            return base.GetById("imola") ?? base.GetDefault();
+            return base.GetById(@"imola") ?? base.GetDefault();
         }
 
         public override TrackObject GetById(string id) {
@@ -64,7 +64,7 @@ namespace AcManager.Tools.Managers {
             var relative = FileUtils.GetRelativePath(filename, objectLocation);
 
             var splitted = FileUtils.Split(relative);
-            if (!string.Equals(splitted[0], "ui", StringComparison.OrdinalIgnoreCase) || splitted.Length > 3) {
+            if (!string.Equals(splitted[0], @"ui", StringComparison.OrdinalIgnoreCase) || splitted.Length > 3) {
                 return true;
             }
 

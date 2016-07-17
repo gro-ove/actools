@@ -214,6 +214,7 @@
     <Compile Include="Windows\Converters\NullToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\OrdinalizingConverter.cs" />
     <Compile Include="Windows\Converters\PluralizingConverter.cs" />
+    <Compile Include="Helpers\PluralizingDictionary.cs" />
     <Compile Include="Windows\Converters\SubstractConverter.cs" />
     <Compile Include="Windows\Converters\SumConverter.cs" />
     <Compile Include="Windows\Converters\ExistToVisibilityConverter.cs" />

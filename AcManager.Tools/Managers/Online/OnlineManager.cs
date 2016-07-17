@@ -23,7 +23,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (SteamIdHelper.Instance.Value == null) {
                 ErrorFatal = true;
-                throw new Exception(@"Can’t find Steam ID");
+                throw new Exception(Resources.CannotFindSteamId);
             }
 
             var data = KunosApiProvider.TryToGetList()?.Select(x => new ServerEntry(this, x));
@@ -31,7 +31,7 @@ namespace AcManager.Tools.Managers.Online {
                 return data;
             }
                 
-            throw new InformativeException(@"Can’t load data", "Make sure internet-connection is working.");
+            throw new InformativeException(Resources.Online_CannotLoadData, Resources.Online_CannotLoadData_Commentary);
         }
 
         protected override async Task<IEnumerable<AcPlaceholderNew>> ScanInnerAsync() {
@@ -40,7 +40,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (SteamIdHelper.Instance.Value == null) {
                 ErrorFatal = true;
-                throw new Exception(@"Can’t find Steam ID");
+                throw new Exception(Resources.CannotFindSteamId);
             }
 
             var data = await Task.Run(() => KunosApiProvider.TryToGetList()?.Select(x => new ServerEntry(this, x)).ToList());
@@ -48,7 +48,7 @@ namespace AcManager.Tools.Managers.Online {
                 return data;
             }
 
-            throw new InformativeException(@"Can’t load data", "Make sure internet-connection is working.");
+            throw new InformativeException(Resources.Online_CannotLoadData, Resources.Online_CannotLoadData_Commentary);
         }
     }
 }
