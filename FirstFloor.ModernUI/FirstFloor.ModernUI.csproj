@@ -218,7 +218,6 @@
     <Compile Include="Windows\Converters\SumConverter.cs" />
     <Compile Include="Windows\Converters\ExistToVisibilityConverter.cs" />
     <Compile Include="Windows\Converters\ToTitleConverter.cs" />
-    <Compile Include="Windows\Converters\UriToCachedImageConverterOld.cs" />
     <Compile Include="Windows\Converters\UriToCachedImageConverter.cs" />
     <Compile Include="Windows\Converters\BooleanToFontWeightConverter.cs" />
     <Compile Include="Windows\Converters\BooleanToFontStyleConverter.cs" />
@@ -249,10 +248,6 @@
     <Compile Include="Windows\Navigation\NavigationType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Assets\Grid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Assets\Converters.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -520,6 +520,14 @@ todo:
     - open new links in find information dialog in same tab
     - weather: test button
 
+    - make project localizable
+        - .mui
+        - .tools
+        - .controls
+        - main project
+    - changeable locale
+    - move culture initialization to EntryPoint
+
     - notification for plugins
     - upload Content to Trello for those who doesn't have Internet connection
     - custom showroom: proper wpf-based errors handling for invalid dx and stuff

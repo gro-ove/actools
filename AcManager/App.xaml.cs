@@ -39,6 +39,8 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager {
     public partial class App {
+        private static readonly string[] SupportedLocales = { "en-US" };
+
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
         private static string GetLocalApplicationDataDirectory() {
@@ -82,6 +84,10 @@ namespace AcManager {
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 #if DEBUG
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("ru-RU");
+#else
+            if (!SupportedLocales.Contains(CultureInfo.CurrentUICulture.Name)) {
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+            }
 #endif
 
             NonfatalError.Register(new NonfatalErrorNotifier());

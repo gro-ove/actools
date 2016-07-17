@@ -18,7 +18,7 @@ namespace AcManager.Tools.Starters {
 
         private void CheckVersion() {
             if (!File.Exists(LauncherFilename)) {
-                throw new InformativeException("Can’t run the game", "Original launcher is missing; please, change starter.");
+                throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.OfficialStarter_OriginalLauncherIsMissing);
             }
 
             if (!FileVersionInfo.GetVersionInfo(LauncherFilename).FileVersion.IsVersionOlderThan("0.16.714")) return;
@@ -26,20 +26,19 @@ namespace AcManager.Tools.Starters {
             if (StarterPlus.IsPatched(LauncherFilename)) {
                 var backupFilename = StarterPlus.BackupFilename;
                 if (!File.Exists(backupFilename)) {
-                    ModernDialog.ShowMessage(
-                            "Can’t restore non-patched version of original launcher. Please, [url=\"https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk\"]restore it manually[/url].", "Can’t Run", MessageBoxButton.OK);
-                    throw new InformativeException("Can’t run the game", "Please, restore original launcher and try again (or change starter).");
+                    ModernDialog.ShowMessage(Resources.OfficialStarter_DownloadAndRestore, Resources.OfficialStarter_CannotRun, MessageBoxButton.OK);
+                    throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.OfficialStarter_RestoreOriginalLauncher);
                 }
 
                 try {
                     File.Delete(LauncherFilename);
                 } catch (Exception) {
                     if (ModernDialog.ShowMessage(
-                            "Can’t restore non-patched version of original launcher. Please, restore it manually: you have to replace “AssettoCorsa.exe” with “AssettoCorsa_backup_sp.exe”.",
-                            "Can’t Run", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                            Resources.OfficialStarter_RestoreLauncherManually,
+                            Resources.OfficialStarter_CannotRun, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                         WindowsHelper.ViewFile(backupFilename);
                     }
-                    throw new InformativeException("Can’t run the game", "Please, restore original launcher and try again (or change starter).");
+                    throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.OfficialStarter_RestoreOriginalLauncher);
                 }
 
                 File.Copy(backupFilename, LauncherFilename);
@@ -52,14 +51,12 @@ namespace AcManager.Tools.Starters {
                 return;
             }
 
-            if (ModernDialog.ShowMessage(
-                    "Can’t use Official Starter: game is too old. Would you like to switch to Tricky Starter instead? You can always go to Settings/Drive and change it.",
-                    "Not Supported", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
-                throw new InformativeException("Can’t run the game", "Please, update AC or change Starter to something else.");
+            if (ModernDialog.ShowMessage(Resources.OfficialStarter_GameIsTooOld, Resources.NotSupported, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.OfficialStarter_UpdateAC);
             }
 
             SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.TrickyStarterType;
-            throw new InformativeException("Can’t run the game", "Try again.");
+            throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.TryAgainDot);
         }
 
         private void RunInner() {

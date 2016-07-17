@@ -19,7 +19,7 @@ namespace AcManager.Tools.Objects {
                                        .Distinct()
                                        .ToArray();
                 } catch (Exception e) {
-                    Logging.Warning("can’t get ids from GUIDs.txt: " + e);
+                    Logging.Warning("Can’t get IDs from GUIDs.txt: " + e);
                     _kunosCarsIds = new string[] {};
                 }
             }

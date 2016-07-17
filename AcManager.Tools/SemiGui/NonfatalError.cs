@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.SemiGui {
     /// <summary>
@@ -18,7 +19,7 @@ namespace AcManager.Tools.SemiGui {
         /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
         /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
         /// <param name="exception">Exception which caused the problem.</param>
-        public static void Notify(string problemDescription, string solutionCommentary, Exception exception = null) {
+        public static void Notify([LocalizationRequired] string problemDescription, [LocalizationRequired] string solutionCommentary, Exception exception = null) {
             if (exception is UserCancelledException) return;
 
             var i = exception as InformativeException;
@@ -35,7 +36,7 @@ namespace AcManager.Tools.SemiGui {
         /// </summary>
         /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
         /// <param name="exception">Exception which caused the problem.</param>
-        public static void Notify(string problemDescription, Exception exception = null) {
+        public static void Notify([LocalizationRequired] string problemDescription, Exception exception = null) {
             Notify(problemDescription, null, exception);
         }
     }
