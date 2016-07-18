@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1063,88 +1063,112 @@
   <data name="Uploader_CannotShareGoogleDrive" xml:space="preserve">
     <value>Can’t share Google Drive file</value>
   </data>
-  <data name="LoadingUnhandledError" xml:space="preserve">
+  <data name="AcError_LoadingUnhandledError" xml:space="preserve">
     <value>Loading unhandled error: {0}</value>
   </data>
-  <data name="FileIsMissing" xml:space="preserve">
+  <data name="AcError_FileIsMissing" xml:space="preserve">
     <value>File “{0}” is missing</value>
   </data>
-  <data name="FileIsDamaged" xml:space="preserve">
+  <data name="AcError_FileIsDamaged" xml:space="preserve">
     <value>File “{0}” is damaged</value>
   </data>
-  <data name="FileIsMissing" xml:space="preserve">
-    <value>File “{0}” is missing</value>
-  </data>
-  <data name="FileIsDamaged" xml:space="preserve">
-    <value>File “{0}” is damaged</value>
-  </data>
-  <data name="NameIsMissing" xml:space="preserve">
+  <data name="AcError_NameIsMissing" xml:space="preserve">
     <value>Name is missing</value>
   </data>
-  <data name="BrandNameIsMissing" xml:space="preserve">
+  <data name="AcError_BrandNameIsMissing" xml:space="preserve">
     <value>Brand name is missing</value>
   </data>
-  <data name="DirectoryUiIsMissing" xml:space="preserve">
+  <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
     <value>Directory “ui” is missing</value>
   </data>
-  <data name="EventsOfAreMissing" xml:space="preserve">
+  <data name="AcError_EventsOfAreMissing" xml:space="preserve">
     <value>Events of “{0}” are missing</value>
   </data>
-  <data name="EventConditionsAreNotSupported" xml:space="preserve">
+  <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
     <value>Event conditions aren’t supported</value>
   </data>
-  <data name="RequiredContentIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
     <value>Required content is missing</value>
   </data>
-  <data name="RequiredTrackIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
     <value>Required track “{0}” is missing</value>
   </data>
-  <data name="RequiredCarIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
     <value>Required car “{0}” is missing</value>
   </data>
-  <data name="RequiredSkin1ForIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredSkin1ForIsMissing" xml:space="preserve">
     <value>Required skin “{1}” for {0} is missing</value>
   </data>
-  <data name="RequiredWeatherIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
     <value>Required weather “{0}” is missing</value>
   </data>
-  <data name="CarParentIsMissing" xml:space="preserve">
+  <data name="AcError_CarParentIsMissing" xml:space="preserve">
     <value>Car’s parent is missing</value>
   </data>
-  <data name="BrandBadgeIsMissing" xml:space="preserve">
+  <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
     <value>Brand’s badge is missing</value>
   </data>
-  <data name="UpgradeIconIsMissing" xml:space="preserve">
+  <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
     <value>Upgrade icon is missing</value>
   </data>
-  <data name="SkinsAreMissing" xml:space="preserve">
+  <data name="AcError_SkinsAreMissing" xml:space="preserve">
     <value>Skins are missing</value>
   </data>
-  <data name="SkinsDirectoryIsUnavailable" xml:space="preserve">
+  <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
     <value>Skins directory is unavailable</value>
   </data>
-  <data name="SetupTrackIsMissing" xml:space="preserve">
+  <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
     <value>Setup’s track ({0}) is missing</value>
   </data>
-  <data name="SkinLiveryLiveryPngIsMissing" xml:space="preserve">
+  <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
     <value>Skin’s livery ({0}/livery.png) is missing</value>
   </data>
-  <data name="SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
+  <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
     <value>Skin’s preview ({0}/preview.jpg) is missing</value>
   </data>
-  <data name="ModelKn5FileIsMissing" xml:space="preserve">
+  <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
     <value>Model (KN5 file) is missing</value>
   </data>
-  <data name="FontBitmapIsMissing" xml:space="preserve">
+  <data name="AcError_FontBitmapIsMissing" xml:space="preserve">
     <value>Font’s bitmap is missing</value>
   </data>
-  <data name="FontIsUsedButDisabled" xml:space="preserve">
+  <data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
     <value>Font is used but disabled</value>
   </data>
-  <data name="TrackIsMissing" xml:space="preserve">
+  <data name="AcError_TrackIsMissing" xml:space="preserve">
     <value>Track “{0}” is missing</value>
   </data>
-  <data name="NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
+  <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
     <value>Name shouldn't contain symbols like “[” or “]”</value>
+  </data>
+  <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
+    <value>File “colorCurves.ini” is missing</value>
+  </data>
+  <data name="Common_None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonLow" xml:space="preserve">
+    <value>Horizon (Low)</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonHigh" xml:space="preserve">
+    <value>Horizon (High)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyLow" xml:space="preserve">
+    <value>Sky (Low)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyHigh" xml:space="preserve">
+    <value>Sky (High)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunLow" xml:space="preserve">
+    <value>Sun (Low)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunHigh" xml:space="preserve">
+    <value>Sun (High)</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientLow" xml:space="preserve">
+    <value>Ambient (Low)</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientHigh" xml:space="preserve">
+    <value>Ambient (High)</value>
   </data>
 </root>
