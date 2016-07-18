@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,28 +14,56 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager {
     public class EntryPoint {
-        public static uint SecondInstanceMessage { get; private set; }
+        private static string _applicationDataDirectory;
+
+        public static string ApplicationDataDirectory => _applicationDataDirectory ?? (_applicationDataDirectory =
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager"));
+
+        private static readonly string[] SupportedLocales = { "en-US" };
+
+        private static void InitializeLocale() {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+
+            var forceLocale = AppArguments.Get(AppFlag.ForceLocale);
+            if (forceLocale != null) {
+                CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(forceLocale);
+            } else if (!SupportedLocales.Contains(CultureInfo.CurrentUICulture.Name)) {
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+            }
+        }
 
         [STAThread]
         private static void Main(string[] a) {
             if (!Debugger.IsAttached) {
                 SetUnhandledExceptionHandler();
             }
+            
+            AppArguments.Initialize(a.Skip(1));
+            AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
+            InitializeLocale();
 
             AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References",
                     Assembly.GetEntryAssembly().Location.Contains("_log_packed")).Handler;
             MainInner(a);
         }
-        
+
+        public static uint SecondInstanceMessage { get; private set; }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void MainInner(string[] args) {
-            if (AppUpdater.OnStartup(args)) {
-                return;
+            if (AppArguments.GetBool(AppFlag.UseCustomLocales, true)) {
+                var customLocale = Path.Combine(ApplicationDataDirectory, "Locales", CultureInfo.CurrentUICulture.Name);
+                if (Directory.Exists(customLocale)) {
+                    CustomResourceManager.SetCustomSource(customLocale);
+                }
             }
+
+            if (AppUpdater.OnStartup(args)) return;
 
             var appGuid = ((GuidAttribute)Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), true).GetValue(0)).Value;
             var mutexId = $@"Global\{{{appGuid}}}";

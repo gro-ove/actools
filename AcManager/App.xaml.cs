@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -33,31 +32,20 @@ using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager {
     public partial class App {
-        private static readonly string[] SupportedLocales = { "en-US" };
-
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
-
-        private static string GetLocalApplicationDataDirectory() {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager");
-        }
 
         public App() {
             if (AppArguments.GetBool(AppFlag.IgnoreSystemProxy, true)) {
                 WebRequest.DefaultWebProxy = null;
             }
 
-            AppArguments.Initialize(Environment.GetCommandLineArgs().Skip(1));
-            FilesStorage.Initialize(AppArguments.Get(AppFlag.StorageLocation) ?? GetLocalApplicationDataDirectory());
-            AppArguments.AddFromFile(FilesStorage.Instance.GetFilename("Arguments.txt"));
-
-            InitializeLocale();
+            FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
 
             AppArguments.Set(AppFlag.SyncNavigation, ref ModernFrame.OptionUseSyncNavigation);
             AppArguments.Set(AppFlag.DisableTransitionAnimation, ref ModernFrame.OptionDisableTransitionAnimation);
@@ -173,24 +161,6 @@ namespace AcManager {
                     "Pages/Windows/MainWindow.xaml" : "Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
 
             RegisterUriScheme();
-        }
-
-        private static void InitializeLocale() {
-            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
-
-            var forceLocale = AppArguments.Get(AppFlag.ForceLocale);
-            if (forceLocale != null) {
-                CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(forceLocale);
-            } else if (!SupportedLocales.Contains(CultureInfo.CurrentUICulture.Name)) {
-                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
-            }
-
-            if (AppArguments.GetBool(AppFlag.UseCustomLocales, true)) {
-                var customLocale = FilesStorage.Instance.CombineFilename("Locales", CultureInfo.CurrentUICulture.Name);
-                if (Directory.Exists(customLocale)) {
-                    CustomResourceManager.SetCustomSource(customLocale);
-                }
-            }
         }
 
         private void PrepareUi() {

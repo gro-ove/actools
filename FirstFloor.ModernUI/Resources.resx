@@ -373,14 +373,11 @@
   </data>
   <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
     <value>PB</value>
-    <comment>Petabyte
-</comment>
+    <comment>Petabyte</comment>
   </data>
   <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
     <value>TB</value>
-    <comment>Terabyte
-
-</comment>
+    <comment>Terabyte</comment>
   </data>
   <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
     <value>GB</value>
@@ -388,8 +385,7 @@
   </data>
   <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
     <value>MB</value>
-    <comment>Megabyte
-</comment>
+    <comment>Megabyte</comment>
   </data>
   <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
     <value>KB</value>

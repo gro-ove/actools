@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AcTools.Utils.Helpers;
 
 namespace AcManager {
     public static class AppArguments {
@@ -13,7 +13,7 @@ namespace AcManager {
         public static IReadOnlyList<string> Values { get; private set; }
 
         public static void Initialize(IEnumerable<string> args) {
-            var list = args.ToListIfItsNot();
+            var list = args.ToList();
 
             _args = list.TakeWhile(x => x != "-")
                 .Where(x => x.StartsWith("--"))
@@ -49,7 +49,7 @@ namespace AcManager {
 
         internal static AppFlag? ArgStringToFlag(string arg) {
             AppFlag result;
-            var s = arg.Split('-').Where(x => x.Length > 0).Select(x => (char)(x[0] + 'A' - 'a') + (x.Length > 1 ? x.Substring(1) : "")).JoinToString();
+            var s = string.Join("", arg.Split('-').Where(x => x.Length > 0).Select(x => (char)(x[0] + 'A' - 'a') + (x.Length > 1 ? x.Substring(1) : "")));
             return Enum.TryParse(s, out result) ? result : (AppFlag?)null;
         }
 
@@ -98,13 +98,17 @@ namespace AcManager {
         public static void Set(AppFlag flag, ref int option) {
             var value = Get(flag);
             if (value == null) return;
-            option = FlexibleParser.ParseInt(value, option);
+            if (!int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out option)) {
+                option = 0;
+            }
         }
 
         public static void Set(AppFlag flag, ref double option) {
             var value = Get(flag);
             if (value == null) return;
-            option = FlexibleParser.ParseDouble(value, option);
+            if (!double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out option)) {
+                option = 0d;
+            }
         }
 
         public static void Set(AppFlag flag, ref string option) {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Xml.Linq;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI {
+    [Localizable(false)]
     public class CustomResourceManager : ResourceManager {
         private static string _customSource;
 
@@ -36,7 +38,7 @@ namespace FirstFloor.ModernUI {
         public new string GetString(string name, CultureInfo culture) {
             if (_customSource != null) {
                 if (_custom == null) {
-                    var location = Path.Combine(_customSource, BaseName + ".resx");
+                    var location = Path.Combine(_customSource, BaseName.Replace(".Resources", "") + ".resx");
                     _custom = LoadCustomResource(location) ?? new Dictionary<string, string>();
                 }
 
