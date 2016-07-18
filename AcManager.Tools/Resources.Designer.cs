@@ -61,6 +61,249 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brand’s badge is missing.
+        /// </summary>
+        public static string AcError_BrandBadgeIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_BrandBadgeIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brand name is missing.
+        /// </summary>
+        public static string AcError_BrandNameIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_BrandNameIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car’s parent is missing.
+        /// </summary>
+        public static string AcError_CarParentIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_CarParentIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File “colorCurves.ini” is missing.
+        /// </summary>
+        public static string AcError_ColorCurvesIniIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_ColorCurvesIniIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Directory “ui” is missing.
+        /// </summary>
+        public static string AcError_DirectoryUiIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_DirectoryUiIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event conditions aren’t supported.
+        /// </summary>
+        public static string AcError_EventConditionsAreNotSupported {
+            get {
+                return ResourceManager.GetString("AcError_EventConditionsAreNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Events of “{0}” are missing.
+        /// </summary>
+        public static string AcError_EventsOfAreMissing {
+            get {
+                return ResourceManager.GetString("AcError_EventsOfAreMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File “{0}” is damaged.
+        /// </summary>
+        public static string AcError_FileIsDamaged {
+            get {
+                return ResourceManager.GetString("AcError_FileIsDamaged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File “{0}” is missing.
+        /// </summary>
+        public static string AcError_FileIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_FileIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Font’s bitmap is missing.
+        /// </summary>
+        public static string AcError_FontBitmapIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_FontBitmapIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Font is used but disabled.
+        /// </summary>
+        public static string AcError_FontIsUsedButDisabled {
+            get {
+                return ResourceManager.GetString("AcError_FontIsUsedButDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading unhandled error: {0}.
+        /// </summary>
+        public static string AcError_LoadingUnhandledError {
+            get {
+                return ResourceManager.GetString("AcError_LoadingUnhandledError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Model (KN5 file) is missing.
+        /// </summary>
+        public static string AcError_ModelKn5FileIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_ModelKn5FileIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name is missing.
+        /// </summary>
+        public static string AcError_NameIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_NameIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name shouldn&apos;t contain symbols like “[” or “]”.
+        /// </summary>
+        public static string AcError_NameShouldnTContainSymbolsLikeOr {
+            get {
+                return ResourceManager.GetString("AcError_NameShouldnTContainSymbolsLikeOr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required car “{0}” is missing.
+        /// </summary>
+        public static string AcError_RequiredCarIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_RequiredCarIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required content is missing.
+        /// </summary>
+        public static string AcError_RequiredContentIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_RequiredContentIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required skin “{1}” for {0} is missing.
+        /// </summary>
+        public static string AcError_RequiredSkin1ForIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_RequiredSkin1ForIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required track “{0}” is missing.
+        /// </summary>
+        public static string AcError_RequiredTrackIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_RequiredTrackIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required weather “{0}” is missing.
+        /// </summary>
+        public static string AcError_RequiredWeatherIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_RequiredWeatherIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setup’s track ({0}) is missing.
+        /// </summary>
+        public static string AcError_SetupTrackIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_SetupTrackIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skin’s livery ({0}/livery.png) is missing.
+        /// </summary>
+        public static string AcError_SkinLiveryLiveryPngIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_SkinLiveryLiveryPngIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skin’s preview ({0}/preview.jpg) is missing.
+        /// </summary>
+        public static string AcError_SkinPreviewPreviewJpgIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_SkinPreviewPreviewJpgIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skins are missing.
+        /// </summary>
+        public static string AcError_SkinsAreMissing {
+            get {
+                return ResourceManager.GetString("AcError_SkinsAreMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skins directory is unavailable.
+        /// </summary>
+        public static string AcError_SkinsDirectoryIsUnavailable {
+            get {
+                return ResourceManager.GetString("AcError_SkinsDirectoryIsUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track “{0}” is missing.
+        /// </summary>
+        public static string AcError_TrackIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_TrackIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrade icon is missing.
+        /// </summary>
+        public static string AcError_UpgradeIconIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_UpgradeIconIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot be disabled.
         /// </summary>
         public static string AcObject_CannotBeDisabled {
@@ -691,38 +934,11 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Brand’s badge is missing.
-        /// </summary>
-        public static string BrandBadgeIsMissing {
-            get {
-                return ResourceManager.GetString("BrandBadgeIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Brand name is missing.
-        /// </summary>
-        public static string BrandNameIsMissing {
-            get {
-                return ResourceManager.GetString("BrandNameIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Can’t find Steam ID.
         /// </summary>
         public static string CannotFindSteamId {
             get {
                 return ResourceManager.GetString("CannotFindSteamId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Car’s parent is missing.
-        /// </summary>
-        public static string CarParentIsMissing {
-            get {
-                return ResourceManager.GetString("CarParentIsMissing", resourceCulture);
             }
         }
         
@@ -795,6 +1011,15 @@ namespace AcManager.Tools {
         public static string Common_Disabled {
             get {
                 return ResourceManager.GetString("Common_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string Common_None {
+            get {
+                return ResourceManager.GetString("Common_None", resourceCulture);
             }
         }
         
@@ -1285,69 +1510,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Directory “ui” is missing.
-        /// </summary>
-        public static string DirectoryUiIsMissing {
-            get {
-                return ResourceManager.GetString("DirectoryUiIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Event conditions aren’t supported.
-        /// </summary>
-        public static string EventConditionsAreNotSupported {
-            get {
-                return ResourceManager.GetString("EventConditionsAreNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Events of “{0}” are missing.
-        /// </summary>
-        public static string EventsOfAreMissing {
-            get {
-                return ResourceManager.GetString("EventsOfAreMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File “{0}” is damaged.
-        /// </summary>
-        public static string FileIsDamaged {
-            get {
-                return ResourceManager.GetString("FileIsDamaged", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File “{0}” is missing.
-        /// </summary>
-        public static string FileIsMissing {
-            get {
-                return ResourceManager.GetString("FileIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Font’s bitmap is missing.
-        /// </summary>
-        public static string FontBitmapIsMissing {
-            get {
-                return ResourceManager.GetString("FontBitmapIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Font is used but disabled.
-        /// </summary>
-        public static string FontIsUsedButDisabled {
-            get {
-                return ResourceManager.GetString("FontIsUsedButDisabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Delete Font.
         /// </summary>
         public static string FontObject_DeleteFont {
@@ -1573,15 +1735,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading unhandled error: {0}.
-        /// </summary>
-        public static string LoadingUnhandledError {
-            get {
-                return ResourceManager.GetString("LoadingUnhandledError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Can’t connect to remote server.
         /// </summary>
         public static string LogHelper_CannotConnectToRemoteServer {
@@ -1623,33 +1776,6 @@ namespace AcManager.Tools {
         public static string LogHelper_WheelsAreMissing {
             get {
                 return ResourceManager.GetString("LogHelper_WheelsAreMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Model (KN5 file) is missing.
-        /// </summary>
-        public static string ModelKn5FileIsMissing {
-            get {
-                return ResourceManager.GetString("ModelKn5FileIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name is missing.
-        /// </summary>
-        public static string NameIsMissing {
-            get {
-                return ResourceManager.GetString("NameIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name shouldn&apos;t contain symbols like “[” or “]”.
-        /// </summary>
-        public static string NameShouldnTContainSymbolsLikeOr {
-            get {
-                return ResourceManager.GetString("NameShouldnTContainSymbolsLikeOr", resourceCulture);
             }
         }
         
@@ -2170,51 +2296,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Required car “{0}” is missing.
-        /// </summary>
-        public static string RequiredCarIsMissing {
-            get {
-                return ResourceManager.GetString("RequiredCarIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Required content is missing.
-        /// </summary>
-        public static string RequiredContentIsMissing {
-            get {
-                return ResourceManager.GetString("RequiredContentIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Required skin “{1}” for {0} is missing.
-        /// </summary>
-        public static string RequiredSkin1ForIsMissing {
-            get {
-                return ResourceManager.GetString("RequiredSkin1ForIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Required track “{0}” is missing.
-        /// </summary>
-        public static string RequiredTrackIsMissing {
-            get {
-                return ResourceManager.GetString("RequiredTrackIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Required weather “{0}” is missing.
-        /// </summary>
-        public static string RequiredWeatherIsMissing {
-            get {
-                return ResourceManager.GetString("RequiredWeatherIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Baidu.
         /// </summary>
         public static string SearchEngine_Baidu {
@@ -2422,15 +2503,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setup’s track ({0}) is missing.
-        /// </summary>
-        public static string SetupTrackIsMissing {
-            get {
-                return ResourceManager.GetString("SetupTrackIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Car setup.
         /// </summary>
         public static string Shared_CarSetup {
@@ -2548,42 +2620,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skin’s livery ({0}/livery.png) is missing.
-        /// </summary>
-        public static string SkinLiveryLiveryPngIsMissing {
-            get {
-                return ResourceManager.GetString("SkinLiveryLiveryPngIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Skin’s preview ({0}/preview.jpg) is missing.
-        /// </summary>
-        public static string SkinPreviewPreviewJpgIsMissing {
-            get {
-                return ResourceManager.GetString("SkinPreviewPreviewJpgIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Skins are missing.
-        /// </summary>
-        public static string SkinsAreMissing {
-            get {
-                return ResourceManager.GetString("SkinsAreMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Skins directory is unavailable.
-        /// </summary>
-        public static string SkinsDirectoryIsUnavailable {
-            get {
-                return ResourceManager.GetString("SkinsDirectoryIsUnavailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cancelled.
         /// </summary>
         public static string Solving_Cancelled {
@@ -2638,29 +2674,11 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Track “{0}” is missing.
-        /// </summary>
-        public static string TrackIsMissing {
-            get {
-                return ResourceManager.GetString("TrackIsMissing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Try again..
         /// </summary>
         public static string TryAgainDot {
             get {
                 return ResourceManager.GetString("TryAgainDot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upgrade icon is missing.
-        /// </summary>
-        public static string UpgradeIconIsMissing {
-            get {
-                return ResourceManager.GetString("UpgradeIconIsMissing", resourceCulture);
             }
         }
         
@@ -2769,6 +2787,78 @@ namespace AcManager.Tools {
         public static string Weather_Cold {
             get {
                 return ResourceManager.GetString("Weather_Cold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ambient (High).
+        /// </summary>
+        public static string Weather_ColorCurves_AmbientHigh {
+            get {
+                return ResourceManager.GetString("Weather_ColorCurves_AmbientHigh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ambient (Low).
+        /// </summary>
+        public static string Weather_ColorCurves_AmbientLow {
+            get {
+                return ResourceManager.GetString("Weather_ColorCurves_AmbientLow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizon (High).
+        /// </summary>
+        public static string Weather_ColorCurves_HorizonHigh {
+            get {
+                return ResourceManager.GetString("Weather_ColorCurves_HorizonHigh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horizon (Low).
+        /// </summary>
+        public static string Weather_ColorCurves_HorizonLow {
+            get {
+                return ResourceManager.GetString("Weather_ColorCurves_HorizonLow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sky (High).
+        /// </summary>
+        public static string Weather_ColorCurves_SkyHigh {
+            get {
+                return ResourceManager.GetString("Weather_ColorCurves_SkyHigh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sky (Low).
+        /// </summary>
+        public static string Weather_ColorCurves_SkyLow {
+            get {
+                return ResourceManager.GetString("Weather_ColorCurves_SkyLow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sun (High).
+        /// </summary>
+        public static string Weather_ColorCurves_SunHigh {
+            get {
+                return ResourceManager.GetString("Weather_ColorCurves_SunHigh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sun (Low).
+        /// </summary>
+        public static string Weather_ColorCurves_SunLow {
+            get {
+                return ResourceManager.GetString("Weather_ColorCurves_SunLow", resourceCulture);
             }
         }
         
