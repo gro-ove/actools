@@ -26,6 +26,8 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using SharpCompress.Common;
+using SharpCompress.Reader;
 using ZipArchive = SharpCompress.Archive.Zip.ZipArchive;
 
 namespace AcManager.Tools {
@@ -340,15 +342,14 @@ namespace AcManager.Tools {
         /// <param name="additionalButton">Label of additional button.</param>
         /// <param name="saveable">Can be saved.</param>
         /// <param name="applyable">Can be applied.</param>
-        /// <param name="nonSaveable">Can be applied without saving.</param>
+        /// <param name="appliableWithoutSaving">Can be applied without saving.</param>
         /// <returns>User choise.</returns>
         private Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true,
-                bool nonSaveable = true) {
+                bool appliableWithoutSaving = true) {
             var description =
                     $@"Name: [b]{shared.Name ?? "[/b][i]?[/i][b]"}[/b]
-For: [b]{shared.Target ?? "[/b][i]?[/i][b]"}[/b]
-Author: [b]{
-                            shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
+{(shared.EntryType == SharedEntryType.Weather ? "ID" : "For")}: [b]{shared.Target ?? "[/b][i]?[/i][b]"}[/b]
+Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
 
             var dlg = new ModernDialog {
                 Title = shared.EntryType.GetDescription().ToTitle(),
@@ -368,9 +369,9 @@ Author: [b]{
             };
 
             dlg.Buttons = new[] {
-                applyable && saveable ? dlg.CreateCloseDialogButton(nonSaveable ? "Apply & Save" : "Save & Apply", true, false, MessageBoxResult.Yes) : null,
-                nonSaveable && applyable ? dlg.CreateCloseDialogButton(saveable ? "Apply Only" : "Apply", true, false, MessageBoxResult.OK) : null,
-                saveable ? dlg.CreateCloseDialogButton(applyable && nonSaveable ? "Save Only" : "Save", true, false, MessageBoxResult.No) : null,
+                applyable && saveable ? dlg.CreateCloseDialogButton(appliableWithoutSaving ? "Apply & Save" : "Save & Apply", true, false, MessageBoxResult.Yes) : null,
+                appliableWithoutSaving && applyable ? dlg.CreateCloseDialogButton(saveable ? "Apply Only" : "Apply", true, false, MessageBoxResult.OK) : null,
+                saveable ? dlg.CreateCloseDialogButton(applyable && appliableWithoutSaving ? "Save Only" : "Save", true, false, MessageBoxResult.No) : null,
                 additionalButton == null ? null : dlg.CreateCloseDialogButton(additionalButton, true, false, MessageBoxResult.None),
                 dlg.CancelButton
             }.NonNull();
@@ -404,8 +405,40 @@ Author: [b]{
             if (data == null) return ArgumentHandleResult.Failed;
 
             switch (shared.EntryType) {
+                case SharedEntryType.Weather: {
+                    var result = ShowDialog(shared, applyable: false);
+                        switch (result) {
+                            case Choise.Save:
+                                var directory = FileUtils.EnsureUnique(Path.Combine(
+                                        WeatherManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
+                                Directory.CreateDirectory(directory);
+
+                                var written = 0;
+                                using (var stream = new MemoryStream(data)) {
+                                    var reader = ReaderFactory.Open(stream);
+
+                                    try {
+                                        while (reader.MoveToNextEntry()) {
+                                            if (!reader.Entry.IsDirectory) {
+                                                reader.WriteEntryToDirectory(directory, ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
+                                                written++;
+                                            }
+                                        }
+                                    } catch (EndOfStreamException) {
+                                        if (written < 2) {
+                                            throw;
+                                        }
+                                    }
+                                }
+                                
+                                return ArgumentHandleResult.SuccessfulShow;
+                            default:
+                                return ArgumentHandleResult.Failed;
+                        }
+                    }
+
                 case SharedEntryType.PpFilter: {
-                        var result = ShowDialog(shared, nonSaveable: false);
+                        var result = ShowDialog(shared, appliableWithoutSaving: false);
                         switch (result) {
                             case Choise.Save:
                             case Choise.ApplyAndSave:

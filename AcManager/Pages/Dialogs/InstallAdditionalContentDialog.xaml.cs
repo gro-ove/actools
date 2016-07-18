@@ -8,6 +8,7 @@ using System.Windows;
 using AcManager.Annotations;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AdditionalContentInstallation;
 using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;

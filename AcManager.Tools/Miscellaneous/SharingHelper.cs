@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Internal;
@@ -73,12 +74,13 @@ namespace AcManager.Tools.Miscellaneous {
         public string GetFileName() {
             switch (EntryType) {
                 case SharedEntryType.Weather:
-                    return Name ?? EntryType.GetDescription();
+                    return Regex.Replace(Target ?? Name ?? "shared_weather", @"\W+", "").ToLowerInvariant();
 
                 default:
+                    // TODO: even localized?
                     return (Name ?? EntryType.GetDescription()) +
                             // (Target == null ? "" : " for " + Target) +
-                            (Author == null ? "" : " (" + Author + ")") + SharingHelper.GetExtenstion(EntryType);
+                            (Author == null ? "" : @" (" + Author + @")") + SharingHelper.GetExtenstion(EntryType);
             }
         }
 

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Input;
 using AcManager.Tools.AcErrors.Solutions;
 using AcManager.Tools.AcObjectsNew;
-using AcTools.Utils.Helpers;
+using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Data;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
@@ -20,6 +18,8 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using SharpCompress.Common;
+using SharpCompress.Writer;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedWeatherPage : ILoadableContent, IParametrizedUriContent, INotifyPropertyChanged {
@@ -80,19 +80,15 @@ namespace AcManager.Pages.Selected {
                         NonfatalError.Notify("Can’t share weather", "Files are too big.");
                         return;
                     }
-
+                    
                     await Task.Run(() => {
-                        var tempFilename = FilesStorage.Instance.GetTemporaryFilename("Shared Weather.zip");
-                        using (var zip = ZipFile.Open(tempFilename, ZipArchiveMode.Create)) {
-                            zip.CreateEntryFromFile(SelectedObject.IniFilename, "weather.ini");
-                            zip.CreateEntryFromFile(SelectedObject.ColorCurvesIniFilename, "colorCurves.ini");
-                        }
+                        using (var memory = new MemoryStream()) {
+                            using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
+                                writer.Write("weather.ini", SelectedObject.IniFilename);
+                                writer.Write("colorCurves.ini", SelectedObject.ColorCurvesIniFilename);
+                            }
 
-                        data = File.ReadAllBytes(tempFilename);
-                        try {
-                            File.Delete(tempFilename);
-                        } catch (Exception e) {
-                            Logging.Warning("[SelectedWeatherPage] Can’t clean up: " + e);
+                            data = memory.ToArray();
                         }
                     });
                 } catch (Exception e) {
@@ -101,7 +97,7 @@ namespace AcManager.Pages.Selected {
                 }
 
                 if (data == null) return;
-                await SharingUiHelper.ShareAsync(SharedEntryType.Weather, SelectedObject.Name, SelectedObject.Type.GetDescription(), data);
+                await SharingUiHelper.ShareAsync(SharedEntryType.Weather, SelectedObject.Name, SelectedObject.Id, data);
             }));
 
             private ICommand _testCommand;
