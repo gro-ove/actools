@@ -5,6 +5,20 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Force specific locale even if it’s not supported at the moment. Could be useful
+        /// if you want app to load locale from Locales folder.
+        /// Example: --force-locale=ru-RU.
+        /// </summary>
+        ForceLocale,
+
+        /// <summary>
+        /// Load locales from Locales folder located in “…\AppData\Local\AcTools Content Manager”
+        /// if exists. Enabled by default.
+        /// Example: --use-custom-locales=no.
+        /// </summary>
+        UseCustomLocales,
+
+        /// <summary>
         /// UI scale (as a temporary solution for 4K screens). Make sure ideal formatting mode
         /// is enabled when using unusual scale.
         /// Example: --ui-scale=1.5.
@@ -149,9 +163,8 @@ namespace AcManager {
         SmartPresetsChangedHandling,
 
         /// <summary>
-        /// Restore original race.ini file, enabled by default. You can disable for whatever
-        /// reason you want.
-        /// Example: --enable-race-ini-restoration=no.
+        /// Restore original race.ini file, disabled by default.
+        /// Example: --enable-race-ini-restoration.
         /// </summary>
         EnableRaceIniRestoration,
 

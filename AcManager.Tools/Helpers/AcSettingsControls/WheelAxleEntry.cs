@@ -3,6 +3,7 @@ using System.Linq;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 using AcTools.Utils;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
     public sealed class WheelAxleEntry : BaseEntry<DirectInputAxle>, IDirectInputEntry {
@@ -10,7 +11,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public bool GammaMode { get; }
 
-        public WheelAxleEntry(string id, string name, bool rangeMode = true, bool gammaMode = false) : base(id, name) {
+        public WheelAxleEntry([LocalizationRequired(false)] string id, string name, bool rangeMode = true, bool gammaMode = false) : base(id, name) {
             RangeMode = rangeMode;
             GammaMode = gammaMode;
         }

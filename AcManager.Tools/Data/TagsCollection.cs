@@ -108,13 +108,13 @@ namespace AcManager.Tools.Data {
                         return null;
 
                     case "racing":
-                        return "race";
+                        return @"race";
 
                     case "american":
-                        return "usa";
+                        return @"usa";
 
                     case "road":
-                        return "street";
+                        return @"street";
 
                     default:
                         return AcStringValues.CountryFromTag(t)?.ToLower() ?? t;

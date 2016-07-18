@@ -1,131 +1,129 @@
-using System.ComponentModel;
 // ReSharper disable InconsistentNaming
-
 namespace AcManager.Tools.AcErrors {
     public enum AcErrorType {
         /// <summary>
         /// {0}: exception
         /// </summary>
-        [Description("Loading unhandled error: {0}")]
+        [LocalizedDescription("LoadingUnhandledError")]
         Load_Base,
 
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [Description("File “{0}” is missing")]
+        [LocalizedDescription("FileIsMissing")]
         Data_IniIsMissing,
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [Description("File “{0}” is damaged")]
+        [LocalizedDescription("FileIsDamaged")]
         Data_IniIsDamaged,
 
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [Description("File “{0}” is missing")]
+        [LocalizedDescription("FileIsMissing")]
         Data_JsonIsMissing,
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [Description("File “{0}” is damaged")]
+        [LocalizedDescription("FileIsDamaged")]
         Data_JsonIsDamaged,
-        
-        [Description("Name is missing")]
+
+        [LocalizedDescription("NameIsMissing")]
         Data_ObjectNameIsMissing,
-        
-        [Description("Brand name is missing")]
+
+        [LocalizedDescription("BrandNameIsMissing")]
         Data_CarBrandIsMissing,
-        
-        [Description("Directory “ui” is missing")]
+
+        [LocalizedDescription("DirectoryUiIsMissing")]
         Data_UiDirectoryIsMissing,
 
 
         /// <summary>
         /// {0}: career name or id
         /// </summary>
-        [Description("Events of “{0}” are missing")]
+        [LocalizedDescription("EventsOfAreMissing")]
         Data_KunosCareerEventsAreMissing,
 
-        [Description("Event conditions aren’t supported")]
+        [LocalizedDescription("EventConditionsAreNotSupported")]
         Data_KunosCareerConditions,
 
-        [Description("Required content is missing")]
+        [LocalizedDescription("RequiredContentIsMissing")]
         Data_KunosCareerContentIsMissing,
 
         /// <summary>
         /// {0}: track id
         /// </summary>
-        [Description("Required track “{0}” is missing")]
+        [LocalizedDescription("RequiredTrackIsMissing")]
         Data_KunosCareerTrackIsMissing,
 
         /// <summary>
         /// {0}: skin id
         /// </summary>
-        [Description("Required car “{0}” is missing")]
+        [LocalizedDescription("RequiredCarIsMissing")]
         Data_KunosCareerCarIsMissing,
 
         /// <summary>
         /// {0}: car name or id
         /// {1}: skin id
         /// </summary>
-        [Description("Required skin “{1}” for {0} is missing")]
+        [LocalizedDescription("RequiredSkin1ForIsMissing")]
         Data_KunosCareerCarSkinIsMissing,
 
         /// <summary>
         /// {0}: weather id
         /// </summary>
-        [Description("Required weather “{0}” is missing")]
+        [LocalizedDescription("RequiredWeatherIsMissing")]
         Data_KunosCareerWeatherIsMissing,
 
 
-        [Description("Car’s parent is missing")]
+        [LocalizedDescription("CarParentIsMissing")]
         Car_ParentIsMissing,
 
-        [Description("Brand’s badge is missing")]
+        [LocalizedDescription("BrandBadgeIsMissing")]
         Car_BrandBadgeIsMissing,
 
-        [Description("Upgrade icon is missing")]
+        [LocalizedDescription("UpgradeIconIsMissing")]
         Car_UpgradeIconIsMissing,
-        
 
-        [Description("Skins are missing")]
+
+        [LocalizedDescription("SkinsAreMissing")]
         CarSkins_SkinsAreMissing,
 
-        [Description("Skins directory is unavailable")]
+        [LocalizedDescription("SkinsDirectoryIsUnavailable")]
         CarSkins_DirectoryIsUnavailable,
 
 
-        [Description("Setup’s track ({0}) is missing")]
+        [LocalizedDescription("SetupTrackIsMissing")]
         CarSetup_TrackIsMissing,
 
 
-        [Description("Skin’s livery ({0}/livery.png) is missing")]
+        [LocalizedDescription("SkinLiveryLiveryPngIsMissing")]
         CarSkin_LiveryIsMissing,
 
-        [Description("Skin’s preview ({0}/preview.jpg) is missing")]
+        [LocalizedDescription("SkinPreviewPreviewJpgIsMissing")]
         CarSkin_PreviewIsMissing,
 
 
-        [Description("Model (KN5 file) is missing")]
+        [LocalizedDescription("ModelKn5FileIsMissing")]
         Showroom_Kn5IsMissing,
 
 
-        [Description("Font’s bitmap is missing")]
+        [LocalizedDescription("FontBitmapIsMissing")]
         Font_BitmapIsMissing,
 
-        [Description("Font is used but disabled")]
+        [LocalizedDescription("FontIsUsedButDisabled")]
         Font_UsedButDisabled,
 
 
-        [Description("Track “{0}” is missing")]
+        [LocalizedDescription("TrackIsMissing")]
         Replay_TrackIsMissing,
 
-        [Description("Name shouldn't contain symbols like “[” or “]”")]
+        [LocalizedDescription("NameShouldnTContainSymbolsLikeOr")]
         Replay_InvalidName,
     }
 }

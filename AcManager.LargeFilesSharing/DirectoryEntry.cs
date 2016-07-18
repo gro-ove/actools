@@ -8,7 +8,7 @@ namespace AcManager.LargeFilesSharing {
         public DirectoryEntry[] Children { get; set; }
 
         public override string ToString() {
-            return $"{DisplayName} ({Id}){{ {Children.JoinToString(", ")} }}";
+            return $"{DisplayName} ({Id}){{ {Children.JoinToString(@", ")} }}";
         }
     }
 }

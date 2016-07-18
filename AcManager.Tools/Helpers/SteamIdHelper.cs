@@ -23,7 +23,7 @@ namespace AcManager.Tools.Helpers {
         public static SteamIdHelper Instance { get; private set; }
 
         public static SteamIdHelper Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
+            if (Instance != null) throw new Exception(@"Already initialized");
             return Instance = new SteamIdHelper();
         }
 
@@ -70,7 +70,7 @@ namespace AcManager.Tools.Helpers {
                 if (regKey == null) return null;
 
                 var steamPath = regKey.GetValue("SteamPath").ToString();
-                var config = File.ReadAllText(Path.Combine(steamPath, "config", "config.vdf"));
+                var config = File.ReadAllText(Path.Combine(steamPath, @"config", @"config.vdf"));
 
                 var match = Regex.Match(config, @"""SteamID""\s+""(\d+)""");
                 return match.Success ? match.Groups[1].Value : null;

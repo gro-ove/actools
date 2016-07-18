@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace AcManager.Tools.Helpers.Api {
         public static readonly string UserAgent;
 
         static CmApiProvider() {
-            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? " WOW64;" : "")}";
+            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
             UserAgent = $"ContentManager/{BuildInformation.AppVersion} ({windows})";
         }
         #endregion
@@ -62,7 +63,7 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
-        public static Task<byte[]> GetDataAsync(string url, IProgress<double?> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public static Task<byte[]> GetDataAsync([Localizable(false)] string url, IProgress<double?> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             return InternalUtils.CmGetDataAsync(url, UserAgent, progress, cancellation);
         }
     }

@@ -6,12 +6,12 @@ using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Tools.AcManagersNew {
     public abstract class AcManagerFileSpecific<T> : AcManagerNew<T> where T : AcCommonObject {
-        public virtual string SearchPattern => "*";
+        public virtual string SearchPattern => @"*";
 
         private Regex _regex;
 
-        protected override bool Filter(string filename) => SearchPattern == "*" || (_regex ?? (_regex = new Regex(
-                SearchPattern.Replace(".", "[.]").Replace("*", ".*").Replace("?", "."))))
+        protected override bool Filter(string filename) => SearchPattern == @"*" || (_regex ?? (_regex = new Regex(
+                SearchPattern.Replace(@".", @"[.]").Replace(@"*", @".*").Replace(@"?", @"."))))
                 .IsMatch(Path.GetFileName(filename) ?? "");
 
         protected override IEnumerable<AcPlaceholderNew> ScanInner() {

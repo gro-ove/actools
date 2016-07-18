@@ -124,8 +124,7 @@ namespace AcManager.Tools.AcManagersNew {
     }
 
     public class WrappedValueChangedEventManager : WeakEventManager {
-        private WrappedValueChangedEventManager() {
-        }
+        private WrappedValueChangedEventManager() {}
         
         public static void AddListener(IBaseAcObjectObservableCollection source, IWeakEventListener listener) {
             CurrentManager.ProtectedAddListener(source, listener);
@@ -158,6 +157,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
         
         private void OnWrappedValueChanged(object sender, WrappedValueChangedEventArgs args) {
+            // what is that?!
             Logging.Write("WHOA");
             DeliverEvent(sender, args);
         }

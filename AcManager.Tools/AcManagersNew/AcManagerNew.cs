@@ -1,4 +1,4 @@
-﻿#define LOGGING
+﻿// #define LOGGING
 
 using System;
 using System.Collections.Generic;
@@ -97,10 +97,10 @@ namespace AcManager.Tools.AcManagersNew {
             Debug.WriteLine($"    id: {id}; object: {obj}; location: {obj?.Location}");
             if (obj != null && !obj.Location.Equals(dir, StringComparison.OrdinalIgnoreCase)) {
                 if (change.Type == WatcherChangeTypes.Created) {
-                    Debug.WriteLine("    wrong location, removed");
+                    Debug.WriteLine(@"    wrong location, removed");
                     RemoveFromList(obj.Id);
                 } else {
-                    Debug.WriteLine("    wrong location, nulled");
+                    Debug.WriteLine(@"    wrong location, nulled");
                 }
                 obj = null;
             }
@@ -175,7 +175,7 @@ namespace AcManager.Tools.AcManagersNew {
             }
 
 #if LOGGING
-            Debug.WriteLine("    current list: " + InnerWrappersList.Select(x => x.Value.Id).JoinToString(", "));
+            Debug.WriteLine(@"    current list: " + InnerWrappersList.Select(x => x.Value.Id).JoinToString(", "));
 #endif
         }
 
@@ -272,7 +272,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         protected virtual bool ShouldSkipFile([NotNull]string objectLocation, [NotNull]string filename) {
-            return filename.EndsWith(".tmp", StringComparison.OrdinalIgnoreCase);
+            return filename.EndsWith(@".tmp", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

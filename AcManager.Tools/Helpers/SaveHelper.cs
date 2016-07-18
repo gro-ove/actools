@@ -66,7 +66,7 @@ namespace AcManager.Tools.Helpers {
                 _load(JsonConvert.DeserializeObject<T>(data));
                 return true;
             } catch (Exception e) {
-                Logging.Warning("cannot load data: " + e);
+                Logging.Warning("Cannot load data: " + e);
             } finally {
                 _disableSaving = false;
             }
@@ -86,7 +86,7 @@ namespace AcManager.Tools.Helpers {
                 _disableSaving = disableSaving;
                 _load(JsonConvert.DeserializeObject<T>(data));
             } catch (Exception e) {
-                Logging.Warning("cannot load data: " + e);
+                Logging.Warning("Cannot load data: " + e);
             } finally {
                 _disableSaving = false;
             }

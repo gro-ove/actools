@@ -13,7 +13,7 @@ namespace AcManager.LargeFilesSharing {
                 var child = i.Children.GetChildByIdOrDefault(id);
                 if (child != null) return child;
             }
-            throw new Exception("Element with given ID not found");
+            throw new Exception(@"Element with given ID not found");
         }
 
         [CanBeNull]

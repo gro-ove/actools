@@ -140,6 +140,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="CustomResourceManager.cs" />
     <Compile Include="Win32\MonitorDpiType.cs" />
     <Compile Include="Win32\NativeMethods.cs" />
     <Compile Include="Win32\OSVersionHelper.cs" />

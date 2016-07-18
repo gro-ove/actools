@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 
 namespace AcManager.Tools.Helpers {
     public class AbstractFilesStorage : AbstractSubdirectoryWatcherProvider {
@@ -22,7 +23,7 @@ namespace AcManager.Tools.Helpers {
             return directory;
         }
 
-        public string GetFilename(params string[] parts) {
+        public string GetFilename([Localizable(false)] params string[] parts) {
             var filename = CombineFilename(parts);
             EnsureDirectory(Path.GetDirectoryName(filename));
             return filename;

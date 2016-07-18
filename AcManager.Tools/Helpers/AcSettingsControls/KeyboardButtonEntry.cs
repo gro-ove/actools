@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
     public class KeyboardButtonEntry : BaseEntry<KeyboardInputButton> {
-        public KeyboardButtonEntry(string id, string name) : base(id, name) {}
+        public KeyboardButtonEntry([LocalizationRequired(false)] string id, string name) : base(id, name) {}
 
         protected override void OnInputChanged(KeyboardInputButton oldValue, KeyboardInputButton newValue) {
             if (oldValue != null) {
@@ -28,7 +29,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
     }
 
     public class KeyboardSpecificButtonEntry : KeyboardButtonEntry {
-        public KeyboardSpecificButtonEntry(string id, string name) : base(id, name) { }
+        public KeyboardSpecificButtonEntry([LocalizationRequired(false)] string id, string name) : base(id, name) { }
 
         public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {
             var section = ini["KEYBOARD"];

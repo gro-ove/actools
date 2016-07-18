@@ -62,7 +62,7 @@ namespace AcManager.Pages.Drive {
             Model.Entry.OnTick();
         }
 
-        private void Online_SelectedServerPage_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_timer != null) return;
 
             _timer = new DispatcherTimer {
@@ -72,15 +72,18 @@ namespace AcManager.Pages.Drive {
             _timer.Tick += Timer_Tick;
         }
 
-        private void Online_SelectedServerPage_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (_timer == null) return;
 
             _timer?.Stop();
             _timer = null;
         }
 
-        private void Online_SelectedServerPage_OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton != MouseButton.Right) return;
+        private async void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
+            await Task.Delay(1);
+            if (e.Handled) return;
+
+            e.Handled = true;
             ToolBar.IsActive = !ToolBar.IsActive;
         }
 

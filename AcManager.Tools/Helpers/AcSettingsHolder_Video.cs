@@ -52,14 +52,14 @@ namespace AcManager.Tools.Helpers {
 
                 internal ResolutionEntry() {
                     _custom = true;
-                    DisplayName = "Custom";
+                    DisplayName = Resources.AcSettings_CustomResolution;
                 }
 
                 internal ResolutionEntry(int width, int height, int framerate) {
                     _width = width;
                     _height = height;
                     _framerate = framerate;
-                    DisplayName = $"{Width}×{Height}, {Framerate} Hz";
+                    DisplayName = string.Format(Resources.AcSettings_ResolutionFormat, Width, Height, Framerate);
                 }
 
                 public bool Equals(ResolutionEntry other) {
@@ -86,7 +86,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            internal VideoSettings() : base("video") {
+            internal VideoSettings() : base(@"video") {
                 CustomResolution.PropertyChanged += (sender, args) => {
                     Save();
                 };
@@ -94,88 +94,88 @@ namespace AcManager.Tools.Helpers {
 
             #region Entries lists
             public SettingEntry[] CameraModes { get; } = {
-                new SettingEntry("DEFAULT", "Single Screen"),
-                new SettingEntry("TRIPLE", "Triple Screen"),
-                new SettingEntry("OCULUS", "Oculus Rift")
+                new SettingEntry("DEFAULT", Resources.AcSettings_CameraMode_SingleScreen),
+                new SettingEntry("TRIPLE", Resources.AcSettings_CameraMode_TripleScreen),
+                new SettingEntry("OCULUS", Resources.AcSettings_CameraMode_OculusRift)
             };
 
             public SettingEntry[] AnisotropicLevels { get; } = {
-                new SettingEntry("0", "Off"),
-                new SettingEntry("2", "2x"),
-                new SettingEntry("4", "4x"),
-                new SettingEntry("8", "8x"),
-                new SettingEntry("16", "16x"),
+                new SettingEntry("0", Resources.AcSettings_Off),
+                new SettingEntry("2", @"2x"),
+                new SettingEntry("4", @"4x"),
+                new SettingEntry("8", @"8x"),
+                new SettingEntry("16", @"16x"),
             };
 
             public SettingEntry[] AntiAliasingLevels { get; } = {
-                new SettingEntry("1", "Off"),
-                new SettingEntry("2", "2x"),
-                new SettingEntry("4", "4x"),
-                new SettingEntry("8", "8x (experimental)")
+                new SettingEntry("1", Resources.AcSettings_Off),
+                new SettingEntry("2", @"2x"),
+                new SettingEntry("4", @"4x"),
+                new SettingEntry("8", string.Format(Resources.AcSettings_ExperimentalValue, @"8x"))
             };
 
             public SettingEntry[] ShadowMapSizes { get; } = {
-                new SettingEntry("512", "512×512"),
-                new SettingEntry("1024", "1024×1024"),
-                new SettingEntry("2048", "2048×2048"),
-                new SettingEntry("4096", "4096×4096"),
-                //new SettingEntry("8196", "8196×8196 (for crazy lads)"),
+                new SettingEntry("256", @"256×256"),
+                new SettingEntry("512", @"512×512"),
+                new SettingEntry("1024", @"1024×1024"),
+                new SettingEntry("2048", @"2048×2048"),
+                new SettingEntry("4096", @"4096×4096")
             };
 
             public SettingEntry[] WorldDetailLevels { get; } = {
-                new SettingEntry("0", "Minimum"),
-                new SettingEntry("1", "Low"),
-                new SettingEntry("2", "Medium"),
-                new SettingEntry("3", "High"),
-                new SettingEntry("4", "Very High"),
-                new SettingEntry("5", "Maximum")
+                new SettingEntry("0", Resources.AcSettings_Quality_Minimum),
+                new SettingEntry("1", Resources.AcSettings_Quality_Low),
+                new SettingEntry("2", Resources.AcSettings_Quality_Medium),
+                new SettingEntry("3", Resources.AcSettings_Quality_High),
+                new SettingEntry("4", Resources.AcSettings_Quality_VeryHigh),
+                new SettingEntry("5", Resources.AcSettings_Quality_Maximum)
             };
 
             public SettingEntry[] SmokeLevels { get; } = {
-                new SettingEntry("0", "Off"),
-                new SettingEntry("1", "Minimum"),
-                new SettingEntry("2", "Low"),
-                new SettingEntry("3", "Medium"),
-                new SettingEntry("4", "High"),
-                new SettingEntry("5", "Maximum")
+                new SettingEntry("0", Resources.AcSettings_Off),
+                new SettingEntry("1", Resources.AcSettings_Quality_Minimum),
+                new SettingEntry("2", Resources.AcSettings_Quality_Low),
+                new SettingEntry("3", Resources.AcSettings_Quality_Medium),
+                new SettingEntry("4", Resources.AcSettings_Quality_High),
+                new SettingEntry("5", Resources.AcSettings_Quality_Maximum)
             };
 
             public SettingEntry[] PostProcessingQualities => WorldDetailLevels;
 
             public SettingEntry[] GlareQualities { get; } = {
-                new SettingEntry("0", "Off"),
-                new SettingEntry("1", "Low"),
-                new SettingEntry("2", "Medium"),
-                new SettingEntry("3", "High"),
-                new SettingEntry("4", "Very High"),
-                new SettingEntry("5", "Maximum")
+                new SettingEntry("0", Resources.AcSettings_Off),
+                new SettingEntry("1", Resources.AcSettings_Quality_Low),
+                new SettingEntry("2", Resources.AcSettings_Quality_Medium),
+                new SettingEntry("3", Resources.AcSettings_Quality_High),
+                new SettingEntry("4", Resources.AcSettings_Quality_VeryHigh),
+                new SettingEntry("5", Resources.AcSettings_Quality_Maximum)
             };
 
             public SettingEntry[] DepthOfFieldQualities => GlareQualities;
 
             public SettingEntry[] MirrorResolutions { get; } = {
-                new SettingEntry("0", "Off"),
-                new SettingEntry("256", "64×256"),
-                new SettingEntry("512", "128×512"),
-                new SettingEntry("1024", "256×1024")
+                new SettingEntry("0", Resources.AcSettings_Off),
+                new SettingEntry("256", @"64×256"),
+                new SettingEntry("512", @"128×512"),
+                new SettingEntry("1024", @"256×1024")
             };
 
             public SettingEntry[] CubemapResolutions { get; } = {
-                new SettingEntry("0", "Off"),
-                new SettingEntry("256", "256×256"),
-                new SettingEntry("512", "512×512"),
-                new SettingEntry("1024", "1024×1024"),
-                new SettingEntry("2048", "2048×2048")
+                new SettingEntry("0", Resources.AcSettings_Off),
+                new SettingEntry("256", @"256×256"),
+                new SettingEntry("512", @"512×512"),
+                new SettingEntry("1024", @"1024×1024"),
+                new SettingEntry("2048", @"2048×2048")
             };
 
             public SettingEntry[] CubemapRenderingFrequencies { get; } = {
-                new SettingEntry("0", "Static"),
-                new SettingEntry("1", "One face per frame"),
-                new SettingEntry("2", "Two faces per frame"),
-                new SettingEntry("3", "Three faces per frame"),
-                new SettingEntry("4", "Four faces per frame"),
-                new SettingEntry("5", "Five faces per frame"),
-                new SettingEntry("6", "Six faces per frame"),
+                new SettingEntry("0", Resources.AcSettings_Cubemap_Static),
+                new SettingEntry("1", Resources.AcSettings_Cubemap_OneFace),
+                new SettingEntry("2", Resources.AcSettings_Cubemap_TwoFaces),
+                new SettingEntry("3", Resources.AcSettings_Cubemap_ThreeFaces),
+                new SettingEntry("4", Resources.AcSettings_Cubemap_FourFaces),
+                new SettingEntry("5", Resources.AcSettings_Cubemap_FiveFaces),
+                new SettingEntry("6", Resources.AcSettings_Cubemap_SixFaces),
             };
             #endregion
 
@@ -659,9 +659,9 @@ namespace AcManager.Tools.Helpers {
 
                 section = Ini["CUBEMAP"];
                 CubemapResolution = section.GetEntry("SIZE", CubemapResolutions, "1024");
-                var orig = CubemapResolution.Value == "0" && section.ContainsKey("__ORIG_FACES_PER_FRAME");
-                CubemapRenderingFrequency = section.GetEntry(orig ? "__ORIG_FACES_PER_FRAME" : "FACES_PER_FRAME", CubemapRenderingFrequencies, "3");
-                CubemapDistance = section.GetInt(orig ? "__ORIG_FARPLANE" : "FARPLANE", 600);
+                var orig = CubemapResolution.Value == @"0" && section.ContainsKey(@"__ORIG_FACES_PER_FRAME");
+                CubemapRenderingFrequency = section.GetEntry(orig ? @"__ORIG_FACES_PER_FRAME" : @"FACES_PER_FRAME", CubemapRenderingFrequencies, "3");
+                CubemapDistance = section.GetInt(orig ? @"__ORIG_FARPLANE" : @"FARPLANE", 600);
             }
 
             protected override void SetToIni() {
@@ -703,7 +703,7 @@ namespace AcManager.Tools.Helpers {
                 Ini["MIRROR"].Set("SIZE", MirrorResolution);
 
                 section = Ini["CUBEMAP"];
-                if (CubemapResolution.Value == "0") {
+                if (CubemapResolution.Value == @"0") {
                     section.Set("SIZE", 0);
                     section.Set("FACES_PER_FRAME", 0);
                     section.Set("FARPLANE", 0);
@@ -713,8 +713,8 @@ namespace AcManager.Tools.Helpers {
                     section.Set("SIZE", CubemapResolution);
                     section.Set("FACES_PER_FRAME", CubemapRenderingFrequency);
                     section.Set("FARPLANE", CubemapDistance);
-                    section.Remove("__ORIG_FACES_PER_FRAME");
-                    section.Remove("__ORIG_FARPLANE");
+                    section.Remove(@"__ORIG_FACES_PER_FRAME");
+                    section.Remove(@"__ORIG_FARPLANE");
                 }
             }
         }

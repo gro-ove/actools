@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Linq;
 using AcTools.Utils;
 using AcTools.Windows;
 
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
         public class ExposureSettings : IniSettings {
-            internal ExposureSettings() : base("exposure") {}
+            internal ExposureSettings() : base(@"exposure") {}
 
             private int _value;
 
@@ -33,23 +34,15 @@ namespace AcManager.Tools.Helpers {
         public static ExposureSettings Exposure => _exposure ?? (_exposure = new ExposureSettings());
 
         public class ReplaySettings : IniSettings {
-            public enum ReplayQuality {
-                Minimum = 0,
-                Low = 1,
-                Medium = 2,
-                High = 3,
-                Ultra = 4
-            }
-
-            public ReplayQuality[] Qualities { get; } = {
-                ReplayQuality.Minimum,
-                ReplayQuality.Low,
-                ReplayQuality.Medium,
-                ReplayQuality.High,
-                ReplayQuality.Ultra
+            public SettingEntry[] Qualities { get; } = {
+                new SettingEntry(0, Resources.AcSettings_Quality_Minimum),
+                new SettingEntry(1, Resources.AcSettings_Quality_Low),
+                new SettingEntry(2, Resources.AcSettings_Quality_Medium),
+                new SettingEntry(3, Resources.AcSettings_Quality_High),
+                new SettingEntry(4, Resources.AcSettings_Quality_Ultra)
             };
 
-            internal ReplaySettings() : base("replay") { }
+            internal ReplaySettings() : base(@"replay") { }
 
             private int _maxSize;
 
@@ -78,11 +71,12 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private ReplayQuality _quality;
+            private SettingEntry _quality;
 
-            public ReplayQuality Quality {
+            public SettingEntry Quality {
                 get { return _quality; }
                 set {
+                    if (!Qualities.Contains(value)) value = Qualities[0];
                     if (Equals(value, _quality)) return;
                     _quality = value;
                     OnPropertyChanged();
@@ -91,7 +85,7 @@ namespace AcManager.Tools.Helpers {
 
             protected override void LoadFromIni() {
                 MaxSize = Ini["REPLAY"].GetInt("MAX_SIZE_MB", 200);
-                Quality = Ini["QUALITY"].GetEnum("LEVEL", ReplayQuality.High);
+                Quality = Ini["QUALITY"].GetEntry("LEVEL", Qualities, 3);
             }
 
             protected override void SetToIni() {

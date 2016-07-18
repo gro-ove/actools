@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -36,7 +37,7 @@ namespace AcManager.Tools.Helpers {
         private static string DefaultDataLocation {
             get {
                 var exeFilename = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                return Path.Combine(Path.GetDirectoryName(exeFilename) ?? ".", Path.GetFileName(exeFilename) + " Data");
+                return Path.Combine(Path.GetDirectoryName(exeFilename) ?? @".", Path.GetFileName(exeFilename) + " Data");
             }
         }
 
@@ -79,7 +80,7 @@ namespace AcManager.Tools.Helpers {
             return new ContentEntry(isOverrided ? contentUserFile : contentFile, isOverrided);
         }
 
-        public string LoadContentFile(string dir, string name = null) {
+        public string LoadContentFile(string dir, [Localizable(false)] string name = null) {
             var entry = GetContentFile(dir, name);
             if (!entry.Exists) return null;
 
@@ -91,7 +92,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public JObject LoadJsonContentFile(string dir, string name = null) {
+        public JObject LoadJsonContentFile(string dir, [Localizable(false)] string name = null) {
             var entry = GetContentFile(dir, name);
             if (!entry.Exists) return null;
 
@@ -103,7 +104,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public T LoadJsonContentFile<T>(string dir, string name = null) {
+        public T LoadJsonContentFile<T>(string dir, [Localizable(false)] string name = null) {
             var entry = GetContentFile(dir, name);
             if (!entry.Exists) return default(T);
 
@@ -190,7 +191,7 @@ namespace AcManager.Tools.Helpers {
                     case '<':
                     case '>':
                     case '|':
-                        result.AppendFormat("%{0:X2}", (int)ch);
+                        result.AppendFormat(@"%{0:X2}", (int)ch);
                         break;
 
                     default:

@@ -121,7 +121,7 @@
             <mui:ModernFrame Grid.Column="2" Source="{Binding SelectedSource}" Margin="16 0 16 0" TransitionName="Normal" Width="450" />
 
             <ProgressBar IsIndeterminate="True" Margin="20" Width="320" Height="4" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.ColumnSpan="3"
-                    Grid.Column="0" Visibility="{Binding Manager.BackgroundLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    Grid.Column="0" Visibility="{Binding Manager.BackgroundLoading, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False" />
 
             <!--empty-->
             <StackPanel Visibility="{Binding MainList.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Grid.ColumnSpan="3"

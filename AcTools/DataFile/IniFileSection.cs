@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using AcTools.Utils.Helpers;
@@ -7,7 +8,7 @@ using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public class IniFileSection : Dictionary<string, string> {
-        public new dynamic this[string key] {
+        public new dynamic this[[NotNull, LocalizationRequired(false)] string key] {
             get { return ContainsKey(key) ? base[key] : null; }
             set {
                 if (value == null) {
@@ -24,7 +25,7 @@ namespace AcTools.DataFile {
         }
 
         [CanBeNull]
-        public string Get([NotNull, LocalizationRequired(false)] string key, string defaultValue) {
+        public string Get([NotNull, LocalizationRequired(false)] string key, [Localizable(false)] string defaultValue) {
             return ContainsKey(key) ? base[key] : defaultValue;
         }
 

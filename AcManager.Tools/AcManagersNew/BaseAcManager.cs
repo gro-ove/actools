@@ -229,7 +229,7 @@ namespace AcManager.Tools.AcManagersNew {
         public void Reload([NotNull]string id) {
             if (id == null) throw new ArgumentNullException(nameof(id));
             var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException(@"ID is wrong", nameof(id));
+            if (wrapper == null) throw new ArgumentException("ID is wrong", nameof(id));
             wrapper.Value = CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled);
         }
         

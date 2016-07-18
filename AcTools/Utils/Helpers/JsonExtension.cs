@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -11,12 +12,12 @@ namespace AcTools.Utils.Helpers {
             public readonly string Name, ParentName;
             public readonly FieldType Type;
 
-            public Field(string name, FieldType type) {
+            public Field([Localizable(false)] string name, FieldType type) {
                 Name = name;
                 Type = type;
             }
 
-            public Field(string name, string parentName, FieldType type) {
+            public Field([Localizable(false)] string name, [Localizable(false)] string parentName, FieldType type) {
                 Name = name;
                 ParentName = parentName;
                 Type = type;

@@ -187,7 +187,7 @@ namespace AcManager.Tools.Data {
 
         public string Description { get; }
 
-        public string FullDescription => $@"{Description.Substring(0, 1).ToUpper() + Description.Substring(1)} ({Temperature:F1}°C)";
+        public string FullDescription => $"{Description.Substring(0, 1).ToUpper() + Description.Substring(1)} ({Temperature:F1} °C)";
 
         public bool HasIcon => Icon != null;
 

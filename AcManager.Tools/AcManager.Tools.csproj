@@ -114,8 +114,12 @@
     <Compile Include="AcObjectsNew\AcObjectNew.cs" />
     <Compile Include="Data\ContentSyncronizer.cs" />
     <Compile Include="Data\DataProvider.cs" />
+    <Compile Include="Data\GameSpecific\CommonSessionResult.cs" />
+    <Compile Include="Data\GameSpecific\DriftSessionResult.cs" />
     <Compile Include="Data\GameSpecific\PlaceConditions.cs" />
+    <Compile Include="Data\GameSpecific\PlaceConditionsType.cs" />
     <Compile Include="Data\GameSpecific\SessionResult.cs" />
+    <Compile Include="Data\GameSpecific\SessionTypeExtension.cs" />
     <Compile Include="Data\KunosCareerProgress.cs" />
     <Compile Include="Data\AsyncProgressEntry.cs" />
     <Compile Include="Data\KunosCareerProgressEntry.cs" />
@@ -374,7 +378,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.ru-RU.resx" />
+    <EmbeddedResource Include="Resources.ru-RU.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

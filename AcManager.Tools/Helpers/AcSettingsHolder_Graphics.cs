@@ -3,7 +3,7 @@
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
         public class GraphicsSettings : IniSettings {
-            internal GraphicsSettings() : base("graphics", systemConfig: true) { }
+            internal GraphicsSettings() : base(@"graphics", systemConfig: true) { }
 
             private bool _allowUnsupportedDx10;
 

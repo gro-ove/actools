@@ -12,7 +12,7 @@ namespace AcManager.LargeFilesSharing {
     internal abstract class FileUploaderBase : ILargeFileUploader {
         protected FileUploaderBase(string name, bool supportsSigning, bool supportsDirectories) {
             Id = GetType().Name;
-            _keyDestinationDirectoryId = "fub.ddi." + Id;
+            _keyDestinationDirectoryId = @"fub.ddi." + Id;
             _destinationDirectoryId = ValuesStorage.GetString(_keyDestinationDirectoryId);
 
             DisplayName = name;
@@ -73,7 +73,7 @@ namespace AcManager.LargeFilesSharing {
                 }
             }
 
-            return "application/unknown";
+            return @"application/unknown";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

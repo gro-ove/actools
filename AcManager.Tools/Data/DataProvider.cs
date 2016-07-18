@@ -52,13 +52,13 @@ namespace AcManager.Tools.Data {
                 var j = FilesStorage.Instance.LoadJsonContentFile(ContentCategory.Data, "KunosContent.json");
                 if (j != null) {
                     _kunosContent = new Dictionary<string, string[]> {
-                        ["tracks"] = (j["tracks"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
-                        ["showrooms"] = (j["showrooms"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
+                        [@"tracks"] = (j[@"tracks"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
+                        [@"showrooms"] = (j[@"showrooms"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
                     };
                 } else {
                     _kunosContent = new Dictionary<string, string[]> {
-                        ["tracks"] = new string[] { },
-                        ["showrooms"] = new string[] { }
+                        [@"tracks"] = new string[] { },
+                        [@"showrooms"] = new string[] { }
                     };
 
                     Logging.Warning("Cannot load KunosContent.json");

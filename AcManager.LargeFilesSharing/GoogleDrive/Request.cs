@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -25,18 +26,18 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
         }
 
         [ItemCanBeNull]
-        private static async Task<string> Send(string method, string url, byte[] data, string authToken, CancellationToken cancellation) {
+        private static async Task<string> Send([Localizable(false)] string method, string url, byte[] data, string authToken, CancellationToken cancellation) {
             try {
                 var request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = method;
                 request.UserAgent = InternalUtils.GetKunosUserAgent();
 
                 if (authToken != null) {
-                    request.Headers["Authorization"] = "Bearer " + authToken;
+                    request.Headers[@"Authorization"] = @"Bearer " + authToken;
                 }
 
                 if (data != null) {
-                    request.ContentType = data[0] == '{' ? "application/json" : "application/x-www-form-urlencoded";
+                    request.ContentType = data[0] == '{' ? @"application/json" : @"application/x-www-form-urlencoded";
                     request.ContentLength = data.Length;
 
                     using (var stream = await request.GetRequestStreamAsync()) {
@@ -72,7 +73,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
         }
 
         [ItemCanBeNull]
-        private static async Task<T> Send<T>(string method, string url, byte[] data, string authToken, CancellationToken cancellation) {
+        private static async Task<T> Send<T>([Localizable(false)] string method, string url, byte[] data, string authToken, CancellationToken cancellation) {
             var response = await Send(method, url, data, authToken, cancellation);
             return response == null ? default(T) : JsonConvert.DeserializeObject<T>(response);
         }
@@ -98,6 +99,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
         }
 
         [ItemCanBeNull]
+        [Localizable(false)]
         public static async Task<T> PostMultipart<T>(string url, object metadata, string authToken, byte[] data, string contentType,
                 IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             try {

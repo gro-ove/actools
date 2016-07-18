@@ -8,7 +8,7 @@ namespace AcManager.Tools.Helpers {
         private const string Key = "__trackslocator_";
 
         public static GeoTagsEntry TryToLocate(string country, string city) {
-            var key = Key + country + "__" + city;
+            var key = Key + country + @"__" + city;
             if (ValuesStorage.Contains(key + "__lat") && ValuesStorage.Contains(key + "__lon")) {
                 return new GeoTagsEntry(ValuesStorage.GetDouble(key + "__lat"), ValuesStorage.GetDouble(key + "__lon"));
             }

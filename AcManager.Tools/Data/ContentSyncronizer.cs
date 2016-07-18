@@ -66,13 +66,13 @@ namespace AcManager.Tools.Data {
         }
 
         private void GetInstalledVersion() {
-            var versionFilename = FilesStorage.Instance.CombineFilename(FilesStorage.ContentDirName, "Manifest.json");
+            var versionFilename = FilesStorage.Instance.CombineFilename(FilesStorage.ContentDirName, @"Manifest.json");
 
             try {
                 InstalledVersion = File.Exists(versionFilename) ? VersionFromData(File.ReadAllText(versionFilename)) : null;
             } catch (Exception e) {
                 InstalledVersion = null;
-                Logging.Warning("cannot read installed version: " + e);
+                Logging.Warning("Cannot read installed version: " + e);
             }
         }
 
@@ -109,8 +109,8 @@ namespace AcManager.Tools.Data {
                     await LoadAndInstall();
                 }
             } catch (Exception e) {
-                LatestError = "Some unhandled error happened.";
-                Logging.Warning("cannot check and update content: " + e);
+                LatestError = Resources.ContentSyncronizer_UnhandledError;
+                Logging.Warning("Cannot check and update content: " + e);
             } finally {
                 CheckingInProcess = false;
                 CheckAndUpdateIfNeededCommand.OnCanExecuteChanged();
@@ -123,7 +123,7 @@ namespace AcManager.Tools.Data {
         }, o => !CheckingInProcess && !IsGetting));
 
         public class ContentManifest {
-            [JsonProperty(PropertyName = "version")]
+            [JsonProperty(PropertyName = @"version")]
             public string Version;
         }
 
@@ -158,8 +158,8 @@ namespace AcManager.Tools.Data {
                 var data = await CmApiProvider.GetStringAsync("content/manifest");
                 return data == null ? null : VersionFromData(data);
             } catch (Exception e) {
-                LatestError = "Can’t download information about latest version.";
-                Logging.Warning("cannot get content/manifest.json: " + e);
+                LatestError = Resources.ContentSyncronizer_CannotDownloadInformation;
+                Logging.Warning("Cannot get content/manifest.json: " + e);
                 return null;
             } finally {
                 IsGetting = false;
@@ -182,7 +182,7 @@ namespace AcManager.Tools.Data {
 
                     using (var stream = new MemoryStream(data, false))
                     using (var archive = new ZipArchive(stream)) {
-                        installedVersion = VersionFromData(archive.GetEntry("Manifest.json").Open().ReadAsStringAndDispose());
+                        installedVersion = VersionFromData(archive.GetEntry(@"Manifest.json").Open().ReadAsStringAndDispose());
                         archive.ExtractToDirectory(location);
                     }
                 });
@@ -190,8 +190,7 @@ namespace AcManager.Tools.Data {
                 InstalledVersion = installedVersion;
                 Logging.Write("Content loaded: " + InstalledVersion);
             } catch (Exception e) {
-                NonfatalError.Notify(@"Can’t load content pack",
-                        @"Make sure internet connection is working and nothing is going on in Content folder.", e);
+                NonfatalError.Notify(Resources.ContentSyncronizer_CannotLoadContent, Resources.ContentSyncronizer_CannotLoadContent_Commentary, e);
             } finally {
                 _isInstalling = false;
             }

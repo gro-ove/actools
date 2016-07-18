@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace AcTools.Processes {
     public partial class Game {
-        public static bool OptionEnableRaceIniRestoration = false;
+        public static bool OptionEnableRaceIniRestoration = true;
 
         private static void ClearUpIniFile(IniFile file) {
             file["BENCHMARK"].Set("ACTIVE", false);

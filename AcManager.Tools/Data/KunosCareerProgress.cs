@@ -149,7 +149,7 @@ namespace AcManager.Tools.Data {
             CurrentSeries = iniFile["CAREER"].Get("CURRENTSERIES");
             AiLevel = iniFile["CAREER"].GetDouble("AI_LEVEL", 95d);
             IsNew = iniFile["CAREER"].GetInt("INTRO", 0) != 2;
-            Entries = iniFile.Where(x => x.Key.StartsWith("SERIES")).ToDictionary(
+            Entries = iniFile.Where(x => x.Key.StartsWith(@"SERIES")).ToDictionary(
                     x => x.Key.ToLowerInvariant(),
                     x => new KunosCareerProgressEntry(
                         x.Value.GetInt("EVENT", 0),
@@ -188,7 +188,7 @@ namespace AcManager.Tools.Data {
                 if (pair.Value.Points.HasValue) {
                     section["POINTS"] = pair.Value.Points;
                 } else {
-                    section.Remove("POINTS");
+                    section.Remove(@"POINTS");
                 }
 
                 for (var i = 0; i < pair.Value.EventsResults.Count; i++) {

@@ -63,14 +63,14 @@ namespace AcManager.Tools.AcManagersNew {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException(@"ID is wrong", nameof(id));
+            if (wrapper == null) throw new ArgumentException("ID is wrong", nameof(id));
 
             var currentLocation = ((AcCommonObject)wrapper.Value).Location;
             var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (path == null) throw new InformativeException("Can’t do", "Sorry, you can’t disable this type of object.");
+            if (path == null) throw new InformativeException(Resources.AcObject_DisablingNotSupported, Resources.AcObject_DisablingNotSupported_Commentary);
 
             var newLocation = Path.Combine(path, newId);
-            if (FileUtils.Exists(newLocation)) throw new ToggleException("Place is taken");
+            if (FileUtils.Exists(newLocation)) throw new ToggleException(Resources.AcObject_PlaceIsTaken);
 
             try {
                 MoveInner(id, newId, currentLocation, newLocation, newEnabled);
@@ -85,7 +85,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             var wrapper = GetWrapperById(id);
             if (wrapper == null) {
-                throw new ArgumentException(@"ID is wrong", nameof(id));
+                throw new ArgumentException("ID is wrong", nameof(id));
             }
 
             Rename(id, id, !wrapper.Value.Enabled);
@@ -96,7 +96,7 @@ namespace AcManager.Tools.AcManagersNew {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var obj = GetById(id);
-            if (obj == null) throw new ArgumentException(@"ID is wrong", nameof(id));
+            if (obj == null) throw new ArgumentException("ID is wrong", nameof(id));
             
             DeleteInner(id, obj.Location);
         }
@@ -111,7 +111,7 @@ namespace AcManager.Tools.AcManagersNew {
                 FileUtils.Recycle(location);
 
                 if (FileUtils.Exists(location)) {
-                    throw new OperationCanceledException("Can’t remove existing directory");
+                    throw new OperationCanceledException(Resources.AcObject_CannotRemove);
                 }
             }
 

@@ -79,11 +79,38 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t change ID.
+        /// </summary>
+        public static string AcObject_CannotChangeId {
+            get {
+                return ResourceManager.GetString("AcObject_CannotChangeId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t change ID: {0}.
+        /// </summary>
+        public static string AcObject_CannotChangeIdExt {
+            get {
+                return ResourceManager.GetString("AcObject_CannotChangeIdExt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t delete.
         /// </summary>
         public static string AcObject_CannotDelete {
             get {
                 return ResourceManager.GetString("AcObject_CannotDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t remove existing directory.
+        /// </summary>
+        public static string AcObject_CannotRemove {
+            get {
+                return ResourceManager.GetString("AcObject_CannotRemove", resourceCulture);
             }
         }
         
@@ -115,6 +142,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t do.
+        /// </summary>
+        public static string AcObject_DisablingNotSupported {
+            get {
+                return ResourceManager.GetString("AcObject_DisablingNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, you can’t disable this type of object..
+        /// </summary>
+        public static string AcObject_DisablingNotSupported_Commentary {
+            get {
+                return ResourceManager.GetString("AcObject_DisablingNotSupported_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ID is wrong.
         /// </summary>
         public static string AcObject_IdIsWrong {
@@ -138,6 +183,33 @@ namespace AcManager.Tools {
         public static string AcObject_PlaceIsTaken {
             get {
                 return ResourceManager.GetString("AcObject_PlaceIsTaken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload file?.
+        /// </summary>
+        public static string AcObject_ReloadAutomatically {
+            get {
+                return ResourceManager.GetString("AcObject_ReloadAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INI-file has been changed. Reload? All local changes will be lost..
+        /// </summary>
+        public static string AcObject_ReloadAutomatically_Ini {
+            get {
+                return ResourceManager.GetString("AcObject_ReloadAutomatically_Ini", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JSON-file has been changed. Reload? All local changes will be lost..
+        /// </summary>
+        public static string AcObject_ReloadAutomatically_Json {
+            get {
+                return ResourceManager.GetString("AcObject_ReloadAutomatically_Json", resourceCulture);
             }
         }
         
@@ -183,6 +255,231 @@ namespace AcManager.Tools {
         public static string AcRootDirectory_Required {
             get {
                 return ResourceManager.GetString("AcRootDirectory_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oculus Rift.
+        /// </summary>
+        public static string AcSettings_CameraMode_OculusRift {
+            get {
+                return ResourceManager.GetString("AcSettings_CameraMode_OculusRift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Single Screen.
+        /// </summary>
+        public static string AcSettings_CameraMode_SingleScreen {
+            get {
+                return ResourceManager.GetString("AcSettings_CameraMode_SingleScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Triple Screen.
+        /// </summary>
+        public static string AcSettings_CameraMode_TripleScreen {
+            get {
+                return ResourceManager.GetString("AcSettings_CameraMode_TripleScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t save AC settings.
+        /// </summary>
+        public static string AcSettings_CannotSave {
+            get {
+                return ResourceManager.GetString("AcSettings_CannotSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure app has access to cfg folder..
+        /// </summary>
+        public static string AcSettings_CannotSave_Commentary {
+            get {
+                return ResourceManager.GetString("AcSettings_CannotSave_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Five faces per frame.
+        /// </summary>
+        public static string AcSettings_Cubemap_FiveFaces {
+            get {
+                return ResourceManager.GetString("AcSettings_Cubemap_FiveFaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Four faces per frame.
+        /// </summary>
+        public static string AcSettings_Cubemap_FourFaces {
+            get {
+                return ResourceManager.GetString("AcSettings_Cubemap_FourFaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One face per frame.
+        /// </summary>
+        public static string AcSettings_Cubemap_OneFace {
+            get {
+                return ResourceManager.GetString("AcSettings_Cubemap_OneFace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Six faces per frame.
+        /// </summary>
+        public static string AcSettings_Cubemap_SixFaces {
+            get {
+                return ResourceManager.GetString("AcSettings_Cubemap_SixFaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Static.
+        /// </summary>
+        public static string AcSettings_Cubemap_Static {
+            get {
+                return ResourceManager.GetString("AcSettings_Cubemap_Static", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Three faces per frame.
+        /// </summary>
+        public static string AcSettings_Cubemap_ThreeFaces {
+            get {
+                return ResourceManager.GetString("AcSettings_Cubemap_ThreeFaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two faces per frame.
+        /// </summary>
+        public static string AcSettings_Cubemap_TwoFaces {
+            get {
+                return ResourceManager.GetString("AcSettings_Cubemap_TwoFaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom.
+        /// </summary>
+        public static string AcSettings_CustomResolution {
+            get {
+                return ResourceManager.GetString("AcSettings_CustomResolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (experimental).
+        /// </summary>
+        public static string AcSettings_ExperimentalValue {
+            get {
+                return ResourceManager.GetString("AcSettings_ExperimentalValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string AcSettings_Off {
+            get {
+                return ResourceManager.GetString("AcSettings_Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High.
+        /// </summary>
+        public static string AcSettings_Quality_High {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_High", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low.
+        /// </summary>
+        public static string AcSettings_Quality_Low {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_Low", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum.
+        /// </summary>
+        public static string AcSettings_Quality_Maximum {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_Maximum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        public static string AcSettings_Quality_Medium {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_Medium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum.
+        /// </summary>
+        public static string AcSettings_Quality_Minimum {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_Minimum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ultra.
+        /// </summary>
+        public static string AcSettings_Quality_Ultra {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_Ultra", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Very High.
+        /// </summary>
+        public static string AcSettings_Quality_VeryHigh {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_VeryHigh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}×{1}, {2} Hz.
+        /// </summary>
+        public static string AcSettings_ResolutionFormat {
+            get {
+                return ResourceManager.GetString("AcSettings_ResolutionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitmap (without compression).
+        /// </summary>
+        public static string AcSettings_ScreenshotFormat_Bmp {
+            get {
+                return ResourceManager.GetString("AcSettings_ScreenshotFormat_Bmp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JPEG.
+        /// </summary>
+        public static string AcSettings_ScreenshotFormat_Jpeg {
+            get {
+                return ResourceManager.GetString("AcSettings_ScreenshotFormat_Jpeg", resourceCulture);
             }
         }
         
@@ -394,11 +691,38 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brand’s badge is missing.
+        /// </summary>
+        public static string BrandBadgeIsMissing {
+            get {
+                return ResourceManager.GetString("BrandBadgeIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brand name is missing.
+        /// </summary>
+        public static string BrandNameIsMissing {
+            get {
+                return ResourceManager.GetString("BrandNameIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t find Steam ID.
         /// </summary>
         public static string CannotFindSteamId {
             get {
                 return ResourceManager.GetString("CannotFindSteamId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car’s parent is missing.
+        /// </summary>
+        public static string CarParentIsMissing {
+            get {
+                return ResourceManager.GetString("CarParentIsMissing", resourceCulture);
             }
         }
         
@@ -466,6 +790,447 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disabled.
+        /// </summary>
+        public static string Common_Disabled {
+            get {
+                return ResourceManager.GetString("Common_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (Recommended).
+        /// </summary>
+        public static string Common_Recommended {
+            get {
+                return ResourceManager.GetString("Common_Recommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steam ID is missing.
+        /// </summary>
+        public static string Common_SteamIdIsMissing {
+            get {
+                return ResourceManager.GetString("Common_SteamIdIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t download information about latest version..
+        /// </summary>
+        public static string ContentSyncronizer_CannotDownloadInformation {
+            get {
+                return ResourceManager.GetString("ContentSyncronizer_CannotDownloadInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t load content pack.
+        /// </summary>
+        public static string ContentSyncronizer_CannotLoadContent {
+            get {
+                return ResourceManager.GetString("ContentSyncronizer_CannotLoadContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure internet connection is working and nothing is going on in Content folder..
+        /// </summary>
+        public static string ContentSyncronizer_CannotLoadContent_Commentary {
+            get {
+                return ResourceManager.GetString("ContentSyncronizer_CannotLoadContent_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some unhandled error happened..
+        /// </summary>
+        public static string ContentSyncronizer_UnhandledError {
+            get {
+                return ResourceManager.GetString("ContentSyncronizer_UnhandledError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brakes.
+        /// </summary>
+        public static string Controls_Brakes {
+            get {
+                return ResourceManager.GetString("Controls_Brakes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Celebrate.
+        /// </summary>
+        public static string Controls_Celebrate {
+            get {
+                return ResourceManager.GetString("Controls_Celebrate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change camera.
+        /// </summary>
+        public static string Controls_ChangeCamera {
+            get {
+                return ResourceManager.GetString("Controls_ChangeCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clutch.
+        /// </summary>
+        public static string Controls_Clutch {
+            get {
+                return ResourceManager.GetString("Controls_Clutch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Complain.
+        /// </summary>
+        public static string Controls_Complain {
+            get {
+                return ResourceManager.GetString("Controls_Complain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decrease.
+        /// </summary>
+        public static string Controls_Decrease {
+            get {
+                return ResourceManager.GetString("Controls_Decrease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DRS activation.
+        /// </summary>
+        public static string Controls_Drs {
+            get {
+                return ResourceManager.GetString("Controls_Drs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flash Headlights.
+        /// </summary>
+        public static string Controls_FlashHeadlights {
+            get {
+                return ResourceManager.GetString("Controls_FlashHeadlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fifth gear.
+        /// </summary>
+        public static string Controls_Gear_Fifth {
+            get {
+                return ResourceManager.GetString("Controls_Gear_Fifth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First gear.
+        /// </summary>
+        public static string Controls_Gear_First {
+            get {
+                return ResourceManager.GetString("Controls_Gear_First", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fourth gear.
+        /// </summary>
+        public static string Controls_Gear_Fourth {
+            get {
+                return ResourceManager.GetString("Controls_Gear_Fourth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rear gear.
+        /// </summary>
+        public static string Controls_Gear_Rear {
+            get {
+                return ResourceManager.GetString("Controls_Gear_Rear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Second gear.
+        /// </summary>
+        public static string Controls_Gear_Second {
+            get {
+                return ResourceManager.GetString("Controls_Gear_Second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seventh gear.
+        /// </summary>
+        public static string Controls_Gear_Seventh {
+            get {
+                return ResourceManager.GetString("Controls_Gear_Seventh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sixth gear.
+        /// </summary>
+        public static string Controls_Gear_Sixth {
+            get {
+                return ResourceManager.GetString("Controls_Gear_Sixth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third gear.
+        /// </summary>
+        public static string Controls_Gear_Third {
+            get {
+                return ResourceManager.GetString("Controls_Gear_Third", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Glance back.
+        /// </summary>
+        public static string Controls_GlanceBack {
+            get {
+                return ResourceManager.GetString("Controls_GlanceBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Glance left.
+        /// </summary>
+        public static string Controls_GlanceLeft {
+            get {
+                return ResourceManager.GetString("Controls_GlanceLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Glance right.
+        /// </summary>
+        public static string Controls_GlanceRight {
+            get {
+                return ResourceManager.GetString("Controls_GlanceRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handbrake.
+        /// </summary>
+        public static string Controls_Handbrake {
+            get {
+                return ResourceManager.GetString("Controls_Handbrake", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Headlights.
+        /// </summary>
+        public static string Controls_Headlights {
+            get {
+                return ResourceManager.GetString("Controls_Headlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Horn.
+        /// </summary>
+        public static string Controls_Horn {
+            get {
+                return ResourceManager.GetString("Controls_Horn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Increase.
+        /// </summary>
+        public static string Controls_Increase {
+            get {
+                return ResourceManager.GetString("Controls_Increase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KERS activation.
+        /// </summary>
+        public static string Controls_Kers {
+            get {
+                return ResourceManager.GetString("Controls_Kers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyboard &amp; mouse.
+        /// </summary>
+        public static string Controls_KeyboardAndMouse {
+            get {
+                return ResourceManager.GetString("Controls_KeyboardAndMouse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MGU-H Mode.
+        /// </summary>
+        public static string Controls_Mguh_Mode {
+            get {
+                return ResourceManager.GetString("Controls_Mguh_Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decrease Delivery.
+        /// </summary>
+        public static string Controls_Mguk_DecreaseDelivery {
+            get {
+                return ResourceManager.GetString("Controls_Mguk_DecreaseDelivery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decrease Recovery.
+        /// </summary>
+        public static string Controls_Mguk_DecreaseRecovery {
+            get {
+                return ResourceManager.GetString("Controls_Mguk_DecreaseRecovery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Increase Delivery.
+        /// </summary>
+        public static string Controls_Mguk_IncreaseDelivery {
+            get {
+                return ResourceManager.GetString("Controls_Mguk_IncreaseDelivery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Increase Recovery.
+        /// </summary>
+        public static string Controls_Mguk_IncreaseRecovery {
+            get {
+                return ResourceManager.GetString("Controls_Mguk_IncreaseRecovery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move to front.
+        /// </summary>
+        public static string Controls_MoveToFront {
+            get {
+                return ResourceManager.GetString("Controls_MoveToFront", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move to rear.
+        /// </summary>
+        public static string Controls_MoveToRear {
+            get {
+                return ResourceManager.GetString("Controls_MoveToRear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next gear.
+        /// </summary>
+        public static string Controls_NextGear {
+            get {
+                return ResourceManager.GetString("Controls_NextGear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous gear.
+        /// </summary>
+        public static string Controls_PreviousGear {
+            get {
+                return ResourceManager.GetString("Controls_PreviousGear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steering.
+        /// </summary>
+        public static string Controls_Steering {
+            get {
+                return ResourceManager.GetString("Controls_Steering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wheel.
+        /// </summary>
+        public static string Controls_SteeringWheel {
+            get {
+                return ResourceManager.GetString("Controls_SteeringWheel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steer left.
+        /// </summary>
+        public static string Controls_SteerLeft {
+            get {
+                return ResourceManager.GetString("Controls_SteerLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steer right.
+        /// </summary>
+        public static string Controls_SteerRight {
+            get {
+                return ResourceManager.GetString("Controls_SteerRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Throttle.
+        /// </summary>
+        public static string Controls_Throttle {
+            get {
+                return ResourceManager.GetString("Controls_Throttle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xbox 360 gamepad.
+        /// </summary>
+        public static string Controls_Xbox360Gamepad {
+            get {
+                return ResourceManager.GetString("Controls_Xbox360Gamepad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fancy.
+        /// </summary>
+        public static string CustomShowroom_Fancy {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Fancy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lite.
+        /// </summary>
+        public static string CustomShowroom_Lite {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Lite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AssettoCorsa.club is changed..
         /// </summary>
         public static string DirectLoader_AcClubChanged {
@@ -520,6 +1285,69 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Directory “ui” is missing.
+        /// </summary>
+        public static string DirectoryUiIsMissing {
+            get {
+                return ResourceManager.GetString("DirectoryUiIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event conditions aren’t supported.
+        /// </summary>
+        public static string EventConditionsAreNotSupported {
+            get {
+                return ResourceManager.GetString("EventConditionsAreNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Events of “{0}” are missing.
+        /// </summary>
+        public static string EventsOfAreMissing {
+            get {
+                return ResourceManager.GetString("EventsOfAreMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File “{0}” is damaged.
+        /// </summary>
+        public static string FileIsDamaged {
+            get {
+                return ResourceManager.GetString("FileIsDamaged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File “{0}” is missing.
+        /// </summary>
+        public static string FileIsMissing {
+            get {
+                return ResourceManager.GetString("FileIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Font’s bitmap is missing.
+        /// </summary>
+        public static string FontBitmapIsMissing {
+            get {
+                return ResourceManager.GetString("FontBitmapIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Font is used but disabled.
+        /// </summary>
+        public static string FontIsUsedButDisabled {
+            get {
+                return ResourceManager.GetString("FontIsUsedButDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Font.
         /// </summary>
         public static string FontObject_DeleteFont {
@@ -561,6 +1389,60 @@ namespace AcManager.Tools {
         public static string Fonts_RescanUsings {
             get {
                 return ResourceManager.GetString("Fonts_RescanUsings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t execute command.
+        /// </summary>
+        public static string GameCommand_CannotExecute {
+            get {
+                return ResourceManager.GetString("GameCommand_CannotExecute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timeout exceeded.
+        /// </summary>
+        public static string GameCommand_TimeoutExceeded {
+            get {
+                return ResourceManager.GetString("GameCommand_TimeoutExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app supposed to run in background.
+        /// </summary>
+        public static string GameCommand_TimeoutExceeded_Commentary {
+            get {
+                return ResourceManager.GetString("GameCommand_TimeoutExceeded_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown problem (Process=null).
+        /// </summary>
+        public static string GameCommand_UnknownProblem {
+            get {
+                return ResourceManager.GetString("GameCommand_UnknownProblem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Imperial (mph).
+        /// </summary>
+        public static string Gameplay_Units_Imperial {
+            get {
+                return ResourceManager.GetString("Gameplay_Units_Imperial", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metrical (km/h).
+        /// </summary>
+        public static string Gameplay_Units_Metrical {
+            get {
+                return ResourceManager.GetString("Gameplay_Units_Metrical", resourceCulture);
             }
         }
         
@@ -691,6 +1573,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading unhandled error: {0}.
+        /// </summary>
+        public static string LoadingUnhandledError {
+            get {
+                return ResourceManager.GetString("LoadingUnhandledError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t connect to remote server.
         /// </summary>
         public static string LogHelper_CannotConnectToRemoteServer {
@@ -732,6 +1623,33 @@ namespace AcManager.Tools {
         public static string LogHelper_WheelsAreMissing {
             get {
                 return ResourceManager.GetString("LogHelper_WheelsAreMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Model (KN5 file) is missing.
+        /// </summary>
+        public static string ModelKn5FileIsMissing {
+            get {
+                return ResourceManager.GetString("ModelKn5FileIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name is missing.
+        /// </summary>
+        public static string NameIsMissing {
+            get {
+                return ResourceManager.GetString("NameIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name shouldn&apos;t contain symbols like “[” or “]”.
+        /// </summary>
+        public static string NameShouldnTContainSymbolsLikeOr {
+            get {
+                return ResourceManager.GetString("NameShouldnTContainSymbolsLikeOr", resourceCulture);
             }
         }
         
@@ -1063,6 +1981,51 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Month.
+        /// </summary>
+        public static string Period_Month {
+            get {
+                return ResourceManager.GetString("Period_Month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One day.
+        /// </summary>
+        public static string Period_OneDay {
+            get {
+                return ResourceManager.GetString("Period_OneDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Three days.
+        /// </summary>
+        public static string Period_ThreeDays {
+            get {
+                return ResourceManager.GetString("Period_ThreeDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two weeks.
+        /// </summary>
+        public static string Period_TwoWeeks {
+            get {
+                return ResourceManager.GetString("Period_TwoWeeks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Week.
+        /// </summary>
+        public static string Period_Week {
+            get {
+                return ResourceManager.GetString("Period_Week", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t install plugin.
         /// </summary>
         public static string Plugins_CannotInstall {
@@ -1117,6 +2080,42 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loaded {0}.
+        /// </summary>
+        public static string Progress_Downloading {
+            get {
+                return ResourceManager.GetString("Progress_Downloading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded {0} of {1}.
+        /// </summary>
+        public static string Progress_Downloading_KnownTotal {
+            get {
+                return ResourceManager.GetString("Progress_Downloading_KnownTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploaded {0}.
+        /// </summary>
+        public static string Progress_Uploading {
+            get {
+                return ResourceManager.GetString("Progress_Uploading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploaded {0} of {1}.
+        /// </summary>
+        public static string Progress_Uploading_KnownTotal {
+            get {
+                return ResourceManager.GetString("Progress_Uploading_KnownTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t rename replays.
         /// </summary>
         public static string Replay_CannotRenameReplays {
@@ -1167,6 +2166,267 @@ namespace AcManager.Tools {
         public static string ReplayReader_UnsupportedFormat {
             get {
                 return ResourceManager.GetString("ReplayReader_UnsupportedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required car “{0}” is missing.
+        /// </summary>
+        public static string RequiredCarIsMissing {
+            get {
+                return ResourceManager.GetString("RequiredCarIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required content is missing.
+        /// </summary>
+        public static string RequiredContentIsMissing {
+            get {
+                return ResourceManager.GetString("RequiredContentIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required skin “{1}” for {0} is missing.
+        /// </summary>
+        public static string RequiredSkin1ForIsMissing {
+            get {
+                return ResourceManager.GetString("RequiredSkin1ForIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required track “{0}” is missing.
+        /// </summary>
+        public static string RequiredTrackIsMissing {
+            get {
+                return ResourceManager.GetString("RequiredTrackIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required weather “{0}” is missing.
+        /// </summary>
+        public static string RequiredWeatherIsMissing {
+            get {
+                return ResourceManager.GetString("RequiredWeatherIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Baidu.
+        /// </summary>
+        public static string SearchEngine_Baidu {
+            get {
+                return ResourceManager.GetString("SearchEngine_Baidu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bing.
+        /// </summary>
+        public static string SearchEngine_Bing {
+            get {
+                return ResourceManager.GetString("SearchEngine_Bing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DuckDuckGo.
+        /// </summary>
+        public static string SearchEngine_DuckDuckGo {
+            get {
+                return ResourceManager.GetString("SearchEngine_DuckDuckGo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google.
+        /// </summary>
+        public static string SearchEngine_Google {
+            get {
+                return ResourceManager.GetString("SearchEngine_Google", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yandex.
+        /// </summary>
+        public static string SearchEngine_Yandex {
+            get {
+                return ResourceManager.GetString("SearchEngine_Yandex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Booking.
+        /// </summary>
+        public static string Session_Booking {
+            get {
+                return ResourceManager.GetString("Session_Booking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drift.
+        /// </summary>
+        public static string Session_Drift {
+            get {
+                return ResourceManager.GetString("Session_Drift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hotlap.
+        /// </summary>
+        public static string Session_Hotlap {
+            get {
+                return ResourceManager.GetString("Session_Hotlap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Practice.
+        /// </summary>
+        public static string Session_Practice {
+            get {
+                return ResourceManager.GetString("Session_Practice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Qualification.
+        /// </summary>
+        public static string Session_Qualification {
+            get {
+                return ResourceManager.GetString("Session_Qualification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Race.
+        /// </summary>
+        public static string Session_Race {
+            get {
+                return ResourceManager.GetString("Session_Race", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Attack.
+        /// </summary>
+        public static string Session_TimeAttack {
+            get {
+                return ResourceManager.GetString("Session_TimeAttack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every day.
+        /// </summary>
+        public static string Settings_Autoupdate_Day {
+            get {
+                return ResourceManager.GetString("Settings_Autoupdate_Day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On startup only.
+        /// </summary>
+        public static string Settings_Autoupdate_Startup {
+            get {
+                return ResourceManager.GetString("Settings_Autoupdate_Startup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every ten hours.
+        /// </summary>
+        public static string Settings_Autoupdate_TenHours {
+            get {
+                return ResourceManager.GetString("Settings_Autoupdate_TenHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every 30 minutes.
+        /// </summary>
+        public static string Settings_Autoupdate_ThirtyMinutes {
+            get {
+                return ResourceManager.GetString("Settings_Autoupdate_ThirtyMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every three hours.
+        /// </summary>
+        public static string Settings_Autoupdate_ThreeHours {
+            get {
+                return ResourceManager.GetString("Settings_Autoupdate_ThreeHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player.
+        /// </summary>
+        public static string Settings_DefaultPlayerName {
+            get {
+                return ResourceManager.GetString("Settings_DefaultPlayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Naive.
+        /// </summary>
+        public static string Settings_Starter_Naive {
+            get {
+                return ResourceManager.GetString("Settings_Starter_Naive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Official.
+        /// </summary>
+        public static string Settings_Starter_Official {
+            get {
+                return ResourceManager.GetString("Settings_Starter_Official", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SSE.
+        /// </summary>
+        public static string Settings_Starter_Sse {
+            get {
+                return ResourceManager.GetString("Settings_Starter_Sse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starter+.
+        /// </summary>
+        public static string Settings_Starter_StarterPlus {
+            get {
+                return ResourceManager.GetString("Settings_Starter_StarterPlus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tricky.
+        /// </summary>
+        public static string Settings_Starter_Tricky {
+            get {
+                return ResourceManager.GetString("Settings_Starter_Tricky", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setup’s track ({0}) is missing.
+        /// </summary>
+        public static string SetupTrackIsMissing {
+            get {
+                return ResourceManager.GetString("SetupTrackIsMissing", resourceCulture);
             }
         }
         
@@ -1288,6 +2548,87 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Skin’s livery ({0}/livery.png) is missing.
+        /// </summary>
+        public static string SkinLiveryLiveryPngIsMissing {
+            get {
+                return ResourceManager.GetString("SkinLiveryLiveryPngIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skin’s preview ({0}/preview.jpg) is missing.
+        /// </summary>
+        public static string SkinPreviewPreviewJpgIsMissing {
+            get {
+                return ResourceManager.GetString("SkinPreviewPreviewJpgIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skins are missing.
+        /// </summary>
+        public static string SkinsAreMissing {
+            get {
+                return ResourceManager.GetString("SkinsAreMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skins directory is unavailable.
+        /// </summary>
+        public static string SkinsDirectoryIsUnavailable {
+            get {
+                return ResourceManager.GetString("SkinsDirectoryIsUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelled.
+        /// </summary>
+        public static string Solving_Cancelled {
+            get {
+                return ResourceManager.GetString("Solving_Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a new file.
+        /// </summary>
+        public static string Solving_CreateNewFile {
+            get {
+                return ResourceManager.GetString("Solving_CreateNewFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New file will be created containing name based on ID.
+        /// </summary>
+        public static string Solving_CreateNewFile_Commentary {
+            get {
+                return ResourceManager.GetString("Solving_CreateNewFile_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore from …{0}.
+        /// </summary>
+        public static string Solving_RestoreFrom {
+            get {
+                return ResourceManager.GetString("Solving_RestoreFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original file will be moved to Recycle Bin if exists.
+        /// </summary>
+        public static string Solving_RestoreFrom_Commentary {
+            get {
+                return ResourceManager.GetString("Solving_RestoreFrom_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} pit.
         /// </summary>
         public static string TrackBaseObject_Specs_PitsNumber {
@@ -1297,11 +2638,425 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Track “{0}” is missing.
+        /// </summary>
+        public static string TrackIsMissing {
+            get {
+                return ResourceManager.GetString("TrackIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Try again..
         /// </summary>
         public static string TryAgainDot {
             get {
                 return ResourceManager.GetString("TryAgainDot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrade icon is missing.
+        /// </summary>
+        public static string UpgradeIconIsMissing {
+            get {
+                return ResourceManager.GetString("UpgradeIconIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authentication token is missing.
+        /// </summary>
+        public static string Uploader_AuthenticationTokenIsMissing {
+            get {
+                return ResourceManager.GetString("Uploader_AuthenticationTokenIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t finish authorization process.
+        /// </summary>
+        public static string Uploader_CannotFinishAuthorization {
+            get {
+                return ResourceManager.GetString("Uploader_CannotFinishAuthorization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t share Google Drive file.
+        /// </summary>
+        public static string Uploader_CannotShareGoogleDrive {
+            get {
+                return ResourceManager.GetString("Uploader_CannotShareGoogleDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure there is enough space..
+        /// </summary>
+        public static string Uploader_CannotUpload_Commentary {
+            get {
+                return ResourceManager.GetString("Uploader_CannotUpload_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t upload file to Google Drive.
+        /// </summary>
+        public static string Uploader_CannotUploadToGoogleDrive {
+            get {
+                return ResourceManager.GetString("Uploader_CannotUploadToGoogleDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the Google Drive authentication code:.
+        /// </summary>
+        public static string Uploader_EnterGoogleDriveAuthenticationCode {
+            get {
+                return ResourceManager.GetString("Uploader_EnterGoogleDriveAuthenticationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Drive.
+        /// </summary>
+        public static string Uploader_GoogleDrive {
+            get {
+                return ResourceManager.GetString("Uploader_GoogleDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GET request failed.
+        /// </summary>
+        public static string Uploader_RequestFailed {
+            get {
+                return ResourceManager.GetString("Uploader_RequestFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Root.
+        /// </summary>
+        public static string Uploader_RootDirectory {
+            get {
+                return ResourceManager.GetString("Uploader_RootDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Broken clouds.
+        /// </summary>
+        public static string Weather_BrokenClouds {
+            get {
+                return ResourceManager.GetString("Weather_BrokenClouds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string Weather_Clear {
+            get {
+                return ResourceManager.GetString("Weather_Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cold.
+        /// </summary>
+        public static string Weather_Cold {
+            get {
+                return ResourceManager.GetString("Weather_Cold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drizzle.
+        /// </summary>
+        public static string Weather_Drizzle {
+            get {
+                return ResourceManager.GetString("Weather_Drizzle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dust.
+        /// </summary>
+        public static string Weather_Dust {
+            get {
+                return ResourceManager.GetString("Weather_Dust", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Few clouds.
+        /// </summary>
+        public static string Weather_FewClouds {
+            get {
+                return ResourceManager.GetString("Weather_FewClouds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fog.
+        /// </summary>
+        public static string Weather_Fog {
+            get {
+                return ResourceManager.GetString("Weather_Fog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hail.
+        /// </summary>
+        public static string Weather_Hail {
+            get {
+                return ResourceManager.GetString("Weather_Hail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Haze.
+        /// </summary>
+        public static string Weather_Haze {
+            get {
+                return ResourceManager.GetString("Weather_Haze", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heavy drizzle.
+        /// </summary>
+        public static string Weather_HeavyDrizzle {
+            get {
+                return ResourceManager.GetString("Weather_HeavyDrizzle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heavy rain.
+        /// </summary>
+        public static string Weather_HeavyRain {
+            get {
+                return ResourceManager.GetString("Weather_HeavyRain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heavy sleet.
+        /// </summary>
+        public static string Weather_HeavySleet {
+            get {
+                return ResourceManager.GetString("Weather_HeavySleet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heavy snow.
+        /// </summary>
+        public static string Weather_HeavySnow {
+            get {
+                return ResourceManager.GetString("Weather_HeavySnow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heavy thunderstorm.
+        /// </summary>
+        public static string Weather_HeavyThunderstorm {
+            get {
+                return ResourceManager.GetString("Weather_HeavyThunderstorm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hot.
+        /// </summary>
+        public static string Weather_Hot {
+            get {
+                return ResourceManager.GetString("Weather_Hot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hurricane.
+        /// </summary>
+        public static string Weather_Hurricane {
+            get {
+                return ResourceManager.GetString("Weather_Hurricane", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light drizzle.
+        /// </summary>
+        public static string Weather_LightDrizzle {
+            get {
+                return ResourceManager.GetString("Weather_LightDrizzle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light rain.
+        /// </summary>
+        public static string Weather_LightRain {
+            get {
+                return ResourceManager.GetString("Weather_LightRain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light sleet.
+        /// </summary>
+        public static string Weather_LightSleet {
+            get {
+                return ResourceManager.GetString("Weather_LightSleet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light snow.
+        /// </summary>
+        public static string Weather_LightSnow {
+            get {
+                return ResourceManager.GetString("Weather_LightSnow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light thunderstorm.
+        /// </summary>
+        public static string Weather_LightThunderstorm {
+            get {
+                return ResourceManager.GetString("Weather_LightThunderstorm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mist.
+        /// </summary>
+        public static string Weather_Mist {
+            get {
+                return ResourceManager.GetString("Weather_Mist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overcast clouds.
+        /// </summary>
+        public static string Weather_OvercastClouds {
+            get {
+                return ResourceManager.GetString("Weather_OvercastClouds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rain.
+        /// </summary>
+        public static string Weather_Rain {
+            get {
+                return ResourceManager.GetString("Weather_Rain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sand.
+        /// </summary>
+        public static string Weather_Sand {
+            get {
+                return ResourceManager.GetString("Weather_Sand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scattered clouds.
+        /// </summary>
+        public static string Weather_ScatteredClouds {
+            get {
+                return ResourceManager.GetString("Weather_ScatteredClouds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sleet.
+        /// </summary>
+        public static string Weather_Sleet {
+            get {
+                return ResourceManager.GetString("Weather_Sleet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smoke.
+        /// </summary>
+        public static string Weather_Smoke {
+            get {
+                return ResourceManager.GetString("Weather_Smoke", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Snow.
+        /// </summary>
+        public static string Weather_Snow {
+            get {
+                return ResourceManager.GetString("Weather_Snow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Squalls.
+        /// </summary>
+        public static string Weather_Squalls {
+            get {
+                return ResourceManager.GetString("Weather_Squalls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thunderstorm.
+        /// </summary>
+        public static string Weather_Thunderstorm {
+            get {
+                return ResourceManager.GetString("Weather_Thunderstorm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tornado.
+        /// </summary>
+        public static string Weather_Tornado {
+            get {
+                return ResourceManager.GetString("Weather_Tornado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windy.
+        /// </summary>
+        public static string Weather_Windy {
+            get {
+                return ResourceManager.GetString("Weather_Windy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AC replay.
+        /// </summary>
+        public static string Windows_AcReplayCommentary {
+            get {
+                return ResourceManager.GetString("Windows_AcReplayCommentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KN5 model.
+        /// </summary>
+        public static string Windows_Kn5Commentary {
+            get {
+                return ResourceManager.GetString("Windows_Kn5Commentary", resourceCulture);
             }
         }
     }

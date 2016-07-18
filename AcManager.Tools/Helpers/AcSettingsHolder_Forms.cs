@@ -12,7 +12,7 @@ namespace AcManager.Tools.Helpers {
 
         public AcFormEntry(string id) {
             Id = id;
-            DisplayName = id.ApartFromFirst("FORM_");
+            DisplayName = id.ApartFromFirst(@"FORM_");
         }
 
         private int _posX;
@@ -97,7 +97,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public class FormsSettings : IniPresetableSettings {
-            internal FormsSettings() : base("acos") {}
+            internal FormsSettings() : base(@"acos") {}
 
             private AcFormEntry[] _entries;
 
@@ -111,7 +111,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             protected override void LoadFromIni() {
-                Entries = Ini.Where(x => x.Key.StartsWith("FORM_")).Select(x => new AcFormEntry(x.Key) {
+                Entries = Ini.Where(x => x.Key.StartsWith(@"FORM_")).Select(x => new AcFormEntry(x.Key) {
                     PosX = x.Value.GetInt("POSX", 0),
                     PosY = x.Value.GetInt("POSY", 0),
                     IsVisible = x.Value.GetBool("VISIBLE", false),
@@ -152,7 +152,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool CanBeSaved => true;
 
-            public string PresetableKey => "In-Game Apps";
+            public string PresetableKey => @"In-Game Apps";
 
             string IUserPresetable.PresetableCategory => PresetableKey;
 

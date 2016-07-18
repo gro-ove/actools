@@ -1,80 +1,78 @@
-using System.ComponentModel;
-
 namespace AcManager.Tools.Data {
     public enum WeatherType {
-        [Description("Light thunderstorm")]
+        [LocalizedDescription("Weather_LightThunderstorm")]
         LightThunderstorm,
-        [Description("Thunderstorm")]
+        [LocalizedDescription("Weather_Thunderstorm")]
         Thunderstorm,
-        [Description("Heavy thunderstorm")]
+        [LocalizedDescription("Weather_HeavyThunderstorm")]
         HeavyThunderstorm,
 
-        [Description("Light drizzle")]
+        [LocalizedDescription("Weather_LightDrizzle")]
         LightDrizzle,
-        [Description("Drizzle")]
+        [LocalizedDescription("Weather_Drizzle")]
         Drizzle,
-        [Description("Heavy drizzle")]
+        [LocalizedDescription("Weather_HeavyDrizzle")]
         HeavyDrizzle,
 
-        [Description("Light rain")]
+        [LocalizedDescription("Weather_LightRain")]
         LightRain,
-        [Description("Rain")]
+        [LocalizedDescription("Weather_Rain")]
         Rain,
-        [Description("Heavy rain")]
+        [LocalizedDescription("Weather_HeavyRain")]
         HeavyRain,
 
-        [Description("Light snow")]
+        [LocalizedDescription("Weather_LightSnow")]
         LightSnow,
-        [Description("Snow")]
+        [LocalizedDescription("Weather_Snow")]
         Snow,
-        [Description("Heavy snow")]
+        [LocalizedDescription("Weather_HeavySnow")]
         HeavySnow,
 
-        [Description("Light sleet")]
+        [LocalizedDescription("Weather_LightSleet")]
         LightSleet,
-        [Description("Sleet")]
+        [LocalizedDescription("Weather_Sleet")]
         Sleet,
-        [Description("Heavy sleet")]
+        [LocalizedDescription("Weather_HeavySleet")]
         HeavySleet,
 
-        [Description("Clear")]
+        [LocalizedDescription("Weather_Clear")]
         Clear,
-        [Description("Few clouds")]
+        [LocalizedDescription("Weather_FewClouds")]
         FewClouds,
-        [Description("Scattered clouds")]
+        [LocalizedDescription("Weather_ScatteredClouds")]
         ScatteredClouds,
-        [Description("Broken clouds")]
+        [LocalizedDescription("Weather_BrokenClouds")]
         BrokenClouds,
-        [Description("Overcast clouds")]
+        [LocalizedDescription("Weather_OvercastClouds")]
         OvercastClouds,
 
-        [Description("Fog")]
+        [LocalizedDescription("Weather_Fog")]
         Fog,
-        [Description("Mist")]
+        [LocalizedDescription("Weather_Mist")]
         Mist,
 
-        [Description("Smoke")]
+        [LocalizedDescription("Weather_Smoke")]
         Smoke,
-        [Description("Haze")]
+        [LocalizedDescription("Weather_Haze")]
         Haze,
-        [Description("Sand")]
+        [LocalizedDescription("Weather_Sand")]
         Sand,
-        [Description("Dust")]
+        [LocalizedDescription("Weather_Dust")]
         Dust,
-        [Description("Squalls")]
+        [LocalizedDescription("Weather_Squalls")]
         Squalls,
 
-        [Description("Tornado")]
+        [LocalizedDescription("Weather_Tornado")]
         Tornado,
-        [Description("Hurricane")]
+        [LocalizedDescription("Weather_Hurricane")]
         Hurricane,
-        [Description("Cold")]
+        [LocalizedDescription("Weather_Cold")]
         Cold,
-        [Description("Hot")]
+        [LocalizedDescription("Weather_Hot")]
         Hot,
-        [Description("Windy")]
+        [LocalizedDescription("Weather_Windy")]
         Windy,
-        [Description("Hail")]
+        [LocalizedDescription("Weather_Hail")]
         Hail
     }
 }

@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
     public sealed class WheelHShifterButtonEntry : WheelButtonEntry {
-        public WheelHShifterButtonEntry(string id, string name, string shortName) : base(id, name) {
+        public WheelHShifterButtonEntry([LocalizationRequired(false)] string id, string name, string shortName) : base(id, name) {
             ShortName = shortName;
         }
 

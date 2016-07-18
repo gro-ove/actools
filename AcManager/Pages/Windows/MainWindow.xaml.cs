@@ -368,7 +368,7 @@ namespace AcManager.Pages.Windows {
         private async void MainWindow_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
             if (!SettingsHolder.Drive.QuickSwitches) return;
 
-            await Task.Delay(10);
+            await Task.Delay(50);
             if (e.Handled) return;
 
             if (Popup.IsOpen) {

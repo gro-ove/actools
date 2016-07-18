@@ -32,10 +32,10 @@ namespace AcManager.Tools.Helpers {
                 try {
                     KeyboardButtonEntries = WheelButtonEntries.Select(x => x.KeyboardButton).ToArray();
                     KeyboardSpecificButtonEntries = new[] {
-                        new KeyboardSpecificButtonEntry("GAS", "Throttle"),
-                        new KeyboardSpecificButtonEntry("BRAKE", "Brakes"),
-                        new KeyboardSpecificButtonEntry("RIGHT", "Steer right"),
-                        new KeyboardSpecificButtonEntry("LEFT", "Steer left")
+                        new KeyboardSpecificButtonEntry("GAS", Resources.Controls_Throttle),
+                        new KeyboardSpecificButtonEntry("BRAKE", Resources.Controls_Brakes),
+                        new KeyboardSpecificButtonEntry("RIGHT", Resources.Controls_SteerRight),
+                        new KeyboardSpecificButtonEntry("LEFT", Resources.Controls_SteerLeft)
                     }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
                     _directInput = new SlimDX.DirectInput.DirectInput();
@@ -122,7 +122,7 @@ namespace AcManager.Tools.Helpers {
             private string _devicesFootprint;
 
             private string GetFootprint(IEnumerable<DeviceInstance> devices) {
-                return devices.Select(x => x.InstanceGuid).JoinToString(";");
+                return devices.Select(x => x.InstanceGuid).JoinToString(@";");
             }
 
             private readonly List<PlaceholderInputDevice> _placeholderDevices = new List<PlaceholderInputDevice>(1);
@@ -313,8 +313,8 @@ namespace AcManager.Tools.Helpers {
 
             private string GetCurrentPresetName(string filename) {
                 filename = FileUtils.GetRelativePath(filename, PresetsDirectory);
-                var f = new[] { "presets", "savedsetups" }.FirstOrDefault(s => filename.StartsWith(s, StringComparison.OrdinalIgnoreCase));
-                return (f == null ? filename : filename.SubstringExt(f.Length + 1)).ApartFromLast(".ini", StringComparison.OrdinalIgnoreCase);
+                var f = new[] { @"presets", @"savedsetups" }.FirstOrDefault(s => filename.StartsWith(s, StringComparison.OrdinalIgnoreCase));
+                return (f == null ? filename : filename.SubstringExt(f.Length + 1)).ApartFromLast(@".ini", StringComparison.OrdinalIgnoreCase);
             }
 
             private bool _currentPresetChanged = true;
@@ -351,9 +351,9 @@ namespace AcManager.Tools.Helpers {
 
             #region Entries lists
             public SettingEntry[] InputMethods { get; } = {
-                new SettingEntry("WHEEL", "Wheel"),
-                new SettingEntry("X360", "Xbox 360 gamepad"),
-                new SettingEntry("KEYBOARD", "Keyboard & mouse")
+                new SettingEntry("WHEEL", Resources.Controls_SteeringWheel),
+                new SettingEntry("X360", Resources.Controls_Xbox360Gamepad),
+                new SettingEntry("KEYBOARD", Resources.Controls_KeyboardAndMouse)
             };
             #endregion
 
@@ -385,11 +385,11 @@ namespace AcManager.Tools.Helpers {
             }
 
             public WheelAxleEntry[] WheelAxleEntries { get; } = {
-                new WheelAxleEntry("STEER", "Steering", false, true),
-                new WheelAxleEntry("THROTTLE", "Throttle"),
-                new WheelAxleEntry("BRAKES", "Brakes", gammaMode: true),
-                new WheelAxleEntry("CLUTCH", "Clutch"),
-                new WheelAxleEntry("HANDBRAKE", "Handbrake")
+                new WheelAxleEntry("STEER", Resources.Controls_Steering, false, true),
+                new WheelAxleEntry("THROTTLE", Resources.Controls_Throttle),
+                new WheelAxleEntry("BRAKES", Resources.Controls_Brakes, gammaMode: true),
+                new WheelAxleEntry("CLUTCH", Resources.Controls_Clutch),
+                new WheelAxleEntry("HANDBRAKE", Resources.Controls_Handbrake)
             };
 
             private bool _combineWithKeyboardInput;
@@ -404,7 +404,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             public class WheelButtonCombined : NotifyPropertyChanged {
-                public WheelButtonCombined(string id, string displayName, bool isNew = false) {
+                public WheelButtonCombined([LocalizationRequired(false)] string id, string displayName, bool isNew = false) {
                     IsNew = isNew;
                     WheelButton = new WheelButtonEntry(id, displayName);
                     KeyboardButton = new KeyboardButtonEntry(id, displayName);
@@ -418,8 +418,8 @@ namespace AcManager.Tools.Helpers {
             }
 
             public WheelButtonCombined[] WheelGearsButtonEntries { get; } = {
-                new WheelButtonCombined("GEARUP", "Next gear"),
-                new WheelButtonCombined("GEARDN", "Previous gear")
+                new WheelButtonCombined("GEARUP", Resources.Controls_NextGear),
+                new WheelButtonCombined("GEARDN", Resources.Controls_PreviousGear)
             };
 
             private bool _wheelUseHShifter;
@@ -452,68 +452,68 @@ namespace AcManager.Tools.Helpers {
             }
 
             public WheelHShifterButtonEntry[] WheelHShifterButtonEntries { get; } = {
-                new WheelHShifterButtonEntry("GEAR_1", "First gear", "1"),
-                new WheelHShifterButtonEntry("GEAR_2", "Second gear", "2"),
-                new WheelHShifterButtonEntry("GEAR_3", "Third gear", "3"),
-                new WheelHShifterButtonEntry("GEAR_4", "Fourth gear", "4"),
-                new WheelHShifterButtonEntry("GEAR_5", "Fifth gear", "5"),
-                new WheelHShifterButtonEntry("GEAR_6", "Sixth gear", "6"),
-                new WheelHShifterButtonEntry("GEAR_7", "Seventh gear", "7"),
-                new WheelHShifterButtonEntry("GEAR_R", "Rear gear", "R")
+                new WheelHShifterButtonEntry("GEAR_1", Resources.Controls_Gear_First, @"1"),
+                new WheelHShifterButtonEntry("GEAR_2", Resources.Controls_Gear_Second, @"2"),
+                new WheelHShifterButtonEntry("GEAR_3", Resources.Controls_Gear_Third, @"3"),
+                new WheelHShifterButtonEntry("GEAR_4", Resources.Controls_Gear_Fourth, @"4"),
+                new WheelHShifterButtonEntry("GEAR_5", Resources.Controls_Gear_Fifth, @"5"),
+                new WheelHShifterButtonEntry("GEAR_6", Resources.Controls_Gear_Sixth, @"6"),
+                new WheelHShifterButtonEntry("GEAR_7", Resources.Controls_Gear_Seventh, @"7"),
+                new WheelHShifterButtonEntry("GEAR_R", Resources.Controls_Gear_Rear, @"R")
             };
 
             public WheelButtonCombined[] WheelCarButtonEntries { get; } = {
-                new WheelButtonCombined("KERS", "KERS activation"),
-                new WheelButtonCombined("DRS", "DRS activation"),
-                new WheelButtonCombined("HANDBRAKE", "Handbrake"),
-                new WheelButtonCombined("ACTION_HEADLIGHTS", "Headlights"),
-                new WheelButtonCombined("ACTION_HEADLIGHTS_FLASH", "Flash Headlights"),
-                new WheelButtonCombined("ACTION_HORN", "Horn"),
+                new WheelButtonCombined("KERS", Resources.Controls_Kers),
+                new WheelButtonCombined("DRS", Resources.Controls_Drs),
+                new WheelButtonCombined("HANDBRAKE", Resources.Controls_Handbrake),
+                new WheelButtonCombined("ACTION_HEADLIGHTS", Resources.Controls_Headlights),
+                new WheelButtonCombined("ACTION_HEADLIGHTS_FLASH", Resources.Controls_FlashHeadlights),
+                new WheelButtonCombined("ACTION_HORN", Resources.Controls_Horn),
             };
 
             public WheelButtonCombined[] WheelCarBrakeButtonEntries { get; } = {
-                new WheelButtonCombined("BALANCEUP", "Move to front"),
-                new WheelButtonCombined("BALANCEDN", "Move to rear"),
+                new WheelButtonCombined("BALANCEUP", Resources.Controls_MoveToFront),
+                new WheelButtonCombined("BALANCEDN", Resources.Controls_MoveToRear),
             };
 
             public WheelButtonCombined[] WheelCarTurboButtonEntries { get; } = {
-                new WheelButtonCombined("TURBOUP", "Increase"),
-                new WheelButtonCombined("TURBODN", "Decrease"),
+                new WheelButtonCombined("TURBOUP", Resources.Controls_Increase),
+                new WheelButtonCombined("TURBODN", Resources.Controls_Decrease),
             };
 
             public WheelButtonCombined[] WheelCarTractionControlButtonEntries { get; } = {
-                new WheelButtonCombined("TCUP", "Increase"),
-                new WheelButtonCombined("TCDN", "Decrease"),
+                new WheelButtonCombined("TCUP", Resources.Controls_Increase),
+                new WheelButtonCombined("TCDN", Resources.Controls_Decrease),
             };
 
             public WheelButtonCombined[] WheelCarAbsButtonEntries { get; } = {
-                new WheelButtonCombined("ABSUP", "Increase"),
-                new WheelButtonCombined("ABSDN", "Decrease"),
+                new WheelButtonCombined("ABSUP", Resources.Controls_Increase),
+                new WheelButtonCombined("ABSDN", Resources.Controls_Decrease),
             };
 
             public WheelButtonCombined[] WheelCarEngineBrakeButtonEntries { get; } = {
-                new WheelButtonCombined("ENGINE_BRAKE_UP", "Increase"),
-                new WheelButtonCombined("ENGINE_BRAKE_DN", "Decrease"),
+                new WheelButtonCombined("ENGINE_BRAKE_UP", Resources.Controls_Increase),
+                new WheelButtonCombined("ENGINE_BRAKE_DN", Resources.Controls_Decrease),
             };
 
             public WheelButtonCombined[] WheelCarMgukButtonEntries { get; } = {
-                new WheelButtonCombined("MGUK_DELIVERY_UP", "Increase Delivery"),
-                new WheelButtonCombined("MGUK_DELIVERY_DN", "Decrease Delivery"),
-                new WheelButtonCombined("MGUK_RECOVERY_UP", "Increase Recovery"),
-                new WheelButtonCombined("MGUK_RECOVERY_DN", "Decrease Recovery"),
-                new WheelButtonCombined("MGUH_MODE", "MGU-H Mode")
+                new WheelButtonCombined("MGUK_DELIVERY_UP", Resources.Controls_Mguk_IncreaseDelivery),
+                new WheelButtonCombined("MGUK_DELIVERY_DN", Resources.Controls_Mguk_DecreaseDelivery),
+                new WheelButtonCombined("MGUK_RECOVERY_UP", Resources.Controls_Mguk_IncreaseRecovery),
+                new WheelButtonCombined("MGUK_RECOVERY_DN", Resources.Controls_Mguk_DecreaseRecovery),
+                new WheelButtonCombined("MGUH_MODE", Resources.Controls_Mguh_Mode)
             };
 
             public WheelButtonCombined[] WheelViewButtonEntries { get; } = {
-                new WheelButtonCombined("GLANCELEFT", "Glance left"),
-                new WheelButtonCombined("GLANCERIGHT", "Glance right"),
-                new WheelButtonCombined("GLANCEBACK", "Glance back"),
-                new WheelButtonCombined("ACTION_CHANGE_CAMERA", "Change camera")
+                new WheelButtonCombined("GLANCELEFT", Resources.Controls_GlanceLeft),
+                new WheelButtonCombined("GLANCERIGHT", Resources.Controls_GlanceRight),
+                new WheelButtonCombined("GLANCEBACK", Resources.Controls_GlanceBack),
+                new WheelButtonCombined("ACTION_CHANGE_CAMERA", Resources.Controls_ChangeCamera)
             };
 
             public WheelButtonCombined[] WheelGesturesButtonEntries { get; } = {
-                new WheelButtonCombined("ACTION_CELEBRATE", "Celebrate"),
-                new WheelButtonCombined("ACTION_CLAIM", "Complain")
+                new WheelButtonCombined("ACTION_CELEBRATE", Resources.Controls_Celebrate),
+                new WheelButtonCombined("ACTION_CLAIM", Resources.Controls_Complain)
             };
 
             private WheelButtonCombined[] _wheelButtonEntries;
@@ -848,7 +848,7 @@ namespace AcManager.Tools.Helpers {
                 KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
 
                 section = Ini["__LAUNCHER_CM"];
-                CurrentPresetName = section.ContainsKey("PRESET_NAME") ? GetCurrentPresetName(section.Get("PRESET_NAME")) : null;
+                CurrentPresetName = section.ContainsKey(@"PRESET_NAME") ? GetCurrentPresetName(section.Get("PRESET_NAME")) : null;
                 CurrentPresetChanged = CurrentPresetName != null && section.GetBool("PRESET_CHANGED", true);
             }
 

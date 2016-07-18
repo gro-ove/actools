@@ -16,7 +16,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyIdealFormattingMode = "appearance_idealFormattingMode";
         public const string KeySmallFont = "appearance_smallFont";
         public const string KeyBitmapScaling = "appearance_bitmapScaling";
-        public const string KeyPopupToolBars = "appearance_ThemePopupToolBars";
+        public const string KeyPopupToolBars = "appearance_popupToolBars";
         public const string KeyFrameAnimation = "AppAppearanceManager.FrameAnimation";
         public const string KeyLargeSubMenuFont = "AppAppearanceManager.LargeSubMenuFont";
 

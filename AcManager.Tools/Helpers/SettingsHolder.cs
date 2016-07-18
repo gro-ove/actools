@@ -29,10 +29,10 @@ namespace AcManager.Tools.Helpers {
 
             public string GetUri(string s) {
                 if (Content.SearchWithWikipedia) {
-                    s = "site:wikipedia.org " + s;
+                    s = @"site:wikipedia.org " + s;
                 }
 
-                return string.Format(Value, Uri.EscapeDataString(s).Replace("%20", "+"));
+                return string.Format(Value, Uri.EscapeDataString(s).Replace(@"%20", @"+"));
             }
         }
 
@@ -130,7 +130,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _pingingWithThreads;
 
             public bool ThreadsPing {
-                get { return _pingingWithThreads ?? (_pingingWithThreads = ValuesStorage.GetBool("Settings.OnlineSettings.ThreadsPing", false)).Value; }
+                get { return _pingingWithThreads ?? (_pingingWithThreads = ValuesStorage.GetBool("Settings.OnlineSettings.ThreadsPing", true)).Value; }
                 set {
                     if (Equals(value, _pingingWithThreads)) return;
                     _pingingWithThreads = value;
@@ -179,7 +179,7 @@ namespace AcManager.Tools.Helpers {
             private string _portsEnumeration;
 
             public string PortsEnumeration {
-                get { return _portsEnumeration ?? (_portsEnumeration = ValuesStorage.GetString("Settings.OnlineSettings.PortsEnumeration", "9000-10000")); }
+                get { return _portsEnumeration ?? (_portsEnumeration = ValuesStorage.GetString("Settings.OnlineSettings.PortsEnumeration", @"9000-10000")); }
                 set {
                     value = value.Trim();
                     if (Equals(value, _portsEnumeration)) return;
@@ -192,7 +192,10 @@ namespace AcManager.Tools.Helpers {
             private string _lanPortsEnumeration;
 
             public string LanPortsEnumeration {
-                get { return _lanPortsEnumeration ?? (_lanPortsEnumeration = ValuesStorage.GetString("Settings.OnlineSettings.LanPortsEnumeration", "9456-9458,9556,9600-9612,9700")); }
+                get {
+                    return _lanPortsEnumeration ??
+                            (_lanPortsEnumeration = ValuesStorage.GetString("Settings.OnlineSettings.LanPortsEnumeration", @"9456-9458,9556,9600-9612,9700"));
+                }
                 set {
                     value = value.Trim();
                     if (Equals(value, _lanPortsEnumeration)) return;
@@ -220,17 +223,17 @@ namespace AcManager.Tools.Helpers {
         public static OnlineSettings Online => _online ?? (_online = new OnlineSettings());
 
         public class CommonSettings : NotifyPropertyChanged {
-            internal CommonSettings() { }
+            internal CommonSettings() {}
 
             private PeriodEntry[] _periodEntries;
 
             public PeriodEntry[] Periods => _periodEntries ?? (_periodEntries = new[] {
-                new PeriodEntry { DisplayName = "Disabled", TimeSpan = TimeSpan.Zero },
-                new PeriodEntry { DisplayName = "On startup only", TimeSpan = TimeSpan.MaxValue },
-                new PeriodEntry { DisplayName = "Every 30 minutes", TimeSpan = TimeSpan.FromMinutes(30) },
-                new PeriodEntry { DisplayName = "Every three hours", TimeSpan = TimeSpan.FromHours(3) },
-                new PeriodEntry { DisplayName = "Every ten hours", TimeSpan = TimeSpan.FromHours(6) },
-                new PeriodEntry { DisplayName = "Every day", TimeSpan = TimeSpan.FromDays(1) }
+                new PeriodEntry { DisplayName = Resources.Common_Disabled, TimeSpan = TimeSpan.Zero },
+                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_Startup, TimeSpan = TimeSpan.MaxValue },
+                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_ThirtyMinutes, TimeSpan = TimeSpan.FromMinutes(30) },
+                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_ThreeHours, TimeSpan = TimeSpan.FromHours(3) },
+                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_TenHours, TimeSpan = TimeSpan.FromHours(6) },
+                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_Day, TimeSpan = TimeSpan.FromDays(1) }
             });
 
             private PeriodEntry _updatePeriod;
@@ -268,7 +271,10 @@ namespace AcManager.Tools.Helpers {
             private bool? _createStartMenuShortcutIfMissing;
 
             public bool CreateStartMenuShortcutIfMissing {
-                get { return _createStartMenuShortcutIfMissing ?? (_createStartMenuShortcutIfMissing = ValuesStorage.GetBool("Settings.CommonSettings.CreateStartMenuShortcutIfMissing", false)).Value; }
+                get {
+                    return _createStartMenuShortcutIfMissing ??
+                            (_createStartMenuShortcutIfMissing = ValuesStorage.GetBool("Settings.CommonSettings.CreateStartMenuShortcutIfMissing", false)).Value;
+                }
                 set {
                     if (Equals(value, _createStartMenuShortcutIfMissing)) return;
                     _createStartMenuShortcutIfMissing = value;
@@ -292,7 +298,10 @@ namespace AcManager.Tools.Helpers {
             private bool? _fixResolutionAutomatically;
 
             public bool FixResolutionAutomatically {
-                get { return _fixResolutionAutomatically ?? (_fixResolutionAutomatically = ValuesStorage.GetBool("Settings.CommonSettings.FixResolutionAutomatically", true)).Value; }
+                get {
+                    return _fixResolutionAutomatically ??
+                            (_fixResolutionAutomatically = ValuesStorage.GetBool("Settings.CommonSettings.FixResolutionAutomatically", true)).Value;
+                }
                 set {
                     if (Equals(value, _fixResolutionAutomatically)) return;
                     _fixResolutionAutomatically = value;
@@ -309,7 +318,7 @@ namespace AcManager.Tools.Helpers {
         public class DriveSettings : NotifyPropertyChanged {
             internal DriveSettings() {
                 if (PlayerName == null) {
-                    PlayerName = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].Get("DRIVER_NAME") ?? "Player";
+                    PlayerName = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].Get("DRIVER_NAME") ?? Resources.Settings_DefaultPlayerName;
                     PlayerNameOnline = PlayerName;
                 }
 
@@ -335,11 +344,11 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            public static readonly StarterType OfficialStarterType = new StarterType("Official (Recommended)");
-            public static readonly StarterType TrickyStarterType = new StarterType("Tricky");
-            public static readonly StarterType StarterPlusType = new StarterType("Starter+", StarterPlus.AddonId);
-            public static readonly StarterType SseStarterType = new StarterType("SSE", SseStarter.AddonId);
-            public static readonly StarterType NaiveStarterType = new StarterType("Naive");
+            public static readonly StarterType OfficialStarterType = new StarterType(string.Format(Resources.Common_Recommended, Resources.Settings_Starter_Official));
+            public static readonly StarterType TrickyStarterType = new StarterType(Resources.Settings_Starter_Tricky);
+            public static readonly StarterType StarterPlusType = new StarterType(Resources.Settings_Starter_StarterPlus, StarterPlus.AddonId);
+            public static readonly StarterType SseStarterType = new StarterType(Resources.Settings_Starter_Sse, SseStarter.AddonId);
+            public static readonly StarterType NaiveStarterType = new StarterType(Resources.Settings_Starter_Naive);
 
             private StarterType _selectedStarterType;
 
@@ -479,7 +488,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            public string DefaultReplaysNameFormat => "_autosave_{car.id}_{track.id}_{date_ac}.acreplay";
+            public string DefaultReplaysNameFormat => @"_autosave_{car.id}_{track.id}_{date_ac}.acreplay";
 
             private string _replaysNameFormat;
 
@@ -615,10 +624,10 @@ namespace AcManager.Tools.Helpers {
                 get {
                     return _quickSwitchesList ??
                             (_quickSwitchesList = ValuesStorage.GetStringList("Settings.DriveSettings.QuickSwitchesList", new[] {
-                                "WidgetExposure",
-                                "WidgetUiPresets",
-                                "WidgetHideDriveArms",
-                                "WidgetHideSteeringWheel"
+                                @"WidgetExposure",
+                                @"WidgetUiPresets",
+                                @"WidgetHideDriveArms",
+                                @"WidgetHideSteeringWheel"
                             }).ToArray());
                 }
                 set {
@@ -700,7 +709,7 @@ namespace AcManager.Tools.Helpers {
             private string _fontIconCharacter;
 
             public string FontIconCharacter {
-                get { return _fontIconCharacter ?? (_fontIconCharacter = ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", "A")); }
+                get { return _fontIconCharacter ?? (_fontIconCharacter = ValuesStorage.GetString("Settings.ContentSettings.FontIconCharacter", @"A")); }
                 set {
                     value = value?.Trim().Substring(0, 1);
                     if (Equals(value, _fontIconCharacter)) return;
@@ -713,12 +722,12 @@ namespace AcManager.Tools.Helpers {
             private PeriodEntry[] _periodEntries;
 
             public PeriodEntry[] NewContentPeriods => _periodEntries ?? (_periodEntries = new[] {
-                new PeriodEntry { DisplayName = "Disabled", TimeSpan = TimeSpan.Zero },
-                new PeriodEntry { DisplayName = "One day", TimeSpan = TimeSpan.FromDays(1) },
-                new PeriodEntry { DisplayName = "Three days", TimeSpan = TimeSpan.FromDays(3) },
-                new PeriodEntry { DisplayName = "Week", TimeSpan = TimeSpan.FromDays(7) },
-                new PeriodEntry { DisplayName = "Two weeks", TimeSpan = TimeSpan.FromDays(14) },
-                new PeriodEntry { DisplayName = "Month", TimeSpan = TimeSpan.FromDays(30) }
+                new PeriodEntry { DisplayName = Resources.Common_Disabled, TimeSpan = TimeSpan.Zero },
+                new PeriodEntry { DisplayName = Resources.Period_OneDay, TimeSpan = TimeSpan.FromDays(1) },
+                new PeriodEntry { DisplayName = Resources.Period_ThreeDays, TimeSpan = TimeSpan.FromDays(3) },
+                new PeriodEntry { DisplayName = Resources.Period_Week, TimeSpan = TimeSpan.FromDays(7) },
+                new PeriodEntry { DisplayName = Resources.Period_TwoWeeks, TimeSpan = TimeSpan.FromDays(14) },
+                new PeriodEntry { DisplayName = Resources.Period_Month, TimeSpan = TimeSpan.FromDays(30) }
             });
 
             private PeriodEntry _newContentPeriod;
@@ -740,11 +749,11 @@ namespace AcManager.Tools.Helpers {
             private SearchEngineEntry[] _searchEngines;
 
             public SearchEngineEntry[] SearchEngines => _searchEngines ?? (_searchEngines = new[] {
-                new SearchEngineEntry { DisplayName = "DuckDuckGo", Value = "https://duckduckgo.com/?q={0}&ia=web" },
-                new SearchEngineEntry { DisplayName = "Bing", Value = "http://www.bing.com/search?q={0}" },
-                new SearchEngineEntry { DisplayName = "Google", Value = "https://www.google.com/search?q={0}&ie=UTF-8" },
-                new SearchEngineEntry { DisplayName = "Yandex", Value = "https://yandex.ru/search/?text={0}" },
-                new SearchEngineEntry { DisplayName = "Baidu", Value = "http://www.baidu.com/s?ie=utf-8&wd={0}" }
+                new SearchEngineEntry { DisplayName = Resources.SearchEngine_DuckDuckGo, Value = @"https://duckduckgo.com/?q={0}&ia=web" },
+                new SearchEngineEntry { DisplayName = Resources.SearchEngine_Bing, Value = @"http://www.bing.com/search?q={0}" },
+                new SearchEngineEntry { DisplayName = Resources.SearchEngine_Google, Value = @"https://www.google.com/search?q={0}&ie=UTF-8" },
+                new SearchEngineEntry { DisplayName = Resources.SearchEngine_Yandex, Value = @"https://yandex.ru/search/?text={0}" },
+                new SearchEngineEntry { DisplayName = Resources.SearchEngine_Baidu, Value = @"http://www.baidu.com/s?ie=utf-8&wd={0}" }
             });
 
             private SearchEngineEntry _searchEngine;
@@ -783,7 +792,7 @@ namespace AcManager.Tools.Helpers {
         public class CustomShowroomSettings : NotifyPropertyChanged {
             internal CustomShowroomSettings() { }
 
-            public string[] ShowroomTypes { get; } = { "Custom", "Lite" };
+            public string[] ShowroomTypes { get; } = { Resources.CustomShowroom_Fancy, Resources.CustomShowroom_Lite };
 
             public string ShowroomType {
                 get { return LiteByDefault ? ShowroomTypes[1] : ShowroomTypes[0]; }
@@ -842,7 +851,7 @@ namespace AcManager.Tools.Helpers {
 
             [CanBeNull]
             public string ShowroomId {
-                get { return _showroomId ?? (_showroomId = ValuesStorage.GetString("Settings.CustomShowroomSettings.ShowroomId", "showroom")); }
+                get { return _showroomId ?? (_showroomId = ValuesStorage.GetString("Settings.CustomShowroomSettings.ShowroomId", @"showroom")); }
                 set {
                     value = value?.Trim();
                     if (Equals(value, _showroomId)) return;
@@ -1026,7 +1035,7 @@ namespace AcManager.Tools.Helpers {
             private string _srsAutoMask;
 
             public string SrsAutoMask {
-                get { return _srsAutoMask ?? (_srsAutoMask = ValuesStorage.GetString("Settings.LiveSettings.SrsAutoMask", "SimRacingSystem*")); }
+                get { return _srsAutoMask ?? (_srsAutoMask = ValuesStorage.GetString("Settings.LiveSettings.SrsAutoMask", @"SimRacingSystem*")); }
                 set {
                     value = value.Trim();
                     if (Equals(value, _srsAutoMask)) return;

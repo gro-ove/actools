@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
         public class PythonSettings : IniPresetableSettings {
-            internal PythonSettings() : base("python") {}
+            internal PythonSettings() : base(@"python") {}
 
             private Dictionary<string, bool> _apps;
 
@@ -35,7 +35,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             protected override void LoadFromIni() {
-                _apps = Ini.Where(x => x.Value.ContainsKey("ACTIVE")).ToDictionary(
+                _apps = Ini.Where(x => x.Value.ContainsKey(@"ACTIVE")).ToDictionary(
                         x => x.Key.ToLowerInvariant(),
                         x => x.Value.GetBool("ACTIVE", false));
                 OnPropertyChanged(nameof(Apps));

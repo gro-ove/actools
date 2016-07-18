@@ -93,7 +93,7 @@ namespace AcTools.DataFile {
         public override string Stringify() {
             return Content.Select(x => (from pair in x.Value
                                         select pair.Key + "=" + pair.Value
-                    ).Prepend("[" + x.Key + "]").JoinToString("\n")).JoinToString("\n\n");
+                    ).Prepend("[" + x.Key + "]").JoinToString("\r\n")).JoinToString("\r\n\r\n");
         }
 
         public override string ToString() {

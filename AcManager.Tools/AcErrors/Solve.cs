@@ -14,9 +14,9 @@ namespace AcManager.Tools.AcErrors {
     public static class Solve {
         public static IEnumerable<Solution> TryToFindRenamedFile(string baseDirectory, string filename, bool skipOff = false) {
             return FileUtils.FindRenamedFile(baseDirectory, filename)
-                            .Where(x => skipOff == false || x.EndsWith("-off", StringComparison.OrdinalIgnoreCase))
-                            .Select(x => new Solution($@"Restore from …{x.Substring(baseDirectory.Length)}",
-                                    @"Original file will be moved to Recycle Bin if exists",
+                            .Where(x => skipOff == false || x.EndsWith(@"-off", StringComparison.OrdinalIgnoreCase))
+                            .Select(x => new Solution(string.Format(Resources.Solving_RestoreFrom, x.Substring(baseDirectory.Length)),
+                                    Resources.Solving_RestoreFrom_Commentary,
                                     e => {
                                         var directory = Path.GetDirectoryName(filename);
                                         if (directory == null) throw new IOException("directory = null");
@@ -35,8 +35,8 @@ namespace AcManager.Tools.AcErrors {
 
         public static IEnumerable<Solution> TryToFindAnyFile(string baseDirectory, string filename, string searchPattern) {
             return Directory.GetFiles(baseDirectory, searchPattern)
-                            .Select(x => new Solution($@"Restore from …{x.Substring(baseDirectory.Length)}",
-                                    @"Original file will be moved to Recycle Bin if exists",
+                            .Select(x => new Solution(string.Format(Resources.Solving_RestoreFrom, x.Substring(baseDirectory.Length)),
+                                    Resources.Solving_RestoreFrom_Commentary,
                                     e => {
                                         var directory = Path.GetDirectoryName(filename);
                                         if (directory == null) throw new IOException("directory = null");
@@ -66,11 +66,11 @@ namespace AcManager.Tools.AcErrors {
         public static MultiSolution TryToCreateNewFile(AcJsonObjectNew target) {
             if (target is ShowroomObject) {
                 return new MultiSolution(
-                    @"Create a new file",
-                    @"New file will be created containing name based on ID",
+                    Resources.Solving_CreateNewFile,
+                    Resources.Solving_CreateNewFile_Commentary,
                     e => {
                         var jObject = new JObject {
-                            ["name"] = AcStringValues.NameFromId(e.Target.Id)
+                            [@"name"] = AcStringValues.NameFromId(e.Target.Id)
                         };
 
                         FileUtils.EnsureFileDirectoryExists(((AcJsonObjectNew)e.Target).JsonFilename);
@@ -80,16 +80,16 @@ namespace AcManager.Tools.AcErrors {
 
             if (target is CarSkinObject) {
                 return new MultiSolution(
-                    @"Create a new file",
-                    @"New file will be created containing name based on ID",
+                    Resources.Solving_CreateNewFile,
+                    Resources.Solving_CreateNewFile_Commentary,
                     e => {
                         var jObject = new JObject {
-                            ["skinname"] = AcStringValues.NameFromId(e.Target.Id),
-                            ["drivername"] = "",
-                            ["country"] = "",
-                            ["team"] = "",
-                            ["number"] = "0",
-                            ["priority"] = 1
+                            [@"skinname"] = AcStringValues.NameFromId(e.Target.Id),
+                            [@"drivername"] = "",
+                            [@"country"] = "",
+                            [@"team"] = "",
+                            [@"number"] = @"0",
+                            [@"priority"] = 1
                         };
 
                         FileUtils.EnsureFileDirectoryExists(((AcJsonObjectNew)e.Target).JsonFilename);

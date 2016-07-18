@@ -6,8 +6,7 @@
         xmlns:online="clr-namespace:AcManager.Tools.Managers.Online;assembly=AcManager.Tools" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
         xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Loaded="Online_SelectedServerPage_OnLoaded" Unloaded="Online_SelectedServerPage_OnUnloaded"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" PreviewMouseDown="Online_SelectedServerPage_OnPreviewMouseDown"
+        Loaded="OnLoaded" Unloaded="OnUnloaded" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp"
         d:DataContext="{d:DesignInstance drive:Online_SelectedServerPage+ViewModel}">
 
     <UserControl.Resources>
@@ -20,14 +19,11 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <DockPanel DataContext="{Binding Entry}">
-        <controls:AcToolBar x:Name="ToolBar" IsActive="True" DockPanel.Dock="Bottom" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
-            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Refresh" ToolTip="Refresh server information (Ctrl+R)" Command="{Binding RefreshCommand}" />
-                <Separator />
-                <Button Content="Join" Command="{Binding JoinCommand}" ToolTip="Join server (Ctrl+G)" Style="{StaticResource Go.ToolBarButton}" />
-            </ToolBar>
-        </controls:AcToolBar>
+    <Grid DataContext="{Binding Entry}" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
         <Grid>
             <!-- error -->
@@ -244,5 +240,13 @@
                 </DockPanel>
             </DockPanel>
         </Grid>
-    </DockPanel>
+
+        <controls:AcToolBar x:Name="ToolBar" IsActive="True" Grid.Row="1" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
+            <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
+                <Button Content="Refresh" ToolTip="Refresh server information (Ctrl+R)" Command="{Binding RefreshCommand}" />
+                <Separator />
+                <Button Content="Join" Command="{Binding JoinCommand}" ToolTip="Join server (Ctrl+G)" Style="{StaticResource Go.ToolBarButton}" />
+            </ToolBar>
+        </controls:AcToolBar>
+    </Grid>
 </UserControl>

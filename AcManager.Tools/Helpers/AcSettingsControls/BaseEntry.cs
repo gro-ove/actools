@@ -8,7 +8,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
     public abstract class BaseEntry<T> : Displayable, IEntry where T : class, IInputProvider {
         public string Id { get; }
 
-        protected BaseEntry(string id, string displayName) {
+        protected BaseEntry([LocalizationRequired(false)] string id, string displayName) {
             Id = id;
             DisplayName = displayName;
         }

@@ -13,7 +13,7 @@ namespace AcManager.Tools.Helpers {
             var subnetMaskBytes = subnetMask.GetAddressBytes();
 
             if (addressBytes.Length != subnetMaskBytes.Length) {
-                throw new ArgumentException("Lengths of IP address and subnet mask do not match.");
+                throw new ArgumentException(@"Lengths of IP address and subnet mask do not match");
             }
 
             return new IPAddress(addressBytes.Select((x, i) => (byte)(x | subnetMaskBytes[i] ^ byte.MaxValue)).ToArray());

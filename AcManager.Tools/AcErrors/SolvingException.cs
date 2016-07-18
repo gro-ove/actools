@@ -7,7 +7,7 @@ namespace AcManager.Tools.AcErrors {
         /// <summary>
         /// Would work as a cancellation. User will return to solutions selection window.
         /// </summary>
-        public SolvingException() : base("Cancelled") {
+        public SolvingException() : base(Resources.Solving_Cancelled) {
             IsCancelled = true;
         }
 

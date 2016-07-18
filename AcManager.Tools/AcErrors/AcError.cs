@@ -36,17 +36,17 @@ namespace AcManager.Tools.AcErrors {
             BaseException = args.OfType<Exception>().FirstOrDefault();
 
             if (Category != AcErrorCategory.CarSkin &&
-                    (type != AcErrorType.Data_JsonIsMissing || !Equals(args.FirstOrDefault(), "ui_skin.json"))) {
-                Logging.Write("[ACERROR] " + Message);
+                    (type != AcErrorType.Data_JsonIsMissing || !Equals(args.FirstOrDefault(), @"ui_skin.json"))) {
+                Logging.Write("[AcError] " + Message);
             }
 
             foreach (var exception in args.OfType<Exception>()) {
-                Logging.Write("[ACERROR] Exception: " + exception);
+                Logging.Write("[AcError] Exception: " + exception);
             }
         }
 
         private static string MessageFromType(AcErrorType type) {
-            return type.GetDescription() ?? "?";
+            return type.GetDescription() ?? @"?";
         }
 
         private static AcErrorCategory CategoryFromType(AcErrorType type) {

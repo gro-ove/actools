@@ -64,8 +64,8 @@ namespace AcManager.Tools.Helpers {
 
             try {
                 RegisterClass(ClassName, AppTitle, true, 0);
-                RegisterExtension(".kn5", "KN5 model");
-                RegisterExtension(".acreplay", "AC replay");
+                RegisterExtension(@".kn5", Resources.Windows_Kn5Commentary);
+                RegisterExtension(@".acreplay", Resources.Windows_AcReplayCommentary);
 
                 ValuesStorage.Set(KeyRegisteredLocation, MainExecutingFile.Location);
                 ValuesStorage.Set(KeyRegisteredVersion, Version);

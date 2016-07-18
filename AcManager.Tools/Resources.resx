@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -534,8 +534,7 @@
   </data>
   <data name="DirectLoader_RecursionDetected" xml:space="preserve">
     <value>Recursion detected</value>
-    <comment>When loader gets trapped into endless loop of redirects
-</comment>
+    <comment>When loader gets trapped into endless loop of redirects</comment>
   </data>
   <data name="DirectLoader_AssettoDbChanged" xml:space="preserve">
     <value>Assetto-DB.com is changed.</value>
@@ -548,5 +547,604 @@
   </data>
   <data name="DirectLoader_RdChanged" xml:space="preserve">
     <value>RaceDepartment is changed.</value>
+  </data>
+  <data name="Common_SteamIdIsMissing" xml:space="preserve">
+    <value>Steam ID is missing</value>
+  </data>
+  <data name="Controls_Throttle" xml:space="preserve">
+    <value>Throttle</value>
+  </data>
+  <data name="Controls_Brakes" xml:space="preserve">
+    <value>Brakes</value>
+  </data>
+  <data name="Controls_SteerLeft" xml:space="preserve">
+    <value>Steer left</value>
+  </data>
+  <data name="Controls_SteerRight" xml:space="preserve">
+    <value>Steer right</value>
+  </data>
+  <data name="Controls_SteeringWheel" xml:space="preserve">
+    <value>Wheel</value>
+    <comment>Controller name</comment>
+  </data>
+  <data name="Controls_Xbox360Gamepad" xml:space="preserve">
+    <value>Xbox 360 gamepad</value>
+  </data>
+  <data name="Controls_KeyboardAndMouse" xml:space="preserve">
+    <value>Keyboard &amp; mouse</value>
+  </data>
+  <data name="Controls_Steering" xml:space="preserve">
+    <value>Steering</value>
+  </data>
+  <data name="Controls_Clutch" xml:space="preserve">
+    <value>Clutch</value>
+  </data>
+  <data name="Controls_Handbrake" xml:space="preserve">
+    <value>Handbrake</value>
+  </data>
+  <data name="Controls_NextGear" xml:space="preserve">
+    <value>Next gear</value>
+  </data>
+  <data name="Controls_PreviousGear" xml:space="preserve">
+    <value>Previous gear</value>
+  </data>
+  <data name="Controls_Gear_First" xml:space="preserve">
+    <value>First gear</value>
+  </data>
+  <data name="Controls_Gear_Second" xml:space="preserve">
+    <value>Second gear</value>
+  </data>
+  <data name="Controls_Gear_Third" xml:space="preserve">
+    <value>Third gear</value>
+  </data>
+  <data name="Controls_Gear_Fourth" xml:space="preserve">
+    <value>Fourth gear</value>
+  </data>
+  <data name="Controls_Gear_Fifth" xml:space="preserve">
+    <value>Fifth gear</value>
+  </data>
+  <data name="Controls_Gear_Sixth" xml:space="preserve">
+    <value>Sixth gear</value>
+  </data>
+  <data name="Controls_Gear_Seventh" xml:space="preserve">
+    <value>Seventh gear</value>
+  </data>
+  <data name="Controls_Gear_Rear" xml:space="preserve">
+    <value>Rear gear</value>
+  </data>
+  <data name="Controls_Kers" xml:space="preserve">
+    <value>KERS activation</value>
+  </data>
+  <data name="Controls_Drs" xml:space="preserve">
+    <value>DRS activation</value>
+  </data>
+  <data name="Controls_Headlights" xml:space="preserve">
+    <value>Headlights</value>
+  </data>
+  <data name="Controls_FlashHeadlights" xml:space="preserve">
+    <value>Flash Headlights</value>
+  </data>
+  <data name="Controls_Horn" xml:space="preserve">
+    <value>Horn</value>
+  </data>
+  <data name="Controls_MoveToFront" xml:space="preserve">
+    <value>Move to front</value>
+    <comment>For brake balance</comment>
+  </data>
+  <data name="Controls_MoveToRear" xml:space="preserve">
+    <value>Move to rear</value>
+    <comment>For brake balance</comment>
+  </data>
+  <data name="Controls_Increase" xml:space="preserve">
+    <value>Increase</value>
+    <comment>For turbo, ABS, TC</comment>
+  </data>
+  <data name="Controls_Decrease" xml:space="preserve">
+    <value>Decrease</value>
+    <comment>For turbo, ABS, TC</comment>
+  </data>
+  <data name="Controls_Mguk_IncreaseDelivery" xml:space="preserve">
+    <value>Increase Delivery</value>
+  </data>
+  <data name="Controls_Mguk_DecreaseDelivery" xml:space="preserve">
+    <value>Decrease Delivery</value>
+  </data>
+  <data name="Controls_Mguk_IncreaseRecovery" xml:space="preserve">
+    <value>Increase Recovery</value>
+  </data>
+  <data name="Controls_Mguk_DecreaseRecovery" xml:space="preserve">
+    <value>Decrease Recovery</value>
+  </data>
+  <data name="Controls_Mguh_Mode" xml:space="preserve">
+    <value>MGU-H Mode</value>
+  </data>
+  <data name="Controls_GlanceLeft" xml:space="preserve">
+    <value>Glance left</value>
+  </data>
+  <data name="Controls_GlanceRight" xml:space="preserve">
+    <value>Glance right</value>
+  </data>
+  <data name="Controls_GlanceBack" xml:space="preserve">
+    <value>Glance back</value>
+  </data>
+  <data name="Controls_ChangeCamera" xml:space="preserve">
+    <value>Change camera</value>
+  </data>
+  <data name="Controls_Celebrate" xml:space="preserve">
+    <value>Celebrate</value>
+  </data>
+  <data name="Controls_Complain" xml:space="preserve">
+    <value>Complain</value>
+  </data>
+  <data name="Gameplay_Units_Metrical" xml:space="preserve">
+    <value>Metrical (km/h)</value>
+  </data>
+  <data name="Gameplay_Units_Imperial" xml:space="preserve">
+    <value>Imperial (mph)</value>
+  </data>
+  <data name="AcSettings_CannotSave" xml:space="preserve">
+    <value>Can’t save AC settings</value>
+  </data>
+  <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
+    <value>Make sure app has access to cfg folder.</value>
+  </data>
+  <data name="AcSettings_Off" xml:space="preserve">
+    <value>Off</value>
+    <comment>For example, for video settings, displayed instead of 0</comment>
+  </data>
+  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
+  <data name="AcSettings_Quality_Low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="AcSettings_Quality_Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="AcSettings_Quality_High" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
+    <value>Ultra</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>JPEG</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
+    <value>Bitmap (without compression)</value>
+  </data>
+  <data name="AcSettings_CustomResolution" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
+    <value>{0}×{1}, {2} Hz</value>
+    <comment>Parameters: width, height, refresh rate</comment>
+  </data>
+  <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
+    <value>Single Screen</value>
+  </data>
+  <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
+    <value>Triple Screen</value>
+  </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="AcSettings_ExperimentalValue" xml:space="preserve">
+    <value>{0} (experimental)</value>
+  </data>
+  <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
+    <value>Very High</value>
+  </data>
+  <data name="AcSettings_Quality_Maximum" xml:space="preserve">
+    <value>Maximum</value>
+  </data>
+  <data name="AcSettings_Cubemap_Static" xml:space="preserve">
+    <value>Static</value>
+  </data>
+  <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
+    <value>One face per frame</value>
+  </data>
+  <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
+    <value>Two faces per frame</value>
+  </data>
+  <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
+    <value>Three faces per frame</value>
+  </data>
+  <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
+    <value>Four faces per frame</value>
+  </data>
+  <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
+    <value>Five faces per frame</value>
+  </data>
+  <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
+    <value>Six faces per frame</value>
+  </data>
+  <data name="Windows_Kn5Commentary" xml:space="preserve">
+    <value>KN5 model</value>
+  </data>
+  <data name="Windows_AcReplayCommentary" xml:space="preserve">
+    <value>AC replay</value>
+  </data>
+  <data name="Common_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="Settings_Autoupdate_Startup" xml:space="preserve">
+    <value>On startup only</value>
+  </data>
+  <data name="Settings_Autoupdate_ThirtyMinutes" xml:space="preserve">
+    <value>Every 30 minutes</value>
+  </data>
+  <data name="Settings_Autoupdate_ThreeHours" xml:space="preserve">
+    <value>Every three hours</value>
+  </data>
+  <data name="Settings_Autoupdate_TenHours" xml:space="preserve">
+    <value>Every ten hours</value>
+  </data>
+  <data name="Settings_Autoupdate_Day" xml:space="preserve">
+    <value>Every day</value>
+  </data>
+  <data name="Settings_DefaultPlayerName" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="Settings_Starter_Official" xml:space="preserve">
+    <value>Official</value>
+  </data>
+  <data name="Settings_Starter_Tricky" xml:space="preserve">
+    <value>Tricky</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Starter+</value>
+  </data>
+  <data name="Settings_Starter_Sse" xml:space="preserve">
+    <value>SSE</value>
+  </data>
+  <data name="Settings_Starter_Naive" xml:space="preserve">
+    <value>Naive</value>
+  </data>
+  <data name="Common_Recommended" xml:space="preserve">
+    <value>{0} (Recommended)</value>
+  </data>
+  <data name="Period_OneDay" xml:space="preserve">
+    <value>One day</value>
+  </data>
+  <data name="Period_ThreeDays" xml:space="preserve">
+    <value>Three days</value>
+  </data>
+  <data name="Period_Week" xml:space="preserve">
+    <value>Week</value>
+  </data>
+  <data name="Period_TwoWeeks" xml:space="preserve">
+    <value>Two weeks</value>
+  </data>
+  <data name="Period_Month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="SearchEngine_Bing" xml:space="preserve">
+    <value>Bing</value>
+  </data>
+  <data name="SearchEngine_Google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="SearchEngine_Baidu" xml:space="preserve">
+    <value>Baidu</value>
+  </data>
+  <data name="CustomShowroom_Fancy" xml:space="preserve">
+    <value>Fancy</value>
+  </data>
+  <data name="CustomShowroom_Lite" xml:space="preserve">
+    <value>Lite</value>
+  </data>
+  <data name="GameCommand_UnknownProblem" xml:space="preserve">
+    <value>Unknown problem (Process=null)</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
+    <value>Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app supposed to run in background</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
+    <value>Timeout exceeded</value>
+  </data>
+  <data name="GameCommand_CannotExecute" xml:space="preserve">
+    <value>Can’t execute command</value>
+  </data>
+  <data name="Session_Drift" xml:space="preserve">
+    <value>Drift</value>
+  </data>
+  <data name="Session_Booking" xml:space="preserve">
+    <value>Booking</value>
+  </data>
+  <data name="Session_Practice" xml:space="preserve">
+    <value>Practice</value>
+  </data>
+  <data name="Session_Qualification" xml:space="preserve">
+    <value>Qualification</value>
+  </data>
+  <data name="Session_Race" xml:space="preserve">
+    <value>Race</value>
+  </data>
+  <data name="Session_Hotlap" xml:space="preserve">
+    <value>Hotlap</value>
+  </data>
+  <data name="Session_TimeAttack" xml:space="preserve">
+    <value>Time Attack</value>
+  </data>
+  <data name="Progress_Downloading" xml:space="preserve">
+    <value>Loaded {0}</value>
+  </data>
+  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
+    <value>Loaded {0} of {1}</value>
+  </data>
+  <data name="Progress_Uploading" xml:space="preserve">
+    <value>Uploaded {0}</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>Uploaded {0} of {1}</value>
+  </data>
+  <data name="ContentSyncronizer_UnhandledError" xml:space="preserve">
+    <value>Some unhandled error happened.</value>
+  </data>
+  <data name="ContentSyncronizer_CannotDownloadInformation" xml:space="preserve">
+    <value>Can’t download information about latest version.</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
+    <value>Can’t load content pack</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
+    <value>Make sure internet connection is working and nothing is going on in Content folder.</value>
+  </data>
+  <data name="Weather_LightThunderstorm" xml:space="preserve">
+    <value>Light thunderstorm</value>
+  </data>
+  <data name="Weather_Thunderstorm" xml:space="preserve">
+    <value>Thunderstorm</value>
+  </data>
+  <data name="Weather_HeavyThunderstorm" xml:space="preserve">
+    <value>Heavy thunderstorm</value>
+  </data>
+  <data name="Weather_LightDrizzle" xml:space="preserve">
+    <value>Light drizzle</value>
+  </data>
+  <data name="Weather_Drizzle" xml:space="preserve">
+    <value>Drizzle</value>
+  </data>
+  <data name="Weather_HeavyDrizzle" xml:space="preserve">
+    <value>Heavy drizzle</value>
+  </data>
+  <data name="Weather_LightRain" xml:space="preserve">
+    <value>Light rain</value>
+  </data>
+  <data name="Weather_Rain" xml:space="preserve">
+    <value>Rain</value>
+  </data>
+  <data name="Weather_HeavyRain" xml:space="preserve">
+    <value>Heavy rain</value>
+  </data>
+  <data name="Weather_LightSnow" xml:space="preserve">
+    <value>Light snow</value>
+  </data>
+  <data name="Weather_Snow" xml:space="preserve">
+    <value>Snow</value>
+  </data>
+  <data name="Weather_HeavySnow" xml:space="preserve">
+    <value>Heavy snow</value>
+  </data>
+  <data name="Weather_LightSleet" xml:space="preserve">
+    <value>Light sleet</value>
+  </data>
+  <data name="Weather_Sleet" xml:space="preserve">
+    <value>Sleet</value>
+  </data>
+  <data name="Weather_HeavySleet" xml:space="preserve">
+    <value>Heavy sleet</value>
+  </data>
+  <data name="Weather_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Weather_FewClouds" xml:space="preserve">
+    <value>Few clouds</value>
+  </data>
+  <data name="Weather_ScatteredClouds" xml:space="preserve">
+    <value>Scattered clouds</value>
+  </data>
+  <data name="Weather_BrokenClouds" xml:space="preserve">
+    <value>Broken clouds</value>
+  </data>
+  <data name="Weather_OvercastClouds" xml:space="preserve">
+    <value>Overcast clouds</value>
+  </data>
+  <data name="Weather_Fog" xml:space="preserve">
+    <value>Fog</value>
+  </data>
+  <data name="Weather_Mist" xml:space="preserve">
+    <value>Mist</value>
+  </data>
+  <data name="Weather_Smoke" xml:space="preserve">
+    <value>Smoke</value>
+  </data>
+  <data name="Weather_Haze" xml:space="preserve">
+    <value>Haze</value>
+  </data>
+  <data name="Weather_Sand" xml:space="preserve">
+    <value>Sand</value>
+  </data>
+  <data name="Weather_Dust" xml:space="preserve">
+    <value>Dust</value>
+  </data>
+  <data name="Weather_Squalls" xml:space="preserve">
+    <value>Squalls</value>
+  </data>
+  <data name="Weather_Tornado" xml:space="preserve">
+    <value>Tornado</value>
+  </data>
+  <data name="Weather_Hurricane" xml:space="preserve">
+    <value>Hurricane</value>
+  </data>
+  <data name="Weather_Cold" xml:space="preserve">
+    <value>Cold</value>
+  </data>
+  <data name="Weather_Hot" xml:space="preserve">
+    <value>Hot</value>
+  </data>
+  <data name="Weather_Windy" xml:space="preserve">
+    <value>Windy</value>
+  </data>
+  <data name="Weather_Hail" xml:space="preserve">
+    <value>Hail</value>
+  </data>
+  <data name="AcObject_CannotChangeId" xml:space="preserve">
+    <value>Can’t change ID</value>
+  </data>
+  <data name="AcObject_CannotChangeIdExt" xml:space="preserve">
+    <value>Can’t change ID: {0}</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically" xml:space="preserve">
+    <value>Reload file?</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
+    <value>INI-file has been changed. Reload? All local changes will be lost.</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
+    <value>JSON-file has been changed. Reload? All local changes will be lost.</value>
+  </data>
+  <data name="AcObject_DisablingNotSupported" xml:space="preserve">
+    <value>Can’t do</value>
+  </data>
+  <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
+    <value>Sorry, you can’t disable this type of object.</value>
+  </data>
+  <data name="AcObject_CannotRemove" xml:space="preserve">
+    <value>Can’t remove existing directory</value>
+  </data>
+  <data name="Solving_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="Solving_RestoreFrom" xml:space="preserve">
+    <value>Restore from …{0}</value>
+    <comment>Restore file from somewhere</comment>
+  </data>
+  <data name="Solving_RestoreFrom_Commentary" xml:space="preserve">
+    <value>Original file will be moved to Recycle Bin if exists</value>
+  </data>
+  <data name="Solving_CreateNewFile" xml:space="preserve">
+    <value>Create a new file</value>
+  </data>
+  <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
+    <value>New file will be created containing name based on ID</value>
+  </data>
+  <data name="Uploader_GoogleDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
+  <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
+    <value>Enter the Google Drive authentication code:</value>
+  </data>
+  <data name="Uploader_CannotFinishAuthorization" xml:space="preserve">
+    <value>Can't finish authorization process</value>
+  </data>
+  <data name="Uploader_AuthenticationTokenIsMissing" xml:space="preserve">
+    <value>Authentication token is missing</value>
+  </data>
+  <data name="Uploader_RequestFailed" xml:space="preserve">
+    <value>GET request failed</value>
+  </data>
+  <data name="Uploader_RootDirectory" xml:space="preserve">
+    <value>Root</value>
+  </data>
+  <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
+    <value>Can’t upload file to Google Drive</value>
+  </data>
+  <data name="Uploader_CannotUpload_Commentary" xml:space="preserve">
+    <value>Make sure there is enough space.</value>
+  </data>
+  <data name="Uploader_CannotShareGoogleDrive" xml:space="preserve">
+    <value>Can’t share Google Drive file</value>
+  </data>
+  <data name="LoadingUnhandledError" xml:space="preserve">
+    <value>Loading unhandled error: {0}</value>
+  </data>
+  <data name="FileIsMissing" xml:space="preserve">
+    <value>File “{0}” is missing</value>
+  </data>
+  <data name="FileIsDamaged" xml:space="preserve">
+    <value>File “{0}” is damaged</value>
+  </data>
+  <data name="FileIsMissing" xml:space="preserve">
+    <value>File “{0}” is missing</value>
+  </data>
+  <data name="FileIsDamaged" xml:space="preserve">
+    <value>File “{0}” is damaged</value>
+  </data>
+  <data name="NameIsMissing" xml:space="preserve">
+    <value>Name is missing</value>
+  </data>
+  <data name="BrandNameIsMissing" xml:space="preserve">
+    <value>Brand name is missing</value>
+  </data>
+  <data name="DirectoryUiIsMissing" xml:space="preserve">
+    <value>Directory “ui” is missing</value>
+  </data>
+  <data name="EventsOfAreMissing" xml:space="preserve">
+    <value>Events of “{0}” are missing</value>
+  </data>
+  <data name="EventConditionsAreNotSupported" xml:space="preserve">
+    <value>Event conditions aren’t supported</value>
+  </data>
+  <data name="RequiredContentIsMissing" xml:space="preserve">
+    <value>Required content is missing</value>
+  </data>
+  <data name="RequiredTrackIsMissing" xml:space="preserve">
+    <value>Required track “{0}” is missing</value>
+  </data>
+  <data name="RequiredCarIsMissing" xml:space="preserve">
+    <value>Required car “{0}” is missing</value>
+  </data>
+  <data name="RequiredSkin1ForIsMissing" xml:space="preserve">
+    <value>Required skin “{1}” for {0} is missing</value>
+  </data>
+  <data name="RequiredWeatherIsMissing" xml:space="preserve">
+    <value>Required weather “{0}” is missing</value>
+  </data>
+  <data name="CarParentIsMissing" xml:space="preserve">
+    <value>Car’s parent is missing</value>
+  </data>
+  <data name="BrandBadgeIsMissing" xml:space="preserve">
+    <value>Brand’s badge is missing</value>
+  </data>
+  <data name="UpgradeIconIsMissing" xml:space="preserve">
+    <value>Upgrade icon is missing</value>
+  </data>
+  <data name="SkinsAreMissing" xml:space="preserve">
+    <value>Skins are missing</value>
+  </data>
+  <data name="SkinsDirectoryIsUnavailable" xml:space="preserve">
+    <value>Skins directory is unavailable</value>
+  </data>
+  <data name="SetupTrackIsMissing" xml:space="preserve">
+    <value>Setup’s track ({0}) is missing</value>
+  </data>
+  <data name="SkinLiveryLiveryPngIsMissing" xml:space="preserve">
+    <value>Skin’s livery ({0}/livery.png) is missing</value>
+  </data>
+  <data name="SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
+    <value>Skin’s preview ({0}/preview.jpg) is missing</value>
+  </data>
+  <data name="ModelKn5FileIsMissing" xml:space="preserve">
+    <value>Model (KN5 file) is missing</value>
+  </data>
+  <data name="FontBitmapIsMissing" xml:space="preserve">
+    <value>Font’s bitmap is missing</value>
+  </data>
+  <data name="FontIsUsedButDisabled" xml:space="preserve">
+    <value>Font is used but disabled</value>
+  </data>
+  <data name="TrackIsMissing" xml:space="preserve">
+    <value>Track “{0}” is missing</value>
+  </data>
+  <data name="NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
+    <value>Name shouldn't contain symbols like “[” or “]”</value>
   </data>
 </root>

@@ -176,28 +176,30 @@ namespace AcManager.Tools.Managers.Online {
             BackgroundLoading = true;
             Pinged = 0;
 
-            UnavailableList.Clear();
-            await TaskExtension.WhenAll(LoadList().Select(async address => {
-                try {
-                    var entry = await Task.Run(() => ServerEntry.FromAddress(this, address));
-                    if (entry == null) {
-                        UnavailableList.Add(address);
-                        return;
+            try {
+                UnavailableList.Clear();
+                await LoadList().Select(async address => {
+                    try {
+                        var entry = await Task.Run(() => ServerEntry.FromAddress(this, address));
+                        if (entry == null) {
+                            UnavailableList.Add(address);
+                            return;
+                        }
+
+                        InnerWrappersList.Add(new AcItemWrapper(this, entry));
+
+                        if (entry.Status == ServerStatus.Unloaded) {
+                            await entry.Update(ServerEntry.UpdateMode.Lite);
+                        }
+
+                        Pinged++;
+                    } catch (Exception e) {
+                        Logging.Warning("[LANMANAGER] Cannot create ServerEntry: " + e);
                     }
-
-                    InnerWrappersList.Add(new AcItemWrapper(this, entry));
-
-                    if (entry.Status == ServerStatus.Unloaded) {
-                        await entry.Update(ServerEntry.UpdateMode.Lite);
-                    }
-
-                    Pinged++;
-                } catch (Exception e) {
-                    Logging.Warning("[LANMANAGER] Cannot create ServerEntry: " + e);
-                }
-            }), SettingsHolder.Online.PingConcurrency);
-
-            BackgroundLoading = false;
+                }).WhenAll(SettingsHolder.Online.PingConcurrency);
+            } finally {
+                BackgroundLoading = false;
+            }
         }
     }
 }

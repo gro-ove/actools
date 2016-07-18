@@ -99,9 +99,9 @@ namespace AcManager.Tools.Helpers.Api {
                     if (response.StatusCode != HttpStatusCode.OK) throw new Exception($"StatusCode = {response.StatusCode}");
 
                     using (var stream = response.GetResponseStream()) {
-                        if (stream == null) throw new Exception("ResponseStream = null");
+                        if (stream == null) throw new Exception(@"ResponseStream = null");
 
-                        if (string.Equals(response.Headers.Get("Content-Encoding"), "gzip", StringComparison.OrdinalIgnoreCase)) {
+                        if (string.Equals(response.Headers.Get("Content-Encoding"), @"gzip", StringComparison.OrdinalIgnoreCase)) {
                             using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
                                 using (var reader = new StreamReader(deflateStream, Encoding.UTF8)) {
                                     result = await reader.ReadToEndAsync();
@@ -142,6 +142,8 @@ namespace AcManager.Tools.Helpers.Api {
                         (_cachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore));
             }
 
+            request.ContinueTimeout = OptionWebRequestTimeout;
+            request.ReadWriteTimeout = OptionWebRequestTimeout;
             request.Timeout = OptionWebRequestTimeout;
 
             string result;
@@ -152,10 +154,10 @@ namespace AcManager.Tools.Helpers.Api {
 
                 using (var stream = response.GetResponseStream()) {
                     if (stream == null) {
-                        throw new Exception("ResponseStream = null");
+                        throw new Exception(@"ResponseStream = null");
                     }
 
-                    if (string.Equals(response.Headers.Get("Content-Encoding"), "gzip", StringComparison.OrdinalIgnoreCase)) {
+                    if (string.Equals(response.Headers.Get("Content-Encoding"), @"gzip", StringComparison.OrdinalIgnoreCase)) {
                         using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress)) {
                             using (var reader = new StreamReader(deflateStream, Encoding.UTF8)) {
                                 result = reader.ReadToEnd();
@@ -171,7 +173,7 @@ namespace AcManager.Tools.Helpers.Api {
 
             if (!OptionSaveResponses) return result;
 
-            var filename = FilesStorage.Instance.GetFilename("Logs",
+            var filename = FilesStorage.Instance.GetFilename(@"Logs",
                                                              $"Dump_{Regex.Replace(uri.Split('/').Last(), @"\W+", "_")}.json");
             if (!File.Exists(filename)) {
                 File.WriteAllText(FilesStorage.Instance.GetFilename(filename), result);
@@ -181,7 +183,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [CanBeNull]
         public static ServerInformation[] TryToGetList() {
-            if (SteamIdHelper.Instance.Value == null) throw new Exception("Steam ID is missing");
+            if (SteamIdHelper.Instance.Value == null) throw new Exception(Resources.Common_SteamIdIsMissing);
 
             for (var i = 0; i < ServersNumber && ServerUri != null; i++) {
                 var uri = ServerUri;
@@ -209,7 +211,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [CanBeNull]
         public static ServerInformation TryToGetInformation(string ip, int port) {
-            if (SteamIdHelper.Instance.Value == null) throw new Exception("Steam ID is missing");
+            if (SteamIdHelper.Instance.Value == null) throw new Exception(Resources.Common_SteamIdIsMissing);
 
             while (ServerUri != null) {
                 var requestUri = $"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={SteamIdHelper.Instance.Value}";
@@ -299,7 +301,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [ItemCanBeNull]
         public static async Task<ServerActualInformation> TryToGetCurrentInformationAsync(string ip, int portC) {
-            var steamId = SteamIdHelper.Instance.Value ?? "-1";
+            var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var requestUri = $"http://{ip}:{portC}/JSON|{steamId}";
 
             try {
@@ -315,7 +317,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [CanBeNull]
         public static ServerActualInformation TryToGetCurrentInformation(string ip, int portC) {
-            var steamId = SteamIdHelper.Instance.Value ?? "-1";
+            var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var requestUri = $"http://{ip}:{portC}/JSON|{steamId}";
 
             try {

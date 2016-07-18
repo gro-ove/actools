@@ -37,9 +37,9 @@ namespace AcManager.Tools.AcObjectsNew {
                 if (string.IsNullOrWhiteSpace(newId)) return;
                 Rename(newId);
             } catch (ToggleException ex) {
-                NonfatalError.Notify(@"Can’t change ID: " + ex.Message, @"Make sure there is no runned app working with object’s folder.");
+                NonfatalError.Notify(string.Format(Resources.AcObject_CannotChangeIdExt, ex.Message), Resources.AcObject_Disabling_MakeSureNoRunnedApps);
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t change ID", @"Make sure there is no runned app working with object’s folder.", ex);
+                NonfatalError.Notify(Resources.AcObject_CannotChangeId, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
             }
         }, o => !string.IsNullOrWhiteSpace(o as string)));
 
@@ -48,9 +48,9 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 Toggle();
             } catch (ToggleException ex) {
-                NonfatalError.Notify(@"Can’t toggle: " + ex.Message, @"Make sure there is no runned app working with object’s folder.");
+                NonfatalError.Notify(string.Format(Resources.AcObject_CannotToggleExt, ex.Message), Resources.AcObject_Disabling_MakeSureNoRunnedApps);
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t toggle", @"Make sure there is no runned app working with object’s folder.", ex);
+                NonfatalError.Notify(Resources.AcObject_CannotToggle, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
             }
         }));
 
@@ -60,13 +60,13 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 Delete();
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t delete", @"Make sure there is no runned app working with object’s folder.", ex);
+                NonfatalError.Notify(Resources.AcObject_CannotDelete, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
             }
         }));
 
         private ICommand _reloadCommand;
         public virtual ICommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new RelayCommand(o => {
-            if (o as string == "full") {
+            if (o as string == @"full") {
                 Manager.Reload(Id);
             } else {
                 Reload();

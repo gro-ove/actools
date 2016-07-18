@@ -14,7 +14,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public static void ViewDirectory(string directory) {
-            ProcessExtension.Start("explorer", new [] { directory });
+            ProcessExtension.Start(@"explorer", new [] { directory });
         }
 
         public static void ViewFile(string filename) {

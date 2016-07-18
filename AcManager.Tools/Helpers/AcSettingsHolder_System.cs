@@ -6,11 +6,11 @@ using AcTools.Utils;
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
         public class SystemSettings : IniSettings {
-            internal SystemSettings() : base("assetto_corsa", systemConfig: true) { }
+            internal SystemSettings() : base(@"assetto_corsa", systemConfig: true) { }
 
             public SettingEntry[] ScreenshotFormats { get; } = {
-                new SettingEntry("JPG", "JPEG"),
-                new SettingEntry("BMP", "Bitmap (without compression)")
+                new SettingEntry("JPG", Resources.AcSettings_ScreenshotFormat_Jpeg),
+                new SettingEntry("BMP", Resources.AcSettings_ScreenshotFormat_Bmp)
             };
 
             #region Some controls stuff
@@ -208,7 +208,7 @@ namespace AcManager.Tools.Helpers {
         public static SystemSettings System => _system ?? (_system = new SystemSettings());
 
         public class ProximityIndicatorSettings : IniSettings {
-            internal ProximityIndicatorSettings() : base("proximity_indicator", systemConfig: true) { }
+            internal ProximityIndicatorSettings() : base(@"proximity_indicator", systemConfig: true) { }
 
             private bool _isEnabled;
 
@@ -235,7 +235,7 @@ namespace AcManager.Tools.Helpers {
         public static ProximityIndicatorSettings ProximityIndicator => _proximityIndicator ?? (_proximityIndicator = new ProximityIndicatorSettings());
 
         public class GhostSettings : IniSettings {
-            internal GhostSettings() : base("ghost_car", systemConfig: true) {}
+            internal GhostSettings() : base(@"ghost_car", systemConfig: true) {}
 
             private Color _color;
 
@@ -354,7 +354,7 @@ namespace AcManager.Tools.Helpers {
         public static GhostSettings Ghost => _ghost ?? (_ghost = new GhostSettings());
 
         public class SkidmarksSettings : IniSettings {
-            internal SkidmarksSettings() : base("skidmarks", systemConfig: true) {}
+            internal SkidmarksSettings() : base(@"skidmarks", systemConfig: true) {}
 
             private double _height;
 

@@ -19,7 +19,7 @@ namespace AcManager.Tools.GameProperties {
             if (string.IsNullOrWhiteSpace(command)) return;
 
             command = VariablesReplacement.Process(command, _properties, null);
-            Logging.Write($"[GAMECOMMANDEXECUTOR] Executing command: “{command}”");
+            Logging.Write($"[GameCommandExecutorBase] Executing command: “{command}”");
 
             try {
                 var proc = Process.Start(new ProcessStartInfo {
@@ -32,7 +32,7 @@ namespace AcManager.Tools.GameProperties {
                 });
 
                 if (proc == null) {
-                    throw new Exception("Unknown problem (Process=null)");
+                    throw new Exception(Resources.GameCommand_UnknownProblem);
                 }
 
                 proc.OutputDataReceived += Process_OutputDataReceived;
@@ -40,25 +40,26 @@ namespace AcManager.Tools.GameProperties {
 
                 proc.BeginOutputReadLine();
                 proc.BeginErrorReadLine();
-
+                
                 if (!proc.WaitForExit(OptionCommandTimeout)) {
                     proc.Kill();
-                    throw new Exception("Timeout exceeded");
+                    throw new InformativeException(Resources.GameCommand_TimeoutExceeded,
+                            string.Format(Resources.GameCommand_TimeoutExceeded_Commentary, (double)OptionCommandTimeout / 1000));
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t execute command", e);
+                NonfatalError.Notify(Resources.GameCommand_CannotExecute, e);
             }
         }
 
         private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) {
             if (!string.IsNullOrWhiteSpace(e.Data)) {
-                Logging.Write("[GAMECOMMANDEXECUTOR] Output: " + e.Data);
+                Logging.Write("[GameCommandExecutorBase] Output: " + e.Data);
             }
         }
 
         private void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e) {
             if (!string.IsNullOrWhiteSpace(e.Data)) {
-                Logging.Write("[GAMECOMMANDEXECUTOR] Error: " + e.Data);
+                Logging.Write("[GameCommandExecutorBase] Error: " + e.Data);
             }
         }
 

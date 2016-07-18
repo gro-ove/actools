@@ -39,7 +39,7 @@ namespace AcManager.Tools.AcObjectsNew {
         public override bool HandleChangedFile(string filename) {
             if (!FileUtils.IsAffected(filename, JsonFilename)) return false;
 
-            if (!Changed || ModernDialog.ShowMessage(@"Json-file updated. Reload? All changes will be lost.", @"Reload file?", MessageBoxButton.YesNo) ==
+            if (!Changed || ModernDialog.ShowMessage(Resources.AcObject_ReloadAutomatically_Json, Resources.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) ==
                     MessageBoxResult.Yes) {
                 ReloadJsonData();
             }

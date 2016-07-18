@@ -30,7 +30,7 @@ namespace AcManager.Tools.Helpers {
 
         public static void DisableBrowserEmulationMode() {
             if (MainExecutingFile.IsInDevelopment) return;
-            SetBrowserFeatureControlKey("FEATURE_BROWSER_EMULATION", MainExecutingFile.Name, EmulationModeDisabled);
+            SetBrowserFeatureControlKey(@"FEATURE_BROWSER_EMULATION", MainExecutingFile.Name, EmulationModeDisabled);
         }
 
         public static void SetSilentAlternative([NotNull] WebBrowser browser, bool silent) {
@@ -65,7 +65,7 @@ namespace AcManager.Tools.Helpers {
             int QueryService([In] ref Guid guidService, [In] ref Guid riid, [MarshalAs(UnmanagedType.IDispatch)] out object ppvObject);
         }
 
-        [DllImport("urlmon.dll", CharSet = CharSet.Ansi)]
+        [DllImport(@"urlmon.dll", CharSet = CharSet.Ansi)]
         private static extern int UrlMkSetSessionOption(
                 int dwOption, string pBuffer, int dwBufferLength, int dwReserved);
 

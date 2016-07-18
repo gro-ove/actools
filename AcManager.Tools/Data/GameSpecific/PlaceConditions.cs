@@ -3,10 +3,6 @@ using System.Linq;
 using AcTools.Processes;
 
 namespace AcManager.Tools.Data.GameSpecific {
-    public enum PlaceConditionsType {
-        Points, Position, Time
-    }
-
     public class PlaceConditions : Game.AdditionalProperties {
         public PlaceConditionsType Type;
         public int? FirstPlaceTarget, SecondPlaceTarget, ThirdPlaceTarget;

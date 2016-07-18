@@ -8,6 +8,7 @@ using System.Web;
 using System.Windows;
 using AcManager.Controls.Dialogs;
 using AcManager.Internal;
+using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
@@ -16,13 +17,13 @@ using Newtonsoft.Json;
 
 namespace AcManager.LargeFilesSharing.GoogleDrive {
     internal class GoogleDriveUploader : FileUploaderBase {
-        public GoogleDriveUploader() : base("Google Drive", true, true) { }
+        public GoogleDriveUploader() : base(Resources.Uploader_GoogleDrive, true, true) { }
 
         private const string RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
 
         private static readonly string[] Scopes = {
-            "https://www.googleapis.com/auth/drive",
-            "https://www.googleapis.com/auth/drive.file"
+            @"https://www.googleapis.com/auth/drive",
+            @"https://www.googleapis.com/auth/drive.file"
         };
 
         private async Task<string> GetAutenficationCode(string clientId, CancellationToken cancellation) {
@@ -38,7 +39,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                 waiting = false;
 
                 // ReSharper disable once AccessToModifiedClosure
-                code = Prompt.Show("Enter the Google Drive authentication code:", "Google Drive", code);
+                code = Prompt.Show(Resources.Uploader_EnterGoogleDriveAuthenticationCode, Resources.Uploader_GoogleDrive, code);
             });
 
             Application.Current.MainWindow.Activated += handler;
@@ -52,8 +53,8 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                 if (code == null) {
                     code = OpenWindowGetter.GetOpenWindows()
                                            .Select(x => x.Value)
-                                           .FirstOrDefault(x => x.Contains("Success code="))?
-                                           .Split(new[] { "Success code=" }, StringSplitOptions.None)
+                                           .FirstOrDefault(x => x.Contains(@"Success code="))?
+                                           .Split(new[] { @"Success code=" }, StringSplitOptions.None)
                                            .ElementAtOrDefault(1)?
                                            .Split(' ')
                                            .FirstOrDefault();
@@ -68,27 +69,27 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
 
 #pragma warning disable 0649
         internal class AuthResponse {
-            [JsonProperty("access_token")]
+            [JsonProperty(@"access_token")]
             public string AccessToken;
 
-            [JsonProperty("refresh_token")]
+            [JsonProperty(@"refresh_token")]
             public string RefreshToken;
 
-            [JsonProperty("expires_in")]
+            [JsonProperty(@"expires_in")]
             public int ExpiresIn;
 
-            [JsonProperty("token_type")]
+            [JsonProperty(@"token_type")]
             public string TokenType;
         }
 
         internal class RefreshResponse {
-            [JsonProperty("access_token")]
+            [JsonProperty(@"access_token")]
             public string AccessToken;
 
-            [JsonProperty("expires_in")]
+            [JsonProperty(@"expires_in")]
             public int ExpiresIn;
 
-            [JsonProperty("token_type")]
+            [JsonProperty(@"token_type")]
             public string TokenType;
         }
 #pragma warning restore 0649
@@ -128,11 +129,11 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                 return;
             }
 
-            var refresh = await Request.Post<RefreshResponse>("https://www.googleapis.com/oauth2/v4/token", new NameValueCollection {
-                { "client_id", clientId },
-                { "client_secret", clientSecret },
-                { "refresh_token", _authToken.RefreshToken },
-                { "grant_type", "refresh_token" }
+            var refresh = await Request.Post<RefreshResponse>(@"https://www.googleapis.com/oauth2/v4/token", new NameValueCollection {
+                { @"client_id", clientId },
+                { @"client_secret", clientSecret },
+                { @"refresh_token", _authToken.RefreshToken },
+                { @"grant_type", @"refresh_token" }
             }.GetQuery(), null, cancellation);
             if (cancellation.IsCancellationRequested) return;
 
@@ -162,17 +163,17 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                 throw new UserCancelledException();
             }
 
-            var response = await Request.Post<AuthResponse>("https://www.googleapis.com/oauth2/v4/token", new NameValueCollection {
-                { "code", code },
-                { "client_id", clientId },
-                { "client_secret", clientSecret },
-                { "redirect_uri", RedirectUrl },
-                { "grant_type", "authorization_code" }
+            var response = await Request.Post<AuthResponse>(@"https://www.googleapis.com/oauth2/v4/token", new NameValueCollection {
+                { @"code", code },
+                { @"client_id", clientId },
+                { @"client_secret", clientSecret },
+                { @"redirect_uri", RedirectUrl },
+                { @"grant_type", @"authorization_code" }
             }.GetQuery(), null, cancellation);
             if (cancellation.IsCancellationRequested) return;
 
             if (response == null) {
-                throw new Exception("Can't finish authorization process");
+                throw new Exception(Resources.Uploader_CannotFinishAuthorization);
             }
 
             _authToken = response;
@@ -184,26 +185,26 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
 
 #pragma warning disable 0649
         internal class SearchResult {
-            [JsonProperty("items")]
+            [JsonProperty(@"items")]
             public SearchResultFile[] Items;
         }
 
         internal class SearchResultFile {
-            [JsonProperty("id")]
+            [JsonProperty(@"id")]
             public string Id;
 
-            [JsonProperty("title")]
+            [JsonProperty(@"title")]
             public string Title;
 
-            [JsonProperty("parents")]
+            [JsonProperty(@"parents")]
             public SearchResultParent[] Parents;
         }
 
         internal class SearchResultParent {
-            [JsonProperty("id")]
+            [JsonProperty(@"id")]
             public string Id;
 
-            [JsonProperty("isRoot")]
+            [JsonProperty(@"isRoot")]
             public bool IsRoot;
         }
 #pragma warning restore 0649
@@ -212,18 +213,18 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
             await Prepare(cancellation);
 
             if (_authToken == null) {
-                throw new Exception("Authentication token is missing");
+                throw new Exception(Resources.Uploader_AuthenticationTokenIsMissing);
             }
 
             const string query = "mimeType='application/vnd.google-apps.folder' and trashed = false and 'me' in writers";
             const string fields = "items(id,parents(id,isRoot),title)";
             var data = await Request.Get<SearchResult>(
-                    "https://www.googleapis.com/drive/v2/files?maxResults=1000&orderBy=title&" +
+                    @"https://www.googleapis.com/drive/v2/files?maxResults=1000&orderBy=title&" +
                             $"q={HttpUtility.UrlEncode(query)}&fields={HttpUtility.UrlEncode(fields)}",
                     _authToken.AccessToken, cancellation);
             
             if (data == null) {
-                throw new Exception("GET request failed");
+                throw new Exception(Resources.Uploader_RequestFailed);
             }
 
             var directories = data.Items.Select(x => new DirectoryEntry {
@@ -239,7 +240,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
             return new [] {
                 new DirectoryEntry {
                     Id = null,
-                    DisplayName = "Root",
+                    DisplayName = Resources.Uploader_RootDirectory,
                     Children = data.Items.Where(x => x.Parents.All(y => y.IsRoot)).Select(x => directories.GetById(x.Id)).ToArray()
                 }
             };
@@ -247,40 +248,40 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
 
 #pragma warning disable 0649
         internal class InsertParams {
-            [JsonProperty("title")]
+            [JsonProperty(@"title")]
             public string Title;
 
-            [JsonProperty("originalFilename")]
+            [JsonProperty(@"originalFilename")]
             public string OriginalFilename;
 
-            [JsonProperty("parents")]
+            [JsonProperty(@"parents")]
             public InsertParamsParent[] ParentIds;
 
-            [JsonProperty("description")]
+            [JsonProperty(@"description")]
             public string Description;
 
-            [JsonProperty("mimeType")]
+            [JsonProperty(@"mimeType")]
             public string MimeType;
         }
 
         internal class InsertParamsParent {
-            [JsonProperty("kind")]
-            public string Kind = "drive#file";
+            [JsonProperty(@"kind")]
+            public string Kind = @"drive#file";
 
-            [JsonProperty("id")]
+            [JsonProperty(@"id")]
             public string Id;
         }
 
         internal class InsertResult {
-            [JsonProperty("id")]
+            [JsonProperty(@"id")]
             public string Id;
         }
 
         internal class PermissionResult {
-            [JsonProperty("role")]
+            [JsonProperty(@"role")]
             public string Role;
 
-            [JsonProperty("type")]
+            [JsonProperty(@"type")]
             public string Type;
         }
 #pragma warning restore 0649
@@ -290,11 +291,10 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
             await Prepare(cancellation);
 
             if (_authToken == null) {
-                throw new Exception("Authentication token is missing");
+                throw new Exception(Resources.Uploader_AuthenticationTokenIsMissing);
             }
-
-            Logging.Write("HERE: " + DestinationDirectoryId);
-            var entry = await Request.PostMultipart<InsertResult>("https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart",
+            
+            var entry = await Request.PostMultipart<InsertResult>(@"https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart",
                     new InsertParams {
                         Title = name,
                         OriginalFilename = originalName,
@@ -310,16 +310,16 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                     progress,
                     cancellation);
             if (entry == null) {
-                throw new InformativeException("Can’t upload file to Google Drive", "Make sure there is enough space.");
+                throw new InformativeException(Resources.Uploader_CannotUploadToGoogleDrive, Resources.Uploader_CannotUpload_Commentary);
             }
 
             var shared = await Request.Post<PermissionResult>($"https://www.googleapis.com/drive/v2/files/fileId/permissions?fileId={entry.Id}",
                     JsonConvert.SerializeObject(new {
-                        role = "reader",
-                        type = "anyone",
+                        role = @"reader",
+                        type = @"anyone",
                     }).GetBytes(), _authToken.AccessToken, cancellation);
             if (shared == null) {
-                throw new Exception("Can’t share Google Drive file");
+                throw new Exception(Resources.Uploader_CannotShareGoogleDrive);
             }
 
             return new UploadResult {

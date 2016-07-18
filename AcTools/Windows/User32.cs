@@ -1,12 +1,30 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 // ReSharper disable InconsistentNaming
 
 namespace AcTools.Windows {
     public static class User32 {
+        public delegate bool EnumWindowsProc(IntPtr hWnd, int lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnumWindows(EnumWindowsProc enumFunc, int lParam);
+
+        [DllImport("user32.dll")]
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        public static extern int GetWindowTextLength(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool IsWindowVisible(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetShellWindow();
+
         [StructLayout(LayoutKind.Sequential)]
         public struct Win32Point {
             public int X;
