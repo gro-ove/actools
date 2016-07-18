@@ -1,11 +1,12 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace AcManager.Tools {
-    public class LocalizedDescriptionAttribute : DescriptionAttribute {
+    internal class LocalizedDescriptionAttribute : DescriptionAttribute {
         private static string Localize(string key) {
-            return Resources.ResourceManager.GetString(key);
+            return Resources.ResourceManager.GetString(key, CultureInfo.CurrentCulture);
         }
 
-        public LocalizedDescriptionAttribute([Localizable(false)] string key) : base(Localize(key)) {}
+        public LocalizedDescriptionAttribute([Localizable(false)] string key) : base(Localize(key)) { }
     }
 }

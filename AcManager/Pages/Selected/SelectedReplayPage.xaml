@@ -25,23 +25,26 @@
         <StackPanel>
             <Grid Margin="20 0 20 20" HorizontalAlignment="Left">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <Grid Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Width="355" Height="200"
-                        Background="Black" Margin="0 0 20 0" services:ImageViewerService.Image="{Binding CarSkin.PreviewImage}">
+                <Grid Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" MaxWidth="355"
+                        Background="Black" Margin="0 0 10 0" services:ImageViewerService.Image="{Binding CarSkin.PreviewImage}"
+                        Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}">
                     <Grid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Filter By Car" Command="{Binding FilterCommand}" CommandParameter="car" />
                         </ContextMenu>
                     </Grid.ContextMenu>
-                    <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="355" Height="200" Stretch="UniformToFill" />
+                    <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" MaxWidth="355" Stretch="UniformToFill" />
                     <TextBlock Padding="4" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Car.DisplayName}" Foreground="White" />
                 </Grid>
 
-                <Grid Grid.Column="1" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Width="355"
-                        Height="200" Background="Black" services:ImageViewerService.Image="{Binding Track.PreviewImage}">
+                <Grid Grid.Column="1" Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                        MaxWidth="355" Background="Black" services:ImageViewerService.Image="{Binding Track.PreviewImage}"
+                        Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}"
+                        Margin="10 0 0 0">
                     <Grid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Filter By Track" Command="{Binding FilterCommand}" CommandParameter="track" />
@@ -102,7 +105,7 @@
                 </TextBlock>
             </Grid>
 
-            <Grid Margin="0 0 0 8"
+            <Grid Margin="0 20 0 8"
                     Visibility="{Binding SelectedObject.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static objects:ReplayObject.PreviousReplayName}}">
                 <Rectangle Stroke="{DynamicResource Error}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                 <StackPanel Margin="8">

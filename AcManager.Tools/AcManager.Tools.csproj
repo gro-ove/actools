@@ -183,6 +183,7 @@
     <Compile Include="Helpers\DirectInput\IDirectInputProvider.cs" />
     <Compile Include="Helpers\DirectInput\IInputProvider.cs" />
     <Compile Include="Helpers\DirectInput\KeyboardInputButton.cs" />
+    <Compile Include="Helpers\EnumExtension.cs" />
     <Compile Include="Helpers\IAcControlsConflictResolver.cs" />
     <Compile Include="Helpers\IniFileExtension.cs" />
     <Compile Include="Helpers\IUserPresetable.cs" />
@@ -228,6 +229,7 @@
     <Compile Include="GameProperties\DriverName.cs" />
     <Compile Include="GameProperties\GameCommandExecutorBase.cs" />
     <Compile Include="Objects\ServerPresetObject.cs" />
+    <Compile Include="Objects\WeatherColorEntry.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -130,11 +130,13 @@ namespace AcTools.Processes {
                 raceSection.Set("SERVER_IP", ServerIp);
                 raceSection.Set("SERVER_PORT", ServerPort);
 
-                if (ServerName != null) {
+                /*if (ServerName != null) {
                     raceSection.Set("SERVER_NAME", ServerName);
                 } else {
                     raceSection.Remove("SERVER_NAME");
-                }
+                }*/
+
+                raceSection.Remove("SERVER_NAME");
 
                 if (ServerHttpPort.HasValue) {
                     raceSection.Set("SERVER_HTTP_PORT", ServerHttpPort);
@@ -463,8 +465,8 @@ namespace AcTools.Processes {
                         ["STABILITY_CONTROL"] = StabilityControl,
                         ["AUTO_BRAKE"] = AutoBrake,
                         ["AUTO_SHIFTER"] = AutoShifter,
-                        ["ABS"] = Abs.GetDescription(),
-                        ["TRACTION_CONTROL"] = TractionControl.GetDescription(),
+                        ["ABS"] = (int)Abs,
+                        ["TRACTION_CONTROL"] = (int)TractionControl,
                         ["AUTO_CLUTCH"] = AutoClutch,
                         ["VISUALDAMAGE"] = VisualDamage,
                         ["DAMAGE"] = Damage,

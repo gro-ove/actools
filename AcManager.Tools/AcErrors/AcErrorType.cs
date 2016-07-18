@@ -1,129 +1,133 @@
 // ReSharper disable InconsistentNaming
+
 namespace AcManager.Tools.AcErrors {
     public enum AcErrorType {
         /// <summary>
         /// {0}: exception
         /// </summary>
-        [LocalizedDescription("LoadingUnhandledError")]
+        [LocalizedDescription("AcError_LoadingUnhandledError")]
         Load_Base,
 
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [LocalizedDescription("FileIsMissing")]
+        [LocalizedDescription("AcError_FileIsMissing")]
         Data_IniIsMissing,
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [LocalizedDescription("FileIsDamaged")]
+        [LocalizedDescription("AcError_FileIsDamaged")]
         Data_IniIsDamaged,
 
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [LocalizedDescription("FileIsMissing")]
+        [LocalizedDescription("AcError_FileIsMissing")]
         Data_JsonIsMissing,
 
         /// <summary>
         /// {0}: file name
         /// </summary>
-        [LocalizedDescription("FileIsDamaged")]
+        [LocalizedDescription("AcError_FileIsDamaged")]
         Data_JsonIsDamaged,
 
-        [LocalizedDescription("NameIsMissing")]
+        [LocalizedDescription("AcError_NameIsMissing")]
         Data_ObjectNameIsMissing,
 
-        [LocalizedDescription("BrandNameIsMissing")]
+        [LocalizedDescription("AcError_BrandNameIsMissing")]
         Data_CarBrandIsMissing,
 
-        [LocalizedDescription("DirectoryUiIsMissing")]
+        [LocalizedDescription("AcError_DirectoryUiIsMissing")]
         Data_UiDirectoryIsMissing,
 
 
         /// <summary>
         /// {0}: career name or id
         /// </summary>
-        [LocalizedDescription("EventsOfAreMissing")]
+        [LocalizedDescription("AcError_EventsOfAreMissing")]
         Data_KunosCareerEventsAreMissing,
 
-        [LocalizedDescription("EventConditionsAreNotSupported")]
+        [LocalizedDescription("AcError_EventConditionsAreNotSupported")]
         Data_KunosCareerConditions,
 
-        [LocalizedDescription("RequiredContentIsMissing")]
+        [LocalizedDescription("AcError_RequiredContentIsMissing")]
         Data_KunosCareerContentIsMissing,
 
         /// <summary>
         /// {0}: track id
         /// </summary>
-        [LocalizedDescription("RequiredTrackIsMissing")]
+        [LocalizedDescription("AcError_RequiredTrackIsMissing")]
         Data_KunosCareerTrackIsMissing,
 
         /// <summary>
         /// {0}: skin id
         /// </summary>
-        [LocalizedDescription("RequiredCarIsMissing")]
+        [LocalizedDescription("AcError_RequiredCarIsMissing")]
         Data_KunosCareerCarIsMissing,
 
         /// <summary>
         /// {0}: car name or id
         /// {1}: skin id
         /// </summary>
-        [LocalizedDescription("RequiredSkin1ForIsMissing")]
+        [LocalizedDescription("AcError_RequiredSkin1ForIsMissing")]
         Data_KunosCareerCarSkinIsMissing,
 
         /// <summary>
         /// {0}: weather id
         /// </summary>
-        [LocalizedDescription("RequiredWeatherIsMissing")]
+        [LocalizedDescription("AcError_RequiredWeatherIsMissing")]
         Data_KunosCareerWeatherIsMissing,
 
 
-        [LocalizedDescription("CarParentIsMissing")]
+        [LocalizedDescription("AcError_CarParentIsMissing")]
         Car_ParentIsMissing,
 
-        [LocalizedDescription("BrandBadgeIsMissing")]
+        [LocalizedDescription("AcError_BrandBadgeIsMissing")]
         Car_BrandBadgeIsMissing,
 
-        [LocalizedDescription("UpgradeIconIsMissing")]
+        [LocalizedDescription("AcError_UpgradeIconIsMissing")]
         Car_UpgradeIconIsMissing,
 
 
-        [LocalizedDescription("SkinsAreMissing")]
+        [LocalizedDescription("AcError_SkinsAreMissing")]
         CarSkins_SkinsAreMissing,
 
-        [LocalizedDescription("SkinsDirectoryIsUnavailable")]
+        [LocalizedDescription("AcError_SkinsDirectoryIsUnavailable")]
         CarSkins_DirectoryIsUnavailable,
 
 
-        [LocalizedDescription("SetupTrackIsMissing")]
+        [LocalizedDescription("AcError_SetupTrackIsMissing")]
         CarSetup_TrackIsMissing,
 
 
-        [LocalizedDescription("SkinLiveryLiveryPngIsMissing")]
+        [LocalizedDescription("AcError_SkinLiveryLiveryPngIsMissing")]
         CarSkin_LiveryIsMissing,
 
-        [LocalizedDescription("SkinPreviewPreviewJpgIsMissing")]
+        [LocalizedDescription("AcError_SkinPreviewPreviewJpgIsMissing")]
         CarSkin_PreviewIsMissing,
 
 
-        [LocalizedDescription("ModelKn5FileIsMissing")]
+        [LocalizedDescription("AcError_ModelKn5FileIsMissing")]
         Showroom_Kn5IsMissing,
 
 
-        [LocalizedDescription("FontBitmapIsMissing")]
+        [LocalizedDescription("AcError_FontBitmapIsMissing")]
         Font_BitmapIsMissing,
 
-        [LocalizedDescription("FontIsUsedButDisabled")]
+        [LocalizedDescription("AcError_FontIsUsedButDisabled")]
         Font_UsedButDisabled,
 
 
-        [LocalizedDescription("TrackIsMissing")]
+        [LocalizedDescription("AcError_TrackIsMissing")]
         Replay_TrackIsMissing,
 
-        [LocalizedDescription("NameShouldnTContainSymbolsLikeOr")]
+        [LocalizedDescription("AcError_NameShouldnTContainSymbolsLikeOr")]
         Replay_InvalidName,
+
+        [LocalizedDescription("AcError_ColorCurvesIniIsMissing")]
+        Weather_ColorCurvesIniIsMissing
     }
 }

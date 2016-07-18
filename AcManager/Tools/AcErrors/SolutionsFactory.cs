@@ -72,8 +72,8 @@ namespace AcManager.Tools.AcErrors {
                                     ((CarObject)e.Target).Brand = value;
                                 }) { IsUiSolution = true },
                         guess == null ? null : new Solution(
-                                @"Set brand name based on car’s name",
-                                $@"New brand name will be: “{guess}”",
+                                "Set brand name based on car’s name",
+                                $"New brand name will be: “{guess}”",
                                 e => {
                                     ((CarObject)e.Target).Brand = guess;
                                 })
@@ -81,12 +81,40 @@ namespace AcManager.Tools.AcErrors {
                 }
 
                 case AcErrorType.Data_IniIsMissing:
-                    // TODO
-                    break;
+                    return Solve.TryToFindRenamedFile(error.Target.Location, ((AcIniObject)error.Target).IniFilename).Union(new[] {
+                        new MultiSolution(
+                                "Remove object",
+                                "Object will be removed to the Recycle Bin",
+                                e => {
+                                    e.Target.DeleteCommand.Execute(null);
+                                })
+                    });
+
+                case AcErrorType.Weather_ColorCurvesIniIsMissing:
+                    return Solve.TryToFindRenamedFile(error.Target.Location, ((WeatherObject)error.Target).ColorCurvesIniFilename).Union(new[] {
+                        new MultiSolution(
+                                "Generate new file",
+                                "New empty file will be created; don’t forget to set proper values and save it afterwards",
+                                e => {
+                                    File.WriteAllText(((WeatherObject)e.Target).ColorCurvesIniFilename, "");
+                                }),
+                        new MultiSolution(
+                                "Remove object",
+                                "Object will be removed to the Recycle Bin",
+                                e => {
+                                    e.Target.DeleteCommand.Execute(null);
+                                })
+                    });
 
                 case AcErrorType.Data_IniIsDamaged:
-                    // TODO
-                    break;
+                    return Solve.TryToFindRenamedFile(error.Target.Location, ((AcIniObject)error.Target).IniFilename).Union(new[] {
+                        new MultiSolution(
+                                "Remove object",
+                                "Object will be removed to the Recycle Bin",
+                                e => {
+                                    e.Target.DeleteCommand.Execute(null);
+                                })
+                    });
 
                 case AcErrorType.Data_UiDirectoryIsMissing:
                     // TODO

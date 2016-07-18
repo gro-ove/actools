@@ -69,7 +69,7 @@
                     <Label Content="_Stability control: " Target="{x:Reference StabilityControlTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
                             Padding="10 0 0 0" />
                     <TextBox Name="StabilityControlTextBox" Text="{Binding StabilityControl, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            Style="{StaticResource TextBoxAsTextBlock.Label}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:TextBoxAdvancement.SpecialMode="Integer" />
                     <Label Content="%" Target="{x:Reference StabilityControlTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                 </StackPanel>
@@ -90,7 +90,7 @@
                     <Label Content="Mechanical _damage: " Target="{x:Reference MechanicalDamageTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
                             Padding="10 0 0 0" />
                     <TextBox Name="MechanicalDamageTextBox" Text="{Binding Damage, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            Style="{StaticResource TextBoxAsTextBlock.Label}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:TextBoxAdvancement.SpecialMode="Integer" />
                     <Label Content="%" Target="{x:Reference MechanicalDamageTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                 </StackPanel>
@@ -104,7 +104,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Tyre Wear: " Target="{x:Reference TyreWearTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" Padding="10 0 0 0" />
                     <TextBox Name="TyreWearTextBox" Text="{Binding TyreWearMultipler, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            Style="{StaticResource TextBoxAsTextBlock.Label}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:TextBoxAdvancement.SpecialMode="Number" />
                     <Label Content="x" Target="{x:Reference TyreWearTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                 </StackPanel>
@@ -124,7 +124,7 @@
                     <Label Content="Slipstream Effect: " Target="{x:Reference SlipSteamTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
                             Padding="10 0 0 0" />
                     <TextBox Name="SlipSteamTextBox" Text="{Binding SlipSteamMultipler, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource TextBoxAsTextBlock.LabelWithoutExtraPadding}" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                            Style="{StaticResource TextBoxAsTextBlock.Label}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:TextBoxAdvancement.SpecialMode="Integer" />
                     <Label Content="x" Target="{x:Reference SlipSteamTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
                 </StackPanel>

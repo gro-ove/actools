@@ -1,5 +1,8 @@
 namespace AcManager.Tools.Data {
     public enum WeatherType {
+        [LocalizedDescription("Common_None")]
+        None,
+
         [LocalizedDescription("Weather_LightThunderstorm")]
         LightThunderstorm,
         [LocalizedDescription("Weather_Thunderstorm")]

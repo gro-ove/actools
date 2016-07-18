@@ -47,7 +47,6 @@ namespace AcManager.Pages.Dialogs {
             new SettingEntry("DiagonalWithCircle", "Diagonal with Circle"),
             new SettingEntry("DiagonalLineWithCircle", "Diagonal line with Circle"),
             new SettingEntry("Carbon", "Carbon"),
-            new SettingEntry("Carbon", "Carbon"),
             new SettingEntry("HorizontalSplit", "Horizontal Split"),
             new SettingEntry("VerticalSplit", "Vertical Split"),
             new SettingEntry("TripleHorizontalSplit", "Triple Horizontal Split"),
@@ -58,7 +57,7 @@ namespace AcManager.Pages.Dialogs {
             new SettingEntry("Solid", "Solid"),
             new SettingEntry("Gradient", "Gradient"),
             new SettingEntry("Gloss", "Gloss"),
-            new SettingEntry("Metallic", "Metallic"),
+            new SettingEntry("Bright", "Bright"),
             new SettingEntry("Miura", "Miura"),
             new SettingEntry("Tesla", "Tesla"),
         };

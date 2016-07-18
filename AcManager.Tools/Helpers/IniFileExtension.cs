@@ -47,6 +47,18 @@ namespace AcManager.Tools.Helpers {
             return result.Length == 3 ? Color.FromRgb(result[0], result[1], result[2]) : defaultValue;
         }
 
+        public static Color GetColor(this IniFileSection section, [LocalizationRequired(false)] string key, Color defaultValue, double defaultMultipler, out double multipler) {
+            var strings = section.GetStrings(key);
+            var result = strings.Select(x => FlexibleParser.ParseInt(x, 0).ClampToByte()).ToArray();
+            if (strings.Length != 4) {
+                multipler = 1d;
+                return defaultValue;
+            }
+            
+            multipler = FlexibleParser.ParseDouble(strings[3], 1d);
+            return Color.FromRgb(result[0], result[1], result[2]);
+        }
+
         public static void Set(this IniFileSection section, [LocalizationRequired(false)] string key, Color entry) {
             section.Set(key, $"{entry.R.ToInvariantString()},{entry.G.ToInvariantString()},{entry.B.ToInvariantString()}");
         }

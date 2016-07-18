@@ -110,7 +110,6 @@
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Utils\Helpers\AlphanumComparatorFast.cs" />
     <Compile Include="Utils\Helpers\DateTimeExtension.cs" />
-    <Compile Include="Utils\Helpers\EnumExtension.cs" />
     <Compile Include="Utils\Helpers\FlexibleParser.cs" />
     <Compile Include="Utils\Helpers\GeoTagsEntry.cs" />
     <Compile Include="Utils\Helpers\GoodShuffle.cs" />

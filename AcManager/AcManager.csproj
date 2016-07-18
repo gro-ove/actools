@@ -454,11 +454,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Assets\Livery\Styles\Gradient.xaml">
+    <Page Include="Assets\Livery\Styles\Bright.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Assets\Livery\Styles\Gloss.xaml">
+    <Page Include="Assets\Livery\Styles\Gradient.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -466,7 +466,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Assets\Livery\Styles\Metallic.xaml">
+    <Page Include="Assets\Livery\Styles\Gloss.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1236,7 +1236,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Livery\Styles\Gloss.png" />
-    <Resource Include="Assets\Livery\Styles\Metallic.png" />
     <Resource Include="Assets\Livery\Styles\Miura.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1259,6 +1258,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="About\ReleaseNotes\0.7.336.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Livery\Styles\Bright.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

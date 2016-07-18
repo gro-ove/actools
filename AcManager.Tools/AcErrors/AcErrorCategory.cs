@@ -9,6 +9,7 @@ namespace AcManager.Tools.AcErrors {
         CarSkins,
         Showroom,
         Font,
-        Replay
+        Replay,
+        Weather
     }
 }

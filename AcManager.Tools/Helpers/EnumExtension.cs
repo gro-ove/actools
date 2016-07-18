@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using JetBrains.Annotations;
 
-namespace AcTools.Utils.Helpers {
+namespace AcManager.Tools.Helpers {
     public static class EnumExtension {
         public static string GetDescription([NotNull] this Enum value) {
             if (value == null) throw new ArgumentNullException(nameof(value));
@@ -12,6 +12,7 @@ namespace AcTools.Utils.Helpers {
 
             var field = type.GetField(name);
             if (field == null) return null;
+
             var attr = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
             return attr?.Description;
         }

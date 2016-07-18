@@ -511,13 +511,14 @@ fixme:
     - SRS: three minutes instead of five
     - accent color on a fresh start
     - find information dialog
-    - replays layout
     - smart textbox with version
     - 1ff opponent?!
     - settins/live: rsr-srs margin
     - fix brands list (removed brands)
 
 todo:
+    - shape with triangle at right bottom (audi r8)
+    
     - open new links in find information dialog in same tab
     - weather: test button
     - managers: loading progress

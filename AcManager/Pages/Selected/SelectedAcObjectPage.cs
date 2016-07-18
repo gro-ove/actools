@@ -4,8 +4,10 @@ using AcManager.Annotations;
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Pages.Selected {
-    public abstract class SelectedAcObjectPage : UserControl {
+    public class SelectedAcObjectPage : UserControl {
         public AcCommonObject SelectedAcObject { get; private set; }
+
+        public SelectedAcObjectPage() { }
 
         protected void InitializeAcObjectPage([NotNull] ISelectedAcObjectViewModel model) {
             SelectedAcObject = model.SelectedAcObject;

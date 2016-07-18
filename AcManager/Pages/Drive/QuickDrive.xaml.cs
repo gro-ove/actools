@@ -358,12 +358,13 @@ namespace AcManager.Pages.Drive {
                 Changed?.Invoke(this, EventArgs.Empty);
             }
 
-            private readonly string _carSetupId;
+            private readonly string _carSetupId, _weatherId;
 
             internal QuickDriveViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null,
-                    TrackBaseObject trackObject = null, string carSetupId = null, bool savePreset = false) {
+                    TrackBaseObject trackObject = null, string carSetupId = null, string weatherId = null, bool savePreset = false) {
                 _uiMode = uiMode;
                 _carSetupId = carSetupId;
+                _weatherId = weatherId;
 
                 _saveable = new SaveHelper<SaveableData>(KeySaveable, () => new SaveableData {
                     RealConditions = RealConditions,
@@ -382,7 +383,7 @@ namespace AcManager.Pages.Drive {
                     Time = Time,
                     TimeMultipler = TimeMultipler,
                 }, o => {
-                    RealConditions = o.RealConditions;
+                    RealConditions = _weatherId == null && o.RealConditions;
                     RealConditionsTimezones = o.RealConditionsTimezones;
                     RealConditionsLighting = o.RealConditionsLighting;
 
@@ -391,7 +392,11 @@ namespace AcManager.Pages.Drive {
 
                     if (o.CarId != null) SelectedCar = CarsManager.Instance.GetById(o.CarId) ?? SelectedCar;
                     if (o.TrackId != null) SelectedTrack = TracksManager.Instance.GetLayoutById(o.TrackId) ?? SelectedTrack;
-                    if (o.WeatherId != null) SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
+                    if (_weatherId != null) {
+                        SelectedWeather = WeatherManager.Instance.GetById(_weatherId);
+                    } else if (o.WeatherId != null) {
+                        SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
+                    }
 
                     if (o.TrackPropertiesPreset != null) {
                         SelectedTrackPropertiesPreset =
@@ -612,8 +617,7 @@ namespace AcManager.Pages.Drive {
 
                 try {
                     var closest = WeatherDescription.FindClosestWeather(from w in WeatherManager.Instance.LoadedOnly
-                                                                        where w.Type.HasValue
-                                                                        select w.Type.Value, type);
+                                                                        select w.Type, type);
                     if (closest == null) {
                         IsWeatherNotSupported = true;
                     } else {
@@ -735,8 +739,9 @@ namespace AcManager.Pages.Drive {
             return new QuickDriveViewModel(string.Empty, false, car, carSkinId, track, carSetupId).Run();
         }
 
-        public static async Task<bool> RunAsync(CarObject car = null, string carSkinId = null, TrackBaseObject track = null, string carSetupId = null) {
-            var model = new QuickDriveViewModel(string.Empty, false, car, carSkinId, track, carSetupId);
+        public static async Task<bool> RunAsync(CarObject car = null, string carSkinId = null, TrackBaseObject track = null, string carSetupId = null,
+                string weatherId = null) {
+            var model = new QuickDriveViewModel(string.Empty, false, car, carSkinId, track, carSetupId, weatherId);
             if (!model.GoCommand.CanExecute(null)) return false;
             await model.Go();
             return true;
