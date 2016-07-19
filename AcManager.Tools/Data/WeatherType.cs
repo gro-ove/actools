@@ -1,81 +1,81 @@
 namespace AcManager.Tools.Data {
     public enum WeatherType {
         [LocalizedDescription("Common_None")]
-        None,
+        None = -1,
 
         [LocalizedDescription("Weather_LightThunderstorm")]
-        LightThunderstorm,
+        LightThunderstorm = 0,
         [LocalizedDescription("Weather_Thunderstorm")]
-        Thunderstorm,
+        Thunderstorm = 1,
         [LocalizedDescription("Weather_HeavyThunderstorm")]
-        HeavyThunderstorm,
+        HeavyThunderstorm = 2,
 
         [LocalizedDescription("Weather_LightDrizzle")]
-        LightDrizzle,
+        LightDrizzle = 3,
         [LocalizedDescription("Weather_Drizzle")]
-        Drizzle,
+        Drizzle = 4,
         [LocalizedDescription("Weather_HeavyDrizzle")]
-        HeavyDrizzle,
+        HeavyDrizzle = 5,
 
         [LocalizedDescription("Weather_LightRain")]
-        LightRain,
+        LightRain = 6,
         [LocalizedDescription("Weather_Rain")]
-        Rain,
+        Rain = 7,
         [LocalizedDescription("Weather_HeavyRain")]
-        HeavyRain,
+        HeavyRain = 8,
 
         [LocalizedDescription("Weather_LightSnow")]
-        LightSnow,
+        LightSnow = 9,
         [LocalizedDescription("Weather_Snow")]
-        Snow,
+        Snow = 10,
         [LocalizedDescription("Weather_HeavySnow")]
-        HeavySnow,
+        HeavySnow = 11,
 
         [LocalizedDescription("Weather_LightSleet")]
-        LightSleet,
+        LightSleet = 12,
         [LocalizedDescription("Weather_Sleet")]
-        Sleet,
+        Sleet = 13,
         [LocalizedDescription("Weather_HeavySleet")]
-        HeavySleet,
+        HeavySleet = 14,
 
         [LocalizedDescription("Weather_Clear")]
-        Clear,
+        Clear = 15,
         [LocalizedDescription("Weather_FewClouds")]
-        FewClouds,
+        FewClouds = 16,
         [LocalizedDescription("Weather_ScatteredClouds")]
-        ScatteredClouds,
+        ScatteredClouds = 17,
         [LocalizedDescription("Weather_BrokenClouds")]
-        BrokenClouds,
+        BrokenClouds = 18,
         [LocalizedDescription("Weather_OvercastClouds")]
-        OvercastClouds,
+        OvercastClouds = 19,
 
         [LocalizedDescription("Weather_Fog")]
-        Fog,
+        Fog = 20,
         [LocalizedDescription("Weather_Mist")]
-        Mist,
+        Mist = 21,
 
         [LocalizedDescription("Weather_Smoke")]
-        Smoke,
+        Smoke = 22,
         [LocalizedDescription("Weather_Haze")]
-        Haze,
+        Haze = 23,
         [LocalizedDescription("Weather_Sand")]
-        Sand,
+        Sand = 24,
         [LocalizedDescription("Weather_Dust")]
-        Dust,
+        Dust = 25,
         [LocalizedDescription("Weather_Squalls")]
-        Squalls,
+        Squalls = 26,
 
         [LocalizedDescription("Weather_Tornado")]
-        Tornado,
+        Tornado = 27,
         [LocalizedDescription("Weather_Hurricane")]
-        Hurricane,
+        Hurricane = 28,
         [LocalizedDescription("Weather_Cold")]
-        Cold,
+        Cold = 29,
         [LocalizedDescription("Weather_Hot")]
-        Hot,
+        Hot = 30,
         [LocalizedDescription("Weather_Windy")]
-        Windy,
+        Windy = 31,
         [LocalizedDescription("Weather_Hail")]
-        Hail
+        Hail = 32
     }
 }

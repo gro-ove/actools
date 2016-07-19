@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.AcObjectsNew {
@@ -37,20 +40,36 @@ namespace AcManager.Tools.AcObjectsNew {
                 if (string.IsNullOrWhiteSpace(newId)) return;
                 Rename(newId);
             } catch (ToggleException ex) {
-                NonfatalError.Notify(string.Format(Resources.AcObject_CannotChangeIdExt, ex.Message), Resources.AcObject_Disabling_MakeSureNoRunnedApps);
+                NonfatalError.Notify(string.Format(Resources.AcObject_CannotChangeIdExt, ex.Message), Resources.AcObject_CannotToggle_Commentary);
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotChangeId, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
+                NonfatalError.Notify(Resources.AcObject_CannotChangeId, Resources.AcObject_CannotToggle_Commentary, ex);
             }
         }, o => !string.IsNullOrWhiteSpace(o as string)));
+
+        public virtual async Task CloneAsync(string id) {
+            try {
+                id = id?.Trim();
+                if (string.IsNullOrWhiteSpace(id)) return;
+
+                await Task.Run(() => {
+                    FileUtils.CopyRecursive(Location, FileUtils.EnsureUnique(Path.Combine(Path.GetDirectoryName(Location) ?? "", id)));
+                });
+            } catch (Exception ex) {
+                NonfatalError.Notify(Resources.AcObject_CannotClone, Resources.AcObject_CannotClone_Commentary, ex);
+            }
+        }
+
+        private ICommand _cloneCommand;
+        public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand(o => CloneAsync(o as string), o => !string.IsNullOrWhiteSpace(o as string)));
 
         private ICommand _toggleCommand;
         public virtual ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new RelayCommand(o => {
             try {
                 Toggle();
             } catch (ToggleException ex) {
-                NonfatalError.Notify(string.Format(Resources.AcObject_CannotToggleExt, ex.Message), Resources.AcObject_Disabling_MakeSureNoRunnedApps);
+                NonfatalError.Notify(string.Format(Resources.AcObject_CannotToggleExt, ex.Message), Resources.AcObject_CannotToggle_Commentary);
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotToggle, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
+                NonfatalError.Notify(Resources.AcObject_CannotToggle, Resources.AcObject_CannotToggle_Commentary, ex);
             }
         }));
 
@@ -60,7 +79,7 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 Delete();
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotDelete, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
+                NonfatalError.Notify(Resources.AcObject_CannotDelete, Resources.AcObject_CannotToggle_Commentary, ex);
             }
         }));
 

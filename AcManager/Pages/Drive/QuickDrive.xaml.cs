@@ -28,6 +28,14 @@ using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive {
+        public static double TimeMinimum { get; } = 8d * 60 * 60;
+
+        public static double TimeMaximum { get; } = 18d * 60 * 60;
+
+        public static double TemperatureMinimum { get; } = 0d;
+
+        public static double TemperatureMaximum { get; } = 36d;
+
         public const string PresetableKeyValue = "Quick Drive";
         private const string KeySaveable = "__QuickDrive_Main";
         
@@ -261,8 +269,6 @@ namespace AcManager.Pages.Drive {
             }
 
             // default limit: 10/36
-            public double TemperatureMinimum => 0.0;
-            public double TemperatureMaximum => 36.0;
             public double Temperature {
                 get { return _temperature; }
                 set {
@@ -281,13 +287,11 @@ namespace AcManager.Pages.Drive {
             public double RoadTemperature => Game.ConditionProperties.GetRoadTemperature(Time, Temperature,
                     SelectedWeather?.TemperatureCoefficient ?? 0.0);
 
-            public int TimeMinimum => 8 * 60 * 60;
-            public int TimeMaximum => 18 * 60 * 60;
             public int Time {
                 get { return _time; }
                 set {
                     if (value == _time) return;
-                    _time = value.Clamp(TimeMinimum, TimeMaximum);
+                    _time = value.Clamp((int)TimeMinimum, (int)TimeMaximum);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayTime));
                     OnPropertyChanged(nameof(RoadTemperature));
@@ -560,7 +564,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void TryToSetTime(int value) {
-                var clamped = value.Clamp(TimeMinimum, TimeMaximum);
+                var clamped = value.Clamp((int)TimeMinimum, (int)TimeMaximum);
                 IsTimeClamped = clamped != value;
                 Time = clamped;
             }

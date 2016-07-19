@@ -13,6 +13,9 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools.Processes;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -26,7 +29,64 @@ namespace AcManager.Pages.Selected {
         private const string KeyEditMode = "weather.editmode";
 
         public class ViewModel : SelectedAcObjectViewModel<WeatherObject> {
-            public ViewModel([NotNull] WeatherObject acObject) : base(acObject) { }
+            public ViewModel([NotNull] WeatherObject acObject) : base(acObject) {
+                SelectedObject.PropertyChanged += SelectedObject_PropertyChanged;
+            }
+
+            public override void Unload() {
+                base.Unload();
+                SelectedObject.PropertyChanged -= SelectedObject_PropertyChanged;
+            }
+
+            private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(SelectedObject.TemperatureCoefficient)) {
+                    OnPropertyChanged(nameof(RoadTemperature));
+                }
+            }
+
+            private const string KeyTemperature = "swp.temp";
+
+            private double _temperature = ValuesStorage.GetDouble(KeyTemperature, 20d);
+            
+            public double Temperature {
+                get { return _temperature; }
+                set {
+                    value = value.Round(0.5);
+                    if (Equals(value, _temperature)) return;
+                    _temperature = value.Clamp(QuickDrive.TemperatureMinimum, QuickDrive.TemperatureMaximum);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(RoadTemperature));
+                    ValuesStorage.Set(KeyTemperature, value);
+                }
+            }
+
+            public double RoadTemperature => Game.ConditionProperties.GetRoadTemperature(Time, Temperature,
+                    SelectedObject.TemperatureCoefficient);
+
+            private const string KeyTime = "swp.time";
+
+            private int _time = ValuesStorage.GetInt(KeyTime, 12 * 60 * 60);
+
+            public int Time {
+                get { return _time; }
+                set {
+                    if (value == _time) return;
+                    _time = value.Clamp((int)QuickDrive.TimeMinimum, (int)QuickDrive.TimeMaximum);
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayTime));
+                    OnPropertyChanged(nameof(RoadTemperature));
+                    ValuesStorage.Set(KeyTime, value);
+                }
+            }
+
+            public string DisplayTime {
+                get { return $"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }
+                set {
+                    int time;
+                    if (!FlexibleParser.TryParseTime(value, out time)) return;
+                    Time = time;
+                }
+            }
 
             #region Weather types
             public WeatherType[] WeatherTypes { get; } = WeatherTypesArray;
@@ -102,8 +162,10 @@ namespace AcManager.Pages.Selected {
 
             private ICommand _testCommand;
 
-            public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(o => QuickDrive.RunAsync(weatherId: SelectedObject.Id),
-                    o => SelectedObject.Enabled));
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(o => {
+                SelectedObject.SaveCommand.Execute(null);
+                return QuickDrive.RunAsync(weatherId: SelectedObject.Id);
+            }, o => SelectedObject.Enabled));
 
             private ICommand _viewTemperatureReadmeCommand;
 
@@ -181,21 +243,6 @@ Accepted values are from -1 to 1.");
             if (EditMode) {
                 ToEditMode();
             }
-
-            //TextEditor.SetAsIniEditor(v => { _object.Content = v; });
-            //TextEditor.SetDocument(_object.Content);
-            //_object.PropertyChanged += SelectedObject_PropertyChanged;
-        }
-
-        private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            //if (TextEditor.IsBusy()) return;
-            //if (e.PropertyName == nameof(_object.Content)) {
-            //    TextEditor.SetDocument(_object.Content);
-            //}
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            _object.PropertyChanged -= SelectedObject_PropertyChanged;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

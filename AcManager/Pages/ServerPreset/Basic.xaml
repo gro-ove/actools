@@ -77,7 +77,7 @@
                 </DockPanel>
                 <TextBlock Style="{StaticResource Small}" Margin="0 0 0 4"
                         Text="{Binding MaximumCapacity, Converter={StaticResource PluralizingConverter}, ConverterParameter={StaticResource MaximumCapacityMessage}}" />
-                <TextBlock Style="{StaticResource Small}">
+                <TextBlock Style="{StaticResource Small}" Margin="0 0 0 8">
                     <TextBlock.Text>
                         <MultiBinding Converter="{x:Static local:SelectedPage.ClientsToBandwidthConverter}"
                                 StringFormat="{}Approximate upload bandwidth required: {0:F2} Mbit/s">

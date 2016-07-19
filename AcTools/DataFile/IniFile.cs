@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using AcTools.AcdFile;
 using AcTools.Utils.Helpers;
@@ -90,10 +91,49 @@ namespace AcTools.DataFile {
             Content.Clear();
         }
 
+        private static Regex _cleanUp;
+
         public override string Stringify() {
-            return Content.Select(x => (from pair in x.Value
-                                        select pair.Key + "=" + pair.Value
-                    ).Prepend("[" + x.Key + "]").JoinToString("\r\n")).JoinToString("\r\n\r\n");
+            if (_cleanUp == null) {
+                _cleanUp = new Regex(@"[\[\]]|(?!\S);|;(?!\S)", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+            }
+
+            var s = new StringBuilder();
+
+            foreach (var pair in Content) {
+                var section = pair.Value;
+                if (section.Count == 0) continue;
+
+                s.Append('[');
+                s.Append(pair.Key);
+                s.Append(']');
+
+                var commentary = section.Commentary;
+                if (commentary != null) {
+                    s.Append(" ; ");
+                    s.Append(commentary);
+                }
+
+                s.Append(Environment.NewLine);
+
+                var commentaries = section.Commentaries;
+                foreach (var sub in section) {
+                    s.Append(sub.Key);
+                    s.Append('=');
+                    s.Append(_cleanUp.Replace(sub.Value, "_"));
+
+                    if (commentaries?.TryGetValue(sub.Key, out commentary) == true) {
+                        s.Append(" ; ");
+                        s.Append(commentary);
+                    }
+
+                    s.Append(Environment.NewLine);
+                }
+
+                s.Append(Environment.NewLine);
+            }
+
+            return s.ToString();
         }
 
         public override string ToString() {
@@ -173,6 +213,30 @@ namespace AcTools.DataFile {
         /// <param name="startFrom">ID of first section (use -1 if first section is SECTION and second is SECTION_1)</param>
         public IEnumerable<IniFileSection> GetSections(string prefixName, int startFrom = 0) {
             return GetSectionNames(prefixName, startFrom).Select(key => this[key]);
+        }
+
+        public void SetCommentaries(IniCommentariesScheme iniCommentaries) {
+            foreach (var group in iniCommentaries) {
+                var section = this[group.Key];
+                foreach (var pair in group.Value) {
+                    section.SetCommentary(pair.Key, pair.Value);
+                }
+            }
+        }
+    }
+    
+    public class IniCommentariesScheme : Dictionary<string, Dictionary<string, string>> {
+        [NotNull]
+        public new Dictionary<string, string> this[string key] {
+            get {
+                Dictionary<string, string> result;
+                if (TryGetValue(key, out result)) return result;
+
+                result = new Dictionary<string, string>();
+                base[key] = result;
+                return result;
+            }
+            set { base[key] = value; }
         }
     }
 }

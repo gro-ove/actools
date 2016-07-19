@@ -20,6 +20,7 @@
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     <converters:OrdinalizingConverter x:Key="OrdinalizingConverter" />
     <converters:FileSizeConverter x:Key="FileSizeConverter" />
+    <converters:PercentageConverter x:Key="PercentageConverter" />
     <converters:PluralizingConverter x:Key="PluralizingConverter" />
     <converters:SubstractConverter x:Key="SubstractConverter" />
     <converters:SumConverter x:Key="SumConverter" />

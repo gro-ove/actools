@@ -1,4 +1,5 @@
-﻿using AcManager.Tools.AcObjectsNew;
+﻿using System.Windows.Input;
+using AcManager.Tools.AcObjectsNew;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Selected {
@@ -9,8 +10,10 @@ namespace AcManager.Pages.Selected {
 
         void Unload();
 
-        RelayCommand FindInformationCommand { get; }
+        ICommand FindInformationCommand { get; }
 
-        RelayCommand ChangeIdCommand { get; }
+        ICommand ChangeIdCommand { get; }
+
+        ICommand CloneCommand { get; }
     }
 }

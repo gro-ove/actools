@@ -24,7 +24,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public override void Save(IniFile ini) {
             var section = ini[Id];
-            section.Set("KEY", Input == null ? "-1" : "0x" + Input?.Id.ToString("X") + " ; " + Input.DisplayName);
+            section.SetCommentary("KEY", Input?.DisplayName);
+            section.Set("KEY", Input == null ? @"-1" : @"0x" + Input?.Id.ToString(@"X"));
         }
     }
 
@@ -38,7 +39,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public override void Save(IniFile ini) {
             var section = ini["KEYBOARD"];
-            section.Set(Id, Input == null ? "-1" : "0x" + Input?.Id.ToString("X") + " ; " + Input.DisplayName);
+            section.SetCommentary("KEY", Input?.DisplayName);
+            section.Set(Id, Input == null ? @"-1" : @"0x" + Input?.Id.ToString(@"X"));
         }
     }
 }

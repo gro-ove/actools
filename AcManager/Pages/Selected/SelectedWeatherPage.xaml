@@ -2,9 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance selected:SelectedWeatherPage+ViewModel}" Unloaded="OnUnloaded" x:Name="This">
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance selected:SelectedWeatherPage+ViewModel}" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,24 +12,75 @@
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- ReSharper disable once Xaml.RedundantResource -->
             <StackPanel x:Key="EditMode">
-                <CheckBox IsChecked="{Binding SelectedObject.ForceCarLights}">
-                    <Label>Turn on headlights</Label>
-                </CheckBox>
+                <Grid x:Name="Grid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <DockPanel attached:ContextMenuAdvancement.PropagateToChildren="True">
-                    <DockPanel.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Command="{Binding ViewTemperatureReadmeCommand}">
-                                <MenuItem.Header>View “readme__weather.txt”</MenuItem.Header>
-                            </MenuItem>
-                        </ContextMenu>
-                    </DockPanel.ContextMenu>
-                    <DockPanel.ToolTip>Creates a variation of the asphalt temperature relative to the weather, ambient temperature and time. More information in “readme_weather.txt”</DockPanel.ToolTip>
-                    <mui:ValueLabel Value="{Binding SelectedObject.TemperatureCoefficientPercentage}" Postfix="%">Temp. coefficient</mui:ValueLabel>
-                    <Slider Minimum="-100" Maximum="100" Value="{Binding SelectedObject.TemperatureCoefficientPercentage}" TickFrequency="20"
-                            TickPlacement="BottomRight" />
-                </DockPanel>
+                    <StackPanel>
+                        <DockPanel>
+                            <Label>ID:</Label>
+                            <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Id, Mode=OneTime}" />
+                        </DockPanel>
+                        
+                        <DockPanel>
+                            <Label>Use as:</Label>
+                            <ComboBox ItemsSource="{Binding WeatherTypes}" SelectedItem="{Binding SelectedObject.Type}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </DockPanel>
+
+                        <CheckBox IsChecked="{Binding SelectedObject.ForceCarLights}">
+                            <Label>Turn on headlights</Label>
+                        </CheckBox>
+
+                        <DockPanel attached:ContextMenuAdvancement.PropagateToChildren="True">
+                            <DockPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Command="{Binding ViewTemperatureReadmeCommand}">
+                                        <MenuItem.Header>View “readme__weather.txt”</MenuItem.Header>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </DockPanel.ContextMenu>
+                            <DockPanel.ToolTip>Creates a variation of the asphalt temperature relative to the weather, ambient temperature and time. More information in “readme_weather.txt”</DockPanel.ToolTip>
+                            <mui:ValueLabel Value="{Binding SelectedObject.TemperatureCoefficient, StringFormat='{}{0:F2}'}">Temp. coefficient</mui:ValueLabel>
+                            <Slider Minimum="-1" Maximum="1" Value="{Binding SelectedObject.TemperatureCoefficient}" TickFrequency="0.2"
+                                    TickPlacement="BottomRight" />
+                        </DockPanel>
+                    </StackPanel>
+
+                    <!--Visibility="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=600}"-->
+                    <Grid Grid.Column="1" Margin="8 0 0 0">
+                        <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+                        <StackPanel Margin="8">
+                            <TextBlock Style="{StaticResource Label}">Temperature coefficient testing:</TextBlock>
+
+                            <StackPanel Orientation="Horizontal" Margin="0 8 0 8">
+                                <StackPanel Margin="0 0 8 0" Width="120">
+                                    <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0 0 0 4">Time</mui:ValueLabel>
+                                    <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}"
+                                            Value="{Binding Time}" Margin="0 0 0 4" Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight"
+                                            IsSnapToTickEnabled="False" />
+                                </StackPanel>
+                                <StackPanel Width="120">
+                                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}" Mode="Number" Postfix=" °C">Air temp.</mui:ValueLabel>
+                                    <Slider Minimum="{x:Static drive:QuickDrive.TemperatureMinimum}" Maximum="{x:Static drive:QuickDrive.TemperatureMaximum}"
+                                            Value="{Binding Temperature}" Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False"
+                                            TickPlacement="BottomRight" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <TextBlock Style="{StaticResource Heading2}" Text="{Binding RoadTemperature, StringFormat='{}Road temperature: {0:F1} °C'}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -41,8 +92,10 @@
                         <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Clouds:</TextBlock>
 
                         <DockPanel ToolTip="Regulates clouds transparency">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsCover}" Postfix="%">Cover</mui:ValueLabel>
-                            <Slider Minimum="0" Maximum="100" Value="{Binding SelectedObject.CloudsCover}" TickFrequency="10" TickPlacement="BottomRight" />
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsCover, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                    Mode="Number">Cover</mui:ValueLabel>
+                            <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
+                                    Value="{Binding SelectedObject.CloudsCover, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel>
@@ -53,13 +106,17 @@
 [br] • [b]100%:[/b] just the color of the cloud is considered
                                 </mui:BbCodeBlock>
                             </DockPanel.ToolTip>
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsCutoff}" Postfix="%">Cut-off</mui:ValueLabel>
-                            <Slider Minimum="0" Maximum="100" Value="{Binding SelectedObject.CloudsCutoff}" TickFrequency="10" TickPlacement="BottomRight" />
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsCutoff, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                    Mode="Number">Cut-off</mui:ValueLabel>
+                            <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
+                                    Value="{Binding SelectedObject.CloudsCutoff, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel ToolTip="Base color; the sunlight, light color and ambient will be added to this">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsColor}" Postfix="%">Color</mui:ValueLabel>
-                            <Slider Minimum="0" Maximum="100" Value="{Binding SelectedObject.CloudsColor}" TickFrequency="10" TickPlacement="BottomRight" />
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsColor, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                    Mode="Number">Color</mui:ValueLabel>
+                            <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
+                                    Value="{Binding SelectedObject.CloudsColor, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel ToolTip="Width of the quad">
@@ -98,30 +155,37 @@
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.FogColorMultipler}" Postfix="%">Brightness</mui:ValueLabel>
-                            <Slider Minimum="0" Maximum="800" Value="{Binding SelectedObject.FogColorMultipler}" TickFrequency="50" TickPlacement="BottomRight" />
+                            <mui:ValueLabel Value="{Binding SelectedObject.FogColorMultipler, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                    Mode="Number">Brightness</mui:ValueLabel>
+                            <Slider Minimum="0" Maximum="800" TickFrequency="80" TickPlacement="BottomRight"
+                                    Value="{Binding SelectedObject.FogColorMultipler, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.FogBlend}" Postfix="%">Blend</mui:ValueLabel>
-                            <Slider Minimum="0" Maximum="100" Value="{Binding SelectedObject.FogBlend}" TickFrequency="10" TickPlacement="BottomRight" />
+                            <mui:ValueLabel Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}}" Postfix="%" Mode="Number">Blend</mui:ValueLabel>
+                            <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
+                                    Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.FogDistance}" Postfix=" m">Distance</mui:ValueLabel>
+                            <mui:ValueLabel Value="{Binding SelectedObject.FogDistance, StringFormat='\{0:F0\}'}" Postfix=" m">Distance</mui:ValueLabel>
                             <Slider Minimum="0" Maximum="12000" Value="{Binding SelectedObject.FogDistance}" TickFrequency="1200" TickPlacement="BottomRight" />
                         </DockPanel>
 
                         <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Additional:</TextBlock>
 
                         <DockPanel ToolTip="Used when HDR is disabled">
-                            <mui:ValueLabel Value="{Binding SelectedObject.HdrOffMultipler}" Postfix="%">HDR-off mult.</mui:ValueLabel>
-                            <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.HdrOffMultipler}" TickFrequency="20" TickPlacement="BottomRight" />
+                            <mui:ValueLabel Value="{Binding SelectedObject.HdrOffMultipler, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                    Mode="Number">HDR-off mult.</mui:ValueLabel>
+                            <Slider Minimum="0" Maximum="200" TickFrequency="20" TickPlacement="BottomRight"
+                                    Value="{Binding SelectedObject.HdrOffMultipler, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.AngleGamma}" Postfix="%">Angle gamma</mui:ValueLabel>
-                            <Slider Minimum="0" Maximum="500" Value="{Binding SelectedObject.AngleGamma}" TickFrequency="50" TickPlacement="BottomRight" />
+                            <mui:ValueLabel Value="{Binding SelectedObject.AngleGamma, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                                    Mode="Number">Angle gamma</mui:ValueLabel>
+                            <Slider Minimum="0" Maximum="500" TickFrequency="50" TickPlacement="BottomRight"
+                                    Value="{Binding SelectedObject.AngleGamma, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                         </DockPanel>
                     </StackPanel>
                 </Grid>
@@ -135,9 +199,9 @@
                             <Grid Margin="0 0 0 8">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="100" />
-                                    <ColumnDefinition MinWidth="100" Width="1*" />
+                                    <ColumnDefinition MinWidth="130" Width="1*" />
                                     <ColumnDefinition Width="100" />
-                                    <ColumnDefinition Width="3*" />
+                                    <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
                                 <mui:ColorPicker Grid.Column="1" Color="{Binding Color}" ToolTip="Low" Margin="0 0 20 0" VerticalAlignment="Center" />
@@ -158,7 +222,7 @@
                 <Button Content="Folder" ToolTip="Open weather's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
-                <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share weather (Ctrl+Page Up)" />
+                <!--<Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share weather (Ctrl+Page Up)" />-->
                 <Button Content="Test" Command="{Binding TestCommand}" ToolTip="Test weather on track (Ctrl+G)" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
@@ -166,8 +230,15 @@
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="Enable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Enable (Ctrl+D)"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                <Button Content="Change ID" Command="{Binding ChangeIdCommand}">
+                    <Button.ToolTip>Change weather’s ID (Ctrl+Shift+F2)</Button.ToolTip>
+                </Button>
                 <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed ini-file (Ctrl+S)" />
                 <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+                <Separator />
+                <Button Content="Clone" Command="{Binding CloneCommand}">
+                    <Button.ToolTip>Clone weather (Ctrl+Shift+D)</Button.ToolTip>
+                </Button>
                 <Separator />
                 <Button Content="Edit Mode" Command="{Binding ToggleEditModeCommand, ElementName=This}" ToolTip="Switch to Edit Mode (Ctrl+E)"
                         Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -178,25 +249,31 @@
 
         <StackPanel x:Name="Wrapper" Style="{StaticResource SettingsPanel}"
                 Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <DockPanel>
-                <Label>Use as:</Label>
-                <ComboBox ItemsSource="{Binding WeatherTypes}" SelectedItem="{Binding SelectedObject.Type}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </DockPanel>
+            <StackPanel Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <DockPanel>
+                    <Label>ID:</Label>
+                    <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Id, Mode=OneTime}" />
+                </DockPanel>
+                
+                <DockPanel>
+                    <Label>Use as:</Label>
+                    <ComboBox ItemsSource="{Binding WeatherTypes}" SelectedItem="{Binding SelectedObject.Type}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </DockPanel>
 
-            <Grid Margin="0 20 0 8"
-                    Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
-                <StackPanel Margin="8">
-                    <TextBlock Style="{StaticResource Label}">Seems empty?</TextBlock>
-                    <TextBlock>Switch to Edit Mode if you want to modify other weather’s parameters.</TextBlock>
-                </StackPanel>
-            </Grid>
+                <Grid Margin="0 20 0 8">
+                    <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+                    <StackPanel Margin="8">
+                        <TextBlock Style="{StaticResource Label}">Seems empty?</TextBlock>
+                        <TextBlock>Switch to Edit Mode if you want to modify other weather’s parameters.</TextBlock>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
         </StackPanel>
     </ac:AcObjectBase>
 </selected:SelectedAcObjectPage>

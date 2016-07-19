@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -43,30 +44,55 @@ namespace AcManager.Tools.Objects {
 
                 if (Loaded) {
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(TemperatureCoefficientPercentage));
                     Changed = true;
                 }
             }
         }
 
-        public int TemperatureCoefficientPercentage {
-            get { return TemperatureCoefficient.ToIntPercentage(); }
-            set { TemperatureCoefficient = value.ToDoublePercentage(); }
-        }
-
         private static WeatherType TryToDetectWeatherTypeById(string id) {
             var l = id.ToLower();
 
-            if (l.Contains(@"mid_clear")) return WeatherType.FewClouds;
-            if (l.Contains(@"light_clouds")) return WeatherType.ScatteredClouds;
-            if (l.Contains(@"heavy_clouds")) return WeatherType.OvercastClouds;
+            if (l.Contains(@"fog")) {
+                if (l.Contains(@"light")) return WeatherType.Mist;
+                return WeatherType.Fog;
+            }
 
-            if (l.Contains(@"clouds")) return WeatherType.BrokenClouds;
-            if (l.Contains(@"clear")) return WeatherType.Clear;
+            if (l.Contains(@"drizzle")) {
+                if (l.Contains(@"light")) return WeatherType.LightDrizzle;
+                if (l.Contains(@"heavy")) return WeatherType.HeavyDrizzle;
+                return WeatherType.Drizzle;
+            }
+
+            if (l.Contains(@"rain")) {
+                if (l.Contains(@"light")) return WeatherType.LightRain;
+                if (l.Contains(@"heavy")) return WeatherType.HeavyRain;
+                return WeatherType.Rain;
+            }
+
+            if (l.Contains(@"snow")) {
+                if (l.Contains(@"light")) return WeatherType.LightSnow;
+                if (l.Contains(@"heavy")) return WeatherType.HeavySnow;
+                return WeatherType.Snow;
+            }
+
+            if (l.Contains(@"clouds")) {
+                if (l.Contains(@"light")) return WeatherType.ScatteredClouds;
+                if (l.Contains(@"heavy")) return WeatherType.OvercastClouds;
+                if (l.Contains(@"mid") || l.Contains(@"few")) return WeatherType.FewClouds;
+                return WeatherType.BrokenClouds;
+            }
+
+            if (l.Contains(@"few")) return WeatherType.FewClouds;
+            if (l.Contains(@"overcast")) return WeatherType.OvercastClouds;
+            if (l.Contains(@"scattered")) return WeatherType.ScatteredClouds;
+            if (l.Contains(@"cold")) return WeatherType.Cold;
+            if (l.Contains(@"hot")) return WeatherType.Hot;
+
+            if (l.Contains(@"clear")) {
+                if (l.Contains(@"mid")) return WeatherType.FewClouds;
+                return WeatherType.Clear;
+            }
             
-            if (l.Contains(@"light_fog")) return WeatherType.Mist;
-            if (l.Contains(@"fog")) return WeatherType.Fog;
-
             return WeatherType.None;
         }
 
@@ -109,10 +135,16 @@ namespace AcManager.Tools.Objects {
         public override void SaveData(IniFile ini) {
             ini["LAUNCHER"].Set("NAME", Name);
             ini["LAUNCHER"].Set("TEMPERATURE_COEFF", TemperatureCoefficient);
-            ini["__LAUNCHER_CM"].Set("WEATHER_TYPE", Type);
+
+            if (Type == WeatherType.None) {
+                ini["__LAUNCHER_CM"].Remove(@"WEATHER_TYPE");
+            } else {
+                ini["__LAUNCHER_CM"].Set("WEATHER_TYPE", Type);
+            }
 
             if (_loadedExtended) {
                 SaveExtended(ini);
+                SaveColorCurves();
             }
         }
 
@@ -131,12 +163,11 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _cloudsCover;
+        private double _cloudsCover;
 
-        public int CloudsCover {
+        public double CloudsCover {
             get { return _cloudsCover; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _cloudsCover)) return;
                 _cloudsCover = value;
                 if (_loadedExtended) {
@@ -146,12 +177,11 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _cloudsCutoff;
+        private double _cloudsCutoff;
 
-        public int CloudsCutoff {
+        public double CloudsCutoff {
             get { return _cloudsCutoff; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _cloudsCutoff)) return;
                 _cloudsCutoff = value;
                 if (_loadedExtended) {
@@ -161,12 +191,11 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _cloudsColor;
+        private double _cloudsColor;
 
-        public int CloudsColor {
+        public double CloudsColor {
             get { return _cloudsColor; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _cloudsColor)) return;
                 _cloudsColor = value;
                 if (_loadedExtended) {
@@ -181,7 +210,6 @@ namespace AcManager.Tools.Objects {
         public double CloudsWidth {
             get { return _cloudsWidth; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _cloudsWidth)) return;
                 _cloudsWidth = value;
                 if (_loadedExtended) {
@@ -196,7 +224,6 @@ namespace AcManager.Tools.Objects {
         public double CloudsHeight {
             get { return _cloudsHeight; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _cloudsHeight)) return;
                 _cloudsHeight = value;
                 if (_loadedExtended) {
@@ -211,7 +238,6 @@ namespace AcManager.Tools.Objects {
         public double CloudsRadius {
             get { return _cloudsRadius; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _cloudsRadius)) return;
                 _cloudsRadius = value;
                 if (_loadedExtended) {
@@ -226,7 +252,6 @@ namespace AcManager.Tools.Objects {
         public int CloudsNumber {
             get { return _cloudsNumber; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _cloudsNumber)) return;
                 _cloudsNumber = value;
                 if (_loadedExtended) {
@@ -241,7 +266,6 @@ namespace AcManager.Tools.Objects {
         public double CloudsSpeedMultipler {
             get { return _cloudsSpeedMultipler; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _cloudsSpeedMultipler)) return;
                 _cloudsSpeedMultipler = value;
                 if (_loadedExtended) {
@@ -271,12 +295,11 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _fogColorMultipler;
+        private double _fogColorMultipler;
 
-        public int FogColorMultipler {
+        public double FogColorMultipler {
             get { return _fogColorMultipler; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _fogColorMultipler)) return;
                 _fogColorMultipler = value;
                 if (_loadedExtended) {
@@ -286,12 +309,11 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _fogBlend;
+        private double _fogBlend;
 
-        public int FogBlend {
+        public double FogBlend {
             get { return _fogBlend; }
             set {
-                value = value.Clamp(0, 1000000);
                 if (Equals(value, _fogBlend)) return;
                 _fogBlend = value;
                 if (_loadedExtended) {
@@ -306,7 +328,6 @@ namespace AcManager.Tools.Objects {
         public double FogDistance {
             get { return _fogDistance; }
             set {
-                value = value.Clamp(0, 999999999);
                 if (Equals(value, _fogDistance)) return;
                 _fogDistance = value;
                 if (_loadedExtended) {
@@ -320,9 +341,9 @@ namespace AcManager.Tools.Objects {
 
         private void LoadExtended(IniFile ini) {
             var clouds = ini["CLOUDS"];
-            CloudsCover = clouds.GetDouble("COVER", 0.9).ToIntPercentage();
-            CloudsCutoff = clouds.GetDouble("CUTOFF", 0.5).ToIntPercentage();
-            CloudsColor = clouds.GetDouble("COLOR", 0.7).ToIntPercentage();
+            CloudsCover = clouds.GetDouble("COVER", 0.9);
+            CloudsCutoff = clouds.GetDouble("CUTOFF", 0.5);
+            CloudsColor = clouds.GetDouble("COLOR", 0.7);
             CloudsWidth = clouds.GetDouble("WIDTH", 9);
             CloudsHeight = clouds.GetDouble("HEIGHT", 4);
             CloudsRadius = clouds.GetDouble("RADIUS", 6);
@@ -347,17 +368,55 @@ namespace AcManager.Tools.Objects {
                     FogColor = Color.FromRgb((255 * color[0] / maxValue).ClampToByte(),
                         (255 * color[1] / maxValue).ClampToByte(),
                         (255 * color[2] / maxValue).ClampToByte());
-                    FogColorMultipler = maxValue.ToIntPercentage();
+                    FogColorMultipler = maxValue;
                 }
             }
 
-            FogBlend = fog.GetDouble("BLEND", 0.85).ToIntPercentage();
+            FogBlend = fog.GetDouble("BLEND", 0.85);
             FogDistance = fog.GetDouble("DISTANCE", 9000);
 
             ForceCarLights = ini["CAR_LIGHTS"].GetBool("FORCE_ON", false);
         }
 
+        [Localizable(false)]
+        private static readonly IniCommentariesScheme IniCommentaries = new IniCommentariesScheme {
+            ["CLOUDS"] = {
+                ["COVER"] = "regulates clouds transparency: 0-1",
+                ["CUTOFF"] =
+                    "regulates other colors influencies on the cloud: 0-1; if 1, just the color of the cloud is considered; if 0, just the color effects on the clouds are considered; if 0.5, 50% of cloud color and 50% of effects",
+                ["COLOR"] = "base color, the sunlight, light color and ambient will be added to this: 0-1",
+                ["WIDTH"] = "width of the quad",
+                ["HEIGHT"] = "height of the quad",
+                ["RADIUS"] = "distance from the center of the skybox to the quad",
+                ["NUMBER"] = "number of clouds",
+            },
+            ["LAUNCHER"] = {
+                ["NAME"] = "name of the weather as it will appear in the launcher menus",
+                ["TEMPERATURE_COEFF"] =
+                    "creates a variation of the asphalt temperature relative to the weather, ambient temperature and time: −1-1; see the readme_weather.txt for explanation",
+            }
+        };
+
         private void SaveExtended(IniFile ini) {
+            ini.SetCommentaries(IniCommentaries);
+
+            var clouds = ini["CLOUDS"];
+            clouds.Set("COVER", CloudsCover);
+            clouds.Set("CUTOFF", CloudsCutoff);
+            clouds.Set("COLOR", CloudsColor);
+            clouds.Set("WIDTH", CloudsWidth);
+            clouds.Set("HEIGHT", CloudsHeight);
+            clouds.Set("RADIUS", CloudsRadius);
+            clouds.Set("NUMBER", CloudsNumber);
+            clouds.Set("BASE_SPEED_MULT", CloudsSpeedMultipler * 0.01);
+
+            var fog = ini["FOG"];
+            fog.Set("COLOR", new [] {
+                FogColor.R, FogColor.G, FogColor.B
+            }.Select(x => (x * FogColorMultipler / 255d).Round(0.1)));
+            fog.Set("BLEND", FogBlend);
+            fog.Set("DISTANCE", FogDistance);
+
             ini["CAR_LIGHTS"].Set("FORCE_ON", ForceCarLights);
         }
         #endregion
@@ -374,9 +433,9 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _hdrOffMultipler;
+        private double _hdrOffMultipler;
 
-        public int HdrOffMultipler {
+        public double HdrOffMultipler {
             get { return _hdrOffMultipler; }
             set {
                 if (Equals(value, _hdrOffMultipler)) return;
@@ -388,9 +447,9 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private int _angleGamma;
+        private double _angleGamma;
 
-        public int AngleGamma {
+        public double AngleGamma {
             get { return _angleGamma; }
             set {
                 if (Equals(value, _angleGamma)) return;
@@ -406,8 +465,8 @@ namespace AcManager.Tools.Objects {
 
         private void LoadColorCurvesData(IniFile ini) {
             var header = ini["HEADER"];
-            HdrOffMultipler = header.GetDouble("HDR_OFF_MULT", 0.3).ToIntPercentage();
-            AngleGamma = header.GetDouble("ANGLE_GAMMA", 3.4).ToIntPercentage();
+            HdrOffMultipler = header.GetDouble("HDR_OFF_MULT", 0.3);
+            AngleGamma = header.GetDouble("ANGLE_GAMMA", 3.4);
 
             foreach (var entry in ColorCurves) {
                 double multipler;
@@ -416,11 +475,35 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private void Entry_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void SaveColorCurvesData(IniFile ini) {
+            var header = ini["HEADER"];
+            header.Set("VERSION", 3);
+            header.Set("HDR_OFF_MULT", HdrOffMultipler);
+            header.Set("ANGLE_GAMMA", AngleGamma);
+
+            foreach (var entry in ColorCurves) {
+                ini[entry.Id].Set(entry.Sub, new[] {
+                    entry.Color.R, entry.Color.G, entry.Color.B, entry.Multipler
+                });
+            }
+        }
+
+        private void Entry_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (_loadedExtended) {
                 OnPropertyChanged();
                 Changed = true;
             }
+        }
+
+        private void SaveColorCurves() {
+            var ini = ColorCurvesIniObject ?? new IniFile();
+            SaveColorCurvesData(ini);
+
+            using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
+                File.WriteAllText(ColorCurvesIniFilename, ini.ToString());
+            }
+
+            Changed = false;
         }
         #endregion
 

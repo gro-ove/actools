@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Annotations;
 using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
@@ -26,18 +27,30 @@ namespace AcManager.Pages.Selected {
 
         public virtual void Unload() { }
 
-        private RelayCommand _findInformationCommand;
+        private ICommand _findInformationCommand;
 
-        public RelayCommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new RelayCommand(o => {
+        public ICommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new RelayCommand(o => {
             new FindInformationDialog((AcJsonObjectNew)SelectedAcObject).ShowDialog();
         }, o => SelectedAcObject is AcJsonObjectNew));
 
-        private RelayCommand _changeIdCommand;
+        private ICommand _changeIdCommand;
 
-        public RelayCommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new RelayCommand(o => {
+        public ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new RelayCommand(o => {
             var newId = Prompt.Show("Enter new ID:", "Change ID", SelectedObject.Id, "?", "Be careful, changing ID might cause some problems with online!");
             if (string.IsNullOrWhiteSpace(newId)) return;
             SelectedObject.ChangeIdCommand.Execute(newId);
+        }));
+
+        private ICommand _cloneCommand;
+
+        public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand(async o => {
+            var newId = Prompt.Show("Enter new ID:", "Clone", SelectedObject.Id, "?");
+            if (string.IsNullOrWhiteSpace(newId)) return;
+
+            using (var waiting = new WaitingDialog()) {
+                waiting.Report("Cloning…");
+                await SelectedObject.CloneAsync(newId);
+            }
         }));
 
         #region Filter Commands

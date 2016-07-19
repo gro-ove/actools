@@ -367,5 +367,23 @@ namespace AcTools.Utils {
 
             throw new Exception("Can’t find unique filename");
         }
+
+        public static void CopyRecursive(string source, string destination) {
+            if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
+                Directory.CreateDirectory(destination);
+                
+                foreach (var dirPath in Directory.GetDirectories(source, "*",
+                        SearchOption.AllDirectories)) {
+                    Directory.CreateDirectory(dirPath.Replace(source, destination));
+                }
+                
+                foreach (var newPath in Directory.GetFiles(source, "*",
+                        SearchOption.AllDirectories)) {
+                    File.Copy(newPath, newPath.Replace(source, destination), true);
+                }
+            } else {
+                File.Copy(source, destination, true);
+            }
+        }
     }
 }

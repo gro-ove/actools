@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -340,6 +340,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t clone object.
+        /// </summary>
+        public static string AcObject_CannotClone {
+            get {
+                return ResourceManager.GetString("AcObject_CannotClone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure there is enough disk space..
+        /// </summary>
+        public static string AcObject_CannotClone_Commentary {
+            get {
+                return ResourceManager.GetString("AcObject_CannotClone_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t delete.
         /// </summary>
         public static string AcObject_CannotDelete {
@@ -367,20 +385,20 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Make sure there is no runned app working with object’s folder..
+        /// </summary>
+        public static string AcObject_CannotToggle_Commentary {
+            get {
+                return ResourceManager.GetString("AcObject_CannotToggle_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t toggle: {0}.
         /// </summary>
         public static string AcObject_CannotToggleExt {
             get {
                 return ResourceManager.GetString("AcObject_CannotToggleExt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Make sure there is no runned app working with object’s folder..
-        /// </summary>
-        public static string AcObject_Disabling_MakeSureNoRunnedApps {
-            get {
-                return ResourceManager.GetString("AcObject_Disabling_MakeSureNoRunnedApps", resourceCulture);
             }
         }
         

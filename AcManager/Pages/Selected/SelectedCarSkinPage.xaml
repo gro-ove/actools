@@ -21,7 +21,7 @@
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" Command="{Binding SelectedObject.ViewInExplorerCommand}">
-                    <Button.ToolTip>Open showroom’s folder (Ctrl+F)</Button.ToolTip>
+                    <Button.ToolTip>Open skin’s folder (Ctrl+F)</Button.ToolTip>
                 </Button>
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
@@ -36,7 +36,7 @@
                     <Button.ToolTip>Change skin’s ID (Ctrl+Shift+F2)</Button.ToolTip>
                 </Button>
                 <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed json-file (Ctrl+S)" />
-                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove skin to Recycle Bin (Ctrl+Delete)" />
                 <Separator />
                 <Button Content="Delete JSON-file" Command="{Binding DeleteJsonCommand}" ToolTip="Remove ui_skin.json to Recycle Bin (Alt+Delete)"
                         Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}" />

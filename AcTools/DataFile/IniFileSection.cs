@@ -8,6 +8,34 @@ using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public class IniFileSection : Dictionary<string, string> {
+        [CanBeNull]
+        internal string Commentary { get; private set; }
+
+        [CanBeNull]
+        internal Dictionary<string, string> Commentaries { get; private set; }
+
+        public void SetCommentary([CanBeNull, LocalizationRequired(false)] string value) {
+            Commentary = value;
+        }
+
+        public void SetCommentary([NotNull, LocalizationRequired(false)] string key, [CanBeNull, LocalizationRequired(false)] string value) {
+            if (value == null) {
+                RemoveCommentary(key);
+                return;
+            }
+
+            if (Commentaries == null) Commentaries = new Dictionary<string, string>(1);
+            Commentaries[key] = value;
+        }
+
+        public void RemoveCommentary([NotNull, LocalizationRequired(false)] string key) {
+            if (Commentaries == null) return;
+            Commentaries.Remove(key);
+            if (Commentaries.Count == 0) {
+                Commentaries = null;
+            }
+        }
+
         public new dynamic this[[NotNull, LocalizationRequired(false)] string key] {
             get { return ContainsKey(key) ? base[key] : null; }
             set {

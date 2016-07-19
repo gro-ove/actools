@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using AcTools.DataFile;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 
 namespace AcTools.Processes {
     public partial class Game {

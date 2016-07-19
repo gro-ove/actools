@@ -11,7 +11,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 flag = (bool)value;
             }
 
-            if (parameter as string == "inverse") {
+            if (parameter as string == @"inverse") {
                 flag = !flag;
             }
 

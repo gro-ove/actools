@@ -72,8 +72,8 @@
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="Actual time is out of range, closest value is used" HorizontalAlignment="Right" />
                     </Grid>
-                    <Slider Minimum="{Binding TimeMinimum}" Maximum="{Binding TimeMaximum}" Value="{Binding Time}" Margin="0 0 0 4" Name="TimeSlider"
-                            TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                    <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}" Value="{Binding Time}"
+                            Margin="0 0 0 4" Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
 
                 <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding RealConditions}" Margin="8 0 0 0" ToolTip="{Binding RealWeather.FullDescription}">
@@ -131,9 +131,9 @@
                                     <TextBlock Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" FontStyle="Italic" VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}">Loading failed</TextBlock>
-                                    <TextBlock Grid.Row="1" Style="{StaticResource Heading2}"
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource Heading2}"
                                             Text="{Binding RealWeather.Description, Converter={StaticResource ToTitleConverter}, TargetNullValue='?'}" />
-                                    <TextBlock Grid.Row="2" Style="{StaticResource Heading1}"
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Heading1}"
                                             Text="{Binding RealWeather.Temperature, StringFormat='{}{0} °C', TargetNullValue='?'}" Margin="8" />
                                     <Image Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Source="{Binding RealWeather.Icon, IsAsync=True}" MaxWidth="36"
                                             Height="36" Stretch="Uniform" Margin="8 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"
@@ -142,8 +142,8 @@
                             </Grid>
                         </Grid.ToolTip>
 
-                        <Slider Minimum="{Binding TemperatureMinimum}" Maximum="{Binding TemperatureMaximum}" Value="{Binding Temperature}"
-                                Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" />
+                        <Slider Minimum="{x:Static drive:QuickDrive.TemperatureMinimum}" Maximum="{x:Static drive:QuickDrive.TemperatureMaximum}"
+                                Value="{Binding Temperature}" Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 -8" Height="16">
                             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                     Visibility="{Binding IsTemperatureClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -224,7 +224,7 @@
         </Grid>
 
         <StackPanel Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
-            <controls:UserPresetsControl Grid.Column="1" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
+            <controls:UserPresetsControl Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
             <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="Share current settings (Ctrl+Page Up)">Share</Button>
             <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)">Go!</Button>
         </StackPanel>

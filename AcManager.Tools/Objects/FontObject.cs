@@ -89,9 +89,9 @@ namespace AcManager.Tools.Objects {
             try {
                 Toggle();
             } catch (ToggleException ex) {
-                NonfatalError.Notify(string.Format(Resources.AcObject_CannotToggleExt, ex.Message), Resources.AcObject_Disabling_MakeSureNoRunnedApps);
+                NonfatalError.Notify(string.Format(Resources.AcObject_CannotToggleExt, ex.Message), Resources.AcObject_CannotToggle_Commentary);
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotToggle, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
+                NonfatalError.Notify(Resources.AcObject_CannotToggle, Resources.AcObject_CannotToggle_Commentary, ex);
             }
         }));
 
@@ -105,7 +105,7 @@ namespace AcManager.Tools.Objects {
             try {
                 Delete();
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotDelete, Resources.AcObject_Disabling_MakeSureNoRunnedApps, ex);
+                NonfatalError.Notify(Resources.AcObject_CannotDelete, Resources.AcObject_CannotToggle_Commentary, ex);
             }
         }));
 

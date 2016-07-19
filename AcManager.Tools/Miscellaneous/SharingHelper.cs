@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -74,7 +73,7 @@ namespace AcManager.Tools.Miscellaneous {
         public string GetFileName() {
             switch (EntryType) {
                 case SharedEntryType.Weather:
-                    return Regex.Replace(Target ?? Name ?? "shared_weather", @"\W+", "").ToLowerInvariant();
+                    return Regex.Replace(Target ?? Name ?? @"shared_weather", @"\W+", "").ToLowerInvariant();
 
                 default:
                     // TODO: even localized?
@@ -111,13 +110,13 @@ namespace AcManager.Tools.Miscellaneous {
                 case SharedEntryType.ControlsPreset:
                 case SharedEntryType.ForceFeedbackPreset:
                 case SharedEntryType.PpFilter:
-                    return ".ini";
+                    return @".ini";
 
                 case SharedEntryType.QuickDrivePreset:
-                    return ".cmpreset";
+                    return @".cmpreset";
 
                 case SharedEntryType.Replay:
-                    return ".lnk";
+                    return @".lnk";
 
                 case SharedEntryType.Weather:
                     return "";
@@ -134,10 +133,10 @@ namespace AcManager.Tools.Miscellaneous {
                 case SharedEntryType.CarSetup:
                     var s = new StringBuilder();
                     foreach (var pair in metadata.Where(x => x.Value != null)) {
-                        if (pair.Key.Contains(":")) {
-                            throw new Exception("Invalid key");
+                        if (pair.Key.Contains(@":")) {
+                            throw new Exception(@"Invalid key");
                         }
-                        s.Append(IniMetadataPrefix + pair.Key + ":" + ValuesStorage.Encode(pair.Value) + "\n");
+                        s.Append(IniMetadataPrefix + pair.Key + @":" + ValuesStorage.Encode(pair.Value) + '\n');
                     }
                     return s + data;
 

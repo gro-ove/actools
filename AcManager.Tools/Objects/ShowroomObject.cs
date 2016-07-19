@@ -43,7 +43,7 @@ namespace AcManager.Tools.Objects {
             }
 
             var tail = (Path.GetFileName(filename) ?? "").ToLower();
-            if (tail.StartsWith(Id + ".bank") || tail.StartsWith("track.wav")) {
+            if (tail.StartsWith(Id + @".bank") || tail.StartsWith(@"track.wav")) {
                 CheckSound();
             }
 
@@ -80,7 +80,7 @@ namespace AcManager.Tools.Objects {
 
         protected override void InitializeLocations() {
             base.InitializeLocations();
-            JsonFilename = Path.Combine(Location, "ui", "ui_showroom.json");
+            JsonFilename = Path.Combine(Location, @"ui", @"ui_showroom.json");
             Kn5Filename = Path.Combine(Location, Id + ".kn5");
             SoundbankFilename = Path.Combine(Location, Id + ".bank");
             TrackFilename = Path.Combine(Location, "track.wav");

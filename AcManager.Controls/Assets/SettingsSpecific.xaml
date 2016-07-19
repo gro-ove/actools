@@ -23,6 +23,7 @@
 
         <Style.Resources>
             <Style TargetType="{x:Type DockPanel}">
+                <Setter Property="Background" Value="Transparent" />
                 <Setter Property="Margin" Value="0 0 0 8" />
 
                 <Style.Resources>
