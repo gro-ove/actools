@@ -175,7 +175,7 @@
   <data name="FontObject_DisableFont" xml:space="preserve">
     <value>Disable Font</value>
   </data>
-  <data name="AcObject_Disabling_MakeSureNoRunnedApps" xml:space="preserve">
+  <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
     <value>Make sure there is no runned app working with object’s folder.</value>
   </data>
   <data name="AcObject_CannotToggleExt" xml:space="preserve">
@@ -1170,5 +1170,11 @@
   </data>
   <data name="Weather_ColorCurves_AmbientHigh" xml:space="preserve">
     <value>Ambient (High)</value>
+  </data>
+  <data name="AcObject_CannotClone" xml:space="preserve">
+    <value>Can’t clone object</value>
+  </data>
+  <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
+    <value>Make sure there is enough disk space.</value>
   </data>
 </root>
