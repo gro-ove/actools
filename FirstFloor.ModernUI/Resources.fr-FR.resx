@@ -118,28 +118,28 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Back" xml:space="preserve">
-    <value>Back</value>
+    <value>En arriere</value>
   </data>
   <data name="Forward" xml:space="preserve">
-    <value>Forward</value>
+    <value>En avant</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Annuler</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Close</value>
+    <value>Fermer</value>
   </data>
   <data name="Go" xml:space="preserve">
-    <value>Go</value>
+    <value>Lancer</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
   <data name="Maximize" xml:space="preserve">
-    <value>Maximize</value>
+    <value>Agrandir</value>
   </data>
   <data name="Minimize" xml:space="preserve">
-    <value>Minimize</value>
+    <value>Réduire</value>
   </data>
   <data name="NavigateLink" xml:space="preserve">
     <value>Navigate link</value>
@@ -154,16 +154,16 @@
     <value>Unable to navigate to {0}, no source specified</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>No</value>
+    <value>Non</value>
   </data>
   <data name="Ok" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="Restore" xml:space="preserve">
-    <value>Restore</value>
+    <value>Restorer</value>
   </data>
   <data name="UIThreadRequired" xml:space="preserve">
-    <value>Operation requires the UI thread</value>
+    <value>L'Operation requiere le Thread UI</value>
   </data>
   <data name="UnexpectedToken" xml:space="preserve">
     <value>Unexpected token</value>
@@ -175,10 +175,10 @@
     <value>Unknown token type</value>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>Yes</value>
+    <value>Oui</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>Newer version {0} is ready to be installed</value>
+    <value>Une nouvelle version {0} est prête à être installée</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="BrokenImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -194,13 +194,13 @@
     <value>Control</value>
   </data>
   <data name="KeyControlLeft" xml:space="preserve">
-    <value>Control (Left)</value>
+    <value>Controle (Gauche)</value>
   </data>
   <data name="KeyControlRight" xml:space="preserve">
-    <value>Control (Right)</value>
+    <value>Controle (Droite)</value>
   </data>
   <data name="KeyDownArrow" xml:space="preserve">
-    <value>Down Arrow</value>
+    <value>Fleche Bas</value>
   </data>
   <data name="KeyEnd" xml:space="preserve">
     <value>End</value>
@@ -215,10 +215,10 @@
     <value>Home</value>
   </data>
   <data name="KeyLeftArrow" xml:space="preserve">
-    <value>Left Arrow</value>
+    <value>Fleche Gauche</value>
   </data>
   <data name="KeyNumberPad" xml:space="preserve">
-    <value>Number Pad {0}</value>
+    <value>Pavé numérique {0}</value>
   </data>
   <data name="KeyPageDown" xml:space="preserve">
     <value>Page Down</value>
@@ -227,31 +227,31 @@
     <value>Page Up</value>
   </data>
   <data name="KeyRightArrow" xml:space="preserve">
-    <value>Right Arrow</value>
+    <value>Fleche Droite</value>
   </data>
   <data name="KeyShift" xml:space="preserve">
     <value>Shift</value>
   </data>
   <data name="KeyShiftLeft" xml:space="preserve">
-    <value>Shift (Left)</value>
+    <value>Shift (Gauche)</value>
   </data>
   <data name="KeyShiftRight" xml:space="preserve">
-    <value>Shift (Right)</value>
+    <value>Shift (Droite)</value>
   </data>
   <data name="KeySpace" xml:space="preserve">
-    <value>Space</value>
+    <value>Espace</value>
   </data>
   <data name="KeyTab" xml:space="preserve">
     <value>Tab</value>
   </data>
   <data name="KeyUpArrow" xml:space="preserve">
-    <value>Up Arrow</value>
+    <value>Fleche Haut</value>
   </data>
   <data name="PickColorFromScreen" xml:space="preserve">
-    <value>Pick any color from screen</value>
+    <value>Prendre une couleur de l'écran</value>
   </data>
   <data name="SelectColor" xml:space="preserve">
-    <value>Select a color</value>
+    <value>Selectionner une couleur</value>
   </data>
   <data name="Source" xml:space="preserve">
     <value>Source</value>
@@ -272,10 +272,10 @@
     <value>Alt</value>
   </data>
   <data name="KeyAltLeft" xml:space="preserve">
-    <value>Alt (Left)</value>
+    <value>Alt (Gauche)</value>
   </data>
   <data name="KeyAltRight" xml:space="preserve">
-    <value>Alt (Right)</value>
+    <value>Alt (Droite)</value>
   </data>
   <data name="KeyPause" xml:space="preserve">
     <value>Pause</value>
@@ -302,67 +302,67 @@
     <value>Help</value>
   </data>
   <data name="KeyWindowsLeft" xml:space="preserve">
-    <value>Windows (Left)</value>
+    <value>Windows (Gauche)</value>
   </data>
   <data name="KeyWindowsRight" xml:space="preserve">
-    <value>Windows (Right)</value>
+    <value>Windows (Droite)</value>
   </data>
   <data name="KeyContextMenu" xml:space="preserve">
-    <value>Context Menu</value>
+    <value>Menu contextuel</value>
   </data>
   <data name="KeyBrowserBack" xml:space="preserve">
-    <value>Browser Back</value>
+    <value>Navigateur Retour</value>
   </data>
   <data name="KeyBrowserFavorites" xml:space="preserve">
-    <value>Browser Favorites</value>
+    <value>Navigateur Favories</value>
   </data>
   <data name="KeyBrowserForward" xml:space="preserve">
-    <value>Browser Forward</value>
+    <value>Navigateur Arriere</value>
   </data>
   <data name="KeyBrowserHome" xml:space="preserve">
-    <value>Browser Home</value>
+    <value>Navigateur Home</value>
   </data>
   <data name="KeyBrowserRefresh" xml:space="preserve">
-    <value>Browser Refresh</value>
+    <value>Navigateur Rafraichir</value>
   </data>
   <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Browser Search</value>
+    <value>Navigateur Recherche</value>
   </data>
   <data name="KeyBrowserStop" xml:space="preserve">
-    <value>Browser Stop</value>
+    <value>Navigateur Stop</value>
   </data>
   <data name="KeyVolumeDown" xml:space="preserve">
-    <value>Volume Down</value>
+    <value>Descendre le Volume</value>
   </data>
   <data name="KeyVolumeMute" xml:space="preserve">
-    <value>Volume Mute</value>
+    <value>Couper le Volume</value>
   </data>
   <data name="KeyVolumeUp" xml:space="preserve">
-    <value>Volume Up</value>
+    <value>Monter le Volume</value>
   </data>
   <data name="KeyMediaNextTrack" xml:space="preserve">
-    <value>Next Track</value>
+    <value>Piste suivante</value>
   </data>
   <data name="KeyMediaPlayPause" xml:space="preserve">
     <value>Play</value>
   </data>
   <data name="KeyMediaPreviousTrack" xml:space="preserve">
-    <value>Previous Track</value>
+    <value>Piste précédente</value>
   </data>
   <data name="KeyMediaStop" xml:space="preserve">
     <value>Stop</value>
   </data>
   <data name="KeySelectMedia" xml:space="preserve">
-    <value>Select Media</value>
+    <value>Selectionner Media</value>
   </data>
   <data name="KeyLaunchMail" xml:space="preserve">
-    <value>Launch Mail</value>
+    <value>Lancer Mail</value>
   </data>
   <data name="KeyLaunchApplication1" xml:space="preserve">
-    <value>Launch Favorite Application 1</value>
+    <value>Lancer l'Application Favorie 1</value>
   </data>
   <data name="KeyLaunchApplication2" xml:space="preserve">
-    <value>Launch Favorite Application 2</value>
+    <value>Lancer l'Application Favorie 2</value>
   </data>
   <data name="KeyZoom" xml:space="preserve">
     <value>Zoom</value>
@@ -396,12 +396,12 @@
     <comment>Byte</comment>
   </data>
   <data name="FiltersLinkAll" xml:space="preserve">
-    <value>All</value>
-    <comment>Title of default tab (showing everything, on the far left) in content section</comment>
+    <value>Tout</value>
+    <comment>Titre de l'onglet par défaut (montre tout, à l'extreme gauche) dans la partie content</comment>
   </data>
   <data name="HidePassword" xml:space="preserve">
-    <value>Hide Password</value>
-    <comment>For password-input boxes</comment>
+    <value>Masquer le mot de passe</value>
+    <comment>Pour la fenêtre mot de passe</comment>
   </data>
   <data name="MarkLimited" xml:space="preserve">
     <value>LIMITED</value>
@@ -410,10 +410,10 @@
     <value>NEW</value>
   </data>
   <data name="PickColor" xml:space="preserve">
-    <value>Pick a color</value>
+    <value>Prendre une couleur</value>
   </data>
   <data name="ShowPassword" xml:space="preserve">
-    <value>Show Password</value>
-    <comment>For password-input boxes</comment>
+    <value>Montrer le mot de passe</value>
+    <comment>Pour la fenêtre mot de passe</comment>
   </data>
 </root>
