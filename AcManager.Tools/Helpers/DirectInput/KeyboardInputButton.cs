@@ -36,7 +36,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
     public sealed class KeyboardInputButton : BaseInputProvider<bool> {
         public KeyboardInputButton(int keyCode) : base(keyCode) {
             Key = (Keys)keyCode;
-            ShortName = Key.ReadableKey();
+            ShortName = Key.ToReadableKey();
             DisplayName = ShortName;
         }
 

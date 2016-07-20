@@ -1,10 +1,12 @@
-using JetBrains.Annotations;
+using System.ComponentModel;
 
-namespace FirstFloor.ModernUI.Helpers {
-    // Localize me!
+namespace FirstFloor.ModernUI.Localizable {
+    /// <summary>
+    /// DonТt forget to add all strings which should be automatically pluralized here!
+    /// </summary>
+    [Localizable(false)]
     internal static class PluralizingDictionary {
-        [CanBeNull]
-        public static string PluralizeEn(string s) {
+        public static string En(string s) {
             switch (s) {
                 case "child": return "children";
                 case "person": return "people";
@@ -25,10 +27,13 @@ namespace FirstFloor.ModernUI.Helpers {
 
             return s + "s";
         }
-
-        [CanBeNull]
-        public static string PluralizeRu(string s, bool two) {
+        
+        public static string Ru(string s, bool two) {
             switch (s) {
+                case "день": return two ? "дн€" : "дней";
+                case "час": return two ? "часа" : "часов";
+                case "минута": return two ? "минуты" : "минут";
+                case "секунда": return two ? "секунды" : "секунд";
                 case "круг": return two ? "круга" : "кругов";
                 case "оппонент": return two ? "оппонента" : "оппонентов";
                 case "противник": return two ? "противника" : "противников";

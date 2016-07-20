@@ -21,6 +21,11 @@
                 <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
                 <Setter Property="SnapsToDevicePixels" Value="True" />
             </Style>
+
+            <mui:ChainConverter x:Key="LowerCaseOrdinalizing">
+                <mui:OrdinalizingConverter />
+                <mui:ToLowerConverter />
+            </mui:ChainConverter>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -165,8 +170,7 @@
                             Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static objects:KunosCareerObjectType.Championship}}">
                         <TextBlock Visibility="{Binding IsStarted, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Run Text="," />
-                            <Run Text="{Binding ChampionshipPlace, Converter={StaticResource OrdinalizingConverter}, ConverterParameter=lower, Mode=OneWay}"
-                                    FontWeight="Bold">
+                            <Run Text="{Binding ChampionshipPlace, Converter={StaticResource LowerCaseOrdinalizing}, Mode=OneWay}" FontWeight="Bold">
                                 <Run.Style>
                                     <Style TargetType="Run">
                                         <Style.Triggers>

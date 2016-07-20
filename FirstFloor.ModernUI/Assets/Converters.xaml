@@ -4,6 +4,7 @@
     <converters:BooleanToFontWeightConverter x:Key="BooleanToFontWeightConverter" />
     <converters:BooleanToTextConverter x:Key="BooleanToTextConverter" />
     <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <converters:ChainConverter x:Key="ChainConverter" />
     <converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
     <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
     <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />

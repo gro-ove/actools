@@ -24,7 +24,7 @@ namespace FirstFloor.ModernUI {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace FirstFloor.ModernUI {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("FirstFloor.ModernUI.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FirstFloor.ModernUI.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -782,6 +782,312 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Eighteenth.
+        /// </summary>
+        public static string Ordinalizing_Eighteenth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Eighteenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eighth.
+        /// </summary>
+        public static string Ordinalizing_Eighth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Eighth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eleventh.
+        /// </summary>
+        public static string Ordinalizing_Eleventh {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Eleventh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fifteenth.
+        /// </summary>
+        public static string Ordinalizing_Fifteenth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Fifteenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fifth.
+        /// </summary>
+        public static string Ordinalizing_Fifth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Fifth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First.
+        /// </summary>
+        public static string Ordinalizing_First {
+            get {
+                return ResourceManager.GetString("Ordinalizing_First", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fourteenth.
+        /// </summary>
+        public static string Ordinalizing_Fourteenth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Fourteenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fourth.
+        /// </summary>
+        public static string Ordinalizing_Fourth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Fourth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minus {0}.
+        /// </summary>
+        public static string Ordinalizing_Minus {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Minus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nineteenth.
+        /// </summary>
+        public static string Ordinalizing_Nineteenth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Nineteenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ninth.
+        /// </summary>
+        public static string Ordinalizing_Ninth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Ninth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}th.
+        /// </summary>
+        public static string Ordinalizing_Nth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Nth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Second.
+        /// </summary>
+        public static string Ordinalizing_Second {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seventeenth.
+        /// </summary>
+        public static string Ordinalizing_Seventeenth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Seventeenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seventh.
+        /// </summary>
+        public static string Ordinalizing_Seventh {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Seventh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sixteenth.
+        /// </summary>
+        public static string Ordinalizing_Sixteenth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Sixteenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sixth.
+        /// </summary>
+        public static string Ordinalizing_Sixth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Sixth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tenth.
+        /// </summary>
+        public static string Ordinalizing_Tenth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Tenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third.
+        /// </summary>
+        public static string Ordinalizing_Third {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Third", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thirteenth.
+        /// </summary>
+        public static string Ordinalizing_Thirteenth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Thirteenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thirtieth.
+        /// </summary>
+        public static string Ordinalizing_Thirtieth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Thirtieth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thirty-first.
+        /// </summary>
+        public static string Ordinalizing_ThirtyFirst {
+            get {
+                return ResourceManager.GetString("Ordinalizing_ThirtyFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twelfth.
+        /// </summary>
+        public static string Ordinalizing_Twelfth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Twelfth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twentieth.
+        /// </summary>
+        public static string Ordinalizing_Twentieth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Twentieth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty-eighth.
+        /// </summary>
+        public static string Ordinalizing_TwentyEighth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_TwentyEighth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty-fifth.
+        /// </summary>
+        public static string Ordinalizing_TwentyFifth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_TwentyFifth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty-first.
+        /// </summary>
+        public static string Ordinalizing_TwentyFirst {
+            get {
+                return ResourceManager.GetString("Ordinalizing_TwentyFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty-fourth.
+        /// </summary>
+        public static string Ordinalizing_TwentyFourth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_TwentyFourth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty-ninth.
+        /// </summary>
+        public static string Ordinalizing_TwentyNinth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_TwentyNinth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty-second.
+        /// </summary>
+        public static string Ordinalizing_TwentySecond {
+            get {
+                return ResourceManager.GetString("Ordinalizing_TwentySecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty-seventh.
+        /// </summary>
+        public static string Ordinalizing_TwentySeventh {
+            get {
+                return ResourceManager.GetString("Ordinalizing_TwentySeventh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty-sixth.
+        /// </summary>
+        public static string Ordinalizing_TwentySixth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_TwentySixth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty-third.
+        /// </summary>
+        public static string Ordinalizing_TwentyThird {
+            get {
+                return ResourceManager.GetString("Ordinalizing_TwentyThird", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zeroth.
+        /// </summary>
+        public static string Ordinalizing_Zeroth {
+            get {
+                return ResourceManager.GetString("Ordinalizing_Zeroth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pick a color.
         /// </summary>
         public static string PickColor {
@@ -868,6 +1174,42 @@ namespace FirstFloor.ModernUI {
         public static string TexturesFilter {
             get {
                 return ResourceManager.GetString("TexturesFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} day.
+        /// </summary>
+        public static string Time_Day {
+            get {
+                return ResourceManager.GetString("Time_Day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} hour.
+        /// </summary>
+        public static string Time_Hour {
+            get {
+                return ResourceManager.GetString("Time_Hour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} minute.
+        /// </summary>
+        public static string Time_Minute {
+            get {
+                return ResourceManager.GetString("Time_Minute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} second.
+        /// </summary>
+        public static string Time_Second {
+            get {
+                return ResourceManager.GetString("Time_Second", resourceCulture);
             }
         }
         

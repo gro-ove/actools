@@ -232,7 +232,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public string DisplayStartingPosition => StartingPosition == 0 ? @"Random" : _last ? @"Last" : StartingPosition.GetOrdinalReadable();
+            public string DisplayStartingPosition => StartingPosition == 0 ? @"Random" : _last ? @"Last" : StartingPosition.ToOrdinal("driver");
 
             public int StartingPositionLimit => OpponentsNumber + 1;
 

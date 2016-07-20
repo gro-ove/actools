@@ -2,165 +2,16 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Localizable;
+using FirstFloor.ModernUI.Windows.Converters;
 
 // Localize me!
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
-        private static string MultiplyFormEn(this int number, string valueOne, string valueTwo) {
-            return number == 1 ? valueOne : valueTwo;
-        }
-
-        private static string MultiplyFormRu(this int number, string valueOne, string valueTwo, string valueFive) {
-            if (number == 1 || number > 20 && number % 10 == 1) {
-                return valueOne;
-            }
-
-            if (number > 1 && number < 5 || number > 20 && number % 10 > 1 && number % 10 < 5) {
-                return valueTwo;
-            }
-
-            return valueFive;
-        }
-
-        private static readonly bool CultureRu = CultureInfo.CurrentUICulture.Name == "ru-RU";
-
-        public static string GetOrdinalReadable(this int value) {
-            if (CultureRu) {
-                return GetOrdinalReadableRu(value);
-            } else {
-                return GetOrdinalReadableEn(value);
-            }
-        }
-
-        public static string GetOrdinalReadableRu(int value) {
-            if (value < 0) {
-                return "Минус " + GetOrdinalReadableRu(-value).ToLowerInvariant();
-            }
-
-            switch (value) {
-                case 0:
-                    return "Нулевой";
-                case 1:
-                    return "Первый";
-                case 2:
-                    return "Второй";
-                case 3:
-                    return "Третий";
-                case 4:
-                    return "Четвёртый";
-                case 5:
-                    return "Пятый";
-                case 6:
-                    return "Шестой";
-                case 7:
-                    return "Седьмой";
-                case 8:
-                    return "Восьмой";
-                case 9:
-                    return "Девятый";
-                case 10:
-                    return "Десятый";
-                case 11:
-                    return "Одиннадцатый";
-                case 12:
-                    return "Двенадцатый";
-                case 13:
-                    return "Тринадцатый";
-                case 14:
-                    return "Четырнадцатый";
-                case 15:
-                    return "Пятнадцатый";
-                case 16:
-                    return "Шестнадцатый";
-                case 17:
-                    return "Семнадцатый";
-                case 18:
-                    return "Восемнадцатый";
-                case 19:
-                    return "Девятнадцатый";
-                case 20:
-                    return "Двадцатый";
-                default:
-                    return value + "-й";
-            }
-        }
-
-        public static string GetOrdinalReadableEn(int value) {
-            if (value < 0) {
-                return "Minus " + GetOrdinalReadableEn(-value).ToLowerInvariant();
-            }
-
-            switch (value) {
-                case 0:
-                    return "Zeroth";
-                case 1:
-                    return "First";
-                case 2:
-                    return "Second";
-                case 3:
-                    return "Third";
-                case 4:
-                    return "Fourth";
-                case 5:
-                    return "Fifth";
-                case 6:
-                    return "Sixth";
-                case 7:
-                    return "Seventh";
-                case 8:
-                    return "Eighth";
-                case 9:
-                    return "Ninth";
-                case 10:
-                    return "Tenth";
-                case 11:
-                    return "Eleventh";
-                case 12:
-                    return "Twelfth";
-                case 13:
-                    return "Thirteenth";
-                case 14:
-                    return "Fourteenth";
-                case 15:
-                    return "Fifteenth";
-                case 16:
-                    return "Sixteenth";
-                case 17:
-                    return "Seventeenth";
-                case 18:
-                    return "Eighteenth";
-                case 19:
-                    return "Nineteenth";
-                case 20:
-                    return "Twentieth";
-                case 21:
-                    return "Twenty-first";
-                case 22:
-                    return "Twenty-second";
-                case 23:
-                    return "Twenty-third";
-                case 24:
-                    return "Twenty-fourth";
-                case 25:
-                    return "Twenty-fifth";
-                case 26:
-                    return "Twenty-sixth";
-                case 27:
-                    return "Twenty-seventh";
-                case 28:
-                    return "Twenty-eighth";
-                case 29:
-                    return "Twenty-ninth";
-                case 30:
-                    return "Thirtieth";
-                case 31:
-                    return "Thirty-first";
-                default:
-                    return value + "th";
-            }
+        public static string ToOrdinal(this int value, string subject, CultureInfo culture = null) {
+            return Ordinalizing.Convert(value, subject, culture);
         }
 
         public static string ToReadableTime(this long seconds) {
@@ -168,60 +19,29 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ToReadableTime(this TimeSpan span) {
-            if (CultureRu) {
-                return ToReadableTimeRu(span);
-            } else {
-                return ToReadableTimeEn(span);
-            }
-        }
-
-        public static string ToReadableTimeRu(this TimeSpan span) {
             var result = new List<string>();
 
             var days = (int)span.TotalDays;
             if (days > 0) {
-                result.Add(days + MultiplyFormRu(days, " день", " дня", "дней"));
+                result.Add(PluralizingConverter.PluralizeExt(days, Resources.Time_Day));
             }
 
             if (span.Hours > 0) {
-                result.Add(span.Hours + MultiplyFormRu(span.Hours, " час", " часа", " часов"));
+                result.Add(PluralizingConverter.PluralizeExt(span.Hours, Resources.Time_Hour));
             }
 
             if (span.Minutes > 0) {
-                result.Add(span.Minutes + MultiplyFormRu(span.Minutes, " минута", " минуты", " минут"));
+                result.Add(PluralizingConverter.PluralizeExt(span.Minutes, Resources.Time_Minute));
             }
 
             if (span.Seconds > 0) {
-                result.Add(span.Seconds + MultiplyFormRu(span.Seconds, " секунда", " секунды", " секунд"));
+                result.Add(PluralizingConverter.PluralizeExt(span.Seconds, Resources.Time_Second));
             }
 
-            return result.Any() ? string.Join(" ", result.Take(2)) : "0 секунд";
+            return result.Any() ? string.Join(@" ", result.Take(2)) : PluralizingConverter.PluralizeExt(0, Resources.Time_Second);
         }
 
-        public static string ToReadableTimeEn(this TimeSpan span) {
-            var result = new List<string>();
-
-            var days = (int)span.TotalDays;
-            if (days > 0) {
-                result.Add(days + MultiplyFormEn(days, " day", " days"));
-            }
-
-            if (span.Hours > 0) {
-                result.Add(span.Hours + MultiplyFormEn(span.Hours, " hour", " hours"));
-            }
-
-            if (span.Minutes > 0) {
-                result.Add(span.Minutes + MultiplyFormEn(span.Minutes, " minute", " minutes"));
-            }
-
-            if (span.Seconds > 0) {
-                result.Add(span.Seconds + MultiplyFormEn(span.Seconds, " second", " seconds"));
-            }
-
-            return result.Any() ? string.Join(" ", result.Take(2)) : "0 seconds";
-        }
-
-        public static double AsMegabytes(this long i) {
+        public static double ToMegabytes(this long i) {
             return i / 1024d / 1024d;
         }
 
@@ -277,11 +97,10 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ToTitle(this string s) {
-            if (CultureRu) return s;
-            return Regex.Replace(s, @"\b[a-z]", x => x.Value.ToUpper());
+            return Titling.Convert(s);
         }
 
-        public static string ReadableKey(this Keys key) {
+        public static string ToReadableKey(this Keys key) {
             switch (key) {
                 //letters
                 case Keys.A:
@@ -314,59 +133,59 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //digits
                 case Keys.D0:
-                    return "0";
+                    return @"0";
                 case Keys.NumPad0:
                     return string.Format(Resources.KeyNumberPad, 0);
                 case Keys.D1:
-                    return "1";
+                    return @"1";
                 case Keys.NumPad1:
                     return string.Format(Resources.KeyNumberPad, 1);
                 case Keys.D2:
-                    return "2";
+                    return @"2";
                 case Keys.NumPad2:
                     return string.Format(Resources.KeyNumberPad, 2);
                 case Keys.D3:
-                    return "3";
+                    return @"3";
                 case Keys.NumPad3:
                     return string.Format(Resources.KeyNumberPad, 3);
                 case Keys.D4:
-                    return "4";
+                    return @"4";
                 case Keys.NumPad4:
                     return string.Format(Resources.KeyNumberPad, 4);
                 case Keys.D5:
-                    return "5";
+                    return @"5";
                 case Keys.NumPad5:
                     return string.Format(Resources.KeyNumberPad, 5);
                 case Keys.D6:
-                    return "6";
+                    return @"6";
                 case Keys.NumPad6:
                     return string.Format(Resources.KeyNumberPad, 6);
                 case Keys.D7:
-                    return "7";
+                    return @"7";
                 case Keys.NumPad7:
                     return string.Format(Resources.KeyNumberPad, 7);
                 case Keys.D8:
-                    return "8";
+                    return @"8";
                 case Keys.NumPad8:
                     return string.Format(Resources.KeyNumberPad, 8);
                 case Keys.D9:
-                    return "9";
+                    return @"9";
                 case Keys.NumPad9:
                     return string.Format(Resources.KeyNumberPad, 9);
 
                 //punctuation
                 case Keys.Add:
-                    return string.Format(Resources.KeyNumberPad, "+");
+                    return string.Format(Resources.KeyNumberPad, @"+");
                 case Keys.Subtract:
-                    return string.Format(Resources.KeyNumberPad, "-");
+                    return string.Format(Resources.KeyNumberPad, @"-");
                 case Keys.Divide:
-                    return string.Format(Resources.KeyNumberPad, "/");
+                    return string.Format(Resources.KeyNumberPad, @"/");
                 case Keys.Multiply:
-                    return string.Format(Resources.KeyNumberPad, "*");
+                    return string.Format(Resources.KeyNumberPad, @"*");
                 case Keys.Space:
                     return Resources.KeySpace;
                 case Keys.Decimal:
-                    return string.Format(Resources.KeyNumberPad, ".");
+                    return string.Format(Resources.KeyNumberPad, @".");
 
                 //function
                 case Keys.F1:
@@ -524,29 +343,29 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //oem keys 
                 case Keys.OemSemicolon: //oem1
-                    return ";";
+                    return @";";
                 case Keys.OemQuestion: //oem2
-                    return "?";
+                    return @"?";
                 case Keys.Oemtilde: //oem3
-                    return "~";
+                    return @"~";
                 case Keys.OemOpenBrackets: //oem4
-                    return "[";
+                    return @"[";
                 case Keys.OemPipe: //oem5
-                    return "|";
+                    return @"|";
                 case Keys.OemCloseBrackets: //oem6
-                    return "]";
+                    return @"]";
                 case Keys.OemQuotes: //oem7
-                    return "'";
+                    return @"'";
                 case Keys.OemBackslash: //oem102
-                    return "/";
+                    return @"/";
                 case Keys.Oemplus:
-                    return "+";
+                    return @"+";
                 case Keys.OemMinus:
-                    return "-";
+                    return @"-";
                 case Keys.Oemcomma:
-                    return ",";
+                    return @",";
                 case Keys.OemPeriod:
-                    return ".";
+                    return @".";
 
                 //unsupported oem keys
                 case Keys.Oem8:
@@ -585,7 +404,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public static string ReadableKey(this Key key) {
+        public static string ToReadableKey(this Key key) {
             switch (key) {
                 //letters
                 case Key.A:
@@ -618,59 +437,59 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //digits
                 case Key.D0:
-                    return "0";
+                    return @"0";
                 case Key.NumPad0:
                     return string.Format(Resources.KeyNumberPad, 0);
                 case Key.D1:
-                    return "1";
+                    return @"1";
                 case Key.NumPad1:
                     return string.Format(Resources.KeyNumberPad, 1);
                 case Key.D2:
-                    return "2";
+                    return @"2";
                 case Key.NumPad2:
                     return string.Format(Resources.KeyNumberPad, 2);
                 case Key.D3:
-                    return "3";
+                    return @"3";
                 case Key.NumPad3:
                     return string.Format(Resources.KeyNumberPad, 3);
                 case Key.D4:
-                    return "4";
+                    return @"4";
                 case Key.NumPad4:
                     return string.Format(Resources.KeyNumberPad, 4);
                 case Key.D5:
-                    return "5";
+                    return @"5";
                 case Key.NumPad5:
                     return string.Format(Resources.KeyNumberPad, 5);
                 case Key.D6:
-                    return "6";
+                    return @"6";
                 case Key.NumPad6:
                     return string.Format(Resources.KeyNumberPad, 6);
                 case Key.D7:
-                    return "7";
+                    return @"7";
                 case Key.NumPad7:
                     return string.Format(Resources.KeyNumberPad, 7);
                 case Key.D8:
-                    return "8";
+                    return @"8";
                 case Key.NumPad8:
                     return string.Format(Resources.KeyNumberPad, 8);
                 case Key.D9:
-                    return "9";
+                    return @"9";
                 case Key.NumPad9:
                     return string.Format(Resources.KeyNumberPad, 9);
 
                 //punctuation
                 case Key.Add:
-                    return string.Format(Resources.KeyNumberPad, "+");
+                    return string.Format(Resources.KeyNumberPad, @"+");
                 case Key.Subtract:
-                    return string.Format(Resources.KeyNumberPad, "-");
+                    return string.Format(Resources.KeyNumberPad, @"-");
                 case Key.Divide:
-                    return string.Format(Resources.KeyNumberPad, "/");
+                    return string.Format(Resources.KeyNumberPad, @"/");
                 case Key.Multiply:
-                    return string.Format(Resources.KeyNumberPad, "*");
+                    return string.Format(Resources.KeyNumberPad, @"*");
                 case Key.Space:
                     return Resources.KeySpace;
                 case Key.Decimal:
-                    return string.Format(Resources.KeyNumberPad, ".");
+                    return string.Format(Resources.KeyNumberPad, @".");
 
                 //function
                 case Key.F1:
@@ -815,29 +634,29 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //oem Key 
                 case Key.OemSemicolon:
-                    return ";";
+                    return @";";
                 case Key.OemQuestion:
-                    return "?";
+                    return @"?";
                 case Key.OemTilde:
-                    return "~";
+                    return @"~";
                 case Key.OemOpenBrackets:
-                    return "[";
+                    return @"[";
                 case Key.OemPipe:
-                    return "|";
+                    return @"|";
                 case Key.OemCloseBrackets:
-                    return "]";
+                    return @"]";
                 case Key.OemQuotes:
-                    return "'";
+                    return @"'";
                 case Key.OemBackslash:
-                    return "/";
+                    return @"/";
                 case Key.OemPlus:
-                    return "+";
+                    return @"+";
                 case Key.OemMinus:
-                    return "-";
+                    return @"-";
                 case Key.OemComma:
-                    return ",";
+                    return @",";
                 case Key.OemPeriod:
-                    return ".";
+                    return @".";
 
                 //unsupported oem Key
                 case Key.Oem8:

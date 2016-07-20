@@ -39,7 +39,7 @@ namespace AcManager.Tools.Helpers {
         public class OnlineServerEntry {
             private string _displayName;
 
-            public string DisplayName => _displayName ?? (_displayName = (Id + 1).GetOrdinalReadable());
+            public string DisplayName => _displayName ?? (_displayName = (Id + 1).ToOrdinal("server"));
 
             public int Id { get; internal set; }
         }

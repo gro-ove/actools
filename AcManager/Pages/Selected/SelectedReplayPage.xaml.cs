@@ -78,7 +78,7 @@ namespace AcManager.Pages.Selected {
             protected override void FilterExec(string type) {
                 switch (type) {
                     case "size":
-                        FilterRange("size", SelectedObject.Size.AsMegabytes(), 0.2, roundTo: 0.1);
+                        FilterRange("size", SelectedObject.Size.ToMegabytes(), 0.2, roundTo: 0.1);
                         return;
 
                     case "driver":

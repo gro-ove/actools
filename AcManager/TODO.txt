@@ -513,6 +513,7 @@ fixme:
     - fix brands list (removed brands)
 
 todo:
+    - add AC credits (and version?)
     - shape with triangle at right bottom (audi r8)
     - change "Author:" to "Version:" or "URL:" if author is missing
 

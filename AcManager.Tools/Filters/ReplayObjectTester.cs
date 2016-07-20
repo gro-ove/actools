@@ -17,7 +17,7 @@ namespace AcManager.Tools.Filters {
                     return value.Test(obj.DriverName);
 
                 case "size":
-                    return value.Test(obj.Size.AsMegabytes());
+                    return value.Test(obj.Size.ToMegabytes());
 
                 case "carid":
                     return value.Test(obj.CarId);

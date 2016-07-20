@@ -1,15 +1,15 @@
 using System;
+using System.Globalization;
 using System.Windows.Data;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     public class OrdinalizingConverter : IValueConverter {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            var result = value.AsInt().GetOrdinalReadable();
-            return (parameter as string)?.Contains("lower") == true ? result.ToLowerInvariant() : result;
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            return value.AsInt().ToOrdinal(parameter as string, culture);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             throw new NotSupportedException();
         }
     }
