@@ -46,18 +46,18 @@
                 <DockPanel.InputBindings>
                     <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
                 </DockPanel.InputBindings>
-                <Label>Name:</Label>
+                <Label Content="Name:" />
                 <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" />
             </DockPanel>
             <DockPanel>
                 <DockPanel.InputBindings>
                     <MouseBinding Command="{Binding ViewMaterialCommand}" MouseAction="LeftClick" />
                 </DockPanel.InputBindings>
-                <Label>Material:</Label>
+                <Label Content="Material:" />
                 <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" />
             </DockPanel>
             <DockPanel>
-                <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left">Textures:</Label>
+                <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left" Content="Textures:" />
                 <ItemsControl MaxHeight="200" ItemsSource="{Binding Renderer.SelectedTextures}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -76,7 +76,7 @@
 
             <TextBlock Text="Stats" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
             <DockPanel>
-                <Label>Triangles:</Label>
+                <Label Content="Triangles:" />
                 <TextBlock Text="{Binding Renderer.SelectedObject.TrianglesCount}" />
             </DockPanel>
         </StackPanel>
@@ -85,24 +85,24 @@
             <StackPanel Visibility="{Binding AmbientShadowsMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                 <TextBlock Text="Stats" Style="{StaticResource Heading2}" />
                 <DockPanel>
-                    <Label>FPS:</Label>
+                    <Label Content="FPS:" />
                     <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
                 </DockPanel>
                 <DockPanel>
-                    <Label>Objects:</Label>
+                    <Label Content="Objects:" />
                     <TextBlock Text="{Binding Renderer.ObjectsCount}" />
                 </DockPanel>
                 <DockPanel>
-                    <Label>Triangles:</Label>
+                    <Label Content="Triangles:" />
                     <TextBlock Text="{Binding Renderer.TrianglesCount}" />
                 </DockPanel>
 
                 <TextBlock Text="Control" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                 <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarLightsEnabled}">
-                    <Label>_Lights</Label>
+                    <Label Content="_Lights" />
                 </CheckBox>
                 <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.ShowWireframe}">
-                    <Label>_Wireframe</Label>
+                    <Label Content="_Wireframe" />
                 </CheckBox>
 
                 <TextBlock Text="Skin" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
@@ -118,7 +118,7 @@
                 </ComboBox>
                 <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.LiveReload}"
                         ToolTip="Automatically update textures; use PSD, XCF, etc. instead if exists (Magick.NET addon is required)">
-                    <Label>Skin editing mode</Label>
+                    <Label Content="Skin editing mode" />
                 </CheckBox>
 
                 <Button Margin="0 12 0 0" Command="{Binding ToggleAmbientShadowModeCommand}">Update Ambient Shadows</Button>
@@ -161,10 +161,10 @@
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
                     <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
-                        <Label>Hide wheels</Label>
+                        <Label Content="Hide wheels" />
                     </CheckBox>
                     <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowFade}" ToolTip="Enable to avoid clipping">
-                        <Label>Fade to edges</Label>
+                        <Label Content="Fade to edges" />
                     </CheckBox>
                     <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}">Update</Button>
                 </StackPanel>
@@ -191,7 +191,7 @@
                     </DockPanel>
 
                     <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.AmbientShadowHighlight}">
-                        <Label>Highlight size</Label>
+                        <Label Content="Highlight size" />
                     </CheckBox>
 
                     <DockPanel>

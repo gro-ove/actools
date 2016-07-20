@@ -58,13 +58,13 @@
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="0">
             <CheckBox Margin="8 0 0 0" IsChecked="{Binding AiLevelFixed}">
-                <Label>_Fixed opponents strength</Label>
+                <Label Content="_Fixed opponents strength" />
             </CheckBox>
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="1">
             <CheckBox Margin="8 0 0 0" IsChecked="{Binding Penalties}">
-                <Label>_Penalties</Label>
+                <Label Content="_Penalties" />
             </CheckBox>
         </StackPanel>
 

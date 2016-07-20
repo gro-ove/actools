@@ -23,12 +23,12 @@
 
                     <StackPanel>
                         <DockPanel>
-                            <Label>ID:</Label>
+                            <Label Content="ID:" />
                             <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Id, Mode=OneTime}" />
                         </DockPanel>
                         
                         <DockPanel>
-                            <Label>Use as:</Label>
+                            <Label Content="Use as:" />
                             <ComboBox ItemsSource="{Binding WeatherTypes}" SelectedItem="{Binding SelectedObject.Type}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
@@ -39,7 +39,7 @@
                         </DockPanel>
 
                         <CheckBox IsChecked="{Binding SelectedObject.ForceCarLights}">
-                            <Label>Turn on headlights</Label>
+                            <Label Content="Turn on headlights" />
                         </CheckBox>
 
                         <DockPanel attached:ContextMenuAdvancement.PropagateToChildren="True">
@@ -61,7 +61,7 @@
                     <Grid Grid.Column="1" Margin="8 0 0 0">
                         <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                         <StackPanel Margin="8">
-                            <TextBlock Style="{StaticResource Label}">Temperature coefficient testing:</TextBlock>
+                            <TextBlock Style="{StaticResource Label}" Text="Temperature coefficient testing:" />
 
                             <StackPanel Orientation="Horizontal" Margin="0 8 0 8">
                                 <StackPanel Margin="0 0 8 0" Width="120">
@@ -90,7 +90,7 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Style="{StaticResource SettingsCompactPanel}">
-                        <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Clouds:</TextBlock>
+                        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Clouds:" />
 
                         <DockPanel ToolTip="Regulates clouds transparency">
                             <mui:ValueLabel Value="{Binding SelectedObject.CloudsCover, Converter={StaticResource PercentageConverter}}" Postfix="%"
@@ -148,10 +148,10 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" Style="{StaticResource SettingsCompactPanel}">
-                        <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Fog:</TextBlock>
+                        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Fog:" />
 
                         <DockPanel>
-                            <Label>Color:</Label>
+                            <Label Content="Color:" />
                             <mui:ColorPicker Color="{Binding SelectedObject.FogColor}" />
                         </DockPanel>
 
@@ -173,7 +173,7 @@
                             <Slider Minimum="0" Maximum="12000" Value="{Binding SelectedObject.FogDistance}" TickFrequency="1200" TickPlacement="BottomRight" />
                         </DockPanel>
 
-                        <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Additional:</TextBlock>
+                        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Additional:" />
 
                         <DockPanel ToolTip="Used when HDR is disabled">
                             <mui:ValueLabel Value="{Binding SelectedObject.HdrOffMultipler, Converter={StaticResource PercentageConverter}}" Postfix="%"
@@ -192,7 +192,7 @@
                 </Grid>
 
                 <TextBlock Style="{StaticResource SettingsPanel.Heading2}"
-                        Visibility="{Binding SelectedObject.HasCurvesData, Converter={StaticResource BooleanToVisibilityConverter}}">Color curves:</TextBlock>
+                        Visibility="{Binding SelectedObject.HasCurvesData, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Color curves:" />
                 <ItemsControl ItemsSource="{Binding SelectedObject.ColorCurves}"
                         Visibility="{Binding SelectedObject.HasCurvesData, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ItemsControl.ItemTemplate>
@@ -266,12 +266,12 @@
                         Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
                 
                 <DockPanel>
-                    <Label>ID:</Label>
+                    <Label Content="ID:" />
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Id, Mode=OneTime}" />
                 </DockPanel>
                 
                 <DockPanel>
-                    <Label>Use as:</Label>
+                    <Label Content="Use as:" />
                     <ComboBox ItemsSource="{Binding WeatherTypes}" SelectedItem="{Binding SelectedObject.Type}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
@@ -284,8 +284,8 @@
                 <Grid Margin="0 20 0 8">
                     <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                     <StackPanel Margin="8">
-                        <TextBlock Style="{StaticResource Label}">Seems empty?</TextBlock>
-                        <TextBlock TextWrapping="Wrap">Switch to Edit Mode if you want to modify other weather’s parameters.</TextBlock>
+                        <TextBlock Style="{StaticResource Label}" Text="Seems empty?" />
+                        <TextBlock TextWrapping="Wrap" Text="Switch to Edit Mode if you want to modify other weather’s parameters." />
                     </StackPanel>
                 </Grid>
             </StackPanel>

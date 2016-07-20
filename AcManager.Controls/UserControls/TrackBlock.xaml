@@ -47,7 +47,7 @@
 
                     <!-- second row -->
                     <TextBlock Text="{x:Static c:Resources.AcObject_CityLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="{x:Static c:Resources.AcObject_AuthorTooltip}">
+                    <TextBlock Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="{x:Static c:Resources.AcObject_Author_Tooltip}">
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource AuthorVersionUrlToLabelConverter}">
                                 <Binding Path="Author" />

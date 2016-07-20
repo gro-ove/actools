@@ -10,7 +10,7 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
-                <Label>Online name:</Label>
+                <Label Content="Online name:" />
                 <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" ToolTip="Use different name online"
                         VerticalAlignment="Center" />
                 <TextBox Text="{Binding Drive.PlayerNameOnline}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True"
@@ -18,30 +18,30 @@
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Online.RememberPasswords}">
-                <Label>Remember passwords</Label>
+                <Label Content="Remember passwords" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Online.CompactUi}">
-                <Label>Compact UI</Label>
+                <Label Content="Compact UI" />
             </CheckBox>
 
             <!--connection-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Connection:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Connection:" />
             <DockPanel>
-                <Label>Server:</Label>
+                <Label Content="Server:" />
                 <ComboBox ItemsSource="{Binding Online.OnlineServers}" SelectedItem="{Binding Online.OnlineServer}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Online.LoadServerInformationDirectly}">
                 <CheckBox.ToolTip>Load server information directly instead of using AC servers; could be faster and more actual, but some information (such as active session) will be missing</CheckBox.ToolTip>
-                <Label>Load server information directly</Label>
+                <Label Content="Load server information directly" />
             </CheckBox>
 
             <!--pinging-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Pinging:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Pinging:" />
 
             <CheckBox IsChecked="{Binding Online.ThreadsPing}" ToolTip="The most correct pinging, but the slowest one">
-                <Label>Use threads instead of asynchronous API</Label>
+                <Label Content="Use threads instead of asynchronous API" />
             </CheckBox>
 
             <DockPanel IsEnabled="{Binding Online.ThreadsPing, Converter={StaticResource InvertBooleanConverter}}">
@@ -56,14 +56,14 @@
             </DockPanel>
 
             <!--<CheckBox IsChecked="{Binding Online.UseFastServer}" attached:LimitedService.Limited="True">
-                <Label>Use Fast Caching Server (experimental)</Label>
+                <Label Content="Use Fast Caching Server (experimental)" />
             </CheckBox>-->
 
             <!--adding by ip-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Adding by IP:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Adding by IP:" />
 
             <DockPanel>
-                <Label>Scan ports:</Label>
+                <Label Content="Scan ports:" />
                 <TextBox Text="{Binding Online.PortsEnumeration}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True">
                     <TextBox.ToolTip>Some enumeration like “9000-10000”</TextBox.ToolTip>
                 </TextBox>
@@ -74,21 +74,21 @@
                 <Slider Minimum="200" Maximum="5000" Value="{Binding Online.ScanPingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">LAN:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="LAN:" />
 
             <!--<CheckBox IsChecked="{Binding Holder.AlternativeScanningMethod}" Margin="0 0 0 8" IsEnabled="False">
-                <Label>Alternative scanning method</Label>
+                <Label Content="Alternative scanning method" />
             </CheckBox>-->
 
             <DockPanel>
-                <Label>Scan ports:</Label>
+                <Label Content="Scan ports:" />
                 <TextBox Text="{Binding Online.LanPortsEnumeration}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True">
                     <TextBox.ToolTip>Some enumeration like “9600,9602,9700-9750”</TextBox.ToolTip>
                 </TextBox>
             </DockPanel>
 
             <DockPanel>
-                <Label>Scan using connections:</Label>
+                <Label Content="Scan using connections:" />
                 <ListBox Name="IgnoredInterfacesListBox" ItemsSource="{Binding NetworkInterfaces}" SelectionMode="Multiple"
                         SelectionChanged="IgnoredInterfacesListBox_OnSelectionChanged" ItemContainerStyle="{StaticResource CheckBoxListBoxItem}">
                     <ListBox.ItemTemplate>
@@ -103,9 +103,9 @@
             </DockPanel>
 
             <!--connection-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" attached:NewMarkService.New="True">Server presets manager:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" attached:NewMarkService.New="True" Text="Server presets manager:" />
             <CheckBox IsChecked="{Binding Online.ServerPresetsManaging}" attached:LimitedService.Limited="True">
-                <Label>Enable</Label>
+                <Label Content="Enable" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

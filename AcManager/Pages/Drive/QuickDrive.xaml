@@ -77,7 +77,7 @@
                 </StackPanel>
 
                 <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding RealConditions}" Margin="8 0 0 0" ToolTip="{Binding RealWeather.FullDescription}">
-                    <Label>_Real conditions</Label>
+                    <Label Content="_Real conditions" />
                     <CheckBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Consider Timezones" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True" />
@@ -130,7 +130,7 @@
                                     <TextBlock Style="{StaticResource Small}" Text="Actual temperature:" Margin="0 0 0 12" />
                                     <TextBlock Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" FontStyle="Italic" VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
-                                            Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}">Loading failed</TextBlock>
+                                            Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}" Text="Loading failed" />
                                     <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource Heading2}"
                                             Text="{Binding RealWeather.Description, Converter={StaticResource ToTitleConverter}, TargetNullValue='?'}" />
                                     <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Heading1}"
@@ -187,7 +187,7 @@
                             </Button.ToolTip>
                         </Button>
                         <CheckBox IsChecked="{Binding TyreBlankets}">
-                            <Label>_Tyre blankets</Label>
+                            <Label Content="_Tyre blankets" />
                         </CheckBox>
                     </DockPanel>
                 </Grid>
@@ -195,15 +195,15 @@
                 <!-- more -->
                 <StackPanel Visibility="Collapsed">
                     <CheckBox Margin="0 0 0 10">
-                        <Label>_Hide steering wheel</Label>
+                        <Label Content="_Hide steering wheel" />
                     </CheckBox>
 
                     <CheckBox Margin="0 0 0 10">
-                        <Label>_Sync steering wheels</Label>
+                        <Label Content="_Sync steering wheels" />
                     </CheckBox>
 
                     <CheckBox Margin="0 0 0 10">
-                        <Label>_World aligned camera</Label>
+                        <Label Content="_World aligned camera" />
                     </CheckBox>
                 </StackPanel>
             </StackPanel>

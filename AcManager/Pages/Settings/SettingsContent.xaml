@@ -11,52 +11,52 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
-                <Label>Mark as new:</Label>
+                <Label Content="Mark as new:" />
                 <ComboBox ItemsSource="{Binding Holder.NewContentPeriods}" SelectedItem="{Binding Holder.NewContentPeriod}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <DockPanel>
-                <Label>Loading concurrency:</Label>
+                <Label Content="Loading concurrency:" />
                 <TextBox Text="{Binding Holder.LoadingConcurrency}" ToolTip="Smaller value may increase UI responsibleness, but decrease loading times"
                         attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:TextBoxAdvancement.SpecialMode="Positive" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Holder.ScrollAutomatically}" ToolTip="For example, on disabling">
-                <Label>Automatically scroll to selected item</Label>
+                <Label Content="Automatically scroll to selected item" />
             </CheckBox>
 
             <!--find information specific-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Information search:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Information search:" />
             
             <DockPanel>
-                <Label>Search Engine:</Label>
+                <Label Content="Search Engine:" />
                 <ComboBox ItemsSource="{Binding Holder.SearchEngines}" SelectedItem="{Binding Holder.SearchEngine}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Holder.SearchWithWikipedia}">
                 <CheckBox.ToolTip>Add “site:wikipedia.org” by default</CheckBox.ToolTip>
-                <Label>Look at Wikipedia by default</Label>
+                <Label Content="Look at Wikipedia by default" />
             </CheckBox>
 
             <!--cars specific-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Cars:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Cars:" />
 
             <CheckBox IsChecked="{Binding Holder.ChangeBrandIconAutomatically}">
-                <Label>Change brand's icon automatically</Label>
+                <Label Content="Change brand's icon automatically" />
             </CheckBox>
 
             <!--showrooms specific-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Showrooms:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Showrooms:" />
 
             <CheckBox IsChecked="{Binding Holder.DownloadShowroomPreviews}" ToolTip="I doubt you have time to update all of them">
-                <Label>Download previews of common showrooms</Label>
+                <Label Content="Download previews of common showrooms" />
             </CheckBox>
 
             <!--fonts specific-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Fonts:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Fonts:" />
 
             <DockPanel>
-                <Label>Font's icon symbol:</Label>
+                <Label Content="Font's icon symbol:" />
                 <TextBox Text="{Binding Holder.FontIconCharacter}" ToolTip="One symbol which will be used for an icon" attached:WatermarkService.Watermark="?"
                         attached:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>

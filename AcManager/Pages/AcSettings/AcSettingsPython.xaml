@@ -24,7 +24,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Column="0" Grid.Row="0" Margin="0 0 0 8">Activated apps:</Label>
+        <Label Grid.Column="0" Grid.Row="0" Margin="0 0 0 8" Content="Activated apps:" />
         <ListBox Grid.Column="0" Grid.Row="1" Margin="0 12 0 0" x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
                 SelectionChanged="EnabledAppsListBox_OnSelectionChanged">
@@ -51,7 +51,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Label Grid.Column="1" Grid.Row="0" Margin="0 0 0 8">Forms:</Label>
+        <Label Grid.Column="1" Grid.Row="0" Margin="0 0 0 8" Content="Forms:" />
         <DataGrid Grid.Column="1" Grid.Row="1" x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}"
                 Style="{StaticResource DataGrid.ReadOnly}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
                 IsReadOnly="False" EnableRowVirtualization="True" EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible"

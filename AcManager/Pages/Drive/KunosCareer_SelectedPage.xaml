@@ -286,29 +286,29 @@
 
                 <!--event params-->
                 <DockPanel Grid.Column="0" Grid.Row="1">
-                    <Label>Time:</Label>
+                    <Label Content="Time:" />
                     <TextBlock Text="{Binding DisplayTime}" Style="{StaticResource Value}" />
                 </DockPanel>
                 <DockPanel Grid.Column="1" Grid.Row="1">
-                    <Label>Weather:</Label>
+                    <Label Content="Weather:" />
                     <TextBlock Text="{Binding WeatherObject.DisplayName}" Style="{StaticResource Value}" />
                 </DockPanel>
                 <DockPanel Grid.Column="0" Grid.Row="2">
-                    <Label>Temperature:</Label>
+                    <Label Content="Temperature:" />
                     <TextBlock Text="{Binding Temperature, StringFormat='{}{0:F0} °C'}" Style="{StaticResource Value}" />
                     <DockPanel.ToolTip>
                         <TextBlock Text="{Binding RoadTemperature, StringFormat='{}Road temperature: {0:F0} °C'}" />
                     </DockPanel.ToolTip>
                 </DockPanel>
                 <DockPanel Grid.Column="1" Grid.Row="2">
-                    <Label>Track Surface:</Label>
+                    <Label Content="Track Surface:" />
                     <TextBlock Text="{Binding TrackPreset.Name}" Style="{StaticResource Value}" />
                 </DockPanel>
 
                 <!--race params-->
                 <DockPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
                         Visibility="{Binding StartingPosition, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Label>Starting position:</Label>
+                    <Label Content="Starting position:" />
                     <TextBlock Style="{StaticResource Value}">
                         <Run Text="{Binding StartingPosition, Converter={StaticResource OrdinalizingConverter}, Mode=OneWay}" />
                         <Run Text="(" /><Run Text="{Binding OpponentsCount, Mode=OneWay}" />
@@ -333,18 +333,18 @@
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
-                    <Label>Opponents:</Label>
+                    <Label Content="Opponents:" />
                     <TextBlock Style="{StaticResource Value}" Text="{Binding OpponentsCount, Mode=OneWay}" />
                 </DockPanel>
 
                 <DockPanel Grid.Column="0" Grid.Row="3"
                         Visibility="{Binding Laps, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Label>Laps:</Label>
+                    <Label Content="Laps:" />
                     <TextBlock Text="{Binding Laps}" Style="{StaticResource Value}" />
                 </DockPanel>
                 <DockPanel Grid.Column="1" Grid.Row="3" Grid.RowSpan="2"
                         Visibility="{Binding Laps, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Label>AI Level:</Label>
+                    <Label Content="AI Level:" />
                     <Grid>
                         <TextBlock Text="{Binding AiLevel, StringFormat='{}{0}%'}" Style="{StaticResource Value}"
                                 Visibility="{Binding Data.DriveSettings.KunosCareerUserAiLevel, Source={StaticResource DataContextProxy}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />

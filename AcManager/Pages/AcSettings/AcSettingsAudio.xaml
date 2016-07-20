@@ -9,7 +9,7 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}" ToolTip="Switch to Low or Normal if you’re experiencing problems with sound">
             <DockPanel>
-                <Label>Latency:</Label>
+                <Label Content="Latency:" />
                 <ComboBox ItemsSource="{Binding Audio.Latencies}" SelectedItem="{Binding Audio.Latency}" />
             </DockPanel>
 
@@ -18,7 +18,7 @@
                 <Slider Minimum="0" Maximum="200" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Levels:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Levels:" />
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding Audio.LevelMaster, StringFormat='{}{0:F0}'}" Mode="Number" Postfix="%">Master</mui:ValueLabel>

@@ -30,7 +30,7 @@
 
         <StackPanel Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding IsActivated}" IsEnabled="{Binding SelectedObject.Enabled}">
-                <Label>_Activated</Label>
+                <Label Content="_Activated" />
             </CheckBox>
         </StackPanel>
     </ac:AcObjectBase>

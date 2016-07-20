@@ -18,15 +18,15 @@
                         <Grid.ToolTip>
                             <StackPanel>
                                 <DockPanel>
-                                    <Label DockPanel.Dock="Left" Width="60">Name:</Label>
+                                    <Label DockPanel.Dock="Left" Width="60" Content="Name:" />
                                     <TextBlock Text="{Binding DisplayName}" />
                                 </DockPanel>
                                 <DockPanel>
-                                    <Label DockPanel.Dock="Left" Width="60">Date:</Label>
+                                    <Label DockPanel.Dock="Left" Width="60" Content="Date:" />
                                     <TextBlock Text="{Binding CreationTime}" />
                                 </DockPanel>
                                 <DockPanel>
-                                    <Label DockPanel.Dock="Left" Width="60">Size:</Label>
+                                    <Label DockPanel.Dock="Left" Width="60" Content="Size:" />
                                     <TextBlock Text="{Binding Size, Converter={StaticResource FileSizeConverter}}" />
                                 </DockPanel>
                             </StackPanel>

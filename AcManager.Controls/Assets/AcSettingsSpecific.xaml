@@ -83,7 +83,7 @@
 
             <StackPanel Margin="16 4 0 0" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                 <CheckBox IsChecked="{Binding Invert}" Margin="0 0 0 4">
-                    <Label>Invert</Label>
+                    <Label Content="Invert" />
                 </CheckBox>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"

@@ -14,7 +14,7 @@
                 <DockPanel>
                     <Image Source="/Assets/Icons/Icon.ico" Width="40" Height="40" DockPanel.Dock="Left" Margin="0 0 12 0" />
                     <StackPanel>
-                        <TextBlock Style="{StaticResource Heading1}" Margin="-2 0 0 0">Content Manager</TextBlock>
+                        <TextBlock Style="{StaticResource Heading1}" Margin="-2 0 0 0" Text="Content Manager" />
                         <mui:BbCodeBlock Style="{StaticResource Small}">A custom launcher and content management app for [url="http://www.assettocorsa.net/"]Assetto Corsa[/url]</mui:BbCodeBlock>
                     </StackPanel>
                 </DockPanel>
@@ -31,7 +31,7 @@
                             Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, Mode=OneTime}" />
                 </StackPanel>
 
-                <TextBlock Style="{StaticResource Heading2}">Contact us:</TextBlock>
+                <TextBlock Style="{StaticResource Heading2}" Text="Contact us:" />
                 <mui:BbCodeBlock Margin="0 8 0 0">If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please contact us using [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] or [url="https://trello.com/c/w5xT6ssZ/49-contacts"]something else[/url].</mui:BbCodeBlock>
             </StackPanel>
         </ScrollViewer>

@@ -43,7 +43,7 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding Drive.QuickSwitches}">
-                <Label>Enable Quick Switches</Label>
+                <Label Content="Enable Quick Switches" />
             </CheckBox>
 
             <mui:BbCodeBlock Margin="0 0 0 20" TextWrapping="Wrap">
@@ -61,8 +61,8 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource Label}" Margin="0 0 0 4">Added:</TextBlock>
-                <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource Label}" Margin="0 0 0 4">Library:</TextBlock>
+                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource Label}" Margin="0 0 0 4" Text="Added:" />
+                <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource Label}" Margin="0 0 0 4" Text="Library:" />
 
                 <ListBox Name="AddedItems" Grid.Row="1" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         ItemContainerStyle="{StaticResource ListBoxItem}" Background="Transparent" AllowDrop="True" DragEnter="List_OnDragEnter"

@@ -17,14 +17,14 @@
     <ScrollViewer DataContext="{Binding Source={x:Static helpers:AcSettingsHolder.Controls}}">
         <StackPanel>
             <CheckBox IsChecked="{Binding CombineWithKeyboardInput}" Margin="0 0 0 20">
-                <Label>Combine with _keyboard</Label>
+                <Label Content="Combine with _keyboard" />
             </CheckBox>
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Shifters:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Shifters:" />
             <ItemsControl ItemsSource="{Binding WheelGearsButtonEntries}" Margin="0 0 20 4" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
             <CheckBox IsChecked="{Binding WheelUseHShifter}" Margin="0 0 0 8">
-                <Label>Use _H-shifter</Label>
+                <Label Content="Use _H-shifter" />
             </CheckBox>
 
             <StackPanel Background="{DynamicResource WindowBackground}" Margin="20 0 20 20" IsEnabled="{Binding WheelUseHShifter}">
@@ -44,31 +44,31 @@
                 <Slider Minimum="0" Maximum="250" Value="{Binding DebouncingInterval}" TickFrequency="25" TickPlacement="BottomRight" />
             </DockPanel>
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Brake balance:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Brake balance:" />
             <ItemsControl ItemsSource="{Binding WheelCarBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">Turbo:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True" Text="Turbo:" />
             <ItemsControl ItemsSource="{Binding WheelCarTurboButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">Traction control:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True" Text="Traction control:" />
             <ItemsControl ItemsSource="{Binding WheelCarTractionControlButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">ABS:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True" Text="ABS:" />
             <ItemsControl ItemsSource="{Binding WheelCarAbsButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">Engine brake:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True" Text="Engine brake:" />
             <ItemsControl ItemsSource="{Binding WheelCarEngineBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True">MGU-K:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" attached:NewMarkService.New="True" Text="MGU-K:" />
             <ItemsControl ItemsSource="{Binding WheelCarMgukButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Miscellaneous:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Miscellaneous:" />
             <ItemsControl ItemsSource="{Binding WheelCarButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">View:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="View:" />
             <ItemsControl ItemsSource="{Binding WheelViewButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4">Gestures:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Gestures:" />
             <ItemsControl ItemsSource="{Binding WheelGesturesButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
         </StackPanel>
     </ScrollViewer>

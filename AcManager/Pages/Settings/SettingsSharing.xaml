@@ -23,40 +23,40 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding Sharing.CopyLinkToClipboard}">
-                <Label>Copy link to clipboard</Label>
+                <Label Content="Copy link to clipboard" />
             </CheckBox>
 
             <DockPanel IsEnabled="{Binding Sharing.ShareAnonymously, Converter={StaticResource InvertBooleanConverter}}">
-                <Label>Sharing nickname:</Label>
+                <Label Content="Sharing nickname:" />
                 <TextBox Text="{Binding Sharing.SharingName}" attached:WatermarkService.Watermark="?" MaxLength="60" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Sharing.ShareAnonymously}">
-                <Label>Share anonymously</Label>
+                <Label Content="Share anonymously" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Sharing.ShareWithoutName}">
-                <Label>Disable custom names for sharing</Label>
+                <Label Content="Disable custom names for sharing" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Sharing.VerifyBeforeSharing}">
-                <Label>Verify params before sharing</Label>
+                <Label Content="Verify params before sharing" />
             </CheckBox>
 
             <StackPanel
                     Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <!--special options-->
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Special:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Special:" />
 
                 <CheckBox IsChecked="{Binding Sharing.CustomIds}">
-                    <Label>Custom IDs</Label>
+                    <Label Content="Custom IDs" />
                 </CheckBox>
             </StackPanel>
 
             <!--big files-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Big files:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Big files:" />
             <DockPanel ToolTip="I hope more destinations will be added later">
-                <Label>Destination:</Label>
+                <Label Content="Destination:" />
                 <Button Visibility="{Binding SelectedUploader.SupportsSigning, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Command="{Binding SignInCommand}" Width="120">
                     <Button.ContextMenu>
@@ -66,17 +66,17 @@
                     </Button.ContextMenu>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Foreground="GreenYellow" Margin="0 0 4 0"
-                                Visibility="{Binding SelectedUploader.IsReady, Converter={StaticResource BooleanToVisibilityConverter}}">✓</TextBlock>
-                        <TextBlock>Sign In</TextBlock>
+                                Visibility="{Binding SelectedUploader.IsReady, Converter={StaticResource BooleanToVisibilityConverter}}" Text="✓" />
+                        <TextBlock Text="Sign In" />
                     </StackPanel>
                 </Button>
                 <ComboBox ItemsSource="{Binding UploadersList}" SelectedItem="{Binding SelectedUploader}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <DockPanel Visibility="{Binding SelectedUploader.SupportsDirectories, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label>Folder:</Label>
+                <Label Content="Folder:" />
                 <Button Width="120" Command="{Binding UpdateDirectoriesCommand}" VerticalAlignment="Top">Update</Button>
-                <TextBlock Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}}" Opacity="0.5" FontStyle="Italic">Press “Update” to reload list of folders</TextBlock>
+                <TextBlock Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}}" Opacity="0.5" FontStyle="Italic" Text="Press “Update” to reload list of folders" />
                 <StackPanel Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                     <TextBlock Text="{Binding UploaderDirectory.DisplayName, StringFormat='{}Selected folder: {0}'}" Margin="0 0 0 4" />
                     <TreeView x:Name="UploaderDirectoriesTreeView" ItemsSource="{Binding UploaderDirectories}"
@@ -96,7 +96,7 @@
             </DockPanel>
 
             <!--history-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">History:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="History:" />
             <DockPanel>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="400"
                         PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">

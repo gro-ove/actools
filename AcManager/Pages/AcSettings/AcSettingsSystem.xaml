@@ -15,39 +15,39 @@
             </DockPanel>
 
             <CheckBox IsChecked="{Binding System.DeveloperApps}">
-                <Label>Developer apps</Label>
+                <Label Content="Developer apps" />
             </CheckBox>
             
             <CheckBox IsChecked="{Binding System.AllowFreeCamera}" ToolTip="Press F7 to toggle free camera mode">
-                <Label>Allow free camera</Label>
+                <Label Content="Allow free camera" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding System.Logging}">
-                <Label>Logging (recommended)</Label>
+                <Label Content="Logging (recommended)" />
             </CheckBox>
 
             <DockPanel>
-                <Label>Screenshots format:</Label>
+                <Label Content="Screenshots format:" />
                 <ComboBox ItemsSource="{Binding System.ScreenshotFormats}" SelectedItem="{Binding System.ScreenshotFormat}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <Grid Margin="0 20 0 8">
                 <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                 <StackPanel Margin="8">
-                    <TextBlock Style="{StaticResource Label}">Want the best screenshots quality?</TextBlock>
-                    <TextBlock TextWrapping="Wrap">Switch to BMP, install Magick.NET plugin and don’t forget to enable automatic conversion on Settings/Drive page.</TextBlock>
+                    <TextBlock Style="{StaticResource Label}" Text="Want the best screenshots quality?" />
+                    <TextBlock TextWrapping="Wrap" Text="Switch to BMP, install Magick.NET plugin and don’t forget to enable automatic conversion on Settings/Drive page." />
                 </StackPanel>
             </Grid>
 
             <!--proximity indicator-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Proximity indicator</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Proximity indicator" />
 
             <CheckBox IsChecked="{Binding ProximityIndicator.IsEnabled}">
-                <Label>Show nearest opponents</Label>
+                <Label Content="Show nearest opponents" />
             </CheckBox>
 
             <!--skidmarks-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Skidmarks</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Skidmarks" />
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding Skidmarks.QuantityMultipler}" Postfix="%">Quantity</mui:ValueLabel>
@@ -60,7 +60,7 @@
             </DockPanel>
 
             <!--mirrors-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Mirrors</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Mirrors" />
             
             <DockPanel>
                 <mui:ValueLabel Value="{Binding System.MirrorsFieldOfView}" Postfix="°" ToolTip="Default value: 10°">Field of view</mui:ValueLabel>
@@ -73,10 +73,10 @@
             </DockPanel>
 
             <!--ghost DisplayColor="{Binding AppAppearanceManager.AccentDisplayColor}"  -->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Ghost car</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Ghost car" />
 
             <DockPanel>
-                <Label>Color:</Label>
+                <Label Content="Color:" />
                 <mui:ColorPicker Color="{Binding Ghost.Color}" />
             </DockPanel>
 

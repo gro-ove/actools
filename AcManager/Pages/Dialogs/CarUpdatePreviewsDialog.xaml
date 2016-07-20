@@ -77,17 +77,17 @@
                     </Grid.RowDefinitions>
 
                     <CheckBox Grid.Row="0" IsChecked="{Binding DisableWatermark}" Margin="8 0 0 0" ToolTip="Kunos watermark will be temporary hidden">
-                        <Label>Hide _watermark</Label>
+                        <Label Content="Hide _watermark" />
                     </CheckBox>
 
                     <CheckBox Grid.Row="1" IsChecked="{Binding DisableSweetFx}" Margin="8 0 0 0"
                             ToolTip="Apparantly SweetFx doesn't affect the result, but could decrease loading time">
-                        <Label>Disable _SweetFX</Label>
+                        <Label Content="Disable _SweetFX" />
                     </CheckBox>
 
                     <CheckBox Grid.Row="2" IsChecked="{Binding ResizePreviews}" Margin="8 0 0 0"
                             ToolTip="Resize previews to Kunos size (1022x575), highly recommended">
-                        <Label>_Resize previews</Label>
+                        <Label Content="_Resize previews" />
                     </CheckBox>
                 </Grid>
 
@@ -100,15 +100,15 @@
 
                     <CheckBox Grid.Row="0" IsChecked="{Binding MaximizeVideoSettings}" Margin="8 0 0 0"
                             ToolTip="Enable all video effets like reflections or glare, recommended">
-                        <Label>Enable all e_ffects</Label>
+                        <Label Content="Enable all e_ffects" />
                     </CheckBox>
 
                     <CheckBox Grid.Row="1" IsChecked="{Binding EnableFxaa}" Margin="8 0 0 0" ToolTip="Use FXAA for previews">
-                        <Label>Enable FX_AA</Label>
+                        <Label Content="Enable FX_AA" />
                     </CheckBox>
 
                     <CheckBox Grid.Row="2" IsChecked="{Binding UseSpecialResolution}" Margin="8 0 0 0" ToolTip="Enable for the best quality">
-                        <Label>Shot in 3840×2160</Label>
+                        <Label Content="Shot in 3840×2160" />
                     </CheckBox>
                 </Grid>
 

@@ -17,7 +17,7 @@
                     ItemsPanel="{StaticResource TwoColumnsPanel}" />
 
             <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Keyboard steering:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Keyboard steering:" />
 
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding Controls.KeyboardSteeringSpeed, StringFormat='{}{0:F2}'}" Mode="Number">Steering speed</mui:ValueLabel>
@@ -34,14 +34,14 @@
                     <Slider Minimum="1" Maximum="5" Value="{Binding Controls.KeyboardReturnRate}" TickFrequency="0.4" TickPlacement="BottomRight" />
                 </DockPanel>
 
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Mouse steering:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Mouse steering:" />
 
                 <CheckBox IsChecked="{Binding Controls.KeyboardMouseSteering}">
-                    <Label>Enable _mouse steering</Label>
+                    <Label Content="Enable _mouse steering" />
                 </CheckBox>
 
                 <CheckBox IsChecked="{Binding Controls.KeyboardMouseButtons}">
-                    <Label>Use mouse _buttons for throttle and brakes</Label>
+                    <Label Content="Use mouse _buttons for throttle and brakes" />
                 </CheckBox>
 
                 <DockPanel>
@@ -49,7 +49,7 @@
                     <Slider Minimum="0.1" Maximum="1" Value="{Binding Controls.KeyboardMouseSteeringSpeed}" TickFrequency="0.09" TickPlacement="BottomRight" />
                 </DockPanel>
 
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Additional bindings:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Additional bindings:" />
             </StackPanel>
 
             <ItemsControl ItemsSource="{Binding Controls.KeyboardButtonEntries}" Margin="0 0 0 20" ItemTemplate="{StaticResource KeyboardButtonEntryTemplate}"

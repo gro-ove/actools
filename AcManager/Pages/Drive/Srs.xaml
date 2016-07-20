@@ -43,15 +43,15 @@
                     <DockPanel.ToolTip>
                         <StackPanel Margin="4 6" Width="240">
                             <StackPanel Orientation="Horizontal" Margin="0 2">
-                                <TextBlock Style="{StaticResource Label}" Width="80">Name:</TextBlock>
+                                <TextBlock Style="{StaticResource Label}" Width="80" Text="Name:" />
                                 <TextBlock Text="{Binding DisplayName, TargetNullValue='?'}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0 2">
-                                <TextBlock Style="{StaticResource Label}" Width="80">Team:</TextBlock>
+                                <TextBlock Style="{StaticResource Label}" Width="80" Text="Team:" />
                                 <TextBlock Text="{Binding Team, TargetNullValue='?'}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0 2">
-                                <TextBlock Style="{StaticResource Label}" Width="80">Nationality:</TextBlock>
+                                <TextBlock Style="{StaticResource Label}" Width="80" Text="Nationality:" />
                                 <TextBlock Text="{Binding Nationality, TargetNullValue='?'}" />
                             </StackPanel>
                         </StackPanel>
@@ -64,15 +64,15 @@
                     <DockPanel.ToolTip>
                         <StackPanel Margin="4 6" Width="240">
                             <StackPanel Orientation="Horizontal" Margin="0 2">
-                                <TextBlock Style="{StaticResource Label}" Width="80">Name:</TextBlock>
+                                <TextBlock Style="{StaticResource Label}" Width="80" Text="Name:" />
                                 <TextBlock Text="{Binding DisplayName, TargetNullValue='?'}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0 2">
-                                <TextBlock Style="{StaticResource Label}" Width="80">IP:</TextBlock>
+                                <TextBlock Style="{StaticResource Label}" Width="80" Text="IP:" />
                                 <TextBlock Text="{Binding Ip, TargetNullValue='?'}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0 2">
-                                <TextBlock Style="{StaticResource Label}" Width="80">Port:</TextBlock>
+                                <TextBlock Style="{StaticResource Label}" Width="80" Text="Port:" />
                                 <TextBlock Text="{Binding Port, TargetNullValue='?'}" />
                             </StackPanel>
                         </StackPanel>
@@ -85,7 +85,7 @@
                     <DockPanel.ToolTip>
                         <StackPanel Margin="4 6" Width="240">
                             <StackPanel Orientation="Horizontal" Margin="0 2">
-                                <TextBlock Style="{StaticResource Label}" Width="100">Start at:</TextBlock>
+                                <TextBlock Style="{StaticResource Label}" Width="100" Text="Start at:" />
                                 <TextBlock Text="{Binding StartTime, TargetNullValue='?'}" />
                             </StackPanel>
                         </StackPanel>

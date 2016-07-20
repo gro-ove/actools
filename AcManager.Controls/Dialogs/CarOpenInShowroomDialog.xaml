@@ -45,12 +45,12 @@
         </StackPanel>
 
         <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding DisableWatermark}" Margin="8 0 0 0" ToolTip="{x:Static controls:Resources.Showroom_HideWatermark_Tooltip}">
-            <Label>Hide _watermark</Label>
+            <Label Content="Hide _watermark" />
         </CheckBox>
 
         <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding DisableSweetFx}" Margin="8 0 0 0"
                 ToolTip="Apparantly SweetFx doesn't affect the result, but could decrease loading time">
-            <Label>Disable _SweetFX</Label>
+            <Label Content="Disable _SweetFX" />
         </CheckBox>
 
         <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">

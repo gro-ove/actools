@@ -31,7 +31,7 @@
         <DockPanel>
             <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top">
                 <DockPanel>
-                    <Label>Input method:</Label>
+                    <Label Content="Input method:" />
                     <ComboBox ItemsSource="{Binding Controls.InputMethods}" SelectedItem="{Binding Controls.InputMethod}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
             </StackPanel>
@@ -40,7 +40,7 @@
         </DockPanel>
 
         <StackPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" Name="DetectedControllers">
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8">Detected controllers:</TextBlock>
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8" Text="Detected controllers:" />
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                 <ItemsControl ItemsSource="{Binding Controls.Devices}">
                     <ItemsControl.ItemsPanel>

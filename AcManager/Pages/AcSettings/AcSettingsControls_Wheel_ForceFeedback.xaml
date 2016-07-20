@@ -14,7 +14,7 @@
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Controls.WheelFfbInvert}">
-                <Label>_Invert FFB</Label>
+                <Label Content="_Invert FFB" />
             </CheckBox>
 
             <DockPanel>
@@ -28,7 +28,7 @@
             </DockPanel>
 
             <!--effects-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Effects:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Effects:" />
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding Controls.WheelFfbKerbEffect}" Mode="Integer" Postfix="%">Kerb effect</mui:ValueLabel>
@@ -46,14 +46,14 @@
             </DockPanel>
 
             <!--effects-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Miscellaneous:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Miscellaneous:" />
 
             <CheckBox IsChecked="{Binding Controls.WheelFfbEnhancedUndersteer}">
-                <Label>Enhanced understeer effect</Label>
+                <Label Content="Enhanced understeer effect" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding System.SoftLock}">
-                <Label>Soft lock</Label>
+                <Label Content="Soft lock" />
             </CheckBox>
 
             <DockPanel>
@@ -63,14 +63,14 @@
             </DockPanel>
 
             <!--experimental-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Experimental:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Experimental:" />
 
             <CheckBox Name="Experimental">
-                <Label Foreground="{DynamicResource Error}">Unlock experimental options (be careful!)</Label>
+                <Label Foreground="{DynamicResource Error}" Content="Unlock experimental options (be careful!)" />
             </CheckBox>
 
             <CheckBox IsEnabled="{Binding Path=IsChecked, ElementName=Experimental}" IsChecked="{Binding System.FfbGyro}">
-                <Label>_Gyroscopic effect</Label>
+                <Label Content="_Gyroscopic effect" />
             </CheckBox>
 
             <DockPanel IsEnabled="{Binding Path=IsChecked, ElementName=Experimental}" ToolTip="Set to 0 for Logitech G920, keep 1 for everything else">

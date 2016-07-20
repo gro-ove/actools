@@ -23,13 +23,13 @@
 
                 <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
                     <CheckBox Margin="10 0 0 0" IsChecked="{Binding Penalties}">
-                        <Label>_Penalties</Label>
+                        <Label Content="_Penalties" />
                     </CheckBox>
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
                     <CheckBox Margin="10 0 0 0" IsChecked="{Binding GhostCar}">
-                        <Label>_Ghost car</Label>
+                        <Label Content="_Ghost car" />
                     </CheckBox>
                 </StackPanel>
 

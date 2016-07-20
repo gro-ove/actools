@@ -31,32 +31,32 @@
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
-                <Label>Use 32-bit version</Label>
+                <Label Content="Use 32-bit version" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.ImmediateStart}">
-                <Label>Start race immediately</Label>
+                <Label Content="Start race immediately" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.SkipPracticeResults}">
-                <Label>Don't show results of Practice session</Label>
+                <Label Content="Don't show results of Practice session" />
             </CheckBox>
 
             <!--player's name-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Player’s name:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Player’s name:" />
 
             <DockPanel>
-                <Label>Name:</Label>
+                <Label Content="Name:" />
                 <TextBox Text="{Binding Drive.PlayerName}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
             <DockPanel>
-                <Label>Nationality:</Label>
+                <Label Content="Nationality:" />
                 <TextBox Text="{Binding Drive.PlayerNationality}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
             <DockPanel>
-                <Label>Online name:</Label>
+                <Label Content="Online name:" />
                 <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" ToolTip="Use different name online"
                         VerticalAlignment="Center" />
                 <TextBox Text="{Binding Drive.PlayerNameOnline}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True"
@@ -64,25 +64,25 @@
             </DockPanel>
 
             <!--quick drive-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Quick Drive:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Quick Drive:" />
 
             <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="Allows to set up to 999 laps and stuff, use on your own risk.">
-                <Label>Expand bounds</Label>
+                <Label Content="Expand bounds" />
             </CheckBox>
 
             <!--kunos career-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Kunos career:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Kunos career:" />
 
             <CheckBox IsChecked="{Binding Drive.KunosCareerUserAiLevel}">
-                <Label>Allow to change AI level</Label>
+                <Label Content="Allow to change AI level" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.KunosCareerUserSkin}">
-                <Label>Allow to change car's skin</Label>
+                <Label Content="Allow to change car's skin" />
             </CheckBox>
 
             <!--game-related events-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Game-related events:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Game-related events:" />
             <DockPanel>
                 <DockPanel.ToolTip>
                     <ToolTip>
@@ -102,7 +102,7 @@
                         </StackPanel>
                     </ToolTip>
                 </DockPanel.ToolTip>
-                <Label>Pre-race event command:</Label>
+                <Label Content="Pre-race event command:" />
                 <TextBox Text="{Binding Drive.PreCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
             </DockPanel>
 
@@ -125,17 +125,17 @@
                         </StackPanel>
                     </ToolTip>
                 </DockPanel.ToolTip>
-                <Label>Post-race event command:</Label>
+                <Label Content="Post-race event command:" />
                 <TextBox Text="{Binding Drive.PostCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}"
                     ToolTip="I highly recommend to enable Magick.NET first — with it, result quality will be higher">
-                <Label>Automatically convert screenshots from BMP-format to JPEG on exit</Label>
+                <Label Content="Automatically convert screenshots from BMP-format to JPEG on exit" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.WeatherSpecificClouds}" ToolTip="Of course, only temporary">
-                <Label>Replace clouds by weather’s clouds if exist</Label>
+                <Label Content="Replace clouds by weather’s clouds if exist" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

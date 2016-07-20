@@ -28,22 +28,22 @@
         <!-- first row -->
         <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding AutoShifter}" Margin="{StaticResource EntryMargin}"
                 ToolTip="Don't confuse it with automatic gearbox">
-            <Label>_Automatic shifting</Label>
+            <Label Content="_Automatic shifting" />
         </CheckBox>
 
         <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding AutoClutch}" Margin="{StaticResource EntryMargin}"
                 ToolTip="Automatically press clutch on shifting">
-            <Label>Automatic _clutch</Label>
+            <Label Content="Automatic _clutch" />
         </CheckBox>
 
         <!-- second row -->
         <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutoBlip}" Margin="{StaticResource EntryMargin}"
                 ToolTip="Automatically syncronize RPM on downshifts">
-            <Label>Auto_blip</Label>
+            <Label Content="Auto_blip" />
         </CheckBox>
 
         <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IdealLine}" Margin="{StaticResource EntryMargin}" ToolTip="Show ideal driving line">
-            <Label>Ideal _line</Label>
+            <Label Content="Ideal _line" />
         </CheckBox>
 
         <!-- third row -->
@@ -79,7 +79,7 @@
         </StackPanel>
 
         <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding FuelConsumption}" Margin="{StaticResource EntryMargin}" ToolTip="Fuel consumption">
-            <Label>_Fuel consumption</Label>
+            <Label Content="_Fuel consumption" />
         </CheckBox>
 
         <!-- fifth row -->
@@ -115,7 +115,7 @@
 
         <!-- sixth row -->
         <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding TyreBlankets}" Margin="{StaticResource EntryMargin}" ToolTip="Heat tires in pits">
-            <Label>_Tyre blankets</Label>
+            <Label Content="_Tyre blankets" />
         </CheckBox>
 
         <StackPanel Orientation="Vertical" Grid.Row="5" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="Multipler for slipstream effect">

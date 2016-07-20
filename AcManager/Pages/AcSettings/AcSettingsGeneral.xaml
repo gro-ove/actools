@@ -10,7 +10,7 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <!--exposure-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Margin="0 0 0 8">Exposure:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Margin="0 0 0 8" Text="Exposure:" />
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding Exposure.Value}" Postfix="%">Value</mui:ValueLabel>
@@ -18,10 +18,10 @@
             </DockPanel>
             
             <!--replays-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Replays:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Replays:" />
 
             <DockPanel>
-                <Label>Quality:</Label>
+                <Label Content="Quality:" />
                 <ComboBox ItemsSource="{Binding Replay.Qualities}" SelectedItem="{Binding Replay.Quality}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 

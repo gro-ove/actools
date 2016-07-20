@@ -10,36 +10,36 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
-                <Label>Units:</Label>
+                <Label Content="Units:" />
                 <ComboBox ItemsSource="{Binding Gameplay.UnitsTypes}" SelectedItem="{Binding Gameplay.Units}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Gameplay.DisplayTimeGap}">
-                <Label>Show time gap to opponents</Label>
+                <Label Content="Show time gap to opponents" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Gameplay.DisplayDamage}">
-                <Label>Show damage (GUI)</Label>
+                <Label Content="Show damage (GUI)" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Gameplay.DisplayLeaderboard}">
-                <Label>Show leaderboard</Label>
+                <Label Content="Show leaderboard" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Gameplay.DisplayMirror}">
-                <Label>Show virtual mirror</Label>
+                <Label Content="Show virtual mirror" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Gameplay.DisplayDriverNames}">
-                <Label>Show drivers’ names</Label>
+                <Label Content="Show drivers’ names" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Gameplay.AllowOverlapping}">
-                <Label>Allow in-game apps overlapping</Label>
+                <Label Content="Allow in-game apps overlapping" />
             </CheckBox>
 
             <!--camera-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Camera:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Camera:" />
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding CameraOnboard.FieldOfView}" Mode="Positive" Postfix="°" ToolTip="Vertical angle">Field of view</mui:ValueLabel>
@@ -47,7 +47,7 @@
             </DockPanel>
 
             <CheckBox IsChecked="{Binding CameraOnboard.WorldAligned}">
-                <Label>_Lock onboard camera to horizon</Label>
+                <Label Content="_Lock onboard camera to horizon" />
             </CheckBox>
 
             <DockPanel>
@@ -68,10 +68,10 @@
             </DockPanel>
 
             <!--g-forces-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">G-Forces:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="G-Forces:" />
 
             <CheckBox IsChecked="{Binding CameraOnboard.GForcesBinded}">
-                <Label>Locked</Label>
+                <Label Content="Locked" />
             </CheckBox>
 
             <DockPanel Visibility="{Binding CameraOnboard.GForcesBinded, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -103,18 +103,18 @@
             </Grid>
 
             <!--view-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">View:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="View:" />
 
             <CheckBox IsChecked="{Binding Video.HideArms}">
-                <Label>Hide driver _arms</Label>
+                <Label Content="Hide driver _arms" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Video.HideSteeringWheel}">
-                <Label>Hide steering _wheel</Label>
+                <Label Content="Hide steering _wheel" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Video.LockSteeringWheel}">
-                <Label>Lock steering wheel</Label>
+                <Label Content="Lock steering wheel" />
             </CheckBox>
 
             <DockPanel>

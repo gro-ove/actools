@@ -13,49 +13,49 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
-                <Label>Use by default:</Label>
+                <Label Content="Use by default:" />
                 <ComboBox ItemsSource="{Binding Holder.ShowroomTypes}" SelectedItem="{Binding Holder.ShowroomType}" ToolTip="Hold Ctrl when starting to select the other one" />
             </DockPanel>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Small}" Margin="0 0 0 20">
+            <TextBlock Style="{StaticResource SettingsPanel.Small}" Margin="0 0 0 20" Text="
                 Lite Showroom is DirectX 10-compatible, much simpler and easier for a videocard. Perfect solution for skins drawing.
-            </TextBlock>
+            " />
 
             <CheckBox IsChecked="{Binding Holder.SmartCameraPivot}"
                     ToolTip="Tries to keep a car at the center of the screen as much as possible (but without any heavy calculations)">
-                <Label>Auto-adjusting camera pivot</Label>
+                <Label Content="Auto-adjusting camera pivot" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.AlternativeControlScheme}"
                     ToolTip="Use left mouse button for panning and right for rotating a model instead">
-                <Label>Invert mouse buttons</Label>
+                <Label Content="Invert mouse buttons" />
             </CheckBox>
 
             <!--lite specific-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Lite Showroom:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Lite Showroom:" />
 
             <CheckBox IsChecked="{Binding Holder.LiteUseBloom}" ToolTip="Disable if you need maximum performance">
-                <Label>Use _bloom</Label>
+                <Label Content="Use _bloom" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.LiteUseMsaa}" ToolTip="Makes picture even worse if you asked me">
-                <Label>Use MSAA</Label>
+                <Label Content="Use MSAA" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Holder.LiteUseFxaa}" ToolTip="You can toggle it any time by pressing F">
-                <Label>Use _FXAA</Label>
+                <Label Content="Use _FXAA" />
             </CheckBox>
 
             <!--fancy specific-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Fancy Showroom:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Fancy Showroom:" />
 
             <DockPanel>
-                <Label>Default showroom:</Label>
+                <Label Content="Default showroom:" />
                 <ComboBox SelectedItem="{Binding SelectedShowroom}" ItemsSource="{Binding Showrooms}" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Holder.UseFxaa}">
-                <Label>Use FXAA</Label>
+                <Label Content="Use FXAA" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

@@ -18,7 +18,7 @@
         <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding Drive.TryToLoadReplays}">
                 <CheckBox.ToolTip>Try to extract track, car and weather from replays for Media/Replays tab</CheckBox.ToolTip>
-                <Label>Load information about replays</Label>
+                <Label Content="Load information about replays" />
             </CheckBox>
 
             <!--extension-->
@@ -33,13 +33,13 @@
                 </Button>
                 <CheckBox IsChecked="{Binding Drive.AutoAddReplaysExtension}">
                     <CheckBox.ToolTip>Automatically add “.acreplay” extension to new replays made by game</CheckBox.ToolTip>
-                    <Label>Automatically add “.acreplay” to new replays</Label>
+                    <Label Content="Automatically add “.acreplay” to new replays" />
                 </CheckBox>
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Drive.AutoSaveReplays}">
                 <CheckBox.ToolTip>Usual “cr” will be renamed automatically.</CheckBox.ToolTip>
-                <Label>Autosave replays</Label>
+                <Label Content="Autosave replays" />
             </CheckBox>
 
             <DockPanel>
@@ -73,15 +73,15 @@
                         </StackPanel>
                     </ToolTip>
                 </DockPanel.ToolTip>
-                <Label>Replays name format</Label>
+                <Label Content="Replays name format" />
                 <TextBox Text="{Binding Drive.ReplaysNameFormat}" attached:WatermarkService.Watermark="{Binding Drive.DefaultReplaysNameFormat}" />
             </DockPanel>
 
             <!--ac settings-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">AC settings:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="AC settings:" />
 
             <DockPanel>
-                <Label>Quality:</Label>
+                <Label Content="Quality:" />
                 <ComboBox ItemsSource="{Binding Replay.Qualities}" SelectedItem="{Binding Replay.Quality}" />
             </DockPanel>
 
@@ -97,7 +97,7 @@
             </DockPanel>
 
             <!--replay-related events-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Replay-related events:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Replay-related events:" />
             <DockPanel>
                 <DockPanel.ToolTip>
                     <ToolTip>
@@ -117,7 +117,7 @@
                         </StackPanel>
                     </ToolTip>
                 </DockPanel.ToolTip>
-                <Label>Pre-replay event command:</Label>
+                <Label Content="Pre-replay event command:" />
                 <TextBox Text="{Binding Drive.PreReplayCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
             </DockPanel>
 
@@ -140,7 +140,7 @@
                         </StackPanel>
                     </ToolTip>
                 </DockPanel.ToolTip>
-                <Label>Post-replay event command:</Label>
+                <Label Content="Post-replay event command:" />
                 <TextBox Text="{Binding Drive.PostReplayCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
             </DockPanel>
         </StackPanel>

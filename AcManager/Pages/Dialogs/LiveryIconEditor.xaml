@@ -17,32 +17,32 @@
                 services:ImageViewerService.MaxHeight="575" />
         <StackPanel Grid.Column="1" Margin="20 0 0 0" Style="{StaticResource SettingsPanel}" Width="240">
             <DockPanel>
-                <Label>Result:</Label>
+                <Label Content="Result:" />
                 <ContentPresenter x:Name="Result" Content="{Binding StyleObject}" Width="64" Height="64" />
             </DockPanel>
             <DockPanel>
-                <Label>Style:</Label>
+                <Label Content="Style:" />
                 <ComboBox ItemsSource="{Binding Styles}" SelectedItem="{Binding SelectedStyle, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
             </DockPanel>
             <DockPanel Visibility="{Binding CustomShape, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                <Label>Shape:</Label>
+                <Label Content="Shape:" />
                 <ComboBox ItemsSource="{Binding Shapes}" SelectedItem="{Binding SelectedShape, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
             </DockPanel>
             <DockPanel>
-                <Label>Color:</Label>
+                <Label Content="Color:" />
                 <mui:ColorPicker Color="{Binding Model.ColorValue}" />
             </DockPanel>
             <DockPanel Visibility="{Binding HasSecondaryColor, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label>Secondary color:</Label>
+                <Label Content="Secondary color:" />
                 <mui:ColorPicker Color="{Binding Model.SecondaryColorValue}" />
             </DockPanel>
             <DockPanel Visibility="{Binding HasTertiaryColor, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label>Tertiary color:</Label>
+                <Label Content="Tertiary color:" />
                 <mui:ColorPicker Color="{Binding Model.TertiaryColorValue}" />
             </DockPanel>
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Number:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Number:" />
             <DockPanel>
-                <Label>Style:</Label>
+                <Label Content="Style:" />
                 <ComboBox ItemsSource="{Binding Numbers}" SelectedItem="{Binding SelectedNumbers, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
             </DockPanel>
             <StackPanel Visibility="{Binding SelectedNumbers.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠'}">
@@ -51,7 +51,7 @@
                     <Slider Minimum="0" Maximum="100" Value="{Binding Model.NumberValue}" TickFrequency="10" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>
-                    <Label>Text color:</Label>
+                    <Label Content="Text color:" />
                     <mui:ColorPicker Color="{Binding Model.TextColorValue}" />
                 </DockPanel>
             </StackPanel>

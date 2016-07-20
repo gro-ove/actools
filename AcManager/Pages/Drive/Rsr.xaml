@@ -32,7 +32,7 @@
                     IsOpen="{Binding IsChecked, ElementName=Button, Mode=TwoWay}" Padding="8">
                 <StackPanel Width="200">
                     <CheckBox IsChecked="{Binding GhostCar}">
-                        <Label>Ghost car</Label>
+                        <Label Content="Ghost car" />
                     </CheckBox>
 
                     <Grid Margin="0 8 0 0" DataContext="{x:Static drive:Rsr.Assists}">
@@ -50,7 +50,7 @@
                                 </Button.ToolTip>
                             </Button>
                             <CheckBox IsChecked="{Binding TyreBlankets}">
-                                <Label>_Tyre blankets</Label>
+                                <Label Content="_Tyre blankets" />
                             </CheckBox>
                         </DockPanel>
                     </Grid>

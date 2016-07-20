@@ -20,31 +20,31 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Style="{StaticResource SettingsCompactPanel}">
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">Assists</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Assists" />
                 <DockPanel>
-                    <Label>ABS:</Label>
+                    <Label Content="ABS:" />
                     <ComboBox ItemsSource="{x:Static local:SelectedPage.AssistStates}" SelectedItem="{Binding SelectedObject.Abs}" />
                 </DockPanel>
                 <DockPanel ToolTip="Traction control">
-                    <Label>TC:</Label>
+                    <Label Content="TC:" />
                     <ComboBox ItemsSource="{x:Static local:SelectedPage.AssistStates}" SelectedItem="{Binding SelectedObject.TractionControl}" />
                 </DockPanel>
                 <CheckBox IsChecked="{Binding SelectedObject.StabilityControl}" ToolTip="AI will help you control the car if enabled">
-                    <Label>Stability control</Label>
+                    <Label Content="Stability control" />
                 </CheckBox>
                 <CheckBox IsChecked="{Binding SelectedObject.AutoClutch}">
-                    <Label>Automatic clutch</Label>
+                    <Label Content="Automatic clutch" />
                 </CheckBox>
                 <CheckBox IsChecked="{Binding SelectedObject.TyreBlankets}">
-                    <Label>Tyre blankets</Label>
+                    <Label Content="Tyre blankets" />
                 </CheckBox>
                 <CheckBox IsChecked="{Binding SelectedObject.ForceVirtualMirror}" ToolTip="Force virtual mirror">
-                    <Label>Virtual mirror</Label>
+                    <Label Content="Virtual mirror" />
                 </CheckBox>
             </StackPanel>
 
             <StackPanel Grid.Column="1" Style="{StaticResource SettingsCompactPanel}">
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">Realism</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Realism" />
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding SelectedObject.FuelRate}" Postfix="%">Fuel rate</mui:ValueLabel>
                     <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.FuelRate}" TickFrequency="25" TickPlacement="BottomRight" />
@@ -70,7 +70,7 @@
                     <Slider Minimum="100" Maximum="200" Value="{Binding SelectedObject.QualifyLimitPercentage}" TickFrequency="25" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>
-                    <Label>Jump start:</Label>
+                    <Label Content="Jump start:" />
                     <ComboBox ItemsSource="{x:Static local:SelectedPage.JumpStarts}" SelectedItem="{Binding SelectedObject.JumpStart}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>

@@ -55,7 +55,7 @@
 
         <StackPanel>
             <DockPanel Margin="8 0 0 8" Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock DockPanel.Dock="Left" Style="{StaticResource Label}" Margin="0 2 8 0">Layout Name:</TextBlock>
+                <TextBlock DockPanel.Dock="Left" Style="{StaticResource Label}" Margin="0 2 8 0" Text="Layout Name:" />
                 <TextBox Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource TextBoxAsTextBlock}" Text="{Binding SelectedTrackConfiguration.LayoutName}"
                         attached:FocusAdvancement.AdvancesByEnterKey="True" />

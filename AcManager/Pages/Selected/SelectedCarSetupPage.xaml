@@ -26,7 +26,7 @@
 
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
-                <Label>Track:</Label>
+                <Label Content="Track:" />
                 <Button Command="{Binding ClearTrackCommand}">Clear</Button>
                 <Button Command="{Binding ChangeTrackCommand}">Change</Button>
 
@@ -39,10 +39,10 @@
                 </Grid>
             </DockPanel>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">Tyres:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Tyres:" />
 
             <DockPanel>
-                <Label>Tyres:</Label>
+                <Label Content="Tyres:" />
                 <ComboBox ItemsSource="{Binding Tyres}" SelectedItem="{Binding SelectedTyres}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
@@ -58,7 +58,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Fuel:</TextBlock>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Fuel:" />
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding SelectedObject.Fuel}" Mode="Integer"

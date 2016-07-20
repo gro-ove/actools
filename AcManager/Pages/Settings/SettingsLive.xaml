@@ -14,16 +14,16 @@
     <ScrollViewer>
         <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding LiveSettings.RsrEnabled}">
-                <Label>Enable RSR Live Timing tab</Label>
+                <Label Content="Enable RSR Live Timing tab" />
             </CheckBox>
 
             <StackPanel IsEnabled="{Binding LiveSettings.RsrEnabled}" Margin="20 0 0 8">
                 <CheckBox IsChecked="{Binding LiveSettings.RsrCustomStyle}" ToolTip="Custom optimized style for built-in RSR website">
-                    <Label>Custom style</Label>
+                    <Label Content="Custom style" />
                 </CheckBox>
 
                 <DockPanel>
-                    <Label>RSR name:</Label>
+                    <Label Content="RSR name:" />
                     <CheckBox DockPanel.Dock="Left" IsChecked="{Binding LiveSettings.RsrDifferentPlayerName}"
                             ToolTip="Use different name when RSR form is enabled" VerticalAlignment="Center" />
                     <TextBox Text="{Binding LiveSettings.RsrPlayerName}" attached:WatermarkService.Watermark="?"
@@ -32,26 +32,26 @@
 
                 <CheckBox IsChecked="{Binding LiveSettings.RsrDisableAppAutomatically}">
                     <CheckBox.ToolTip>Automatically show or hide RSR app if starting race isn’t RSR-related</CheckBox.ToolTip>
-                    <Label>Automatically toggle RSR app</Label>
+                    <Label Content="Automatically toggle RSR app" />
                 </CheckBox>
             </StackPanel>
 
             <CheckBox IsChecked="{Binding LiveSettings.SrsEnabled}" Margin="0 20 0 8">
-                <Label>Enable Sim Racing System (SRS) tab</Label>
+                <Label Content="Enable Sim Racing System (SRS) tab" />
             </CheckBox>
 
             <StackPanel IsEnabled="{Binding LiveSettings.SrsEnabled}" Margin="20 0 0 8">
                 <CheckBox IsChecked="{Binding LiveSettings.SrsCustomStyle}" ToolTip="Custom optimized style for built-in SRS website">
-                    <Label>Custom style</Label>
+                    <Label Content="Custom style" />
                 </CheckBox>
 
                 <CheckBox IsChecked="{Binding LiveSettings.SrsAutoMode}" ToolTip="Allow to join SRS races through Online section">
-                    <Label>Joining from Online</Label>
+                    <Label Content="Joining from Online" />
                 </CheckBox>
 
                 <DockPanel>
                     <DockPanel.ToolTip>Default value: “SimRacingSystem*”</DockPanel.ToolTip>
-                    <Label>Mask for SRS servers:</Label>
+                    <Label Content="Mask for SRS servers:" />
                     <TextBox Text="{Binding LiveSettings.SrsAutoMask}" attached:WatermarkService.Watermark="?"
                             attached:FocusAdvancement.AdvancesByEnterKey="True" />
                 </DockPanel>

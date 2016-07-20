@@ -28,27 +28,27 @@
             </ListBox>
 
             <DockPanel>
-                <Label>Color:</Label>
+                <Label Content="Color:" />
                 <mui:ColorPicker Color="{Binding AppAppearanceManager.AccentColor}" DisplayColor="{Binding AppAppearanceManager.AccentDisplayColor}" />
             </DockPanel>
 
             <DockPanel attached:LimitedService.Limited="True">
-                <Label>Theme:</Label>
+                <Label Content="Theme:" />
                 <ComboBox ItemsSource="{Binding AppAppearanceManager.Themes}" SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}">
-                <Label>Small font</Label>
+                <Label Content="Small font" />
             </CheckBox>
 
             <DockPanel attached:LimitedService.Limited="True">
-                <Label>Text rendering:</Label>
+                <Label Content="Text rendering:" />
                 <ComboBox ItemsSource="{Binding TextFormattings}" SelectedItem="{Binding TextFormatting, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <DockPanel attached:LimitedService.Limited="True" ToolTip="Restart app to apply changes">
-                <Label>Image scaling quality:</Label>
+                <Label Content="Image scaling quality:" />
                 <Button Visibility="{Binding BitmapScalingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Command="{Binding RestartCommand}">Restart</Button>
                 <ComboBox ItemsSource="{Binding BitmapScalings}" SelectedItem="{Binding BitmapScaling, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
@@ -56,19 +56,19 @@
 
             <CheckBox IsChecked="{Binding AppAppearanceManager.PopupToolBars}" ToolTip="Don't forget, there is a keyboard shortcut for every button"
                     attached:LimitedService.Limited="True">
-                <Label>Popup toolbars</Label>
+                <Label Content="Popup toolbars" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding AppAppearanceManager.LargeSubMenuFont}" ToolTip="By the way, try shortcuts like F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc.">
-                <Label>Large search boxes</Label>
+                <Label Content="Large search boxes" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding FancyBackgroundManager.Enabled}" ToolTip="Extra fancy">
-                <Label>Dynamic background</Label>
+                <Label Content="Dynamic background" />
             </CheckBox>
 
             <DockPanel>
-                <Label>Transition animation:</Label>
+                <Label Content="Transition animation:" />
                 <ComboBox ItemsSource="{Binding AppAppearanceManager.FrameAnimations}" SelectedItem="{Binding AppAppearanceManager.FrameAnimation, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" />
             </DockPanel>

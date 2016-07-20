@@ -45,7 +45,7 @@
         </Grid>
 
         <CheckBox IsChecked="{Binding AutomaticallyRecalculate}" Margin="0 0 0 10">
-            <Label>_Automatically recalculate P/W ratio</Label>
+            <Label Content="_Automatically recalculate P/W ratio" />
         </CheckBox>
 
         <controls:OxyPlotGraphViewer SourceTorque="{Binding TorqueGraph}" SourcePower="{Binding PowerGraph}" Height="200"

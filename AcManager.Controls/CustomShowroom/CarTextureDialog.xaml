@@ -46,19 +46,19 @@
         <Grid Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Grid.Column="1" Grid.Row="1">
             <StackPanel VerticalAlignment="Top">
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100">Type:</Label>
+                    <Label DockPanel.Dock="Left" Width="100" Content="Type:" />
                     <TextBlock Text="{Binding TextureFormat}" attached:WatermarkService.Watermark="?" />
                 </DockPanel>
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100">Format:</Label>
+                    <Label DockPanel.Dock="Left" Width="100" Content="Format:" />
                     <TextBlock Text="{Binding TextureFormatDescription}" attached:WatermarkService.Watermark="?" />
                 </DockPanel>
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100">Dimensions:</Label>
+                    <Label DockPanel.Dock="Left" Width="100" Content="Dimensions:" />
                     <TextBlock Text="{Binding TextureDimensions}" attached:WatermarkService.Watermark="?" />
                 </DockPanel>
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100">Size:</Label>
+                    <Label DockPanel.Dock="Left" Width="100" Content="Size:" />
                     <TextBlock Text="{Binding Data.Length, Converter={StaticResource FileSizeConverter}}" />
                 </DockPanel>
             </StackPanel>

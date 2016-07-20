@@ -105,7 +105,7 @@
 
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16"
                             Visibility="{Binding ActualWidth, ElementName=BigButtons, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=430}">
-                        <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8">Sort by:</TextBlock>
+                        <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8" Text="Sort by:" />
                         <ComboBox Width="120" ItemsSource="{Binding SortingModes}" SelectedItem="{Binding SortingMode}" DisplayMemberPath="DisplayName" />
                     </StackPanel>
                 </DockPanel>
@@ -145,7 +145,7 @@
                         <Path Data="{StaticResource AddIconData}" Width="10" Height="10"
                                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
                                 ToolTip="Password required" Margin="0 0 4 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
-                        <TextBlock>Add a New Entry</TextBlock>
+                        <TextBlock Text="Add a New Entry" />
                     </DockPanel>
                 </Button>
             </StackPanel>

@@ -41,7 +41,7 @@
             </DockPanel>
 
             <CheckBox IsChecked="{Binding InShadow}" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" Margin="8 0 0 0">
-                <Label>In _Shadow</Label>
+                <Label Content="In _Shadow" />
             </CheckBox>
         </Grid>
     </StackPanel>

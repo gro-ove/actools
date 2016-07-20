@@ -20,26 +20,26 @@
         <ScrollViewer>
             <StackPanel Style="{StaticResource SettingsPanel}">
                 <CheckBox IsChecked="{Binding Video.Fullscreen}">
-                    <Label>_Fullscreen</Label>
+                    <Label Content="_Fullscreen" />
                 </CheckBox>
 
                 <DockPanel>
-                    <Label>Resolution:</Label>
+                    <Label Content="Resolution:" />
                     <ComboBox ItemsSource="{Binding Video.Resolutions}" SelectedItem="{Binding Video.Resolution, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
 
                 <CheckBox IsChecked="{Binding FixResolutionAutomatically, Source={x:Static helpers:SettingsHolder.Common}}"
                         IsEnabled="{Binding Video.Fullscreen}">
                     <CheckBox.ToolTip>Automatically switch resolution before starting race if it’s not on the list (only if fullscreen mode is enabled)</CheckBox.ToolTip>
-                    <Label>Fix resolution automatically</Label>
+                    <Label Content="Fix resolution automatically" />
                 </CheckBox>
 
                 <DockPanel Visibility="{Binding Video.UseCustomResolution, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Label>Custom resolution:</Label>
+                    <Label Content="Custom resolution:" />
                     <StackPanel Orientation="Horizontal">
                         <TextBox Text="{Binding Video.CustomResolution.Width}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                                 attached:TextBoxAdvancement.SpecialMode="Positive" Width="60" ToolTip="Width" />
-                        <TextBlock>×</TextBlock>
+                        <TextBlock Text="×" />
                         <TextBox Text="{Binding Video.CustomResolution.Height}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                                 attached:TextBoxAdvancement.SpecialMode="Positive" Width="60" ToolTip="Height" />
                         <TextBlock Text=", " />
@@ -50,26 +50,26 @@
                 </DockPanel>
 
                 <DockPanel Margin="0 20 0 8">
-                    <Label>Rendering mode:</Label>
+                    <Label Content="Rendering mode:" />
                     <ComboBox ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
 
                 <CheckBox IsChecked="{Binding Video.VerticalSyncronization}">
-                    <Label>_Vertical syncronization</Label>
+                    <Label Content="_Vertical syncronization" />
                 </CheckBox>
 
                 <DockPanel>
-                    <Label>Anisotropic filtering:</Label>
+                    <Label Content="Anisotropic filtering:" />
                     <ComboBox ItemsSource="{Binding Video.AnisotropicLevels}" SelectedItem="{Binding Video.AnisotropicLevel}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
 
                 <DockPanel>
-                    <Label>Anti-aliasing:</Label>
+                    <Label Content="Anti-aliasing:" />
                     <ComboBox ItemsSource="{Binding Video.AntiAliasingLevels}" SelectedItem="{Binding Video.AntiAliasingLevel}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
 
                 <CheckBox IsChecked="{Binding Video.FramerateLimitEnabled}">
-                    <Label>_Limit framerate</Label>
+                    <Label Content="_Limit framerate" />
                 </CheckBox>
 
                 <DockPanel Visibility="{Binding Video.FramerateLimitEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -78,37 +78,37 @@
                 </DockPanel>
 
                 <!--quality-->
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Quality:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Quality:" />
 
                 <DockPanel>
-                    <Label>World detail:</Label>
+                    <Label Content="World detail:" />
                     <ComboBox ItemsSource="{Binding Video.WorldDetailLevels}" SelectedItem="{Binding Video.WorldDetail}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
 
                 <DockPanel>
-                    <Label>Shadows resolution:</Label>
+                    <Label Content="Shadows resolution:" />
                     <ComboBox ItemsSource="{Binding Video.ShadowMapSizes}" SelectedItem="{Binding Video.ShadowMapSize}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
 
                 <DockPanel>
-                    <Label>Smoke generation:</Label>
+                    <Label Content="Smoke generation:" />
                     <ComboBox ItemsSource="{Binding Video.SmokeLevels}" SelectedItem="{Binding Video.SmokeLevel}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
 
                 <CheckBox IsChecked="{Binding Video.SmokeInMirrors}">
-                    <Label>Show smoke in mirrors</Label>
+                    <Label Content="Show smoke in mirrors" />
                 </CheckBox>
 
                 <!--effects-->
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Post-Processing:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Post-Processing:" />
 
                 <CheckBox IsChecked="{Binding Video.PostProcessing}">
-                    <Label>Enable _post-processing effects</Label>
+                    <Label Content="Enable _post-processing effects" />
                 </CheckBox>
 
                 <StackPanel Visibility="{Binding Video.PostProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <DockPanel>
-                        <Label>Filter:</Label>
+                        <Label Content="Filter:" />
                         <Button Command="{Binding ManageFiltersCommand}">Manage</Button>
                         <ComboBox ItemsSource="{Binding LoadedOnlyCollection, Source={x:Static managers:PpFiltersManager.Instance}}"
                                 SelectedItem="{Binding Video.PostProcessingFilterObject}" DisplayMemberPath="DisplayName"
@@ -116,18 +116,18 @@
                     </DockPanel>
 
                     <DockPanel>
-                        <Label>Overall quality:</Label>
+                        <Label Content="Overall quality:" />
                         <ComboBox ItemsSource="{Binding Video.PostProcessingQualities}" SelectedItem="{Binding Video.PostProcessingQuality}"
                                 DisplayMemberPath="DisplayName" />
                     </DockPanel>
 
                     <DockPanel>
-                        <Label>Glare quality:</Label>
+                        <Label Content="Glare quality:" />
                         <ComboBox ItemsSource="{Binding Video.GlareQualities}" SelectedItem="{Binding Video.GlareQuality}" DisplayMemberPath="DisplayName" />
                     </DockPanel>
 
                     <DockPanel>
-                        <Label>Depth of field:</Label>
+                        <Label Content="Depth of field:" />
                         <ComboBox ItemsSource="{Binding Video.DepthOfFieldQualities}" SelectedItem="{Binding Video.DepthOfFieldQuality}"
                                 DisplayMemberPath="DisplayName" />
                     </DockPanel>
@@ -144,28 +144,28 @@
                     </DockPanel>
 
                     <CheckBox IsChecked="{Binding Video.HeatShimmering}">
-                        <Label>Heat shimmering</Label>
+                        <Label Content="Heat shimmering" />
                     </CheckBox>
 
                     <CheckBox IsChecked="{Binding Video.RaysOfGod}">
-                        <Label>Crepuscular rays</Label>
+                        <Label Content="Crepuscular rays" />
                     </CheckBox>
 
                     <CheckBox IsChecked="{Binding Video.Fxaa}">
-                        <Label>_FXAA</Label>
+                        <Label Content="_FXAA" />
                     </CheckBox>
                 </StackPanel>
 
                 <!--reflections-->
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Reflections:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Reflections:" />
                 <DockPanel>
-                    <Label>Reflection resolution:</Label>
+                    <Label Content="Reflection resolution:" />
                     <ComboBox ItemsSource="{Binding Video.CubemapResolutions}" SelectedItem="{Binding Video.CubemapResolution}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
 
                 <StackPanel Visibility="{Binding Video.CubemapResolution.Value, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
                     <DockPanel>
-                        <Label>Rendering frequency:</Label>
+                        <Label Content="Rendering frequency:" />
                         <ComboBox ItemsSource="{Binding Video.CubemapRenderingFrequencies}" SelectedItem="{Binding Video.CubemapRenderingFrequency}"
                                 DisplayMemberPath="DisplayName" />
                     </DockPanel>
@@ -177,18 +177,18 @@
                 </StackPanel>
 
                 <!--mirrors-->
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Mirrors:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Mirrors:" />
                 <DockPanel>
-                    <Label>Mirror resolution:</Label>
+                    <Label Content="Mirror resolution:" />
                     <ComboBox ItemsSource="{Binding Video.MirrorResolutions}" SelectedItem="{Binding Video.MirrorResolution}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
 
                 <CheckBox IsChecked="{Binding Video.MirrorHighQuality}">
-                    <Label>High quality</Label>
+                    <Label Content="High quality" />
                 </CheckBox>
 
                 <!--mirrors-->
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Oculus:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Oculus:" />
                 <DockPanel>
                     <mui:ValueLabel Value="{Binding Oculus.PixelPerDisplay}" Mode="Number">Pixels per display</mui:ValueLabel>
                     <Slider Minimum="1" Maximum="2.5" Value="{Binding Oculus.PixelPerDisplay}" TickFrequency="0.1" IsSnapToTickEnabled="True"
@@ -196,9 +196,9 @@
                 </DockPanel>
 
                 <!--system-->
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}">System:</TextBlock>
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="System:" />
                 <CheckBox IsChecked="{Binding Graphics.AllowUnsupportedDx10}">
-                    <Label>Allow unsupported DirectX 10 (use on your own risk; doesn’t work?)</Label>
+                    <Label Content="Allow unsupported DirectX 10 (use on your own risk; doesn’t work?)" />
                 </CheckBox>
 
                 <DockPanel ToolTip="Skybox reflection gain">
