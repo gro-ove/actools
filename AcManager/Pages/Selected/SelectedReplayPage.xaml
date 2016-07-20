@@ -110,8 +110,8 @@
                 <Rectangle Stroke="{DynamicResource Error}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                 <StackPanel Margin="8">
                     <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}">Warning</TextBlock>
-                    <TextBlock>Replay will be overwritten after the next race. Rename it to keep it.</TextBlock>
-                    <TextBlock Margin="0 4 0 0" FontStyle="Italic"
+                    <TextBlock TextWrapping="Wrap">Replay will be overwritten after the next race. Rename it to keep it.</TextBlock>
+                    <TextBlock Margin="0 4 0 0" FontStyle="Italic" TextWrapping="Wrap"
                             Visibility="{Binding AutoSaveReplays, Source={x:Static helpers:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">You can go to Settings and enable “Save replays automatically” option to avoid losing something valuable.</TextBlock>
                 </StackPanel>
             </Grid>

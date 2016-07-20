@@ -6,7 +6,9 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AcManager.Controls.Presentation;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 
 namespace AcManager.Controls {
     [ContentProperty("Content")]
@@ -56,7 +58,7 @@ namespace AcManager.Controls {
         }
 
         protected async void Main_OnMouseUp(object sender, MouseButtonEventArgs e) {
-            if (_toolBar == null) return;
+            if (_toolBar == null || !AppAppearanceManager.Instance.PopupToolBars) return;
 
             await Task.Delay(1);
             if (e.Handled) return;

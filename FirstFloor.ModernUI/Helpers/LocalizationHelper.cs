@@ -163,19 +163,19 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public static string ReadableTime(this long seconds) {
-            return ReadableTime(TimeSpan.FromSeconds(seconds));
+        public static string ToReadableTime(this long seconds) {
+            return ToReadableTime(TimeSpan.FromSeconds(seconds));
         }
 
-        public static string ReadableTime(this TimeSpan span) {
+        public static string ToReadableTime(this TimeSpan span) {
             if (CultureRu) {
-                return ReadableTimeRu(span);
+                return ToReadableTimeRu(span);
             } else {
-                return ReadableTimeEn(span);
+                return ToReadableTimeEn(span);
             }
         }
 
-        public static string ReadableTimeRu(this TimeSpan span) {
+        public static string ToReadableTimeRu(this TimeSpan span) {
             var result = new List<string>();
 
             var days = (int)span.TotalDays;
@@ -198,7 +198,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return result.Any() ? string.Join(" ", result.Take(2)) : "0 секунд";
         }
 
-        public static string ReadableTimeEn(this TimeSpan span) {
+        public static string ToReadableTimeEn(this TimeSpan span) {
             var result = new List<string>();
 
             var days = (int)span.TotalDays;
@@ -225,7 +225,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return i / 1024d / 1024d;
         }
 
-        public static string ReadableSize(this long i, int round = 2) {
+        public static string ToReadableSize(this long i, int round = 2) {
             var absoluteI = i < 0 ? -i : i;
 
             string suffix;

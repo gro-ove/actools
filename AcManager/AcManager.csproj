@@ -1262,6 +1262,9 @@
   <ItemGroup>
     <Resource Include="Assets\Livery\Styles\Bright.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="About\ImportantTips\Custom Weather’s Clouds.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)\Properties

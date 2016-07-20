@@ -17,7 +17,7 @@
                 <Label>Enable RSR Live Timing tab</Label>
             </CheckBox>
 
-            <StackPanel IsEnabled="{Binding LiveSettings.RsrEnabled}" Margin="20 8 0 0">
+            <StackPanel IsEnabled="{Binding LiveSettings.RsrEnabled}" Margin="20 0 0 8">
                 <CheckBox IsChecked="{Binding LiveSettings.RsrCustomStyle}" ToolTip="Custom optimized style for built-in RSR website">
                     <Label>Custom style</Label>
                 </CheckBox>
@@ -36,11 +36,11 @@
                 </CheckBox>
             </StackPanel>
 
-            <CheckBox IsChecked="{Binding LiveSettings.SrsEnabled}">
+            <CheckBox IsChecked="{Binding LiveSettings.SrsEnabled}" Margin="0 20 0 8">
                 <Label>Enable Sim Racing System (SRS) tab</Label>
             </CheckBox>
 
-            <StackPanel IsEnabled="{Binding LiveSettings.SrsEnabled}" Margin="20 8 0 0">
+            <StackPanel IsEnabled="{Binding LiveSettings.SrsEnabled}" Margin="20 0 0 8">
                 <CheckBox IsChecked="{Binding LiveSettings.SrsCustomStyle}" ToolTip="Custom optimized style for built-in SRS website">
                     <Label>Custom style</Label>
                 </CheckBox>

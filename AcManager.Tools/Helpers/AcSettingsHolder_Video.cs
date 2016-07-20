@@ -2,6 +2,7 @@
 using System.Linq;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
@@ -11,7 +12,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
-        public class VideoSettings : IniSettings {
+        public class VideoSettings : IniPresetableSettings {
             public class ResolutionEntry : Displayable, IEquatable<ResolutionEntry> {
                 private readonly bool _custom;
 
@@ -614,7 +615,7 @@ namespace AcManager.Tools.Helpers {
                 var resolution = Resolutions.FirstOrDefault(x => x.Equals(CustomResolution));
                 if (resolution != null) {
                     Resolution = resolution;
-                } else if (Fullscreen) {
+                } else if (Fullscreen && !UseCustomResolution) {
                     Resolution = Resolutions.FirstOrDefault(x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height);
                     ForceSave();
                     Logging.Warning($"RESOLUTION ({CustomResolution.DisplayName}) IS INVALID, CHANGED TO ({Resolution?.DisplayName})");
@@ -664,8 +665,8 @@ namespace AcManager.Tools.Helpers {
                 CubemapDistance = section.GetInt(orig ? @"__ORIG_FARPLANE" : @"FARPLANE", 600);
             }
 
-            protected override void SetToIni() {
-                var section = Ini["VIDEO"];
+            protected override void SetToIni(IniFile ini) {
+                var section = ini["VIDEO"];
                 section.Set("WIDTH", Resolution.Width);
                 section.Set("HEIGHT", Resolution.Height);
                 section.Set("REFRESH", Resolution.Framerate);
@@ -676,19 +677,19 @@ namespace AcManager.Tools.Helpers {
                 section.Set("ANISOTROPIC", AnisotropicLevel);
                 section.Set("SHADOW_MAP_SIZE", ShadowMapSize);
                 section.Set("FPS_CAP_MS", FramerateLimitEnabled ? 1e3 / FramerateLimit : 0d);
-                Ini["CAMERA"].Set("MODE", CameraMode);
-                
-                section = Ini["ASSETTOCORSA"];
+                ini["CAMERA"].Set("MODE", CameraMode);
+
+                section = ini["ASSETTOCORSA"];
                 section.Set("HIDE_ARMS", HideArms);
                 section.Set("HIDE_STEER", HideSteeringWheel);
                 section.Set("LOCK_STEER", LockSteeringWheel);
                 section.Set("WORLD_DETAIL", WorldDetail);
 
-                Ini["EFFECTS"].Set("MOTION_BLUR", MotionBlur);
-                Ini["EFFECTS"].Set("RENDER_SMOKE_IN_MIRROR", SmokeInMirrors);
-                Ini["EFFECTS"].Set("SMOKE", SmokeLevel);
+                ini["EFFECTS"].Set("MOTION_BLUR", MotionBlur);
+                ini["EFFECTS"].Set("RENDER_SMOKE_IN_MIRROR", SmokeInMirrors);
+                ini["EFFECTS"].Set("SMOKE", SmokeLevel);
 
-                section = Ini["POST_PROCESS"];
+                section = ini["POST_PROCESS"];
                 section.Set("ENABLED", PostProcessing);
                 section.Set("QUALITY", PostProcessingQuality);
                 section.Set("FILTER", PostProcessingFilter);
@@ -697,12 +698,12 @@ namespace AcManager.Tools.Helpers {
                 section.Set("RAYS_OF_GOD", RaysOfGod);
                 section.Set("HEAT_SHIMMER", HeatShimmering);
                 section.Set("FXAA", Fxaa);
-                Ini["SATURATION"].Set("LEVEL", ColorSaturation);
+                ini["SATURATION"].Set("LEVEL", ColorSaturation);
 
-                Ini["MIRROR"].Set("HQ", MirrorHighQuality);
-                Ini["MIRROR"].Set("SIZE", MirrorResolution);
+                ini["MIRROR"].Set("HQ", MirrorHighQuality);
+                ini["MIRROR"].Set("SIZE", MirrorResolution);
 
-                section = Ini["CUBEMAP"];
+                section = ini["CUBEMAP"];
                 if (CubemapResolution.Value == @"0") {
                     section.Set("SIZE", 0);
                     section.Set("FACES_PER_FRAME", 0);
@@ -716,6 +717,10 @@ namespace AcManager.Tools.Helpers {
                     section.Remove(@"__ORIG_FACES_PER_FRAME");
                     section.Remove(@"__ORIG_FARPLANE");
                 }
+            }
+
+            protected override void InvokeChanged() {
+                _videoPresets?.InvokeChanged();
             }
         }
 

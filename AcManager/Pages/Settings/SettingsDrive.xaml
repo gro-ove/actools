@@ -94,7 +94,7 @@
 [br] [b][mono]{track}[/mono][/b] — track's name;
 [br] [b][mono]{track.id}[/mono][/b] — track's id.
 [br]
-[br]If you need some other values, please, contact us and we’ll add them.
+[br]If you need some other values, please, contact us and we'll add them.
 [br]
 [br]Working directory will be set to Assetto Corsa folder in Documents." />
                         </StackPanel>
@@ -117,7 +117,7 @@
 [br] [b][mono]{track}[/mono][/b] — track's name;
 [br] [b][mono]{track.id}[/mono][/b] — track's id.
 [br]
-[br]If you need some other values, please, contact us and we’ll add them.
+[br]If you need some other values, please, contact us and we'll add them.
 [br]
 [br]Working directory will be set to Assetto Corsa folder in Documents." />
                         </StackPanel>
@@ -126,6 +126,15 @@
                 <Label>Post-race event command:</Label>
                 <TextBox Text="{Binding Drive.PostCommand}" attached:WatermarkService.Watermark="None" />
             </DockPanel>
+
+            <CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}"
+                    ToolTip="I highly recommend to enable Magick.NET first — with it, result quality will be higher">
+                <Label>Automatically convert screenshots from BMP-format to JPEG on exit</Label>
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Drive.WeatherSpecificClouds}" ToolTip="Of course, only temporary">
+                <Label>Replace clouds by weather’s clouds if exist</Label>
+            </CheckBox>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

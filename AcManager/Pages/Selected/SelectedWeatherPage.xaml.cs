@@ -1,14 +1,18 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using AcManager.About;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
@@ -21,6 +25,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 using SharpCompress.Common;
 using SharpCompress.Writer;
 
@@ -129,15 +134,21 @@ namespace AcManager.Pages.Selected {
             };
             #endregion
 
+            private const long SharingSizeLimit = 2 * 1024 * 1024;
+
             private AsyncCommand _shareCommand;
 
             public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async o => {
                 byte[] data = null;
 
                 try {
-                    if (new FileInfo(SelectedObject.IniFilename).Length > 10000 ||
-                            new FileInfo(SelectedObject.ColorCurvesIniFilename).Length > 5000) {
-                        NonfatalError.Notify("Can’t share weather", "Files are too big.");
+                    if (!File.Exists(SelectedObject.IniFilename)) {
+                        NonfatalError.Notify("Can’t share weather", $"File “{Path.GetFileName(SelectedObject.IniFilename)}” is missing.");
+                        return;
+                    }
+
+                    if (!File.Exists(SelectedObject.ColorCurvesIniFilename)) {
+                        NonfatalError.Notify("Can’t share weather", $"File “{Path.GetFileName(SelectedObject.ColorCurvesIniFilename)}” is missing.");
                         return;
                     }
                     
@@ -146,11 +157,27 @@ namespace AcManager.Pages.Selected {
                             using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
                                 writer.Write("weather.ini", SelectedObject.IniFilename);
                                 writer.Write("colorCurves.ini", SelectedObject.ColorCurvesIniFilename);
+
+                                if (File.Exists(SelectedObject.PreviewImage)) {
+                                    writer.Write("preview.jpg", SelectedObject.PreviewImage);
+                                }
+
+                                var clouds = Path.Combine(SelectedObject.Location, "clouds");
+                                if (Directory.Exists(clouds)) {
+                                    foreach (var cloud in Directory.GetFiles(clouds, "*.dds")) {
+                                        writer.Write(FileUtils.GetRelativePath(cloud, SelectedObject.Location), cloud);
+                                    }
+                                }
                             }
 
                             data = memory.ToArray();
                         }
                     });
+
+                    if (data.Length > SharingSizeLimit) {
+                        NonfatalError.Notify("Can’t share weather", $"Files are too big. Limit is {SharingSizeLimit.ToReadableSize()}.");
+                        return;
+                    }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t share weather", "Make sure files are readable.", e);
                     return;
@@ -164,7 +191,9 @@ namespace AcManager.Pages.Selected {
 
             public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(o => {
                 SelectedObject.SaveCommand.Execute(null);
-                return QuickDrive.RunAsync(weatherId: SelectedObject.Id);
+
+                int time;
+                return QuickDrive.RunAsync(weatherId: SelectedObject.Id, time: FlexibleParser.TryParseTime(o as string, out time) ? time : (int?)null);
             }, o => SelectedObject.Enabled));
 
             private ICommand _viewTemperatureReadmeCommand;
@@ -180,6 +209,76 @@ The equation used is:
 
 Change the 1 values in (((-10*1)*x)+10*1) to see the results in your graphs.
 Accepted values are from -1 to 1.");
+            }));
+
+            private const string KeyUpdatePreviewMessageShown = "swp.upms";
+
+            private AsyncCommand _updatePreviewCommand;
+
+            public AsyncCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new AsyncCommand(async o => {
+                if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
+                    UpdatePreviewDirectCommand.Execute(o);
+                    return;
+                }
+
+                if (!ValuesStorage.GetBool(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
+                        ImportantTips.Entries.GetByIdOrDefault("trackPreviews")?.Content, "How-To", MessageBoxButton.OK) !=
+                        MessageBoxResult.OK) {
+                    return;
+                }
+
+                var directory = FileUtils.GetDocumentsScreensDirectory();
+                var shots = Directory.GetFiles(directory);
+
+                await QuickDrive.RunAsync(weatherId: SelectedObject.Id);
+                if (ScreenshotsConverter.CurrentConversion?.IsCompleted == false) {
+                    await ScreenshotsConverter.CurrentConversion;
+                }
+
+                var newShots = Directory.GetFiles(directory).Where(x => !shots.Contains(x) && (
+                        x.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                                x.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                                x.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))).ToList();
+
+                if (!newShots.Any()) {
+                    NonfatalError.Notify("Can’t update preview", "You were supposed to make at least one screenshot.");
+                    return;
+                }
+
+                ValuesStorage.Set(KeyUpdatePreviewMessageShown, true);
+
+                var shot = new ImageViewer(newShots) {
+                    Model = {
+                        MaxImageHeight = 575d,
+                        MaxImageWidth = 1022d
+                    }
+                }.ShowDialogInSelectFileMode();
+                if (shot == null) return;
+
+                try {
+                    ImageUtils.ApplyPreview(shot, SelectedObject.PreviewImage, 1022d, 575d);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t update preview", e);
+                }
+            }, o => SelectedObject.Enabled));
+
+            private RelayCommand _updatePreviewDirectCommand;
+
+            public RelayCommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new RelayCommand(o => {
+                var dialog = new OpenFileDialog {
+                    Filter = FileDialogFilters.ImagesFilter,
+                    Title = "Select New Preview Image",
+                    InitialDirectory = FileUtils.GetDocumentsScreensDirectory(),
+                    RestoreDirectory = true
+                };
+
+                if (dialog.ShowDialog() == true) {
+                    try {
+                        ImageUtils.ApplyPreview(dialog.FileName, SelectedObject.PreviewImage, 1022d, 575d);
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can’t update preview", e);
+                    }
+                }
             }));
         }
 
@@ -235,8 +334,12 @@ Accepted values are from -1 to 1.");
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(ToggleEditModeCommand, new KeyGesture(Key.E, ModifierKeys.Control)),
-                new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.D1, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = "9:00" },
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.D2, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = "12:00" },
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = "15:00" },
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = "18:00" }
             });
             InitializeComponent();
 

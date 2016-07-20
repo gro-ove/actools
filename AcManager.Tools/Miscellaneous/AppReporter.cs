@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -12,6 +13,7 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Miscellaneous {
     public class AppReporter {
+        [Localizable(false)]
         public static void SendLogs(string message = null) {
             var tempFilename = FilesStorage.Instance.GetTemporaryFilename("Logs.zip");
             var logsDirectory = FilesStorage.Instance.GetDirectory("Logs");
@@ -57,7 +59,7 @@ namespace AcManager.Tools.Miscellaneous {
                     Logging.Warning("Can’t attach Arguments.txt: " + e);
                 }
 
-                foreach (var fileInfo in new DirectoryInfo(logsDirectory).GetFiles("*.txt").Where(x => x.Length < 100000)
+                foreach (var fileInfo in new DirectoryInfo(logsDirectory).GetFiles("*.txt").Where(x => x.Length < 2000000)
                         .OrderBy(x => -x.CreationTime.ToUnixTimestamp()).Take(35)) {
                     try {
                         zip.CreateEntryFromFile(fileInfo.FullName, "Logs/" + fileInfo.Name, CompressionLevel.Optimal);

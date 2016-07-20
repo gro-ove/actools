@@ -25,6 +25,8 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Navigation;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive {
@@ -255,6 +257,8 @@ namespace AcManager.Pages.Drive {
                     _realConditionsTimezones = value;
                     OnPropertyChanged();
                     SaveLater();
+
+                    TryToSetRealTime();
                 }
             }
 
@@ -348,9 +352,12 @@ namespace AcManager.Pages.Drive {
             private class SaveableData {
                 public Uri Mode;
                 public string ModeData, CarId, TrackId, WeatherId, TrackPropertiesPreset;
-                public bool RealConditions, RealConditionsTimezones, RealConditionsLighting;
+                public bool RealConditions, RealConditionsLighting;
                 public double Temperature;
                 public int Time, TimeMultipler;
+
+                [JsonProperty("rcTimezones")]
+                public bool? RealConditionsTimezones;
             }
 
             private readonly ISaveHelper _saveable;
@@ -363,12 +370,14 @@ namespace AcManager.Pages.Drive {
             }
 
             private readonly string _carSetupId, _weatherId;
+            private readonly int? _forceTime;
 
             internal QuickDriveViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null,
-                    TrackBaseObject trackObject = null, string carSetupId = null, string weatherId = null, bool savePreset = false) {
+                    TrackBaseObject trackObject = null, string carSetupId = null, string weatherId = null, int? time = null, bool savePreset = false) {
                 _uiMode = uiMode;
                 _carSetupId = carSetupId;
                 _weatherId = weatherId;
+                _forceTime = time;
 
                 _saveable = new SaveHelper<SaveableData>(KeySaveable, () => new SaveableData {
                     RealConditions = RealConditions,
@@ -388,7 +397,7 @@ namespace AcManager.Pages.Drive {
                     TimeMultipler = TimeMultipler,
                 }, o => {
                     RealConditions = _weatherId == null && o.RealConditions;
-                    RealConditionsTimezones = o.RealConditionsTimezones;
+                    RealConditionsTimezones = o.RealConditionsTimezones ?? true;
                     RealConditionsLighting = o.RealConditionsLighting;
 
                     if (o.Mode != null) SelectedMode = o.Mode != null && o.Mode.OriginalString.Contains('_') ? o.Mode : SelectedMode;
@@ -411,7 +420,7 @@ namespace AcManager.Pages.Drive {
                     Time = o.Time;
                     TimeMultipler = o.TimeMultipler;
                 }, () => {
-                    RealConditionsTimezones = false;
+                    RealConditionsTimezones = true;
                     RealConditionsLighting = false;
                     RealConditions = false;
 
@@ -527,7 +536,7 @@ namespace AcManager.Pages.Drive {
                     var now = DateTime.Now;
                     var time = now.Hour * 60 * 60 + now.Minute * 60 + now.Second;
 
-                    if (_selectedTrackGeoTags == null || _selectedTrackGeoTags == InvalidGeoTagsEntry) {
+                    if (_selectedTrackGeoTags == null || _selectedTrackGeoTags == InvalidGeoTagsEntry || !RealConditionsTimezones) {
                         TryToSetTime(time);
                         return;
                     }
@@ -681,7 +690,7 @@ namespace AcManager.Pages.Drive {
                         AmbientTemperature = Temperature,
                         RoadTemperature = RoadTemperature,
 
-                        SunAngle = Game.ConditionProperties.GetSunAngle(Time),
+                        SunAngle = Game.ConditionProperties.GetSunAngle(_forceTime ?? Time),
                         TimeMultipler = TimeMultipler,
                         CloudSpeed = 0.2,
 
@@ -744,8 +753,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public static async Task<bool> RunAsync(CarObject car = null, string carSkinId = null, TrackBaseObject track = null, string carSetupId = null,
-                string weatherId = null) {
-            var model = new QuickDriveViewModel(string.Empty, false, car, carSkinId, track, carSetupId, weatherId);
+                string weatherId = null, int? time = null) {
+            var model = new QuickDriveViewModel(string.Empty, false, car, carSkinId, track, carSetupId, weatherId, time);
             if (!model.GoCommand.CanExecute(null)) return false;
             await model.Go();
             return true;

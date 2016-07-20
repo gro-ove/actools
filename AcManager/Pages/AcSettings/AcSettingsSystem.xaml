@@ -13,23 +13,31 @@
                 <mui:ValueLabel Value="{Binding System.SimulationValue}" Postfix="%">Simulation value</mui:ValueLabel>
                 <Slider Minimum="0" Maximum="100" Value="{Binding System.SimulationValue}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
-            
-            <CheckBox IsChecked="{Binding System.Logging}">
-                <Label>Logging (recommended)</Label>
+
+            <CheckBox IsChecked="{Binding System.DeveloperApps}">
+                <Label>Developer apps</Label>
             </CheckBox>
             
             <CheckBox IsChecked="{Binding System.AllowFreeCamera}" ToolTip="Press F7 to toggle free camera mode">
                 <Label>Allow free camera</Label>
             </CheckBox>
-            
+
+            <CheckBox IsChecked="{Binding System.Logging}">
+                <Label>Logging (recommended)</Label>
+            </CheckBox>
+
             <DockPanel>
                 <Label>Screenshots format:</Label>
                 <ComboBox ItemsSource="{Binding System.ScreenshotFormats}" SelectedItem="{Binding System.ScreenshotFormat}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding System.DeveloperApps}">
-                <Label>Developer apps</Label>
-            </CheckBox>
+            <Grid Margin="0 20 0 8">
+                <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+                <StackPanel Margin="8">
+                    <TextBlock Style="{StaticResource Label}">Want the best screenshots quality?</TextBlock>
+                    <TextBlock TextWrapping="Wrap">Switch to BMP, install Magick.NET plugin and don’t forget to enable automatic conversion on Settings/Drive page.</TextBlock>
+                </StackPanel>
+            </Grid>
 
             <!--proximity indicator-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}">Proximity indicator</TextBlock>

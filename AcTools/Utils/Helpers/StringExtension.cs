@@ -29,6 +29,23 @@ namespace AcTools.Utils.Helpers {
             return currentVersion.CompareAsVersionTo(checkableVersion) < 0;
         }
 
+        public static string ForceReplace(this string s, string oldValue, string newValue) {
+            var index = s.IndexOf(oldValue, StringComparison.CurrentCulture);
+            if (index == -1) throw new Exception("Old value not found");
+            return s.Substring(0, index) + newValue + s.Substring(index + oldValue.Length);
+        }
+
+        public static string ForceReplace(this string s, string oldValue, string newValue, StringComparison comparison) {
+            var index = s.IndexOf(oldValue, comparison);
+            if (index == -1) throw new Exception("Old value not found");
+            return s.Substring(0, index) + newValue + s.Substring(index + oldValue.Length);
+        }
+
+        public static string Replace(this string s, string oldValue, string newValue, StringComparison comparison) {
+            var index = s.IndexOf(oldValue, comparison);
+            return index != -1 ? s.Substring(0, index) + newValue + s.Substring(index + oldValue.Length) : s;
+        }
+
         public static bool Contains(this string s, string sub, StringComparison comparison) {
             return s.IndexOf(sub, comparison) != -1;
         }

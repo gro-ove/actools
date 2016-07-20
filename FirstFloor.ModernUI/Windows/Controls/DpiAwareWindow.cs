@@ -112,12 +112,49 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SaveLocationAndSize();
         }
 
+        public static readonly DependencyPropertyKey ActualLeftPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualLeft), typeof(double),
+                typeof(DpiAwareWindow), new PropertyMetadata(0d));
+
+        public static readonly DependencyProperty ActualLeftProperty = ActualLeftPropertyKey.DependencyProperty;
+
+        public double ActualLeft => (double)GetValue(ActualLeftProperty);
+
+        public static readonly DependencyPropertyKey ActualTopPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualTop), typeof(double),
+                typeof(DpiAwareWindow), new PropertyMetadata(0d));
+
+        public static readonly DependencyProperty ActualTopProperty = ActualTopPropertyKey.DependencyProperty;
+
+        public double ActualTop => (double)GetValue(ActualTopProperty);
+
+        private void UpdateActualLocation() {
+            if (WindowState == WindowState.Maximized) {
+                var rect = GetWindowRectangle();
+                SetValue(ActualTopPropertyKey, (double)rect.Top);
+                SetValue(ActualLeftPropertyKey, (double)rect.Left);
+            } else {
+                SetValue(ActualTopPropertyKey, Top);
+                SetValue(ActualLeftPropertyKey, Left);
+            }
+        }
+
         protected virtual void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             SaveLocationAndSize();
+            UpdateActualLocation();
+        }
+
+        [DllImport(@"user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetWindowRect(IntPtr hWnd, out Win32Rect lpWindowRect);
+        
+        private Win32Rect GetWindowRectangle() {
+            Win32Rect rect;
+            GetWindowRect(new WindowInteropHelper(this).Handle, out rect);
+            return rect;
         }
 
         protected virtual void OnStateChanged(object sender, EventArgs e) {
             SaveLocationAndSize();
+            UpdateActualLocation();
         }
 
         /// <summary>
@@ -165,12 +202,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             // Marshal the value in the lParam into a Rect.
-            var newDisplayRect = (RECT)Marshal.PtrToStructure(lParam, typeof(RECT));
+            var newDisplayRect = (Win32Rect)Marshal.PtrToStructure(lParam, typeof(Win32Rect));
 
             // Set the Window’s position & size.
             var matrix = _source.CompositionTarget.TransformFromDevice;
-            var ul = matrix.Transform(new Vector(newDisplayRect.left, newDisplayRect.top));
-            var hw = matrix.Transform(new Vector(newDisplayRect.right - newDisplayRect.left, newDisplayRect.bottom - newDisplayRect.top));
+            var ul = matrix.Transform(new Vector(newDisplayRect.Left, newDisplayRect.Top));
+            var hw = matrix.Transform(new Vector(newDisplayRect.Right - newDisplayRect.Left, newDisplayRect.Bottom - newDisplayRect.Top));
             Left = ul.X;
             Top = ul.Y;
             UpdateWindowSize(hw.X, hw.Y);
@@ -303,10 +340,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private const int GwlStyle = -16;
         private const int WsDisabled = 0x08000000;
 
-        [DllImport("user32.dll")]
+        [DllImport(@"user32.dll")]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        [DllImport("user32.dll")]
+        [DllImport(@"user32.dll")]
         private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         private bool _nativeEnabled;
@@ -358,9 +395,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             RescaleIfNeeded();
 
-            var locationKey = key + ".l";
-            var sizeKey = key + ".s";
-            var maximizedKey = key + ".m";
+            var locationKey = key + @".l";
+            var sizeKey = key + @".s";
+            var maximizedKey = key + @".m";
 
             var area = Screen.PrimaryScreen.WorkingArea;
             var location = ValuesStorage.GetPoint(locationKey, new Point(Left, Top));
@@ -381,9 +418,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             RescaleIfNeeded();
 
-            var locationKey = key + ".l";
-            var sizeKey = key + ".s";
-            var maximizedKey = key + ".m";
+            var locationKey = key + @".l";
+            var sizeKey = key + @".s";
+            var maximizedKey = key + @".m";
 
             ValuesStorage.Set(locationKey, new Point(Left, Top));
             if (ResizeMode == ResizeMode.CanResize || ResizeMode == ResizeMode.CanResizeWithGrip) {

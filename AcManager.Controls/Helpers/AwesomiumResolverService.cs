@@ -8,30 +8,24 @@ using FirstFloor.ModernUI.Helpers;
 namespace AcManager.Controls.Helpers {
     public static class AwesomiumResolverService {
         public static bool IsInitialized => _awesomiumPath != null;
-
-        #region Fields
+        
         private const string DllExtension = ".dll";
         private static readonly string[] Dependencies;
         private static readonly string[] Resources;
         private static string _awesomiumPath;
-        #endregion
 
-        #region Ctor
         static AwesomiumResolverService() {
             Dependencies = new [] {
                 "awesomium.core",
-                "awesomium.windows.controls",
-                "awesomium.windows.forms"
+                "awesomium.windows.controls"
             };
 
             Resources = new [] {
-                "awesomium.core.Resources",
-                "awesomium.windows.controls.Resources"
+                "awesomium.core.resources",
+                "awesomium.windows.controls.resources"
             };
         }
-        #endregion
 
-        #region Methods
         /// <summary>
         /// Initializes and activates the <see cref="AwesomiumResolverService"/>.
         /// </summary>
@@ -73,30 +67,28 @@ namespace AcManager.Controls.Helpers {
             _awesomiumPath = null;
             AppDomain.CurrentDomain.AssemblyResolve -= ResolveAwesomium;
         }
-        #endregion
-
-        #region Event Handlers
+        
         private static Assembly ResolveAwesomium(object sender, ResolveEventArgs args) {
             var unresolved = args.Name.ToLower();
             var resourcesDll = Resources.SingleOrDefault(item => unresolved.StartsWith(item));
 
             if (!string.IsNullOrEmpty(resourcesDll)) {
                 var resourceId = CultureInfo.CurrentUICulture.IetfLanguageTag;
-
-                if (string.Compare(resourceId, "en-US", StringComparison.OrdinalIgnoreCase) != 0) {
-                    string resourcesPath = $"{_awesomiumPath}{resourceId}{Path.DirectorySeparatorChar}{resourcesDll}{DllExtension}";
-
-                    if (File.Exists(resourcesPath))
+                if (!string.Equals(resourceId, "en-US", StringComparison.OrdinalIgnoreCase)) {
+                    var resourcesPath = $"{_awesomiumPath}{resourceId}{Path.DirectorySeparatorChar}{resourcesDll}{DllExtension}";
+                    if (File.Exists(resourcesPath)) {
                         return Assembly.LoadFrom(resourcesPath);
+                    }
                 }
+
+                return null;
             }
 
             var dependencyDll = Dependencies.SingleOrDefault(item => unresolved.StartsWith(item));
-
             if (string.IsNullOrEmpty(dependencyDll)) return null;
-            string dependencyPath = $"{_awesomiumPath}{Path.DirectorySeparatorChar}{dependencyDll}{DllExtension}";
+
+            var dependencyPath = $"{_awesomiumPath}{Path.DirectorySeparatorChar}{dependencyDll}{DllExtension}";
             return File.Exists(dependencyPath) ? Assembly.LoadFrom(dependencyPath) : null;
         }
-        #endregion
     }
 }

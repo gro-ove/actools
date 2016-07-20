@@ -7,6 +7,7 @@ namespace AcManager.Pages.Selected {
     public class SelectedAcObjectPage : UserControl {
         public AcCommonObject SelectedAcObject { get; private set; }
 
+        [UsedImplicitly]
         public SelectedAcObjectPage() { }
 
         protected void InitializeAcObjectPage([NotNull] ISelectedAcObjectViewModel model) {

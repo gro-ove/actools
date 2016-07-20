@@ -196,6 +196,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         [Obsolete]
         protected void OnImageChanged(string propertyName) {
+            OnPropertyChanged(propertyName);
             BetterImage.ReloadImage((string)GetType().GetProperty(propertyName).GetValue(this, null));
         }
 

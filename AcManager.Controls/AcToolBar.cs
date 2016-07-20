@@ -34,12 +34,12 @@ namespace AcManager.Controls {
         }
 
         #region Toggling attributes
-        public static readonly DependencyProperty IsTogglablerProperty = DependencyProperty.Register("IsTogglable", typeof(bool),
+        public static readonly DependencyProperty IsTogglableProperty = DependencyProperty.Register("IsTogglable", typeof(bool),
             typeof(AcToolBar), new PropertyMetadata());
-
+        
         public bool IsTogglable {
-            get { return (bool)GetValue(IsTogglablerProperty); }
-            set { SetValue(IsTogglablerProperty, value); }
+            get { return (bool)GetValue(IsTogglableProperty); }
+            set { SetValue(IsTogglableProperty, value); }
         }
 
         public static readonly DependencyProperty IsActiveProperty = DependencyProperty.Register("IsActive", typeof(bool),

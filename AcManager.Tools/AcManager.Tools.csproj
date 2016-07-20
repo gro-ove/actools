@@ -139,7 +139,9 @@
     <Compile Include="Filters\ReplayObjectTester.cs" />
     <Compile Include="Filters\TrackObjectTester.cs" />
     <Compile Include="Filters\UniqueAcObjectTester.cs" />
+    <Compile Include="GameProperties\ScreenshotsConverter.cs" />
     <Compile Include="GameProperties\RaceCommandExecutor.cs" />
+    <Compile Include="GameProperties\ReplayCommandExecutor.cs" />
     <Compile Include="GameProperties\RsrMark.cs" />
     <Compile Include="GameProperties\SrsMark.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
@@ -154,7 +156,6 @@
     <Compile Include="Helpers\AcSettingsHolder_Audio.cs" />
     <Compile Include="Helpers\AcSettingsHolder_CameraOnboard.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Gameplay.cs" />
-    <Compile Include="Helpers\AcSettingsHolder_Python.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Forms.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Replay.cs" />
     <Compile Include="Helpers\AcSettingsHolder_Graphics.cs" />
@@ -218,7 +219,7 @@
     <Compile Include="Managers\Presets\ISavedPresetEntry.cs" />
     <Compile Include="Managers\Presets\SavedPresetEntry.cs" />
     <Compile Include="Managers\PythonAppsManager.cs" />
-    <Compile Include="Managers\ReplaysExtensionSetter.cs" />
+    <Compile Include="GameProperties\ReplaysExtensionSetter.cs" />
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
     <Compile Include="Miscellaneous\SharingHelper.cs" />
@@ -243,6 +244,7 @@
     <Compile Include="SemiGui\IGameUiFactory.cs" />
     <Compile Include="SemiGui\UserCancelledException.cs" />
     <Compile Include="SemiGui\VariablesReplacement.cs" />
+    <Compile Include="SemiGui\WeatherSpecificCloudsHelper.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />
     <Compile Include="Helpers\Api\CmApiProvider.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider_Lan.cs" />

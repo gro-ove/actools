@@ -2,7 +2,7 @@
 id: trackPreviews
 limited: true
 
-If you want to generate a new preview image for any track, press “Update Preview” button on the track’s page in Content tab. Race will be started as usual, but instead of driving you need to make some picturesque shots (you’ll be able to choose one of them later).
+If you want to generate a new preview image for any track or weather, press “Update Preview” button on the its in Content tab. Race will be started as usual, but instead of driving you need to make some picturesque shots (you’ll be able to choose one of them later).
 
 Hints:
  • Press F8 to make a shot;

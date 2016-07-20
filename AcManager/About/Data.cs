@@ -4,18 +4,6 @@ using System.Linq;
 namespace AcManager.About {
     public static class ImportantTips {
         public static readonly PieceOfInformation[] Entries = new []{
-            new PieceOfInformation(@"21_1095401383_1831013213", @"trackPreviews", @"Track Previews How-To", null, @"If you want to generate a new preview image for any track, press “Update Preview” button on the track’s page in Content tab. Race will be started as usual, but instead of driving you need to make some picturesque shots (you’ll be able to choose one of them later).
-
-Hints:
- • Press F8 to make a shot;
- • Press F7 to switch to a Free Camera mode (you can enable it in AC settings);
- • In Free Camera mode use arrows to move camera around; also you may hold Ctrl or Shift to adjust its speed;
- • And, as usual, PageUp/PageDown allow to tune exposure;
- • App will cut and resize them to match Kunos previews automatically.
-
- [img=""http://i.imgur.com/LzLLjAw.png|355""]Example[/img]
-
-Good luck!", true, false),
             new PieceOfInformation(@"22_-1950881468_1645627313", null, @"Command-Line Arguments", null, @"CM has a bunch of special options you can set by using command-line arguments. Or just create a new [i]Arguments.txt[/i] file in [i]…\AppData\Local\AcTools Content Manager[/i] and write them in it (one argument per line).
 
  [img=""http://i.imgur.com/qO7oOVn.png|240""]Example of that file[/img]
@@ -66,6 +54,27 @@ CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends o
 [s]Since AC 1.6 SSE stoped working, and other two (Tricky and Starter+) require write-access to root AC folder, which could be unavailable. Also, both of them require the default launcher (AssettoCorsa.exe) to be replaced, and it could cause some troubles.
 
 So, I’m asking Kunos to add some official support for custom launchers. [url=""http://www.assettocorsa.net/forum/index.php?threads/alternative-launchers-official-support.32894/""]Please, show that you’re interested in it![/url][/s]", false, true),
+            new PieceOfInformation(@"21_1095401383_1831013213", @"trackPreviews", @"Track Previews How-To", null, @"If you want to generate a new preview image for any track or weather, press “Update Preview” button on the its in Content tab. Race will be started as usual, but instead of driving you need to make some picturesque shots (you’ll be able to choose one of them later).
+
+Hints:
+ • Press F8 to make a shot;
+ • Press F7 to switch to a Free Camera mode (you can enable it in AC settings);
+ • In Free Camera mode use arrows to move camera around; also you may hold Ctrl or Shift to adjust its speed;
+ • And, as usual, PageUp/PageDown allow to tune exposure;
+ • App will cut and resize them to match Kunos previews automatically.
+
+ [img=""http://i.imgur.com/LzLLjAw.png|355""]Example[/img]
+
+Good luck!", true, false),
+            new PieceOfInformation(@"23_1914836418_-1434887877", null, @"Custom Weather’s Clouds", null, @"Now you can set special clouds for any weather!
+
+ [img=""http://i.imgur.com/4HIvuzZ.jpg|240""]Example[/img]
+
+Put them into [i]clouds[/i] folder inside weather’s  folder and CM will replace original clouds automatically. And, of course, will revert everything back to normal after the race (or, in case of sudden exit, in a next startup).
+
+Just in case, this behavior could be disabled in Settings/Drive.
+
+Thanks to [url=""http://www.assettocorsa.net/forum/index.php?members/peter-boese.1619/""]@peter boese[/url] for the idea!", false, false),
         }.Where(x => !x.IsHidden).ToArray();
     }
 

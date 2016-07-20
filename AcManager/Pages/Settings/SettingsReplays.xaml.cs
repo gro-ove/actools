@@ -1,4 +1,5 @@
-﻿using AcManager.Tools.Helpers;
+﻿using AcManager.Tools.GameProperties;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Presentation;
 

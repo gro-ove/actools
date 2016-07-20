@@ -1,0 +1,11 @@
+﻿sid: 23_1914836418_-1434887877
+
+Now you can set special clouds for any weather!
+
+ [img="http://i.imgur.com/4HIvuzZ.jpg|240"]Example[/img]
+
+Put them into [i]clouds[/i] folder inside weather’s  folder and CM will replace original clouds automatically. And, of course, will revert everything back to normal after the race (or, in case of sudden exit, in a next startup).
+
+Just in case, this behavior could be disabled in Settings/Drive.
+
+Thanks to [url="http://www.assettocorsa.net/forum/index.php?members/peter-boese.1619/"]@peter boese[/url] for the idea!

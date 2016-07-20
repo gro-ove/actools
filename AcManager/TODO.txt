@@ -506,19 +506,16 @@ fixme:
     - race: last position vs nth position (also last)
     - are all async requests killed by timeout?
     - practice: gold medals
-    - watermark disabling in showroom!
-    - change "Author:" to "Version:" or "URL:" if author is missing
     - SRS: three minutes instead of five
-    - accent color on a fresh start
     - find information dialog
     - smart textbox with version
     - 1ff opponent?!
-    - settins/live: rsr-srs margin
     - fix brands list (removed brands)
 
 todo:
     - shape with triangle at right bottom (audi r8)
-    
+    - change "Author:" to "Version:" or "URL:" if author is missing
+
     - open new links in find information dialog in same tab
     - weather: test button
     - managers: loading progress

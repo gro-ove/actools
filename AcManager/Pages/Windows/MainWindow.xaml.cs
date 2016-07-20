@@ -95,7 +95,7 @@ namespace AcManager.Pages.Windows {
             SettingsHolder.Online.PropertyChanged += Online_PropertyChanged;
 
             if (!OfficialStarterNotification() && PluginsManager.Instance.HasAnyNew()) {
-                Toast.Show("Don’t forget to install some plugins!", "");
+                Toast.Show("Don’t forget to install plugins!", "");
             }
         }
 
@@ -136,7 +136,7 @@ namespace AcManager.Pages.Windows {
             return true;
         }
 
-        private void Live_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void Live_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(SettingsHolder.LiveSettings.RsrEnabled) ||
                     e.PropertyName == nameof(SettingsHolder.LiveSettings.SrsEnabled)) {
                 UpdateLiveTabs();
@@ -292,7 +292,7 @@ namespace AcManager.Pages.Windows {
                           .SetNew(AboutHelper.Instance.HasNewImportantTips);
         }
 
-        private void About_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void About_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(AboutHelper.HasNewReleaseNotes) || e.PropertyName == nameof(AboutHelper.HasNewImportantTips)) {
                 UpdateAboutIsNew();
             }

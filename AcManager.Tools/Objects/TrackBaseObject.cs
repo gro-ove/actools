@@ -211,23 +211,23 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override bool TestIfKunos() {
-            return base.TestIfKunos() || (DataProvider.Instance.KunosContent["tracks"]?.Contains(Id) ?? false);
+            return base.TestIfKunos() || (DataProvider.Instance.KunosContent[@"tracks"]?.Contains(Id) ?? false);
         }
 
         public override void SaveData(JObject json) {
             base.SaveData(json);
             
-            json["city"] = City;
+            json[@"city"] = City;
 
             if (GeoTags != null) {
-                json["geotags"] = GeoTags.ToJObject();
+                json[@"geotags"] = GeoTags.ToJObject();
             } else {
-                json.Remove("geotags");
+                json.Remove(@"geotags");
             }
 
-            json["length"] = SpecsLength;
-            json["width"] = SpecsWidth;
-            json["pitboxes"] = SpecsPitboxes;
+            json[@"length"] = SpecsLength;
+            json[@"width"] = SpecsWidth;
+            json[@"pitboxes"] = SpecsPitboxes;
         }
 
         public string PreviewImage { get; protected set; }

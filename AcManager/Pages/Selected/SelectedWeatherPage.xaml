@@ -3,7 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True"
+                               xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
+                               mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance selected:SelectedWeatherPage+ViewModel}" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -222,8 +223,18 @@
                 <Button Content="Folder" ToolTip="Open weather's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
-                <!--<Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share weather (Ctrl+Page Up)" />-->
-                <Button Content="Test" Command="{Binding TestCommand}" ToolTip="Test weather on track (Ctrl+G)" />
+                <Button Content="Edit Mode" Command="{Binding ToggleEditModeCommand, ElementName=This}" ToolTip="Switch to Edit Mode (Ctrl+E)"
+                        Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                <Button Content="Disable Edit Mode" Command="{Binding ToggleEditModeCommand, ElementName=This}" ToolTip="Switch from Edit Mode (Ctrl+E)"
+                        Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Separator />
+                <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share weather (Ctrl+Page Up)" />
+                <mui:ButtonWithComboBox Content="Test" Command="{Binding TestCommand}" ButtonToolTip="Test weather on track (Ctrl+G)">
+                    <MenuItem Header="9:00" InputGestureText="Ctrl+Alt+1" Command="{Binding TestCommand}" CommandParameter="9:00" />
+                    <MenuItem Header="12:00" InputGestureText="Ctrl+Alt+2" Command="{Binding TestCommand}" CommandParameter="12:00" />
+                    <MenuItem Header="15:00" InputGestureText="Ctrl+Alt+3" Command="{Binding TestCommand}" CommandParameter="15:00" />
+                    <MenuItem Header="18:00" InputGestureText="Ctrl+Alt+4" Command="{Binding TestCommand}" CommandParameter="18:00" />
+                </mui:ButtonWithComboBox>
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
@@ -240,16 +251,20 @@
                     <Button.ToolTip>Clone weather (Ctrl+Shift+D)</Button.ToolTip>
                 </Button>
                 <Separator />
-                <Button Content="Edit Mode" Command="{Binding ToggleEditModeCommand, ElementName=This}" ToolTip="Switch to Edit Mode (Ctrl+E)"
-                        Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="Disable Edit Mode" Command="{Binding ToggleEditModeCommand, ElementName=This}" ToolTip="Switch from Edit Mode (Ctrl+E)"
-                        Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <mui:ButtonWithComboBox Content="Update Preview" Command="{Binding UpdatePreviewCommand}" ButtonToolTip="Update preview (Ctrl+P)">
+                    <MenuItem Header="Without Shooting" ToolTip="Just select existing image" InputGestureText="Ctrl+Alt+P"
+                            Command="{Binding UpdatePreviewDirectCommand}" />
+                </mui:ButtonWithComboBox>
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
         <StackPanel x:Name="Wrapper" Style="{StaticResource SettingsPanel}"
                 Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <mui:BetterImage Margin="0 0 0 12" Filename="{Binding SelectedObject.PreviewImage}" HideBroken="True"
+                        services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1022"
+                        Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
+                
                 <DockPanel>
                     <Label>ID:</Label>
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Id, Mode=OneTime}" />
@@ -270,7 +285,7 @@
                     <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                     <StackPanel Margin="8">
                         <TextBlock Style="{StaticResource Label}">Seems empty?</TextBlock>
-                        <TextBlock>Switch to Edit Mode if you want to modify other weather’s parameters.</TextBlock>
+                        <TextBlock TextWrapping="Wrap">Switch to Edit Mode if you want to modify other weather’s parameters.</TextBlock>
                     </StackPanel>
                 </Grid>
             </StackPanel>

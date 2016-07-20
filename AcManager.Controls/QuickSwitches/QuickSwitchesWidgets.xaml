@@ -81,6 +81,8 @@
         <Path Data="{StaticResource KeyboardIconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" Fill="{DynamicResource ButtonText}"
                 Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
     </DockPanel>
+    <local:QuickSwitchPresetsControl x:Key="WidgetVideoPresets" UserPresetable="{x:Static hs:AcSettingsHolder.VideoPresets}"
+            IconData="{StaticResource VideoSettingsIconData}" ToolTip="Switch between video-settings presets" />
     <local:QuickSwitchComboBox x:Key="WidgetPpFilters" ItemsSource="{Binding LoadedOnlyCollection, Source={x:Static managers:PpFiltersManager.Instance}}"
             SelectedItem="{Binding PostProcessingFilterObject, Source={x:Static hs:AcSettingsHolder.Video}}" IconData="{StaticResource PpFilterIconData}"
             ToolTip="Switch between PP filters" DisplayMemberPath="DisplayName" />

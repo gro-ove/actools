@@ -637,6 +637,33 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _automaticallyConvertBmpToJpg;
+
+            public bool AutomaticallyConvertBmpToJpg {
+                get {
+                    return _automaticallyConvertBmpToJpg ??
+                            (_automaticallyConvertBmpToJpg = ValuesStorage.GetBool("Settings.DriveSettings.AutomaticallyConvertBmpToJpg", false)).Value;
+                }
+                set {
+                    if (Equals(value, _automaticallyConvertBmpToJpg)) return;
+                    _automaticallyConvertBmpToJpg = value;
+                    ValuesStorage.Set("Settings.DriveSettings.AutomaticallyConvertBmpToJpg", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _weatherSpecificClouds;
+
+            public bool WeatherSpecificClouds {
+                get { return _weatherSpecificClouds ?? (_weatherSpecificClouds = ValuesStorage.GetBool("Settings.DriveSettings.WeatherSpecificClouds", true)).Value; }
+                set {
+                    if (Equals(value, _weatherSpecificClouds)) return;
+                    _weatherSpecificClouds = value;
+                    ValuesStorage.Set("Settings.DriveSettings.WeatherSpecificClouds", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static DriveSettings _drive;

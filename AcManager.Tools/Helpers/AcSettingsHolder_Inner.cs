@@ -72,16 +72,15 @@ namespace AcManager.Tools.Helpers {
 
             protected void Reload() {
                 Ini = new IniFile(Filename);
-                _loading = true;
+                IsLoading = true;
                 LoadFromIni();
-                _loading = false;
+                IsLoading = false;
             }
 
             private bool _reloading;
-            private bool _loading;
             private DateTime _lastSaved;
 
-            protected bool IsLoading => _loading;
+            protected bool IsLoading { get; private set; }
 
             protected void IgnoreChangesForAWhile() {
                 _lastSaved = DateTime.Now;
@@ -109,9 +108,9 @@ namespace AcManager.Tools.Helpers {
                         return;
                     }
 
-                    _loading = true;
+                    IsLoading = true;
                     Application.Current.Dispatcher.Invoke(LoadFromIni);
-                    _loading = false;
+                    IsLoading = false;
                 } finally {
                     _reloading = false;
                 }
@@ -146,10 +145,10 @@ namespace AcManager.Tools.Helpers {
             }
 
             protected void ForceSave() {
-                var l = _loading;
-                _loading = false;
+                var l = IsLoading;
+                IsLoading = false;
                 Save();
-                _loading = l;
+                IsLoading = l;
             }
 
             public IniFile Ini;

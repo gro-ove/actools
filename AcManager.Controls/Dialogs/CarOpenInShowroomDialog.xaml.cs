@@ -16,7 +16,7 @@ namespace AcManager.Controls.Dialogs {
     public partial class CarOpenInShowroomDialog {
         public const string PresetableKeyValue = "Showroom";
 
-        public class CarOpenInShowroomDialogViewModel : NotifyPropertyChanged, IUserPresetable {
+        public class ViewModel : NotifyPropertyChanged, IUserPresetable {
             private class SaveableData {
                 public string ShowroomId, FilterId;
                 public double CameraFov;
@@ -30,7 +30,7 @@ namespace AcManager.Controls.Dialogs {
 
             private readonly ISaveHelper _saveable;
 
-            public CarOpenInShowroomDialogViewModel(string serializedPreset, CarObject carObject, string selectedSkinId) {
+            public ViewModel(string serializedPreset, CarObject carObject, string selectedSkinId) {
                 ShowroomsManager.Instance.EnsureLoaded();
                 PpFiltersManager.Instance.EnsureLoaded();
 
@@ -66,7 +66,7 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            public CarOpenInShowroomDialogViewModel(CarObject carObject, string selectedSkinId) : this(null, carObject, selectedSkinId) {
+            public ViewModel(CarObject carObject, string selectedSkinId) : this(null, carObject, selectedSkinId) {
             }
 
             public CarObject SelectedCar { get; set; }
@@ -173,7 +173,7 @@ namespace AcManager.Controls.Dialogs {
                         ShowroomId = SelectedShowroom.Id,
                         CameraFov = CameraFov,
                         DisableSweetFx = DisableSweetFx,
-                        DisableWatermark = DisableSweetFx,
+                        DisableWatermark = DisableWatermark,
                         Filter = ForceFilterAcId ?? SelectedFilter.AcId,
                         UseBmp = false
                     }));
@@ -184,28 +184,28 @@ namespace AcManager.Controls.Dialogs {
             }
         }
 
-        public CarOpenInShowroomDialogViewModel ViewModel => (CarOpenInShowroomDialogViewModel) DataContext;
+        public ViewModel Model => (ViewModel) DataContext;
 
         public CarOpenInShowroomDialog(CarObject carObject, string selectedSkinId) {
             InitializeComponent();
-            DataContext = new CarOpenInShowroomDialogViewModel(carObject, selectedSkinId);
+            DataContext = new ViewModel(carObject, selectedSkinId);
 
             Buttons = new[] { GoButton, CloseButton };
         }
 
         private void CarOpenInShowroomDialog_OnClosing(object sender, CancelEventArgs e) {
             if (!IsResultOk) return;
-            ViewModel.Run();
+            Model.Run();
         }
 
         public static bool Run(CarObject carObject, string selectedSkinId, string filterAcId = null) {
-            return new CarOpenInShowroomDialogViewModel(string.Empty, carObject, selectedSkinId) {
+            return new ViewModel(string.Empty, carObject, selectedSkinId) {
                 ForceFilterAcId = filterAcId
             }.Run();
         }
 
         public static bool RunPreset(string presetFilename, CarObject carObject, string selectedSkinId) {
-            return new CarOpenInShowroomDialogViewModel(File.ReadAllText(presetFilename), carObject, selectedSkinId).Run();
+            return new ViewModel(File.ReadAllText(presetFilename), carObject, selectedSkinId).Run();
         }
     }
 }

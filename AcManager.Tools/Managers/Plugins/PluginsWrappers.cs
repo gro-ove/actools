@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.Plugins {
     public static class PluginsWrappers {
@@ -15,7 +16,9 @@ namespace AcManager.Tools.Managers.Plugins {
 
         public static void Register(IPluginWrapper wrapper) {
             Wrappers.Add(wrapper.Id, wrapper);
+            Logging.Write("here: " + wrapper.Id);
             if (PluginsManager.Instance.IsPluginEnabled(wrapper.Id)) {
+                Logging.Write("enable()");
                 wrapper.Enable();
             }
         }

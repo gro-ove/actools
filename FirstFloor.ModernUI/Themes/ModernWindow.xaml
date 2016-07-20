@@ -31,13 +31,6 @@
                             <SolidColorBrush x:Name="WindowBorderBackground" Color="{DynamicResource WindowBackgroundColor}" />
                         </Border.Background>
 
-                        <Border.Resources>
-                            <Storyboard x:Key="BackgroundAnimation">
-                                <ColorAnimation Storyboard.TargetName="WindowBorderBackground" Storyboard.TargetProperty="Color"
-                                        To="{DynamicResource WindowBackgroundColor}" Duration="0:0:.6" />
-                            </Storyboard>
-                        </Border.Resources>
-
                         <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                             <Grid>
                                 <Grid.LayoutTransform>
@@ -212,9 +205,6 @@
                     </Border>
 
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsActive" Value="True">
-                            <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />
-                        </Trigger>
                         <Trigger Property="IsDimmed" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
@@ -257,6 +247,12 @@
                 <WindowChrome CornerRadius="0" GlassFrameThickness="1" UseAeroCaptionButtons="False" NonClientFrameEdges="None" />
             </Setter.Value>
         </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsActive" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

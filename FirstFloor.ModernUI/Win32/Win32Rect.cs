@@ -2,7 +2,7 @@
 
 namespace FirstFloor.ModernUI.Win32 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct RECT {
-        public int left, top, right, bottom;
+    internal struct Win32Rect {
+        public int Left, Top, Right, Bottom;
     }
 }

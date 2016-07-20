@@ -16,7 +16,11 @@ namespace AcManager.Pages.AcSettings {
 
             public AcSettingsHolder.VideoSettings Video => AcSettingsHolder.Video;
 
+            public AcSettingsHolder.OculusSettings Oculus => AcSettingsHolder.Oculus;
+
             public AcSettingsHolder.GraphicsSettings Graphics => AcSettingsHolder.Graphics;
+
+            public IUserPresetable Presets => AcSettingsHolder.VideoPresets;
 
             private RelayCommand _manageFiltersCommand;
 

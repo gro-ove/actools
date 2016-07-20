@@ -22,15 +22,17 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public override bool HandleChangedFile(string filename) {
-            if (!FileUtils.IsAffected(filename, IniFilename)) return false;
+            if (FileUtils.IsAffected(filename, IniFilename)) {
+                if (!Changed ||
+                        ModernDialog.ShowMessage(Resources.AcObject_ReloadAutomatically_Ini, Resources.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) ==
+                                MessageBoxResult.Yes) {
+                    ReloadIniData();
+                }
 
-            if (!Changed ||
-                    ModernDialog.ShowMessage(Resources.AcObject_ReloadAutomatically_Ini, Resources.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) ==
-                            MessageBoxResult.Yes) {
-                ReloadIniData();
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         public string IniFilename { get; protected set; }

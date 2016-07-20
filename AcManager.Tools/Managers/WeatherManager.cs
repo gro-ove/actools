@@ -15,6 +15,7 @@ namespace AcManager.Tools.Managers {
         }
 
         private static readonly string[] WatchedFiles = {
+            @"preview.jpg",
             @"colorcurves.ini",
             @"weather.ini"
         };

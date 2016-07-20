@@ -49,8 +49,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register("LinkNavigator", typeof(ILinkNavigator), typeof(ModernWindow), new PropertyMetadata(new DefaultLinkNavigator()));
 
-        private Storyboard _backgroundAnimation;
-
         public static RoutedUICommand NavigateTitleLink { get; } = new RoutedUICommand(ModernUI.Resources.NavigateLink, "NavigateTitleLink", typeof(LinkCommands));
 
         /// <summary>
@@ -73,21 +71,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             CommandBindings.Add(new CommandBinding(LinkCommands.NavigateLink, OnNavigateLink, OnCanNavigateLink));
             CommandBindings.Add(new CommandBinding(NavigateTitleLink, OnNavigateTitleLink, OnCanNavigateTitleLink));
 
-            // listen for theme changes
-            AppearanceManager.Current.PropertyChanged += OnAppearanceManagerPropertyChanged;
-
             // ContentSource = DefaultContentSource;
-        }
-
-        /// <summary>
-        /// Raises the System.Windows.Window.Closed event.
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnClosed(EventArgs e) {
-            base.OnClosed(e);
-
-            // detach event handler
-            AppearanceManager.Current.PropertyChanged -= OnAppearanceManagerPropertyChanged;
         }
 
         public event EventHandler<NavigationEventArgs> FrameNavigated;
@@ -116,26 +100,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             _menu = GetTemplateChild("PART_Menu") as ModernMenu;
-
-            // retrieve BackgroundAnimation storyboard
-            var border = GetTemplateChild("WindowBorder") as Border;
-            if (border == null) return;
-
-            _backgroundAnimation = border.Resources["BackgroundAnimation"] as Storyboard;
-            _backgroundAnimation?.Begin();
-
-            // ContentFrame
         }
 
         private void Frame_Navigated(object sender, NavigationEventArgs navigationEventArgs) {
             FrameNavigated?.Invoke(this, navigationEventArgs);
-        }
-
-        private void OnAppearanceManagerPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            // start background animation if theme has changed
-            if (e.PropertyName == "ThemeSource") {
-                _backgroundAnimation?.Begin();
-            }
         }
 
         private void OnCanNavigateTitleLink(object sender, CanExecuteRoutedEventArgs e) {

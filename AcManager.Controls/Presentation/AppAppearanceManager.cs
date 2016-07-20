@@ -213,8 +213,8 @@ namespace AcManager.Controls.Presentation {
         #region Toolbars
         private bool? _popupToolBars;
 
-        public bool? PopupToolBars {
-            get { return _popupToolBars; }
+        public bool PopupToolBars {
+            get { return _popupToolBars ?? false; }
             set {
                 if (_loading) {
                     AppearanceManager.Current.PopupToolBars = value;
@@ -226,7 +226,7 @@ namespace AcManager.Controls.Presentation {
                 _popupToolBars = value;
                 OnPropertyChanged();
                 AppearanceManager.Current.PopupToolBars = value;
-                ValuesStorage.Set(KeyPopupToolBars, value ?? false);
+                ValuesStorage.Set(KeyPopupToolBars, value);
             }
         }
         #endregion

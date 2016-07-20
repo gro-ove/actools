@@ -94,6 +94,10 @@ namespace AcManager.Tools.SemiGui {
                 AcSettingsHolder.Video.EnsureResolutionIsCorrect();
             }
 
+            if (SettingsHolder.Drive.WeatherSpecificClouds) {
+                properties.SetAdditional(new WeatherSpecificCloudsHelper());
+            }
+
             if (raceMode) {
                 PrepareRaceModeImmediateStart(properties);
                 PrepareRaceModeRsr(properties);
@@ -101,7 +105,8 @@ namespace AcManager.Tools.SemiGui {
             }
 
             if (_factory == null) {
-                using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
+                using (ReplaysExtensionSetter.OnlyNewIfEnabled())
+                using (ScreenshotsConverter.OnlyNewIfEnabled()) {
                     if (raceMode) {
                         properties.SetAdditional(new RaceCommandExecutor(properties));
                     } else {
@@ -117,7 +122,8 @@ namespace AcManager.Tools.SemiGui {
                 
                 try {
                     Game.Result result;
-                    using (ReplaysExtensionSetter.OnlyNewIfEnabled()) {
+                    using (ReplaysExtensionSetter.OnlyNewIfEnabled())
+                    using (ScreenshotsConverter.OnlyNewIfEnabled()) {
                         if (raceMode) {
                             properties.SetAdditional(new RaceCommandExecutor(properties));
                         } else {

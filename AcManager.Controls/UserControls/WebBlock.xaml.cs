@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools.Managers.Plugins;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.UserControls {
     public partial class WebBlock {

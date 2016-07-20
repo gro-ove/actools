@@ -9,10 +9,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <awe:WebSessionProvider x:Key="WebSession" DataPath=".\Cache">
-                <core:WebPreferences ShrinkStandaloneImagesToFit="False" SmoothScrolling="True" EnableGPUAcceleration="True" WebGL="True" />
-            </awe:WebSessionProvider>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -22,9 +18,6 @@
                 <Label>Magick.NET leaking:</Label>
                 <Button Command="{Binding MagickNetMemoryLeakingCommand}">Test</Button>
             </DockPanel>
-
-            <awe:WebControl x:Name="WebControl" IsTransparent="True" Source="http://google.ru" Height="700" ViewType="Window"
-                    WebSession="{Binding Source={StaticResource WebSession}}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -160,7 +160,7 @@ namespace AcManager {
             StartupUri = new Uri(Superintendent.Instance.IsReady ?
                     "Pages/Windows/MainWindow.xaml" : "Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
 
-            RegisterUriScheme();
+            BackgroundInitialization();
         }
 
         private void PrepareUi() {
@@ -190,9 +190,10 @@ namespace AcManager {
             }
         }
 
-        private async void RegisterUriScheme() {
+        private async void BackgroundInitialization() {
             await Task.Delay(1500);
             CustomUriSchemeHelper.EnsureRegistered();
+            WeatherSpecificCloudsHelper.RestoreIfReplaced();
         }
 
         private async void DeleteOldLogs() {

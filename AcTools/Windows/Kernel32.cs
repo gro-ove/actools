@@ -30,6 +30,14 @@ namespace AcTools.Windows {
         public static extern bool CreateHardLink(string lpFileName, string lpExistingFileName, IntPtr lpSecurityAttributes);
 
         [DllImport("kernel32.dll")]
+        public static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SymbolicLink dwFlags);
+
+        public  enum SymbolicLink {
+            File = 0,
+            Directory = 1
+        }
+
+        [DllImport("kernel32.dll")]
         public static extern uint GetCurrentThreadId();
 
         [DllImport("kernel32.dll")]

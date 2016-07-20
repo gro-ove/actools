@@ -35,6 +35,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(ShowBrokenProperty, value); }
         }
 
+        public static readonly DependencyProperty HideBrokenProperty = DependencyProperty.Register(nameof(HideBroken), typeof(bool),
+                typeof(BetterImage));
+
+        public bool HideBroken {
+            get { return (bool)GetValue(HideBrokenProperty); }
+            set { SetValue(HideBrokenProperty, value); }
+        }
+
         public static readonly DependencyProperty ClearOnChangeProperty = DependencyProperty.Register(nameof(ClearOnChange), typeof(bool),
                 typeof(BetterImage));
 
@@ -190,7 +198,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [ItemNotNull]
         private static async Task<byte[]> ReadAllBytesAsync(string filename, CancellationToken cancellation = default(CancellationToken)) {
-            if (filename.StartsWith("/")) {
+            if (filename.StartsWith(@"/")) {
                 try {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
                     if (stream != null) {
@@ -339,6 +347,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private Point _offset;
 
         protected override Size MeasureOverride(Size constraint) {
+            if (_current.BitmapSource == null && HideBroken) return new Size();
+
             _size = MeasureArrangeHelper(constraint);
             return new Size(Math.Min(_size.Width, constraint.Width), Math.Min(_size.Height, constraint.Height));
         }
@@ -350,6 +360,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 VerticalContentAlignment == VerticalAlignment.Bottom ? 1d : 0d;
 
         protected override Size ArrangeOverride(Size arrangeSize) {
+            if (_current.BitmapSource == null && HideBroken) return new Size();
+
             _size = MeasureArrangeHelper(arrangeSize);
             _offset = new Point((arrangeSize.Width - _size.Width) * HorizontalContentAlignmentMultipler,
                     (arrangeSize.Height - _size.Height) * VerticalContentAlignmentMultipler);
@@ -358,6 +370,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override void OnRender(DrawingContext dc) {
+            if (_current.BitmapSource == null && HideBroken) return;
+
             dc.DrawRectangle(Background, null, new Rect(new Point(), RenderSize));
             if (_current.BitmapSource != null) {
                 dc.DrawImage(_current.BitmapSource, new Rect(_offset, _size));

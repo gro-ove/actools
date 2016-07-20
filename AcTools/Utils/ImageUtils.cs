@@ -220,5 +220,34 @@ namespace AcTools.Utils {
                 bitmap.Save(destination, ImageFormat.Png);
             }
         }
+
+        public static void ConvertImageMagick(string source, string destination, int quality) {
+            using (var image = new MagickImage(source)) {
+                image.Quality = quality;
+                image.Density = new MagickGeometry(96, 96);
+                if (File.Exists(destination)) {
+                    try {
+                        File.Delete(destination);
+                    } catch (UnauthorizedAccessException) {
+                        Thread.Sleep(200);
+                        File.Delete(destination);
+                    }
+                }
+
+                image.Write(destination);
+            }
+        }
+
+        public static void Convert(string source, string destination, int quality = 95) {
+            if (IsMagickAsseblyLoaded) {
+                ConvertImageMagick(source, destination, quality);
+            } else {
+                var encoder = ImageCodecInfo.GetImageDecoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
+                var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, quality > 85 ? 100L : quality) } };
+                using (var image = Image.FromFile(source)) {
+                    image.Save(destination, encoder, parameters);
+                }
+            }
+        }
     }
 }

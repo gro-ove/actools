@@ -40,7 +40,7 @@ namespace AcManager.Tools.Managers.Online {
 
             public string DisplayDuration => Type == Game.SessionType.Race ?
                     PluralizingConverter.PluralizeExt((int)Duration, Resources.Online_Session_LapsDuration) :
-                    Duration.ReadableTime();
+                    Duration.ToReadableTime();
         }
 
         public class CarEntry {

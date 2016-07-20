@@ -143,7 +143,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image Files|*.jpg;*.jpeg;*.png;*.gif;*.tif|All files (*.*)|*.*.
+        ///   Looks up a localized string similar to Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*.
         /// </summary>
         public static string ImagesFilter {
             get {

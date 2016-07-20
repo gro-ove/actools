@@ -99,8 +99,11 @@ namespace AcManager.Tools.Objects {
         protected override void InitializeLocations() {
             base.InitializeLocations();
             IniFilename = Path.Combine(Location, "weather.ini");
+            PreviewImage = Path.Combine(Location, "preview.jpg");
             ColorCurvesIniFilename = Path.Combine(Location, "colorCurves.ini");
         }
+
+        public string PreviewImage { get; private set; }
 
         public string ColorCurvesIniFilename { get; private set; }
 
@@ -567,18 +570,32 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override bool HandleChangedFile(string filename) {
-            if (!FileUtils.IsAffected(filename, ColorCurvesIniFilename) || !_loadedExtended) return base.HandleChangedFile(filename);
+        public override void Reload() {
+            OnImageChangedValue(PreviewImage);
+            base.Reload();
+        }
 
-            if (!Changed ||
-                    ModernDialog.ShowMessage(Resources.AcObject_ReloadAutomatically_Ini, Resources.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) ==
-                            MessageBoxResult.Yes) {
-                var c = Changed;
-                ReloadColorCurves();
-                Changed = c;
+        public override bool HandleChangedFile(string filename) {
+            if (base.HandleChangedFile(filename)) return true;
+
+            if (FileUtils.IsAffected(filename, PreviewImage)) {
+                OnImageChangedValue(PreviewImage);
+                return true;
             }
 
-            return true;
+            if (_loadedExtended && FileUtils.IsAffected(filename, ColorCurvesIniFilename)) {
+                if (!Changed ||
+                        ModernDialog.ShowMessage(Resources.AcObject_ReloadAutomatically_Ini, Resources.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) ==
+                                MessageBoxResult.Yes) {
+                    var c = Changed;
+                    ReloadColorCurves();
+                    Changed = c;
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         public override int CompareTo(AcPlaceholderNew o) {

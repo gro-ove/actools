@@ -270,6 +270,8 @@ namespace AcTools.Processes {
             }
 
             internal void RevertChanges() {
+                AdditionalPropertieses.OfType<RaceIniProperties>().OfType<IDisposable>().DisposeEverything();
+
                 _disposeLater?.DisposeEverything();
                 if (_removeLater == null) return;
 

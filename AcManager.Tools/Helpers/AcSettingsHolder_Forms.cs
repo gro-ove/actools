@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers {
@@ -94,6 +96,16 @@ namespace AcManager.Tools.Helpers {
             }
 
             protected abstract void SetToIni(IniFile ini);
+
+            protected override void Save() {
+                base.Save();
+
+                if (!IsLoading) {
+                    InvokeChanged();
+                }
+            }
+
+            protected abstract void InvokeChanged();
         }
 
         public class FormsSettings : IniPresetableSettings {
@@ -126,7 +138,6 @@ namespace AcManager.Tools.Helpers {
 
             private void Entry_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
                 Save();
-                _appsPresets?.InvokeChanged();
             }
 
             protected override void SetToIni(IniFile ini) {
@@ -139,11 +150,62 @@ namespace AcManager.Tools.Helpers {
                     section.Set("SCALE", entry.Scale.ToDoublePercentage());
                 }
             }
+
+            protected override void InvokeChanged() {
+                _appsPresets?.InvokeChanged();
+            }
         }
 
         private static FormsSettings _forms;
 
         public static FormsSettings Forms => _forms ?? (_forms = new FormsSettings());
+
+        public class PythonSettings : IniPresetableSettings {
+            internal PythonSettings() : base(@"python") { }
+
+            private Dictionary<string, bool> _apps;
+
+            public IReadOnlyDictionary<string, bool> Apps => _apps;
+
+            public bool IsActivated([NotNull] string appId) {
+                if (appId == null) {
+                    throw new ArgumentNullException(nameof(appId));
+                }
+
+                bool result;
+                return _apps.TryGetValue(appId.ToLowerInvariant(), out result) && result;
+            }
+
+            public void SetActivated([NotNull] string appId, bool value) {
+                if (appId == null) {
+                    throw new ArgumentNullException(nameof(appId));
+                }
+
+                _apps[appId.ToLowerInvariant()] = value;
+                Save();
+            }
+
+            protected override void LoadFromIni() {
+                _apps = Ini.Where(x => x.Value.ContainsKey(@"ACTIVE")).ToDictionary(
+                        x => x.Key.ToLowerInvariant(),
+                        x => x.Value.GetBool("ACTIVE", false));
+                OnPropertyChanged(nameof(Apps));
+            }
+
+            protected override void SetToIni(IniFile ini) {
+                foreach (var app in Apps) {
+                    ini[app.Key.ToUpperInvariant()].Set("ACTIVE", app.Value);
+                }
+            }
+
+            protected override void InvokeChanged() {
+                _appsPresets?.InvokeChanged();
+            }
+        }
+
+        private static PythonSettings _python;
+
+        public static PythonSettings Python => _python ?? (_python = new PythonSettings());
 
         private class AppsPresetsInner : IUserPresetable {
             private class Saveable {
@@ -168,6 +230,7 @@ namespace AcManager.Tools.Helpers {
             public event EventHandler Changed;
 
             public void InvokeChanged() {
+                if (_python == null || _forms == null) return;
                 Changed?.Invoke(this, EventArgs.Empty);
             }
 

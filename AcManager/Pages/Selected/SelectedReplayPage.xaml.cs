@@ -139,7 +139,7 @@ namespace AcManager.Pages.Selected {
                                 }
 
                                 data = memory.ToArray();
-                                Logging.Write($"Compressed: {file.Length.ReadableSize()} to {data.LongLength.ReadableSize()}");
+                                Logging.Write($"Compressed: {file.Length.ToReadableSize()} to {data.LongLength.ToReadableSize()}");
                             }
                         });
 

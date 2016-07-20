@@ -328,9 +328,14 @@ namespace AcTools.Utils {
             return s.Length > 0 && (s[0] == Path.DirectorySeparatorChar || s[0] == Path.AltDirectorySeparatorChar);
         }
 
-        public static void Hardlink([NotNull] string source, [NotNull] string destination) {
+        public static void Hardlink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (destination == null) throw new ArgumentNullException(nameof(destination));
+
+            if (overwrite && File.Exists(destination)) {
+                File.Delete(destination);
+            }
+
             Kernel32.CreateHardLink(destination, source, IntPtr.Zero);
         }
 
@@ -372,14 +377,28 @@ namespace AcTools.Utils {
             if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
                 Directory.CreateDirectory(destination);
                 
-                foreach (var dirPath in Directory.GetDirectories(source, "*",
-                        SearchOption.AllDirectories)) {
-                    Directory.CreateDirectory(dirPath.Replace(source, destination));
+                foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories)) {
+                    Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
                 }
                 
-                foreach (var newPath in Directory.GetFiles(source, "*",
-                        SearchOption.AllDirectories)) {
-                    File.Copy(newPath, newPath.Replace(source, destination), true);
+                foreach (var newPath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
+                    File.Copy(newPath, Path.Combine(destination, GetRelativePath(newPath, source)), true);
+                }
+            } else {
+                File.Copy(source, destination, true);
+            }
+        }
+
+        public static void CopyRecursiveHardlink(string source, string destination) {
+            if (File.GetAttributes(source).HasFlag(FileAttributes.Directory)) {
+                Directory.CreateDirectory(destination);
+                
+                foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories)) {
+                    Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
+                }
+                
+                foreach (var newPath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
+                    Hardlink(newPath, Path.Combine(destination, GetRelativePath(newPath, source)), true);
                 }
             } else {
                 File.Copy(source, destination, true);

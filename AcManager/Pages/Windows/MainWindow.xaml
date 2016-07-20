@@ -7,7 +7,7 @@
         Closed="MainWindow_OnClosed" MouseRightButtonUp="MainWindow_OnMouseRightButtonDown" PreviewMouseRightButtonUp="MainWindow_OnPreviewMouseRightButtonUp"
         PreviewMouseRightButtonDown="MainWindow_OnPreviewMouseRightButtonDown" d:DataContext="{d:DesignInstance windows:MainWindow+MainWindowViewModel}"
         AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
-        LocationAndSizeKey="MainWindow_LS" Name="Window">
+        LocationAndSizeKey="MainWindow_LS" x:Name="Window">
     <mui:ModernWindow.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
     </mui:ModernWindow.Resources>
@@ -24,7 +24,7 @@
         <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="live">
             <mui:LinkGroup.Links>
                 <mui:Link x:Name="RsrLink" DisplayName="RSR" Source="/Pages/Drive/Rsr.xaml" />
-                <mui:Link x:Name="SrsLink" DisplayName="SRS" IsEnabled="False" Source="/Pages/Drive/Srs.xaml" />
+                <mui:Link x:Name="SrsLink" DisplayName="SRS" Source="/Pages/Drive/Srs.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="online" Source="/Pages/Drive/Online.xaml">
@@ -86,8 +86,8 @@
         <mui:TitleLink DisplayName="enter key" Source="cmd://enterkey" IsAccented="True" />
     </mui:ModernWindow.TitleLinks>
 
-    <Popup Placement="Absolute" HorizontalOffset="{Binding Left, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
-            VerticalOffset="{Binding Top, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
+    <Popup Placement="Absolute" HorizontalOffset="{Binding ActualLeft, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
+            VerticalOffset="{Binding ActualTop, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
             Height="{Binding ActualHeight, ElementName=Window, Converter={x:Static windows:MainWindow.PopupHeightConverter}}"
-            PlacementTarget="{Binding ElementName=Window}" Name="Popup" StaysOpen="False" PopupAnimation="Slide" AllowsTransparency="True" />
+            x:Name="Popup" StaysOpen="False" PopupAnimation="Slide" AllowsTransparency="True" />
 </mui:ModernWindow>

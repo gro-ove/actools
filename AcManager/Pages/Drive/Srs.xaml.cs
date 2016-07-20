@@ -11,6 +11,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
+using AcManager.Internal;
 using AcManager.Properties;
 using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
@@ -83,7 +84,7 @@ namespace AcManager.Pages.Drive {
             private bool _showExtensionMessage;
 
             public bool ShowExtensionMessage {
-                get { return _showExtensionMessage; }
+                get { return AppKeyHolder.IsAllRight && _showExtensionMessage; }
                 set {
                     if (Equals(value, _showExtensionMessage)) return;
                     _showExtensionMessage = value;

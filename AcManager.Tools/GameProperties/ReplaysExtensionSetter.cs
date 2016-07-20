@@ -9,12 +9,17 @@ using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Managers {
+namespace AcManager.Tools.GameProperties {
     public class ReplaysExtensionSetter : IDisposable {
         private readonly string[] _previous;
 
         private ReplaysExtensionSetter() {
-            _previous = Directory.GetFiles(FileUtils.GetReplaysDirectory());
+            try {
+                _previous = Directory.GetFiles(FileUtils.GetReplaysDirectory());
+            } catch (Exception e) {
+                Logging.Error("[ReplaysExtensionSetter] Can’t get files: " + e);
+                _previous = new string[0];
+            }
         }
 
         [CanBeNull]
@@ -25,13 +30,13 @@ namespace AcManager.Tools.Managers {
         private static IEnumerable<string> GetWithoutExtension() {
             try {
                 return Directory.GetFiles(FileUtils.GetReplaysDirectory())
-                                .Where(file => !file.EndsWith(ReplayObject.ReplayExtension) && !string.Equals(Path.GetFileName(file), "cr",
-                                        StringComparison.OrdinalIgnoreCase));
+                                .Where(file => !file.EndsWith(ReplayObject.ReplayExtension, StringComparison.OrdinalIgnoreCase) &&
+                                        !string.Equals(Path.GetFileName(file), @"cr", StringComparison.OrdinalIgnoreCase));
             } catch (Exception e) {
                 Logging.Error("[ReplaysExtensionSetter] Can’t get files without extension: " + e);
                 return new string[0];
             }
-        } 
+        }
 
         public void Dispose() {
             try {

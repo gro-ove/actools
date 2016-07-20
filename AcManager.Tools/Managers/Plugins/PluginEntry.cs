@@ -49,7 +49,7 @@ namespace AcManager.Tools.Managers.Plugins {
             }
         }
 
-        public string DisplaySize => LocalizationHelper.ReadableSize(_size);
+        public string DisplaySize => LocalizationHelper.ToReadableSize(_size);
 
         public string KeyEnabled => "_appAddon__" + Id + "__enabled";
 

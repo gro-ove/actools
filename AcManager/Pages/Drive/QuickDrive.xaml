@@ -80,7 +80,7 @@
                     <Label>_Real conditions</Label>
                     <CheckBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Consider Timezones" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True" IsEnabled="False" />
+                            <MenuItem Header="Consider Timezones" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True" />
                             <MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />
                         </ContextMenu>
                     </CheckBox.ContextMenu>
