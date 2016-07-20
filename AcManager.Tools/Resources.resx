@@ -1177,4 +1177,16 @@
   <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
     <value>Make sure there is enough disk space.</value>
   </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>BHP</value>
+  </data>
+  <data name="Units_Nm" xml:space="preserve">
+    <value>Nm</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Power</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Torque</value>
+  </data>
 </root>
