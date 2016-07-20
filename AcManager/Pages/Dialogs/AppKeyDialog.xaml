@@ -8,9 +8,9 @@
     <mui:ModernDialog.ButtonsRowContent>
         <StackPanel Orientation="Horizontal">
             <Button Visibility="{Binding InternetConnectionRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Command="{Binding TryAgainCommand}">Try Again</Button>
+                    Command="{Binding TryAgainCommand}" Content="Try Again" />
             <Button Visibility="{Binding OfflineModeAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Command="{Binding OfflineModeCommand}" Margin="4 0 0 0">Offline Mode</Button>
+                    Command="{Binding OfflineModeCommand}" Margin="4 0 0 0" Content="Offline Mode" />
         </StackPanel>
     </mui:ModernDialog.ButtonsRowContent>
     <StackPanel>
@@ -26,7 +26,7 @@
 
         <TextBlock Foreground="{DynamicResource Error}" Visibility="{Binding KeyRevoked, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Margin="0 8 0 0">
-            <Run>Key was revoked</Run><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
+            <Run Text="Key was revoked" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
                     Command="{Binding RevokedKeyMessageCommand}">[?]</Hyperlink>
         </TextBlock>
     </StackPanel>

@@ -167,9 +167,6 @@
     <Compile Include="Dialogs\ImageViewer.xaml.cs">
       <DependentUpon>ImageViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\UserPresetsControl_SaveDialog.xaml.cs">
-      <DependentUpon>UserPresetsControl_SaveDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\WaitingDialog.xaml.cs">
       <DependentUpon>WaitingDialog.xaml</DependentUpon>
     </Compile>
@@ -286,10 +283,6 @@
     <Page Include="Dialogs\ImageViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\UserPresetsControl_SaveDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\WaitingDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

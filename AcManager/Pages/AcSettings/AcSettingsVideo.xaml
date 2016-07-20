@@ -4,7 +4,7 @@
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
         xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+AcVideoViewModel}">
     <UserControl.Resources>
@@ -73,7 +73,7 @@
                 </CheckBox>
 
                 <DockPanel Visibility="{Binding Video.FramerateLimitEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <mui:ValueLabel Value="{Binding Video.FramerateLimit}" Mode="Positive" Postfix=" FPS">Framerate</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Video.FramerateLimit}" Mode="Positive" Postfix=" FPS" Content="Framerate" />
                     <Slider Minimum="30" Maximum="240" Value="{Binding Video.FramerateLimit}" TickFrequency="21" TickPlacement="BottomRight" />
                 </DockPanel>
 
@@ -109,7 +109,7 @@
                 <StackPanel Visibility="{Binding Video.PostProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <DockPanel>
                         <Label Content="Filter:" />
-                        <Button Command="{Binding ManageFiltersCommand}">Manage</Button>
+                        <Button Command="{Binding ManageFiltersCommand}" Content="Manage" />
                         <ComboBox ItemsSource="{Binding LoadedOnlyCollection, Source={x:Static managers:PpFiltersManager.Instance}}"
                                 SelectedItem="{Binding Video.PostProcessingFilterObject}" DisplayMemberPath="DisplayName"
                                 attached:WatermarkService.Watermark="{Binding Video.PostProcessingFilter}" />
@@ -133,13 +133,13 @@
                     </DockPanel>
 
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding Video.ColorSaturation}" Mode="Integer" Postfix="%">Saturation</mui:ValueLabel>
+                        <mui:ValueLabel Value="{Binding Video.ColorSaturation}" Mode="Integer" Postfix="%" Content="Saturation" />
                         <Slider Minimum="0" Maximum="120" Value="{Binding Video.ColorSaturation}" TickFrequency="12" TickPlacement="BottomRight" />
                     </DockPanel>
 
                     <DockPanel>
                         <mui:ValueLabel Value="{Binding Video.MotionBlur, Converter={x:Static helpers:AcSettingsHolder.ZeroToOffConverter}}"
-                                Mode="IntegerOrZeroLabel">Motion blur</mui:ValueLabel>
+                                Mode="IntegerOrZeroLabel" Content="Motion blur" />
                         <Slider Minimum="0" Maximum="12" Value="{Binding Video.MotionBlur}" TickFrequency="2" TickPlacement="BottomRight" />
                     </DockPanel>
 
@@ -171,7 +171,7 @@
                     </DockPanel>
 
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding Video.CubemapDistance}" Mode="Integer" Postfix=" m">Rendering distance</mui:ValueLabel>
+                        <mui:ValueLabel Value="{Binding Video.CubemapDistance}" Mode="Integer" Postfix="{x:Static c:Resources.Common_MetersPostfix}" Content="Rendering distance" />
                         <Slider Minimum="0" Maximum="1200" Value="{Binding Video.CubemapDistance}" TickFrequency="120" TickPlacement="BottomRight" />
                     </DockPanel>
                 </StackPanel>
@@ -190,7 +190,7 @@
                 <!--mirrors-->
                 <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Oculus:" />
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding Oculus.PixelPerDisplay}" Mode="Number">Pixels per display</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Oculus.PixelPerDisplay}" Mode="Number" Content="Pixels per display" />
                     <Slider Minimum="1" Maximum="2.5" Value="{Binding Oculus.PixelPerDisplay}" TickFrequency="0.1" IsSnapToTickEnabled="True"
                             TickPlacement="BottomRight" />
                 </DockPanel>
@@ -202,12 +202,12 @@
                 </CheckBox>
 
                 <DockPanel ToolTip="Skybox reflection gain">
-                    <mui:ValueLabel Value="{Binding Graphics.SkyboxReflectionGain}" Mode="Integer" Postfix="%">Skybox reflection</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Graphics.SkyboxReflectionGain}" Mode="Integer" Postfix="%" Content="Skybox reflection" />
                     <Slider Minimum="0" Maximum="300" Value="{Binding Graphics.SkyboxReflectionGain}" TickFrequency="30" TickPlacement="BottomRight" />
                 </DockPanel>
 
                 <DockPanel ToolTip="Set negative value (like -1) to sharp the image">
-                    <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Mode="Integer" Postfix="%">Mip LOD bias</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Mode="Integer" Postfix="%" Content="Mip LOD bias" />
                     <Slider Minimum="-400" Maximum="0" Value="{Binding Graphics.MipLodBias}" IsSnapToTickEnabled="True" TickFrequency="25"
                             TickPlacement="BottomRight" />
                 </DockPanel>
@@ -215,15 +215,15 @@
                 <DockPanel ToolTip="Maximum frame latency; auto — defined by videocard settings">
                     <mui:ValueLabel
                             Value="{Binding Graphics.MaximumFrameLatency, Converter={x:Static helpers:AcSettingsHolder.ZeroToOffConverter}, ConverterParameter='Auto'}"
-                            Mode="IntegerOrZeroLabel">Max. frame latency</mui:ValueLabel>
+                            Mode="IntegerOrZeroLabel" Content="Max. frame latency" />
                     <Slider Minimum="0" Maximum="6" Value="{Binding Graphics.MaximumFrameLatency}" TickFrequency="1" TickPlacement="BottomRight" />
                 </DockPanel>
             </StackPanel>
         </ScrollViewer>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
-            <controls:UserPresetsControl Name="UserPresetsControl" UserPresetable="{Binding Presets}" MinWidth="300" Margin="0 0 4 0" />
-            <Button Command="{Binding ShareCommand}" ToolTip="Share current settings (Ctrl+Page Up)">Share</Button>
+            <c:UserPresetsControl Name="UserPresetsControl" UserPresetable="{Binding Presets}" MinWidth="300" Margin="0 0 4 0" />
+            <Button Command="{Binding ShareCommand}" ToolTip="Share current settings (Ctrl+Page Up)" Content="Share" />
         </StackPanel>
     </Grid>
 </UserControl>

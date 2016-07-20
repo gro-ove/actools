@@ -137,7 +137,7 @@
                         <DockPanel>
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="0 9 0 -9">
                                 <Button PreviewMouseLeftButtonUp="ResetButton_OnMouseLeftButtonUp" Margin="0 0 4 0"
-                                        Visibility="{Binding ChampionshipResetCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">Reset</Button>
+                                        Visibility="{Binding ChampionshipResetCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Reset" />
 
                                 <Grid
                                         Visibility="{Binding NextCareerObject, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
@@ -172,7 +172,7 @@
                                             </StackPanel>
                                         </ToolTip>
                                     </Grid.ToolTip>
-                                    <Button IsEnabled="{Binding NextCareerObject.IsAvailable}" PreviewMouseLeftButtonUp="NextButton_OnMouseLeftButtonUp">Next</Button>
+                                    <Button IsEnabled="{Binding NextCareerObject.IsAvailable}" PreviewMouseLeftButtonUp="NextButton_OnMouseLeftButtonUp" Content="Next" />
                                 </Grid>
                             </StackPanel>
 
@@ -490,7 +490,7 @@
                             </Button.ToolTip>
                         </Button>
                         <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
-                                CommandParameter="{Binding Data.AssistsViewModel.GameProperties, Source={StaticResource DataContextProxy}}">Go!</Button>
+                                CommandParameter="{Binding Data.AssistsViewModel.GameProperties, Source={StaticResource DataContextProxy}}" Content="Go!" />
                     </DockPanel>
                 </Grid>
             </Grid>

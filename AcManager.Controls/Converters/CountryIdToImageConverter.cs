@@ -6,11 +6,10 @@ using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using AcManager.Controls.Properties;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.Converters {
-    public class CountryIdToImageConverter
-        : IValueConverter {
+    [ValueConversion(typeof(string), typeof(BitmapImage))]
+    public class CountryIdToImageConverter : IValueConverter {
         private static ZipArchive _archive;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {

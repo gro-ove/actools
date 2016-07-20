@@ -67,7 +67,7 @@
                 <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="0"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
-                        <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0">Time</mui:ValueLabel>
+                        <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0" Content="Time" />
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="Actual time is out of range, closest value is used" HorizontalAlignment="Right" />
@@ -158,7 +158,7 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2">
-                    <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×">Time multipler</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="Time multipler" />
                     <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
                             Margin="0 0 0 4" Name="TimeMultiplerSlider" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
@@ -225,8 +225,8 @@
 
         <StackPanel Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
             <controls:UserPresetsControl Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
-            <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="Share current settings (Ctrl+Page Up)">Share</Button>
-            <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)">Go!</Button>
+            <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="Share current settings (Ctrl+Page Up)" Content="Share" />
+            <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)" Content="Go!" />
         </StackPanel>
     </Grid>
 </UserControl>

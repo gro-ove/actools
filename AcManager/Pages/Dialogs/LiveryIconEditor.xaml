@@ -47,7 +47,7 @@
             </DockPanel>
             <StackPanel Visibility="{Binding SelectedNumbers.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠'}">
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding Model.Value}" Mode="Integer">Value</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding Model.Value}" Mode="Integer" Content="Value" />
                     <Slider Minimum="0" Maximum="100" Value="{Binding Model.NumberValue}" TickFrequency="10" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>

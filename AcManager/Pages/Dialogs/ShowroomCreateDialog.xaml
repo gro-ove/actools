@@ -36,7 +36,7 @@
                     </StackPanel>
                 </DockPanel.ToolTip>
                 
-                <Button DockPanel.Dock="Right" Command="{Binding SelectPanoramaFileCommand}" HorizontalAlignment="Right" Margin="4 0 4 0" Padding="4 0 4 0">…</Button>
+                <Button DockPanel.Dock="Right" Command="{Binding SelectPanoramaFileCommand}" HorizontalAlignment="Right" Margin="4 0 4 0" Padding="4 0 4 0" Content="…" />
                 <TextBox Text="{Binding PanoramaFilename}" attached:WatermarkService.Watermark="?" Style="{StaticResource TextBoxAsTextBlock}" />
             </DockPanel>
 

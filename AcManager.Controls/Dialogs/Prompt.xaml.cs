@@ -44,7 +44,7 @@ namespace AcManager.Controls.Dialogs {
                     Mode = BindingMode.TwoWay
                 });
 
-                var textBox = comboBox.Template?.FindName("PART_EditableTextBox", comboBox) as TextBox;
+                var textBox = comboBox.Template?.FindName(@"PART_EditableTextBox", comboBox) as TextBox;
                 if (textBox != null) {
                     textBox.SelectAll();
                     textBox.Focus();
@@ -136,9 +136,9 @@ namespace AcManager.Controls.Dialogs {
         [CanBeNull]
         public static string Show(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false, int maxLength = -1, IEnumerable<string> suggestions = null) {
-            if (passwordMode && suggestions != null) throw new ArgumentException("Can’t have suggestions with password mode");
-            if (passwordMode && multiline) throw new ArgumentException("Can’t use multiline input area with password mode");
-            if (suggestions != null && multiline) throw new ArgumentException("Can’t use multiline input area with suggestions");
+            if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
+            if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
+            if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
             var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, maxLength, suggestions);
             dialog.ShowDialog();

@@ -75,7 +75,7 @@
 
             <DockPanel Visibility="{Binding SelectedUploader.SupportsDirectories, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Label Content="Folder:" />
-                <Button Width="120" Command="{Binding UpdateDirectoriesCommand}" VerticalAlignment="Top">Update</Button>
+                <Button Width="120" Command="{Binding UpdateDirectoriesCommand}" VerticalAlignment="Top" Content="Update" />
                 <TextBlock Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}}" Opacity="0.5" FontStyle="Italic" Text="Press “Update” to reload list of folders" />
                 <StackPanel Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                     <TextBlock Text="{Binding UploaderDirectory.DisplayName, StringFormat='{}Selected folder: {0}'}" Margin="0 0 0 4" />
@@ -112,7 +112,7 @@
                         <!--<DataGrid.RowDetailsTemplate>
                             <DataTemplate DataType="{x:Type miscellaneous:SharingHelper+SharedEntry}">
                                 <DockPanel>
-                                    <Button DockPanel.Dock="Right" Command="{Binding RemoveCommand}">Remove</Button>
+                                    <Button DockPanel.Dock="Right" Command="{Binding RemoveCommand}" Content="Remove" />
                                     <TextBlock Text="{Binding Id, StringFormat='{}ID: {0}'}" VerticalAlignment="Center" Margin="4 0" />
                                 </DockPanel>
                             </DataTemplate>

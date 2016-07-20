@@ -76,7 +76,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             try {
                 var carDirectory = Path.GetDirectoryName(kn5);
-                if (Path.GetFileName(Path.GetDirectoryName(carDirectory)) == "..") {
+                if (Path.GetFileName(Path.GetDirectoryName(carDirectory)) == @"..") {
                     carDirectory = Path.GetDirectoryName(Path.GetDirectoryName(carDirectory));
                 }
 
@@ -85,14 +85,14 @@ namespace AcManager.Controls.CustomShowroom {
 
                 LiteShowroomWrapper wrapper;
                 using (var waiting = new WaitingDialog()) {
-                    waiting.Report("Loading model…");
+                    waiting.Report(Resources.CustomShowroom_Loading);
 
                     if (toolboxMode) {
                         renderer = await Task.Run(() => new ToolsKn5ObjectRenderer(kn5, carDirectory));
                         wrapper = new LiteShowroomWrapperWithTools((ToolsKn5ObjectRenderer)renderer, carObject, skinId);
                     } else {
                         Logging.Warning($"Can’t find CarObject for “{carDirectory}”");
-                        Logging.Warning($"Found location: “{carObject?.Location ?? "NULL"}”");
+                        Logging.Warning($"Found location: “{carObject?.Location ?? @"NULL"}”");
 
                         renderer = await Task.Run(() => new ForwardKn5ObjectRenderer(kn5, carDirectory));
                         wrapper = new LiteShowroomWrapper(renderer);
@@ -116,7 +116,7 @@ namespace AcManager.Controls.CustomShowroom {
                 
                 GC.Collect();
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t start Custom Showroom", e);
+                NonfatalError.Notify(Resources.CustomShowroom_CannotStart, e);
             } finally {
                 renderer?.Dispose();
                 _last = null;
@@ -136,7 +136,7 @@ namespace AcManager.Controls.CustomShowroom {
             try {
                 FancyShowroomWrapper wrapper;
                 using (var waiting = new WaitingDialog()) {
-                    waiting.Report("Loading model…");
+                    waiting.Report(Resources.CustomShowroom_Loading);
 
                     renderer = await Task.Run(() => new Kn5ObjectRenderer(kn5, showroomKn5));
                     renderer.UseFxaa = SettingsHolder.CustomShowroom.LiteUseFxaa;
@@ -154,7 +154,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                 wrapper.Run(() => _starting = false);
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t start Custom Showroom", e);
+                NonfatalError.Notify(Resources.CustomShowroom_CannotStart, e);
             } finally {
                 renderer?.Dispose();
                 _last = null;

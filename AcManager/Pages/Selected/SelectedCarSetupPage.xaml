@@ -27,8 +27,8 @@
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
                 <Label Content="Track:" />
-                <Button Command="{Binding ClearTrackCommand}">Clear</Button>
-                <Button Command="{Binding ChangeTrackCommand}">Change</Button>
+                <Button Command="{Binding ClearTrackCommand}" Content="Clear" />
+                <Button Command="{Binding ChangeTrackCommand}" Content="Change" />
 
                 <Grid>
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Track.DisplayName, Mode=OneWay}"
@@ -62,7 +62,7 @@
 
             <DockPanel>
                 <mui:ValueLabel Value="{Binding SelectedObject.Fuel}" Mode="Integer"
-                        Postfix="{Binding SelectedObject.Fuel, Converter={StaticResource PluralizingConverter}, ConverterParameter=' litre'}">Fuel</mui:ValueLabel>
+                        Postfix="{Binding SelectedObject.Fuel, Converter={StaticResource PluralizingConverter}, ConverterParameter=' litre'}" Content="Fuel" />
                 <Slider Minimum="0" Maximum="{Binding SelectedObject.FuelMaximum}" Value="{Binding SelectedObject.Fuel}"
                         TickFrequency="{Binding SelectedObject.FuelMaximum, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.1}"
                         TickPlacement="BottomRight" />

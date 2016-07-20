@@ -70,6 +70,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Author:.
+        /// </summary>
+        public static string AcObject_AuthorLabel {
+            get {
+                return ResourceManager.GetString("AcObject_AuthorLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Brand:.
         /// </summary>
         public static string AcObject_CarBrandLabel {
@@ -138,6 +147,24 @@ namespace AcManager.Controls {
         public static string AcObject_TrackGeoTagsLabel {
             get {
                 return ResourceManager.GetString("AcObject_TrackGeoTagsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL.
+        /// </summary>
+        public static string AcObject_UrlLabel {
+            get {
+                return ResourceManager.GetString("AcObject_UrlLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version:.
+        /// </summary>
+        public static string AcObject_VersionLabel {
+            get {
+                return ResourceManager.GetString("AcObject_VersionLabel", resourceCulture);
             }
         }
         
@@ -304,6 +331,33 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string Common_Clear {
+            get {
+                return ResourceManager.GetString("Common_Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Developer Tools.
+        /// </summary>
+        public static string Common_DevTools {
+            get {
+                return ResourceManager.GetString("Common_DevTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Common_Error {
+            get {
+                return ResourceManager.GetString("Common_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter:.
         /// </summary>
         public static string Common_FilterLabel {
@@ -313,11 +367,47 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Folder “{0}” already exists. Overwrite files?.
+        /// </summary>
+        public static string Common_FolderExists {
+            get {
+                return ResourceManager.GetString("Common_FolderExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  m.
+        /// </summary>
+        public static string Common_MetersPostfix {
+            get {
+                return ResourceManager.GetString("Common_MetersPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  ms.
+        /// </summary>
+        public static string Common_MillisecondsPostfix {
+            get {
+                return ResourceManager.GetString("Common_MillisecondsPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Oops!.
         /// </summary>
         public static string Common_Oops {
             get {
                 return ResourceManager.GetString("Common_Oops", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, wait….
+        /// </summary>
+        public static string Common_PleaseWait {
+            get {
+                return ResourceManager.GetString("Common_PleaseWait", resourceCulture);
             }
         }
         
@@ -340,11 +430,92 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unpack {0}.
+        /// </summary>
+        public static string Common_Unpack {
+            get {
+                return ResourceManager.GetString("Common_Unpack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Built-in Presets.
         /// </summary>
         public static string Controls_BuiltInPresets {
             get {
                 return ResourceManager.GetString("Controls_BuiltInPresets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear keyboard binding.
+        /// </summary>
+        public static string Controls_ClearKeyboardBinding {
+            get {
+                return ResourceManager.GetString("Controls_ClearKeyboardBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear wheel binding.
+        /// </summary>
+        public static string Controls_ClearWheelBinding {
+            get {
+                return ResourceManager.GetString("Controls_ClearWheelBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to assign.
+        /// </summary>
+        public static string Controls_ClickToAssign {
+            get {
+                return ResourceManager.GetString("Controls_ClickToAssign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Degress.
+        /// </summary>
+        public static string Controls_DegressLabel {
+            get {
+                return ResourceManager.GetString("Controls_DegressLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string Controls_FilterAxis {
+            get {
+                return ResourceManager.GetString("Controls_FilterAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gamma.
+        /// </summary>
+        public static string Controls_GammaAxis {
+            get {
+                return ResourceManager.GetString("Controls_GammaAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invert.
+        /// </summary>
+        public static string Controls_InvertAxis {
+            get {
+                return ResourceManager.GetString("Controls_InvertAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyboard button.
+        /// </summary>
+        public static string Controls_KeyboardButton {
+            get {
+                return ResourceManager.GetString("Controls_KeyboardButton", resourceCulture);
             }
         }
         
@@ -385,11 +556,588 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to From.
+        /// </summary>
+        public static string Controls_RangeFromAxis {
+            get {
+                return ResourceManager.GetString("Controls_RangeFromAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To.
+        /// </summary>
+        public static string Controls_RangeToAxis {
+            get {
+                return ResourceManager.GetString("Controls_RangeToAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed sensitivity.
+        /// </summary>
+        public static string Controls_SpeedSensitivity {
+            get {
+                return ResourceManager.GetString("Controls_SpeedSensitivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steering wheel button.
+        /// </summary>
+        public static string Controls_SteeringWheelButton {
+            get {
+                return ResourceManager.GetString("Controls_SteeringWheelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Presets.
         /// </summary>
         public static string Controls_UserPresets {
             get {
                 return ResourceManager.GetString("Controls_UserPresets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for input.
+        /// </summary>
+        public static string Controls_WaitingForInput {
+            get {
+                return ResourceManager.GetString("Controls_WaitingForInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brightness.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_Brightness {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_Brightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diffusion.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_Diffusion {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_Diffusion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fade to edges.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_FadeToEdges {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_FadeToEdges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide wheels.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_HideWheels {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_HideWheels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Iterations.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_Iterations {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_Iterations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reloading textures….
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_Reloading {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_Reloading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset To Recommended Values.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_Reset {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Ambient Shadows.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_Update {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating shadows….
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_Updating {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_Updating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ambient Shadow.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadowsHeader {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadowsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data Is Encrypted.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadowsSize_EncryptedData {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadowsSize_EncryptedData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadowsSize_EncryptedDataMessage {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadowsSize_EncryptedDataMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fit.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadowsSize_Fit {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadowsSize_Fit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highlight size.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadowsSize_Highlight {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadowsSize_Highlight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadowsSize_Reset {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadowsSize_Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadowsSize_Save {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadowsSize_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadowsSizeHeader {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadowsSizeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t export texture.
+        /// </summary>
+        public static string CustomShowroom_CannotExport {
+            get {
+                return ResourceManager.GetString("CustomShowroom_CannotExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t start Custom Showroom.
+        /// </summary>
+        public static string CustomShowroom_CannotStart {
+            get {
+                return ResourceManager.GetString("CustomShowroom_CannotStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Lights.
+        /// </summary>
+        public static string CustomShowroom_Control_Lights {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Control_Lights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Wireframe.
+        /// </summary>
+        public static string CustomShowroom_Control_Wireframe {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Control_Wireframe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control.
+        /// </summary>
+        public static string CustomShowroom_ControlHeader {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ControlHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skin editing mode.
+        /// </summary>
+        public static string CustomShowroom_EditingMode {
+            get {
+                return ResourceManager.GetString("CustomShowroom_EditingMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically update textures; use PSD, XCF, etc. instead if exists (Magick.NET addon is required).
+        /// </summary>
+        public static string CustomShowroom_EditingMode_Tooltip {
+            get {
+                return ResourceManager.GetString("CustomShowroom_EditingMode_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string CustomShowroom_Export {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading model….
+        /// </summary>
+        public static string CustomShowroom_Loading {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Material name: [b]{0}[/b]
+        ///Shader: [b]{1}[/b]
+        ///
+        ///Blend mode: [b]{2}[/b]
+        ///Alpha test: [b]{3}[/b]
+        ///Depth mode: [b]{4}[/b].
+        /// </summary>
+        public static string CustomShowroom_MaterialInformation {
+            get {
+                return ResourceManager.GetString("CustomShowroom_MaterialInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object name: [b]{0}[/b]
+        ///Class: [b]{1}[/b]
+        ///
+        ///Active: [b]{2}[/b]
+        ///Renderable: [b]{3}[/b]
+        ///Visible: [b]{4}[/b]
+        ///
+        ///Transparent: [b]{5}[/b]
+        ///Casting Shadows: [b]{6}[/b]
+        ///
+        ///Layer: [b]{7}[/b]
+        ///LOD In: [b]{8}[/b]
+        ///LOD In: [b]{9}[/b]
+        ///
+        ///Material: [b]{10}[/b].
+        /// </summary>
+        public static string CustomShowroom_ObjectInformation {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ObjectInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Material:.
+        /// </summary>
+        public static string CustomShowroom_Selected_MaterialLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Selected_MaterialLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name:.
+        /// </summary>
+        public static string CustomShowroom_Selected_NameLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Selected_NameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Textures:.
+        /// </summary>
+        public static string CustomShowroom_Selected_TexturesLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Selected_TexturesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected.
+        /// </summary>
+        public static string CustomShowroom_SelectedHeader {
+            get {
+                return ResourceManager.GetString("CustomShowroom_SelectedHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shader properties:.
+        /// </summary>
+        public static string CustomShowroom_ShaderProperties {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ShaderProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skin.
+        /// </summary>
+        public static string CustomShowroom_SkinHeader {
+            get {
+                return ResourceManager.GetString("CustomShowroom_SkinHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FPS:.
+        /// </summary>
+        public static string CustomShowroom_Stats_FpsLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Stats_FpsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Objects:.
+        /// </summary>
+        public static string CustomShowroom_Stats_ObjectsLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Stats_ObjectsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Triangles:.
+        /// </summary>
+        public static string CustomShowroom_Stats_TrianglesLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_Stats_TrianglesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stats.
+        /// </summary>
+        public static string CustomShowroom_StatsHeader {
+            get {
+                return ResourceManager.GetString("CustomShowroom_StatsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dimensions:.
+        /// </summary>
+        public static string CustomShowroom_TextureDimensionsLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_TextureDimensionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Format:.
+        /// </summary>
+        public static string CustomShowroom_TextureFormatLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_TextureFormatLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Texture is missing!.
+        /// </summary>
+        public static string CustomShowroom_TextureIsMissing {
+            get {
+                return ResourceManager.GetString("CustomShowroom_TextureIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size:.
+        /// </summary>
+        public static string CustomShowroom_TextureSizeLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_TextureSizeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type:.
+        /// </summary>
+        public static string CustomShowroom_TextureTypeLabel {
+            get {
+                return ResourceManager.GetString("CustomShowroom_TextureTypeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools.
+        /// </summary>
+        public static string CustomShowroom_ToolsTitle {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ToolsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Mapping.
+        /// </summary>
+        public static string CustomShowroom_ViewMapping {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View in 1024×1024.
+        /// </summary>
+        public static string CustomShowroom_ViewMapping_1024 {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping_1024", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View in 2048×2048.
+        /// </summary>
+        public static string CustomShowroom_ViewMapping_2048 {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping_2048", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View in 4096×4096.
+        /// </summary>
+        public static string CustomShowroom_ViewMapping_4096 {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping_4096", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View in 512×512.
+        /// </summary>
+        public static string CustomShowroom_ViewMapping_512 {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping_512", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View in custom resolution.
+        /// </summary>
+        public static string CustomShowroom_ViewMapping_Custom {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping_Custom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Texture Mapping.
+        /// </summary>
+        public static string CustomShowroom_ViewMapping_Export {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping_Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t figure out dimensions.
+        /// </summary>
+        public static string CustomShowroom_ViewMapping_ParsingFailed {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping_ParsingFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, use valid format for them..
+        /// </summary>
+        public static string CustomShowroom_ViewMapping_ParsingFailed_Commentary {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping_ParsingFailed_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dimensions ([Width]×[Height]):.
+        /// </summary>
+        public static string CustomShowroom_ViewMapping_Prompt {
+            get {
+                return ResourceManager.GetString("CustomShowroom_ViewMapping_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t save image.
+        /// </summary>
+        public static string ImageViewer_CannotSave {
+            get {
+                return ResourceManager.GetString("ImageViewer_CannotSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        public static string ImageViewer_DefaultName {
+            get {
+                return ResourceManager.GetString("ImageViewer_DefaultName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Image As.
+        /// </summary>
+        public static string ImageViewer_SaveTitle {
+            get {
+                return ResourceManager.GetString("ImageViewer_SaveTitle", resourceCulture);
             }
         }
         
@@ -435,6 +1183,51 @@ namespace AcManager.Controls {
         public static string KunosCareer_RequiredSeriesAreNotFinishedYet {
             get {
                 return ResourceManager.GetString("KunosCareer_RequiredSeriesAreNotFinishedYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car is missing:.
+        /// </summary>
+        public static string Online_CarIsMissingLabel {
+            get {
+                return ResourceManager.GetString("Online_CarIsMissingLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drivers online:.
+        /// </summary>
+        public static string Online_DriversOnlineLabel {
+            get {
+                return ResourceManager.GetString("Online_DriversOnlineLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join Using {0}.
+        /// </summary>
+        public static string Online_JoinUsing {
+            get {
+                return ResourceManager.GetString("Online_JoinUsing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password required.
+        /// </summary>
+        public static string Online_PasswordRequired {
+            get {
+                return ResourceManager.GetString("Online_PasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track is missing:.
+        /// </summary>
+        public static string Online_TrackIsMissingLabel {
+            get {
+                return ResourceManager.GetString("Online_TrackIsMissingLabel", resourceCulture);
             }
         }
         
@@ -882,11 +1675,47 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter:.
+        ///   Looks up a localized string similar to Can’t start showroom.
         /// </summary>
-        public static string Showroom_FilterLabel {
+        public static string Showroom_CannotStart {
             get {
-                return ResourceManager.GetString("Showroom_FilterLabel", resourceCulture);
+                return ResourceManager.GetString("Showroom_CannotStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable _SweetFX.
+        /// </summary>
+        public static string Showroom_DisableSweetFx {
+            get {
+                return ResourceManager.GetString("Showroom_DisableSweetFx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apparantly SweetFX doesn’t affect the result, but could decrease loading time.
+        /// </summary>
+        public static string Showroom_DisableSweetFx_Tooltip {
+            get {
+                return ResourceManager.GetString("Showroom_DisableSweetFx_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FOV:.
+        /// </summary>
+        public static string Showroom_FovLabel {
+            get {
+                return ResourceManager.GetString("Showroom_FovLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide _watermark.
+        /// </summary>
+        public static string Showroom_HideWatermark {
+            get {
+                return ResourceManager.GetString("Showroom_HideWatermark", resourceCulture);
             }
         }
         
@@ -950,6 +1779,24 @@ namespace AcManager.Controls {
         public static string Video_CannotPlay_Commentary {
             get {
                 return ResourceManager.GetString("Video_CannotPlay_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t play video.
+        /// </summary>
+        public static string VideoViewer_CannotPlay {
+            get {
+                return ResourceManager.GetString("VideoViewer_CannotPlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure VLC addon is installed properly..
+        /// </summary>
+        public static string VideoViewer_CannotPlay_Commentary {
+            get {
+                return ResourceManager.GetString("VideoViewer_CannotPlay_Commentary", resourceCulture);
             }
         }
         

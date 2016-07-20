@@ -27,11 +27,11 @@ namespace AcManager.Controls.Dialogs {
 
             try {
                 Logging.Write("[VLC] Initialization: " + PluginsManager.Instance.GetPluginDirectory("VLC"));
-                Player.Initialize(PluginsManager.Instance.GetPluginDirectory("VLC"), "--ignore-config", "--no-video-title", "--no-sub-autodetect-file");
+                Player.Initialize(PluginsManager.Instance.GetPluginDirectory("VLC"), @"--ignore-config", @"--no-video-title", @"--no-sub-autodetect-file");
                 Logging.Write("[VLC] Player.BeginStop()");
                 Player.BeginStop(Stopped);
             } catch (Exception ex) {
-                NonfatalError.Notify("Can’t play video", "Make sure VLC addon is installed properly.", ex);
+                NonfatalError.Notify(Controls.Resources.VideoViewer_CannotPlay, Controls.Resources.VideoViewer_CannotPlay_Commentary, ex);
                 Close();
             }
         }
@@ -44,12 +44,12 @@ namespace AcManager.Controls.Dialogs {
                 Player.Play();
                 Player.StateChanged += Player_StateChanged;
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t play video", "Make sure VLC addon is installed properly.", e);
+                NonfatalError.Notify(Controls.Resources.VideoViewer_CannotPlay, Controls.Resources.VideoViewer_CannotPlay_Commentary, e);
                 Close();
             }
         }
 
-        private void Player_StateChanged(object sender, xZune.Vlc.ObjectEventArgs<xZune.Vlc.Interop.Media.MediaState> e) {
+        private void Player_StateChanged(object sender, xZune.Vlc.ObjectEventArgs<MediaState> e) {
             if (Player.State == MediaState.Ended) {
                 Application.Current.Dispatcher.Invoke(Close);
             }

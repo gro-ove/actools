@@ -216,9 +216,6 @@
   <data name="AcObject_ErrorsHeader" xml:space="preserve">
     <value>Errors:</value>
   </data>
-  <data name="Common_FilterLabel" xml:space="preserve">
-    <value>Filter:</value>
-  </data>
   <data name="Presets_Save" xml:space="preserve">
     <value>Save Preset</value>
   </data>
@@ -419,10 +416,311 @@ Entry type: [b]{2}[/b]</value>
   <data name="Showroom_ShowroomLabel" xml:space="preserve">
     <value>Showroom:</value>
   </data>
-  <data name="Showroom_FilterLabel" xml:space="preserve">
+  <data name="Common_FilterLabel" xml:space="preserve">
     <value>Filter:</value>
   </data>
   <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
     <value>Kunos watermark will be temporary hidden</value>
+  </data>
+  <data name="Showroom_HideWatermark" xml:space="preserve">
+    <value>Hide _watermark</value>
+  </data>
+  <data name="Showroom_DisableSweetFx" xml:space="preserve">
+    <value>Disable _SweetFX</value>
+  </data>
+  <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>Apparantly SweetFX doesn’t affect the result, but could decrease loading time</value>
+  </data>
+  <data name="Showroom_FovLabel" xml:space="preserve">
+    <value>FOV:</value>
+  </data>
+  <data name="Showroom_CannotStart" xml:space="preserve">
+    <value>Can’t start showroom</value>
+  </data>
+  <data name="ImageViewer_DefaultName" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="ImageViewer_SaveTitle" xml:space="preserve">
+    <value>Save Image As</value>
+  </data>
+  <data name="ImageViewer_CannotSave" xml:space="preserve">
+    <value>Can’t save image</value>
+  </data>
+  <data name="VideoViewer_CannotPlay" xml:space="preserve">
+    <value>Can’t play video</value>
+  </data>
+  <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
+    <value>Make sure VLC addon is installed properly.</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Please, wait…</value>
+  </data>
+  <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
+    <value>Texture is missing!</value>
+  </data>
+  <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
+    <value>Type:</value>
+  </data>
+  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
+    <value>Format:</value>
+  </data>
+  <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
+    <value>Dimensions:</value>
+  </data>
+  <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
+    <value>Size:</value>
+  </data>
+  <data name="CustomShowroom_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping" xml:space="preserve">
+    <value>View Mapping</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
+    <value>View in 2048×2048</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
+    <value>View in 512×512</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
+    <value>View in 1024×1024</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
+    <value>View in 4096×4096</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Custom" xml:space="preserve">
+    <value>View in custom resolution</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
+    <value>Dimensions ([Width]×[Height]):</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed" xml:space="preserve">
+    <value>Can’t figure out dimensions</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
+    <value>Please, use valid format for them.</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
+    <value>Export Texture Mapping</value>
+  </data>
+  <data name="CustomShowroom_CannotExport" xml:space="preserve">
+    <value>Can’t export texture</value>
+  </data>
+  <data name="CustomShowroom_Loading" xml:space="preserve">
+    <value>Loading model…</value>
+  </data>
+  <data name="CustomShowroom_CannotStart" xml:space="preserve">
+    <value>Can’t start Custom Showroom</value>
+  </data>
+  <data name="CustomShowroom_ToolsTitle" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+    <value>Material:</value>
+  </data>
+  <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
+    <value>Textures:</value>
+  </data>
+  <data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
+    <value>Triangles:</value>
+  </data>
+  <data name="CustomShowroom_StatsHeader" xml:space="preserve">
+    <value>Stats</value>
+  </data>
+  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
+    <value>FPS:</value>
+  </data>
+  <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
+    <value>Objects:</value>
+  </data>
+  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
+    <value>Control</value>
+  </data>
+  <data name="CustomShowroom_Control_Lights" xml:space="preserve">
+    <value>_Lights</value>
+  </data>
+  <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
+    <value>_Wireframe</value>
+  </data>
+  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="CustomShowroom_EditingMode" xml:space="preserve">
+    <value>Skin editing mode</value>
+  </data>
+  <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
+    <value>Automatically update textures; use PSD, XCF, etc. instead if exists (Magick.NET addon is required)</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
+    <value>Update Ambient Shadows</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
+    <value>Reset To Recommended Values</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
+    <value>Ambient Shadow</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
+    <value>Diffusion</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
+    <value>Iterations</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
+    <value>Hide wheels</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
+    <value>Fade to edges</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
+    <value>Fit</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
+    <value>Highlight size</value>
+  </data>
+  <data name="Common_MetersPostfix" xml:space="preserve">
+    <value> m</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
+    <value>Updating shadows…</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
+    <value>Reloading textures…</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
+    <value>Data Is Encrypted</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
+    <value>Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?</value>
+  </data>
+  <data name="Common_DevTools" xml:space="preserve">
+    <value>Developer Tools</value>
+  </data>
+  <data name="Common_Unpack" xml:space="preserve">
+    <value>Unpack {0}</value>
+  </data>
+  <data name="AcObject_VersionLabel" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="AcObject_UrlLabel" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Common_FolderExists" xml:space="preserve">
+    <value>Folder “{0}” already exists. Overwrite files?</value>
+  </data>
+  <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
+    <value>Object name: [b]{0}[/b]
+Class: [b]{1}[/b]
+
+Active: [b]{2}[/b]
+Renderable: [b]{3}[/b]
+Visible: [b]{4}[/b]
+
+Transparent: [b]{5}[/b]
+Casting Shadows: [b]{6}[/b]
+
+Layer: [b]{7}[/b]
+LOD In: [b]{8}[/b]
+LOD In: [b]{9}[/b]
+
+Material: [b]{10}[/b]</value>
+  </data>
+  <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
+    <value>Material name: [b]{0}[/b]
+Shader: [b]{1}[/b]
+
+Blend mode: [b]{2}[/b]
+Alpha test: [b]{3}[/b]
+Depth mode: [b]{4}[/b]</value>
+  </data>
+  <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
+    <value>Shader properties:</value>
+  </data>
+  <data name="AcObject_AuthorLabel" xml:space="preserve">
+    <value>Author:</value>
+  </data>
+  <data name="Common_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Controls_ClickToAssign" xml:space="preserve">
+    <value>Click to assign</value>
+  </data>
+  <data name="Controls_WaitingForInput" xml:space="preserve">
+    <value>Waiting for input</value>
+  </data>
+  <data name="Controls_InvertAxis" xml:space="preserve">
+    <value>Invert</value>
+  </data>
+  <data name="Controls_DegressLabel" xml:space="preserve">
+    <value>Degress</value>
+    <comment>For steering wheel</comment>
+  </data>
+  <data name="Controls_RangeFromAxis" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="Controls_RangeToAxis" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="Controls_GammaAxis" xml:space="preserve">
+    <value>Gamma</value>
+  </data>
+  <data name="Controls_FilterAxis" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="Controls_SpeedSensitivity" xml:space="preserve">
+    <value>Speed sensitivity</value>
+    <comment>For steering wheel</comment>
+  </data>
+  <data name="Controls_ClearWheelBinding" xml:space="preserve">
+    <value>Clear wheel binding</value>
+  </data>
+  <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
+    <value>Clear keyboard binding</value>
+  </data>
+  <data name="Controls_SteeringWheelButton" xml:space="preserve">
+    <value>Steering wheel button</value>
+  </data>
+  <data name="Controls_KeyboardButton" xml:space="preserve">
+    <value>Keyboard button</value>
+  </data>
+  <data name="Online_CarIsMissingLabel" xml:space="preserve">
+    <value>Car is missing:</value>
+  </data>
+  <data name="Online_TrackIsMissingLabel" xml:space="preserve">
+    <value>Track is missing:</value>
+  </data>
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
+    <value>Drivers online:</value>
+  </data>
+  <data name="Online_JoinUsing" xml:space="preserve">
+    <value>Join Using {0}</value>
+    <comment>Join using specific car</comment>
+  </data>
+  <data name="Common_MillisecondsPostfix" xml:space="preserve">
+    <value> ms</value>
+  </data>
+  <data name="Online_PasswordRequired" xml:space="preserve">
+    <value>Password required</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>Error</value>
   </data>
 </root>

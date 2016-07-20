@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using AcManager.Controls.ViewModels;
 
 namespace AcManager.Controls.Converters {
-    public class RealismLevelToColorConverter
-            : IValueConverter {
+    [ValueConversion(typeof(RealismLevel), typeof(SolidColorBrush))]
+    public class RealismLevelToColorConverter : IValueConverter {
         private static Color GetColor(RealismLevel? level) {
             switch (level) {
                 case RealismLevel.Realistic:

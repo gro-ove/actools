@@ -12,7 +12,7 @@
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
                 <Label Content="Assetto Corsa folder:" />
-                <Button Command="{Binding ChangeAcRootCommand}">Change</Button>
+                <Button Command="{Binding ChangeAcRootCommand}" Content="Change" />
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
             </DockPanel>
 
@@ -26,7 +26,7 @@
 
             <DockPanel>
                 <Label Content="App key:" />
-                <Button Command="{Binding ChangeAppKeyCommand}">Change</Button>
+                <Button Command="{Binding ChangeAppKeyCommand}" Content="Change" />
                 <TextBlock Text="{Binding Source={x:Static internal:AppKeyHolder.KeySafe}, Mode=OneTime}" attached:WatermarkService.Watermark="?" />
             </DockPanel>
 
@@ -46,7 +46,7 @@
             <!--app version-->
             <DockPanel>
                 <Label Content="App version:" />
-                <Button Command="{Binding AppUpdater.CheckAndPrepareIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}">Check for Updates</Button>
+                <Button Command="{Binding AppUpdater.CheckAndPrepareIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}" Content="Check for Updates" />
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}"
                         Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, Mode=OneTime}" attached:WatermarkService.Watermark="?" />
             </DockPanel>
@@ -57,7 +57,7 @@
             <!--content version-->
             <DockPanel>
                 <Label Content="Content version:" />
-                <Button Command="{Binding ContentSyncronizer.CheckAndUpdateIfNeededCommand}">Check for Updates</Button>
+                <Button Command="{Binding ContentSyncronizer.CheckAndUpdateIfNeededCommand}" Content="Check for Updates" />
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding ContentSyncronizer.InstalledVersion, Mode=OneWay}"
                         attached:WatermarkService.Watermark="?" />
             </DockPanel>
@@ -69,7 +69,7 @@
 
             <DockPanel>
                 <Label Content="Size:" />
-                <Button Command="{Binding CleanUpStorageCommand}" ToolTip="Remove all nonimportant values">Clean Up</Button>
+                <Button Command="{Binding CleanUpStorageCommand}" ToolTip="Remove all nonimportant values" Content="Clean Up" />
                 <TextBlock Text="{Binding ValuesStorage.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} entry', Mode=OneWay}" />
             </DockPanel>
 

@@ -34,12 +34,12 @@
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
             <mui:ValueLabel Value="{Binding LapsNumber}"
-                    Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter=' lap'}">Race duration</mui:ValueLabel>
+                    Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter=' lap'}" Content="Race duration" />
             <Slider Minimum="1" Maximum="{Binding LapsNumberMaximumLimited}" Value="{Binding LapsNumber}" />
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0">
-            <mui:ValueLabel Value="{Binding AiLevel}" Postfix='%'>Opponents strength</mui:ValueLabel>
+            <mui:ValueLabel Value="{Binding AiLevel}" Postfix='%' Content="Opponents strength" />
             <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevel}" />
         </StackPanel>
 
@@ -52,7 +52,7 @@
                             IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
                 </ContextMenu>
             </StackPanel.ContextMenu>
-            <mui:ValueLabel Value="{Binding AiLevelMin}" Postfix='%'>Opponents strength (min)</mui:ValueLabel>
+            <mui:ValueLabel Value="{Binding AiLevelMin}" Postfix='%' Content="Opponents strength (min)" />
             <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevelMin}" />
         </StackPanel>
 

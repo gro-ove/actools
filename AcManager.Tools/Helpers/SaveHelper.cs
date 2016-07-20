@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
@@ -33,7 +34,7 @@ namespace AcManager.Tools.Helpers {
         private readonly Action<T> _load;
         private readonly Action _reset;
 
-        public SaveHelper(string key, Func<T> save, Action<T> load, Action reset) {
+        public SaveHelper([Localizable(false)] string key, Func<T> save, Action<T> load, Action reset) {
             _key = key;
             _save = save;
             _load = load;

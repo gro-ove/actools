@@ -50,7 +50,7 @@
             <DockPanel attached:LimitedService.Limited="True" ToolTip="Restart app to apply changes">
                 <Label Content="Image scaling quality:" />
                 <Button Visibility="{Binding BitmapScalingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Command="{Binding RestartCommand}">Restart</Button>
+                        Command="{Binding RestartCommand}" Content="Restart" />
                 <ComboBox ItemsSource="{Binding BitmapScalings}" SelectedItem="{Binding BitmapScaling, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 

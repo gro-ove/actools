@@ -1024,11 +1024,56 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t unpack {0}.
+        /// </summary>
+        public static string Common_CannotUnpack {
+            get {
+                return ResourceManager.GetString("Common_CannotUnpack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destination.
+        /// </summary>
+        public static string Common_Destination {
+            get {
+                return ResourceManager.GetString("Common_Destination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disabled.
         /// </summary>
         public static string Common_Disabled {
             get {
                 return ResourceManager.GetString("Common_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exporting….
+        /// </summary>
+        public static string Common_Exporting {
+            get {
+                return ResourceManager.GetString("Common_Exporting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KN5.
+        /// </summary>
+        public static string Common_KN5 {
+            get {
+                return ResourceManager.GetString("Common_KN5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Length.
+        /// </summary>
+        public static string Common_Length {
+            get {
+                return ResourceManager.GetString("Common_Length", resourceCulture);
             }
         }
         
@@ -1074,6 +1119,15 @@ namespace AcManager.Tools {
         public static string Common_Torque {
             get {
                 return ResourceManager.GetString("Common_Torque", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Width.
+        /// </summary>
+        public static string Common_Width {
+            get {
+                return ResourceManager.GetString("Common_Width", resourceCulture);
             }
         }
         

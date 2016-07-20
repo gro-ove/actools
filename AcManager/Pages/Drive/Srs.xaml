@@ -13,7 +13,7 @@
         </Grid.RowDefinitions>
 
         <DockPanel Margin="0 0 0 20" Visibility="{Binding ShowExtensionMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}">Got It</Button>
+            <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}" Content="Got It" />
             <mui:BbCodeBlock>Just in case, if you can't join using this section (or missed joining time), use Online section instead.</mui:BbCodeBlock>
         </DockPanel>
 
@@ -96,10 +96,10 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
-                <!--<Button Command="{Binding TestCommand, ElementName=This}" Margin="0 0 4 0">Test</Button>-->
+                <!--<Button Command="{Binding TestCommand, ElementName=This}" Margin="0 0 4 0" Content="Test" />-->
                 <Button Visibility="{Binding CanQuit, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Command="{Binding QuitCommand, ElementName=This}" ToolTip="Quit registration" Margin="0 0 4 0">Quit</Button>
-                <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)">Go!</Button>
+                        Command="{Binding QuitCommand, ElementName=This}" ToolTip="Quit registration" Margin="0 0 4 0" Content="Quit" />
+                <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)" Content="Go!" />
             </StackPanel>
         </Grid>
     </Grid>

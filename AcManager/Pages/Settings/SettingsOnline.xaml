@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System"
         xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsOnline+SettingsOnlineViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -46,12 +48,12 @@
 
             <DockPanel IsEnabled="{Binding Online.ThreadsPing, Converter={StaticResource InvertBooleanConverter}}">
                 <DockPanel.ToolTip>Increase value to make pinging of the whole list go faster, but it’ll be less accurate</DockPanel.ToolTip>
-                <mui:ValueLabel Value="{Binding Online.PingConcurrency}" Mode="Integer">Ping concurrency</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding Online.PingConcurrency}" Mode="Integer" Content="Ping concurrency" />
                 <Slider Minimum="10" Maximum="300" Value="{Binding Online.PingConcurrency}" TickFrequency="29" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Online.PingTimeout}" Mode="Integer" Postfix=" ms">Ping timeout</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding Online.PingTimeout}" Mode="Integer" Postfix="{x:Static c:Resources.Common_MillisecondsPostfix}" Content="Ping timeout" />
                 <Slider Minimum="200" Maximum="5000" Value="{Binding Online.PingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -70,7 +72,7 @@
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Online.ScanPingTimeout}" Mode="Integer" Postfix=" ms">Scan timeout</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding Online.ScanPingTimeout}" Mode="Integer" Postfix="{x:Static c:Resources.Common_MillisecondsPostfix}" Content="Scan timeout" />
                 <Slider Minimum="200" Maximum="5000" Value="{Binding Online.ScanPingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>
 

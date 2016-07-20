@@ -9,7 +9,7 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Controls.WheelFfbGain}" Mode="Integer" Postfix="%">Gain</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding Controls.WheelFfbGain}" Mode="Integer" Postfix="%" Content="Gain" />
                 <Slider Minimum="0" Maximum="200" Value="{Binding Controls.WheelFfbGain}" TickFrequency="20" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -18,12 +18,12 @@
             </CheckBox>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Controls.WheelFfbFilter}" Mode="Integer" Postfix="%">Filter</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding Controls.WheelFfbFilter}" Mode="Integer" Postfix="%" Content="Filter" />
                 <Slider Minimum="0" Maximum="99" Value="{Binding Controls.WheelFfbFilter}" TickFrequency="11" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Controls.WheelFfbMinForce, StringFormat='{}{0:F1}'}" Mode="Number" Postfix="%">Minimum force</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding Controls.WheelFfbMinForce, StringFormat='{}{0:F1}'}" Mode="Number" Postfix="%" Content="Minimum force" />
                 <Slider Minimum="0" Maximum="30" Value="{Binding Controls.WheelFfbMinForce}" TickFrequency="3" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -31,17 +31,17 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Effects:" />
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Controls.WheelFfbKerbEffect}" Mode="Integer" Postfix="%">Kerb effect</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding Controls.WheelFfbKerbEffect}" Mode="Integer" Postfix="%" Content="Kerb effect" />
                 <Slider Minimum="0" Maximum="150" Value="{Binding Controls.WheelFfbKerbEffect}" TickFrequency="15" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Controls.WheelFfbRoadEffect}" Mode="Integer" Postfix="%">Road effect</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding Controls.WheelFfbRoadEffect}" Mode="Integer" Postfix="%" Content="Road effect" />
                 <Slider Minimum="0" Maximum="150" Value="{Binding Controls.WheelFfbRoadEffect}" TickFrequency="15" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Controls.WheelFfbSlipEffect}" Mode="Integer" Postfix="%">Slip effect</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding Controls.WheelFfbSlipEffect}" Mode="Integer" Postfix="%" Content="Slip effect" />
                 <Slider Minimum="0" Maximum="150" Value="{Binding Controls.WheelFfbSlipEffect}" TickFrequency="15" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -58,7 +58,7 @@
 
             <DockPanel>
                 <DockPanel.ToolTip>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</DockPanel.ToolTip>
-                <mui:ValueLabel Value="{Binding System.FfbSkipSteps}" Mode="Integer">Skip FFB steps</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding System.FfbSkipSteps}" Mode="Integer" Content="Skip FFB steps" />
                 <Slider Minimum="0" Maximum="5" Value="{Binding System.FfbSkipSteps}" TickFrequency="1" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -74,12 +74,12 @@
             </CheckBox>
 
             <DockPanel IsEnabled="{Binding Path=IsChecked, ElementName=Experimental}" ToolTip="Set to 0 for Logitech G920, keep 1 for everything else">
-                <mui:ValueLabel Value="{Binding System.FfbDamperGain}" Mode="Integer" Postfix="%">Damper gain</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding System.FfbDamperGain}" Mode="Integer" Postfix="%" Content="Damper gain" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding System.FfbDamperGain}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel IsEnabled="{Binding Path=IsChecked, ElementName=Experimental}">
-                <mui:ValueLabel Value="{Binding System.FfbDamperMinLevel}" Mode="Integer" Postfix="%">Minimum damper level</mui:ValueLabel>
+                <mui:ValueLabel Value="{Binding System.FfbDamperMinLevel}" Mode="Integer" Postfix="%" Content="Minimum damper level" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding System.FfbDamperMinLevel}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
         </StackPanel>

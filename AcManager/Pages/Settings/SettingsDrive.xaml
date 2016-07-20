@@ -16,8 +16,8 @@
             <DockPanel>
                 <Label>
                     <TextBlock>
-                        <Run>Game starter</Run><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                Command="{Binding NavigateCommand}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run>:</Run>
+                        <Run Text="Game starter" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
+                                Command="{Binding NavigateCommand}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run Text=":" />
                     </TextBlock>
                 </Label>
                 <ComboBox ItemsSource="{Binding Drive.StarterTypes}" SelectedItem="{Binding Drive.SelectedStarterType}" DisplayMemberPath="DisplayName">

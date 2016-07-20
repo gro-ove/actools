@@ -225,4 +225,7 @@
   <data name="Presets_Unsaved" xml:space="preserve">
     <value>Не сохранено</value>
   </data>
+  <data name="Controls_SteeringWheelButton" xml:space="preserve">
+    <value>Кнопка на руле</value>
+  </data>
 </root>

@@ -24,7 +24,7 @@
                     </TextBox>
                     <Button Margin="0 0 4 0" Padding="2 0 2 0" Focusable="False"
                             Command="{Binding CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:TagsList}, Mode=FindAncestor}}"
-                            CommandParameter="{Binding}">×</Button>
+                            CommandParameter="{Binding}" Content="×" />
                 </StackPanel>
             </DataTemplate>
         </controls:TagsListDataTemplateSelector.TagDataTemplate>

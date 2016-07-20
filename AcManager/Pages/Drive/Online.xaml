@@ -63,7 +63,7 @@
                     <TextBlock.ToolTip>
                         <ToolTip>
                             <TextBlock>     
-                                <Run>Pinged</Run>
+                                <Run Text="Pinged" />
                                 <Run Text="{Binding Manager.Pinged, Mode=OneWay}" />
                                 <Run Text="{Binding Manager.WrappersList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter},
                                         ConverterParameter='{}out of {0} server'}" />

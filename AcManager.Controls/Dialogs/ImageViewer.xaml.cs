@@ -176,6 +176,17 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
+            private string _saveableTitle = Controls.Resources.ImageViewer_SaveTitle;
+
+            public string SaveableTitle {
+                get { return _saveableTitle; }
+                set {
+                    if (Equals(value, _saveableTitle)) return;
+                    _saveableTitle = value;
+                    OnPropertyChanged();
+                }
+            }
+
             private string _saveDirectory;
 
             public string SaveDirectory {
@@ -213,7 +224,7 @@ namespace AcManager.Controls.Dialogs {
 
             public object CurrentOriginalImage => _originalImages[_currentPosition];
 
-            public string CurrentImageName => Path.GetFileName(CurrentOriginalImage as string ?? "Image");
+            public string CurrentImageName => Path.GetFileName(CurrentOriginalImage as string ?? Controls.Resources.ImageViewer_DefaultName);
 
             private bool _selectionMode;
 
@@ -248,7 +259,7 @@ namespace AcManager.Controls.Dialogs {
 
                 var dialog = new SaveFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
-                    Title = "Export Texture Mapping",
+                    Title = SaveableTitle,
                     DefaultExt = Path.GetExtension(origin)
                 };
 
@@ -261,7 +272,7 @@ namespace AcManager.Controls.Dialogs {
                 try {
                     await Task.Run(() => File.Copy(origin, dialog.FileName));
                 } catch (Exception ex) {
-                    NonfatalError.Notify("Can’t export texture", ex);
+                    NonfatalError.Notify(Controls.Resources.ImageViewer_CannotSave, ex);
                 }
             }, o => CurrentOriginalImage is string));
         }

@@ -2,13 +2,12 @@
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcTools.Processes;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -178,8 +177,7 @@ namespace AcManager.Controls.Dialogs {
                         UseBmp = false
                     }));
                 } catch (Exception e) {
-                    ShowMessage("Can’t start showroom:\n\n" + e, "Oops!", MessageBoxButton.OK);
-                    Logging.Warning("cannot update previews: " + e);
+                    NonfatalError.Notify(Controls.Resources.Showroom_CannotStart, e);
                 }
             }
         }

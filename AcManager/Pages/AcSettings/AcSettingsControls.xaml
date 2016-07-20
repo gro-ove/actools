@@ -155,7 +155,7 @@
                     </MenuItem>
                 </Menu>
 
-                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset">Save Preset</Button>
+                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset" Content="Save Preset" />
             </Grid>
             <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0" ToolTip="Share current settings (Ctrl+Page Up)"
                     Content="Share">
@@ -169,7 +169,7 @@
                 </Button.ContextMenu>
             </Button>
             <Button Command="{Binding TestCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="Test current preset with Quick Drive"
-                    Style="{StaticResource Go.Button}">Test</Button>
+                    Style="{StaticResource Go.Button}" Content="Test" />
         </StackPanel>
     </Grid>
 </UserControl>

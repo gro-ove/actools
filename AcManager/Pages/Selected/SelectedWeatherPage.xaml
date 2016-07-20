@@ -1,6 +1,6 @@
 ﻿<selected:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedWeatherPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
                                xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
@@ -51,7 +51,7 @@
                                 </ContextMenu>
                             </DockPanel.ContextMenu>
                             <DockPanel.ToolTip>Creates a variation of the asphalt temperature relative to the weather, ambient temperature and time. More information in “readme_weather.txt”</DockPanel.ToolTip>
-                            <mui:ValueLabel Value="{Binding SelectedObject.TemperatureCoefficient, StringFormat='{}{0:F2}'}">Temp. coefficient</mui:ValueLabel>
+                            <mui:ValueLabel Value="{Binding SelectedObject.TemperatureCoefficient, StringFormat='{}{0:F2}'}" Content="Temp. coefficient" />
                             <Slider Minimum="-1" Maximum="1" Value="{Binding SelectedObject.TemperatureCoefficient}" TickFrequency="0.2"
                                     TickPlacement="BottomRight" />
                         </DockPanel>
@@ -65,13 +65,13 @@
 
                             <StackPanel Orientation="Horizontal" Margin="0 8 0 8">
                                 <StackPanel Margin="0 0 8 0" Width="120">
-                                    <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0 0 0 4">Time</mui:ValueLabel>
+                                    <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0 0 0 4" Content="Time" />
                                     <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}"
                                             Value="{Binding Time}" Margin="0 0 0 4" Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight"
                                             IsSnapToTickEnabled="False" />
                                 </StackPanel>
                                 <StackPanel Width="120">
-                                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}" Mode="Number" Postfix=" °C">Air temp.</mui:ValueLabel>
+                                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}" Mode="Number" Postfix=" °C" Content="Air temp." />
                                     <Slider Minimum="{x:Static drive:QuickDrive.TemperatureMinimum}" Maximum="{x:Static drive:QuickDrive.TemperatureMaximum}"
                                             Value="{Binding Temperature}" Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False"
                                             TickPlacement="BottomRight" />
@@ -94,7 +94,7 @@
 
                         <DockPanel ToolTip="Regulates clouds transparency">
                             <mui:ValueLabel Value="{Binding SelectedObject.CloudsCover, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number">Cover</mui:ValueLabel>
+                                    Mode="Number" Content="Cover" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.CloudsCover, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
@@ -108,40 +108,40 @@
                                 </mui:BbCodeBlock>
                             </DockPanel.ToolTip>
                             <mui:ValueLabel Value="{Binding SelectedObject.CloudsCutoff, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number">Cut-off</mui:ValueLabel>
+                                    Mode="Number" Content="Cut-off" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.CloudsCutoff, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel ToolTip="Base color; the sunlight, light color and ambient will be added to this">
                             <mui:ValueLabel Value="{Binding SelectedObject.CloudsColor, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number">Color</mui:ValueLabel>
+                                    Mode="Number" Content="Color" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.CloudsColor, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel ToolTip="Width of the quad">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsWidth, StringFormat='{}{0:F2}'}" Mode="Number">Width</mui:ValueLabel>
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsWidth, StringFormat='{}{0:F2}'}" Mode="Number" Content="Width" />
                             <Slider Minimum="0" Maximum="20" Value="{Binding SelectedObject.CloudsWidth}" TickFrequency="2" TickPlacement="BottomRight" />
                         </DockPanel>
 
                         <DockPanel ToolTip="Height of the quad">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsHeight, StringFormat='{}{0:F2}'}" Mode="Number">Height</mui:ValueLabel>
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsHeight, StringFormat='{}{0:F2}'}" Mode="Number" Content="Height" />
                             <Slider Minimum="0" Maximum="20" Value="{Binding SelectedObject.CloudsHeight}" TickFrequency="2" TickPlacement="BottomRight" />
                         </DockPanel>
 
                         <DockPanel ToolTip="Distance from the center of the skybox to the quad">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsRadius, StringFormat='{}{0:F2}'}" Mode="Number">Radius</mui:ValueLabel>
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsRadius, StringFormat='{}{0:F2}'}" Mode="Number" Content="Radius" />
                             <Slider Minimum="0" Maximum="20" Value="{Binding SelectedObject.CloudsRadius}" TickFrequency="2" TickPlacement="BottomRight" />
                         </DockPanel>
 
                         <DockPanel ToolTip="Number of clouds">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsNumber}">Number</mui:ValueLabel>
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsNumber}" Content="Number" />
                             <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.CloudsNumber}" TickFrequency="20" TickPlacement="BottomRight" />
                         </DockPanel>
 
                         <DockPanel ToolTip="Base speed multipler">
-                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsSpeedMultipler}" Mode="Number" Postfix="%">Speed</mui:ValueLabel>
+                            <mui:ValueLabel Value="{Binding SelectedObject.CloudsSpeedMultipler}" Mode="Number" Postfix="%" Content="Speed" />
                             <Slider Minimum="0" Maximum="2" Value="{Binding SelectedObject.CloudsSpeedMultiplerRounded}" TickFrequency="0.2"
                                     TickPlacement="BottomRight" />
                         </DockPanel>
@@ -157,19 +157,19 @@
 
                         <DockPanel>
                             <mui:ValueLabel Value="{Binding SelectedObject.FogColorMultipler, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number">Brightness</mui:ValueLabel>
+                                    Mode="Number" Content="Brightness" />
                             <Slider Minimum="0" Maximum="800" TickFrequency="80" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.FogColorMultipler, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}}" Postfix="%" Mode="Number">Blend</mui:ValueLabel>
+                            <mui:ValueLabel Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}}" Postfix="%" Mode="Number" Content="Blend" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.FogDistance, StringFormat='\{0:F0\}'}" Postfix=" m">Distance</mui:ValueLabel>
+                            <mui:ValueLabel Value="{Binding SelectedObject.FogDistance, StringFormat='\{0:F0\}'}" Postfix="{x:Static c:Resources.Common_MetersPostfix}" Content="Distance" />
                             <Slider Minimum="0" Maximum="12000" Value="{Binding SelectedObject.FogDistance}" TickFrequency="1200" TickPlacement="BottomRight" />
                         </DockPanel>
 
@@ -177,14 +177,14 @@
 
                         <DockPanel ToolTip="Used when HDR is disabled">
                             <mui:ValueLabel Value="{Binding SelectedObject.HdrOffMultipler, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number">HDR-off mult.</mui:ValueLabel>
+                                    Mode="Number" Content="HDR-off mult." />
                             <Slider Minimum="0" Maximum="200" TickFrequency="20" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.HdrOffMultipler, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                         </DockPanel>
 
                         <DockPanel>
                             <mui:ValueLabel Value="{Binding SelectedObject.AngleGamma, Converter={StaticResource PercentageConverter}}" Postfix="%"
-                                    Mode="Number">Angle gamma</mui:ValueLabel>
+                                    Mode="Number" Content="Angle gamma" />
                             <Slider Minimum="0" Maximum="500" TickFrequency="50" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.AngleGamma, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" />
                         </DockPanel>
@@ -206,7 +206,7 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
                                 <mui:ColorPicker Grid.Column="1" Color="{Binding Color}" ToolTip="Low" Margin="0 0 20 0" VerticalAlignment="Center" />
-                                <mui:ValueLabel Grid.Column="2" Value="{Binding Multipler}" Postfix="×">Multipler</mui:ValueLabel>
+                                <mui:ValueLabel Grid.Column="2" Value="{Binding Multipler}" Postfix="×" Content="Multipler" />
                                 <Slider Grid.Column="3" Minimum="0" Maximum="{Binding Maximum}" Value="{Binding MultiplerRounded}"
                                         TickFrequency="{Binding Step}" TickPlacement="BottomRight" />
                             </Grid>
@@ -217,8 +217,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
-        <ac:AcObjectBase.ToolBars>
+    <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
+        <c:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Folder" ToolTip="Open weather's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
@@ -256,7 +256,7 @@
                             Command="{Binding UpdatePreviewDirectCommand}" />
                 </mui:ButtonWithComboBox>
             </ToolBar>
-        </ac:AcObjectBase.ToolBars>
+        </c:AcObjectBase.ToolBars>
 
         <StackPanel x:Name="Wrapper" Style="{StaticResource SettingsPanel}"
                 Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -290,5 +290,5 @@
                 </Grid>
             </StackPanel>
         </StackPanel>
-    </ac:AcObjectBase>
+    </c:AcObjectBase>
 </selected:SelectedAcObjectPage>

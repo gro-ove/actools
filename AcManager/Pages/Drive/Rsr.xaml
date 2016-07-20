@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
 
         <DockPanel Margin="0 0 0 20" Visibility="{Binding ShowExtensionMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}">Got It</Button>
+            <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}" Content="Got It" />
             <mui:BbCodeBlock>If you're using Chrome-like browser, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]here[/url] is an extension for starting RSR events directly from browser!</mui:BbCodeBlock>
         </DockPanel>
 
@@ -84,7 +84,7 @@
                 </DockPanel>
             </StackPanel>
 
-            <Button Grid.Column="2" Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)" VerticalAlignment="Bottom">Go!</Button>
+            <Button Grid.Column="2" Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)" VerticalAlignment="Bottom" Content="Go!" />
         </Grid>
     </Grid>
 </UserControl>

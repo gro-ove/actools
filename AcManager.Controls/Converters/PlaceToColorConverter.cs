@@ -2,8 +2,10 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Controls.Converters {
+    [ValueConversion(typeof(int), typeof(Brush))]
     public class PlaceToColorConverter : IValueConverter {
         public Brush FirstPlaceColor { get; set; }
 
@@ -14,7 +16,7 @@ namespace AcManager.Controls.Converters {
         public Brush DefaultColor { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            switch (System.Convert.ToInt32(value?.ToString() ?? "0")) {
+            switch (value.AsInt()) {
                 case 1:
                     return FirstPlaceColor;
                 case 2:

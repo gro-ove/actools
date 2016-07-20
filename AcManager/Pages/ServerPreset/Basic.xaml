@@ -73,7 +73,7 @@
 
             <StackPanel Style="{StaticResource SettingsCompactPanel}">
                 <DockPanel ToolTip="Number of allowed clients">
-                    <mui:ValueLabel Value="{Binding SelectedObject.Capacity}">Capacity</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SelectedObject.Capacity}" Content="Capacity" />
                     <Slider Minimum="2" Maximum="{Binding MaximumCapacity}" Value="{Binding SelectedObject.Capacity}" TickPlacement="BottomRight"
                             TickFrequency="{Binding MaximumCapacity, Converter={x:Static local:SelectedPage.ProgressCapacityConverter}}" />
                 </DockPanel>
@@ -128,11 +128,11 @@
                             attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" attached:TextBoxAdvancement.SpecialMode="Positive" />
                 </DockPanel>
                 <DockPanel ToolTip="Higher value provides better multiplayer quality, but requires a more powerful connection">
-                    <mui:ValueLabel Value="{Binding SelectedObject.SendIntervalHz}" Postfix=" Hz">Packets</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SelectedObject.SendIntervalHz}" Postfix=" Hz" Content="Packets" />
                     <Slider Minimum="10" Maximum="35" Value="{Binding SelectedObject.SendIntervalHz}" TickFrequency="5" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.Threads}">Threads</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SelectedObject.Threads}" Content="Threads" />
                     <Slider Minimum="2" Maximum="8" Value="{Binding SelectedObject.Threads}" TickFrequency="2" TickPlacement="BottomRight" />
                 </DockPanel>
             </StackPanel>

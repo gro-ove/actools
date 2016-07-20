@@ -46,27 +46,27 @@
             <StackPanel Grid.Column="1" Style="{StaticResource SettingsCompactPanel}">
                 <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Realism" />
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.FuelRate}" Postfix="%">Fuel rate</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SelectedObject.FuelRate}" Postfix="%" Content="Fuel rate" />
                     <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.FuelRate}" TickFrequency="25" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.DamageRate}" Postfix="%">Damage rate</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SelectedObject.DamageRate}" Postfix="%" Content="Damage rate" />
                     <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.DamageRate}" TickFrequency="25" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.TyreWearRate}" Postfix="%">Tyres wear rate</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SelectedObject.TyreWearRate}" Postfix="%" Content="Tyres wear rate" />
                     <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.TyreWearRate}" TickFrequency="25" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.AllowTyresOut}">Allowed tyres out</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SelectedObject.AllowTyresOut}" Content="Allowed tyres out" />
                     <Slider Minimum="0" Maximum="4" Value="{Binding SelectedObject.AllowTyresOut}" TickFrequency="1" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.MaxBallast}" Postfix=" kg">Max ballast</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SelectedObject.MaxBallast}" Postfix=" kg" Content="Max ballast" />
                     <Slider Minimum="0" Maximum="200" Value="{Binding SelectedObject.MaxBallast}" TickFrequency="25" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>
-                    <mui:ValueLabel Value="{Binding SelectedObject.QualifyLimitPercentage}" Postfix="%">Qualify limit</mui:ValueLabel>
+                    <mui:ValueLabel Value="{Binding SelectedObject.QualifyLimitPercentage}" Postfix="%" Content="Qualify limit" />
                     <Slider Minimum="100" Maximum="200" Value="{Binding SelectedObject.QualifyLimitPercentage}" TickFrequency="25" TickPlacement="BottomRight" />
                 </DockPanel>
                 <DockPanel>

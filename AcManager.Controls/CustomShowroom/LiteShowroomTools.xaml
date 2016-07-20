@@ -3,9 +3,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom" xmlns:modernui="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" Title="Tools" ShowInTaskbar="False" d:DataContext="{d:DesignInstance customShowroom:LiteShowroomTools+LiteShowroomToolsViewModel}"
-        Topmost="True" Loaded="LiteShowroomTools_OnLoaded" Unloaded="LiteShowroomTools_OnUnloaded" Width="250" SizeToContent="Height">
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:c="clr-namespace:AcManager.Controls"
+        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="{x:Static c:Resources.CustomShowroom_ToolsTitle}" ShowInTaskbar="False"
+        d:DataContext="{d:DesignInstance customShowroom:LiteShowroomTools+LiteShowroomToolsViewModel}" Topmost="True" Loaded="LiteShowroomTools_OnLoaded"
+        Unloaded="LiteShowroomTools_OnUnloaded" Width="250" SizeToContent="Height">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -41,29 +43,30 @@
         </StackPanel.Resources>
 
         <StackPanel Visibility="{Binding Renderer.SelectedName, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-            <TextBlock Text="Selected" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+            <TextBlock Text="{x:Static c:Resources.CustomShowroom_SelectedHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
             <DockPanel>
                 <DockPanel.InputBindings>
                     <MouseBinding Command="{Binding ViewObjectCommand}" MouseAction="LeftClick" />
                 </DockPanel.InputBindings>
-                <Label Content="Name:" />
+                <Label Content="{x:Static c:Resources.CustomShowroom_Selected_NameLabel}" />
                 <TextBlock Text="{Binding Renderer.SelectedName}" TextTrimming="CharacterEllipsis" />
             </DockPanel>
             <DockPanel>
                 <DockPanel.InputBindings>
                     <MouseBinding Command="{Binding ViewMaterialCommand}" MouseAction="LeftClick" />
                 </DockPanel.InputBindings>
-                <Label Content="Material:" />
+                <Label Content="{x:Static c:Resources.CustomShowroom_Selected_MaterialLabel}" />
                 <TextBlock Text="{Binding Renderer.SelectedMaterial.Name}" TextTrimming="CharacterEllipsis" />
             </DockPanel>
             <DockPanel>
-                <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left" Content="Textures:" />
+                <Label DockPanel.Dock="Top" Margin="0 0 0 4" HorizontalAlignment="Left" Content="{x:Static c:Resources.CustomShowroom_Selected_TexturesLabel}" />
                 <ItemsControl MaxHeight="200" ItemsSource="{Binding Renderer.SelectedTextures}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <DockPanel Margin="8 0 0 0">
                                 <Button DockPanel.Dock="Right" Height="20" Padding="4 0"
-                                        Command="{Binding Data.ViewTextureCommand, Source={StaticResource DataContextProxy}}" CommandParameter="{Binding}">…</Button>
+                                        Command="{Binding Data.ViewTextureCommand, Source={StaticResource DataContextProxy}}" CommandParameter="{Binding}"
+                                        Content="…" />
                                 <Label VerticalAlignment="Center" Width="90">
                                     <TextBlock Text="{Binding SlotName, StringFormat='{}{0}: '}" />
                                 </Label>
@@ -74,38 +77,38 @@
                 </ItemsControl>
             </DockPanel>
 
-            <TextBlock Text="Stats" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+            <TextBlock Text="{x:Static c:Resources.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
             <DockPanel>
-                <Label Content="Triangles:" />
+                <Label Content="{x:Static c:Resources.CustomShowroom_Stats_TrianglesLabel}" />
                 <TextBlock Text="{Binding Renderer.SelectedObject.TrianglesCount}" />
             </DockPanel>
         </StackPanel>
 
         <StackPanel Visibility="{Binding Renderer.SelectedName, Converter={StaticResource NullToVisibilityConverter}}">
             <StackPanel Visibility="{Binding AmbientShadowsMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                <TextBlock Text="Stats" Style="{StaticResource Heading2}" />
+                <TextBlock Text="{x:Static c:Resources.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" />
                 <DockPanel>
-                    <Label Content="FPS:" />
+                    <Label Content="{x:Static c:Resources.CustomShowroom_Stats_FpsLabel}" />
                     <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
                 </DockPanel>
                 <DockPanel>
-                    <Label Content="Objects:" />
+                    <Label Content="{x:Static c:Resources.CustomShowroom_Stats_ObjectsLabel}" />
                     <TextBlock Text="{Binding Renderer.ObjectsCount}" />
                 </DockPanel>
                 <DockPanel>
-                    <Label Content="Triangles:" />
+                    <Label Content="{x:Static c:Resources.CustomShowroom_Stats_TrianglesLabel}" />
                     <TextBlock Text="{Binding Renderer.TrianglesCount}" />
                 </DockPanel>
 
-                <TextBlock Text="Control" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                <TextBlock Text="{x:Static c:Resources.CustomShowroom_ControlHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                 <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.CarLightsEnabled}">
-                    <Label Content="_Lights" />
+                    <Label Content="{x:Static c:Resources.CustomShowroom_Control_Lights}" />
                 </CheckBox>
                 <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.ShowWireframe}">
-                    <Label Content="_Wireframe" />
+                    <Label Content="{x:Static c:Resources.CustomShowroom_Control_Wireframe}" />
                 </CheckBox>
 
-                <TextBlock Text="Skin" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                <TextBlock Text="{x:Static c:Resources.CustomShowroom_SkinHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                 <ComboBox ItemsSource="{Binding Car.LoadedOnlySkins}" SelectedItem="{Binding Skin}" Margin="0 4 0 0">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -116,17 +119,21 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.LiveReload}"
-                        ToolTip="Automatically update textures; use PSD, XCF, etc. instead if exists (Magick.NET addon is required)">
-                    <Label Content="Skin editing mode" />
+                <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.LiveReload}" ToolTip="{x:Static c:Resources.CustomShowroom_EditingMode_Tooltip}">
+                    <Label Content="{x:Static c:Resources.CustomShowroom_EditingMode}" />
                 </CheckBox>
 
-                <Button Margin="0 12 0 0" Command="{Binding ToggleAmbientShadowModeCommand}">Update Ambient Shadows</Button>
+                <Button Margin="0 12 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
+                        Content="{x:Static c:Resources.CustomShowroom_AmbientShadows_Update}" />
 
                 <StackPanel
                         Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="Developer Tools" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                    <Button Margin="0 12 0 0" Command="{Binding UnpackKn5Command}">Unpack KN5</Button>
+                    <TextBlock Text="{x:Static c:Resources.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                    <Button Margin="0 12 0 0" Command="{Binding UnpackKn5Command}">
+                        <Button.Content>
+                            <TextBlock Text="{Binding Source={x:Static t:Resources.Common_KN5}, StringFormat={x:Static c:Resources.Common_Unpack}}" />
+                        </Button.Content>
+                    </Button>
                 </StackPanel>
             </StackPanel>
 
@@ -134,70 +141,80 @@
                 <StackPanel Background="Transparent" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <StackPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Reset To Recommended Values" Command="{Binding AmbientShadowResetCommand}" />
+                            <MenuItem Header="{x:Static c:Resources.CustomShowroom_AmbientShadows_Reset}" Command="{Binding AmbientShadowResetCommand}" />
                         </ContextMenu>
                     </StackPanel.ContextMenu>
-                    
+
                     <DockPanel>
                         <mui:ModernButton Margin="0 0 4 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="20" IconWidth="10"
                                 IconHeight="10" IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
                                 Command="{Binding ToggleAmbientShadowModeCommand}" ToolTip="{x:Static modernui:Resources.Back}" DockPanel.Dock="Left" />
-                        <TextBlock Text="Ambient Shadow" Style="{StaticResource Heading2}" />
+                        <TextBlock Text="{x:Static c:Resources.CustomShowroom_AmbientShadowsHeader}" Style="{StaticResource Heading2}" />
                     </DockPanel>
 
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top">Diffusion</mui:ValueLabel>
+                        <mui:ValueLabel Value="{Binding AmbientShadowDiffusion, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top"
+                                Content="{x:Static c:Resources.CustomShowroom_AmbientShadows_Diffusion}" />
                         <Slider Minimum="0" Maximum="100" Value="{Binding AmbientShadowDiffusion}" TickFrequency="20" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top">Brightness</mui:ValueLabel>
+                        <mui:ValueLabel Value="{Binding AmbientShadowBrightness, StringFormat='\{0:F0\}'}" Postfix="%" Mode="Number" DockPanel.Dock="Top"
+                                Content="{x:Static c:Resources.CustomShowroom_AmbientShadows_Brightness}" />
                         <Slider Minimum="150" Maximum="800" Value="{Binding AmbientShadowBrightness}" TickFrequency="130" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top">Iterations</mui:ValueLabel>
+                        <mui:ValueLabel Value="{Binding AmbientShadowIterations}" DockPanel.Dock="Top"
+                                Content="{x:Static c:Resources.CustomShowroom_AmbientShadows_Iterations}" />
                         <Slider Minimum="400" Maximum="4000" Value="{Binding AmbientShadowIterations}" TickFrequency="720" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
                     <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowHideWheels}">
-                        <Label Content="Hide wheels" />
+                        <Label Content="{x:Static c:Resources.CustomShowroom_AmbientShadows_HideWheels}" />
                     </CheckBox>
                     <CheckBox Margin="0 4 0 0" IsChecked="{Binding AmbientShadowFade}" ToolTip="Enable to avoid clipping">
-                        <Label Content="Fade to edges" />
+                        <Label Content="{x:Static c:Resources.CustomShowroom_AmbientShadows_FadeToEdges}" />
                     </CheckBox>
-                    <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}">Update</Button>
+                    <Button Margin="0 4 0 0" Command="{Binding UpdateAmbientShadowCommand}"
+                            Content="{x:Static c:Resources.CustomShowroom_AmbientShadows_Update}" />
                 </StackPanel>
 
                 <StackPanel Background="Transparent" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <StackPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Reset" Command="{Binding AmbientShadowSizeResetCommand}" />
-                            <MenuItem Header="Fit" Command="{Binding AmbientShadowSizeFitCommand}" />
-                            <MenuItem Header="Save" Command="{Binding AmbientShadowSizeSaveCommand}" />
+                            <MenuItem Header="{x:Static c:Resources.CustomShowroom_AmbientShadowsSize_Reset}" Command="{Binding AmbientShadowSizeResetCommand}" />
+                            <MenuItem Header="{x:Static c:Resources.CustomShowroom_AmbientShadowsSize_Fit}" Command="{Binding AmbientShadowSizeFitCommand}" />
+                            <MenuItem Header="{x:Static c:Resources.CustomShowroom_AmbientShadowsSize_Save}" Command="{Binding AmbientShadowSizeSaveCommand}" />
                         </ContextMenu>
                     </StackPanel.ContextMenu>
 
-                    <TextBlock Text="Size" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                    <TextBlock Text="{x:Static c:Resources.CustomShowroom_AmbientShadowsSizeHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}" Postfix=" m" Mode="Number" DockPanel.Dock="Top">Width</mui:ValueLabel>
+                        <mui:ValueLabel Value="{Binding Renderer.AmbientShadowWidth, StringFormat='\{0:F2\}'}"
+                                Postfix="{x:Static c:Resources.Common_MetersPostfix}" Mode="Number" DockPanel.Dock="Top"
+                                Content="{x:Static t:Resources.Common_Width}" />
                         <Slider Minimum="0" Maximum="4" Value="{Binding Renderer.AmbientShadowWidth}" TickFrequency="1" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}'}" Postfix=" m" Mode="Number" DockPanel.Dock="Top">Length</mui:ValueLabel>
+                        <mui:ValueLabel Value="{Binding Renderer.AmbientShadowLength, StringFormat='\{0:F2\}'}"
+                                Postfix="{x:Static c:Resources.Common_MetersPostfix}" Mode="Number" DockPanel.Dock="Top"
+                                Content="{x:Static t:Resources.Common_Length}" />
                         <Slider Minimum="0" Maximum="6" Value="{Binding Renderer.AmbientShadowLength}" TickFrequency="1" TickPlacement="BottomRight"
                                 IsSnapToTickEnabled="False" />
                     </DockPanel>
 
                     <CheckBox Margin="0 4 0 0" IsChecked="{Binding Renderer.AmbientShadowHighlight}">
-                        <Label Content="Highlight size" />
+                        <Label Content="{x:Static c:Resources.CustomShowroom_AmbientShadowsSize_Highlight}" />
                     </CheckBox>
 
                     <DockPanel>
-                        <Button Width="60" Margin="0 0 4 0" DockPanel.Dock="Left" Command="{Binding AmbientShadowSizeFitCommand}">Fit</Button>
+                        <Button Width="60" Margin="0 0 4 0" DockPanel.Dock="Left" Command="{Binding AmbientShadowSizeFitCommand}"
+                                Content="{x:Static c:Resources.CustomShowroom_AmbientShadowsSize_Fit}" />
                         <Button Command="{Binding AmbientShadowSizeSaveCommand}"
-                                FontStyle="{Binding Renderer.AmbientShadowSizeChanged, Converter={StaticResource BooleanToFontStyleConverter}}">Save</Button>
+                                FontStyle="{Binding Renderer.AmbientShadowSizeChanged, Converter={StaticResource BooleanToFontStyleConverter}}"
+                                Content="{x:Static c:Resources.CustomShowroom_AmbientShadowsSize_Save}" />
                     </DockPanel>
                 </StackPanel>
             </StackPanel>

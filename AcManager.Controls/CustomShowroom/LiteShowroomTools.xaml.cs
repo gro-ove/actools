@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -273,7 +274,7 @@ namespace AcManager.Controls.CustomShowroom {
                 }
 
                 using (var waiting = new WaitingDialog()) {
-                    waiting.Report("Updating shadows…");
+                    waiting.Report(Controls.Resources.CustomShowroom_AmbientShadows_Updating);
 
                     await Task.Run(() => {
                         if (Renderer == null) return;
@@ -288,15 +289,15 @@ namespace AcManager.Controls.CustomShowroom {
                             renderer.Shot();
                         }
                     });
-                    
-                    waiting.Report("Reloading textures…");
+
+                    waiting.Report(Controls.Resources.CustomShowroom_AmbientShadows_Reloading);
 
                     foreach (var s in new[] {
-                        "body_shadow.png",
-                        "tyre_0_shadow.png",
-                        "tyre_1_shadow.png",
-                        "tyre_2_shadow.png",
-                        "tyre_3_shadow.png"
+                        @"body_shadow.png",
+                        @"tyre_0_shadow.png",
+                        @"tyre_1_shadow.png",
+                        @"tyre_2_shadow.png",
+                        @"tyre_3_shadow.png"
                     }) {
                         if (Renderer == null) return;
                         await Renderer.UpdateTextureAsync(Path.Combine(Car.Location, s));
@@ -310,8 +311,8 @@ namespace AcManager.Controls.CustomShowroom {
 
             public RelayCommand AmbientShadowSizeSaveCommand => _ambientShadowSizeSaveCommand ?? (_ambientShadowSizeSaveCommand = new RelayCommand(o => {
                 if (Renderer == null || File.Exists(Path.Combine(Car.Location, "data.acd")) && ModernDialog.ShowMessage(
-                        "Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?",
-                        "Data is Encrypted", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+                        Controls.Resources.CustomShowroom_AmbientShadowsSize_EncryptedDataMessage,
+                        Controls.Resources.CustomShowroom_AmbientShadowsSize_EncryptedData, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
                 var data = Path.Combine(Car.Location, "data");
                 Directory.CreateDirectory(data);
@@ -373,11 +374,12 @@ namespace AcManager.Controls.CustomShowroom {
 
                     var destination = Path.Combine(Car.Location, "unpacked");
 
-                    using (var waiting = new WaitingDialog("Exporting…")) {
+                    using (var waiting = new WaitingDialog(Tools.Resources.Common_Exporting)) {
                         await Task.Delay(1);
 
                         if (FileUtils.Exists(destination) &&
-                                MessageBox.Show("Folder “unpacked” already exists. Overwrite files?", "Destination", MessageBoxButton.YesNo) == MessageBoxResult.No) {
+                                MessageBox.Show(string.Format(Controls.Resources.Common_FolderExists, @"unpacked"), Tools.Resources.Common_Destination,
+                                        MessageBoxButton.YesNo) == MessageBoxResult.No) {
                             var temp = destination;
                             var i = 1;
                             do {
@@ -385,8 +387,8 @@ namespace AcManager.Controls.CustomShowroom {
                             } while (FileUtils.Exists(destination));
                         }
 
-                        var name = Renderer.Kn5.RootNode.Name.StartsWith("FBX: ") ? Renderer.Kn5.RootNode.Name.Substring(5) :
-                                "model.fbx";
+                        var name = Renderer.Kn5.RootNode.Name.StartsWith(@"FBX: ") ? Renderer.Kn5.RootNode.Name.Substring(5) :
+                                @"model.fbx";
                         Directory.CreateDirectory(destination);
                         await Renderer.Kn5.ExportFbxWithIniAsync(Path.Combine(destination, name), waiting, waiting.CancellationToken);
 
@@ -397,7 +399,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                     Process.Start(destination);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t unpack KN5", e);
+                    NonfatalError.Notify(string.Format(Tools.Resources.Common_CannotUnpack, Tools.Resources.Common_KN5), e);
                 }
             }, o => SettingsHolder.Common.DeveloperMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.Kn5 != null));
             #endregion
@@ -430,27 +432,15 @@ namespace AcManager.Controls.CustomShowroom {
                 var obj = Renderer?.SelectedObject.OriginalNode;
                 if (obj == null) return;
 
-                ShowMessage($@"Object name: [b]{obj.Name}[/b]
-Class: [b]{obj.NodeClass.GetDescription()}[/b]
-
-Active: [b]{obj.Active}[/b]
-Renderable: [b]{obj.IsRenderable}[/b]
-Visible: [b]{obj.IsVisible}[/b]
-
-Transparent: [b]{obj.IsTransparent}[/b]
-Casting Shadows: [b]{obj.CastShadows}[/b]
-
-Layer: [b]{obj.Layer}[/b]
-LOD In: [b]{obj.LodIn}[/b]
-LOD In: [b]{obj.LodOut}[/b]
-
-Material: [b]{Renderer.SelectedMaterial?.Name ?? "?"}[/b]", obj.Name);
+                ShowMessage(string.Format(Controls.Resources.CustomShowroom_ObjectInformation, obj.Name, obj.NodeClass.GetDescription(), obj.Active,
+                        obj.IsRenderable, obj.IsVisible, obj.IsTransparent, obj.CastShadows, obj.Layer,
+                        obj.LodIn, obj.LodOut, Renderer.SelectedMaterial?.Name ?? @"?"), obj.Name);
             }, o => Renderer?.SelectedObject != null));
 
             private static string MaterialPropertyToString(Kn5Material.ShaderProperty property) {
-                if (property.ValueD.Any(x => !Equals(x, 0f))) return $"({property.ValueD.JoinToString(", ")})";
-                if (property.ValueC.Any(x => !Equals(x, 0f))) return $"({property.ValueC.JoinToString(", ")})";
-                if (property.ValueB.Any(x => !Equals(x, 0f))) return $"({property.ValueB.JoinToString(", ")})";
+                if (property.ValueD.Any(x => !Equals(x, 0f))) return $"({property.ValueD.JoinToString(@", ")})";
+                if (property.ValueC.Any(x => !Equals(x, 0f))) return $"({property.ValueC.JoinToString(@", ")})";
+                if (property.ValueB.Any(x => !Equals(x, 0f))) return $"({property.ValueB.JoinToString(@", ")})";
                 return property.ValueA.ToInvariantString();
             }
 
@@ -460,16 +450,27 @@ Material: [b]{Renderer.SelectedMaterial?.Name ?? "?"}[/b]", obj.Name);
                 var material = Renderer?.SelectedMaterial;
                 if (material == null) return;
 
-                ShowMessage($@"Material name: [b]{material.Name}[/b]
-Shader: [b]{material.ShaderName}[/b]
+                var sb = new StringBuilder();
+                sb.Append(string.Format(Controls.Resources.CustomShowroom_MaterialInformation, material.Name, material.ShaderName,
+                        material.BlendMode.GetDescription(), material.AlphaTested, material.DepthMode.GetDescription()));
 
-Blend mode: [b]{material.BlendMode.GetDescription()}[/b]
-Alpha test: [b]{material.AlphaTested}[/b]
-Depth mode: [b]{material.DepthMode.GetDescription()}[/b]{
-        (material.ShaderProperties.Any() ? "\n\nShader properties:\n" : "")
-}{material.ShaderProperties.Select(x => $"    • {x.Name}: [b]{MaterialPropertyToString(x)}[/b]").JoinToString("\n")}{
-        (material.TextureMappings.Any() ? "\n\nTextures:\n" : "")
-}{material.TextureMappings.Select(x => $"    • {x.Name}: [b]{x.Texture}[/b]").JoinToString("\n")}", material.Name);
+                if (material.ShaderProperties.Any()) {
+                    sb.Append('\n');
+                    sb.Append('\n');
+                    sb.Append(Controls.Resources.CustomShowroom_ShaderProperties);
+                    sb.Append('\n');
+                    sb.Append(material.ShaderProperties.Select(x => $"    • {x.Name}: [b]{MaterialPropertyToString(x)}[/b]").JoinToString('\n'));
+                }
+
+                if (material.TextureMappings.Any()) {
+                    sb.Append('\n');
+                    sb.Append('\n');
+                    sb.Append(Controls.Resources.CustomShowroom_Selected_TexturesLabel);
+                    sb.Append('\n');
+                    sb.Append(material.TextureMappings.Select(x => $"    • {x.Name}: [b]{x.Texture}[/b]").JoinToString('\n'));
+                }
+
+                ShowMessage(sb.ToString(), material.Name);
             }, o => Renderer?.SelectedMaterial != null));
 
             private RelayCommand _viewTextureCommand;

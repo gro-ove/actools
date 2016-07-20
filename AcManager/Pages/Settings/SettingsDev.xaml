@@ -16,7 +16,7 @@
         <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
             <DockPanel>
                 <Label Content="Magick.NET leaking:" />
-                <Button Command="{Binding MagickNetMemoryLeakingCommand}">Test</Button>
+                <Button Command="{Binding MagickNetMemoryLeakingCommand}" Content="Test" />
             </DockPanel>
         </StackPanel>
     </ScrollViewer>

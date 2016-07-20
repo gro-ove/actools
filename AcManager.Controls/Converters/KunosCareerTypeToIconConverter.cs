@@ -4,6 +4,7 @@ using System.Windows.Data;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Controls.Converters {
+    [ValueConversion(typeof(KunosCareerObjectType), typeof(object))]
     public class KunosCareerTypeToIconConverter : IValueConverter {
         public object ChampionshipIconData { get; set; }
 

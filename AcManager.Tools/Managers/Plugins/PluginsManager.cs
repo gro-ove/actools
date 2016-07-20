@@ -53,11 +53,11 @@ namespace AcManager.Tools.Managers.Plugins {
             return GetById(id)?.IsReady ?? false;
         }
 
-        public string GetPluginDirectory(string id) {
+        public string GetPluginDirectory([Localizable(false)] string id) {
             return Path.Combine(PluginsDirectory, id);
         }
 
-        public string GetPluginFilename(string id, string fileId) {
+        public string GetPluginFilename([Localizable(false)] string id, [Localizable(false)] string fileId) {
             return Path.Combine(PluginsDirectory, id, fileId);
         }
 
