@@ -32,7 +32,7 @@ namespace AcManager.Controls.Helpers {
 
         public ResourceResponse OnRequest(ResourceRequest request) {
             if (UserAgent != null) {
-                request.AppendExtraHeader("User-Agent", UserAgent);
+                request.AppendExtraHeader(@"User-Agent", UserAgent);
             }
 
             return null;
@@ -72,7 +72,7 @@ namespace AcManager.Controls.Helpers {
 
         private void SetExternal(object o) {
             if (!IsDocumentReady || o == null) return;
-            using (JSObject interop = CreateGlobalJavascriptObject("external")) {
+            using (JSObject interop = CreateGlobalJavascriptObject(@"external")) {
                 o.GetType().GetMethods().ToList().ForEach(method => interop.Bind(method.Name, Handler));
             }
         }

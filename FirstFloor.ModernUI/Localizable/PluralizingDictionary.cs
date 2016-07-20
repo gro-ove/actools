@@ -39,6 +39,8 @@ namespace FirstFloor.ModernUI.Localizable {
                 case "противник": return two ? "противника" : "противников";
                 case "пит-стоп": return two ? "пит-стопа" : "пит-стопов";
                 case "сервер": return two ? "сервера" : "серверов";
+                case "очко": return two ? "очка" : "очков";
+                case "ошибка": return two ? "ошибки" : "ошибок";
             }
 
             return null;

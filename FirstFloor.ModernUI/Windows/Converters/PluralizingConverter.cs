@@ -11,7 +11,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         public static string Pluralize(int value, [NotNull] string s, CultureInfo culture = null) {
             if (s == null) throw new ArgumentNullException(nameof(s));
 
-            var result = Pluralizing.Convert(value, s, culture);
+            var result = Pluralizing.Convert(value, s);
             if (result == null || result == s) return s;
             if (result == string.Empty) return string.Empty;
 

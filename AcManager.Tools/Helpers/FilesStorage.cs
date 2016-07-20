@@ -145,7 +145,7 @@ namespace AcManager.Tools.Helpers {
             Process.Start(contentUserDir);
         }
 
-        public string GetTemporaryFilename(string filename) {
+        public string GetTemporaryFilename([Localizable(false)] string filename) {
             return GetFilename("Temporary", filename);
         }
 

@@ -344,4 +344,19 @@
   <data name="Ordinalizing_Nth" xml:space="preserve">
     <value>{0}-й</value>
   </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0} день</value>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0} час</value>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0} минута</value>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0} секунда</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>Stack Trace</value>
+  </data>
 </root>

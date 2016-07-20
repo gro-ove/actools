@@ -5,9 +5,9 @@ using System.Windows.Shapes;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Controls {
-    public partial class GraphViewer : UserControl {
+    public partial class GraphViewer {
         public static readonly DependencyProperty SourceProperty =
-            DependencyProperty.Register("Source", typeof(GraphData), typeof(GraphViewer), new PropertyMetadata(OnSourceChanged));
+            DependencyProperty.Register(nameof(Source), typeof(GraphData), typeof(GraphViewer), new PropertyMetadata(OnSourceChanged));
 
         private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             ((GraphViewer)d).OnSourceChanged((GraphData)e.OldValue, (GraphData)e.NewValue);

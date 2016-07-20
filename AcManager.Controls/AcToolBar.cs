@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 
 namespace AcManager.Controls {
-    [ContentProperty("ToolBars")]
+    [ContentProperty(nameof(ToolBars))]
     public class AcToolBar : Control {
         static AcToolBar() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AcToolBar), new FrameworkPropertyMetadata(typeof(AcToolBar)));
@@ -14,7 +14,7 @@ namespace AcManager.Controls {
             SetCurrentValue(ToolBarsProperty, new Collection<ToolBar>());
         }
 
-        private ToolBarTray ToolBarTray => GetTemplateChild("PART_ToolBarTray") as ToolBarTray;
+        private ToolBarTray ToolBarTray => GetTemplateChild(@"PART_ToolBarTray") as ToolBarTray;
 
         public static readonly DependencyProperty ToolBarsProperty = DependencyProperty.Register(nameof(ToolBars), typeof(Collection<ToolBar>),
                                                                                              typeof(AcToolBar));

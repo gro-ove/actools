@@ -28,7 +28,7 @@ namespace AcManager.Controls.UserControls {
                     var videoViewer = new VideoViewer(career.StartVideo, career.Name);
                     videoViewer.ShowDialog();
                 } else {
-                    NonfatalError.Notify("Can’t play video", "Please, go to the Settings, download and enable VLC addon.");
+                    NonfatalError.Notify(Controls.Resources.Video_CannotPlay, Controls.Resources.Video_CannotPlay_Commentary);
                 }
             }
             
@@ -39,7 +39,7 @@ namespace AcManager.Controls.UserControls {
             var career = KunosCareerObject;
             if (career == null) return;
 
-            InformationIcon.Data = FindResource(File.Exists(career.StartVideo) ? "MovieIconData" : "InformationIconData") as Geometry;
+            InformationIcon.Data = FindResource(File.Exists(career.StartVideo) ? @"MovieIconData" : @"InformationIconData") as Geometry;
         }
     }
 }

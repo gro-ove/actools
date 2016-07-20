@@ -87,9 +87,9 @@ namespace FirstFloor.ModernUI.Localizable {
             }
         }
 
-        public static string Convert(int v, string s, CultureInfo culture = null) {
+        public static string Convert(int v, string s) {
             string result;
-            switch ((culture ?? CultureInfo.CurrentUICulture).Name.ToLowerInvariant()) {
+            switch (CultureInfo.CurrentUICulture.Name.ToLowerInvariant()) {
                 case "ru":
                 case "ru-ru":
                     result = Base(v);

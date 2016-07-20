@@ -106,6 +106,9 @@
     <Compile Include="Helpers\ValuesStorage_EncryptionKey.cs" />
     <Compile Include="Helpers\ValuesStorage.cs" />
     <Compile Include="Helpers\WrappingStream.cs" />
+    <Compile Include="Localizable\Ordinalizing.cs" />
+    <Compile Include="Localizable\Pluralizing.cs" />
+    <Compile Include="Localizable\Titling.cs" />
     <Compile Include="ModernUiHelper.cs" />
     <Compile Include="Presentation\AsyncCommand.cs" />
     <Compile Include="Presentation\AutoCompleteBehavior.cs" />
@@ -200,6 +203,7 @@
     <Compile Include="Windows\Attached\WatermarkAdorner.cs" />
     <Compile Include="Windows\Attached\WatermarkService.cs" />
     <Compile Include="Windows\Converters\BooleanToTextConverter.cs" />
+    <Compile Include="Windows\Converters\ChainConverter.cs" />
     <Compile Include="Windows\Converters\ConverterHelper.cs" />
     <Compile Include="Windows\Converters\EnumToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\EnumToDescriptionConverter.cs" />
@@ -216,7 +220,7 @@
     <Compile Include="Windows\Converters\OrdinalizingConverter.cs" />
     <Compile Include="Windows\Converters\PercentageConverter.cs" />
     <Compile Include="Windows\Converters\PluralizingConverter.cs" />
-    <Compile Include="Helpers\PluralizingDictionary.cs" />
+    <Compile Include="Localizable\PluralizingDictionary.cs" />
     <Compile Include="Windows\Converters\SubstractConverter.cs" />
     <Compile Include="Windows\Converters\SumConverter.cs" />
     <Compile Include="Windows\Converters\ExistToVisibilityConverter.cs" />
@@ -449,6 +453,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources.fr-FR.resx" />
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>

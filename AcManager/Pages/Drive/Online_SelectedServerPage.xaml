@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.Online_SelectedServerPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:online="clr-namespace:AcManager.Tools.Managers.Online;assembly=AcManager.Tools" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
@@ -158,7 +158,7 @@
                         </Grid.RowDefinitions>
 
                         <!-- first row -->
-                        <TextBlock Text="Country:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
+                        <TextBlock Text="{x:Static c:Resources.AcObject_ContryLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
                         <TextBlock Text="Clients:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
 
                         <DockPanel Grid.Column="1" Grid.Row="0">
@@ -241,12 +241,12 @@
             </DockPanel>
         </Grid>
 
-        <controls:AcToolBar x:Name="ToolBar" IsActive="True" Grid.Row="1" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
+        <c:AcToolBar x:Name="ToolBar" IsActive="True" Grid.Row="1" PreviewMouseDown="ToolBar_OnPreviewMouseDown">
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="Refresh" ToolTip="Refresh server information (Ctrl+R)" Command="{Binding RefreshCommand}" />
                 <Separator />
                 <Button Content="Join" Command="{Binding JoinCommand}" ToolTip="Join server (Ctrl+G)" Style="{StaticResource Go.ToolBarButton}" />
             </ToolBar>
-        </controls:AcToolBar>
+        </c:AcToolBar>
     </Grid>
 </UserControl>

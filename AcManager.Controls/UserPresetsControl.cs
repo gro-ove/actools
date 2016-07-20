@@ -356,7 +356,7 @@ namespace AcManager.Controls {
             }
         }
 
-        private static readonly DependencyPropertyKey ChangedPropertyKey = DependencyProperty.RegisterReadOnly("Changed", 
+        private static readonly DependencyPropertyKey ChangedPropertyKey = DependencyProperty.RegisterReadOnly(nameof(Changed), 
             typeof(bool), typeof(UserPresetsControl), null);
         public static readonly DependencyProperty ChangedProperty = ChangedPropertyKey.DependencyProperty;
 

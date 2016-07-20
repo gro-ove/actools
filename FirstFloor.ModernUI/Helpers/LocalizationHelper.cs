@@ -11,7 +11,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
         public static string ToOrdinal(this int value, string subject, CultureInfo culture = null) {
-            return Ordinalizing.Convert(value, subject, culture);
+            return Ordinalizing.Convert(value, subject);
         }
 
         public static string ToReadableTime(this long seconds) {

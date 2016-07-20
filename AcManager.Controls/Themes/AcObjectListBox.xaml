@@ -20,7 +20,7 @@
                         </Grid.RowDefinitions>
                         <DockPanel Margin="8" HorizontalAlignment="Stretch"
                                 Visibility="{TemplateBinding IsFilteringEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="Filter:" Width="60" DockPanel.Dock="Left" />
+                            <TextBlock Text="{x:Static ac:Resources.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
                             <TextBox Style="{StaticResource TextBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                                     attached:WatermarkService.Watermark="*"
                                     Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}" />

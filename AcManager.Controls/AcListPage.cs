@@ -56,7 +56,7 @@ namespace AcManager.Controls {
 
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
-            _list = GetTemplateChild("ItemsList") as ListBox;
+            _list = GetTemplateChild(@"ItemsList") as ListBox;
             _list?.ScrollIntoView(_list.SelectedItem);
         }
 
@@ -97,12 +97,12 @@ namespace AcManager.Controls {
         }
 
         #region Control Properies
-        public static readonly DependencyProperty SelectedSourceProperty = DependencyProperty.Register("SelectedSource", typeof(Uri),
+        public static readonly DependencyProperty SelectedSourceProperty = DependencyProperty.Register(nameof(SelectedSource), typeof(Uri),
             typeof(AcListPage), new PropertyMetadata());
 
         public Uri SelectedSource => (Uri)GetValue(SelectedSourceProperty);
 
-        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register("ItemsSource", typeof(AcWrapperCollectionView),
+        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource), typeof(AcWrapperCollectionView),
             typeof(AcListPage), new PropertyMetadata(OnItemsSourceChanged));
 
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {

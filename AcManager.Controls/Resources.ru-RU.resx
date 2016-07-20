@@ -117,69 +117,112 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Championship" xml:space="preserve">
-    <value>Чемпионат</value>
+  <data name="KunosCareer_RequiredSeries" xml:space="preserve">
+    <value>Требуется пройти: {0}</value>
   </data>
-  <data name="Online_ScanningProgress" xml:space="preserve">
-    <value>Сканирование ({0}/{1}), найдено {2}…</value>
+  <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
+    <value>Требуемые серии пока не пройдены</value>
   </data>
-  <data name="Online_ScanningProgress_Found" xml:space="preserve">
-    <value>{0} сервер</value>
+  <data name="KunosCareer_CompletedLabel" xml:space="preserve">
+    <value>Завершено: </value>
+    <comment>Don’t forget about space at the end!</comment>
   </data>
-  <data name="Online_Server_MissingCarBbCode" xml:space="preserve">
-    <value>«[url="http://assetto-db.com/car/{0}"]{0}[/url]»</value>
+  <data name="KunosCareer_Point" xml:space="preserve">
+    <value>очко</value>
+    <comment>Will be pluralized automatically</comment>
   </data>
-  <data name="Online_Server_MissingTrackBbCode" xml:space="preserve">
-    <value>«[url="http://assetto-db.com/track/{0}"]{0}[/url]»</value>
+  <data name="KunosCareer_Error" xml:space="preserve">
+    <value>{0} ошибка</value>
+    <comment>Will be pluralized automatically</comment>
   </data>
-  <data name="SingleEvents" xml:space="preserve">
-    <value>События</value>
+  <data name="AcObject_ErrorsHeader" xml:space="preserve">
+    <value>Ошибки:</value>
   </data>
-  <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
-    <value>{0} пит-стоп</value>
+  <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
+    <value>Координаты:</value>
   </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} ГГц</value>
-    <comment>Parameters: width, height, refresh rate</comment>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>Город</value>
   </data>
-  <data name="AcSettings_CustomResolution" xml:space="preserve">
-    <value>Заданное вручную</value>
+  <data name="Assists_Header" xml:space="preserve">
+    <value>Помощники:</value>
   </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
+    <value>АКПП:</value>
   </data>
-  <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
-    <value>Bitmap (без сжатия)</value>
+  <data name="Assists_AutoClutchLabel" xml:space="preserve">
+    <value>Авто-сцепление:</value>
   </data>
-  <data name="AcSettings_Off" xml:space="preserve">
-    <value>Выкл.</value>
-    <comment>For example, for video settings, displayed instead of 0</comment>
+  <data name="Assists_AutoBlipLabel" xml:space="preserve">
+    <value>Авто-блип:</value>
   </data>
-  <data name="Windows_Kn5Commentary" xml:space="preserve">
-    <value>KN5 модель</value>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
   </data>
-  <data name="Windows_AcReplayCommentary" xml:space="preserve">
-    <value>AC реплей</value>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>TC:</value>
   </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Яндекс</value>
+  <data name="Assists_StabilityControlLabel" xml:space="preserve">
+    <value>Стабилизация:</value>
   </data>
-  <data name="Period_Month" xml:space="preserve">
-    <value>Месяц</value>
+  <data name="Assists_FuelLabel" xml:space="preserve">
+    <value>Расход топлива:</value>
   </data>
-  <data name="CustomShowroom_Fancy" xml:space="preserve">
-    <value>Графонистый</value>
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
+    <value>Износ шин:</value>
   </data>
-  <data name="CustomShowroom_Lite" xml:space="preserve">
-    <value>Простой</value>
+  <data name="WebBrowser_Prompt" xml:space="preserve">
+    <value>Сообщение</value>
   </data>
-  <data name="CarParentIsMissing" xml:space="preserve">
-    <value>Нет базовой версии</value>
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
+    <value>Производитель:</value>
   </data>
-  <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
-    <value>Не получится запустить игру</value>
+  <data name="AcObject_ContryLabel" xml:space="preserve">
+    <value>Страна:</value>
   </data>
-  <data name="NotSupported" xml:space="preserve">
-    <value>Не поддерживается</value>
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
+    <value>Класс:</value>
+  </data>
+  <data name="AcObject_YearLabel" xml:space="preserve">
+    <value>Год:</value>
+  </data>
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
+    <value>Базовая версия:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Характеристики:</value>
+  </data>
+  <data name="AcObject_AuthorTooltip" xml:space="preserve">
+    <value>Автор, версия и веб-адрес</value>
+  </data>
+  <data name="Car_OpenInShowroom" xml:space="preserve">
+    <value>Открыть в шоуруме</value>
+  </data>
+  <data name="Common_Presets" xml:space="preserve">
+    <value>Пресеты</value>
+  </data>
+  <data name="Common_Settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="Car_OpenInCustomShowroom" xml:space="preserve">
+    <value>Открыть в кастомном шоуруме</value>
+  </data>
+  <data name="Video_CannotPlay" xml:space="preserve">
+    <value>Не получится проиграть видео</value>
+  </data>
+  <data name="Video_CannotPlay_Commentary" xml:space="preserve">
+    <value>Пожалуйста, зайдите в настройки и включите VLC-плагин</value>
+  </data>
+  <data name="Common_FilterLabel" xml:space="preserve">
+    <value>Фильтр:</value>
+  </data>
+  <data name="Presets_Save" xml:space="preserve">
+    <value>Сохранить пресет</value>
+  </data>
+  <data name="Presets_Save_Tooltip" xml:space="preserve">
+    <value>Сохранить текущие параметры как пресет</value>
+  </data>
+  <data name="Presets_Unsaved" xml:space="preserve">
+    <value>Не сохранено</value>
   </data>
 </root>

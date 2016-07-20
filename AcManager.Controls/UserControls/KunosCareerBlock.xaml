@@ -2,7 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:effects="clr-namespace:FirstFloor.ModernUI.Effects;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" DataContextChanged="KunosCareerBlock_OnDataContextChanged">
+        xmlns:c="clr-namespace:AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        DataContextChanged="KunosCareerBlock_OnDataContextChanged">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -107,10 +108,12 @@
             <!--without errors-->
             <StackPanel Margin="0 0 0 4" Visibility="{Binding HasErrors, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                 <!--not available-->
-                <DockPanel Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <DockPanel Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+                        ToolTip="{x:Static c:Resources.KunosCareer_RequiredSeriesAreNotFinishedYet}" Background="Transparent">
                     <Path Data="{StaticResource LockIconData}" Fill="{DynamicResource WindowText}" SnapsToDevicePixels="True" MaxHeight="10" Stretch="Uniform"
-                            ToolTip="Required series aren't done yet" DockPanel.Dock="Left" />
-                    <TextBlock Text="{Binding DisplayRequired, StringFormat='Required series: {0}'}" Name="LockTextBlock" Margin="4 0 0 0" />
+                            DockPanel.Dock="Left" />
+                    <TextBlock Text="{Binding DisplayRequired, StringFormat={x:Static c:Resources.KunosCareer_RequiredSeries}}" Name="LockTextBlock"
+                            Margin="4 0 0 0" />
                 </DockPanel>
 
                 <!--available-->
@@ -126,9 +129,8 @@
                     </StackPanel.Resources>
 
                     <!--completed events: 0/0-->
-
-                    <TextBlock Text="Completed: " />
-                    <TextBlock FontWeight="Bold" Name="ProgressText">
+                    <TextBlock Text="{x:Static c:Resources.KunosCareer_CompletedLabel}" />
+                    <TextBlock FontWeight="Bold">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
                                 <Binding Path="CompletedEvents" />
@@ -182,7 +184,8 @@
                                 </Run.Style>
                             </Run><Run Text="," />
                             <Run Text="{Binding ChampionshipPoints, Mode=OneWay}" FontWeight="Bold" />
-                            <Run Text="{Binding ChampionshipPoints, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='point'}" />
+                            <Run
+                                    Text="{Binding ChampionshipPoints, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:Resources.KunosCareer_Point}}" />
                         </TextBlock>
                     </StackPanel>
                 </StackPanel>
@@ -203,7 +206,8 @@
                 </DockPanel.ToolTip>
                 <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" MaxHeight="10" Stretch="Uniform" Fill="{DynamicResource Error}"
                         DockPanel.Dock="Left" />
-                <TextBlock Text="{Binding Errors.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} error'}" Margin="4 0 0 0" />
+                <TextBlock Margin="4 0 0 0"
+                        Text="{Binding Errors.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:Resources.KunosCareer_Error}}" />
             </DockPanel>
         </StackPanel>
     </DockPanel>

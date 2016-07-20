@@ -82,7 +82,7 @@
                                     CommandParameter="country" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
-                    <TextBlock Text="Country:" />
+                    <TextBlock Text="{x:Static ac:Resources.AcObject_ContryLabel}" />
                     <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
                             ItemsSource="{x:Static managers:SuggestionLists.CountriesListView}" />
                 </DockPanel>

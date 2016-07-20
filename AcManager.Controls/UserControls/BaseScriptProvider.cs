@@ -34,7 +34,7 @@ namespace AcManager.Controls.UserControls {
         }
 
         public string Prompt(string message, string defaultValue) {
-            return Dialogs.Prompt.Show(message, "Webpage says", defaultValue);
+            return Dialogs.Prompt.Show(message, Resources.WebBrowser_Prompt, defaultValue);
         }
 
         public void FixPage() {

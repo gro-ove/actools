@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Controls {
@@ -52,7 +51,7 @@ namespace AcManager.Controls {
                 _iconImage.MouseDown -= IconImage_MouseDown;
             }
 
-            _iconImage = GetTemplateChild("PART_IconImage") as UIElement;
+            _iconImage = GetTemplateChild(@"PART_IconImage") as UIElement;
 
             if (_iconImage != null) {
                 _iconImage.MouseDown += IconImage_MouseDown;

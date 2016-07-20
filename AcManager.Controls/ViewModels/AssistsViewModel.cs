@@ -30,7 +30,7 @@ namespace AcManager.Controls.ViewModels {
 
         string IUserPresetable.PresetableCategory => UserPresetableKeyValue;
 
-        string IUserPresetable.DefaultPreset => "Pro";
+        string IUserPresetable.DefaultPreset => @"Pro";
 
         string IUserPresetable.ExportToPresetData() {
             return Saveable.ToSerializedString();

@@ -19,8 +19,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if (value == null) return value;
-            return Titling.Convert(value.ToString(), culture);
+            return value == null ? null : Titling.Convert(value.ToString());
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace AcManager.Controls.Helpers {
 
         public static void Register(IAcObjectsUriProvider provider) {
             if (_provider != null) {
-                throw new Exception("Provider already assigned");
+                throw new Exception(@"Provider already assigned");
             }
 
             _provider = provider;
@@ -19,7 +19,7 @@ namespace AcManager.Controls.Helpers {
 
         public static Uri GetUri(AcObjectNew obj) {
             if (_provider == null) {
-                throw new Exception("Provider is missing");
+                throw new Exception(@"Provider is missing");
             }
 
             return _provider.GetUri(obj);

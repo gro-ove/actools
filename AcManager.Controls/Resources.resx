@@ -1,0 +1,369 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Assists_IdealLineLabel" xml:space="preserve">
+    <value>Ideal line:</value>
+  </data>
+  <data name="Assists_Header" xml:space="preserve">
+    <value>Assists:</value>
+  </data>
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
+    <value>Auto shifter:</value>
+  </data>
+  <data name="Assists_AutoClutchLabel" xml:space="preserve">
+    <value>Auto clutch:</value>
+  </data>
+  <data name="Assists_AutoBlipLabel" xml:space="preserve">
+    <value>Auto blip:</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
+  </data>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>TC:</value>
+  </data>
+  <data name="Assists_StabilityControlLabel" xml:space="preserve">
+    <value>Stability control:</value>
+  </data>
+  <data name="Assists_FuelLabel" xml:space="preserve">
+    <value>Fuel:</value>
+  </data>
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
+    <value>Tyre wear:</value>
+  </data>
+  <data name="WebBrowser_Prompt" xml:space="preserve">
+    <value>Webpage says</value>
+  </data>
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
+    <value>Brand:</value>
+  </data>
+  <data name="AcObject_ContryLabel" xml:space="preserve">
+    <value>Country:</value>
+  </data>
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
+    <value>Class:</value>
+  </data>
+  <data name="AcObject_YearLabel" xml:space="preserve">
+    <value>Year:</value>
+  </data>
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
+    <value>Parent:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Specs:</value>
+  </data>
+  <data name="AcObject_AuthorTooltip" xml:space="preserve">
+    <value>Author, version &amp;amp; URL</value>
+  </data>
+  <data name="Car_OpenInShowroom" xml:space="preserve">
+    <value>Open In Showroom</value>
+  </data>
+  <data name="Common_Presets" xml:space="preserve">
+    <value>Presets</value>
+  </data>
+  <data name="Common_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Car_OpenInCustomShowroom" xml:space="preserve">
+    <value>Open In Custom Showroom</value>
+  </data>
+  <data name="KunosCareer_RequiredSeries" xml:space="preserve">
+    <value>Required series: {0}</value>
+  </data>
+  <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
+    <value>Required series aren’t finished yet</value>
+  </data>
+  <data name="KunosCareer_CompletedLabel" xml:space="preserve">
+    <value>Completed: </value>
+    <comment>Don’t forget about space at the end!</comment>
+  </data>
+  <data name="KunosCareer_Point" xml:space="preserve">
+    <value>point</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="KunosCareer_Error" xml:space="preserve">
+    <value>{0} error</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="Video_CannotPlay" xml:space="preserve">
+    <value>Can’t play video</value>
+  </data>
+  <data name="Video_CannotPlay_Commentary" xml:space="preserve">
+    <value>Please, go to the Settings and enable VLC addon.</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>City:</value>
+  </data>
+  <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
+    <value>Geo Tags:</value>
+  </data>
+  <data name="AcObject_ErrorsHeader" xml:space="preserve">
+    <value>Errors:</value>
+  </data>
+  <data name="Common_FilterLabel" xml:space="preserve">
+    <value>Filter:</value>
+  </data>
+  <data name="Presets_Save" xml:space="preserve">
+    <value>Save Preset</value>
+  </data>
+  <data name="Presets_Save_Tooltip" xml:space="preserve">
+    <value>Save current settings as preset</value>
+  </data>
+  <data name="Presets_Unsaved" xml:space="preserve">
+    <value>Unsaved</value>
+  </data>
+  <data name="QuickSwitches_Header" xml:space="preserve">
+    <value>Quick Switches</value>
+  </data>
+  <data name="QuickSwitches_HideWheel" xml:space="preserve">
+    <value>Hide wheel</value>
+  </data>
+  <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
+    <value>Hide steering wheel</value>
+  </data>
+  <data name="QuickSwitches_LockWheel" xml:space="preserve">
+    <value>Lock wheel</value>
+  </data>
+  <data name="QuickSwitches_LockCamera" xml:space="preserve">
+    <value>Lock camera</value>
+  </data>
+  <data name="QuickSwitches_Mirror" xml:space="preserve">
+    <value>Mirror</value>
+  </data>
+  <data name="QuickSwitches_Names" xml:space="preserve">
+    <value>Names</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard" xml:space="preserve">
+    <value>Leaderboard</value>
+  </data>
+  <data name="QuickSwitches_DamageUi" xml:space="preserve">
+    <value>Damage (UI)</value>
+  </data>
+  <data name="QuickSwitches_Nearest" xml:space="preserve">
+    <value>Nearest</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen" xml:space="preserve">
+    <value>Fullscreen</value>
+  </data>
+  <data name="QuickSwitches_DevApps" xml:space="preserve">
+    <value>Dev apps</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera" xml:space="preserve">
+    <value>Free camera</value>
+  </data>
+  <data name="QuickSwitches_OnlineName" xml:space="preserve">
+    <value>Online name</value>
+  </data>
+  <data name="QuickSwitches_Exposure" xml:space="preserve">
+    <value>Exposure</value>
+  </data>
+  <data name="QuickSwitches_Fov" xml:space="preserve">
+    <value>FOV</value>
+  </data>
+  <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
+    <value>Lock steering wheel</value>
+  </data>
+  <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
+    <value>Lock onboard camera to horizon</value>
+  </data>
+  <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
+    <value>Display virtual mirror</value>
+  </data>
+  <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
+    <value>Display drivers’ names</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard_Tooltip" xml:space="preserve">
+    <value>Display leaderboard</value>
+  </data>
+  <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
+    <value>Display damage</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
+    <value>Fullscreen mode (for example, Shadowplay won’t work without it)</value>
+  </data>
+  <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
+    <value>Enable developer apps</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
+    <value>Enable free camera (press F7 in-game)</value>
+  </data>
+  <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
+    <value>Use different name online</value>
+  </data>
+  <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
+    <value>Switch between UI presets</value>
+  </data>
+  <data name="QuickSwitches_ControlsPresets_Tooltip" xml:space="preserve">
+    <value>Switch between controls presets</value>
+  </data>
+  <data name="QuickSwitches_VideoPresets_Tooltip" xml:space="preserve">
+    <value>Switch between video-settings presets</value>
+  </data>
+  <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
+    <value>Switch between PP filters</value>
+  </data>
+  <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
+    <value>Brightness level</value>
+  </data>
+  <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
+    <value>Field of view (vertical angle)</value>
+  </data>
+  <data name="QuickSwitches_HideArms" xml:space="preserve">
+    <value>Hide arms</value>
+  </data>
+  <data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
+    <value>Hide driver’s arms</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Theme_Nordschleife" xml:space="preserve">
+    <value>Nordschleife</value>
+  </data>
+  <data name="Animation_Modern" xml:space="preserve">
+    <value>Modern</value>
+  </data>
+  <data name="Animation_Fade" xml:space="preserve">
+    <value>Fade</value>
+  </data>
+  <data name="Animation_Up" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="Animation_Down" xml:space="preserve">
+    <value>Down</value>
+  </data>
+  <data name="Controls_LoadPresetWarning" xml:space="preserve">
+    <value>Load “{0}”? Current values will be replaced (but later could be restored from Recycle Bin).</value>
+  </data>
+  <data name="Common_AreYouSure" xml:space="preserve">
+    <value>Are you sure?</value>
+  </data>
+  <data name="Controls_BuiltInPresets" xml:space="preserve">
+    <value>Built-in Presets</value>
+  </data>
+  <data name="Controls_UserPresets" xml:space="preserve">
+    <value>User Presets</value>
+  </data>
+  <data name="Controls_Preview_InputMethod" xml:space="preserve">
+    <value>Input method: [b]{0}[/b]</value>
+  </data>
+</root>

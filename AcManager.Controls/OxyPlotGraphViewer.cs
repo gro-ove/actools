@@ -13,14 +13,14 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty SourceTorqueProperty =
-            DependencyProperty.Register("SourceTorque", typeof(GraphData), typeof(OxyPlotGraphViewer), new PropertyMetadata(OnSourceTorqueChanged));
+            DependencyProperty.Register(nameof(SourceTorque), typeof(GraphData), typeof(OxyPlotGraphViewer), new PropertyMetadata(OnSourceTorqueChanged));
 
         private static void OnSourceTorqueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             ((OxyPlotGraphViewer)d).UpdateCanvas();
         }
 
         public static readonly DependencyProperty SourcePowerProperty =
-            DependencyProperty.Register("SourcePower", typeof(GraphData), typeof(OxyPlotGraphViewer), new PropertyMetadata(OnSourcePowerChanged));
+            DependencyProperty.Register(nameof(SourcePower), typeof(GraphData), typeof(OxyPlotGraphViewer), new PropertyMetadata(OnSourcePowerChanged));
 
         private static void OnSourcePowerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             ((OxyPlotGraphViewer)d).UpdateCanvas();
@@ -36,8 +36,9 @@ namespace AcManager.Controls {
             set { SetValue(SourcePowerProperty, value); }
         }
 
-        public OxyPlotGraphViewer() {
-        }
+        private const string KeyRpm = "rpm";
+        private const string KeyBhp = "bhp";
+        private const string KeyNm = "nm";
 
         private void UpdateCanvas() {
             // TODO: find the way without double redrawing on initialization
@@ -53,14 +54,14 @@ namespace AcManager.Controls {
             };
 
             model.Axes.Add(new LinearAxis {
-                Key = "rpm",
+                Key = KeyRpm,
                 TicklineColor = OxyColors.White,
                 Position = AxisPosition.Bottom
             });
 
             model.Axes.Add(new LinearAxis {
-                Key = "bhp",
-                Title = "BHP",
+                Key = KeyBhp,
+                Title = Tools.Resources.Units_BHP,
                 TextColor = powerColor,
                 TitleColor = powerColor,
                 TicklineColor = powerColor,
@@ -68,8 +69,8 @@ namespace AcManager.Controls {
             });
 
             model.Axes.Add(new LinearAxis {
-                Key = "nm",
-                Title = "Nm",
+                Key = KeyNm,
+                Title = Tools.Resources.Units_Nm,
                 TextColor = torqueColor,
                 TitleColor = torqueColor,
                 TicklineColor = torqueColor,
@@ -80,10 +81,10 @@ namespace AcManager.Controls {
             if (sourcePower != null) {
                 var powerLineSeries = new LineSeries {
                     Color = powerColor,
-                    Title = "Power",
-                    XAxisKey = "rpm",
-                    YAxisKey = "bhp",
-                    TrackerKey = "bhp"
+                    Title = Tools.Resources.Common_Power,
+                    XAxisKey = KeyRpm,
+                    YAxisKey = KeyBhp,
+                    TrackerKey = KeyBhp
                 };
                 foreach (var point in sourcePower.Values) {
                     powerLineSeries.Points.Add(new DataPoint(point.Key, point.Value));
@@ -95,10 +96,10 @@ namespace AcManager.Controls {
             if (sourceTorque != null) {
                 var torqueLineSeries = new LineSeries {
                     Color = torqueColor,
-                    Title = "Torque",
-                    XAxisKey = "rpm",
-                    YAxisKey = "nm",
-                    TrackerKey = "nm"
+                    Title = Tools.Resources.Common_Torque,
+                    XAxisKey = KeyRpm,
+                    YAxisKey = KeyNm,
+                    TrackerKey = KeyNm
                 };
                 foreach (var point in SourceTorque.Values) {
                     torqueLineSeries.Points.Add(new DataPoint(point.Key, point.Value));

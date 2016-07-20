@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using System.Windows.Media;
 using AcManager.Tools.Objects;
 
 namespace AcManager.Controls.Converters {

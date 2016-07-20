@@ -1,5 +1,4 @@
-﻿using AcManager.Tools.Objects;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.AcObjectsNew;
 
@@ -9,8 +8,8 @@ namespace AcManager.Controls {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AcObjectErrorsSection), new FrameworkPropertyMetadata(typeof(AcObjectErrorsSection)));
         }
 
-        public static readonly DependencyProperty AcObjectProperty = DependencyProperty.Register("AcObject", typeof (AcCommonObject),
-                                                                                          typeof (AcObjectErrorsSection));
+        public static readonly DependencyProperty AcObjectProperty = DependencyProperty.Register(nameof(AcObject), typeof(AcCommonObject),
+                typeof(AcObjectErrorsSection));
 
         public AcCommonObject AcObject {
             get { return (AcCommonObject) GetValue(AcObjectProperty); }

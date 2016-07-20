@@ -36,8 +36,9 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ac:AcObjectBase">
                             <Grid>
-                                <TextBlock Margin="20" FontSize="30" Foreground="Red" Text="OUTDATED!"
-                                        ToolTip="You weren't supposed to see this, something's gone terribly wrong" />
+                                <TextBlock Margin="20" FontSize="30" Foreground="Red" Text="Outdated!">
+                                    <TextBlock.ToolTip>You weren’t supposed to see this, something’s gone terribly wrong</TextBlock.ToolTip>
+                                </TextBlock>
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>

@@ -122,7 +122,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected void LoadTags(JObject json) {
-            var tags = json["tags"] as JArray;
+            var tags = json[@"tags"] as JArray;
             Tags = tags != null ? new TagsCollection(tags.Select(x => x.ToString())) : new TagsCollection();
         }
 
@@ -144,7 +144,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected virtual bool TestIfKunos() {
-            return Id.StartsWith("ks_");
+            return Id.StartsWith(@"ks_");
         }
 
         protected virtual void LoadVersionInfo(JObject json) {
@@ -162,7 +162,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public virtual void SaveData(JObject json) {
-            json["name"] = Name ?? "";
+            json[@"name"] = Name ?? "";
             SaveTags(json);
             SaveCountry(json);
             SaveDescription(json);
@@ -171,29 +171,29 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected void SaveTags(JObject json) {
-            json["tags"] = new JArray(Tags.Select(x => (object)x).ToArray());
+            json[@"tags"] = new JArray(Tags.Select(x => (object)x).ToArray());
         }
 
         protected virtual void SaveCountry(JObject json) {
-            json["country"] = Country;
+            json[@"country"] = Country;
         }
 
         protected void SaveDescription(JObject json) {
-            json["description"] = AcStringValues.EncodeDescription(Description);
+            json[@"description"] = AcStringValues.EncodeDescription(Description);
         }
 
         protected void SaveYear(JObject json) {
             if (Year.HasValue) {
-                json["year"] = Year.Value;
+                json[@"year"] = Year.Value;
             } else {
-                json.Remove("year");
+                json.Remove(@"year");
             }
         }
 
         protected void SaveVersionInfo(JObject json) {
-            json["author"] = Author;
-            json["version"] = Version;
-            json["url"] = Url;
+            json[@"author"] = Author;
+            json[@"version"] = Version;
+            json[@"url"] = Url;
         }
 
         public override void Save() {
@@ -292,9 +292,19 @@ namespace AcManager.Tools.AcObjectsNew {
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(Url));
+                    OnPropertyChanged(nameof(VersionInfoLabel));
                     OnPropertyChanged(nameof(VersionInfoDisplay));
                     Changed = true;
                 }
+            }
+        }
+
+        public string VersionInfoLabel {
+            get {
+                if (Author != null) return Resources.AcObject_AuthorLabel;
+                if (Version != null) return Resources.AcObject_VersionLabel;
+                if (Version != null) return Resources.AcObject_UrlLabel;
+                return Resources.AcObject_AuthorLabel;
             }
         }
 

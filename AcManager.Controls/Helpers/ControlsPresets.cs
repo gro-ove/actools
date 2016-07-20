@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -75,11 +76,11 @@ namespace AcManager.Controls.Helpers {
 
         private AcSettingsHolder.ControlsSettings Controls => AcSettingsHolder.Controls;
 
-        private async Task<MenuItem> RebuildAsync(string header, string sub) {
+        private async Task<MenuItem> RebuildAsync(string header, [Localizable(false)] string sub) {
             var result = new MenuItem { Header = header };
             var directory = Path.Combine(Controls.PresetsDirectory, sub);
-            var list = await Task.Run(() => FileUtils.GetFiles(directory, "*.ini").Select(x => new PresetEntry(x)).ToList());
-            foreach (var item in UserPresetsControl.GroupPresets(list, directory, ClickHandler, this, ".ini")) {
+            var list = await Task.Run(() => FileUtils.GetFiles(directory, @"*.ini").Select(x => new PresetEntry(x)).ToList());
+            foreach (var item in UserPresetsControl.GroupPresets(list, directory, ClickHandler, this, @".ini")) {
                 result.Items.Add(item);
             }
             return result;
@@ -91,8 +92,9 @@ namespace AcManager.Controls.Helpers {
 
             var entry = (((MenuItem)sender).Tag as UserPresetsControl.TagHelper)?.Entry as PresetEntry;
             if (entry == null || (Controls.CurrentPresetName == null || Controls.CurrentPresetChanged) &&
-                    ModernDialog.ShowMessage($"Load “{entry.DisplayName}”? Current values will be replaced (but later could be restored from Recycle Bin).",
-                            "Are you sure?", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                    ModernDialog.ShowMessage(
+                            string.Format(Resources.Controls_LoadPresetWarning, entry.DisplayName),
+                            Resources.Common_AreYouSure, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                 return;
             }
             
@@ -107,8 +109,8 @@ namespace AcManager.Controls.Helpers {
 
             try {
                 Presets.Clear();
-                Presets.Add(await RebuildAsync("Built-in Presets", "presets"));
-                Presets.Add(await RebuildAsync("User Presets", "savedsetups"));
+                Presets.Add(await RebuildAsync(Resources.Controls_BuiltInPresets, "presets"));
+                Presets.Add(await RebuildAsync(Resources.Controls_UserPresets, "savedsetups"));
                 PresetsReady = true;
             } catch (Exception e) {
                 Logging.Warning("RebuildPresetsList() exception: " + e);
@@ -122,21 +124,17 @@ namespace AcManager.Controls.Helpers {
             var result = new StringBuilder();
 
             // input method
-            result.Append("Input method: [b]");
-            result.Append(ini["HEADER"].GetEntry("INPUT_METHOD", Controls.InputMethods).DisplayName);
-            result.Append("[/b]");
+            result.AppendFormat(Resources.Controls_Preview_InputMethod, ini["HEADER"].GetEntry("INPUT_METHOD", Controls.InputMethods).DisplayName);
 
             // device
             var section = ini["CONTROLLERS"];
             var devices = LinqExtension.RangeFrom().Select(x => section.Get("CON" + x.ToInvariantString())).TakeWhile(x => x != null).Distinct().ToList();
             if (devices.Count > 1) {
-                result.Append("\nDevices: [b]");
-                result.Append(devices.JoinToString(", "));
-                result.Append("[/b]");
+                result.Append('\n');
+                result.AppendFormat(Resources.Controls_Preview_Devices, devices.JoinToString(@", "));
             } else if (devices.Count == 1) {
-                result.Append("\nDevice: [b]");
-                result.Append(devices[0]);
-                result.Append("[/b]");
+                result.Append('\n');
+                result.AppendFormat(Resources.Controls_Preview_Device, devices[0]);
             }
 
             return new BbCodeBlock {

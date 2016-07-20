@@ -18,7 +18,7 @@
                                 <DockPanel HorizontalAlignment="Stretch">
                                     <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}"
                                           Stretch="Uniform" x:Name="ErrorIcon" DockPanel.Dock="Right" />
-                                    <TextBlock Text="Errors:" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
+                                    <TextBlock Text="{x:Static ac:Resources.AcObject_ErrorsHeader}" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
                                 </DockPanel>
                                 <ItemsControl DataContext="{Binding AcObject, RelativeSource={RelativeSource TemplatedParent}}" 
                                               ItemsSource="{Binding Errors}" x:Name="AcObjectInDataContext">

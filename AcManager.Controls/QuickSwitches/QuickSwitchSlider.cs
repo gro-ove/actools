@@ -63,8 +63,8 @@ namespace AcManager.Controls.QuickSwitches {
                 _wrapper.MouseWheel -= Wrapper_MouseWheel;
             }
 
-            _thumb = GetTemplateChild("PART_Thumb") as Thumb;
-            _wrapper = GetTemplateChild("PART_Wrapper") as FrameworkElement;
+            _thumb = GetTemplateChild(@"PART_Thumb") as Thumb;
+            _wrapper = GetTemplateChild(@"PART_Wrapper") as FrameworkElement;
 
             if (_thumb != null) {
                 _thumb.DragDelta += Thumb_DragDelta;

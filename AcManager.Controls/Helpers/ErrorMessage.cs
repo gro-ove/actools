@@ -10,7 +10,7 @@ namespace AcManager.Controls.Helpers {
             var text = (exception == null ? problemDescription + "." : $"{problemDescription}:\n\n[b][mono]{exception.Message}[/mono][/b]") +
                     (solutionCommentary == null ? "" : "\n\n[i]" + solutionCommentary + "[/i]");
             var dlg = new ModernDialog {
-                Title = "Oops!",
+                Title = Resources.Common_Oops,
                 Content = new ScrollViewer {
                     Content = new BbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,

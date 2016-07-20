@@ -1,12 +1,9 @@
-﻿using System.Linq;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows;
 using System.Windows.Markup;
 using AcManager.Tools.Objects;
-using AcTools.Utils.Helpers;
 
 namespace AcManager.Controls.UserControls {
-    [ContentProperty("PreviewContent")]
+    [ContentProperty(nameof(PreviewContent))]
     public partial class TrackBlock {
         public TrackBlock() {
             InitializeComponent();

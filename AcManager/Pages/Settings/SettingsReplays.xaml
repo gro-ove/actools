@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance settings:SettingsReplays+ViewModel}">
     <UserControl.Resources>
@@ -117,7 +118,7 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label>Pre-replay event command:</Label>
-                <TextBox Text="{Binding Drive.PreReplayCommand}" attached:WatermarkService.Watermark="None" />
+                <TextBox Text="{Binding Drive.PreReplayCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
             </DockPanel>
 
             <DockPanel>
@@ -140,7 +141,7 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label>Post-replay event command:</Label>
-                <TextBox Text="{Binding Drive.PostReplayCommand}" attached:WatermarkService.Watermark="None" />
+                <TextBox Text="{Binding Drive.PostReplayCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
             </DockPanel>
         </StackPanel>
     </ScrollViewer>

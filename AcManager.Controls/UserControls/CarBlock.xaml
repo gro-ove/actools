@@ -2,9 +2,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" Name="ThisControl">
+        xmlns:Controls="clr-namespace:AcManager.Controls" xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:CarBlock}" Name="ThisControl">
     <UserControl.Resources>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <DockPanel Name="InnerCarBlockPanel">
@@ -52,8 +58,9 @@
                     </Grid.RowDefinitions>
 
                     <!-- first row -->
-                    <TextBlock Text="Brand:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Country:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static Controls:Resources.AcObject_CarBrandLabel}" Grid.Column="0" Grid.Row="0"
+                            Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static Controls:Resources.AcObject_ContryLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
 
                     <TextBlock Text="{Binding Brand}" Grid.Column="1" Grid.Row="0" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
@@ -61,8 +68,9 @@
                             TextTrimming="CharacterEllipsis" />
 
                     <!-- second row -->
-                    <TextBlock Text="Class:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Year:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static Controls:Resources.AcObject_CarClassLabel}" Grid.Column="0" Grid.Row="1"
+                            Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static Controls:Resources.AcObject_YearLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
                     <TextBlock Text="{Binding CarClass}" Grid.Column="1" Grid.Row="1" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
@@ -70,16 +78,25 @@
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <!-- third row -->
-                    <TextBlock Text="Parent:" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Author:" Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
+                    <TextBlock Text="{x:Static Controls:Resources.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2"
+                            Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}" ToolTip="{x:Static Controls:Resources.AcObject_AuthorTooltip}">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource AuthorVersionUrlToLabelConverter}">
+                                <Binding Path="Author" />
+                                <Binding Path="Version" />
+                                <Binding Path="Url" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
 
-                    <TextBlock Text="{Binding ParentDisplayName}" attached:WatermarkService.Watermark="None" Grid.Column="1" Grid.Row="2" TextWrapping="NoWrap"
-                            TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{Binding ParentDisplayName}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" Grid.Column="1"
+                            Grid.Row="2" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="3" Grid.Row="2"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <!-- last row -->
-                    <TextBlock Text="Specs:" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static Controls:Resources.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
                     <TextBlock Text="{Binding SpecsInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </Grid>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools.Managers.Plugins;
@@ -29,8 +30,8 @@ namespace AcManager.Controls.UserControls {
 
         public void Execute(string js, bool onload = false) {
             _something.Execute(onload ?
-                        "(function(){ var f = function(){" + js + "}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
-                        "(function(){" + js + "})();");
+                        @"(function(){ var f = function(){" + js + @"}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
+                        @"(function(){" + js + @"})();");
         }
 
         public static readonly DependencyProperty UserAgentProperty = DependencyProperty.Register(nameof(UserAgent), typeof(string),
@@ -65,6 +66,7 @@ namespace AcManager.Controls.UserControls {
             SetUserStyle(newValue);
         }
 
+        [Localizable(false)]
         private void SetUserStyle(string userStyle) {
             if (string.IsNullOrWhiteSpace(userStyle)) return;
 

@@ -4,7 +4,9 @@
         xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools"
+        mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDrive+SettingsDriveViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -101,7 +103,7 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label>Pre-race event command:</Label>
-                <TextBox Text="{Binding Drive.PreCommand}" attached:WatermarkService.Watermark="None" />
+                <TextBox Text="{Binding Drive.PreCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
             </DockPanel>
 
             <DockPanel>
@@ -124,7 +126,7 @@
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <Label>Post-race event command:</Label>
-                <TextBox Text="{Binding Drive.PostCommand}" attached:WatermarkService.Watermark="None" />
+                <TextBox Text="{Binding Drive.PostCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}"

@@ -74,7 +74,7 @@
                                         CommandParameter="country" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="Country:" />
+                        <TextBlock Text="{x:Static ac:Resources.AcObject_ContryLabel}" />
                         <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
                                 ItemsSource="{x:Static managers:SuggestionLists.CountriesListView}" />
                     </DockPanel>
@@ -87,7 +87,7 @@
                                         CommandParameter="decade" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="Year:" ToolTip="Year of production start" />
+                        <TextBlock Text="{x:Static ac:Resources.AcObject_YearLabel}" ToolTip="Year of production start" />
                         <TextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer"
                                 attached:WatermarkService.Watermark="?" />
                     </DockPanel>

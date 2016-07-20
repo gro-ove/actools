@@ -5,13 +5,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using AcManager.Controls.Presentation;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Helpers;
 
 namespace AcManager.Controls {
-    [ContentProperty("Content")]
+    [ContentProperty(nameof(Content))]
     public class AcObjectBase : Control {
         static AcObjectBase() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AcObjectBase), new FrameworkPropertyMetadata(typeof(AcObjectBase)));
@@ -40,9 +38,9 @@ namespace AcManager.Controls {
                 _iconImage.IconMouseDown -= Header_IconMouseDown;
             }
 
-            _main = GetTemplateChild("PART_Main") as Grid;
-            _toolBar = GetTemplateChild("PART_ToolBar") as AcToolBar;
-            _iconImage = GetTemplateChild("PART_Header") as AcObjectHeaderSection;
+            _main = GetTemplateChild(@"PART_Main") as Grid;
+            _toolBar = GetTemplateChild(@"PART_ToolBar") as AcToolBar;
+            _iconImage = GetTemplateChild(@"PART_Header") as AcObjectHeaderSection;
 
             if (_main != null) {
                 _main.MouseRightButtonUp += Main_OnMouseUp;

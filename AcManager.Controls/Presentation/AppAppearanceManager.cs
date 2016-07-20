@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -25,11 +26,11 @@ namespace AcManager.Controls.Presentation {
         public static AppAppearanceManager Instance { get; private set; }
 
         public static AppAppearanceManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
+            if (Instance != null) throw new Exception(@"Already initialized");
             return Instance = new AppAppearanceManager();
         }
 
-        private bool _loading;
+        private readonly bool _loading;
 
         private AppAppearanceManager() {
             AppearanceManager.Current.Initialize();
@@ -183,15 +184,15 @@ namespace AcManager.Controls.Presentation {
 
         public Link[] Themes { get; } = {
             new Link {
-                DisplayName = "Nordschleife",
+                DisplayName = Resources.Theme_Nordschleife,
                 Source = new Uri(UriDefaultTheme, UriKind.Relative)
             },
             new Link {
-                DisplayName = "Dark",
+                DisplayName = Resources.Theme_Dark,
                 Source = AppearanceManager.DarkThemeSource
             },
             new Link {
-                DisplayName = "Light",
+                DisplayName = Resources.Theme_Light,
                 Source = AppearanceManager.LightThemeSource
             }
         };
@@ -238,18 +239,18 @@ namespace AcManager.Controls.Presentation {
 
             public string Id { get; }
 
-            public FrameAnimationEntry(string id, string displayName) {
+            public FrameAnimationEntry([Localizable(false)] string id, string displayName) {
                 Id = id;
                 DisplayName = displayName;
             }
         }
 
         public FrameAnimationEntry[] FrameAnimations { get; } = {
-            new FrameAnimationEntry("Normal", "Disabled"),
-            new FrameAnimationEntry("ModernUITransition", "Modern UI"),
-            new FrameAnimationEntry("DefaultTransition", "Fade"),
-            new FrameAnimationEntry("UpTransition", "Up"),
-            new FrameAnimationEntry("DownTransition", "Down")
+            new FrameAnimationEntry("Normal", Tools.Resources.Common_Disabled),
+            new FrameAnimationEntry("ModernUITransition", Resources.Animation_Modern),
+            new FrameAnimationEntry("DefaultTransition", Resources.Animation_Fade),
+            new FrameAnimationEntry("UpTransition", Resources.Animation_Up),
+            new FrameAnimationEntry("DownTransition", Resources.Animation_Down)
         };
 
         private FrameAnimationEntry _frameAnimation;

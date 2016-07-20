@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Reflection;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.Helpers {
+    [Localizable(false)]
     public static class AwesomiumResolverService {
         public static bool IsInitialized => _awesomiumPath != null;
         

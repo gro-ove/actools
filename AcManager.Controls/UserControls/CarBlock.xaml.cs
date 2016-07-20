@@ -88,11 +88,11 @@ namespace AcManager.Controls.UserControls {
                 e.Handled = true;
                 var contextMenu = new ContextMenu();
 
-                var item = new MenuItem { Header = "Open In Showroom" };
+                var item = new MenuItem { Header = Controls.Resources.Car_OpenInShowroom };
                 item.Click += (s, args) => CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id);
                 contextMenu.Items.Add(item);
 
-                item = new MenuItem { Header = "Presets" };
+                item = new MenuItem { Header = Controls.Resources.Common_Presets };
                 foreach (var menuItem in PresetsMenuHelper.GroupPresets(CarOpenInShowroomDialog.PresetableKeyValue, p => {
                     CarOpenInShowroomDialog.RunPreset(p, Car, SelectedSkin?.Id);
                 })) {
@@ -100,13 +100,13 @@ namespace AcManager.Controls.UserControls {
                 }
                 contextMenu.Items.Add(item);
 
-                item = new MenuItem { Header = "Settings", InputGestureText = "Shift" };
+                item = new MenuItem { Header = Controls.Resources.Common_Settings, InputGestureText = @"Shift" };
                 item.Click += (s, args) => new CarOpenInShowroomDialog(Car, SelectedSkin?.Id).ShowDialog();
                 contextMenu.Items.Add(item);
 
                 // TODO: Presets!
 
-                item = new MenuItem { Header = "Open In Custom Showroom", InputGestureText = "Alt" };
+                item = new MenuItem { Header = Controls.Resources.Car_OpenInCustomShowroom, InputGestureText = @"Alt" };
                 item.Click += (s, args) => CustomShowroomWrapper.StartAsync(Car, SelectedSkin);
                 contextMenu.Items.Add(item);
 

@@ -131,8 +131,8 @@ namespace FirstFloor.ModernUI.Localizable {
         }
         #endregion
 
-        public static string Convert(string s, CultureInfo culture = null) {
-            if (culture == null) culture = CultureInfo.CurrentUICulture;
+        public static string Convert(string s) {
+            var culture = CultureInfo.CurrentUICulture;
             switch (culture.Name.ToLowerInvariant()) {
                 case "ru":
                 case "ru-ru":

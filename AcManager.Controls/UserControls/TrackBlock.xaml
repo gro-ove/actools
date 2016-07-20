@@ -2,8 +2,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Controls.UserControls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" d:DataContext="{d:DesignInstance local:TrackBlock}" Name="ThisControl">
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:c="clr-namespace:AcManager.Controls"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:TrackBlock}" Name="ThisControl">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <DockPanel Name="InnerTrackBlockPanel">
         <!-- data section -->
         <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Track}" Margin="0 10 0 0"
@@ -27,8 +37,8 @@
                     </Grid.RowDefinitions>
 
                     <!-- first row -->
-                    <TextBlock Text="Country:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Year:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Year of production start" />
+                    <TextBlock Text="{x:Static c:Resources.AcObject_ContryLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static c:Resources.AcObject_YearLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
 
                     <TextBlock Text="{Binding Country}" Grid.Column="1" Grid.Row="0" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
@@ -36,8 +46,16 @@
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <!-- second row -->
-                    <TextBlock Text="City:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="Author:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="Author/version, url" />
+                    <TextBlock Text="{x:Static c:Resources.AcObject_CityLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="{x:Static c:Resources.AcObject_AuthorTooltip}">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource AuthorVersionUrlToLabelConverter}">
+                                <Binding Path="Author" />
+                                <Binding Path="Version" />
+                                <Binding Path="Url" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
 
                     <TextBlock Text="{Binding City}" Grid.Column="1" Grid.Row="1" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
@@ -45,12 +63,12 @@
                             TextTrimming="CharacterEllipsis" Grid.Column="3" Grid.Row="1" />
 
                     <!-- third row -->
-                    <TextBlock Text="Geo Tags:" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static c:Resources.AcObject_TrackGeoTagsLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}" />
                     <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding GeoTags}" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
 
                     <!-- last row -->
-                    <TextBlock Text="Specs:" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static c:Resources.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
                     <TextBlock Text="{Binding SpecsInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </Grid>

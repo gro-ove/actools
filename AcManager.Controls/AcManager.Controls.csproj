@@ -103,6 +103,7 @@
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="ChangedPresetEventArgs.cs" />
+    <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
     <Compile Include="Helpers\AwesomiumResolverService.cs" />
     <Compile Include="Helpers\BetterWebControl.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
@@ -120,6 +121,11 @@
     </Compile>
     <Compile Include="QuickSwitches\QuickSwitchPresetsControl.cs" />
     <Compile Include="QuickSwitches\QuickSwitchSlider.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
     <Compile Include="UserControls\BaseScriptProvider.cs" />
     <Compile Include="UserControls\IWebSomething.cs" />
@@ -377,19 +383,27 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="Properties\BinaryResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>BinaryResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Include="Properties\BinaryResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BinaryResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.ru-RU.resx">
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Assets\Data\Flags.zip" />

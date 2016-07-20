@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -304,6 +304,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Author:.
+        /// </summary>
+        public static string AcObject_AuthorLabel {
+            get {
+                return ResourceManager.GetString("AcObject_AuthorLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot be disabled.
         /// </summary>
         public static string AcObject_CannotBeDisabled {
@@ -471,6 +480,24 @@ namespace AcManager.Tools {
         public static string AcObject_ReloadAutomatically_Json {
             get {
                 return ResourceManager.GetString("AcObject_ReloadAutomatically_Json", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL:.
+        /// </summary>
+        public static string AcObject_UrlLabel {
+            get {
+                return ResourceManager.GetString("AcObject_UrlLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version:.
+        /// </summary>
+        public static string AcObject_VersionLabel {
+            get {
+                return ResourceManager.GetString("AcObject_VersionLabel", resourceCulture);
             }
         }
         
@@ -1042,6 +1069,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Power.
+        /// </summary>
+        public static string Common_Power {
+            get {
+                return ResourceManager.GetString("Common_Power", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} (Recommended).
         /// </summary>
         public static string Common_Recommended {
@@ -1056,6 +1092,15 @@ namespace AcManager.Tools {
         public static string Common_SteamIdIsMissing {
             get {
                 return ResourceManager.GetString("Common_SteamIdIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Torque.
+        /// </summary>
+        public static string Common_Torque {
+            get {
+                return ResourceManager.GetString("Common_Torque", resourceCulture);
             }
         }
         
@@ -2697,6 +2742,24 @@ namespace AcManager.Tools {
         public static string TryAgainDot {
             get {
                 return ResourceManager.GetString("TryAgainDot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BHP.
+        /// </summary>
+        public static string Units_BHP {
+            get {
+                return ResourceManager.GetString("Units_BHP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nm.
+        /// </summary>
+        public static string Units_Nm {
+            get {
+                return ResourceManager.GetString("Units_Nm", resourceCulture);
             }
         }
         

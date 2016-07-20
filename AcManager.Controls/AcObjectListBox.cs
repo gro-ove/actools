@@ -7,7 +7,6 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Lists;
-using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter;
 
 namespace AcManager.Controls {
@@ -16,7 +15,7 @@ namespace AcManager.Controls {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AcObjectListBox), new FrameworkPropertyMetadata(typeof(AcObjectListBox)));
         }
 
-        public static readonly DependencyProperty BasicFilterProperty = DependencyProperty.Register("BasicFilter", typeof(string),
+        public static readonly DependencyProperty BasicFilterProperty = DependencyProperty.Register(nameof(BasicFilter), typeof(string),
             typeof(AcObjectListBox), new PropertyMetadata(OnFilterChanged));
 
         public string BasicFilter {
@@ -24,7 +23,7 @@ namespace AcManager.Controls {
             set { SetValue(BasicFilterProperty, value); }
         }
 
-        public static readonly DependencyProperty UserFilterProperty = DependencyProperty.Register("UserFilter", typeof(string),
+        public static readonly DependencyProperty UserFilterProperty = DependencyProperty.Register(nameof(UserFilter), typeof(string),
             typeof(AcObjectListBox), new PropertyMetadata(OnFilterChanged));
 
         public string UserFilter {
@@ -36,7 +35,7 @@ namespace AcManager.Controls {
             ((AcObjectListBox)d).UpdateFilter();
         }
 
-        public static readonly DependencyProperty IsFilteringEnabledProperty = DependencyProperty.Register("IsFilteringEnabled", typeof(bool),
+        public static readonly DependencyProperty IsFilteringEnabledProperty = DependencyProperty.Register(nameof(IsFilteringEnabled), typeof(bool),
             typeof(AcObjectListBox), new PropertyMetadata(true));
 
         public bool IsFilteringEnabled {
@@ -44,14 +43,14 @@ namespace AcManager.Controls {
             set { SetValue(IsFilteringEnabledProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(AcObjectNew),
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(nameof(SelectedItem), typeof(AcObjectNew),
             typeof(AcObjectListBox), new PropertyMetadata(OnSelectedItemChanged));
 
         private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            ((AcObjectListBox)d).OnSelectedItemChanged((AcObjectNew)e.OldValue, (AcObjectNew)e.NewValue);
+            ((AcObjectListBox)d).OnSelectedItemChanged((AcObjectNew)e.NewValue);
         }
 
-        private void OnSelectedItemChanged(AcObjectNew oldValue, AcObjectNew newValue) {
+        private void OnSelectedItemChanged(AcObjectNew newValue) {
             if (InnerItemsSource == null || InnerItemsSource.CurrentItem == newValue) return;
 
             InnerItemsSource.MoveCurrentToOrNull(newValue);
@@ -63,14 +62,14 @@ namespace AcManager.Controls {
             set { SetValue(SelectedItemProperty, value); }
         }
 
-        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register("ItemsSource", typeof(IAcObjectList),
+        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource), typeof(IAcObjectList),
             typeof(AcObjectListBox), new PropertyMetadata(OnItemsSourceChanged));
 
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            ((AcObjectListBox)d).OnItemsSourceChanged((IAcObjectList)e.OldValue, (IAcObjectList)e.NewValue);
+            ((AcObjectListBox)d).OnItemsSourceChanged((IAcObjectList)e.NewValue);
         }
 
-        public static readonly DependencyProperty InnerItemsSourceProperty = DependencyProperty.Register("InnerItemsSource", typeof(AcWrapperCollectionView),
+        public static readonly DependencyProperty InnerItemsSourceProperty = DependencyProperty.Register(nameof(InnerItemsSource), typeof(AcWrapperCollectionView),
             typeof(AcObjectListBox), new PropertyMetadata());
 
         public IAcWrapperObservableCollection ItemsSource {
@@ -87,7 +86,7 @@ namespace AcManager.Controls {
             Loaded += AcObjectListBox_Loaded;
         }
 
-        private bool _unloaded = false;
+        private bool _unloaded;
 
         private void AcObjectListBox_Loaded(object sender, RoutedEventArgs e) {
             if (_unloaded) {
@@ -107,7 +106,7 @@ namespace AcManager.Controls {
         private IFilter<AcObjectNew> _filter;
         private IAcObjectList _observableCollection;
 
-        private void OnItemsSourceChanged(IAcObjectList oldValue, IAcObjectList newValue) {
+        private void OnItemsSourceChanged(IAcObjectList newValue) {
             ClearFilter();
 
             if (InnerItemsSource != null) {
@@ -140,7 +139,7 @@ namespace AcManager.Controls {
             var userFilter = UserFilter;
 
             var filter = string.IsNullOrWhiteSpace(baseFilter) ? userFilter
-                : string.IsNullOrWhiteSpace(userFilter) ? baseFilter : baseFilter + " & (" + userFilter + ")";
+                : string.IsNullOrWhiteSpace(userFilter) ? baseFilter : baseFilter + @" & (" + userFilter + @")";
 
             InnerItemsSource.CurrentChanged -= ItemsSource_CurrentChanged;
             using (listView.DeferRefresh()) {

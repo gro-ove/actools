@@ -16,14 +16,14 @@ namespace AcManager.Controls.Converters {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var id = value?.ToString();
             if (id?.Length != 2) {
-                id = "_";
+                id = @"_";
             }
 
             if (_archive == null) {
-                _archive = new ZipArchive(new MemoryStream(Resources.Flags));
+                _archive = new ZipArchive(new MemoryStream(BinaryResources.Flags));
             }
             
-            var entryStream = (_archive.GetEntry(id) ?? _archive.GetEntry("_"))?.Open();
+            var entryStream = (_archive.GetEntry(id) ?? _archive.GetEntry(@"_"))?.Open();
             if (entryStream == null) {
                 return null;
             }

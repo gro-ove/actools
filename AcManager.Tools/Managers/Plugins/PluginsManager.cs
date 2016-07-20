@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace AcManager.Tools.Managers.Plugins {
             // TODO: Directory watching
         }
 
-        public bool IsPluginEnabled(string id) {
+        public bool IsPluginEnabled([Localizable(false)] string id) {
             if (!_locallyLoaded) {
                 ReloadLocalList();
             }

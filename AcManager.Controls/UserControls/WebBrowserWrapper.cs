@@ -13,7 +13,7 @@ namespace AcManager.Controls.UserControls {
         public static readonly string DefaultUserAgent;
 
         static WebBrowserWrapper() {
-            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? " WOW64;" : "")}";
+            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
             DefaultUserAgent = $"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
         }
         #endregion
@@ -70,7 +70,7 @@ document.addEventListener('mousedown', function(e){
 
         public void Execute(string js) {
             try {
-                _inner.InvokeScript("eval", js);
+                _inner.InvokeScript(@"eval", js);
             } catch (InvalidOperationException e) {
                 Logging.Warning("[WebBrowserBlock] Execute() InvalidOperationException: " + e.Message);
             } catch (COMException e) {
@@ -84,9 +84,9 @@ document.addEventListener('mousedown', function(e){
             try {
                 _inner.Navigate(url);
             } catch (Exception e) {
-                if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
-                        !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase)) {
-                    url = "http://" + url;
+                if (!url.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) &&
+                        !url.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase)) {
+                    url = @"http://" + url;
                     try {
                         _inner.Navigate(url);
                     } catch (Exception ex) {

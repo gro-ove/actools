@@ -26,7 +26,7 @@ namespace AcManager.Controls.Helpers {
         public static FancyBackgroundManager Instance { get; private set; }
 
         public static FancyBackgroundManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
+            if (Instance != null) throw new Exception(@"Already initialized");
             return Instance = new FancyBackgroundManager();
         }
 
@@ -91,10 +91,10 @@ namespace AcManager.Controls.Helpers {
                         File.Copy(value, _cachedFilename);
                         value = _cachedFilename;
                     } catch (Exception e) {
-                        Logging.Warning("Can’t copy background image '{0}': {1}", value ?? "NULL", e);
+                        Logging.Warning("Can’t copy background image '{0}': {1}", value ?? @"NULL", e);
                     }
                 } else { 
-                    Logging.Warning("Background image '{0}' is missing", value ?? "NULL");
+                    Logging.Warning("Background image '{0}' is missing", value ?? @"NULL");
                     value = null;
                 }
 
@@ -146,7 +146,7 @@ namespace AcManager.Controls.Helpers {
             var visualBrush = rectangle?.Fill as VisualBrush;
 
             if (visualBrush == null) {
-                visualBrush = (VisualBrush)anyElement.FindResource("FancyBackgroundBrush");
+                visualBrush = (VisualBrush)anyElement.FindResource(@"FancyBackgroundBrush");
                 rectangle = new Rectangle {
                     Fill = visualBrush,
                     Tag = backgroundContent
@@ -156,13 +156,13 @@ namespace AcManager.Controls.Helpers {
             }
 
             var frameworkElement = (FrameworkElement)visualBrush.Visual;
-            var backgroundImage0 = (Image)LogicalTreeHelper.FindLogicalNode(frameworkElement, "BackgroundImage0");
-            var backgroundImage1 = (Image)LogicalTreeHelper.FindLogicalNode(frameworkElement, "BackgroundImage1");
+            var backgroundImage0 = (Image)LogicalTreeHelper.FindLogicalNode(frameworkElement, @"BackgroundImage0");
+            var backgroundImage1 = (Image)LogicalTreeHelper.FindLogicalNode(frameworkElement, @"BackgroundImage1");
             if (backgroundImage0 == null || backgroundImage1 == null) return;
 
             var state = frameworkElement.Tag as int? ?? 0;
             (state == 0 ? backgroundImage1 : backgroundImage0).Source = UriToCachedImageConverter.Convert(Instance.BackgroundFilename);
-            VisualStateManager.GoToElementState(backgroundImage1, "State" + state, true);
+            VisualStateManager.GoToElementState(backgroundImage1, @"State" + state, true);
             frameworkElement.Tag = 1 - state;
         }
     }

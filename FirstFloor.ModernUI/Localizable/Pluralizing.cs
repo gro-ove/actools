@@ -19,8 +19,8 @@ namespace FirstFloor.ModernUI.Localizable {
             return last == 1 ? s : PluralizingDictionary.Ru(s, true);
         }
 
-        public static string Convert(int v, string s, CultureInfo culture = null) {
-            switch ((culture ?? CultureInfo.CurrentUICulture).Name.ToLowerInvariant()) {
+        public static string Convert(int v, string s) {
+            switch (CultureInfo.CurrentUICulture.Name.ToLowerInvariant()) {
                 case "ru":
                 case "ru-ru":
                     return Ru(v, s);

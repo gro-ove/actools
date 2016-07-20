@@ -11,7 +11,7 @@ namespace AcManager.Controls.UserControls {
         public static readonly string DefaultUserAgent;
 
         static AwesomiumWrapper() {
-            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? " WOW64;" : "")}";
+            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
             DefaultUserAgent =
                     $"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
         }
@@ -31,7 +31,7 @@ namespace AcManager.Controls.UserControls {
                         // RemoteDebuggingHost = "127.0.0.1",
                         // RemoteDebuggingPort = 45451,
                         AdditionalOptions = new [] {
-                            "disable-desktop-notifications"
+                            @"disable-desktop-notifications"
                         },
                         CustomCSS = @"
 ::-webkit-scrollbar {
@@ -61,7 +61,7 @@ namespace AcManager.Controls.UserControls {
                     });
                 }
 
-                _session = WebCore.CreateWebSession(FilesStorage.Instance.GetTemporaryFilename("Awesomium"), new WebPreferences {
+                _session = WebCore.CreateWebSession(FilesStorage.Instance.GetTemporaryFilename(@"Awesomium"), new WebPreferences {
                     EnableGPUAcceleration = true,
                     WebGL = true,
                     SmoothScrolling = false
@@ -79,7 +79,7 @@ namespace AcManager.Controls.UserControls {
 
         private void OnDocumentReady(object sender, DocumentReadyEventArgs e) {
             if (e.ReadyState == DocumentReadyState.Ready && _inner.IsDocumentReady) {
-                if (_inner.ExecuteJavascriptWithResult("window.__cm_loaded").IsBoolean) return;
+                if (_inner.ExecuteJavascriptWithResult(@"window.__cm_loaded").IsBoolean) return;
                 Navigated?.Invoke(this, new PageLoadedEventArgs(_inner.Source.OriginalString));
             }
         }
@@ -132,9 +132,9 @@ document.addEventListener('mousedown', function(e){
             try {
                 _inner.Source = new Uri(url, UriKind.RelativeOrAbsolute);
             } catch (Exception e) {
-                if (!url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
-                        !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase)) {
-                    url = "http://" + url;
+                if (!url.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) &&
+                        !url.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase)) {
+                    url = @"http://" + url;
                     try {
                         _inner.Source = new Uri(url, UriKind.RelativeOrAbsolute);
                     } catch (Exception ex) {
