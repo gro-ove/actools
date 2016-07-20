@@ -28,6 +28,9 @@ namespace AcManager.Tools.Miscellaneous {
         [LocalizedDescription("Shared_QuickDrivePreset")]
         QuickDrivePreset,
 
+        [LocalizedDescription("Shared_VideoSettingsPreset")]
+        VideoSettingsPreset,
+
         [LocalizedDescription("Shared_Replay")]
         Replay,
 
@@ -113,6 +116,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return @".ini";
 
                 case SharedEntryType.QuickDrivePreset:
+                case SharedEntryType.VideoSettingsPreset:
                     return @".cmpreset";
 
                 case SharedEntryType.Replay:
@@ -184,7 +188,12 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             return new SharedEntry {
-                Id = id, EntryType = entryType, Name = loaded.Name, Target = loaded.Target, Author = loaded.Author, Data = loaded.Data
+                Id = id,
+                EntryType = entryType,
+                Name = loaded.Name,
+                Target = loaded.Target,
+                Author = loaded.Author,
+                Data = loaded.Data
             };
         }
 

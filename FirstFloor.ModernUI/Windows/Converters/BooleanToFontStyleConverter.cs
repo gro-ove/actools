@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
+    [ValueConversion(typeof(bool), typeof(FontStyle))]
     public class BooleanToFontStyleConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var flag = false;

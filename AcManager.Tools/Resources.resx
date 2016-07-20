@@ -1189,4 +1189,7 @@
   <data name="Common_Torque" xml:space="preserve">
     <value>Torque</value>
   </data>
+  <data name="Shared_VideoSettingsPreset" xml:space="preserve">
+    <value>Video settings preset</value>
+  </data>
 </root>

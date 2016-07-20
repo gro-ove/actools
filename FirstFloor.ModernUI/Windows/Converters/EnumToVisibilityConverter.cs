@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
+    [ValueConversion(typeof(object), typeof(Visibility))]
     public class EnumToVisibilityConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (parameter == null) {

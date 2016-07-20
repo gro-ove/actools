@@ -4,8 +4,6 @@ using System.Windows.Data;
 
 namespace AcManager.Controls.Converters {
     public class AuthorVersionUrlToLabelConverter : IMultiValueConverter {
-
-
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             if (values.Length != 3) return null;
 

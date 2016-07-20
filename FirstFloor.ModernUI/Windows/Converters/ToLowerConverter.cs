@@ -6,6 +6,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts string values to lower case.
     /// </summary>
+    [ValueConversion(typeof(string), typeof(string))]
     public class ToLowerConverter : IValueConverter {
         /// <summary>
         /// Converts a value.

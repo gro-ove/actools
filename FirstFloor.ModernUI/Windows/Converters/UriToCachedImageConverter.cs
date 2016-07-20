@@ -6,6 +6,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
+    [ValueConversion(typeof(object), typeof(BitmapSource))]
     public class UriToCachedImageConverter : IValueConverter {
         public const double OneTrueDpi = 96d;
 

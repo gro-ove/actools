@@ -3,6 +3,7 @@ using System.Windows.Data;
 using System.Globalization;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
+    [ValueConversion(typeof(bool), typeof(string))]
     public class BooleanToTextConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             var flag = false;
@@ -10,7 +11,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 flag = (bool)value;
             }
 
-            if (parameter as string == "inverse") {
+            if (parameter as string == @"inverse") {
                 flag = !flag;
             }
 

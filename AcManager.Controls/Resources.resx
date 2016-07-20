@@ -168,7 +168,7 @@
   <data name="AcObject_SpecsLabel" xml:space="preserve">
     <value>Specs:</value>
   </data>
-  <data name="AcObject_AuthorTooltip" xml:space="preserve">
+  <data name="AcObject_Author_Tooltip" xml:space="preserve">
     <value>Author, version &amp;amp; URL</value>
   </data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
@@ -365,5 +365,64 @@
   </data>
   <data name="Controls_Preview_InputMethod" xml:space="preserve">
     <value>Input method: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_Devices" xml:space="preserve">
+    <value>Devices: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_Device" xml:space="preserve">
+    <value>Device: [b]{0}[/b]</value>
+  </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Oops!</value>
+  </data>
+  <data name="Share_EnterName" xml:space="preserve">
+    <value>Enter name or keep field empty:</value>
+  </data>
+  <data name="Share_EnterNameHeader" xml:space="preserve">
+    <value>Share As</value>
+  </data>
+  <data name="Share_EnterCustomId" xml:space="preserve">
+    <value>Enter custom ID:</value>
+  </data>
+  <data name="Share_EnterCustomIdHeader" xml:space="preserve">
+    <value>Custom ID</value>
+  </data>
+  <data name="Share_VerifyMessage" xml:space="preserve">
+    <value>Author name: [b]{0}[/b]
+Entry name: [b]{1}[/b]
+Entry type: [b]{2}[/b]</value>
+  </data>
+  <data name="Share_VerifyMessageHeader" xml:space="preserve">
+    <value>Is Everything OK?</value>
+  </data>
+  <data name="Share_InProgress" xml:space="preserve">
+    <value>Sharing…</value>
+  </data>
+  <data name="Share_CannotShare" xml:space="preserve">
+    <value>Can’t share {0}</value>
+  </data>
+  <data name="Share_CannotShare_Commentary" xml:space="preserve">
+    <value>Make sure Internet connection is available.</value>
+  </data>
+  <data name="Share_Shared" xml:space="preserve">
+    <value>{0} Shared</value>
+    <comment>Title</comment>
+  </data>
+  <data name="Share_SharedMessage" xml:space="preserve">
+    <value>Link copied to clipboard</value>
+    <comment>Shown in Windows notifications</comment>
+  </data>
+  <data name="Share_SharedMessageAlternative" xml:space="preserve">
+    <value>Click to open link</value>
+    <comment>Shown in Windows notifications</comment>
+  </data>
+  <data name="Showroom_ShowroomLabel" xml:space="preserve">
+    <value>Showroom:</value>
+  </data>
+  <data name="Showroom_FilterLabel" xml:space="preserve">
+    <value>Filter:</value>
+  </data>
+  <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
+    <value>Kunos watermark will be temporary hidden</value>
   </data>
 </root>

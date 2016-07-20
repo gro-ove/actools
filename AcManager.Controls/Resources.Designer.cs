@@ -63,9 +63,9 @@ namespace AcManager.Controls {
         /// <summary>
         ///   Looks up a localized string similar to Author, version &amp;amp; URL.
         /// </summary>
-        public static string AcObject_AuthorTooltip {
+        public static string AcObject_Author_Tooltip {
             get {
-                return ResourceManager.GetString("AcObject_AuthorTooltip", resourceCulture);
+                return ResourceManager.GetString("AcObject_Author_Tooltip", resourceCulture);
             }
         }
         
@@ -878,6 +878,33 @@ namespace AcManager.Controls {
         public static string Share_VerifyMessageHeader {
             get {
                 return ResourceManager.GetString("Share_VerifyMessageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter:.
+        /// </summary>
+        public static string Showroom_FilterLabel {
+            get {
+                return ResourceManager.GetString("Showroom_FilterLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kunos watermark will be temporary hidden.
+        /// </summary>
+        public static string Showroom_HideWatermark_Tooltip {
+            get {
+                return ResourceManager.GetString("Showroom_HideWatermark_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Showroom:.
+        /// </summary>
+        public static string Showroom_ShowroomLabel {
+            get {
+                return ResourceManager.GetString("Showroom_ShowroomLabel", resourceCulture);
             }
         }
         

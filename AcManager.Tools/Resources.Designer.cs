@@ -304,15 +304,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Author:.
-        /// </summary>
-        public static string AcObject_AuthorLabel {
-            get {
-                return ResourceManager.GetString("AcObject_AuthorLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot be disabled.
         /// </summary>
         public static string AcObject_CannotBeDisabled {
@@ -480,24 +471,6 @@ namespace AcManager.Tools {
         public static string AcObject_ReloadAutomatically_Json {
             get {
                 return ResourceManager.GetString("AcObject_ReloadAutomatically_Json", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to URL:.
-        /// </summary>
-        public static string AcObject_UrlLabel {
-            get {
-                return ResourceManager.GetString("AcObject_UrlLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Version:.
-        /// </summary>
-        public static string AcObject_VersionLabel {
-            get {
-                return ResourceManager.GetString("AcObject_VersionLabel", resourceCulture);
             }
         }
         
@@ -2616,6 +2589,15 @@ namespace AcManager.Tools {
         public static string Shared_Replay {
             get {
                 return ResourceManager.GetString("Shared_Replay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video settings preset.
+        /// </summary>
+        public static string Shared_VideoSettingsPreset {
+            get {
+                return ResourceManager.GetString("Shared_VideoSettingsPreset", resourceCulture);
             }
         }
         

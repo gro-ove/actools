@@ -292,19 +292,9 @@ namespace AcManager.Tools.AcObjectsNew {
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(Url));
-                    OnPropertyChanged(nameof(VersionInfoLabel));
                     OnPropertyChanged(nameof(VersionInfoDisplay));
                     Changed = true;
                 }
-            }
-        }
-
-        public string VersionInfoLabel {
-            get {
-                if (Author != null) return Resources.AcObject_AuthorLabel;
-                if (Version != null) return Resources.AcObject_VersionLabel;
-                if (Version != null) return Resources.AcObject_UrlLabel;
-                return Resources.AcObject_AuthorLabel;
             }
         }
 

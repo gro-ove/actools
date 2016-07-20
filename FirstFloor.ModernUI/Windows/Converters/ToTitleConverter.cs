@@ -7,6 +7,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts string values to a title case.
     /// </summary>
+    [ValueConversion(typeof(string), typeof(string))]
     public class ToTitleConverter : IValueConverter {
         /// <summary>
         /// Converts a value.

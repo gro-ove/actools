@@ -5,6 +5,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts string values to upper case.
     /// </summary>
+    [ValueConversion(typeof(string), typeof(string))]
     public class ToUpperSpecialConverter : IValueConverter {
         /// <summary>
         /// Converts a value.

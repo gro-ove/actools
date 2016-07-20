@@ -6,6 +6,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts a boolean value to a font weight (false: normal, true: bold)
     /// </summary>
+    [ValueConversion(typeof(bool), typeof(FontWeight))]
     public class BooleanToFontWeightConverter : IValueConverter {
         /// <summary>
         /// Converts a value.
@@ -18,8 +19,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         /// A converted value. If the method returns null, the valid null value is used.
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            bool inverse = parameter as string == "inverse";
-
+            var inverse = parameter as string == @"inverse";
             var bold = value as bool?;
             if (bold.HasValue && bold.Value) {
                 return inverse ? FontWeights.Normal : FontWeights.Bold;

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
+using AcManager.Controls;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
@@ -407,145 +408,166 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
             switch (shared.EntryType) {
                 case SharedEntryType.Weather: {
                     var result = ShowDialog(shared, applyable: false);
-                        switch (result) {
-                            case Choise.Save:
-                                var directory = FileUtils.EnsureUnique(Path.Combine(
-                                        WeatherManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
-                                Directory.CreateDirectory(directory);
+                    switch (result) {
+                        case Choise.Save:
+                            var directory = FileUtils.EnsureUnique(Path.Combine(
+                                    WeatherManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
+                            Directory.CreateDirectory(directory);
 
-                                var written = 0;
-                                using (var stream = new MemoryStream(data)) {
-                                    var reader = ReaderFactory.Open(stream);
+                            var written = 0;
+                            using (var stream = new MemoryStream(data)) {
+                                var reader = ReaderFactory.Open(stream);
 
-                                    try {
-                                        while (reader.MoveToNextEntry()) {
-                                            if (!reader.Entry.IsDirectory) {
-                                                reader.WriteEntryToDirectory(directory, ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
-                                                written++;
-                                            }
-                                        }
-                                    } catch (EndOfStreamException) {
-                                        if (written < 2) {
-                                            throw;
+                                try {
+                                    while (reader.MoveToNextEntry()) {
+                                        if (!reader.Entry.IsDirectory) {
+                                            reader.WriteEntryToDirectory(directory, ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
+                                            written++;
                                         }
                                     }
+                                } catch (EndOfStreamException) {
+                                    if (written < 2) {
+                                        throw;
+                                    }
                                 }
-                                
-                                return ArgumentHandleResult.SuccessfulShow;
-                            default:
-                                return ArgumentHandleResult.Failed;
-                        }
+                            }
+
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
                     }
+                }
 
                 case SharedEntryType.PpFilter: {
-                        var result = ShowDialog(shared, appliableWithoutSaving: false);
-                        switch (result) {
-                            case Choise.Save:
-                            case Choise.ApplyAndSave:
-                                var filename = FileUtils.EnsureUnique(Path.Combine(
-                                        PpFiltersManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
-                                Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
-                                File.WriteAllBytes(filename, data);
-                                if (result == Choise.ApplyAndSave) {
-                                    AcSettingsHolder.Video.PostProcessingFilter = Path.GetFileNameWithoutExtension(filename);
-                                }
-                                return ArgumentHandleResult.SuccessfulShow;
-                            default:
-                                return ArgumentHandleResult.Failed;
-                        }
+                    var result = ShowDialog(shared, appliableWithoutSaving: false);
+                    switch (result) {
+                        case Choise.Save:
+                        case Choise.ApplyAndSave:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(
+                                    PpFiltersManager.Instance.Directories.EnabledDirectory, shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllBytes(filename, data);
+                            if (result == Choise.ApplyAndSave) {
+                                AcSettingsHolder.Video.PostProcessingFilter = Path.GetFileNameWithoutExtension(filename);
+                            }
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
                     }
+                }
 
                 case SharedEntryType.CarSetup: {
-                        var content = data.ToUtf8String();
-                        var metadata = SharingHelper.GetMetadata(SharedEntryType.CarSetup, content, out content);
+                    var content = data.ToUtf8String();
+                    var metadata = SharingHelper.GetMetadata(SharedEntryType.CarSetup, content, out content);
 
-                        var carId = metadata.GetValueOrDefault("car");
-                        var trackId = metadata.GetValueOrDefault("track") ?? CarSetupObject.GenericDirectory;
-                        if (carId == null) {
-                            throw new InformativeException("Can’t install car’s setup", "Metadata is missing.");
-                        }
-
-                        var result = ShowDialog(shared, applyable: false, additionalButton: trackId == CarSetupObject.GenericDirectory ? null : "Save as Generic");
-                        switch (result) {
-                            case Choise.Save:
-                            case Choise.Extra:
-                                var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(carId),
-                                    result == Choise.Save ? trackId : CarSetupObject.GenericDirectory, shared.GetFileName()));
-                                Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
-                                File.WriteAllText(filename, content);
-                                return ArgumentHandleResult.SuccessfulShow;
-                            default:
-                                return ArgumentHandleResult.Failed;
-                        }
+                    var carId = metadata.GetValueOrDefault("car");
+                    var trackId = metadata.GetValueOrDefault("track") ?? CarSetupObject.GenericDirectory;
+                    if (carId == null) {
+                        throw new InformativeException("Can’t install car’s setup", "Metadata is missing.");
                     }
+
+                    var result = ShowDialog(shared, applyable: false, additionalButton: trackId == CarSetupObject.GenericDirectory ? null : "Save as Generic");
+                    switch (result) {
+                        case Choise.Save:
+                        case Choise.Extra:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(FileUtils.GetCarSetupsDirectory(carId),
+                                    result == Choise.Save ? trackId : CarSetupObject.GenericDirectory, shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllText(filename, content);
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
+                    }
+                }
 
                 case SharedEntryType.ControlsPreset: {
-                        var result = ShowDialog(shared, "Apply FFB Only");
-                        switch (result) {
-                            case Choise.Save:
-                            case Choise.ApplyAndSave:
-                                var filename = FileUtils.EnsureUnique(Path.Combine(
-                                        AcSettingsHolder.Controls.UserPresetsDirectory, "Loaded", shared.GetFileName()));
-                                Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
-                                File.WriteAllBytes(filename, data);
-                                if (result == Choise.ApplyAndSave) {
-                                    AcSettingsHolder.Controls.LoadPreset(filename);
-                                }
-                                return ArgumentHandleResult.SuccessfulShow;
-                            case Choise.Apply:
-                                if (File.Exists(AcSettingsHolder.Controls.Filename)) {
-                                    FileUtils.Recycle(AcSettingsHolder.Controls.Filename);
-                                }
-                                File.WriteAllBytes(AcSettingsHolder.Controls.Filename, data);
-                                return ArgumentHandleResult.SuccessfulShow;
-                            case Choise.Extra: // ffb only
-                                var ini = IniFile.Parse(data.ToUtf8String());
-                                AcSettingsHolder.Controls.LoadFfbFromIni(ini);
-                                return ArgumentHandleResult.SuccessfulShow;
-                            default:
-                                return ArgumentHandleResult.Failed;
-                        }
+                    var result = ShowDialog(shared, "Apply FFB Only");
+                    switch (result) {
+                        case Choise.Save:
+                        case Choise.ApplyAndSave:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(
+                                    AcSettingsHolder.Controls.UserPresetsDirectory, "Loaded", shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllBytes(filename, data);
+                            if (result == Choise.ApplyAndSave) {
+                                AcSettingsHolder.Controls.LoadPreset(filename);
+                            }
+                            return ArgumentHandleResult.SuccessfulShow;
+                        case Choise.Apply:
+                            if (File.Exists(AcSettingsHolder.Controls.Filename)) {
+                                FileUtils.Recycle(AcSettingsHolder.Controls.Filename);
+                            }
+                            File.WriteAllBytes(AcSettingsHolder.Controls.Filename, data);
+                            return ArgumentHandleResult.SuccessfulShow;
+                        case Choise.Extra: // ffb only
+                            var ini = IniFile.Parse(data.ToUtf8String());
+                            AcSettingsHolder.Controls.LoadFfbFromIni(ini);
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
                     }
+                }
 
                 case SharedEntryType.ForceFeedbackPreset: {
-                        var result = ShowDialog(shared, saveable: false);
-                        switch (result) {
-                            case Choise.Apply:
-                                var ini = IniFile.Parse(data.ToUtf8String());
-                                AcSettingsHolder.Controls.LoadFfbFromIni(ini);
-                                AcSettingsHolder.System.LoadFfbFromIni(ini);
-                                return ArgumentHandleResult.SuccessfulShow;
-                            default:
-                                return ArgumentHandleResult.Failed;
-                        }
+                    var result = ShowDialog(shared, saveable: false);
+                    switch (result) {
+                        case Choise.Apply:
+                            var ini = IniFile.Parse(data.ToUtf8String());
+                            AcSettingsHolder.Controls.LoadFfbFromIni(ini);
+                            AcSettingsHolder.System.LoadFfbFromIni(ini);
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
                     }
+                }
+
+                case SharedEntryType.VideoSettingsPreset: {
+                    var result = ShowDialog(shared);
+                    switch (result) {
+                        case Choise.Save:
+                        case Choise.ApplyAndSave:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(
+                                    PresetsManager.Instance.GetDirectory(AcSettingsHolder.VideoPresets.PresetableKey), "Loaded", shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllBytes(filename, data);
+                            if (result == Choise.ApplyAndSave) {
+                                UserPresetsControl.LoadPreset(AcSettingsHolder.VideoPresets.PresetableKey, filename);
+                            }
+                            return ArgumentHandleResult.SuccessfulShow;
+                        case Choise.Apply:
+                            AcSettingsHolder.VideoPresets.ImportFromPresetData(data.ToUtf8String());
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
+                    }
+                }
 
                 case SharedEntryType.QuickDrivePreset: {
-                        var result = ShowDialog(shared, "Just Go");
-                        switch (result) {
-                            case Choise.Save:
-                            case Choise.ApplyAndSave:
-                                var filename = FileUtils.EnsureUnique(Path.Combine(
-                                        PresetsManager.Instance.GetDirectory(QuickDrive.PresetableKeyValue), "Loaded", shared.GetFileName()));
-                                Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
-                                File.WriteAllBytes(filename, data);
-                                if (result == Choise.ApplyAndSave) {
-                                    QuickDrive.LoadPreset(filename);
-                                }
-                                return ArgumentHandleResult.SuccessfulShow;
-                            case Choise.Apply:
-                                QuickDrive.LoadSerializedPreset(data.ToUtf8String());
-                                return ArgumentHandleResult.SuccessfulShow;
-                            case Choise.Extra: // just go
-                                if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
-                                    throw new InformativeException("Can’t start race", "Make sure required car & track are installed and available.");
-                                }
+                    var result = ShowDialog(shared, "Just Go");
+                    switch (result) {
+                        case Choise.Save:
+                        case Choise.ApplyAndSave:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(
+                                    PresetsManager.Instance.GetDirectory(QuickDrive.PresetableKeyValue), "Loaded", shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllBytes(filename, data);
+                            if (result == Choise.ApplyAndSave) {
+                                QuickDrive.LoadPreset(filename);
+                            }
+                            return ArgumentHandleResult.SuccessfulShow;
+                        case Choise.Apply:
+                            QuickDrive.LoadSerializedPreset(data.ToUtf8String());
+                            return ArgumentHandleResult.SuccessfulShow;
+                        case Choise.Extra: // just go
+                            if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
+                                throw new InformativeException("Can’t start race", "Make sure required car & track are installed and available.");
+                            }
 
-                                return ArgumentHandleResult.SuccessfulShow;
-                            default:
-                                return ArgumentHandleResult.Failed;
-                        }
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
                     }
+                }
 
                 default:
                     throw new Exception($"Unsupported yet type: “{shared.EntryType}”");

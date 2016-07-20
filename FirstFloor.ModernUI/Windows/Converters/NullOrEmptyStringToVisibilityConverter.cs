@@ -7,6 +7,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     /// <summary>
     /// Converts a null or empty string value to Visibility.Visible and any other value to Visibility.Collapsed
     /// </summary>
+    [ValueConversion(typeof(string), typeof(Visibility))]
     public class NullOrEmptyStringToVisibilityConverter : IValueConverter {
         /// <summary>
         /// Converts a value.
@@ -26,7 +27,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 flag = string.IsNullOrEmpty(s);
             }
 
-            var inverse = parameter as string == "inverse";
+            var inverse = parameter as string == @"inverse";
             return inverse ? (flag ? Visibility.Collapsed : Visibility.Visible) : (flag ? Visibility.Visible : Visibility.Collapsed);
         }
 

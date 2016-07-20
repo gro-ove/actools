@@ -5,6 +5,7 @@ using System.Windows.Data;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
+    [ValueConversion(typeof(Enum), typeof(string))]
     public class EnumToDescriptionConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             return (value as Enum)?.GetDescription();

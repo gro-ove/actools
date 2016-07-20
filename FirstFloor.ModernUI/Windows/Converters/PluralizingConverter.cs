@@ -7,6 +7,7 @@ using FirstFloor.ModernUI.Localizable;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
+    [ValueConversion(typeof(int), typeof(string))]
     public class PluralizingConverter : IValueConverter {
         public static string Pluralize(int value, [NotNull] string s, CultureInfo culture = null) {
             if (s == null) throw new ArgumentNullException(nameof(s));

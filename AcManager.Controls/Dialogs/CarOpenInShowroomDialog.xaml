@@ -4,7 +4,6 @@
         xmlns:controls="clr-namespace:AcManager.Controls" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:dialogs="clr-namespace:AcManager.Controls.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Showroom"
         Closing="CarOpenInShowroomDialog_OnClosing" d:DataContext="{d:DesignInstance dialogs:CarOpenInShowroomDialog+ViewModel}">
-
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,7 +26,7 @@
 
         <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
             <Grid Margin="0 0 0 4">
-                <TextBlock Text="Showroom:" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="{x:Static controls:Resources.Showroom_ShowroomLabel}" Style="{StaticResource LabelWithPadding}" />
             </Grid>
             <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
                 <ComboBox.ItemContainerStyle>
@@ -40,12 +39,12 @@
 
         <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
             <Grid Margin="0 0 0 4">
-                <TextBlock Text="Filter:" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="{x:Static controls:Resources.Showroom_FilterLabel}" Style="{StaticResource LabelWithPadding}" />
             </Grid>
             <ComboBox Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
         </StackPanel>
 
-        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding DisableWatermark}" Margin="8 0 0 0" ToolTip="Kunos watermark will be temporary hidden">
+        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding DisableWatermark}" Margin="8 0 0 0" ToolTip="{x:Static controls:Resources.Showroom_HideWatermark_Tooltip}">
             <Label>Hide _watermark</Label>
         </CheckBox>
 

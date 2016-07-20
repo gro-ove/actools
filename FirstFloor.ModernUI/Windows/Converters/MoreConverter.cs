@@ -2,6 +2,7 @@
 using System.Windows.Data;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
+    [ValueConversion(typeof(double), typeof(bool))]
     public class MoreConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             return value.AsDouble() > parameter.AsDouble();

@@ -12,6 +12,7 @@ using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 using Clipboard = System.Windows.Clipboard;
 
 #if WIN10_SHARE
@@ -38,11 +39,11 @@ namespace AcManager.Controls.Helpers {
 
         private static bool _sharingInProcess;
 
-        public static Task ShareAsync(SharedEntryType type, string defaultName, string target, string data) {
+        public static Task ShareAsync(SharedEntryType type, [CanBeNull] string defaultName, [CanBeNull] string target, [NotNull] string data) {
             return ShareAsync(type, defaultName, target, Encoding.UTF8.GetBytes(data));
         }
 
-        public static async Task ShareAsync(SharedEntryType type, string defaultName, string target, byte[] data) {
+        public static async Task ShareAsync(SharedEntryType type, [CanBeNull] string defaultName, [CanBeNull] string target, [NotNull] byte[] data) {
             if (_sharingInProcess) return;
             _sharingInProcess = true;
 

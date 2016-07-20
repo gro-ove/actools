@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
+    [ValueConversion(typeof(double), typeof(Visibility))]
     public class MoreToVisibilityConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             if (value == null) return null;
@@ -20,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
             var p = t.Split(',');
             var s = p[0].AsDouble();
-            var r = p.Contains("inverse") ? s > a : a > s;
+            var r = p.Contains(@"inverse") ? s > a : a > s;
             return r ? Visibility.Visible : Visibility.Collapsed;
         }
 

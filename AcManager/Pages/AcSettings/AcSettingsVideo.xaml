@@ -222,7 +222,8 @@
         </ScrollViewer>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
-            <controls:UserPresetsControl Name="UserPresetsControl" UserPresetable="{Binding Presets}" />
+            <controls:UserPresetsControl Name="UserPresetsControl" UserPresetable="{Binding Presets}" MinWidth="300" Margin="0 0 4 0" />
+            <Button Command="{Binding ShareCommand}" ToolTip="Share current settings (Ctrl+Page Up)">Share</Button>
         </StackPanel>
     </Grid>
 </UserControl>

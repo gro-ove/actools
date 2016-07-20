@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
+    [ValueConversion(typeof(double), typeof(double))]
     public class PercentageConverter : IValueConverter {
         private static double Round(double value, double precision) {
             return Math.Round(value / precision) * precision;
