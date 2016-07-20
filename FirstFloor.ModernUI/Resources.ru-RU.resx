@@ -210,4 +210,138 @@
   <data name="Yes" xml:space="preserve">
     <value>Да</value>
   </data>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>Минус {0}</value>
+  </data>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>Нулевой</value>
+    <comment>You don't have to translate all of it — just put “-” and Nth value will be used instead</comment>
+  </data>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>Первый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>Второй</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>Третий</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>Четвёртый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>Пятый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>Шестой</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>Седьмой</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>Восьмой</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>Девятый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>Десятый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>Одиннадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Twelfth" xml:space="preserve">
+    <value>Двенадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>Тринадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>Четырнадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>Пятнадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>Шестнадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>Семнадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>Восемнадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>Девятнадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Twentieth" xml:space="preserve">
+    <value>Двадцатый</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
+    <value>-</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Nth" xml:space="preserve">
+    <value>{0}-й</value>
+  </data>
 </root>

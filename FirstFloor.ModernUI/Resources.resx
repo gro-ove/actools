@@ -416,4 +416,154 @@
     <value>Show Password</value>
     <comment>For password-input boxes</comment>
   </data>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>Minus {0}</value>
+  </data>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>Zeroth</value>
+    <comment>You don't have to translate all of it — just put “-” and Nth value will be used instead</comment>
+  </data>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>First</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>Second</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>Third</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>Fourth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>Fifth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>Sixth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>Seventh</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>Eighth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>Ninth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>Tenth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>Eleventh</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Twelfth" xml:space="preserve">
+    <value>Twelfth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>Thirteenth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>Fourteenth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>Fifteenth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>Sixteenth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>Seventeenth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>Eighteenth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>Nineteenth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Twentieth" xml:space="preserve">
+    <value>Twentieth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
+    <value>Twenty-first</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>Twenty-second</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>Twenty-third</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>Twenty-fourth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
+    <value>Twenty-fifth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>Twenty-sixth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>Twenty-seventh</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
+    <value>Twenty-eighth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>Twenty-ninth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>Thirtieth</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
+    <value>Thirty-first</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  </data>
+  <data name="Ordinalizing_Nth" xml:space="preserve">
+    <value>{0}th</value>
+  </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0} day</value>
+    <comment>For stuff like “5 days 12 hours”, will be pluralized automatically</comment>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0} hour</value>
+    <comment>For stuff like “5 days 12 hours”, will be pluralized automatically</comment>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0} minute</value>
+    <comment>For stuff like “5 days 12 hours”, will be pluralized automatically</comment>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0} second</value>
+    <comment>For stuff like “5 days 12 hours”, will be pluralized automatically</comment>
+  </data>
 </root>
