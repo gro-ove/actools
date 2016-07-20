@@ -1192,4 +1192,22 @@
   <data name="Shared_VideoSettingsPreset" xml:space="preserve">
     <value>Video settings preset</value>
   </data>
+  <data name="Common_Width" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  </data>
+  <data name="Common_Exporting" xml:space="preserve">
+    <value>Exporting…</value>
+  </data>
+  <data name="Common_Destination" xml:space="preserve">
+    <value>Destination</value>
+  </data>
+  <data name="Common_CannotUnpack" xml:space="preserve">
+    <value>Can’t unpack {0}</value>
+  </data>
 </root>
