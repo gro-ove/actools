@@ -24,6 +24,9 @@ Set of utils and apps designed for Assetto Corsa. If you have any interest in th
 - ### [AcManager.Tools](https://github.com/gro-ove/actools/tree/master/AcManager.Tools)
     Library with logic, almost without any UI parts (like CarsManager and CarObject, for instance).
 
+- ### [AcManager.LargeFilesSharing](https://github.com/gro-ove/actools/tree/master/AcManager.LargeFilesSharing)
+    Small sub-library for uploading big files into clouds (only Google Drive for now). Could weight more than 2 MB with official Google library, but self-written takes only about 35 KB.
+
 - ### [AcManager.Controls](https://github.com/gro-ove/actools/tree/master/AcManager.Controls)
     Library with common UI components (like AcListPage).
 
