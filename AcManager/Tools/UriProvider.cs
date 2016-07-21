@@ -1,10 +1,12 @@
 using System;
+using System.ComponentModel;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools {
+    [Localizable(false)]
     public class UriProvider : IAcObjectsUriProvider {
         Uri IAcObjectsUriProvider.GetUri(AcObjectNew obj) {
             if (obj is CarObject) {

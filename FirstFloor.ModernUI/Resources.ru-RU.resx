@@ -359,4 +359,25 @@
   <data name="StackTrace" xml:space="preserve">
     <value>Stack Trace</value>
   </data>
+  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
+    <value>ЭБ</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
+    <value>ПБ</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
+    <value>ТБ</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
+    <value>ГБ</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
+    <value>МБ</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
+    <value>КБ</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
+    <value>Б</value>
+  </data>
 </root>

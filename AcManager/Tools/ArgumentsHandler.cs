@@ -47,8 +47,8 @@ namespace AcManager.Tools {
                 return await ProcessUriRequest(argument);
             }
 
-            if (argument.StartsWith("http", StringComparison.OrdinalIgnoreCase) || argument.StartsWith("https", StringComparison.OrdinalIgnoreCase) ||
-                    argument.StartsWith("ftp", StringComparison.OrdinalIgnoreCase)) {
+            if (argument.StartsWith(@"http", StringComparison.OrdinalIgnoreCase) || argument.StartsWith(@"https", StringComparison.OrdinalIgnoreCase) ||
+                    argument.StartsWith(@"ftp", StringComparison.OrdinalIgnoreCase)) {
                 argument = await LoadRemoveFile(argument);
                 if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
             }
@@ -63,14 +63,14 @@ namespace AcManager.Tools {
         }
 
         private async Task<string> LoadRemoveFile(string argument, string name = null, string extension = null) {
-            using (var waiting = new WaitingDialog("Loading…")) {
+            using (var waiting = new WaitingDialog(Controls.Resources.Common_Loading)) {
                 return await FlexibleLoader.LoadAsync(argument, name, extension, waiting, waiting.CancellationToken);
             }
         }
 
         private async Task<ArgumentHandleResult> ProcessInputFile(string filename) {
             var isDirectory = FileUtils.IsDirectory(filename);
-            if (!isDirectory && filename.EndsWith(".acreplay", StringComparison.OrdinalIgnoreCase) ||
+            if (!isDirectory && filename.EndsWith(@".acreplay", StringComparison.OrdinalIgnoreCase) ||
                     Path.GetDirectoryName(filename)?.Equals(FileUtils.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
                 await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
                     Filename = filename
@@ -78,7 +78,7 @@ namespace AcManager.Tools {
                 return ArgumentHandleResult.Successful;
             }
 
-            if (!isDirectory && filename.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase)) {
+            if (!isDirectory && filename.EndsWith(@".kn5", StringComparison.OrdinalIgnoreCase)) {
                 await CustomShowroomWrapper.StartAsync(filename);
                 return ArgumentHandleResult.Successful;
             }
@@ -86,7 +86,7 @@ namespace AcManager.Tools {
             try {
                 new InstallAdditionalContentDialog(filename).ShowDialog();
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t install additional content", e);
+                NonfatalError.Notify(AcManager.Resources.Arguments_CannotInstallAdditionalContent, e);
                 return ArgumentHandleResult.Failed;
             }
 
@@ -117,7 +117,7 @@ namespace AcManager.Tools {
                 case "quickdrive":
                     var preset = Convert.FromBase64String(param).ToUtf8String();
                     if (!QuickDrive.RunSerializedPreset(preset)) {
-                        NonfatalError.Notify("Can’t start race", "Make sure required car & track are installed and available.");
+                        NonfatalError.Notify(AcManager.Resources.Arguments_CannotStartRace, AcManager.Resources.Arguments_CannotStartRace_Commentary);
                         return ArgumentHandleResult.Failed;
                     }
                     break;
@@ -132,7 +132,7 @@ namespace AcManager.Tools {
                 case "open":
                 case "install":
                     var address = Convert.FromBase64String(param).ToUtf8String();
-                    var path = await LoadRemoveFile(address, query?.Get("name"));
+                    var path = await LoadRemoveFile(address, query?.Get(@"name"));
                     if (string.IsNullOrWhiteSpace(path)) return ArgumentHandleResult.FailedShow;
 
                     try {
@@ -156,7 +156,7 @@ namespace AcManager.Tools {
 
             public static ParsedUriRequest Parse(string s) {
                 var m = Regex.Match(s, @"^/((?:/[\w\.-]+)+)/?([?&][^#]*)?(?:#(.*))?");
-                if (!m.Success) throw new Exception("Invalid format");
+                if (!m.Success) throw new Exception(Controls.Resources.Common_InvalidFormat);
 
                 return new ParsedUriRequest {
                     Path = m.Groups[1].Value.Substring(1),
@@ -172,7 +172,7 @@ namespace AcManager.Tools {
             var request = uri.SubstringExt(CustomUriSchemeHelper.UriScheme.Length);
             Logging.Write("[MAINWINDOW] URI Request: " + request);
 
-            if (!request.StartsWith("//", StringComparison.Ordinal)) {
+            if (!request.StartsWith(@"//", StringComparison.Ordinal)) {
                 return await ProcessUriRequestObsolete(request);
             }
 
@@ -180,36 +180,36 @@ namespace AcManager.Tools {
             try {
                 parsed = ParsedUriRequest.Parse(request);
             } catch (Exception) {
-                NonfatalError.Notify("Can’t parse request", "Make sure format is valid");
+                NonfatalError.Notify(AcManager.Resources.Arguments_CannotParseRequest, AcManager.Resources.Arguments_CannotParseRequest_Commentary);
                 return ArgumentHandleResult.Failed;
             }
 
             try {
                 switch (parsed.Path) {
                     case "replay":
-                        return await ProcessReplay(parsed.Params.Get("url"), parsed.Params.Get("uncompressed") == null);
+                        return await ProcessReplay(parsed.Params.Get(@"url"), parsed.Params.Get(@"uncompressed") == null);
 
                     case "rsr":
-                        return await ProcessRsrEvent(parsed.Params.Get("id"));
+                        return await ProcessRsrEvent(parsed.Params.Get(@"id"));
 
                     case "rsr/setup":
-                        return await ProcessRsrSetup(parsed.Params.Get("id"));
+                        return await ProcessRsrSetup(parsed.Params.Get(@"id"));
 
                     case "shared":
-                        return await ProcessShared(parsed.Params.Get("id"));
+                        return await ProcessShared(parsed.Params.Get(@"id"));
 
                     default:
-                        NonfatalError.Notify($"Not supported request: “{parsed.Path}”", "Make sure format is valid");
+                        NonfatalError.Notify($"Not supported request: “{parsed.Path}”", AcManager.Resources.Arguments_CannotParseRequest_Commentary);
                         return ArgumentHandleResult.Failed;
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t process request", "Make sure data is valid.", e);
+                NonfatalError.Notify(AcManager.Resources.Arguments_CannotProcessRequest, AcManager.Resources.Arguments_CannotProcessRequest_Commentary, e);
                 return ArgumentHandleResult.Failed;
             }
         }
 
         public async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {
-            var path = await LoadRemoveFile(url, extension: compressed ? ".zip" : ".acreplay");
+            var path = await LoadRemoveFile(url, extension: compressed ? @".zip" : @".acreplay");
             if (string.IsNullOrWhiteSpace(path)) return ArgumentHandleResult.FailedShow;
 
             try {
@@ -223,7 +223,7 @@ namespace AcManager.Tools {
                     return await ProcessInputFile(path);
                 }
 
-                var filename = FileUtils.GetTempFileName(Path.GetTempPath(), ".acreplay");
+                var filename = FileUtils.GetTempFileName(Path.GetTempPath(), @".acreplay");
 
                 /*using (var archive = ZipFile.OpenRead(path)) {
                     foreach (var entry in archive.Entries.Where(x => !string.Equals(x.Name, "ReadMe.txt", StringComparison.OrdinalIgnoreCase))) {
@@ -236,7 +236,7 @@ namespace AcManager.Tools {
 
                 var archive = ZipArchive.Open(path);
                 var acreplay = archive.Entries.FirstOrDefault(
-                        x => x.IsDirectory == false && !string.Equals(x.Key, "ReadMe.txt", StringComparison.OrdinalIgnoreCase));
+                        x => x.IsDirectory == false && !string.Equals(x.Key, @"ReadMe.txt", StringComparison.OrdinalIgnoreCase));
                 if (acreplay == null) {
                     return ArgumentHandleResult.FailedShow;
                 }
@@ -277,16 +277,16 @@ namespace AcManager.Tools {
                     }
             }) {
                 data = await client.DownloadStringTaskAsync($"http://www.radiators-champ.com/RSRLiveTiming/ajax.php?action=download_setup&id={id}");
-                header = client.ResponseHeaders["Content-Disposition"]?.Split(new[] { "filename=" }, StringSplitOptions.None).ElementAtOrDefault(1)?.Trim();
+                header = client.ResponseHeaders[@"Content-Disposition"]?.Split(new[] { @"filename=" }, StringSplitOptions.None).ElementAtOrDefault(1)?.Trim();
             }
 
             if (data == null || header == null) {
-                throw new InformativeException("Can’t install setup", "RSR has changed.");
+                throw new InformativeException(AcManager.Resources.Arguments_CannotInstallSetup, AcManager.Resources.Arguments_CannotInstallSetup_Commentary);
             }
 
             var match = Regex.Match(header, @"^([^_]+_.+)_\d+_\d+_\d+_(.+)\.ini$");
             if (!match.Success) {
-                throw new InformativeException("Can’t install setup", "RSR returned file in unsupported format.");
+                throw new InformativeException(AcManager.Resources.Arguments_CannotInstallSetup, AcManager.Resources.Arguments_CannotInstallSetup_CommentaryFormat);
             }
 
             var ids = match.Groups[1].Value;
@@ -304,7 +304,7 @@ namespace AcManager.Tools {
             }
 
             if (car == null || track == null) {
-                throw new InformativeException("Can’t install setup", "RSR returned file in unsupported format.");
+                throw new InformativeException(AcManager.Resources.Arguments_CannotInstallSetup, AcManager.Resources.Arguments_CannotInstallSetup_CommentaryFormat);
             }
 
             var result = ShowDialog(new SharedEntry {
@@ -313,7 +313,7 @@ namespace AcManager.Tools {
                 EntryType = SharedEntryType.CarSetup,
                 Id = header,
                 Target = car.DisplayName
-            }, applyable: false, additionalButton: "Save as Generic");
+            }, applyable: false, additionalButton: AcManager.Resources.Arguments_SaveAsGeneric);
 
             switch (result) {
                 case Choise.Save:
@@ -347,17 +347,18 @@ namespace AcManager.Tools {
         /// <returns>User choise.</returns>
         private Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true,
                 bool appliableWithoutSaving = true) {
-            var description =
-                    $@"Name: [b]{shared.Name ?? "[/b][i]?[/i][b]"}[/b]
-{(shared.EntryType == SharedEntryType.Weather ? "ID" : "For")}: [b]{shared.Target ?? "[/b][i]?[/i][b]"}[/b]
-Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
+            var description = string.Format(AcManager.Resources.Arguments_SharedMessage, shared.Name ?? AcManager.Resources.Arguments_SharedMessage_EmptyValue,
+                    shared.EntryType == SharedEntryType.Weather
+                            ? AcManager.Resources.Arguments_SharedMessage_Id : AcManager.Resources.Arguments_SharedMessage_For,
+                    shared.Target ?? AcManager.Resources.Arguments_SharedMessage_EmptyValue,
+                    shared.Author ?? AcManager.Resources.Arguments_SharedMessage_EmptyValue);
 
             var dlg = new ModernDialog {
                 Title = shared.EntryType.GetDescription().ToTitle(),
                 Content = new ScrollViewer {
                     Content = new BbCodeBlock {
-                        BbCode = description + "\n\n" + (
-                                saveable ? "Would you like to apply this preset or to save it for later?" : "Would you like to apply this preset?"),
+                        BbCode = description + '\n' + '\n' + (
+                                saveable ? AcManager.Resources.Arguments_Shared_ShouldApplyOrSave : AcManager.Resources.Arguments_Shared_ShouldApply),
                         Margin = new Thickness(0, 0, 0, 8)
                     },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -370,9 +371,15 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
             };
 
             dlg.Buttons = new[] {
-                applyable && saveable ? dlg.CreateCloseDialogButton(appliableWithoutSaving ? "Apply & Save" : "Save & Apply", true, false, MessageBoxResult.Yes) : null,
-                appliableWithoutSaving && applyable ? dlg.CreateCloseDialogButton(saveable ? "Apply Only" : "Apply", true, false, MessageBoxResult.OK) : null,
-                saveable ? dlg.CreateCloseDialogButton(applyable && appliableWithoutSaving ? "Save Only" : "Save", true, false, MessageBoxResult.No) : null,
+                applyable && saveable ? dlg.CreateCloseDialogButton(
+                        appliableWithoutSaving ? AcManager.Resources.Arguments_Shared_ApplyAndSave : AcManager.Resources.Arguments_Shared_SaveAndApply,
+                        true, false, MessageBoxResult.Yes) : null,
+                appliableWithoutSaving && applyable
+                        ? dlg.CreateCloseDialogButton(saveable ? AcManager.Resources.Arguments_Shared_ApplyOnly : AcManager.Resources.Arguments_Shared_Apply,
+                                true, false, MessageBoxResult.OK) : null,
+                saveable ? dlg.CreateCloseDialogButton(
+                        applyable && appliableWithoutSaving ? AcManager.Resources.Arguments_Shared_SaveOnly : AcManager.Resources.Arguments_Shared_Save,
+                        true, false, MessageBoxResult.No) : null,
                 additionalButton == null ? null : dlg.CreateCloseDialogButton(additionalButton, true, false, MessageBoxResult.None),
                 dlg.CancelButton
             }.NonNull();
@@ -398,7 +405,7 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
             SharedEntry shared;
 
             using (var waiting = new WaitingDialog()) {
-                waiting.Report("Loading…");
+                waiting.Report(Controls.Resources.Common_Loading);
                 shared = await SharingHelper.GetSharedAsync(id, waiting.CancellationToken);
             }
 
@@ -463,10 +470,10 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
                     var carId = metadata.GetValueOrDefault("car");
                     var trackId = metadata.GetValueOrDefault("track") ?? CarSetupObject.GenericDirectory;
                     if (carId == null) {
-                        throw new InformativeException("Can’t install car’s setup", "Metadata is missing.");
+                        throw new InformativeException(AcManager.Resources.Arguments_CannotInstallCarSetup, AcManager.Resources.Arguments_MetadataIsMissing);
                     }
 
-                    var result = ShowDialog(shared, applyable: false, additionalButton: trackId == CarSetupObject.GenericDirectory ? null : "Save as Generic");
+                    var result = ShowDialog(shared, applyable: false, additionalButton: trackId == CarSetupObject.GenericDirectory ? null : AcManager.Resources.Arguments_SaveAsGeneric);
                     switch (result) {
                         case Choise.Save:
                         case Choise.Extra:
@@ -481,12 +488,12 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
                 }
 
                 case SharedEntryType.ControlsPreset: {
-                    var result = ShowDialog(shared, "Apply FFB Only");
+                    var result = ShowDialog(shared, AcManager.Resources.Arguments_Shared_ApplyFfbOnly);
                     switch (result) {
                         case Choise.Save:
                         case Choise.ApplyAndSave:
                             var filename = FileUtils.EnsureUnique(Path.Combine(
-                                    AcSettingsHolder.Controls.UserPresetsDirectory, "Loaded", shared.GetFileName()));
+                                    AcSettingsHolder.Controls.UserPresetsDirectory, @"Loaded", shared.GetFileName()));
                             Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                             File.WriteAllBytes(filename, data);
                             if (result == Choise.ApplyAndSave) {
@@ -527,7 +534,7 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
                         case Choise.Save:
                         case Choise.ApplyAndSave:
                             var filename = FileUtils.EnsureUnique(Path.Combine(
-                                    PresetsManager.Instance.GetDirectory(AcSettingsHolder.VideoPresets.PresetableKey), "Loaded", shared.GetFileName()));
+                                    PresetsManager.Instance.GetDirectory(AcSettingsHolder.VideoPresets.PresetableKey), @"Loaded", shared.GetFileName()));
                             Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                             File.WriteAllBytes(filename, data);
                             if (result == Choise.ApplyAndSave) {
@@ -543,12 +550,12 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
                 }
 
                 case SharedEntryType.QuickDrivePreset: {
-                    var result = ShowDialog(shared, "Just Go");
+                    var result = ShowDialog(shared, AcManager.Resources.Arguments_Shared_JustGo);
                     switch (result) {
                         case Choise.Save:
                         case Choise.ApplyAndSave:
                             var filename = FileUtils.EnsureUnique(Path.Combine(
-                                    PresetsManager.Instance.GetDirectory(QuickDrive.PresetableKeyValue), "Loaded", shared.GetFileName()));
+                                    PresetsManager.Instance.GetDirectory(QuickDrive.PresetableKeyValue), @"Loaded", shared.GetFileName()));
                             Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                             File.WriteAllBytes(filename, data);
                             if (result == Choise.ApplyAndSave) {
@@ -560,7 +567,7 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
                             return ArgumentHandleResult.SuccessfulShow;
                         case Choise.Extra: // just go
                             if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
-                                throw new InformativeException("Can’t start race", "Make sure required car & track are installed and available.");
+                                throw new InformativeException(AcManager.Resources.Arguments_CannotStartRace, AcManager.Resources.Arguments_CannotStartRace_Commentary);
                             }
 
                             return ArgumentHandleResult.SuccessfulShow;
@@ -570,7 +577,7 @@ Author: [b]{shared.Author ?? "[/b][i]?[/i][b]"}[/b]";
                 }
 
                 default:
-                    throw new Exception($"Unsupported yet type: “{shared.EntryType}”");
+                    throw new Exception(string.Format(AcManager.Resources.Arguments_SharedUnsupported, shared.EntryType));
             }
         }
     }

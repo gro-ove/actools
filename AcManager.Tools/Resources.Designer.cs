@@ -1006,6 +1006,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Championship.
+        /// </summary>
+        public static string Championship {
+            get {
+                return ResourceManager.GetString("Championship", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t download file.
         /// </summary>
         public static string Common_CannotDownloadFile {
@@ -2683,7 +2692,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t get shared entry, its type {0} is not supported.
+        ///   Looks up a localized string similar to Can’t get shared entry, its type “{0}” is not supported.
         /// </summary>
         public static string SharingHelper_NotSupported {
             get {
@@ -2715,6 +2724,15 @@ namespace AcManager.Tools {
         public static string ShowroomObject_CannotToggleSound_Commentary {
             get {
                 return ResourceManager.GetString("ShowroomObject_CannotToggleSound_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Single events.
+        /// </summary>
+        public static string SingleEvents {
+            get {
+                return ResourceManager.GetString("SingleEvents", resourceCulture);
             }
         }
         

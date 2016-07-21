@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 
 namespace AcManager {
+    [Localizable(false)]
     internal class PackedHelper {
         private readonly bool _logging;
         private readonly string _temporaryDirectory;

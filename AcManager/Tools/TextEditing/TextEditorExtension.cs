@@ -5,7 +5,7 @@ using ICSharpCode.AvalonEdit.Document;
 namespace AcManager.Tools.TextEditing {
     internal static class TextEditorExtension {
         public static void SetAsIniEditor(this TextEditor editor, Action<string> changedHandler) {
-            editor.SyntaxHighlighting = HighlighterHolder.Get("Ini");
+            editor.SyntaxHighlighting = HighlighterHolder.Get(@"Ini");
             editor.Options = new TextEditorOptions {
                 AllowScrollBelowDocument = true,
                 CutCopyWholeLine = true,

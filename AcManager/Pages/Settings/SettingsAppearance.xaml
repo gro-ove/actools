@@ -2,7 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+             xmlns:AcManager="clr-namespace:AcManager"
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance settings:SettingsAppearance+AppearanceViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -28,47 +29,47 @@
             </ListBox>
 
             <DockPanel>
-                <Label Content="Color:" />
+                <Label Content="{x:Static AcManager:Resources.Settings_Appearance_ColorLabel}" />
                 <mui:ColorPicker Color="{Binding AppAppearanceManager.AccentColor}" DisplayColor="{Binding AppAppearanceManager.AccentDisplayColor}" />
             </DockPanel>
 
             <DockPanel attached:LimitedService.Limited="True">
-                <Label Content="Theme:" />
+                <Label Content="{x:Static AcManager:Resources.Settings_Appearance_ThemeLabel}" />
                 <ComboBox ItemsSource="{Binding AppAppearanceManager.Themes}" SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding AppAppearanceManager.SmallFont}">
-                <Label Content="Small font" />
+                <Label Content="{x:Static AcManager:Resources.Settings_Appearance_SmallFont}" />
             </CheckBox>
 
             <DockPanel attached:LimitedService.Limited="True">
-                <Label Content="Text rendering:" />
+                <Label Content="{x:Static AcManager:Resources.Settings_Appearance_TextRenderingLabel}" />
                 <ComboBox ItemsSource="{Binding TextFormattings}" SelectedItem="{Binding TextFormatting, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
-            <DockPanel attached:LimitedService.Limited="True" ToolTip="Restart app to apply changes">
-                <Label Content="Image scaling quality:" />
+            <DockPanel attached:LimitedService.Limited="True" ToolTip="{x:Static AcManager:Resources.Settings_Appearance_ImageScaling_Tooltip}">
+                <Label Content="{x:Static AcManager:Resources.Settings_Appearance_ImageScalingLabel}" />
                 <Button Visibility="{Binding BitmapScalingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Command="{Binding RestartCommand}" Content="Restart" />
+                        Command="{Binding RestartCommand}" Content="{x:Static AcManager:Resources.Common_Restart}" />
                 <ComboBox ItemsSource="{Binding BitmapScalings}" SelectedItem="{Binding BitmapScaling, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding AppAppearanceManager.PopupToolBars}" ToolTip="Don't forget, there is a keyboard shortcut for every button"
+            <CheckBox IsChecked="{Binding AppAppearanceManager.PopupToolBars}" ToolTip="{x:Static AcManager:Resources.Settings_Appearance_PopupToolbars_Tooltip}"
                     attached:LimitedService.Limited="True">
-                <Label Content="Popup toolbars" />
+                <Label Content="{x:Static AcManager:Resources.Settings_Appearance_PopupToolbars}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding AppAppearanceManager.LargeSubMenuFont}" ToolTip="By the way, try shortcuts like F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc.">
-                <Label Content="Large search boxes" />
+            <CheckBox IsChecked="{Binding AppAppearanceManager.LargeSubMenuFont}" ToolTip="{x:Static AcManager:Resources.Settings_Appearance_LargeSearchBoxes_Tooltip}">
+                <Label Content="{x:Static AcManager:Resources.Settings_Appearance_LargeSearchBoxes}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding FancyBackgroundManager.Enabled}" ToolTip="Extra fancy">
-                <Label Content="Dynamic background" />
+                <Label Content="{x:Static AcManager:Resources.Settings_Appearance_DynamicBackground}" />
             </CheckBox>
 
             <DockPanel>
-                <Label Content="Transition animation:" />
+                <Label Content="{x:Static AcManager:Resources.Settings_Appearance_TransitionAnimationLabel}" />
                 <ComboBox ItemsSource="{Binding AppAppearanceManager.FrameAnimations}" SelectedItem="{Binding AppAppearanceManager.FrameAnimation, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" />
             </DockPanel>

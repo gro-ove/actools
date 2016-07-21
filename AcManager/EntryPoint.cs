@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -24,19 +25,6 @@ namespace AcManager {
         public static string ApplicationDataDirectory => _applicationDataDirectory ?? (_applicationDataDirectory =
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager"));
 
-        private static readonly string[] SupportedLocales = { "en-US" };
-
-        private static void InitializeLocale() {
-            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
-
-            var forceLocale = AppArguments.Get(AppFlag.ForceLocale);
-            if (forceLocale != null) {
-                CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(forceLocale);
-            } else if (!SupportedLocales.Contains(CultureInfo.CurrentUICulture.Name)) {
-                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
-            }
-        }
-
         [STAThread]
         private static void Main(string[] a) {
             if (!Debugger.IsAttached) {
@@ -45,10 +33,10 @@ namespace AcManager {
             
             AppArguments.Initialize(a.Skip(1));
             AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
-            InitializeLocale();
+            LocalesHelper.Initialize();
 
             AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References",
-                    Assembly.GetEntryAssembly().Location.Contains("_log_packed")).Handler;
+                    Assembly.GetEntryAssembly().Location.Contains(@"_log_packed")).Handler;
             MainInner(a);
         }
 
@@ -57,7 +45,7 @@ namespace AcManager {
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void MainInner(string[] args) {
             if (AppArguments.GetBool(AppFlag.UseCustomLocales, true)) {
-                var customLocale = Path.Combine(ApplicationDataDirectory, "Locales", CultureInfo.CurrentUICulture.Name);
+                var customLocale = Path.Combine(ApplicationDataDirectory, @"Locales", CultureInfo.CurrentUICulture.Name);
                 if (Directory.Exists(customLocale)) {
                     CustomResourceManager.SetCustomSource(customLocale);
                 }
@@ -97,10 +85,12 @@ namespace AcManager {
 
         private static string CommunicationFilename => Path.Combine(Path.GetTempPath(), "__CM_SnappySandybrownTerrier_811447478013131345");
 
+        [Localizable(false)]
         private static string PackArgs(IEnumerable<string> args) {
             return args.Select(x => "\n" + x.Replace(@"\", @"\\").Replace("\n", @"\n")).JoinToString();
         }
 
+        [Localizable(false)]
         private static IEnumerable<string> UnpackArgs(string packed) {
             return packed.Split('\n').Select(x => x.Replace(@"\n", "\n").Replace(@"\\", @"\")).Skip(1);
         }
@@ -158,17 +148,17 @@ namespace AcManager {
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
             var e = args.ExceptionObject as Exception;
 
-            var text = "Unhandled exception:\n\n" + (e?.ToString() ?? "?");
+            var text = string.Format(Resources.Main_UnhandledException, (e?.ToString() ?? @"?"));
             try {
                 // ErrorMessage.ShowWithoutLogging("Unhandled exception", "Please, send MainLog.txt to developer.", e);
-                MessageBox.Show(text, @"Oops!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(text, Controls.Resources.Common_Oops, MessageBoxButtons.OK, MessageBoxIcon.Error);
             } catch (Exception) {
                 // ignored
             }
 
             if (!LogError(text)) {
                 try {
-                    var logFilename = AppDomain.CurrentDomain.BaseDirectory + "/content_manager_crash_" + DateTime.Now.Ticks + ".txt";
+                    var logFilename = $"{AppDomain.CurrentDomain.BaseDirectory}/content_manager_crash_{DateTime.Now.Ticks}.txt";
                     File.WriteAllText(logFilename, text);
                 } catch (Exception) {
                     // ignored

@@ -5,7 +5,7 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Plugins {
     public class MagickPluginWrapper : IPluginWrapper {
-        public string Id => "Magick";
+        public string Id => @"Magick";
 
         public void Enable() {
             try {

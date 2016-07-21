@@ -2,11 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System"
         xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:Tools="clr-namespace:AcManager.Tools;assembly=AcManager.Tools"
-        mc:Ignorable="d" d:DesignHeight="300"
+        xmlns:h="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDrive+SettingsDriveViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -16,8 +13,9 @@
             <DockPanel>
                 <Label>
                     <TextBlock>
-                        <Run Text="Game starter" /><Hyperlink Typography.Variants="Superscript" FontSize="11" BaselineAlignment="Superscript"
-                                Command="{Binding NavigateCommand}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run Text=":" />
+                        <Run Text="{x:Static g:Resources.Settings_Drive_Starter}" /><Hyperlink Typography.Variants="Superscript" FontSize="11"
+                                BaselineAlignment="Superscript" Command="{Binding NavigateCommand}"
+                                CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters">[?]</Hyperlink><Run Text=":" />
                     </TextBlock>
                 </Label>
                 <ComboBox ItemsSource="{Binding Drive.StarterTypes}" SelectedItem="{Binding Drive.SelectedStarterType}" DisplayMemberPath="DisplayName">
@@ -31,111 +29,88 @@
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
-                <Label Content="Use 32-bit version" />
+                <Label Content="{x:Static g:Resources.Settings_Drive_32bit}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.ImmediateStart}">
-                <Label Content="Start race immediately" />
+                <Label Content="{x:Static g:Resources.Settings_Drive_StartImmediately}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.SkipPracticeResults}">
-                <Label Content="Don't show results of Practice session" />
+                <Label Content="{x:Static g:Resources.Settings_Drive_SkipPracticeResults}" />
             </CheckBox>
 
             <!--player's name-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Player’s name:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_Drive_PlayerNameHeader}" />
 
             <DockPanel>
-                <Label Content="Name:" />
-                <TextBox Text="{Binding Drive.PlayerName}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
+                <Label Content="{x:Static g:Resources.Settings_Drive_NameLabel}" />
+                <TextBox Text="{Binding Drive.PlayerName}" h:WatermarkService.Watermark="?" h:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
             <DockPanel>
-                <Label Content="Nationality:" />
-                <TextBox Text="{Binding Drive.PlayerNationality}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
+                <Label Content="{x:Static g:Resources.Settings_Drive_NationalityLabel}" />
+                <TextBox Text="{Binding Drive.PlayerNationality}" h:WatermarkService.Watermark="?" h:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
             <DockPanel>
-                <Label Content="Online name:" />
-                <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" ToolTip="Use different name online"
-                        VerticalAlignment="Center" />
-                <TextBox Text="{Binding Drive.PlayerNameOnline}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True"
+                <Label Content="{x:Static g:Resources.Settings_Drive_OnlineNameLabel}" />
+                <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}"
+                        ToolTip="{x:Static g:Resources.Settings_Drive_OnlineName_Tooltip}" VerticalAlignment="Center" />
+                <TextBox Text="{Binding Drive.PlayerNameOnline}" h:WatermarkService.Watermark="?" h:FocusAdvancement.AdvancesByEnterKey="True"
                         IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
             </DockPanel>
 
             <!--quick drive-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Quick Drive:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_Drive_QuickDriveHeader}" />
 
-            <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="Allows to set up to 999 laps and stuff, use on your own risk.">
-                <Label Content="Expand bounds" />
+            <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="{x:Static g:Resources.Settings_Drive_ExpandBounds_Tooltip}">
+                <Label Content="{x:Static g:Resources.Settings_Drive_ExpandBounds}" />
             </CheckBox>
 
             <!--kunos career-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Kunos career:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_Drive_KunosCareerHeader}" />
 
             <CheckBox IsChecked="{Binding Drive.KunosCareerUserAiLevel}">
-                <Label Content="Allow to change AI level" />
+                <Label Content="{x:Static g:Resources.Settings_Drive_ChangeAiLevel}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.KunosCareerUserSkin}">
-                <Label Content="Allow to change car's skin" />
+                <Label Content="{x:Static g:Resources.Settings_Drive_ChangeCarSkin}" />
             </CheckBox>
 
             <!--game-related events-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Game-related events:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_Drive_EventsHeader}" />
             <DockPanel>
                 <DockPanel.ToolTip>
                     <ToolTip>
                         <StackPanel Margin="4">
-                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="This command will be executed before starting acs.exe, but after setting all ini-files.
-[br]
-[br]Values for replacement:
-[br] [b][mono]{type}[/mono][/b] — type of race;
-[br] [b][mono]{car}[/mono][/b] — car's name;
-[br] [b][mono]{car.id}[/mono][/b] — car's id;
-[br] [b][mono]{track}[/mono][/b] — track's name;
-[br] [b][mono]{track.id}[/mono][/b] — track's id.
-[br]
-[br]If you need some other values, please, contact us and we'll add them.
-[br]
-[br]Working directory will be set to Assetto Corsa folder in Documents." />
+                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="{x:Static g:Resources.Settings_Drive_PreCommand_Tooltip}" />
                         </StackPanel>
                     </ToolTip>
                 </DockPanel.ToolTip>
-                <Label Content="Pre-race event command:" />
-                <TextBox Text="{Binding Drive.PreCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
+                <Label Content="{x:Static g:Resources.Settings_Drive_PreCommandLabel}" />
+                <TextBox Text="{Binding Drive.PreCommand}" h:WatermarkService.Watermark="{x:Static t:Resources.Common_None}" />
             </DockPanel>
 
             <DockPanel>
                 <DockPanel.ToolTip>
                     <ToolTip>
                         <StackPanel Margin="4">
-                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="This command will be executed after acs.exe finished, but before reading all result json-files.
-[br]
-[br]Values for replacement:
-[br] [b][mono]{type}[/mono][/b] — type of race;
-[br] [b][mono]{car}[/mono][/b] — car's name;
-[br] [b][mono]{car.id}[/mono][/b] — car's id;
-[br] [b][mono]{track}[/mono][/b] — track's name;
-[br] [b][mono]{track.id}[/mono][/b] — track's id.
-[br]
-[br]If you need some other values, please, contact us and we'll add them.
-[br]
-[br]Working directory will be set to Assetto Corsa folder in Documents." />
+                            <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="{x:Static g:Resources.Settings_Drive_PostCommand_Tooltip}" />
                         </StackPanel>
                     </ToolTip>
                 </DockPanel.ToolTip>
-                <Label Content="Post-race event command:" />
-                <TextBox Text="{Binding Drive.PostCommand}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
+                <Label Content="{x:Static g:Resources.Settings_Drive_PostCommandLabel}" />
+                <TextBox Text="{Binding Drive.PostCommand}" h:WatermarkService.Watermark="{x:Static t:Resources.Common_None}" />
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}"
-                    ToolTip="I highly recommend to enable Magick.NET first — with it, result quality will be higher">
-                <Label Content="Automatically convert screenshots from BMP-format to JPEG on exit" />
+            <CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}" ToolTip="{x:Static g:Resources.Settings_Drive_ConvertScreenshots_Tooltip}">
+                <Label Content="{x:Static g:Resources.Settings_Drive_ConvertScreenshots}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Drive.WeatherSpecificClouds}" ToolTip="Of course, only temporary">
-                <Label Content="Replace clouds by weather’s clouds if exist" />
+            <CheckBox IsChecked="{Binding Drive.WeatherSpecificClouds}" ToolTip="{x:Static g:Resources.Settings_Drive_CustomClouds_Tooltip}">
+                <Label Content="{x:Static g:Resources.Settings_Drive_CustomClouds}" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

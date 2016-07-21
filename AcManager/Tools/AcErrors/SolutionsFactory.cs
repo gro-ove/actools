@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -30,12 +31,12 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Data_JsonIsDamaged:
                     return new[] {
                         new MultiSolution(
-                                @"Try to restore JSON file",
-                                @"App will make an attempt to read known properties from damaged JSON file (be carefull, data loss is possible)",
+                                AcManager.Resources.Solution_RestoreJsonFile,
+                                AcManager.Resources.Solution_RestoreJsonFile_Details,
                                 e => {
                                     var t = (AcJsonObjectNew)e.Target;
                                     if (!Solve.TryToRestoreDamagedJsonFile(t.JsonFilename, JObjectRestorationSchemeProvider.GetScheme(t))) {
-                                        throw new SolvingException("Can’t restore damaged JSON");
+                                        throw new SolvingException(AcManager.Resources.Solution_CannotRestoreJsonFile);
                                     }
                                 }),
                         Solve.TryToCreateNewFile((AcJsonObjectNew)error.Target)
@@ -44,36 +45,38 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Data_ObjectNameIsMissing:
                     return new[] {
                         new MultiSolution(
-                                @"Set name",
-                                @"Just set a new name",
+                                AcManager.Resources.Solution_SetName,
+                                AcManager.Resources.Solution_SetName_Details,
                                 e => {
-                                    var value = Prompt.Show("Enter a new name", "New Name", AcStringValues.NameFromId(e.Target.Id), maxLength: 200);
+                                    var value = Prompt.Show(AcManager.Resources.Solution_SetName_Prompt, AcManager.Resources.Common_NewName,
+                                            AcStringValues.NameFromId(e.Target.Id), maxLength: 200);
                                     if (value == null) throw new SolvingException();
                                     e.Target.NameEditable = value;
                                 }) { IsUiSolution = true },
                         new MultiSolution(
-                                @"Set name based on ID",
-                                $@"New name will be: “{AcStringValues.NameFromId(error.Target.Id)}”",
+                                AcManager.Resources.Solution_SetNameFromId,
+                                string.Format(AcManager.Resources.Solution_SetNameFromId_Details, AcStringValues.NameFromId(error.Target.Id)),
                                 e => {
                                     e.Target.NameEditable = AcStringValues.NameFromId(e.Target.Id);
-                                }), 
+                                }),
                     };
 
                 case AcErrorType.Data_CarBrandIsMissing: {
                     var guess = AcStringValues.BrandFromName(error.Target.DisplayName);
                     return new[] {
                         new Solution(
-                                @"Set brand name",
-                                @"Just set a new brand name",
+                                AcManager.Resources.Solution_SetBrandName,
+                                AcManager.Resources.Solution_SetBrandName_Details,
                                 e => {
-                                    var value = Prompt.Show("Enter a new brand name", "New Brand Name", guess, maxLength: 200,
+                                    var value = Prompt.Show(AcManager.Resources.Solution_SetBrandName_Prompt, AcManager.Resources.Common_NewBrandName, guess,
+                                            maxLength: 200,
                                             suggestions: SuggestionLists.CarBrandsList);
                                     if (value == null) throw new SolvingException();
                                     ((CarObject)e.Target).Brand = value;
                                 }) { IsUiSolution = true },
                         guess == null ? null : new Solution(
-                                "Set brand name based on car’s name",
-                                $"New brand name will be: “{guess}”",
+                                AcManager.Resources.Solution_SetBrandNameFromName,
+                                string.Format(AcManager.Resources.Solution_SetBrandNameFromName_Details, guess),
                                 e => {
                                     ((CarObject)e.Target).Brand = guess;
                                 })
@@ -83,8 +86,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Data_IniIsMissing:
                     return Solve.TryToFindRenamedFile(error.Target.Location, ((AcIniObject)error.Target).IniFilename).Union(new[] {
                         new MultiSolution(
-                                "Remove object",
-                                "Object will be removed to the Recycle Bin",
+                                AcManager.Resources.Solution_RemoveObject,
+                                AcManager.Resources.Solution_RemoveObject_Details,
                                 e => {
                                     e.Target.DeleteCommand.Execute(null);
                                 })
@@ -93,14 +96,14 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Weather_ColorCurvesIniIsMissing:
                     return Solve.TryToFindRenamedFile(error.Target.Location, ((WeatherObject)error.Target).ColorCurvesIniFilename).Union(new[] {
                         new MultiSolution(
-                                "Generate new file",
-                                "New empty file will be created; don’t forget to set proper values and save it afterwards",
+                                AcManager.Resources.Solution_GenerateNew,
+                                AcManager.Resources.Solution_GenerateNew_Details,
                                 e => {
                                     File.WriteAllText(((WeatherObject)e.Target).ColorCurvesIniFilename, "");
                                 }),
                         new MultiSolution(
-                                "Remove object",
-                                "Object will be removed to the Recycle Bin",
+                                AcManager.Resources.Solution_RemoveObject,
+                                AcManager.Resources.Solution_RemoveObject_Details,
                                 e => {
                                     e.Target.DeleteCommand.Execute(null);
                                 })
@@ -109,8 +112,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Data_IniIsDamaged:
                     return Solve.TryToFindRenamedFile(error.Target.Location, ((AcIniObject)error.Target).IniFilename).Union(new[] {
                         new MultiSolution(
-                                "Remove object",
-                                "Object will be removed to the Recycle Bin",
+                                AcManager.Resources.Solution_RemoveObject,
+                                AcManager.Resources.Solution_RemoveObject_Details,
                                 e => {
                                     e.Target.DeleteCommand.Execute(null);
                                 })
@@ -123,14 +126,14 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Car_ParentIsMissing:
                     return new[] {
                         new MultiSolution(
-                                @"Make independent",
-                                @"Remove id of missing parent from ui_car.json",
+                                AcManager.Resources.Solution_MakeIndependent,
+                                AcManager.Resources.Solution_MakeIndependent_Details,
                                 e => {
                                     ((CarObject)e.Target).ParentId = null;
                                 }),
                         new MultiSolution(
-                                @"Change parent",
-                                @"Select a new parent from cars list",
+                                AcManager.Resources.Solution_ChangeParent,
+                                AcManager.Resources.Solution_ChangeParent_Details,
                                 e => {
                                     var target = (CarObject)e.Target;
                                     new ChangeCarParentDialog(target).ShowDialog();
@@ -145,17 +148,17 @@ namespace AcManager.Tools.AcErrors {
                     var fit = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $"{car.Brand}.png");
                     return new ISolution[] {
                         fit.Exists ? new MultiSolution(
-                            $"Set {car.Brand} badge",
-                            "Set the brand’s badge from Content storage",
-                            e => {
-                                var c = (CarObject)e.Target;
-                                var f = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $"{c.Brand}.png");
-                                if (!f.Exists) return;
-                                File.Copy(f.Filename, c.BrandBadge);
-                            }) : null, 
+                                string.Format(AcManager.Resources.Solution_SetBrandBadge, car.Brand),
+                                AcManager.Resources.Solution_SetBrandBadge_Details,
+                                e => {
+                                    var c = (CarObject)e.Target;
+                                    var f = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $"{c.Brand}.png");
+                                    if (!f.Exists) return;
+                                    File.Copy(f.Filename, c.BrandBadge);
+                                }) : null,
                         new MultiSolution(
-                                @"Change brand’s badge",
-                                @"Select a new brand’s badge from the list",
+                                AcManager.Resources.Solution_ChangeBrandBadge,
+                                AcManager.Resources.Solution_ChangeBrandBadge_Details,
                                 e => {
                                     var target = (CarObject)e.Target;
                                     new BrandBadgeEditor(target).ShowDialog();
@@ -168,22 +171,22 @@ namespace AcManager.Tools.AcErrors {
 
                 case AcErrorType.Car_UpgradeIconIsMissing: {
                     var car = (CarObject)error.Target;
-                    var label = UpgradeIconEditor.TryToGuessLabel(car.DisplayName) ?? "S1";
+                    var label = UpgradeIconEditor.TryToGuessLabel(car.DisplayName) ?? @"S1";
                     var fit = FilesStorage.Instance.GetContentFile(ContentCategory.UpgradeIcons, $"{label}.png");
                     return new ISolution[] {
                         fit.Exists ? new MultiSolution(
-                            $"Set “{label}” icon",
-                            "Set the upgrade icon from Content storage",
-                            e => {
-                                var c = (CarObject)e.Target;
-                                var l = UpgradeIconEditor.TryToGuessLabel(c.DisplayName) ?? "S1";
-                                var f = FilesStorage.Instance.GetContentFile(ContentCategory.UpgradeIcons, $"{l}.png");
-                                if (!f.Exists) return;
-                                File.Copy(f.Filename, c.UpgradeIcon);
-                            }) : null, 
+                                string.Format(AcManager.Resources.Solution_SetUpgradeIcon, label),
+                                AcManager.Resources.Solution_SetUpgradeIcon_Details,
+                                e => {
+                                    var c = (CarObject)e.Target;
+                                    var l = UpgradeIconEditor.TryToGuessLabel(c.DisplayName) ?? @"S1";
+                                    var f = FilesStorage.Instance.GetContentFile(ContentCategory.UpgradeIcons, $"{l}.png");
+                                    if (!f.Exists) return;
+                                    File.Copy(f.Filename, c.UpgradeIcon);
+                                }) : null,
                         new MultiSolution(
-                                @"Change upgrade icon",
-                                @"Select or create a new upgrade icon with the editor",
+                                AcManager.Resources.Solution_ChangeUpgradeIcon,
+                                AcManager.Resources.Solution_ChangeUpgradeIcon_Details,
                                 e => {
                                     var target = (CarObject)e.Target;
                                     new UpgradeIconEditor(target).ShowDialog();
@@ -197,12 +200,12 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Showroom_Kn5IsMissing:
                     return new[] {
                         new MultiSolution(
-                                @"Make an empty model",
-                                @"With nothing, only emptyness",
+                                AcManager.Resources.Solution_MakeEmptyModel,
+                                AcManager.Resources.Solution_MakeEmptyModel_Details,
                                 e => {
                                     Kn5.CreateEmpty().SaveAll(((ShowroomObject)e.Target).Kn5Filename);
                                 })
-                    }.Concat(Solve.TryToFindAnyFile(error.Target.Location, ((ShowroomObject)error.Target).Kn5Filename, "*.kn5")).Where(x => x != null);
+                    }.Concat(Solve.TryToFindAnyFile(error.Target.Location, ((ShowroomObject)error.Target).Kn5Filename, @"*.kn5")).Where(x => x != null);
 
                 case AcErrorType.Data_KunosCareerEventsAreMissing:
                     break;
@@ -222,13 +225,13 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.CarSkins_SkinsAreMissing:
                     return new[] {
                         new MultiSolution(
-                                @"Create empty skin",
-                                @"Create a new empty skin called “default”",
+                                AcManager.Resources.Solution_CreateEmptySkin,
+                                AcManager.Resources.Solution_CreateEmptySkin_Details,
                                 e => {
                                     var target = Path.Combine(((CarObject)e.Target).SkinsDirectory, "default");
                                     Directory.CreateDirectory(target);
                                     File.WriteAllText(Path.Combine(target, "ui_skin.json"), JsonConvert.SerializeObject(new {
-                                        skinname = "Default",
+                                        skinname = @"Default",
                                         drivername = "",
                                         country = "",
                                         team = "",
@@ -236,8 +239,8 @@ namespace AcManager.Tools.AcErrors {
                                     }));
                                 })
                     }.Union(((CarObject)error.Target).SkinsManager.WrappersList.Where(x => !x.Value.Enabled).Select(x => new MultiSolution(
-                            $@"Enable {x.Value.DisplayName}",
-                            "Enable disabled skin",
+                            string.Format(AcManager.Resources.Solution_EnableSkin, x.Value.DisplayName),
+                            AcManager.Resources.Solution_EnableSkin_Details,
                             (IAcError e) => {
                                 ((CarSkinObject)x.Loaded()).ToggleCommand.Execute(null);
                             }
@@ -247,14 +250,14 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.CarSkins_DirectoryIsUnavailable:
                     return null;
 
-                case AcErrorType.Font_BitmapIsMissing: 
+                case AcErrorType.Font_BitmapIsMissing:
                     return Solve.TryToFindRenamedFile(Path.GetDirectoryName(error.Target.Location), ((FontObject)error.Target).FontBitmap);
 
                 case AcErrorType.Font_UsedButDisabled:
                     return new[] {
                         new MultiSolution(
-                                @"Enable",
-                                @"Move font from “fonts-off” to “fonts”",
+                                AcManager.Resources.Solution_Enable,
+                                AcManager.Resources.Solution_Enable_Details,
                                 e => {
                                     e.Target.ToggleCommand.Execute(null);
                                 })
@@ -263,14 +266,14 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.CarSetup_TrackIsMissing:
                     return new[] {
                         new Solution(
-                                @"Find track",
-                                @"Try to find track online",
+                                AcManager.Resources.Solution_FindTrack,
+                                AcManager.Resources.Solution_FindTrack_Details,
                                 e => {
                                     Process.Start($@"http://assetto-db.com/track/{((CarSetupObject)e.Target).TrackId}");
                                 }),
                         new MultiSolution(
-                                @"Make generic",
-                                @"Move to generic folder",
+                                AcManager.Resources.Solution_MakeGeneric,
+                                AcManager.Resources.Solution_MakeGeneric_Details,
                                 e => {
                                     ((CarSetupObject)e.Target).TrackId = null;
                                 })
@@ -279,8 +282,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.CarSkin_PreviewIsMissing:
                     return new ISolution[] {
                         new MultiSolution(
-                                @"Generate new preview",
-                                @"Generate a new preview using recently used preset",
+                                AcManager.Resources.Solution_GeneratePreview,
+                                AcManager.Resources.Solution_GeneratePreview_Details,
                                 e => {
                                     var list = e.ToList();
                                     var carId = ((CarSkinObject)list[0].Target).CarId;
@@ -291,8 +294,8 @@ namespace AcManager.Tools.AcErrors {
                                     }
                                 }) { IsUiSolution = true },
                         new MultiSolution(
-                                @"Setup and generate new preview",
-                                @"Select a new preview through settings",
+                                AcManager.Resources.Solution_SetupPreview,
+                                AcManager.Resources.Solution_SetupPreview_Details,
                                 e => {
                                     var list = e.ToList();
                                     var carId = ((CarSkinObject)list[0].Target).CarId;
@@ -307,16 +310,16 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.CarSkin_LiveryIsMissing:
                     return new ISolution[] {
                         new AsyncMultiSolution(
-                                @"Generate new livery",
-                                @"Generate a new livery using last settings of Livery Editor",
+                                AcManager.Resources.Solution_GenerateLivery,
+                                AcManager.Resources.Solution_GenerateLivery_Details,
                                 e => LiveryIconEditor.GenerateAsync((CarSkinObject)e.Target)),
                         new AsyncMultiSolution(
-                                @"Generate random livery",
-                                @"Generate a new livery using random settings",
+                                AcManager.Resources.Solution_RandomLivery,
+                                AcManager.Resources.Solution_RandomLivery_Details,
                                 e => LiveryIconEditor.GenerateRandomAsync((CarSkinObject)e.Target)),
                         new MultiSolution(
-                                @"Setup new livery",
-                                @"Select a new livery using Livery Editor",
+                                AcManager.Resources.Solution_SetupLivery,
+                                AcManager.Resources.Solution_SetupLivery_Details,
                                 e => {
                                     if (!new LiveryIconEditor((CarSkinObject)e.Target).ShowDialog()) {
                                         throw new SolvingException();
@@ -328,8 +331,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Replay_TrackIsMissing:
                     return new[] {
                         new MultiSolution(
-                                @"Remove replay",
-                                @"Replay will be removed to the Recycle Bin",
+                                AcManager.Resources.Solution_RemoveReplay,
+                                AcManager.Resources.Solution_RemoveReplay_Details,
                                 e => {
                                     e.Target.DeleteCommand.Execute(null);
                                 })
@@ -338,10 +341,10 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Replay_InvalidName:
                     return new[] {
                         new MultiSolution(
-                                @"Fix name",
-                                @"Remove invalid symbols",
+                                AcManager.Resources.Solution_FixName,
+                                AcManager.Resources.Solution_FixName_Details,
                                 e => {
-                                    e.Target.NameEditable = Regex.Replace(e.Target.NameEditable ?? "-", @"[\[\]]", "");
+                                    e.Target.NameEditable = Regex.Replace(e.Target.NameEditable ?? @"-", @"[\[\]]", "");
                                 })
                     };
 

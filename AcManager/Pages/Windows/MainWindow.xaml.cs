@@ -67,11 +67,11 @@ namespace AcManager.Pages.Windows {
 
             DataContext = new MainWindowViewModel();
             InputBindings.AddRange(new[] {
-                new InputBinding(new NavigateCommand(this, "about"), new KeyGesture(Key.F1, ModifierKeys.Alt)),
-                new InputBinding(new NavigateCommand(this, "drive"), new KeyGesture(Key.F1)),
-                new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F2)),
-                new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F3)),
-                new InputBinding(new NavigateCommand(this, "settings"), new KeyGesture(Key.F4))
+                new InputBinding(new NavigateCommand(this, AcManager.Resources.Main_About), new KeyGesture(Key.F1, ModifierKeys.Alt)),
+                new InputBinding(new NavigateCommand(this, AcManager.Resources.Main_Drive), new KeyGesture(Key.F1)),
+                new InputBinding(new NavigateCommand(this, AcManager.Resources.Main_Media), new KeyGesture(Key.F2)),
+                new InputBinding(new NavigateCommand(this, AcManager.Resources.Main_Content), new KeyGesture(Key.F3)),
+                new InputBinding(new NavigateCommand(this, AcManager.Resources.Main_Settings), new KeyGesture(Key.F4))
             });
             InitializeComponent();
 
@@ -79,12 +79,12 @@ namespace AcManager.Pages.Windows {
             AppKeyHolder.ProceedMainWindow(this);
             
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => x.Source.OriginalString.Contains("/online.xaml", StringComparison.OrdinalIgnoreCase))) {
+                                                 .Where(x => x.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += OnlineLinkChanged;
             }
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => string.Equals(x.GroupKey, "content", StringComparison.OrdinalIgnoreCase))) {
+                                                 .Where(x => string.Equals(x.GroupKey, AcManager.Resources.Main_Content, StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += ContentLinkChanged;
             }
 
@@ -120,14 +120,14 @@ namespace AcManager.Pages.Windows {
             }
 
             var launcher = FileUtils.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
-            if (FileVersionInfo.GetVersionInfo(launcher).FileVersion.IsVersionOlderThan("0.16.714")) {
+            if (FileVersionInfo.GetVersionInfo(launcher).FileVersion.IsVersionOlderThan(@"0.16.714")) {
                 return false;
             }
 
-            Toast.Show("Now With Official Support!", "New starter is ready, now without any patching at all", () => {
+            Toast.Show(AcManager.Resources.Main_OfficialSupportNotification, AcManager.Resources.Main_OfficialSupportNotification_Details, () => {
                 if (ModernDialog.ShowMessage(
-                        "Since 1.7 Kunos added an official support for custom launchers. Basically, it works like Starter+, but now CM doesn't have to replace AssettoCorsa.exe, and it's great! Would you like to switch to a new Official Starter?",
-                        "Good news!", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                        AcManager.Resources.Main_OfficialSupportNotification_Message,
+                        Controls.Resources.Common_GoodNews, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                     SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.OfficialStarterType;
                 }
 
@@ -154,10 +154,10 @@ namespace AcManager.Pages.Windows {
         /// </summary>
         private static void OnlineLinkChanged(object sender, LinkChangedEventArgs e) {
             var group = (LinkGroupFilterable)sender;
-            var type = group.Source.GetQueryParamEnum<OnlineManagerType>("Mode");
+            var type = group.Source.GetQueryParamEnum<OnlineManagerType>(@"Mode");
 
-            var oldKey = type + "_" + typeof(ServerEntry).Name + "_" + e.OldValue;
-            var newKey = type + "_" + typeof(ServerEntry).Name + "_" + e.NewValue;
+            var oldKey = type + @"_" + typeof(ServerEntry).Name + @"_" + e.OldValue;
+            var newKey = type + @"_" + typeof(ServerEntry).Name + @"_" + e.NewValue;
             LimitedStorage.Move(LimitedSpace.SelectedEntry, oldKey, newKey);
             LimitedStorage.Move(LimitedSpace.OnlineSorting, oldKey, newKey);
             LimitedStorage.Move(LimitedSpace.OnlineQuickFilter, oldKey, newKey);
@@ -184,8 +184,8 @@ namespace AcManager.Pages.Windows {
                     return;
             }
 
-            var oldKey = "Content_" + type.Name + "_" + e.OldValue;
-            var newKey = "Content_" + type.Name + "_" + e.NewValue;
+            var oldKey = @"Content_" + type.Name + @"_" + e.OldValue;
+            var newKey = @"Content_" + type.Name + @"_" + e.NewValue;
             LimitedStorage.Move(LimitedSpace.SelectedEntry, oldKey, newKey);
         }
 
@@ -218,7 +218,7 @@ namespace AcManager.Pages.Windows {
 
                 var result = await _argumentsHandler.ProcessArgument(arg);
                 if (result == ArgumentHandleResult.FailedShow) {
-                    NonfatalError.Notify("Can’t process argument", "Make sure it’s in valid format.");
+                    NonfatalError.Notify(AcManager.Resources.Main_CannotProcessArgument, AcManager.Resources.Main_CannotProcessArgument_Commentary);
                 }
 
                 if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
@@ -282,13 +282,13 @@ namespace AcManager.Pages.Windows {
         }
 
         private void UpdateAboutIsNew() {
-            TitleLinks.FirstOrDefault(x => x.DisplayName == "about")?
+            TitleLinks.FirstOrDefault(x => x.DisplayName == AcManager.Resources.Main_About)?
                       .SetNew(AboutHelper.Instance.HasNewImportantTips || AboutHelper.Instance.HasNewReleaseNotes);
             MenuLinkGroups.SelectMany(x => x.Links)
-                          .FirstOrDefault(x => x.DisplayName == "Release Notes")?
+                          .FirstOrDefault(x => x.DisplayName == AcManager.Resources.Main_Link_ReleaseNotes)?
                           .SetNew(AboutHelper.Instance.HasNewReleaseNotes);
             MenuLinkGroups.SelectMany(x => x.Links)
-                          .FirstOrDefault(x => x.DisplayName == "Important Tips")?
+                          .FirstOrDefault(x => x.DisplayName == AcManager.Resources.Main_Link_ImportantTips)?
                           .SetNew(AboutHelper.Instance.HasNewImportantTips);
         }
 
@@ -342,7 +342,7 @@ namespace AcManager.Pages.Windows {
             var data = e.Data.GetData(DataFormats.FileDrop) as string[] ??
                        (e.Data.GetData(DataFormats.UnicodeText) as string)?.Split('\n')
                                                                            .Select(x => x.Trim())
-                                                                           .Select(x => x.Length > 1 && x.StartsWith("\"") && x.EndsWith("\"")
+                                                                           .Select(x => x.Length > 1 && x.StartsWith(@"""") && x.EndsWith(@"""")
                                                                                    ? x.Substring(1, x.Length - 2) : x);
             Dispatcher.InvokeAsync(() => ProcessDroppedFiles(data));
         }

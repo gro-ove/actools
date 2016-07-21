@@ -304,6 +304,33 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gamer.
+        /// </summary>
+        public static string AssistsPreset_Gamer {
+            get {
+                return ResourceManager.GetString("AssistsPreset_Gamer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Intermediate.
+        /// </summary>
+        public static string AssistsPreset_Intermediate {
+            get {
+                return ResourceManager.GetString("AssistsPreset_Intermediate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pro.
+        /// </summary>
+        public static string AssistsPreset_Pro {
+            get {
+                return ResourceManager.GetString("AssistsPreset_Pro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open In Custom Showroom.
         /// </summary>
         public static string Car_OpenInCustomShowroom {
@@ -372,6 +399,33 @@ namespace AcManager.Controls {
         public static string Common_FolderExists {
             get {
                 return ResourceManager.GetString("Common_FolderExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Good news!.
+        /// </summary>
+        public static string Common_GoodNews {
+            get {
+                return ResourceManager.GetString("Common_GoodNews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid format.
+        /// </summary>
+        public static string Common_InvalidFormat {
+            get {
+                return ResourceManager.GetString("Common_InvalidFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading….
+        /// </summary>
+        public static string Common_Loading {
+            get {
+                return ResourceManager.GetString("Common_Loading", resourceCulture);
             }
         }
         

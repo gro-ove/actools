@@ -15,7 +15,7 @@ namespace AcManager.Tools.SpecialDriveModes {
         }
 
         public async Task Start(IProgress<string> progress = null, CancellationToken cancellation = default(CancellationToken)) {
-            progress?.Report("Getting information about the event…");
+            progress?.Report(AcManager.Resources.RsrStarter_GettingInformation);
             var entry = await RsrApiProvider.GetEventInformationAsync(_eventId, cancellation);
             Logging.Write("[RsrStarter] Car ID: " + entry?.CarId);
         }

@@ -117,124 +117,117 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="KunosCareer_RequiredSeries" xml:space="preserve">
-    <value>Требуется пройти: {0}</value>
+  <data name="Main_Title" xml:space="preserve">
+    <value>Content Manager (Lite-режим)</value>
   </data>
-  <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
-    <value>Требуемые серии пока не пройдены</value>
+  <data name="App_NewVersion_Details" xml:space="preserve">
+    <value>Новая версия: {0}</value>
   </data>
-  <data name="KunosCareer_CompletedLabel" xml:space="preserve">
-    <value>Завершено: </value>
-    <comment>Don’t forget about space at the end!</comment>
+  <data name="App_ContentUpdated_Details" xml:space="preserve">
+    <value>Текущая версия: {0}</value>
   </data>
-  <data name="KunosCareer_Point" xml:space="preserve">
-    <value>очко</value>
-    <comment>Will be pluralized automatically</comment>
+  <data name="Main_UnhandledException" xml:space="preserve">
+    <value>Непойманная ошибка:
+
+{0}</value>
   </data>
-  <data name="KunosCareer_Error" xml:space="preserve">
-    <value>{0} ошибка</value>
-    <comment>Will be pluralized automatically</comment>
+  <data name="App_ContentUpdated" xml:space="preserve">
+    <value>Контент обновлён</value>
   </data>
-  <data name="AcObject_ErrorsHeader" xml:space="preserve">
-    <value>Ошибки:</value>
+  <data name="App_NewVersion" xml:space="preserve">
+    <value>Новая версия</value>
   </data>
-  <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
-    <value>Координаты:</value>
+  <data name="Main_Link_Apps" xml:space="preserve">
+    <value>Приложения</value>
   </data>
-  <data name="AcObject_CityLabel" xml:space="preserve">
-    <value>Город</value>
+  <data name="Main_Link_Fonts" xml:space="preserve">
+    <value>Шрифты</value>
   </data>
-  <data name="Assists_Header" xml:space="preserve">
-    <value>Помощники:</value>
+  <data name="Main_Link_PpFilters" xml:space="preserve">
+    <value>Фильтры</value>
   </data>
-  <data name="Assists_AutoShifterLabel" xml:space="preserve">
-    <value>АКПП:</value>
+  <data name="Main_Link_Weather" xml:space="preserve">
+    <value>Погода</value>
   </data>
-  <data name="Assists_AutoClutchLabel" xml:space="preserve">
-    <value>Авто-сцепление:</value>
+  <data name="Main_Link_Rsr" xml:space="preserve">
+    <value>RSR</value>
   </data>
-  <data name="Assists_AutoBlipLabel" xml:space="preserve">
-    <value>Авто-блип:</value>
+  <data name="Main_Link_Srs" xml:space="preserve">
+    <value>SRS</value>
   </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
+  <data name="Main_Link_QuickDrive" xml:space="preserve">
+    <value>Быстрый заезд</value>
   </data>
-  <data name="Assists_TractionControlLabel" xml:space="preserve">
-    <value>TC:</value>
+  <data name="Main_Link_Career" xml:space="preserve">
+    <value>Карьера</value>
   </data>
-  <data name="Assists_StabilityControlLabel" xml:space="preserve">
-    <value>Стабилизация:</value>
+  <data name="Main_Link_Challenges" xml:space="preserve">
+    <value>Испытания</value>
   </data>
-  <data name="Assists_FuelLabel" xml:space="preserve">
-    <value>Расход топлива:</value>
+  <data name="Main_Group_Single" xml:space="preserve">
+    <value>офлайн</value>
   </data>
-  <data name="Assists_TyreWearLabel" xml:space="preserve">
-    <value>Износ шин:</value>
+  <data name="Main_Group_Live" xml:space="preserve">
+    <value>лайв</value>
   </data>
-  <data name="WebBrowser_Prompt" xml:space="preserve">
-    <value>Сообщение</value>
+  <data name="Main_Group_Online" xml:space="preserve">
+    <value>онлайн</value>
   </data>
-  <data name="AcObject_CarBrandLabel" xml:space="preserve">
-    <value>Производитель:</value>
+  <data name="Main_Group_Lan" xml:space="preserve">
+    <value>локальная сеть</value>
   </data>
-  <data name="AcObject_ContryLabel" xml:space="preserve">
-    <value>Страна:</value>
+  <data name="Main_Group_Screenshots" xml:space="preserve">
+    <value>скриншоты</value>
   </data>
-  <data name="AcObject_CarClassLabel" xml:space="preserve">
-    <value>Класс:</value>
+  <data name="Main_Group_Replays" xml:space="preserve">
+    <value>реплеи</value>
   </data>
-  <data name="AcObject_YearLabel" xml:space="preserve">
-    <value>Год:</value>
+  <data name="Main_Group_Cars" xml:space="preserve">
+    <value>машины</value>
   </data>
-  <data name="AcObject_CarParentLabel" xml:space="preserve">
-    <value>Базовая версия:</value>
+  <data name="Main_Group_Tracks" xml:space="preserve">
+    <value>трассы</value>
   </data>
-  <data name="AcObject_SpecsLabel" xml:space="preserve">
-    <value>Характеристики:</value>
+  <data name="Main_Group_Showrooms" xml:space="preserve">
+    <value>шоурумы</value>
   </data>
-  <data name="AcObject_AuthorTooltip" xml:space="preserve">
-    <value>Автор, версия и веб-адрес</value>
+  <data name="Main_Group_Miscellaneous" xml:space="preserve">
+    <value>разное</value>
   </data>
-  <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>Открыть в шоуруме</value>
+  <data name="Main_Group_ServerPresets" xml:space="preserve">
+    <value>пресеты</value>
   </data>
-  <data name="Common_Presets" xml:space="preserve">
-    <value>Пресеты</value>
+  <data name="Main_Group_ServerRunned" xml:space="preserve">
+    <value>запущенное</value>
   </data>
-  <data name="Common_Settings" xml:space="preserve">
-    <value>Настройки</value>
+  <data name="Main_Link_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
   </data>
-  <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>Открыть в кастомном шоуруме</value>
+  <data name="Main_Link_About" xml:space="preserve">
+    <value>О программе</value>
   </data>
-  <data name="Video_CannotPlay" xml:space="preserve">
-    <value>Не получится проиграть видео</value>
+  <data name="Main_Link_ReleaseNotes" xml:space="preserve">
+    <value>Релизные заметки</value>
   </data>
-  <data name="Video_CannotPlay_Commentary" xml:space="preserve">
-    <value>Пожалуйста, зайдите в настройки и включите VLC-плагин</value>
+  <data name="Main_Link_ImportantTips" xml:space="preserve">
+    <value>Советы</value>
   </data>
-  <data name="Common_FilterLabel" xml:space="preserve">
-    <value>Фильтр:</value>
+  <data name="Main_About" xml:space="preserve">
+    <value>о программе</value>
   </data>
-  <data name="Presets_Save" xml:space="preserve">
-    <value>Сохранить пресет</value>
+  <data name="Main_Settings" xml:space="preserve">
+    <value>настройки</value>
   </data>
-  <data name="Presets_Save_Tooltip" xml:space="preserve">
-    <value>Сохранить текущие параметры как пресет</value>
+  <data name="Main_Server" xml:space="preserve">
+    <value>сервер</value>
   </data>
-  <data name="Presets_Unsaved" xml:space="preserve">
-    <value>Не сохранено</value>
+  <data name="Main_Drive" xml:space="preserve">
+    <value>поехали</value>
   </data>
-  <data name="Controls_SteeringWheelButton" xml:space="preserve">
-    <value>Кнопка на руле</value>
+  <data name="Main_Media" xml:space="preserve">
+    <value>медиа</value>
   </data>
-  <data name="AssistsPreset_Gamer" xml:space="preserve">
-    <value>Игрок</value>
-  </data>
-  <data name="AssistsPreset_Intermediate" xml:space="preserve">
-    <value>Опытный</value>
-  </data>
-  <data name="AssistsPreset_Pro" xml:space="preserve">
-    <value>Про</value>
+  <data name="Main_Content" xml:space="preserve">
+    <value>контент</value>
   </data>
 </root>

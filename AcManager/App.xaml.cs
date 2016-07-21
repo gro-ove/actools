@@ -77,7 +77,7 @@ namespace AcManager {
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
                 var logFilename = FilesStorage.Instance.GetFilename("Logs", "Main Log.txt");
                 if (File.Exists(logFilename)) {
-                    File.Move(logFilename, $"{logFilename.ApartFromLast(".txt", StringComparison.OrdinalIgnoreCase)}_{DateTime.Now.ToUnixTimestamp()}.txt");
+                    File.Move(logFilename, $"{logFilename.ApartFromLast(@".txt", StringComparison.OrdinalIgnoreCase)}_{DateTime.Now.ToUnixTimestamp()}.txt");
                     DeleteOldLogs();
                 }
 
@@ -158,7 +158,7 @@ namespace AcManager {
             BbCodeBlock.ImageClicked += BbCodeBlock_ImageClicked;
 
             StartupUri = new Uri(Superintendent.Instance.IsReady ?
-                    "Pages/Windows/MainWindow.xaml" : "Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
+                    @"Pages/Windows/MainWindow.xaml" : @"Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
 
             BackgroundInitialization();
         }
@@ -201,9 +201,9 @@ namespace AcManager {
             await Task.Run(() => {
                 var directory = FilesStorage.Instance.GetDirectory("Logs");
                 foreach (var f in from file in Directory.GetFiles(directory)
-                                  where file.EndsWith(".txt") || file.EndsWith(".json")
+                                  where file.EndsWith(@".txt") || file.EndsWith(@".json")
                                   let info = new FileInfo(file)
-                                  where info.CreationTime < DateTime.Now.AddDays(-3)
+                                  where info.CreationTime < DateTime.Now.AddDays(-10)
                                   select info){
                     f.Delete();
                 }
@@ -223,25 +223,26 @@ namespace AcManager {
         }
 
         private void ContentSyncronizer_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == "InstalledVersion") {
-                Toast.Show("Content Updated", $"Current version: {ContentSyncronizer.Instance.InstalledVersion}");
+            if (e.PropertyName == nameof(ContentSyncronizer.InstalledVersion)) {
+                Toast.Show(AcManager.Resources.App_ContentUpdated, string.Format(AcManager.Resources.App_ContentUpdated_Details, ContentSyncronizer.Instance.InstalledVersion));
             }
         }
 
         private void AppUpdater_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == "UpdateIsReady") {
-                Toast.Show("New Version", $"Update is ready: {AppUpdater.Instance.UpdateIsReady}", () => {
-                    AppUpdater.Instance.FinishUpdateCommand.Execute(null);
-                });
+            if (e.PropertyName == nameof(AppUpdater.UpdateIsReady)) {
+                Toast.Show(AcManager.Resources.App_NewVersion,
+                        string.Format(AcManager.Resources.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
+                            AppUpdater.Instance.FinishUpdateCommand.Execute(null);
+                        });
             }
         }
 
         private static void InitializePresets() {
             PresetsManager.Initialize(FilesStorage.Instance.GetDirectory("Presets"));
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos, "Previews", "Kunos");
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, "Assists", "Gamer");
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, "Assists", "Intermediate");
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, "Assists", "Pro");
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos, @"Previews", @"Kunos");
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, @"Assists", Controls.Resources.AssistsPreset_Gamer);
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, @"Assists", Controls.Resources.AssistsPreset_Intermediate);
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, @"Assists", Controls.Resources.AssistsPreset_Pro);
         }
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {

@@ -723,4 +723,22 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_Error" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="AssistsPreset_Gamer" xml:space="preserve">
+    <value>Gamer</value>
+  </data>
+  <data name="AssistsPreset_Intermediate" xml:space="preserve">
+    <value>Intermediate</value>
+  </data>
+  <data name="AssistsPreset_Pro" xml:space="preserve">
+    <value>Pro</value>
+  </data>
+  <data name="Common_Loading" xml:space="preserve">
+    <value>Loading…</value>
+  </data>
+  <data name="Common_InvalidFormat" xml:space="preserve">
+    <value>Invalid format</value>
+  </data>
+  <data name="Common_GoodNews" xml:space="preserve">
+    <value>Good news!</value>
+  </data>
 </root>

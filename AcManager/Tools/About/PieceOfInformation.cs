@@ -7,7 +7,7 @@ namespace AcManager.Tools.About {
         private readonly string _sid;
 
         public PieceOfInformation(string sid, string id, string displayName, string version, string content, bool limited, bool hidden) {
-            _sid = "PieceOfInformation.IsNotNew_" + sid;
+            _sid = @"PieceOfInformation.IsNotNew_" + sid;
             Id = id;
 
             DisplayName = displayName;
