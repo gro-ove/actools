@@ -27,7 +27,7 @@
         <DockPanel Margin="0 0 0 20" Background="Transparent">
             <DockPanel.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{x:Static Controls:Resources.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+                    <MenuItem Header="{x:Static Controls:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
                 </ContextMenu>
             </DockPanel.ContextMenu>
 
@@ -70,11 +70,11 @@
                                     TextTrimming="CharacterEllipsis" />
                             <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0"
                                     Name="ProviderName" TextTrimming="CharacterEllipsis" />
-                            <TextBlock Text="{x:Static Controls:Resources.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
+                            <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
                                     HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Normal" TextTrimming="CharacterEllipsis"
                                     Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" />
                         </Grid>
-                        <TextBlock Text="{x:Static Controls:Resources.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+                        <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                                 VerticalAlignment="Center" TextTrimming="CharacterEllipsis" FontWeight="Normal"
                                 Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     </Grid>
@@ -83,45 +83,45 @@
 
             <StackPanel Margin="16 4 0 0" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                 <CheckBox IsChecked="{Binding Invert}" Margin="0 0 0 4">
-                    <Label Content="{x:Static Controls:Resources.Controls_InvertAxis}" />
+                    <Label Content="{x:Static Controls:ControlsStrings.Controls_InvertAxis}" />
                 </CheckBox>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
                         Margin="0 0 0 4">
                     <mui:ValueLabel Value="{Binding DegressOfRotation}" Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static Controls:Resources.Controls_DegressLabel}" />
+                            DockPanel.Dock="Left" Content="{x:Static Controls:ControlsStrings.Controls_DegressLabel}" />
                     <Slider Minimum="40" Maximum="1180" Value="{Binding DegressOfRotation}" TickFrequency="20" TickPlacement="None" IsSnapToTickEnabled="True" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
                     <mui:ValueLabel Value="{Binding RangeFrom}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static Controls:Resources.Controls_RangeFromAxis}" />
+                            DockPanel.Dock="Left" Content="{x:Static Controls:ControlsStrings.Controls_RangeFromAxis}" />
                     <Slider Minimum="0" Maximum="100" Value="{Binding RangeFrom}" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
                     <mui:ValueLabel Value="{Binding RangeTo}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static Controls:Resources.Controls_RangeToAxis}" />
+                            DockPanel.Dock="Left" Content="{x:Static Controls:ControlsStrings.Controls_RangeToAxis}" />
                     <Slider Minimum="0" Maximum="100" Value="{Binding RangeTo}" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
                     <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static Controls:Resources.Controls_GammaAxis}" />
+                            DockPanel.Dock="Left" Content="{x:Static Controls:ControlsStrings.Controls_GammaAxis}" />
                     <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
                         Margin="0 0 0 4">
                     <mui:ValueLabel Value="{Binding Filter}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120" DockPanel.Dock="Left"
-                            Content="{x:Static Controls:Resources.Controls_FilterAxis}" />
+                            Content="{x:Static Controls:ControlsStrings.Controls_FilterAxis}" />
                     <Slider Minimum="0" Maximum="100" Value="{Binding Filter}" />
                 </DockPanel>
 
                 <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
                         Margin="0 0 0 4">
                     <mui:ValueLabel Value="{Binding SpeedSensitivity}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static Controls:Resources.Controls_SpeedSensitivity}" />
+                            DockPanel.Dock="Left" Content="{x:Static Controls:ControlsStrings.Controls_SpeedSensitivity}" />
                     <Slider Minimum="0" Maximum="100" Value="{Binding SpeedSensitivity}" />
                 </DockPanel>
             </StackPanel>
@@ -132,8 +132,8 @@
         <Grid Margin="0 0 0 4" Background="Transparent">
             <Grid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{x:Static Controls:Resources.Controls_ClearWheelBinding}" Command="{Binding WheelButton.ClearCommand}" />
-                    <MenuItem Header="{x:Static Controls:Resources.Controls_ClearKeyboardBinding}" Command="{Binding KeyboardButton.ClearCommand}" />
+                    <MenuItem Header="{x:Static Controls:ControlsStrings.Controls_ClearWheelBinding}" Command="{Binding WheelButton.ClearCommand}" />
+                    <MenuItem Header="{x:Static Controls:ControlsStrings.Controls_ClearKeyboardBinding}" Command="{Binding KeyboardButton.ClearCommand}" />
                 </ContextMenu>
             </Grid.ContextMenu>
 
@@ -145,12 +145,12 @@
 
             <TextBlock Text="{Binding WheelButton.DisplayName, StringFormat='{}{0}:'}" Style="{StaticResource Label}" Grid.Column="0" Margin="20 0 0 0" />
 
-            <Button Grid.Column="1" ToolTip="{x:Static Controls:Resources.Controls_SteeringWheelButton}" DataContext="{Binding WheelButton}"
+            <Button Grid.Column="1" ToolTip="{x:Static Controls:ControlsStrings.Controls_SteeringWheelButton}" DataContext="{Binding WheelButton}"
                     Command="{Binding ToggleWaitingCommand, Source={x:Static helpers:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
                     Style="{StaticResource WaitingButton}">
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{x:Static Controls:Resources.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+                        <MenuItem Header="{x:Static Controls:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
                     </ContextMenu>
                 </Button.ContextMenu>
 
@@ -160,25 +160,25 @@
                                 TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0"
                                 TextTrimming="CharacterEllipsis" />
-                        <TextBlock Text="{x:Static Controls:Resources.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
+                        <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
                                 HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Normal"
                                 Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                     </Grid>
-                    <TextBlock Text="{x:Static Controls:Resources.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                             VerticalAlignment="Center" FontWeight="Normal"
                             Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                 </Grid>
             </Button>
 
-            <Button Grid.Column="2" ToolTip="{x:Static Controls:Resources.Controls_KeyboardButton}" Margin="4 0 0 0"
+            <Button Grid.Column="2" ToolTip="{x:Static Controls:ControlsStrings.Controls_KeyboardButton}" Margin="4 0 0 0"
                     IsEnabled="{Binding CombineWithKeyboardInput, Source={x:Static helpers:AcSettingsHolder.Controls}}" DataContext="{Binding KeyboardButton}"
                     Command="{Binding ToggleWaitingCommand, Source={x:Static helpers:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
                     Style="{StaticResource WaitingButton}">
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="{x:Static Controls:Resources.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+                        <MenuItem Header="{x:Static Controls:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
                     </ContextMenu>
                 </Button.ContextMenu>
 
@@ -186,13 +186,13 @@
                     <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                         <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
                                 TextTrimming="CharacterEllipsis" />
-                        <TextBlock Text="{x:Static Controls:Resources.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
+                        <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
                                 HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Normal"
                                 Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                     </Grid>
-                    <TextBlock Text="{x:Static Controls:Resources.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                             VerticalAlignment="Center" FontWeight="Normal"
                             Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                 </Grid>
@@ -204,7 +204,7 @@
         <DockPanel Margin="2" Background="Transparent">
             <DockPanel.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{x:Static Controls:Resources.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+                    <MenuItem Header="{x:Static Controls:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
                 </ContextMenu>
             </DockPanel.ContextMenu>
 
@@ -216,13 +216,13 @@
                     <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                         <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                                 TextTrimming="CharacterEllipsis" />
-                        <TextBlock Text="{x:Static Controls:Resources.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
+                        <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
                                 HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Normal"
                                 Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                     </Grid>
-                    <TextBlock Text="{x:Static Controls:Resources.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                             VerticalAlignment="Center" FontWeight="Normal"
                             Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                 </Grid>
@@ -234,7 +234,7 @@
         <DockPanel Margin="2" Background="Transparent">
             <DockPanel.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="{x:Static Controls:Resources.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+                    <MenuItem Header="{x:Static Controls:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
                 </ContextMenu>
             </DockPanel.ContextMenu>
 
@@ -246,13 +246,13 @@
                     <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                         <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                                 TextTrimming="CharacterEllipsis" />
-                        <TextBlock Text="{x:Static Controls:Resources.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
+                        <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
                                 HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Normal"
                                 Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
                     </Grid>
-                    <TextBlock Text="{x:Static Controls:Resources.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                             VerticalAlignment="Center" FontWeight="Normal"
                             Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                 </Grid>

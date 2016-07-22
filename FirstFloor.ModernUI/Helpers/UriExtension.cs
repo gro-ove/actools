@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
+    [Localizable(false)]
     public static class UriExtension {
         [Pure]
         [NotNull]
@@ -57,7 +59,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [Pure]
         [CanBeNull]
-        public static string GetQueryParam(this Uri uri, string key) {
+        public static string GetQueryParam(this Uri uri, [Localizable(false)] string key) {
             key = key + "=";
             return (from s in uri.ToString().Split('?', '&')
                     where s.StartsWith(key)

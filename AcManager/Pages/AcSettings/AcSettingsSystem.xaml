@@ -55,7 +55,7 @@
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Skidmarks.Height}" Postfix="{x:Static c:Resources.Common_MetersPostfix}" Mode="Number" Content="Height from the ground" />
+                <mui:ValueLabel Value="{Binding Skidmarks.Height}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" Mode="Number" Content="Height from the ground" />
                 <Slider Minimum="0" Maximum="0.04" Value="{Binding Skidmarks.Height}" TickFrequency="0.004" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -68,7 +68,7 @@
             </DockPanel>
             
             <DockPanel>
-                <mui:ValueLabel Value="{Binding System.MirrorsFarPlane}" Postfix="{x:Static c:Resources.Common_MetersPostfix}" ToolTip="Default value: 400 m" Content="Rendering distance" />
+                <mui:ValueLabel Value="{Binding System.MirrorsFarPlane}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" ToolTip="Default value: 400 m" Content="Rendering distance" />
                 <Slider Minimum="100" Maximum="1100" Value="{Binding System.MirrorsFarPlane}" TickFrequency="100" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -86,12 +86,12 @@
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Ghost.MinDistance}" Postfix="{x:Static c:Resources.Common_MetersPostfix}" ToolTip="Default value: 10 m" Content="Start showing at" />
+                <mui:ValueLabel Value="{Binding Ghost.MinDistance}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" ToolTip="Default value: 10 m" Content="Start showing at" />
                 <Slider Minimum="0" Maximum="120" Value="{Binding Ghost.MinDistance}" TickFrequency="12" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Ghost.MaxDistance}" Postfix="{x:Static c:Resources.Common_MetersPostfix}" ToolTip="Default value: 50 m" Content="Max opacity at" />
+                <mui:ValueLabel Value="{Binding Ghost.MaxDistance}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" ToolTip="Default value: 50 m" Content="Max opacity at" />
                 <Slider Minimum="0" Maximum="120" Value="{Binding Ghost.MaxDistance}" TickFrequency="12" TickPlacement="BottomRight" />
             </DockPanel>
 

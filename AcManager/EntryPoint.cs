@@ -149,10 +149,10 @@ namespace AcManager {
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
             var e = args.ExceptionObject as Exception;
 
-            var text = string.Format(Resources.Main_UnhandledException, (e?.ToString() ?? @"?"));
+            var text = string.Format(AppStrings.Main_UnhandledException, (e?.ToString() ?? @"?"));
             try {
                 // ErrorMessage.ShowWithoutLogging("Unhandled exception", "Please, send MainLog.txt to developer.", e);
-                MessageBox.Show(text, Controls.Resources.Common_Oops, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(text, Controls.ControlsStrings.Common_Oops, MessageBoxButtons.OK, MessageBoxIcon.Error);
             } catch (Exception) {
                 // ignored
             }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -30,7 +30,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             if (client.ResponseHeaders?.Get("Content-Type").Contains("text/html", StringComparison.OrdinalIgnoreCase) == false) return true;
             var match = Regex.Match(downloadPage, @"href=""(/uc\?export=download[^""]+)", RegexOptions.IgnoreCase);
             if (!match.Success) {
-                NonfatalError.Notify(Resources.Common_CannotDownloadFile, Resources.DirectLoader_GoogleDriveChanged);
+                NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
                 return false;
             }
 

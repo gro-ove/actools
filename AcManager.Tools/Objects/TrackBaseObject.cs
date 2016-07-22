@@ -159,7 +159,7 @@ namespace AcManager.Tools.Objects {
                 foreach (var val in new[] {
                     SpecsLength, 
                     SpecsWidth, 
-                    string.IsNullOrWhiteSpace(SpecsPitboxes) ? "" : PluralizingConverter.PluralizeExt(pitboxes, Resources.TrackBaseObject_Specs_PitsNumber)
+                    string.IsNullOrWhiteSpace(SpecsPitboxes) ? "" : PluralizingConverter.PluralizeExt(pitboxes, ToolsStrings.TrackBaseObject_Specs_PitsNumber)
                 }.Where(val => !string.IsNullOrWhiteSpace(val))) {
                     if (result.Length > 0) {
                         result.Append(@", ");

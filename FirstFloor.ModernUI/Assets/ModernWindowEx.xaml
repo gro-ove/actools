@@ -54,7 +54,7 @@
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top"
                                                 WindowChrome.IsHitTestVisibleInChrome="True">
                                             <Button Command="{Binding Source={x:Static SystemCommands.MinimizeWindowCommand}}"
-                                                    ToolTip="{x:Static modernui:Resources.Minimize}" Style="{StaticResource SystemButton}">
+                                                    ToolTip="{x:Static modernui:UiStrings.Minimize}" Style="{StaticResource SystemButton}">
                                                 <Button.Content>
                                                     <Grid Width="13" Height="12" RenderTransform="1,0,0,1,0,1">
                                                         <Path Data="M0,6 L8,6 Z" Width="8" Height="7" VerticalAlignment="Center" HorizontalAlignment="Center"
@@ -65,7 +65,7 @@
                                             </Button>
                                             <Grid Margin="1 0 1 0">
                                                 <Button x:Name="Restore" Command="{Binding Source={x:Static SystemCommands.RestoreWindowCommand}}"
-                                                        ToolTip="{x:Static modernui:Resources.Restore}" Style="{StaticResource SystemButton}"
+                                                        ToolTip="{x:Static modernui:UiStrings.Restore}" Style="{StaticResource SystemButton}"
                                                         Visibility="Hidden">
                                                     <Button.Content>
                                                         <Grid Width="13" Height="12" UseLayoutRounding="True" RenderTransform="1,0,0,1,.5,.5">
@@ -77,7 +77,7 @@
                                                     </Button.Content>
                                                 </Button>
                                                 <Button x:Name="Maximize" Command="{Binding Source={x:Static SystemCommands.MaximizeWindowCommand}}"
-                                                        ToolTip="{x:Static modernui:Resources.Maximize}" Style="{StaticResource SystemButton}">
+                                                        ToolTip="{x:Static modernui:UiStrings.Maximize}" Style="{StaticResource SystemButton}">
                                                     <Button.Content>
                                                         <Grid Width="13" Height="12">
                                                             <Path Data="M0,1 L9,1 L9,8 L0,8 Z" Width="9" Height="8" VerticalAlignment="Center"
@@ -89,7 +89,7 @@
                                                 </Button>
                                             </Grid>
                                             <Button Command="{Binding Source={x:Static SystemCommands.CloseWindowCommand}}"
-                                                    ToolTip="{x:Static modernui:Resources.Close}" Style="{StaticResource SystemCloseButton}">
+                                                    ToolTip="{x:Static modernui:UiStrings.Close}" Style="{StaticResource SystemCloseButton}">
                                                 <Button.Content>
                                                     <Grid Width="13" Height="12" RenderTransform="1,0,0,1,0,1">
                                                         <Path Data="M0,0 L8,7 M8,0 L0,7 Z" Width="8" Height="7" VerticalAlignment="Center"

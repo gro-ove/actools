@@ -66,9 +66,9 @@ namespace AcManager.Pages.Settings {
             }
 
             public BitmapScalingEntry[] BitmapScalings { get; } = {
-                new BitmapScalingEntry { DisplayName = Tools.Resources.AcSettings_Quality_Low, Value = BitmapScalingMode.NearestNeighbor },
-                new BitmapScalingEntry { DisplayName = Tools.Resources.AcSettings_Quality_Normal, Value = BitmapScalingMode.LowQuality },
-                new BitmapScalingEntry { DisplayName = Tools.Resources.AcSettings_Quality_High, Value = BitmapScalingMode.HighQuality }
+                new BitmapScalingEntry { DisplayName = Tools.ToolsStrings.AcSettings_Quality_Low, Value = BitmapScalingMode.NearestNeighbor },
+                new BitmapScalingEntry { DisplayName = Tools.ToolsStrings.AcSettings_Quality_Normal, Value = BitmapScalingMode.LowQuality },
+                new BitmapScalingEntry { DisplayName = Tools.ToolsStrings.AcSettings_Quality_High, Value = BitmapScalingMode.HighQuality }
             };
 
             private Displayable _textFormatting;
@@ -84,8 +84,8 @@ namespace AcManager.Pages.Settings {
             }
 
             public Displayable[] TextFormattings { get; } = {
-                new Displayable { DisplayName = Tools.Resources.AcSettings_Quality_Subpixel },
-                new Displayable { DisplayName = Tools.Resources.AcSettings_Quality_Ideal },
+                new Displayable { DisplayName = Tools.ToolsStrings.AcSettings_Quality_Subpixel },
+                new Displayable { DisplayName = Tools.ToolsStrings.AcSettings_Quality_Ideal },
             };
         }
     }

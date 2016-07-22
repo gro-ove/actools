@@ -68,7 +68,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             } catch (TaskCanceledException) {
                 return null;
             } catch (Exception e) {
-                NonfatalError.Notify(Resources.Common_CannotDownloadFile, Resources.Common_CannotDownloadFile_Commentary, e);
+                NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.Common_CannotDownloadFile_Commentary, e);
                 return null;
             }
         }

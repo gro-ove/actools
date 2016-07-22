@@ -1,24 +1,31 @@
 ﻿<selected:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedReplayPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
+        xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:he="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
         xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager"
+        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedReplayPage+ViewModel}">
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="View in Explorer" ToolTip="View replay file in explorer (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
-                <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_ReplayTooltip}"
+                        Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
+                        Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
-                <Button Content="Upload &amp; Share" Command="{Binding ShareCommand}" ToolTip="Share replay using Google Drive (Ctrl+Page Up)" />
-                <Button Content="Play" Command="{Binding PlayCommand}" ToolTip="Run replay (Ctrl+G)" Style="{StaticResource Go.ToolBarButton}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_UploadAndShare}" Command="{Binding ShareCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_UploadAndShare_ReplayTooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Play}" Command="{Binding PlayCommand}" ToolTip="{x:Static g:AppStrings.Toolbar_Play_Tooltip}"
+                        Style="{StaticResource Go.ToolBarButton}" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
-                <Button Content="Rename" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Rename file according to the new name (Ctrl+S)" />
-                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove replay to Recycle Bin (Ctrl+Delete)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Rename}" Command="{Binding SelectedObject.SaveCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Rename_ReplayTooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Delete_ReplayTooltip}" />
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
@@ -34,7 +41,7 @@
                         Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}">
                     <Grid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Car" Command="{Binding FilterCommand}" CommandParameter="car" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByCar}" Command="{Binding FilterCommand}" CommandParameter="car" />
                         </ContextMenu>
                     </Grid.ContextMenu>
                     <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" MaxWidth="355" Stretch="UniformToFill" />
@@ -47,7 +54,7 @@
                         Margin="10 0 0 0">
                     <Grid.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Track" Command="{Binding FilterCommand}" CommandParameter="track" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByTrack}" Command="{Binding FilterCommand}" CommandParameter="track" />
                         </ContextMenu>
                     </Grid.ContextMenu>
                     <mui:BetterImage StretchDirection="DownOnly" Filename="{Binding Track.PreviewImage}" MaxWidth="355" />
@@ -68,38 +75,38 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Date:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                <TextBlock Text="Size:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="{x:Static g:AppStrings.AcObject_DateLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="{x:Static g:AppStrings.AcObject_SizeLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
                 <TextBlock Text="{Binding SelectedObject.CreationTime}" Grid.Column="1" Grid.Row="0">
                     <TextBlock.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Age" Command="{Binding FilterCommand}" CommandParameter="age" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByAge}" Command="{Binding FilterCommand}" CommandParameter="age" />
                         </ContextMenu>
                     </TextBlock.ContextMenu>
                 </TextBlock>
                 <TextBlock Text="{Binding SelectedObject.Size, Converter={StaticResource FileSizeConverter}}" Grid.Column="1" Grid.Row="1">
                     <TextBlock.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Size" Command="{Binding FilterCommand}" CommandParameter="size" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_BySize}" Command="{Binding FilterCommand}" CommandParameter="size" />
                         </ContextMenu>
                     </TextBlock.ContextMenu>
                 </TextBlock>
 
-                <TextBlock Text="Driver Name:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
-                <TextBlock Text="Weather:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="{x:Static g:AppStrings.AcObject_DriverNameLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
+                <TextBlock Text="{x:Static g:AppStrings.AcObject_WeatherLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
                 <TextBlock Text="{Binding SelectedObject.DriverName}" Grid.Column="3" Grid.Row="0" attached:WatermarkService.Watermark="?">
                     <TextBlock.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Driver Name" Command="{Binding FilterCommand}" CommandParameter="driver" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding FilterCommand}" CommandParameter="driver" />
                         </ContextMenu>
                     </TextBlock.ContextMenu>
                 </TextBlock>
                 <TextBlock Text="{Binding Weather.DisplayName}" Grid.Column="3" Grid.Row="1" attached:WatermarkService.Watermark="?">
                     <TextBlock.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Weather" Command="{Binding FilterCommand}" CommandParameter="weather" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByWeather}" Command="{Binding FilterCommand}" CommandParameter="weather" />
                         </ContextMenu>
                     </TextBlock.ContextMenu>
                 </TextBlock>
@@ -109,10 +116,10 @@
                     Visibility="{Binding SelectedObject.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static objects:ReplayObject.PreviousReplayName}}">
                 <Rectangle Stroke="{DynamicResource Error}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                 <StackPanel Margin="8">
-                    <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}" Text="Warning" />
-                    <TextBlock TextWrapping="Wrap" Text="Replay will be overwritten after the next race. Rename it to keep it." />
-                    <TextBlock Margin="0 4 0 0" FontStyle="Italic" TextWrapping="Wrap"
-                            Visibility="{Binding AutoSaveReplays, Source={x:Static helpers:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" Text="You can go to Settings and enable “Save replays automatically” option to avoid losing something valuable." />
+                    <TextBlock Style="{StaticResource Label}" Foreground="{DynamicResource Error}" Text="{x:Static t:ToolsStrings.Common_Warning}" />
+                    <TextBlock TextWrapping="Wrap" Text="{x:Static ac:ControlsStrings.Replay_CrMessage}" />
+                    <TextBlock Margin="0 4 0 0" FontStyle="Italic" TextWrapping="Wrap" Text="{x:Static ac:ControlsStrings.Replay_CrMessage_Commentary}"
+                            Visibility="{Binding AutoSaveReplays, Source={x:Static he:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 </StackPanel>
             </Grid>
         </StackPanel>

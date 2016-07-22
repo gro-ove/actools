@@ -1,8 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsQuickSwitches" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance settings:SettingsQuickSwitches+SettingsQuickSwitchesViewModel}" mui:ModernFrame.KeepAlive="False">
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:AcManager="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsQuickSwitches+SettingsQuickSwitchesViewModel}"
+        mui:ModernFrame.KeepAlive="False">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -43,12 +44,9 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding Drive.QuickSwitches}">
-                <Label Content="Enable Quick Switches" />
+                <Label Content="{x:Static AcManager:AppStrings.Settings_QuickSwitches_Enable}" />
             </CheckBox>
-
-            <mui:BbCodeBlock Margin="0 0 0 20" TextWrapping="Wrap">
-                Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press the right mouse button.[br][br]If you want some new option, write it [url="https://trello.com/c/ad89Y9rL/71-quick-switches"]here[/url] or [url="https://trello.com/c/w5xT6ssZ/49-contacts"]using any other way[/url].
-            </mui:BbCodeBlock>
+            <mui:BbCodeBlock Margin="0 0 0 20" TextWrapping="Wrap" BbCode="{x:Static AcManager:AppStrings.Settings_QuickSwitches_Description}" />
 
             <Grid>
                 <Grid.RowDefinitions>
@@ -61,8 +59,10 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource Label}" Margin="0 0 0 4" Text="Added:" />
-                <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource Label}" Margin="0 0 0 4" Text="Library:" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource Label}" Margin="0 0 0 4"
+                        Text="{x:Static AcManager:AppStrings.Settings_QuickSwitches_AddedLabel}" />
+                <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource Label}" Margin="0 0 0 4"
+                        Text="{x:Static AcManager:AppStrings.Settings_QuickSwitches_LibraryLabel}" />
 
                 <ListBox Name="AddedItems" Grid.Row="1" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         ItemContainerStyle="{StaticResource ListBoxItem}" Background="Transparent" AllowDrop="True" DragEnter="List_OnDragEnter"

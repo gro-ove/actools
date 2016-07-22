@@ -51,7 +51,7 @@ namespace AcManager.Tools.Managers.Online {
 
         protected ServerEntry CreateAndAddEntry(ServerInformation information, bool withPastLoad = true) {
             var entry = new ServerEntry(this, information);
-            if (GetById(entry.Id) != null) throw new Exception(Resources.OnlineManage_IdIsTaken);
+            if (GetById(entry.Id) != null) throw new Exception(ToolsStrings.OnlineManage_IdIsTaken);
 
             entry.Load();
             if (withPastLoad) {

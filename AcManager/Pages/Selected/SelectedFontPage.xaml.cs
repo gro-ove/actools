@@ -12,7 +12,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls.Dialogs;
-using AcManager.Pages.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -39,21 +39,21 @@ namespace AcManager.Pages.Selected {
                 }
 
                 if (missing?.Any() == true) {
-                    ModernDialog.ShowMessage(missing.JoinToString(", "), "Missing Fonts", MessageBoxButton.OK);
+                    ModernDialog.ShowMessage(missing.JoinToString(@", "), AppStrings.Font_MissingFonts, MessageBoxButton.OK);
                 }
             }));
 
             private AsyncCommand _disableUnusedCommand;
 
             public AsyncCommand DisableUnusedCommand => _disableUnusedCommand ?? (_disableUnusedCommand = new AsyncCommand(async o => {
-                using (var waiting = new WaitingDialog("Scanning…")) {
+                using (var waiting = new WaitingDialog(ToolsStrings.Common_Scanning)) {
                     await FontsManager.Instance.UsingsRescan(waiting, waiting.CancellationToken);
                     if (waiting.CancellationToken.IsCancellationRequested) return;
 
                     waiting.Title = null;
                     var toDisable = FontsManager.Instance.LoadedOnly.Where(x => x.Enabled && x.UsingsCarsIds.Length == 0).ToList();
                     foreach (var font in toDisable) {
-                        waiting.Report($@"Disabling {font.DisplayName}…");
+                        waiting.Report(string.Format(AppStrings.Common_DisablingFormat, font.DisplayName));
                         font.ToggleCommand.Execute(null);
                         await Task.Delay(500, waiting.CancellationToken);
                         if (waiting.CancellationToken.IsCancellationRequested) break;
@@ -67,7 +67,7 @@ namespace AcManager.Pages.Selected {
                 Process.Start(FontCreationTool);
             }, o => File.Exists(FontCreationTool)));
 
-            public string FontCreationTool => Path.Combine(AcRootDirectory.Instance.Value, "sdk", "dev", "ksFontGenerator", "ksFontGenerator.exe");
+            public string FontCreationTool => Path.Combine(AcRootDirectory.Instance.RequireValue, @"sdk", @"dev", @"ksFontGenerator", @"ksFontGenerator.exe");
         }
 
         private string _id;
@@ -75,7 +75,7 @@ namespace AcManager.Pages.Selected {
         void IParametrizedUriContent.OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
             if (_id == null) {
-                throw new Exception("ID is missing");
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
         }
 
@@ -90,7 +90,7 @@ namespace AcManager.Pages.Selected {
         }
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
             InitializeAcObjectPage(new ViewModel(_object));
             InputBindings.AddRange(new[] {
@@ -101,7 +101,7 @@ namespace AcManager.Pages.Selected {
             InitializeComponent();
         }
 
-        private string KeyTestText = "SelectedFontPage.TestText";
+        private const string KeyTestText = "SelectedFontPage.TestText";
 
         private ViewModel Model => (ViewModel)DataContext;
 
@@ -111,7 +111,7 @@ namespace AcManager.Pages.Selected {
         }
 
         private void SelectedFontPage_OnLoaded(object sender, RoutedEventArgs e) {
-            TextBox.Text = ValuesStorage.GetString(KeyTestText, "0123456789 Test");
+            TextBox.Text = ValuesStorage.GetString(KeyTestText, @"0123456789 Test");
         }
 
         private void RedrawTestText() {
@@ -137,7 +137,7 @@ namespace AcManager.Pages.Selected {
         private class InnerUsingsConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 var array = value as IReadOnlyList<string>;
-                return array?.Select(x => CarsManager.Instance.GetById(x)?.DisplayName ?? x).JoinToString(", ");
+                return array?.Select(x => CarsManager.Instance.GetById(x)?.DisplayName ?? x).JoinToString(@", ");
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

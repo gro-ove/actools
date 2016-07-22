@@ -31,7 +31,7 @@ namespace AcManager.Controls.Dialogs {
                 Logging.Write("[VLC] Player.BeginStop()");
                 Player.BeginStop(Stopped);
             } catch (Exception ex) {
-                NonfatalError.Notify(Controls.Resources.VideoViewer_CannotPlay, Controls.Resources.VideoViewer_CannotPlay_Commentary, ex);
+                NonfatalError.Notify(Controls.ControlsStrings.VideoViewer_CannotPlay, Controls.ControlsStrings.VideoViewer_CannotPlay_Commentary, ex);
                 Close();
             }
         }
@@ -44,7 +44,7 @@ namespace AcManager.Controls.Dialogs {
                 Player.Play();
                 Player.StateChanged += Player_StateChanged;
             } catch (Exception e) {
-                NonfatalError.Notify(Controls.Resources.VideoViewer_CannotPlay, Controls.Resources.VideoViewer_CannotPlay_Commentary, e);
+                NonfatalError.Notify(Controls.ControlsStrings.VideoViewer_CannotPlay, Controls.ControlsStrings.VideoViewer_CannotPlay_Commentary, e);
                 Close();
             }
         }

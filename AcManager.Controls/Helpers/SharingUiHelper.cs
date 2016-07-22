@@ -50,7 +50,7 @@ namespace AcManager.Controls.Helpers {
             try {
                 var contentName = defaultName;
                 if (!SettingsHolder.Sharing.ShareWithoutName) {
-                    contentName = Prompt.Show(Resources.Share_EnterName, Resources.Share_EnterNameHeader, defaultName, Tools.Resources.Common_None, maxLength: 60);
+                    contentName = Prompt.Show(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, defaultName, Tools.ToolsStrings.Common_None, maxLength: 60);
                     if (contentName == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(contentName)) {
                         contentName = null;
@@ -59,7 +59,7 @@ namespace AcManager.Controls.Helpers {
 
                 string id = null;
                 if (SettingsHolder.Sharing.CustomIds) {
-                    id = Prompt.Show(Resources.Share_EnterCustomId, Resources.Share_EnterCustomIdHeader, "", Tools.Resources.Common_None, maxLength: 200)?.Trim();
+                    id = Prompt.Show(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "", Tools.ToolsStrings.Common_None, maxLength: 200)?.Trim();
                     if (id == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(id)) {
                         id = null;
@@ -68,14 +68,14 @@ namespace AcManager.Controls.Helpers {
 
                 var authorName = SettingsHolder.Sharing.ShareAnonymously ? null : SettingsHolder.Sharing.SharingName;
                 if (SettingsHolder.Sharing.VerifyBeforeSharing && ModernDialog.ShowMessage(
-                        string.Format(Resources.Share_VerifyMessage, authorName ?? @"?", contentName ?? @"?",
-                                type.GetDescription()), Resources.Share_VerifyMessageHeader, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                        string.Format(ControlsStrings.Share_VerifyMessage, authorName ?? @"?", contentName ?? @"?",
+                                type.GetDescription()), ControlsStrings.Share_VerifyMessageHeader, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                     return;
                 }
 
                 string link;
                 using (var waiting = new WaitingDialog()) {
-                    waiting.Report(Resources.Share_InProgress);
+                    waiting.Report(ControlsStrings.Share_InProgress);
 
                     link = await SharingHelper.ShareAsync(type, contentName, target, data, id, waiting.CancellationToken);
                     if (link == null) return;
@@ -94,7 +94,7 @@ namespace AcManager.Controls.Helpers {
                 }
 #endif
             } catch (Exception e) {
-                NonfatalError.Notify(string.Format(Resources.Share_CannotShare, type.GetDescription()), Resources.Share_CannotShare_Commentary, e);
+                NonfatalError.Notify(string.Format(ControlsStrings.Share_CannotShare, type.GetDescription()), ControlsStrings.Share_CannotShare_Commentary, e);
             } finally {
                 _sharingInProcess = false;
             }
@@ -105,8 +105,8 @@ namespace AcManager.Controls.Helpers {
                 Clipboard.SetText(link);
             }
 
-            Toast.Show(string.Format(Resources.Share_Shared, type.GetDescription().ToTitle()),
-                    SettingsHolder.Sharing.CopyLinkToClipboard ? Resources.Share_SharedMessage : Resources.Share_SharedMessageAlternative, () => {
+            Toast.Show(string.Format(ControlsStrings.Share_Shared, type.GetDescription().ToTitle()),
+                    SettingsHolder.Sharing.CopyLinkToClipboard ? ControlsStrings.Share_SharedMessage : ControlsStrings.Share_SharedMessageAlternative, () => {
                         Process.Start(link + "#noauto");
                     });
         }

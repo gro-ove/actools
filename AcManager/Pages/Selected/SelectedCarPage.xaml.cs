@@ -9,11 +9,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Annotations;
+using AcManager.Controls;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -39,10 +41,10 @@ namespace AcManager.Pages.Selected {
 
             private void Handler(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
                 if (propertyChangedEventArgs.PropertyName == nameof(CarObject.Brand) && SettingsHolder.Content.ChangeBrandIconAutomatically) {
-                    var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, SelectedObject.Brand + ".png");
+                    var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, SelectedObject.Brand + @".png");
                     if (entry.Exists) {
                         try {
-                            FileUtils.RecycleSilent(SelectedObject.BrandBadge);
+                            FileUtils.Recycle(SelectedObject.BrandBadge);
                             File.Copy(entry.Filename, SelectedObject.BrandBadge);
                         } catch (Exception e) {
                             Logging.Warning("Can’t change brand badge: " + e);
@@ -74,11 +76,11 @@ namespace AcManager.Pages.Selected {
             protected override void FilterExec(string type) {
                 switch (type) {
                     case "class":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.CarClass) ? "class-" : $"class:{Filter.Encode(SelectedObject.CarClass)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.CarClass) ? @"class-" : $"class:{Filter.Encode(SelectedObject.CarClass)}");
                         break;
 
                     case "brand":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.Brand) ? "brand-" : $"brand:{Filter.Encode(SelectedObject.Brand)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.Brand) ? @"brand-" : $"brand:{Filter.Encode(SelectedObject.Brand)}");
                         break;
 
                     case "power":
@@ -264,7 +266,7 @@ namespace AcManager.Pages.Selected {
                     Acd.FromFile(source).ExportDirectory(destination);
                     WindowsHelper.ViewDirectory(destination);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t read data", "Make sure file exists and there is enough space.", e);
+                    NonfatalError.Notify(ToolsStrings.Common_CannotReadData, e);
                 }
             }, o => SettingsHolder.Common.MsMode && SelectedObject.AcdData.IsPacked));
 
@@ -276,21 +278,20 @@ namespace AcManager.Pages.Selected {
                     var exists = File.Exists(destination);
 
                     if (SelectedObject.Author == AcCommonObject.AuthorKunos && ModernDialog.ShowMessage(
-                            "You’re going to repack original Kunos data. Result most likely will differ, so you won’t be able to play online. Are you sure you want to continue?[br][br]Original “data.acd” will be moved to the Recycle Bin.",
-                            "Warning!", MessageBoxButton.YesNo) != MessageBoxResult.Yes ||
+                            AppStrings.Car_PackKunosDataMessage, ToolsStrings.Common_Warning, MessageBoxButton.YesNo) != MessageBoxResult.Yes ||
                             SelectedObject.Author != AcCommonObject.AuthorKunos && exists && ModernDialog.ShowMessage(
-                                    "Packed data already exists. Replace it?[br][br]Original “data.acd” will be moved to the Recycle Bin.",
-                                    "Warning!", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                                    AppStrings.Car_PackExistingDataMessage, ToolsStrings.Common_Warning, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                         return;
                     }
 
                     if (exists) {
                         FileUtils.Recycle(destination);
                     }
+
                     Acd.FromDirectory(DataDirectory).Save(destination);
                     WindowsHelper.ViewFile(destination);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t pack data", "Make sure there is enough space.", e);
+                    NonfatalError.Notify(AppStrings.Car_CannotPackData, ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
                 }
             }, o => SettingsHolder.Common.DeveloperMode && Directory.Exists(DataDirectory)));
 
@@ -302,16 +303,16 @@ namespace AcManager.Pages.Selected {
 
                 try {
                     using (new WaitingDialog()) {
-                        var guids = Path.Combine(donor.Location, "sfx", "GUIDs.txt");
-                        var soundbank = Path.Combine(donor.Location, "sfx", donor.Id + ".bank");
+                        var guids = Path.Combine(donor.Location, @"sfx", @"GUIDs.txt");
+                        var soundbank = Path.Combine(donor.Location, @"sfx", $"{donor.Id}.bank");
 
-                        var newGuilds = Path.Combine(SelectedObject.Location, "sfx", "GUIDs.txt");
-                        var newSoundbank = Path.Combine(SelectedObject.Location, "sfx", SelectedObject.Id + ".bank");
+                        var newGuilds = Path.Combine(SelectedObject.Location, @"sfx", @"GUIDs.txt");
+                        var newSoundbank = Path.Combine(SelectedObject.Location, @"sfx", $"{SelectedObject.Id}.bank");
 
                         await Task.Run(() => {
                             var destinations = new[] { newGuilds, newSoundbank }.Where(File.Exists).Select(x => new {
                                 Original = x,
-                                Backup = FileUtils.EnsureUnique(x + ".bak")
+                                Backup = FileUtils.EnsureUnique($"{x}.bak")
                             }).ToList();
 
                             foreach (var oldFile in destinations) {
@@ -325,12 +326,12 @@ namespace AcManager.Pages.Selected {
                                 } else if (File.Exists(soundbank) && donor.Author == AcCommonObject.AuthorKunos) {
                                     File.Copy(soundbank, newSoundbank);
                                     File.WriteAllText(newGuilds, File.ReadAllLines(FileUtils.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
-                                                                     .Where(x => !x.Contains("} bank:/") || x.Contains("} bank:/common") ||
-                                                                             x.EndsWith("} bank:/" + donor.Id))
-                                                                     .Where(x => !x.Contains("} event:/") || x.Contains("} event:/cars/" + donor.Id + "/"))
-                                                                     .JoinToString("\r\n").Replace(donor.Id, SelectedObject.Id));
+                                                                     .Where(x => !x.Contains(@"} bank:/") || x.Contains(@"} bank:/common") ||
+                                                                             x.EndsWith(@"} bank:/" + donor.Id))
+                                                                     .Where(x => !x.Contains(@"} event:/") || x.Contains(@"} event:/cars/" + donor.Id + @"/"))
+                                                                     .JoinToString(Environment.NewLine).Replace(donor.Id, SelectedObject.Id));
                                 } else {
-                                    throw new Exception("Selected car doesn’t have proper sound");
+                                    throw new InformativeException(AppStrings.Car_ReplaceSound_WrongCar, AppStrings.Car_ReplaceSound_WrongCar_Commentary);
                                 }
                             } catch (Exception) {
                                 foreach (var oldFile in destinations) {
@@ -346,7 +347,7 @@ namespace AcManager.Pages.Selected {
                         });
                     }
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t replace car’s sound", "Make sure there is enough space and original files could be removed.", e);
+                    NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, AppStrings.Car_ReplaceSound_CannotReplace_Commentary, e);
                 }
             }, o => SettingsHolder.Common.MsMode));
         }
@@ -356,7 +357,7 @@ namespace AcManager.Pages.Selected {
         void IParametrizedUriContent.OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
             if (_id == null) {
-                throw new Exception("ID is missing");
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
         }
 
@@ -376,7 +377,7 @@ namespace AcManager.Pages.Selected {
         private ViewModel _model;
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
@@ -401,11 +402,11 @@ namespace AcManager.Pages.Selected {
             InitializeComponent();
 
             if (SettingsHolder.CustomShowroom.LiteByDefault) {
-                LiteCustomShowroomMenuItem.InputGestureText = "Alt+H";
-                FancyCustomShowroomMenuItem.InputGestureText = "Ctrl+Alt+H";
+                LiteCustomShowroomMenuItem.InputGestureText = @"Alt+H";
+                FancyCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
             } else {
-                LiteCustomShowroomMenuItem.InputGestureText = "Ctrl+Alt+H";
-                FancyCustomShowroomMenuItem.InputGestureText = "Alt+H";
+                LiteCustomShowroomMenuItem.InputGestureText = @"Ctrl+Alt+H";
+                FancyCustomShowroomMenuItem.InputGestureText = @"Alt+H";
             }
         }
 
@@ -437,51 +438,51 @@ namespace AcManager.Pages.Selected {
             var contextMenu = new ContextMenu {
                 Items = {
                     new MenuItem {
-                        Header = $"Skin: {skin.DisplayName?.Replace("_", "__") ?? "?"}",
+                        Header = string.Format(AppStrings.Car_SkinFormat, skin.DisplayName?.Replace(@"_", @"__") ?? @"?"),
                         StaysOpenOnClick = true
                     }
                 }
             };
 
-            var item = new MenuItem { Header = "Open In Showroom", InputGestureText = "Ctrl+H" };
+            var item = new MenuItem { Header = ControlsStrings.Car_OpenInShowroom, InputGestureText = @"Ctrl+H" };
             item.Click += (sender, args) => CarOpenInShowroomDialog.Run(_model.SelectedObject, skin.Id);
             contextMenu.Items.Add(item);
 
-            item = new MenuItem { Header = "Open In Custom Showroom", InputGestureText = "Alt+H" };
+            item = new MenuItem { Header = ControlsStrings.Car_OpenInCustomShowroom, InputGestureText = @"Alt+H" };
             item.Click += (sender, args) => CustomShowroomWrapper.StartAsync(_model.SelectedObject, skin);
             contextMenu.Items.Add(item);
 
             contextMenu.Items.Add(new MenuItem {
-                Header = "Folder",
+                Header = AppStrings.Toolbar_Folder,
                 Command = skin.ViewInExplorerCommand
             });
 
             contextMenu.Items.Add(new Separator());
 
-            item = new MenuItem { Header = "Update Preview" };
+            item = new MenuItem { Header = AppStrings.Toolbar_UpdatePreview };
             item.Click += (sender, args) => new CarUpdatePreviewsDialog(_model.SelectedObject, new[] { skin.Id },
                     ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             contextMenu.Items.Add(item);
 
             contextMenu.Items.Add(new Separator());
 
-            item = new MenuItem { Header = "Change Livery" };
+            item = new MenuItem { Header = AppStrings.Toolbar_ChangeLivery };
             item.Click += (sender, args) => new LiveryIconEditor(skin).ShowDialog();
             contextMenu.Items.Add(item);
 
-            item = new MenuItem { Header = "Generate Livery", ToolTip = "Generate a new livery using last settings of Livery Editor" };
+            item = new MenuItem { Header = AppStrings.Toolbar_GenerateLivery, ToolTip = AppStrings.Solution_GenerateLivery_Details };
             item.Click += (sender, args) => LiveryIconEditor.GenerateAsync(skin).Forget();
             contextMenu.Items.Add(item);
 
-            item = new MenuItem { Header = "Generate Random Livery", ToolTip = "Generate a new livery using random settings" };
+            item = new MenuItem { Header = AppStrings.Toolbar_GenerateRandomLivery, ToolTip = AppStrings.Solution_RandomLivery_Details };
             item.Click += (sender, args) => LiveryIconEditor.GenerateRandomAsync(skin).Forget();
             contextMenu.Items.Add(item);
 
             contextMenu.Items.Add(new Separator());
 
             contextMenu.Items.Add(new MenuItem {
-                Header = "Delete Skin",
-                ToolTip = "Skin will be moved to the Recycle Bin",
+                Header = AppStrings.Car_DeleteSkin,
+                ToolTip = AppStrings.Car_DeleteSkin_Tooltip,
                 Command = skin.DeleteCommand
             });
 

@@ -28,8 +28,8 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
 
         public static IEnumerable<UpdateOption> GetByType(AdditionalContentType type) {
             return new[] {
-                new UpdateOption { Name = Resources.Installator_UpdateEverything },
-                new UpdateOption { Name = Resources.Installator_RemoveExistingFirst, RemoveExisting = true }
+                new UpdateOption { Name = ToolsStrings.Installator_UpdateEverything },
+                new UpdateOption { Name = ToolsStrings.Installator_RemoveExistingFirst, RemoveExisting = true }
             }.Union(GetByTypeOnly(type));
         }
 
@@ -42,9 +42,9 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                             );
                         Func<string, bool> previewsFilter =
                             x => !x.StartsWith(@"skins\") || !x.EndsWith(@"\preview.jpg");
-                        yield return new UpdateOption { Name = Resources.Installator_KeepUiInformation, Filter = uiFilter };
-                        yield return new UpdateOption { Name = Resources.Installator_KeepSkinsPreviews, Filter = previewsFilter };
-                        yield return new UpdateOption { Name = Resources.Installator_KeepUiInformationAndSkinsPreviews, Filter = x => uiFilter(x) && previewsFilter(x) };
+                        yield return new UpdateOption { Name = ToolsStrings.Installator_KeepUiInformation, Filter = uiFilter };
+                        yield return new UpdateOption { Name = ToolsStrings.Installator_KeepSkinsPreviews, Filter = previewsFilter };
+                        yield return new UpdateOption { Name = ToolsStrings.Installator_KeepUiInformationAndSkinsPreviews, Filter = x => uiFilter(x) && previewsFilter(x) };
                         break;
                     }
 
@@ -53,23 +53,23 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                             x => !x.StartsWith(@"ui\") ||
                                  !x.EndsWith(@"\ui_track.json") && !x.EndsWith(@"\preview.png") &&
                                  !x.EndsWith(@"\outline.png");
-                        yield return new UpdateOption { Name = Resources.Installator_KeepUiInformation, Filter = uiFilter };
+                        yield return new UpdateOption { Name = ToolsStrings.Installator_KeepUiInformation, Filter = uiFilter };
                         break;
                     }
 
                 case AdditionalContentType.CarSkin: {
                         Func<string, bool> uiFilter = x => x != @"ui_skin.json";
                         Func<string, bool> previewFilter = x => x != @"preview.jpg";
-                        yield return new UpdateOption { Name = Resources.Installator_KeepUiInformation, Filter = uiFilter };
-                        yield return new UpdateOption { Name = Resources.Installator_KeepSkinPreview, Filter = previewFilter };
-                        yield return new UpdateOption { Name = Resources.Installator_KeepUiInformationAndSkinPreview, Filter = x => uiFilter(x) && previewFilter(x) };
+                        yield return new UpdateOption { Name = ToolsStrings.Installator_KeepUiInformation, Filter = uiFilter };
+                        yield return new UpdateOption { Name = ToolsStrings.Installator_KeepSkinPreview, Filter = previewFilter };
+                        yield return new UpdateOption { Name = ToolsStrings.Installator_KeepUiInformationAndSkinPreview, Filter = x => uiFilter(x) && previewFilter(x) };
                         break;
                     }
 
                 case AdditionalContentType.Showroom: {
                         Func<string, bool> uiFilter =
                             x => x != @"ui\ui_showroom.json";
-                        yield return new UpdateOption { Name = Resources.Installator_KeepUiInformation, Filter = uiFilter };
+                        yield return new UpdateOption { Name = ToolsStrings.Installator_KeepUiInformation, Filter = uiFilter };
                         break;
                     }
 

@@ -228,12 +228,12 @@ namespace AcManager.Tools.Helpers {
             private PeriodEntry[] _periodEntries;
 
             public PeriodEntry[] Periods => _periodEntries ?? (_periodEntries = new[] {
-                new PeriodEntry { DisplayName = Resources.Common_Disabled, TimeSpan = TimeSpan.Zero },
-                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_Startup, TimeSpan = TimeSpan.MaxValue },
-                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_ThirtyMinutes, TimeSpan = TimeSpan.FromMinutes(30) },
-                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_ThreeHours, TimeSpan = TimeSpan.FromHours(3) },
-                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_TenHours, TimeSpan = TimeSpan.FromHours(6) },
-                new PeriodEntry { DisplayName = Resources.Settings_Autoupdate_Day, TimeSpan = TimeSpan.FromDays(1) }
+                new PeriodEntry { DisplayName = ToolsStrings.Common_Disabled, TimeSpan = TimeSpan.Zero },
+                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_Startup, TimeSpan = TimeSpan.MaxValue },
+                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_ThirtyMinutes, TimeSpan = TimeSpan.FromMinutes(30) },
+                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_ThreeHours, TimeSpan = TimeSpan.FromHours(3) },
+                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_TenHours, TimeSpan = TimeSpan.FromHours(6) },
+                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_Day, TimeSpan = TimeSpan.FromDays(1) }
             });
 
             private PeriodEntry _updatePeriod;
@@ -338,7 +338,7 @@ namespace AcManager.Tools.Helpers {
         public class DriveSettings : NotifyPropertyChanged {
             internal DriveSettings() {
                 if (PlayerName == null) {
-                    PlayerName = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].Get("DRIVER_NAME") ?? Resources.Settings_DefaultPlayerName;
+                    PlayerName = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].Get("DRIVER_NAME") ?? ToolsStrings.Settings_DefaultPlayerName;
                     PlayerNameOnline = PlayerName;
                 }
 
@@ -364,11 +364,11 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            public static readonly StarterType OfficialStarterType = new StarterType(string.Format(Resources.Common_Recommended, Resources.Settings_Starter_Official));
-            public static readonly StarterType TrickyStarterType = new StarterType(Resources.Settings_Starter_Tricky);
-            public static readonly StarterType StarterPlusType = new StarterType(Resources.Settings_Starter_StarterPlus, StarterPlus.AddonId);
-            public static readonly StarterType SseStarterType = new StarterType(Resources.Settings_Starter_Sse, SseStarter.AddonId);
-            public static readonly StarterType NaiveStarterType = new StarterType(Resources.Settings_Starter_Naive);
+            public static readonly StarterType OfficialStarterType = new StarterType(string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official));
+            public static readonly StarterType TrickyStarterType = new StarterType(ToolsStrings.Settings_Starter_Tricky);
+            public static readonly StarterType StarterPlusType = new StarterType(ToolsStrings.Settings_Starter_StarterPlus, StarterPlus.AddonId);
+            public static readonly StarterType SseStarterType = new StarterType(ToolsStrings.Settings_Starter_Sse, SseStarter.AddonId);
+            public static readonly StarterType NaiveStarterType = new StarterType(ToolsStrings.Settings_Starter_Naive);
 
             private StarterType _selectedStarterType;
 
@@ -769,12 +769,12 @@ namespace AcManager.Tools.Helpers {
             private PeriodEntry[] _periodEntries;
 
             public PeriodEntry[] NewContentPeriods => _periodEntries ?? (_periodEntries = new[] {
-                new PeriodEntry { DisplayName = Resources.Common_Disabled, TimeSpan = TimeSpan.Zero },
-                new PeriodEntry { DisplayName = Resources.Period_OneDay, TimeSpan = TimeSpan.FromDays(1) },
-                new PeriodEntry { DisplayName = Resources.Period_ThreeDays, TimeSpan = TimeSpan.FromDays(3) },
-                new PeriodEntry { DisplayName = Resources.Period_Week, TimeSpan = TimeSpan.FromDays(7) },
-                new PeriodEntry { DisplayName = Resources.Period_TwoWeeks, TimeSpan = TimeSpan.FromDays(14) },
-                new PeriodEntry { DisplayName = Resources.Period_Month, TimeSpan = TimeSpan.FromDays(30) }
+                new PeriodEntry { DisplayName = ToolsStrings.Common_Disabled, TimeSpan = TimeSpan.Zero },
+                new PeriodEntry { DisplayName = ToolsStrings.Period_OneDay, TimeSpan = TimeSpan.FromDays(1) },
+                new PeriodEntry { DisplayName = ToolsStrings.Period_ThreeDays, TimeSpan = TimeSpan.FromDays(3) },
+                new PeriodEntry { DisplayName = ToolsStrings.Period_Week, TimeSpan = TimeSpan.FromDays(7) },
+                new PeriodEntry { DisplayName = ToolsStrings.Period_TwoWeeks, TimeSpan = TimeSpan.FromDays(14) },
+                new PeriodEntry { DisplayName = ToolsStrings.Period_Month, TimeSpan = TimeSpan.FromDays(30) }
             });
 
             private PeriodEntry _newContentPeriod;
@@ -796,11 +796,11 @@ namespace AcManager.Tools.Helpers {
             private SearchEngineEntry[] _searchEngines;
 
             public SearchEngineEntry[] SearchEngines => _searchEngines ?? (_searchEngines = new[] {
-                new SearchEngineEntry { DisplayName = Resources.SearchEngine_DuckDuckGo, Value = @"https://duckduckgo.com/?q={0}&ia=web" },
-                new SearchEngineEntry { DisplayName = Resources.SearchEngine_Bing, Value = @"http://www.bing.com/search?q={0}" },
-                new SearchEngineEntry { DisplayName = Resources.SearchEngine_Google, Value = @"https://www.google.com/search?q={0}&ie=UTF-8" },
-                new SearchEngineEntry { DisplayName = Resources.SearchEngine_Yandex, Value = @"https://yandex.ru/search/?text={0}" },
-                new SearchEngineEntry { DisplayName = Resources.SearchEngine_Baidu, Value = @"http://www.baidu.com/s?ie=utf-8&wd={0}" }
+                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_DuckDuckGo, Value = @"https://duckduckgo.com/?q={0}&ia=web" },
+                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_Bing, Value = @"http://www.bing.com/search?q={0}" },
+                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_Google, Value = @"https://www.google.com/search?q={0}&ie=UTF-8" },
+                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_Yandex, Value = @"https://yandex.ru/search/?text={0}" },
+                new SearchEngineEntry { DisplayName = ToolsStrings.SearchEngine_Baidu, Value = @"http://www.baidu.com/s?ie=utf-8&wd={0}" }
             });
 
             private SearchEngineEntry _searchEngine;
@@ -839,7 +839,7 @@ namespace AcManager.Tools.Helpers {
         public class CustomShowroomSettings : NotifyPropertyChanged {
             internal CustomShowroomSettings() { }
 
-            public string[] ShowroomTypes { get; } = { Resources.CustomShowroom_Fancy, Resources.CustomShowroom_Lite };
+            public string[] ShowroomTypes { get; } = { ToolsStrings.CustomShowroom_Fancy, ToolsStrings.CustomShowroom_Lite };
 
             public string ShowroomType {
                 get { return LiteByDefault ? ShowroomTypes[1] : ShowroomTypes[0]; }

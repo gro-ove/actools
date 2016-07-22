@@ -174,7 +174,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return null;
                 }
             } catch (Exception e) {
-                NonfatalError.Notify(Resources.SharingHelper_CannotGetShared, Resources.SharingHelper_CannotGetShared_Commentary, e);
+                NonfatalError.Notify(ToolsStrings.SharingHelper_CannotGetShared, ToolsStrings.SharingHelper_CannotGetShared_Commentary, e);
                 return null;
             }
 
@@ -182,7 +182,7 @@ namespace AcManager.Tools.Miscellaneous {
             try {
                 entryType = (SharedEntryType)Enum.Parse(typeof(SharedEntryType), loaded.EntryType);
             } catch (Exception) {
-                NonfatalError.Notify(string.Format(Resources.SharingHelper_NotSupported, loaded.EntryType), Resources.SharingHelper_NotSupported_Commentary);
+                NonfatalError.Notify(string.Format(ToolsStrings.SharingHelper_NotSupported, loaded.EntryType), ToolsStrings.SharingHelper_NotSupported_Commentary);
                 Logging.Warning("[SharingHelper] Unsupported entry type: " + loaded.EntryType);
                 return null;
             }

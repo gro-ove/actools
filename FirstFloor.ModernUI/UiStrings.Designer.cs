@@ -22,14 +22,14 @@ namespace FirstFloor.ModernUI {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    public class UiStrings {
         
         private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal UiStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace FirstFloor.ModernUI {
         public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("FirstFloor.ModernUI.Resources", typeof(Resources).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("FirstFloor.ModernUI.UiStrings", typeof(UiStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -66,16 +66,6 @@ namespace FirstFloor.ModernUI {
         public static string Back {
             get {
                 return ResourceManager.GetString("Back", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] BrokenImage {
-            get {
-                object obj = ResourceManager.GetObject("BrokenImage", resourceCulture);
-                return ((byte[])(obj));
             }
         }
         

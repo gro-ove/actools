@@ -16,7 +16,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
         public static Size Size { get; } = new Size(14, 16);
 
         private static BitmapSource Load() {
-            using (var stream = new WrappingStream(new MemoryStream(Resources.BrokenImage))) {
+            using (var stream = new WrappingStream(new MemoryStream(BinaryResources.BrokenImage))) {
                 var bi = new BitmapImage();
                 bi.BeginInit();
                 bi.CacheOption = BitmapCacheOption.OnLoad;

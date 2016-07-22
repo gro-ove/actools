@@ -53,14 +53,14 @@ namespace AcManager.Tools.Helpers {
 
                 internal ResolutionEntry() {
                     _custom = true;
-                    DisplayName = Resources.AcSettings_CustomResolution;
+                    DisplayName = ToolsStrings.AcSettings_CustomResolution;
                 }
 
                 internal ResolutionEntry(int width, int height, int framerate) {
                     _width = width;
                     _height = height;
                     _framerate = framerate;
-                    DisplayName = string.Format(Resources.AcSettings_ResolutionFormat, Width, Height, Framerate);
+                    DisplayName = string.Format(ToolsStrings.AcSettings_ResolutionFormat, Width, Height, Framerate);
                 }
 
                 public bool Equals(ResolutionEntry other) {
@@ -95,13 +95,13 @@ namespace AcManager.Tools.Helpers {
 
             #region Entries lists
             public SettingEntry[] CameraModes { get; } = {
-                new SettingEntry("DEFAULT", Resources.AcSettings_CameraMode_SingleScreen),
-                new SettingEntry("TRIPLE", Resources.AcSettings_CameraMode_TripleScreen),
-                new SettingEntry("OCULUS", Resources.AcSettings_CameraMode_OculusRift)
+                new SettingEntry("DEFAULT", ToolsStrings.AcSettings_CameraMode_SingleScreen),
+                new SettingEntry("TRIPLE", ToolsStrings.AcSettings_CameraMode_TripleScreen),
+                new SettingEntry("OCULUS", ToolsStrings.AcSettings_CameraMode_OculusRift)
             };
 
             public SettingEntry[] AnisotropicLevels { get; } = {
-                new SettingEntry("0", Resources.AcSettings_Off),
+                new SettingEntry("0", ToolsStrings.AcSettings_Off),
                 new SettingEntry("2", @"2x"),
                 new SettingEntry("4", @"4x"),
                 new SettingEntry("8", @"8x"),
@@ -109,10 +109,10 @@ namespace AcManager.Tools.Helpers {
             };
 
             public SettingEntry[] AntiAliasingLevels { get; } = {
-                new SettingEntry("1", Resources.AcSettings_Off),
+                new SettingEntry("1", ToolsStrings.AcSettings_Off),
                 new SettingEntry("2", @"2x"),
                 new SettingEntry("4", @"4x"),
-                new SettingEntry("8", string.Format(Resources.AcSettings_ExperimentalValue, @"8x"))
+                new SettingEntry("8", string.Format(ToolsStrings.AcSettings_ExperimentalValue, @"8x"))
             };
 
             public SettingEntry[] ShadowMapSizes { get; } = {
@@ -124,45 +124,45 @@ namespace AcManager.Tools.Helpers {
             };
 
             public SettingEntry[] WorldDetailLevels { get; } = {
-                new SettingEntry("0", Resources.AcSettings_Quality_Minimum),
-                new SettingEntry("1", Resources.AcSettings_Quality_Low),
-                new SettingEntry("2", Resources.AcSettings_Quality_Medium),
-                new SettingEntry("3", Resources.AcSettings_Quality_High),
-                new SettingEntry("4", Resources.AcSettings_Quality_VeryHigh),
-                new SettingEntry("5", Resources.AcSettings_Quality_Maximum)
+                new SettingEntry("0", ToolsStrings.AcSettings_Quality_Minimum),
+                new SettingEntry("1", ToolsStrings.AcSettings_Quality_Low),
+                new SettingEntry("2", ToolsStrings.AcSettings_Quality_Medium),
+                new SettingEntry("3", ToolsStrings.AcSettings_Quality_High),
+                new SettingEntry("4", ToolsStrings.AcSettings_Quality_VeryHigh),
+                new SettingEntry("5", ToolsStrings.AcSettings_Quality_Maximum)
             };
 
             public SettingEntry[] SmokeLevels { get; } = {
-                new SettingEntry("0", Resources.AcSettings_Off),
-                new SettingEntry("1", Resources.AcSettings_Quality_Minimum),
-                new SettingEntry("2", Resources.AcSettings_Quality_Low),
-                new SettingEntry("3", Resources.AcSettings_Quality_Medium),
-                new SettingEntry("4", Resources.AcSettings_Quality_High),
-                new SettingEntry("5", Resources.AcSettings_Quality_Maximum)
+                new SettingEntry("0", ToolsStrings.AcSettings_Off),
+                new SettingEntry("1", ToolsStrings.AcSettings_Quality_Minimum),
+                new SettingEntry("2", ToolsStrings.AcSettings_Quality_Low),
+                new SettingEntry("3", ToolsStrings.AcSettings_Quality_Medium),
+                new SettingEntry("4", ToolsStrings.AcSettings_Quality_High),
+                new SettingEntry("5", ToolsStrings.AcSettings_Quality_Maximum)
             };
 
             public SettingEntry[] PostProcessingQualities => WorldDetailLevels;
 
             public SettingEntry[] GlareQualities { get; } = {
-                new SettingEntry("0", Resources.AcSettings_Off),
-                new SettingEntry("1", Resources.AcSettings_Quality_Low),
-                new SettingEntry("2", Resources.AcSettings_Quality_Medium),
-                new SettingEntry("3", Resources.AcSettings_Quality_High),
-                new SettingEntry("4", Resources.AcSettings_Quality_VeryHigh),
-                new SettingEntry("5", Resources.AcSettings_Quality_Maximum)
+                new SettingEntry("0", ToolsStrings.AcSettings_Off),
+                new SettingEntry("1", ToolsStrings.AcSettings_Quality_Low),
+                new SettingEntry("2", ToolsStrings.AcSettings_Quality_Medium),
+                new SettingEntry("3", ToolsStrings.AcSettings_Quality_High),
+                new SettingEntry("4", ToolsStrings.AcSettings_Quality_VeryHigh),
+                new SettingEntry("5", ToolsStrings.AcSettings_Quality_Maximum)
             };
 
             public SettingEntry[] DepthOfFieldQualities => GlareQualities;
 
             public SettingEntry[] MirrorResolutions { get; } = {
-                new SettingEntry("0", Resources.AcSettings_Off),
+                new SettingEntry("0", ToolsStrings.AcSettings_Off),
                 new SettingEntry("256", @"64×256"),
                 new SettingEntry("512", @"128×512"),
                 new SettingEntry("1024", @"256×1024")
             };
 
             public SettingEntry[] CubemapResolutions { get; } = {
-                new SettingEntry("0", Resources.AcSettings_Off),
+                new SettingEntry("0", ToolsStrings.AcSettings_Off),
                 new SettingEntry("256", @"256×256"),
                 new SettingEntry("512", @"512×512"),
                 new SettingEntry("1024", @"1024×1024"),
@@ -170,13 +170,13 @@ namespace AcManager.Tools.Helpers {
             };
 
             public SettingEntry[] CubemapRenderingFrequencies { get; } = {
-                new SettingEntry("0", Resources.AcSettings_Cubemap_Static),
-                new SettingEntry("1", Resources.AcSettings_Cubemap_OneFace),
-                new SettingEntry("2", Resources.AcSettings_Cubemap_TwoFaces),
-                new SettingEntry("3", Resources.AcSettings_Cubemap_ThreeFaces),
-                new SettingEntry("4", Resources.AcSettings_Cubemap_FourFaces),
-                new SettingEntry("5", Resources.AcSettings_Cubemap_FiveFaces),
-                new SettingEntry("6", Resources.AcSettings_Cubemap_SixFaces),
+                new SettingEntry("0", ToolsStrings.AcSettings_Cubemap_Static),
+                new SettingEntry("1", ToolsStrings.AcSettings_Cubemap_OneFace),
+                new SettingEntry("2", ToolsStrings.AcSettings_Cubemap_TwoFaces),
+                new SettingEntry("3", ToolsStrings.AcSettings_Cubemap_ThreeFaces),
+                new SettingEntry("4", ToolsStrings.AcSettings_Cubemap_FourFaces),
+                new SettingEntry("5", ToolsStrings.AcSettings_Cubemap_FiveFaces),
+                new SettingEntry("6", ToolsStrings.AcSettings_Cubemap_SixFaces),
             };
             #endregion
 

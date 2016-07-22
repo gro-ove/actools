@@ -109,7 +109,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         public async Task CheckAndUpdateIfNeeded() {
             if (!MainExecutingFile.IsPacked) {
-                LatestError = Resources.AppUpdater_UnpackedVersionMessage;
+                LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
                 IsSupported = false;
                 return;
             }
@@ -135,7 +135,7 @@ namespace AcManager.Tools.Miscellaneous {
                     await LoadAndPrepare();
                 }
             } catch (Exception e) {
-                LatestError = Resources.AppUpdater_UnhandledError;
+                LatestError = ToolsStrings.AppUpdater_UnhandledError;
                 Logging.Warning("[AppUpdater] Cannot check and update app: " + e);
             } finally {
                 CheckingInProcess = false;
@@ -174,7 +174,7 @@ namespace AcManager.Tools.Miscellaneous {
                 var data = await CmApiProvider.GetStringAsync($"app/manifest/{Branch}");
                 return data == null ? null : VersionFromData(data);
             } catch (Exception e) {
-                LatestError = Resources.AppUpdater_CannotDownloadInformation;
+                LatestError = ToolsStrings.AppUpdater_CannotDownloadInformation;
                 Logging.Warning("[AppUpdater] Cannot get app/manifest.json: " + e);
                 return null;
             } finally {
@@ -208,8 +208,8 @@ namespace AcManager.Tools.Miscellaneous {
 
         private async Task LoadAndPrepare() {
             if (!MainExecutingFile.IsPacked) {
-                NonfatalError.Notify(Resources.AppUpdater_CannotUpdateApp, Resources.AppUpdater_UnpackedVersionMessage);
-                LatestError = Resources.AppUpdater_UnpackedVersionMessage;
+                NonfatalError.Notify(ToolsStrings.AppUpdater_CannotUpdateApp, ToolsStrings.AppUpdater_UnpackedVersionMessage);
+                LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
                 return;
             }
 
@@ -237,13 +237,13 @@ namespace AcManager.Tools.Miscellaneous {
 
                 UpdateIsReady = preparedVersion;
             } catch (UnauthorizedAccessException) {
-                NonfatalError.Notify(Resources.AppUpdater_AccessIsDenied,
-                        Resources.AppUpdater_AccessIsDenied_Commentary);
-                LatestError = Resources.AppUpdater_AccessIsDenied_Short;
+                NonfatalError.Notify(ToolsStrings.AppUpdater_AccessIsDenied,
+                        ToolsStrings.AppUpdater_AccessIsDenied_Commentary);
+                LatestError = ToolsStrings.AppUpdater_AccessIsDenied_Short;
             } catch (Exception e) {
-                NonfatalError.Notify(Resources.AppUpdater_CannotLoad,
-                        Resources.AppUpdater_CannotLoad_Commentary, e);
-                LatestError = Resources.AppUpdater_CannotLoadShort;
+                NonfatalError.Notify(ToolsStrings.AppUpdater_CannotLoad,
+                        ToolsStrings.AppUpdater_CannotLoad_Commentary, e);
+                LatestError = ToolsStrings.AppUpdater_CannotLoadShort;
             } finally {
                 _isPreparing = false;
             }
@@ -280,7 +280,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 return false;
             } catch (Exception e) {
-                MessageBox.Show(string.Format(Resources.AppUpdater_CannotUpdate_Message, e.Message), Resources.AppUpdater_UpdateFailed,
+                MessageBox.Show(string.Format(ToolsStrings.AppUpdater_CannotUpdate_Message, e.Message), ToolsStrings.AppUpdater_UpdateFailed,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
@@ -342,9 +342,9 @@ namespace AcManager.Tools.Miscellaneous {
 
                 if (File.Exists(originalFilename)) {
                     MessageBox.Show(
-                            string.Format(Resources.AppUpdater_CannotUpdate_HelpNeeded, Path.GetFileName(originalFilename),
+                            string.Format(ToolsStrings.AppUpdater_CannotUpdate_HelpNeeded, Path.GetFileName(originalFilename),
                                     Path.GetFileName(MainExecutingFile.Location)),
-                            Resources.AppUpdater_UpdateFailed, MessageBoxButton.OK, MessageBoxImage.Error);
+                            ToolsStrings.AppUpdater_UpdateFailed, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }

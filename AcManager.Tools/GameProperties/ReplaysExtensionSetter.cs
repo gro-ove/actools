@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,7 +54,7 @@ namespace AcManager.Tools.GameProperties {
                     File.Move(file, file + ReplayObject.ReplayExtension);
                 }
             } catch (Exception e) {
-                NonfatalError.Notify(Resources.Replay_CannotRenameReplays, Resources.Replay_CannotRenameReplays_Commentary, e);
+                NonfatalError.Notify(ToolsStrings.Replay_CannotRenameReplays, ToolsStrings.Replay_CannotRenameReplays_Commentary, e);
             }
         }
 

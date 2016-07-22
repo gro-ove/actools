@@ -10,7 +10,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 

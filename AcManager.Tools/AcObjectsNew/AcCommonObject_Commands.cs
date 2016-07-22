@@ -40,9 +40,9 @@ namespace AcManager.Tools.AcObjectsNew {
                 if (string.IsNullOrWhiteSpace(newId)) return;
                 Rename(newId);
             } catch (ToggleException ex) {
-                NonfatalError.Notify(string.Format(Resources.AcObject_CannotChangeIdExt, ex.Message), Resources.AcObject_CannotToggle_Commentary);
+                NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotChangeIdExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotChangeId, Resources.AcObject_CannotToggle_Commentary, ex);
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotChangeId, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
             }
         }, o => !string.IsNullOrWhiteSpace(o as string)));
 
@@ -55,7 +55,7 @@ namespace AcManager.Tools.AcObjectsNew {
                     FileUtils.CopyRecursive(Location, FileUtils.EnsureUnique(Path.Combine(Path.GetDirectoryName(Location) ?? "", id)));
                 });
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotClone, Resources.AcObject_CannotClone_Commentary, ex);
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotClone, ToolsStrings.AcObject_CannotClone_Commentary, ex);
             }
         }
 
@@ -67,9 +67,9 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 Toggle();
             } catch (ToggleException ex) {
-                NonfatalError.Notify(string.Format(Resources.AcObject_CannotToggleExt, ex.Message), Resources.AcObject_CannotToggle_Commentary);
+                NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotToggleExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotToggle, Resources.AcObject_CannotToggle_Commentary, ex);
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotToggle, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
             }
         }));
 
@@ -79,7 +79,7 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 Delete();
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotDelete, Resources.AcObject_CannotToggle_Commentary, ex);
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
             }
         }));
 

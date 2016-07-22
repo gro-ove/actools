@@ -91,7 +91,7 @@
                 <DockPanel ToolTip="Set a password if you want a private server" Margin="0 20 0 8">
                     <Label Content="Password:" />
                     <TextBox Text="{Binding SelectedObject.Password}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
+                            attached:WatermarkService.Watermark="{x:Static Tools:ToolsStrings.Common_None}" />
                 </DockPanel>
                 <DockPanel>
                     <DockPanel.ToolTip>
@@ -99,7 +99,7 @@
                     </DockPanel.ToolTip>
                     <Label Content="Admin password:" />
                     <TextBox Text="{Binding SelectedObject.AdminPassword}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" />
+                            attached:WatermarkService.Watermark="{x:Static Tools:ToolsStrings.Common_None}" />
                 </DockPanel>
                 <CheckBox IsChecked="{Binding SelectedObject.ShowOnLobby}"
                         ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
@@ -107,7 +107,7 @@
                 </CheckBox>
                 <DockPanel Margin="0 20 0 8">
                     <Label Content="Welcome message:" />
-                    <TextBox attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" IsEnabled="False" />
+                    <TextBox attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="{x:Static Tools:ToolsStrings.Common_None}" IsEnabled="False" />
                 </DockPanel>
             </StackPanel>
 
@@ -115,17 +115,17 @@
                 <DockPanel ToolTip="Remember to open this port on your firewall">
                     <Label Content="UDP port:" />
                     <TextBox Text="{Binding SelectedObject.UdpPort}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" attached:TextBoxAdvancement.SpecialMode="Positive" />
+                            attached:WatermarkService.Watermark="{x:Static Tools:ToolsStrings.Common_None}" attached:TextBoxAdvancement.SpecialMode="Positive" />
                 </DockPanel>
                 <DockPanel ToolTip="Remember to open this port on your firewall">
                     <Label Content="TCP port:" />
                     <TextBox Text="{Binding SelectedObject.TcpPort}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" attached:TextBoxAdvancement.SpecialMode="Positive" />
+                            attached:WatermarkService.Watermark="{x:Static Tools:ToolsStrings.Common_None}" attached:TextBoxAdvancement.SpecialMode="Positive" />
                 </DockPanel>
                 <DockPanel ToolTip="Remember to open this port on your firewall">
                     <Label Content="HTTP port:" />
                     <TextBox Text="{Binding SelectedObject.HttpPort}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                            attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" attached:TextBoxAdvancement.SpecialMode="Positive" />
+                            attached:WatermarkService.Watermark="{x:Static Tools:ToolsStrings.Common_None}" attached:TextBoxAdvancement.SpecialMode="Positive" />
                 </DockPanel>
                 <DockPanel ToolTip="Higher value provides better multiplayer quality, but requires a more powerful connection">
                     <mui:ValueLabel Value="{Binding SelectedObject.SendIntervalHz}" Postfix=" Hz" Content="Packets" />

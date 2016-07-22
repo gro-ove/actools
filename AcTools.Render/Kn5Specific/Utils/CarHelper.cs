@@ -400,6 +400,14 @@ namespace AcTools.Render.Kn5Specific.Utils {
             var wheelRr = node.GetDummyByName("WHEEL_RR");
             if (wheelLf == null || wheelRf == null || wheelLr == null || wheelRr == null) return;
 
+            if (!wheelLf.BoundingBox.HasValue ||
+                    !wheelRf.BoundingBox.HasValue ||
+                    !wheelLr.BoundingBox.HasValue ||
+                    !wheelRr.BoundingBox.HasValue) {
+                node.LocalMatrix = Matrix.Translation(0, -node.BoundingBox?.Minimum.Y ?? 0f, 0) * node.LocalMatrix;
+                return;
+            }
+
             var y1 = Math.Min(wheelLf.BoundingBox?.Minimum.Y ?? float.MaxValue,
                     wheelRf.BoundingBox?.Minimum.Y ?? float.MaxValue);
             var y2 = Math.Min(wheelLr.BoundingBox?.Minimum.Y ?? float.MaxValue,

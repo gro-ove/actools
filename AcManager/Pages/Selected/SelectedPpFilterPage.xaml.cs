@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
@@ -42,7 +43,7 @@ namespace AcManager.Pages.Selected {
         void IParametrizedUriContent.OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
             if (_id == null) {
-                throw new Exception("ID is missing");
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
         }
 
@@ -61,7 +62,7 @@ namespace AcManager.Pages.Selected {
         private ViewModel _model;
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {

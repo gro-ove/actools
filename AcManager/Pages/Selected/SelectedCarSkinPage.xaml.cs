@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Pages.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -22,23 +24,23 @@ namespace AcManager.Pages.Selected {
             public ViewModel(CarObject car, [NotNull] CarSkinObject acObject) : base(acObject) {
                 Car = car;
             }
-
+            
             protected override void FilterExec(string type) {
                 switch (type) {
                     case "team":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.Team) ? "team-" : $"team:{Filter.Encode(SelectedObject.Team)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.Team) ? @"team-" : $"team:{Filter.Encode(SelectedObject.Team)}");
                         break;
 
                     case "driver":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.DriverName) ? "driver-" : $"driver:{Filter.Encode(SelectedObject.DriverName)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.DriverName) ? @"driver-" : $"driver:{Filter.Encode(SelectedObject.DriverName)}");
                         break;
 
                     case "number":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.SkinNumber) ? "number-" : $"number:{Filter.Encode(SelectedObject.SkinNumber)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.SkinNumber) ? @"number-" : $"number:{Filter.Encode(SelectedObject.SkinNumber)}");
                         break;
 
                     case "priority":
-                        NewFilterTab(SelectedObject.Priority.HasValue ? $"priority:{SelectedObject.Priority.Value}" : "priority-");
+                        NewFilterTab(SelectedObject.Priority.HasValue ? $"priority:{SelectedObject.Priority.Value}" : @"priority-");
                         break;
                 }
                 
@@ -59,7 +61,7 @@ namespace AcManager.Pages.Selected {
                         FileUtils.Recycle(SelectedObject.JsonFilename);
                     }
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t remove ui_skin.json", "Make sure file isn’t used.", e);
+                    NonfatalError.Notify(AppStrings.Skin_CannotRemoveUiSkin, AppStrings.Skin_CannotRemoveUiSkin_Commentary, e);
                 }
             }));
 
@@ -91,10 +93,10 @@ namespace AcManager.Pages.Selected {
 
         void IParametrizedUriContent.OnUri(Uri uri) {
             _carId = uri.GetQueryParam("CarId");
-            if (_carId == null) throw new ArgumentException("Car ID is missing");
+            if (_carId == null) throw new ArgumentException(ToolsStrings.Common_CarIdIsMissing);
 
             _id = uri.GetQueryParam("Id");
-            if (_id == null) throw new ArgumentException("ID is missing");
+            if (_id == null) throw new ArgumentException(ToolsStrings.Common_IdIsMissing);
         }
 
         private CarObject _carObject;
@@ -125,8 +127,8 @@ namespace AcManager.Pages.Selected {
         }
 
         void ILoadableContent.Initialize() {
-            if (_carObject == null) throw new ArgumentException("Can’t find car with provided ID");
-            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+            if (_carObject == null) throw new ArgumentException(AppStrings.Common_CannotFindCarById);
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
             InitializeAcObjectPage(_model = new ViewModel(_carObject, _object));
             InputBindings.AddRange(new[] {

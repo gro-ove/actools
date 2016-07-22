@@ -117,8 +117,8 @@ namespace AcManager.Controls.Helpers {
         public void SwitchToPreset(PresetEntry entry) {
             var backup = Controls.CurrentPresetName == null || Controls.CurrentPresetChanged;
             if (backup && WarnIfChanged && ModernDialog.ShowMessage(
-                    string.Format(Resources.Controls_LoadPresetWarning, entry.DisplayName),
-                    Resources.Common_AreYouSure, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                    string.Format(ControlsStrings.Controls_LoadPresetWarning, entry.DisplayName),
+                    ControlsStrings.Common_AreYouSure, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                 return;
             }
 
@@ -167,8 +167,8 @@ namespace AcManager.Controls.Helpers {
                 _builtInPresets = await ScanAsync(AcSettingsHolder.ControlsSettings.SubBuiltInPresets);
                 _userPresets = await ScanAsync(AcSettingsHolder.ControlsSettings.SubUserPresets);
 
-                Presets.Add(Rebuild(Resources.Controls_BuiltInPresets, AcSettingsHolder.ControlsSettings.SubBuiltInPresets, _builtInPresets));
-                Presets.Add(Rebuild(Resources.Controls_UserPresets, AcSettingsHolder.ControlsSettings.SubUserPresets, _userPresets));
+                Presets.Add(Rebuild(ControlsStrings.Controls_BuiltInPresets, AcSettingsHolder.ControlsSettings.SubBuiltInPresets, _builtInPresets));
+                Presets.Add(Rebuild(ControlsStrings.Controls_UserPresets, AcSettingsHolder.ControlsSettings.SubUserPresets, _userPresets));
                 PresetsReady = true;
             } catch (Exception e) {
                 Logging.Warning("RebuildPresetsList() exception: " + e);
@@ -182,17 +182,17 @@ namespace AcManager.Controls.Helpers {
             var result = new StringBuilder();
 
             // input method
-            result.AppendFormat(Resources.Controls_Preview_InputMethod, ini["HEADER"].GetEntry("INPUT_METHOD", Controls.InputMethods).DisplayName);
+            result.AppendFormat(ControlsStrings.Controls_Preview_InputMethod, ini["HEADER"].GetEntry("INPUT_METHOD", Controls.InputMethods).DisplayName);
 
             // device
             var section = ini["CONTROLLERS"];
             var devices = LinqExtension.RangeFrom().Select(x => section.Get("CON" + x.ToInvariantString())).TakeWhile(x => x != null).Distinct().ToList();
             if (devices.Count > 1) {
                 result.Append('\n');
-                result.AppendFormat(Resources.Controls_Preview_Devices, devices.JoinToString(@", "));
+                result.AppendFormat(ControlsStrings.Controls_Preview_Devices, devices.JoinToString(@", "));
             } else if (devices.Count == 1) {
                 result.Append('\n');
-                result.AppendFormat(Resources.Controls_Preview_Device, devices[0]);
+                result.AppendFormat(ControlsStrings.Controls_Preview_Device, devices[0]);
             }
 
             return new BbCodeBlock {

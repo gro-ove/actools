@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using AcManager.Tools.AcObjectsNew;
-using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Selected {
     public interface ISelectedAcObjectViewModel {

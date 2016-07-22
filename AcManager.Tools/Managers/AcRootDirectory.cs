@@ -101,7 +101,7 @@ namespace AcManager.Tools.Managers {
         [NotNull]
         public string RequireValue {
             get {
-                if (_value == null) throw new Exception(Resources.AcRootDirectory_Required);
+                if (_value == null) throw new Exception(ToolsStrings.AcRootDirectory_Required);
                 return _value;
             }
         }
@@ -138,38 +138,38 @@ namespace AcManager.Tools.Managers {
 
         public static bool CheckDirectory(string directory, out string reason) {
             if (directory == null) {
-                reason = Resources.AcRootDirectory_NotDefined;
+                reason = ToolsStrings.AcRootDirectory_NotDefined;
                 return false;
             }
 
             if (!OptionDisableChecking) {
                 if (!Directory.Exists(directory)) {
-                    reason = Resources.AcRootDirectory_Missing;
+                    reason = ToolsStrings.AcRootDirectory_Missing;
                     return false;
                 }
 
                 if (!Directory.Exists(Path.Combine(directory, @"apps"))) {
-                    reason = string.Format(Resources.AcRootDirectory_MissingDirectory, @"apps");
+                    reason = string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"apps");
                     return false;
                 }
 
                 if (!Directory.Exists(Path.Combine(directory, @"content"))) {
-                    reason = string.Format(Resources.AcRootDirectory_MissingDirectory, @"content");
+                    reason = string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"content");
                     return false;
                 }
 
                 if (!Directory.Exists(Path.Combine(directory, @"content", @"cars"))) {
-                    reason = string.Format(Resources.AcRootDirectory_MissingDirectory, @"content\cars");
+                    reason = string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"content\cars");
                     return false;
                 }
 
                 if (!Directory.Exists(Path.Combine(directory, @"content", @"tracks"))) {
-                    reason = string.Format(Resources.AcRootDirectory_MissingDirectory, @"content\tracks");
+                    reason = string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"content\tracks");
                     return false;
                 }
 
                 if (!File.Exists(Path.Combine(directory, @"acs.exe"))) {
-                    reason = string.Format(Resources.AcRootDirectory_MissingFile, @"acs.exe");
+                    reason = string.Format(ToolsStrings.AcRootDirectory_MissingFile, @"acs.exe");
                     return false;
                 }
             }
@@ -190,7 +190,7 @@ namespace AcManager.Tools.Managers {
             }
 
             if (!File.Exists(launcher)) {
-                reason = string.Format(Resources.AcRootDirectory_MissingFile, @"AssettoCorsa.exe");
+                reason = string.Format(ToolsStrings.AcRootDirectory_MissingFile, @"AssettoCorsa.exe");
                 return false;
             }
 

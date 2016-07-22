@@ -9,7 +9,7 @@ namespace FirstFloor.ModernUI.Windows {
             if (ModernUiHelper.IsInDesignMode) return null;
 
             if (!Application.Current.Dispatcher.CheckAccess()) {
-                throw new InvalidOperationException(Resources.UIThreadRequired);
+                throw new InvalidOperationException(UiStrings.UIThreadRequired);
             }
 
             var loaded = Application.LoadComponent(uri);

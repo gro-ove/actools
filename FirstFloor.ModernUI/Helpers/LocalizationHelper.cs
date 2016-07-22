@@ -11,7 +11,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
         public static string ToReadableBoolean(this bool value) {
-            return value ? Resources.Yes : Resources.No;
+            return value ? UiStrings.Yes : UiStrings.No;
         }
 
         public static string ToOrdinal(this int value, string subject, CultureInfo culture = null) {
@@ -27,22 +27,22 @@ namespace FirstFloor.ModernUI.Helpers {
 
             var days = (int)span.TotalDays;
             if (days > 0) {
-                result.Add(PluralizingConverter.PluralizeExt(days, Resources.Time_Day));
+                result.Add(PluralizingConverter.PluralizeExt(days, UiStrings.Time_Day));
             }
 
             if (span.Hours > 0) {
-                result.Add(PluralizingConverter.PluralizeExt(span.Hours, Resources.Time_Hour));
+                result.Add(PluralizingConverter.PluralizeExt(span.Hours, UiStrings.Time_Hour));
             }
 
             if (span.Minutes > 0) {
-                result.Add(PluralizingConverter.PluralizeExt(span.Minutes, Resources.Time_Minute));
+                result.Add(PluralizingConverter.PluralizeExt(span.Minutes, UiStrings.Time_Minute));
             }
 
             if (span.Seconds > 0) {
-                result.Add(PluralizingConverter.PluralizeExt(span.Seconds, Resources.Time_Second));
+                result.Add(PluralizingConverter.PluralizeExt(span.Seconds, UiStrings.Time_Second));
             }
 
-            return result.Any() ? string.Join(@" ", result.Take(2)) : PluralizingConverter.PluralizeExt(0, Resources.Time_Second);
+            return result.Any() ? string.Join(@" ", result.Take(2)) : PluralizingConverter.PluralizeExt(0, UiStrings.Time_Second);
         }
 
         public static double ToMegabytes(this long i) {
@@ -55,25 +55,25 @@ namespace FirstFloor.ModernUI.Helpers {
             string suffix;
             double readable;
             if (absoluteI >= 0x1000000000000000) {
-                suffix = Resources.LocalizationHelper_ReadableSize_EB;
+                suffix = UiStrings.LocalizationHelper_ReadableSize_EB;
                 readable = i >> 50;
             } else if (absoluteI >= 0x4000000000000) {
-                suffix = Resources.LocalizationHelper_ReadableSize_PB;
+                suffix = UiStrings.LocalizationHelper_ReadableSize_PB;
                 readable = i >> 40;
             } else if (absoluteI >= 0x10000000000) {
-                suffix = Resources.LocalizationHelper_ReadableSize_TB;
+                suffix = UiStrings.LocalizationHelper_ReadableSize_TB;
                 readable = i >> 30;
             } else if (absoluteI >= 0x40000000) {
-                suffix = Resources.LocalizationHelper_ReadableSize_GB;
+                suffix = UiStrings.LocalizationHelper_ReadableSize_GB;
                 readable = i >> 20;
             } else if (absoluteI >= 0x100000) {
-                suffix = Resources.LocalizationHelper_ReadableSize_MB;
+                suffix = UiStrings.LocalizationHelper_ReadableSize_MB;
                 readable = i >> 10;
             } else if (absoluteI >= 0x400) {
-                suffix = Resources.LocalizationHelper_ReadableSize_KB;
+                suffix = UiStrings.LocalizationHelper_ReadableSize_KB;
                 readable = i;
             } else {
-                return i.ToString(@"0 " + Resources.LocalizationHelper_ReadableSize_B);
+                return i.ToString(@"0 " + UiStrings.LocalizationHelper_ReadableSize_B);
             }
 
             readable = readable / 1024;
@@ -139,57 +139,57 @@ namespace FirstFloor.ModernUI.Helpers {
                 case Keys.D0:
                     return @"0";
                 case Keys.NumPad0:
-                    return string.Format(Resources.KeyNumberPad, 0);
+                    return string.Format(UiStrings.KeyNumberPad, 0);
                 case Keys.D1:
                     return @"1";
                 case Keys.NumPad1:
-                    return string.Format(Resources.KeyNumberPad, 1);
+                    return string.Format(UiStrings.KeyNumberPad, 1);
                 case Keys.D2:
                     return @"2";
                 case Keys.NumPad2:
-                    return string.Format(Resources.KeyNumberPad, 2);
+                    return string.Format(UiStrings.KeyNumberPad, 2);
                 case Keys.D3:
                     return @"3";
                 case Keys.NumPad3:
-                    return string.Format(Resources.KeyNumberPad, 3);
+                    return string.Format(UiStrings.KeyNumberPad, 3);
                 case Keys.D4:
                     return @"4";
                 case Keys.NumPad4:
-                    return string.Format(Resources.KeyNumberPad, 4);
+                    return string.Format(UiStrings.KeyNumberPad, 4);
                 case Keys.D5:
                     return @"5";
                 case Keys.NumPad5:
-                    return string.Format(Resources.KeyNumberPad, 5);
+                    return string.Format(UiStrings.KeyNumberPad, 5);
                 case Keys.D6:
                     return @"6";
                 case Keys.NumPad6:
-                    return string.Format(Resources.KeyNumberPad, 6);
+                    return string.Format(UiStrings.KeyNumberPad, 6);
                 case Keys.D7:
                     return @"7";
                 case Keys.NumPad7:
-                    return string.Format(Resources.KeyNumberPad, 7);
+                    return string.Format(UiStrings.KeyNumberPad, 7);
                 case Keys.D8:
                     return @"8";
                 case Keys.NumPad8:
-                    return string.Format(Resources.KeyNumberPad, 8);
+                    return string.Format(UiStrings.KeyNumberPad, 8);
                 case Keys.D9:
                     return @"9";
                 case Keys.NumPad9:
-                    return string.Format(Resources.KeyNumberPad, 9);
+                    return string.Format(UiStrings.KeyNumberPad, 9);
 
                 //punctuation
                 case Keys.Add:
-                    return string.Format(Resources.KeyNumberPad, @"+");
+                    return string.Format(UiStrings.KeyNumberPad, @"+");
                 case Keys.Subtract:
-                    return string.Format(Resources.KeyNumberPad, @"-");
+                    return string.Format(UiStrings.KeyNumberPad, @"-");
                 case Keys.Divide:
-                    return string.Format(Resources.KeyNumberPad, @"/");
+                    return string.Format(UiStrings.KeyNumberPad, @"/");
                 case Keys.Multiply:
-                    return string.Format(Resources.KeyNumberPad, @"*");
+                    return string.Format(UiStrings.KeyNumberPad, @"*");
                 case Keys.Space:
-                    return Resources.KeySpace;
+                    return UiStrings.KeySpace;
                 case Keys.Decimal:
-                    return string.Format(Resources.KeyNumberPad, @".");
+                    return string.Format(UiStrings.KeyNumberPad, @".");
 
                 //function
                 case Keys.F1:
@@ -220,109 +220,109 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //navigation
                 case Keys.Up:
-                    return Resources.KeyUpArrow;
+                    return UiStrings.KeyUpArrow;
                 case Keys.Down:
-                    return Resources.KeyDownArrow;
+                    return UiStrings.KeyDownArrow;
                 case Keys.Left:
-                    return Resources.KeyLeftArrow;
+                    return UiStrings.KeyLeftArrow;
                 case Keys.Right:
-                    return Resources.KeyRightArrow;
+                    return UiStrings.KeyRightArrow;
                 case Keys.Prior:
-                    return Resources.KeyPageUp;
+                    return UiStrings.KeyPageUp;
                 case Keys.Next:
-                    return Resources.KeyPageDown;
+                    return UiStrings.KeyPageDown;
                 case Keys.Home:
-                    return Resources.KeyHome;
+                    return UiStrings.KeyHome;
                 case Keys.End:
-                    return Resources.KeyEnd;
+                    return UiStrings.KeyEnd;
 
                 //control keys
                 case Keys.Back:
-                    return Resources.KeyBackspace;
+                    return UiStrings.KeyBackspace;
                 case Keys.Tab:
-                    return Resources.KeyTab;
+                    return UiStrings.KeyTab;
                 case Keys.Escape:
-                    return Resources.KeyEscape;
+                    return UiStrings.KeyEscape;
                 case Keys.Enter:
-                    return Resources.KeyEnter;
+                    return UiStrings.KeyEnter;
                 case Keys.Shift:
                 case Keys.ShiftKey:
-                    return Resources.KeyShift;
+                    return UiStrings.KeyShift;
                 case Keys.LShiftKey:
-                    return Resources.KeyShiftLeft;
+                    return UiStrings.KeyShiftLeft;
                 case Keys.RShiftKey:
-                    return Resources.KeyShiftRight;
+                    return UiStrings.KeyShiftRight;
                 case Keys.Control:
                 case Keys.ControlKey:
-                    return Resources.KeyControl;
+                    return UiStrings.KeyControl;
                 case Keys.LControlKey:
-                    return Resources.KeyControlLeft;
+                    return UiStrings.KeyControlLeft;
                 case Keys.RControlKey:
-                    return Resources.KeyControlRight;
+                    return UiStrings.KeyControlRight;
                 case Keys.Menu:
                 case Keys.Alt:
-                    return Resources.KeyAlt;
+                    return UiStrings.KeyAlt;
                 case Keys.LMenu:
-                    return Resources.KeyAltLeft;
+                    return UiStrings.KeyAltLeft;
                 case Keys.RMenu:
-                    return Resources.KeyAltRight;
+                    return UiStrings.KeyAltRight;
                 case Keys.Pause:
-                    return Resources.KeyPause;
+                    return UiStrings.KeyPause;
                 case Keys.CapsLock:
-                    return Resources.KeyCapsLock;
+                    return UiStrings.KeyCapsLock;
                 case Keys.NumLock:
-                    return Resources.KeyNumLock;
+                    return UiStrings.KeyNumLock;
                 case Keys.Scroll:
-                    return Resources.KeyScrollLock;
+                    return UiStrings.KeyScrollLock;
                 case Keys.PrintScreen:
-                    return Resources.KeyPrintScreen;
+                    return UiStrings.KeyPrintScreen;
                 case Keys.Insert:
-                    return Resources.KeyInsert;
+                    return UiStrings.KeyInsert;
                 case Keys.Delete:
-                    return Resources.KeyDelete;
+                    return UiStrings.KeyDelete;
                 case Keys.Help:
-                    return Resources.KeyHelp;
+                    return UiStrings.KeyHelp;
                 case Keys.LWin:
-                    return Resources.KeyWindowsLeft;
+                    return UiStrings.KeyWindowsLeft;
                 case Keys.RWin:
-                    return Resources.KeyWindowsRight;
+                    return UiStrings.KeyWindowsRight;
                 case Keys.Apps:
-                    return Resources.KeyContextMenu;
+                    return UiStrings.KeyContextMenu;
 
                 //browser keys
                 case Keys.BrowserBack:
-                    return Resources.KeyBrowserBack;
+                    return UiStrings.KeyBrowserBack;
                 case Keys.BrowserFavorites:
-                    return Resources.KeyBrowserFavorites;
+                    return UiStrings.KeyBrowserFavorites;
                 case Keys.BrowserForward:
-                    return Resources.KeyBrowserForward;
+                    return UiStrings.KeyBrowserForward;
                 case Keys.BrowserHome:
-                    return Resources.KeyBrowserHome;
+                    return UiStrings.KeyBrowserHome;
                 case Keys.BrowserRefresh:
-                    return Resources.KeyBrowserRefresh;
+                    return UiStrings.KeyBrowserRefresh;
                 case Keys.BrowserSearch:
-                    return Resources.KeyBrowserSearch;
+                    return UiStrings.KeyBrowserSearch;
                 case Keys.BrowserStop:
-                    return Resources.KeyBrowserStop;
+                    return UiStrings.KeyBrowserStop;
 
                 //media keys
                 case Keys.VolumeDown:
-                    return Resources.KeyVolumeDown;
+                    return UiStrings.KeyVolumeDown;
                 case Keys.VolumeMute:
-                    return Resources.KeyVolumeMute;
+                    return UiStrings.KeyVolumeMute;
                 case Keys.VolumeUp:
-                    return Resources.KeyVolumeUp;
+                    return UiStrings.KeyVolumeUp;
                 case Keys.MediaNextTrack:
-                    return Resources.KeyMediaNextTrack;
+                    return UiStrings.KeyMediaNextTrack;
                 case Keys.Play:
                 case Keys.MediaPlayPause:
-                    return Resources.KeyMediaPlayPause;
+                    return UiStrings.KeyMediaPlayPause;
                 case Keys.MediaPreviousTrack:
-                    return Resources.KeyMediaPreviousTrack;
+                    return UiStrings.KeyMediaPreviousTrack;
                 case Keys.MediaStop:
-                    return Resources.KeyMediaStop;
+                    return UiStrings.KeyMediaStop;
                 case Keys.SelectMedia:
-                    return Resources.KeySelectMedia;
+                    return UiStrings.KeySelectMedia;
 
                 //IME keys
                 case Keys.HanjaMode:
@@ -337,13 +337,13 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //special keys
                 case Keys.LaunchMail:
-                    return Resources.KeyLaunchMail;
+                    return UiStrings.KeyLaunchMail;
                 case Keys.LaunchApplication1:
-                    return Resources.KeyLaunchApplication1;
+                    return UiStrings.KeyLaunchApplication1;
                 case Keys.LaunchApplication2:
-                    return Resources.KeyLaunchApplication2;
+                    return UiStrings.KeyLaunchApplication2;
                 case Keys.Zoom:
-                    return Resources.KeyZoom;
+                    return UiStrings.KeyZoom;
 
                 //oem keys 
                 case Keys.OemSemicolon: //oem1
@@ -443,57 +443,57 @@ namespace FirstFloor.ModernUI.Helpers {
                 case Key.D0:
                     return @"0";
                 case Key.NumPad0:
-                    return string.Format(Resources.KeyNumberPad, 0);
+                    return string.Format(UiStrings.KeyNumberPad, 0);
                 case Key.D1:
                     return @"1";
                 case Key.NumPad1:
-                    return string.Format(Resources.KeyNumberPad, 1);
+                    return string.Format(UiStrings.KeyNumberPad, 1);
                 case Key.D2:
                     return @"2";
                 case Key.NumPad2:
-                    return string.Format(Resources.KeyNumberPad, 2);
+                    return string.Format(UiStrings.KeyNumberPad, 2);
                 case Key.D3:
                     return @"3";
                 case Key.NumPad3:
-                    return string.Format(Resources.KeyNumberPad, 3);
+                    return string.Format(UiStrings.KeyNumberPad, 3);
                 case Key.D4:
                     return @"4";
                 case Key.NumPad4:
-                    return string.Format(Resources.KeyNumberPad, 4);
+                    return string.Format(UiStrings.KeyNumberPad, 4);
                 case Key.D5:
                     return @"5";
                 case Key.NumPad5:
-                    return string.Format(Resources.KeyNumberPad, 5);
+                    return string.Format(UiStrings.KeyNumberPad, 5);
                 case Key.D6:
                     return @"6";
                 case Key.NumPad6:
-                    return string.Format(Resources.KeyNumberPad, 6);
+                    return string.Format(UiStrings.KeyNumberPad, 6);
                 case Key.D7:
                     return @"7";
                 case Key.NumPad7:
-                    return string.Format(Resources.KeyNumberPad, 7);
+                    return string.Format(UiStrings.KeyNumberPad, 7);
                 case Key.D8:
                     return @"8";
                 case Key.NumPad8:
-                    return string.Format(Resources.KeyNumberPad, 8);
+                    return string.Format(UiStrings.KeyNumberPad, 8);
                 case Key.D9:
                     return @"9";
                 case Key.NumPad9:
-                    return string.Format(Resources.KeyNumberPad, 9);
+                    return string.Format(UiStrings.KeyNumberPad, 9);
 
                 //punctuation
                 case Key.Add:
-                    return string.Format(Resources.KeyNumberPad, @"+");
+                    return string.Format(UiStrings.KeyNumberPad, @"+");
                 case Key.Subtract:
-                    return string.Format(Resources.KeyNumberPad, @"-");
+                    return string.Format(UiStrings.KeyNumberPad, @"-");
                 case Key.Divide:
-                    return string.Format(Resources.KeyNumberPad, @"/");
+                    return string.Format(UiStrings.KeyNumberPad, @"/");
                 case Key.Multiply:
-                    return string.Format(Resources.KeyNumberPad, @"*");
+                    return string.Format(UiStrings.KeyNumberPad, @"*");
                 case Key.Space:
-                    return Resources.KeySpace;
+                    return UiStrings.KeySpace;
                 case Key.Decimal:
-                    return string.Format(Resources.KeyNumberPad, @".");
+                    return string.Format(UiStrings.KeyNumberPad, @".");
 
                 //function
                 case Key.F1:
@@ -524,100 +524,100 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //navigation
                 case Key.Up:
-                    return Resources.KeyUpArrow;
+                    return UiStrings.KeyUpArrow;
                 case Key.Down:
-                    return Resources.KeyDownArrow;
+                    return UiStrings.KeyDownArrow;
                 case Key.Left:
-                    return Resources.KeyLeftArrow;
+                    return UiStrings.KeyLeftArrow;
                 case Key.Right:
-                    return Resources.KeyRightArrow;
+                    return UiStrings.KeyRightArrow;
                 case Key.Prior:
-                    return Resources.KeyPageUp;
+                    return UiStrings.KeyPageUp;
                 case Key.Next:
-                    return Resources.KeyPageDown;
+                    return UiStrings.KeyPageDown;
                 case Key.Home:
-                    return Resources.KeyHome;
+                    return UiStrings.KeyHome;
                 case Key.End:
-                    return Resources.KeyEnd;
+                    return UiStrings.KeyEnd;
 
                 //control Key
                 case Key.Back:
-                    return Resources.KeyBackspace;
+                    return UiStrings.KeyBackspace;
                 case Key.Tab:
-                    return Resources.KeyTab;
+                    return UiStrings.KeyTab;
                 case Key.Escape:
-                    return Resources.KeyEscape;
+                    return UiStrings.KeyEscape;
                 case Key.Enter:
-                    return Resources.KeyEnter;
+                    return UiStrings.KeyEnter;
                 case Key.LeftShift:
-                    return Resources.KeyShiftLeft;
+                    return UiStrings.KeyShiftLeft;
                 case Key.RightShift:
-                    return Resources.KeyShiftRight;
+                    return UiStrings.KeyShiftRight;
                 case Key.LeftCtrl:
-                    return Resources.KeyControlLeft;
+                    return UiStrings.KeyControlLeft;
                 case Key.RightCtrl:
-                    return Resources.KeyControlRight;
+                    return UiStrings.KeyControlRight;
                 case Key.LeftAlt:
-                    return Resources.KeyAltLeft;
+                    return UiStrings.KeyAltLeft;
                 case Key.RightAlt:
-                    return Resources.KeyAltRight;
+                    return UiStrings.KeyAltRight;
                 case Key.Pause:
-                    return Resources.KeyPause;
+                    return UiStrings.KeyPause;
                 case Key.CapsLock:
-                    return Resources.KeyCapsLock;
+                    return UiStrings.KeyCapsLock;
                 case Key.NumLock:
-                    return Resources.KeyNumLock;
+                    return UiStrings.KeyNumLock;
                 case Key.Scroll:
-                    return Resources.KeyScrollLock;
+                    return UiStrings.KeyScrollLock;
                 case Key.PrintScreen:
-                    return Resources.KeyPrintScreen;
+                    return UiStrings.KeyPrintScreen;
                 case Key.Insert:
-                    return Resources.KeyInsert;
+                    return UiStrings.KeyInsert;
                 case Key.Delete:
-                    return Resources.KeyDelete;
+                    return UiStrings.KeyDelete;
                 case Key.Help:
-                    return Resources.KeyHelp;
+                    return UiStrings.KeyHelp;
                 case Key.LWin:
-                    return Resources.KeyWindowsLeft;
+                    return UiStrings.KeyWindowsLeft;
                 case Key.RWin:
-                    return Resources.KeyWindowsRight;
+                    return UiStrings.KeyWindowsRight;
                 case Key.Apps:
-                    return Resources.KeyContextMenu;
+                    return UiStrings.KeyContextMenu;
 
                 //browser Key
                 case Key.BrowserBack:
-                    return Resources.KeyBrowserBack;
+                    return UiStrings.KeyBrowserBack;
                 case Key.BrowserFavorites:
-                    return Resources.KeyBrowserFavorites;
+                    return UiStrings.KeyBrowserFavorites;
                 case Key.BrowserForward:
-                    return Resources.KeyBrowserForward;
+                    return UiStrings.KeyBrowserForward;
                 case Key.BrowserHome:
-                    return Resources.KeyBrowserHome;
+                    return UiStrings.KeyBrowserHome;
                 case Key.BrowserRefresh:
-                    return Resources.KeyBrowserRefresh;
+                    return UiStrings.KeyBrowserRefresh;
                 case Key.BrowserSearch:
-                    return Resources.KeyBrowserSearch;
+                    return UiStrings.KeyBrowserSearch;
                 case Key.BrowserStop:
-                    return Resources.KeyBrowserStop;
+                    return UiStrings.KeyBrowserStop;
 
                 //media Key
                 case Key.VolumeDown:
-                    return Resources.KeyVolumeDown;
+                    return UiStrings.KeyVolumeDown;
                 case Key.VolumeMute:
-                    return Resources.KeyVolumeMute;
+                    return UiStrings.KeyVolumeMute;
                 case Key.VolumeUp:
-                    return Resources.KeyVolumeUp;
+                    return UiStrings.KeyVolumeUp;
                 case Key.MediaNextTrack:
-                    return Resources.KeyMediaNextTrack;
+                    return UiStrings.KeyMediaNextTrack;
                 case Key.Play:
                 case Key.MediaPlayPause:
-                    return Resources.KeyMediaPlayPause;
+                    return UiStrings.KeyMediaPlayPause;
                 case Key.MediaPreviousTrack:
-                    return Resources.KeyMediaPreviousTrack;
+                    return UiStrings.KeyMediaPreviousTrack;
                 case Key.MediaStop:
-                    return Resources.KeyMediaStop;
+                    return UiStrings.KeyMediaStop;
                 case Key.SelectMedia:
-                    return Resources.KeySelectMedia;
+                    return UiStrings.KeySelectMedia;
 
                 //IME Key
                 case Key.HanjaMode:
@@ -628,13 +628,13 @@ namespace FirstFloor.ModernUI.Helpers {
 
                 //special Key
                 case Key.LaunchMail:
-                    return Resources.KeyLaunchMail;
+                    return UiStrings.KeyLaunchMail;
                 case Key.LaunchApplication1:
-                    return Resources.KeyLaunchApplication1;
+                    return UiStrings.KeyLaunchApplication1;
                 case Key.LaunchApplication2:
-                    return Resources.KeyLaunchApplication2;
+                    return UiStrings.KeyLaunchApplication2;
                 case Key.Zoom:
-                    return Resources.KeyZoom;
+                    return UiStrings.KeyZoom;
 
                 //oem Key 
                 case Key.OemSemicolon:

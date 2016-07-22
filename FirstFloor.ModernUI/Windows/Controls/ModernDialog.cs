@@ -137,39 +137,39 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Gets the Ok button.
         /// </summary>
         public Button OkButton => _okButton ??
-                (_okButton = CreateCloseDialogButton(ModernUI.Resources.Ok, true, false, MessageBoxResult.OK));
+                (_okButton = CreateCloseDialogButton(ModernUI.UiStrings.Ok, true, false, MessageBoxResult.OK));
 
         /// <summary>
         /// Gets the Go button (result is MessageBoxResult.OK).
         /// </summary>
         public Button GoButton => _goButton ??
                 (_goButton =
-                        CreateStyledCloseDialogButton(@"Go.Button", ModernUI.Resources.Go, true, false, MessageBoxResult.OK));
+                        CreateStyledCloseDialogButton(@"Go.Button", ModernUI.UiStrings.Go, true, false, MessageBoxResult.OK));
 
         /// <summary>
         /// Gets the Cancel button.
         /// </summary>
         public Button CancelButton => _cancelButton ??
-                (_cancelButton = CreateCloseDialogButton(ModernUI.Resources.Cancel, false, true, MessageBoxResult.Cancel));
+                (_cancelButton = CreateCloseDialogButton(ModernUI.UiStrings.Cancel, false, true, MessageBoxResult.Cancel));
 
         /// <summary>
         /// Gets the Yes button.
         /// </summary>
         public Button YesButton => _yesButton ??
-                (_yesButton = CreateCloseDialogButton(ModernUI.Resources.Yes, true, false, MessageBoxResult.Yes));
+                (_yesButton = CreateCloseDialogButton(ModernUI.UiStrings.Yes, true, false, MessageBoxResult.Yes));
 
         /// <summary>
         /// Gets the No button.
         /// </summary>
         public Button NoButton => _noButton ??
-                (_noButton = CreateCloseDialogButton(ModernUI.Resources.No, false, true, MessageBoxResult.No));
+                (_noButton = CreateCloseDialogButton(ModernUI.UiStrings.No, false, true, MessageBoxResult.No));
 
         /// <summary>
         /// Gets the Close button.
         /// </summary>
         public Button CloseButton => _closeButton ??
                 (_closeButton =
-                        CreateCloseDialogButton(ModernUI.Resources.Close, true, false, MessageBoxResult.None));
+                        CreateCloseDialogButton(ModernUI.UiStrings.Close, true, false, MessageBoxResult.None));
 
         /// <summary>
         /// Gets or sets the background content of this window instance.

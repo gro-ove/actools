@@ -94,7 +94,4 @@ del AssemblyInfo.cs~</PreBuildEvent>
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release packedhelper "$(ProjectPath)"</PostBuildEvent>
   </PropertyGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="References.resources" />
-  </ItemGroup>
 </Project>

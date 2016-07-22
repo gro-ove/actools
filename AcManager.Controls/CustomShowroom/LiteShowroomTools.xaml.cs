@@ -273,37 +273,41 @@ namespace AcManager.Controls.CustomShowroom {
                     if (Renderer?.AmbientShadowSizeChanged == true) return;
                 }
 
-                using (var waiting = new WaitingDialog()) {
-                    waiting.Report(Controls.Resources.CustomShowroom_AmbientShadows_Updating);
+                try {
+                    using (var waiting = new WaitingDialog()) {
+                        waiting.Report(ControlsStrings.CustomShowroom_AmbientShadows_Updating);
 
-                    await Task.Run(() => {
-                        if (Renderer == null) return;
-                        using (var renderer = new AmbientShadowKn5ObjectRenderer(Renderer.Kn5, Car.Location)) {
-                            renderer.DiffusionLevel = (float)AmbientShadowDiffusion / 100f;
-                            renderer.SkyBrightnessLevel = (float)AmbientShadowBrightness / 100f;
-                            renderer.Iterations = AmbientShadowIterations;
-                            renderer.HideWheels = AmbientShadowHideWheels;
-                            renderer.Fade = AmbientShadowFade;
+                        await Task.Run(() => {
+                            if (Renderer == null) return;
+                            using (var renderer = new AmbientShadowKn5ObjectRenderer(Renderer.Kn5, Car.Location)) {
+                                renderer.DiffusionLevel = (float)AmbientShadowDiffusion / 100f;
+                                renderer.SkyBrightnessLevel = (float)AmbientShadowBrightness / 100f;
+                                renderer.Iterations = AmbientShadowIterations;
+                                renderer.HideWheels = AmbientShadowHideWheels;
+                                renderer.Fade = AmbientShadowFade;
 
-                            renderer.Initialize();
-                            renderer.Shot();
+                                renderer.Initialize();
+                                renderer.Shot();
+                            }
+                        });
+
+                        waiting.Report(ControlsStrings.CustomShowroom_AmbientShadows_Reloading);
+
+                        foreach (var s in new[] {
+                            @"body_shadow.png",
+                            @"tyre_0_shadow.png",
+                            @"tyre_1_shadow.png",
+                            @"tyre_2_shadow.png",
+                            @"tyre_3_shadow.png"
+                        }) {
+                            if (Renderer == null) return;
+                            await Renderer.UpdateTextureAsync(Path.Combine(Car.Location, s));
                         }
-                    });
 
-                    waiting.Report(Controls.Resources.CustomShowroom_AmbientShadows_Reloading);
-
-                    foreach (var s in new[] {
-                        @"body_shadow.png",
-                        @"tyre_0_shadow.png",
-                        @"tyre_1_shadow.png",
-                        @"tyre_2_shadow.png",
-                        @"tyre_3_shadow.png"
-                    }) {
-                        if (Renderer == null) return;
-                        await Renderer.UpdateTextureAsync(Path.Combine(Car.Location, s));
+                        GC.Collect();
                     }
-
-                    GC.Collect();
+                } catch (Exception e) {
+                    NonfatalError.Notify(ControlsStrings.CustomShowroom_AmbientShadows_CannotUpdate, e);
                 }
             }));
 
@@ -311,8 +315,8 @@ namespace AcManager.Controls.CustomShowroom {
 
             public RelayCommand AmbientShadowSizeSaveCommand => _ambientShadowSizeSaveCommand ?? (_ambientShadowSizeSaveCommand = new RelayCommand(o => {
                 if (Renderer == null || File.Exists(Path.Combine(Car.Location, "data.acd")) && ModernDialog.ShowMessage(
-                        Controls.Resources.CustomShowroom_AmbientShadowsSize_EncryptedDataMessage,
-                        Controls.Resources.CustomShowroom_AmbientShadowsSize_EncryptedData, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+                        ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedDataMessage,
+                        ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedData, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
                 var data = Path.Combine(Car.Location, "data");
                 Directory.CreateDirectory(data);
@@ -374,11 +378,11 @@ namespace AcManager.Controls.CustomShowroom {
 
                     var destination = Path.Combine(Car.Location, "unpacked");
 
-                    using (var waiting = new WaitingDialog(Tools.Resources.Common_Exporting)) {
+                    using (var waiting = new WaitingDialog(Tools.ToolsStrings.Common_Exporting)) {
                         await Task.Delay(1);
 
                         if (FileUtils.Exists(destination) &&
-                                MessageBox.Show(string.Format(Controls.Resources.Common_FolderExists, @"unpacked"), Tools.Resources.Common_Destination,
+                                MessageBox.Show(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"), Tools.ToolsStrings.Common_Destination,
                                         MessageBoxButton.YesNo) == MessageBoxResult.No) {
                             var temp = destination;
                             var i = 1;
@@ -399,7 +403,7 @@ namespace AcManager.Controls.CustomShowroom {
 
                     Process.Start(destination);
                 } catch (Exception e) {
-                    NonfatalError.Notify(string.Format(Tools.Resources.Common_CannotUnpack, Tools.Resources.Common_KN5), e);
+                    NonfatalError.Notify(string.Format(Tools.ToolsStrings.Common_CannotUnpack, Tools.ToolsStrings.Common_KN5), e);
                 }
             }, o => SettingsHolder.Common.MsMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.Kn5 != null));
             #endregion
@@ -432,7 +436,7 @@ namespace AcManager.Controls.CustomShowroom {
                 var obj = Renderer?.SelectedObject.OriginalNode;
                 if (obj == null) return;
 
-                ShowMessage(string.Format(Controls.Resources.CustomShowroom_ObjectInformation, obj.Name, obj.NodeClass.GetDescription(), obj.Active,
+                ShowMessage(string.Format(ControlsStrings.CustomShowroom_ObjectInformation, obj.Name, obj.NodeClass.GetDescription(), obj.Active,
                         obj.IsRenderable, obj.IsVisible, obj.IsTransparent, obj.CastShadows, obj.Layer,
                         obj.LodIn, obj.LodOut, Renderer.SelectedMaterial?.Name ?? @"?"), obj.Name);
             }, o => Renderer?.SelectedObject != null));
@@ -451,13 +455,13 @@ namespace AcManager.Controls.CustomShowroom {
                 if (material == null) return;
 
                 var sb = new StringBuilder();
-                sb.Append(string.Format(Controls.Resources.CustomShowroom_MaterialInformation, material.Name, material.ShaderName,
+                sb.Append(string.Format(ControlsStrings.CustomShowroom_MaterialInformation, material.Name, material.ShaderName,
                         material.BlendMode.GetDescription(), material.AlphaTested, material.DepthMode.GetDescription()));
 
                 if (material.ShaderProperties.Any()) {
                     sb.Append('\n');
                     sb.Append('\n');
-                    sb.Append(Controls.Resources.CustomShowroom_ShaderProperties);
+                    sb.Append(ControlsStrings.CustomShowroom_ShaderProperties);
                     sb.Append('\n');
                     sb.Append(material.ShaderProperties.Select(x => $"    • {x.Name}: [b]{MaterialPropertyToString(x)}[/b]").JoinToString('\n'));
                 }
@@ -465,7 +469,7 @@ namespace AcManager.Controls.CustomShowroom {
                 if (material.TextureMappings.Any()) {
                     sb.Append('\n');
                     sb.Append('\n');
-                    sb.Append(Controls.Resources.CustomShowroom_Selected_TexturesLabel);
+                    sb.Append(ControlsStrings.CustomShowroom_Selected_TexturesLabel);
                     sb.Append('\n');
                     sb.Append(material.TextureMappings.Select(x => $"    • {x.Name}: [b]{x.Texture}[/b]").JoinToString('\n'));
                 }

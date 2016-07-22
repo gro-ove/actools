@@ -184,15 +184,15 @@ namespace AcManager.Controls.Presentation {
 
         public Link[] Themes { get; } = {
             new Link {
-                DisplayName = Resources.Theme_Nordschleife,
+                DisplayName = ControlsStrings.Theme_Nordschleife,
                 Source = new Uri(UriDefaultTheme, UriKind.Relative)
             },
             new Link {
-                DisplayName = Resources.Theme_Dark,
+                DisplayName = ControlsStrings.Theme_Dark,
                 Source = AppearanceManager.DarkThemeSource
             },
             new Link {
-                DisplayName = Resources.Theme_Light,
+                DisplayName = ControlsStrings.Theme_Light,
                 Source = AppearanceManager.LightThemeSource
             }
         };
@@ -246,11 +246,11 @@ namespace AcManager.Controls.Presentation {
         }
 
         public FrameAnimationEntry[] FrameAnimations { get; } = {
-            new FrameAnimationEntry("Normal", Tools.Resources.Common_Disabled),
-            new FrameAnimationEntry("ModernUITransition", Resources.Animation_Modern),
-            new FrameAnimationEntry("DefaultTransition", Resources.Animation_Fade),
-            new FrameAnimationEntry("UpTransition", Resources.Animation_Up),
-            new FrameAnimationEntry("DownTransition", Resources.Animation_Down)
+            new FrameAnimationEntry("Normal", Tools.ToolsStrings.Common_Disabled),
+            new FrameAnimationEntry("ModernUITransition", ControlsStrings.Animation_Modern),
+            new FrameAnimationEntry("DefaultTransition", ControlsStrings.Animation_Fade),
+            new FrameAnimationEntry("UpTransition", ControlsStrings.Animation_Up),
+            new FrameAnimationEntry("DownTransition", ControlsStrings.Animation_Down)
         };
 
         private FrameAnimationEntry _frameAnimation;

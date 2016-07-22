@@ -96,7 +96,7 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
-                <!--<Button Command="{Binding TestCommand, ElementName=This}" Margin="0 0 4 0" Content="Test" />-->
+                <!--<Button Command="{Binding TestCommand, ElementName=This}" Margin="0 0 4 0" Content="{x:Static g:AppStrings.Toolbar_Test}" />-->
                 <Button Visibility="{Binding CanQuit, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Command="{Binding QuitCommand, ElementName=This}" ToolTip="Quit registration" Margin="0 0 4 0" Content="Quit" />
                 <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)" Content="Go!" />

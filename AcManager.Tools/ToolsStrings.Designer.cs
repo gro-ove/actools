@@ -22,14 +22,14 @@ namespace AcManager.Tools {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    public class ToolsStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal ToolsStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace AcManager.Tools {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -216,9 +216,9 @@ namespace AcManager.Tools {
         /// <summary>
         ///   Looks up a localized string similar to Required skin “{1}” for {0} is missing.
         /// </summary>
-        public static string AcError_RequiredSkin1ForIsMissing {
+        public static string AcError_RequiredSkinForIsMissing {
             get {
-                return ResourceManager.GetString("AcError_RequiredSkin1ForIsMissing", resourceCulture);
+                return ResourceManager.GetString("AcError_RequiredSkinForIsMissing", resourceCulture);
             }
         }
         
@@ -363,6 +363,15 @@ namespace AcManager.Tools {
         public static string AcObject_CannotDelete {
             get {
                 return ResourceManager.GetString("AcObject_CannotDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot get ID from path.
+        /// </summary>
+        public static string AcObject_CannotGetId {
+            get {
+                return ResourceManager.GetString("AcObject_CannotGetId", resourceCulture);
             }
         }
         
@@ -1051,6 +1060,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t Do.
+        /// </summary>
+        public static string Common_CannotDo {
+            get {
+                return ResourceManager.GetString("Common_CannotDo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t download file.
         /// </summary>
         public static string Common_CannotDownloadFile {
@@ -1065,6 +1083,15 @@ namespace AcManager.Tools {
         public static string Common_CannotDownloadFile_Commentary {
             get {
                 return ResourceManager.GetString("Common_CannotDownloadFile_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t read data.
+        /// </summary>
+        public static string Common_CannotReadData {
+            get {
+                return ResourceManager.GetString("Common_CannotReadData", resourceCulture);
             }
         }
         
@@ -1105,6 +1132,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ID is missing.
+        /// </summary>
+        public static string Common_IdIsMissing {
+            get {
+                return ResourceManager.GetString("Common_IdIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to KN5.
         /// </summary>
         public static string Common_KN5 {
@@ -1119,6 +1155,24 @@ namespace AcManager.Tools {
         public static string Common_Length {
             get {
                 return ResourceManager.GetString("Common_Length", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure Internet-connection works..
+        /// </summary>
+        public static string Common_MakeSureInternetWorks {
+            get {
+                return ResourceManager.GetString("Common_MakeSureInternetWorks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure there is enough space..
+        /// </summary>
+        public static string Common_MakeSureThereIsEnoughSpace {
+            get {
+                return ResourceManager.GetString("Common_MakeSureThereIsEnoughSpace", resourceCulture);
             }
         }
         
@@ -1164,6 +1218,15 @@ namespace AcManager.Tools {
         public static string Common_Torque {
             get {
                 return ResourceManager.GetString("Common_Torque", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string Common_Warning {
+            get {
+                return ResourceManager.GetString("Common_Warning", resourceCulture);
             }
         }
         
@@ -2014,15 +2077,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure internet-connection is working..
-        /// </summary>
-        public static string Online_CannotLoadData_Commentary {
-            get {
-                return ResourceManager.GetString("Online_CannotLoadData_Commentary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Can’t parse address.
         /// </summary>
         public static string Online_CannotParseAddress {
@@ -2310,15 +2364,6 @@ namespace AcManager.Tools {
         public static string PpFilterObject_MakeSureCouldBeOverwritten {
             get {
                 return ResourceManager.GetString("PpFilterObject_MakeSureCouldBeOverwritten", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Can’t Do.
-        /// </summary>
-        public static string Presets_CannotDo {
-            get {
-                return ResourceManager.GetString("Presets_CannotDo", resourceCulture);
             }
         }
         
@@ -2877,15 +2922,6 @@ namespace AcManager.Tools {
         public static string Uploader_CannotShareGoogleDrive {
             get {
                 return ResourceManager.GetString("Uploader_CannotShareGoogleDrive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Make sure there is enough space..
-        /// </summary>
-        public static string Uploader_CannotUpload_Commentary {
-            get {
-                return ResourceManager.GetString("Uploader_CannotUpload_Commentary", resourceCulture);
             }
         }
         

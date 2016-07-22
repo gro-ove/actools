@@ -183,7 +183,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [CanBeNull]
         public static ServerInformation[] TryToGetList() {
-            if (SteamIdHelper.Instance.Value == null) throw new Exception(Resources.Common_SteamIdIsMissing);
+            if (SteamIdHelper.Instance.Value == null) throw new Exception(ToolsStrings.Common_SteamIdIsMissing);
 
             for (var i = 0; i < ServersNumber && ServerUri != null; i++) {
                 var uri = ServerUri;
@@ -211,7 +211,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [CanBeNull]
         public static ServerInformation TryToGetInformation(string ip, int port) {
-            if (SteamIdHelper.Instance.Value == null) throw new Exception(Resources.Common_SteamIdIsMissing);
+            if (SteamIdHelper.Instance.Value == null) throw new Exception(ToolsStrings.Common_SteamIdIsMissing);
 
             while (ServerUri != null) {
                 var requestUri = $"http://{ServerUri}/lobby.ashx/single?ip={ip}&port={port}&guid={SteamIdHelper.Instance.Value}";

@@ -22,7 +22,7 @@ namespace AcManager.Pages.Dialogs {
                 CreateExtraDialogButton("Find It", new RelayCommand(o => {
                     MapWebBrowser.InvokeScript("moveTo", GetQuery(Model.Track));
                 })),
-                CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, new CombinedCommand(Model.SaveCommand, CloseCommand)),
+                CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, new CombinedCommand(Model.SaveCommand, CloseCommand)),
                 CancelButton
             };
 

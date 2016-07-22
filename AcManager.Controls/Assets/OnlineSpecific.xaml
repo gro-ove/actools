@@ -22,7 +22,7 @@
                 <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
                         DockPanel.Dock="Left" Margin="0 0 4 0" />
                 <TextBlock>
-                    <Run Text="{x:Static c:Resources.Online_CarIsMissingLabel}" />
+                    <Run Text="{x:Static c:ControlsStrings.Online_CarIsMissingLabel}" />
                     <Run Text="{Binding CarId, Mode=OneWay}" FontWeight="Bold" />
                 </TextBlock>
             </DockPanel>
@@ -39,7 +39,7 @@
                 <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
                         DockPanel.Dock="Left" Margin="0 0 4 0" />
                 <TextBlock>
-                    <Run Text="{x:Static c:Resources.Online_TrackIsMissingLabel}" />
+                    <Run Text="{x:Static c:ControlsStrings.Online_TrackIsMissingLabel}" />
                     <Run Text="{Binding TrackId, Mode=OneWay}" FontWeight="Bold" />
                 </TextBlock>
             </DockPanel>
@@ -59,7 +59,7 @@
     <!--tooltips for clients-->
     <ToolTip x:Key="ClientsTooltip" d:DataContext="{d:DesignInstance o:ServerEntry}">
         <StackPanel Visibility="{Binding CurrentDrivers.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" Margin="4">
-            <TextBlock Text="{x:Static c:Resources.Online_DriversOnlineLabel}" Style="{StaticResource Label}" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Online_DriversOnlineLabel}" Style="{StaticResource Label}" />
             <ItemsControl ItemsSource="{Binding CurrentDrivers}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxHeight="480" MaxWidth="450"
                     ItemTemplate="{StaticResource OnlineDriverEntry}" ItemsPanel="{StaticResource WrapItemsPanel}" />
         </StackPanel>
@@ -105,7 +105,7 @@
         <MenuItem Command="{Binding JoinCommand}">
             <MenuItem.Header>
                 <!--TODO: fallback value?-->
-                <TextBlock Text="{Binding CarsView.CurrentItem.CarObject, FallbackValue='?', StringFormat={x:Static c:Resources.Online_JoinUsing}}" />
+                <TextBlock Text="{Binding CarsView.CurrentItem.CarObject, FallbackValue='?', StringFormat={x:Static c:ControlsStrings.Online_JoinUsing}}" />
             </MenuItem.Header>
         </MenuItem>
         <!--TODO: rework this-->
@@ -137,7 +137,7 @@
                         <DockPanel Grid.Column="0">
                             <Path Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}" Stretch="Uniform"
                                     Visibility="Hidden" x:Name="PasswordIcon" HorizontalAlignment="Left" DockPanel.Dock="Left"
-                                    ToolTip="{x:Static c:Resources.Online_PasswordRequired}" Margin="10 1 2 3" />
+                                    ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Margin="10 1 2 3" />
                             <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" FontSize="{DynamicResource SmallFontSize}" TextWrapping="NoWrap"
                                     TextTrimming="CharacterEllipsis" Margin="2" x:Name="DisplayNameText" />
                         </DockPanel>
@@ -147,14 +147,14 @@
 
                         <StackPanel x:Name="PingPanel" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <TextBlock Text="{Binding Ping, TargetNullValue='?'}" Style="{StaticResource Small}" />
-                            <TextBlock Text="{x:Static c:Resources.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
+                            <TextBlock Text="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
                         </StackPanel>
 
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="Collapsed" x:Name="ErrorIcon" Grid.Column="2" HorizontalAlignment="Right">
                             <Path.ToolTip>
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:Resources.Common_Error}" Margin="4" />
+                                    <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:ControlsStrings.Common_Error}" Margin="4" />
                                     <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="4" />
                                 </StackPanel>
                             </Path.ToolTip>
@@ -206,7 +206,7 @@
                         <!-- first row -->
                         <Path Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}" Stretch="Uniform"
                                 Visibility="Hidden" x:Name="PasswordIcon" HorizontalAlignment="Left" DockPanel.Dock="Left"
-                                ToolTip="{x:Static c:Resources.Online_PasswordRequired}" Margin="10 1 2 3" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" />
+                                ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Margin="10 1 2 3" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" />
 
                         <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap"
                                 TextTrimming="CharacterEllipsis" Margin="2" x:Name="DisplayNameText" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" />
@@ -220,14 +220,14 @@
                         <StackPanel x:Name="PingPanel" Grid.Row="0" Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Right"
                                 VerticalAlignment="Center">
                             <TextBlock Text="{Binding Ping, TargetNullValue=?}" Style="{StaticResource Small}" />
-                            <TextBlock Text="{x:Static c:Resources.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
+                            <TextBlock Text="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
                         </StackPanel>
 
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="Collapsed" x:Name="ErrorIcon" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Right">
                             <Path.ToolTip>
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:Resources.Common_Error}" Margin="4" />
+                                    <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:ControlsStrings.Common_Error}" Margin="4" />
                                     <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="4" />
                                 </StackPanel>
                             </Path.ToolTip>
@@ -306,7 +306,7 @@
                         <!-- first row -->
                         <Path Data="{StaticResource LockIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}" Stretch="Uniform"
                                 Visibility="Hidden" x:Name="PasswordIcon" HorizontalAlignment="Left" DockPanel.Dock="Left"
-                                ToolTip="{x:Static c:Resources.Online_PasswordRequired}" Margin="10 1 2 3" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" />
+                                ToolTip="{x:Static c:ControlsStrings.Online_PasswordRequired}" Margin="10 1 2 3" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" />
 
                         <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap"
                                 TextTrimming="CharacterEllipsis" Margin="2" x:Name="DisplayNameText" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" />
@@ -323,14 +323,14 @@
                         <StackPanel x:Name="PingPanel" Grid.Row="0" Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Right"
                                 VerticalAlignment="Center">
                             <TextBlock Text="{Binding Ping, TargetNullValue=?}" Style="{StaticResource Small}" />
-                            <TextBlock Text="{x:Static c:Resources.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
+                            <TextBlock Text="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
                         </StackPanel>
 
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="Collapsed" x:Name="ErrorIcon" Grid.Row="0" Grid.Column="7" HorizontalAlignment="Right">
                             <Path.ToolTip>
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:Resources.Common_Error}" Margin="4" />
+                                    <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:ControlsStrings.Common_Error}" Margin="4" />
                                     <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="4" />
                                 </StackPanel>
                             </Path.ToolTip>

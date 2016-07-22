@@ -62,7 +62,7 @@ namespace AcManager.Tools.Managers.Presets {
 
             var dialog = new SaveFileDialog {
                 InitialDirectory = presetsDirectory,
-                Filter = string.Format(Resources.Presets_FileFilter, FileExtension),
+                Filter = string.Format(ToolsStrings.Presets_FileFilter, FileExtension),
                 DefaultExt = FileExtension
             };
 
@@ -79,8 +79,8 @@ namespace AcManager.Tools.Managers.Presets {
             filename = dialog.FileName;
 
             if (!filename.StartsWith(presetsDirectory)) {
-                if (ModernDialog.ShowMessage(Resources.Presets_ChooseFileInInitialDirectory,
-                                             Resources.Presets_CannotDo, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                if (ModernDialog.ShowMessage(ToolsStrings.Presets_ChooseFileInInitialDirectory,
+                                             ToolsStrings.Common_CannotDo, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                     SavePresetUsingDialog(category, data, filename, out resultFilename);
                 } else {
                     resultFilename = null;

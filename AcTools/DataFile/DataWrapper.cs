@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using AcTools.AcdFile;
 
@@ -28,7 +29,7 @@ namespace AcTools.DataFile {
 
         public bool IsEmpty => _acd == null;
 
-        public IniFile GetIniFile(string name) {
+        public IniFile GetIniFile([Localizable(false)] string name) {
             AbstractDataFile cached;
             if (_cache.TryGetValue(name, out cached)) return (IniFile)cached;
 

@@ -13,7 +13,7 @@ namespace AcManager.Pages.Settings {
     public partial class SettingsCustomShowroom : ILoadableContent {
         public class ViewModel : NotifyPropertyChanged {
             public class NoneShowroom {
-                public override string ToString() => Tools.Resources.Common_None;
+                public override string ToString() => Tools.ToolsStrings.Common_None;
             }
 
             public SettingsHolder.CustomShowroomSettings Holder => SettingsHolder.CustomShowroom;

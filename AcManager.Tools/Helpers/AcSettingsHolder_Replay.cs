@@ -35,11 +35,11 @@ namespace AcManager.Tools.Helpers {
 
         public class ReplaySettings : IniSettings {
             public SettingEntry[] Qualities { get; } = {
-                new SettingEntry(0, Resources.AcSettings_Quality_Minimum),
-                new SettingEntry(1, Resources.AcSettings_Quality_Low),
-                new SettingEntry(2, Resources.AcSettings_Quality_Medium),
-                new SettingEntry(3, Resources.AcSettings_Quality_High),
-                new SettingEntry(4, Resources.AcSettings_Quality_Ultra)
+                new SettingEntry(0, ToolsStrings.AcSettings_Quality_Minimum),
+                new SettingEntry(1, ToolsStrings.AcSettings_Quality_Low),
+                new SettingEntry(2, ToolsStrings.AcSettings_Quality_Medium),
+                new SettingEntry(3, ToolsStrings.AcSettings_Quality_High),
+                new SettingEntry(4, ToolsStrings.AcSettings_Quality_Ultra)
             };
 
             internal ReplaySettings() : base(@"replay") { }

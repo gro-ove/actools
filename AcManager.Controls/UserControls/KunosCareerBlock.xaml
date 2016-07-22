@@ -109,10 +109,10 @@
             <StackPanel Margin="0 0 0 4" Visibility="{Binding HasErrors, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                 <!--not available-->
                 <DockPanel Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
-                        ToolTip="{x:Static c:Resources.KunosCareer_RequiredSeriesAreNotFinishedYet}" Background="Transparent">
+                        ToolTip="{x:Static c:ControlsStrings.KunosCareer_RequiredSeriesAreNotFinishedYet}" Background="Transparent">
                     <Path Data="{StaticResource LockIconData}" Fill="{DynamicResource WindowText}" SnapsToDevicePixels="True" MaxHeight="10" Stretch="Uniform"
                             DockPanel.Dock="Left" />
-                    <TextBlock Text="{Binding DisplayRequired, StringFormat={x:Static c:Resources.KunosCareer_RequiredSeries}}" Name="LockTextBlock"
+                    <TextBlock Text="{Binding DisplayRequired, StringFormat={x:Static c:ControlsStrings.KunosCareer_RequiredSeries}}" Name="LockTextBlock"
                             Margin="4 0 0 0" />
                 </DockPanel>
 
@@ -129,7 +129,7 @@
                     </StackPanel.Resources>
 
                     <!--completed events: 0/0-->
-                    <TextBlock Text="{x:Static c:Resources.KunosCareer_CompletedLabel}" />
+                    <TextBlock Text="{x:Static c:ControlsStrings.KunosCareer_CompletedLabel}" />
                     <TextBlock FontWeight="Bold">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0}/{1}">
@@ -185,7 +185,7 @@
                             </Run><Run Text="," />
                             <Run Text="{Binding ChampionshipPoints, Mode=OneWay}" FontWeight="Bold" />
                             <Run
-                                    Text="{Binding ChampionshipPoints, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:Resources.KunosCareer_Point}}" />
+                                    Text="{Binding ChampionshipPoints, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.KunosCareer_Point}}" />
                         </TextBlock>
                     </StackPanel>
                 </StackPanel>
@@ -207,7 +207,7 @@
                 <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" MaxHeight="10" Stretch="Uniform" Fill="{DynamicResource Error}"
                         DockPanel.Dock="Left" />
                 <TextBlock Margin="4 0 0 0"
-                        Text="{Binding Errors.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:Resources.KunosCareer_Error}}" />
+                        Text="{Binding Errors.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.KunosCareer_Error}}" />
             </DockPanel>
         </StackPanel>
     </DockPanel>

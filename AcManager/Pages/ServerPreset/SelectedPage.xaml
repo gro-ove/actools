@@ -3,7 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset"
+        xmlns:g="clr-namespace:AcManager"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance serverPreset:SelectedPage+ViewModel}" Unloaded="OnUnloaded">
     <UserControl.Resources>
@@ -17,22 +19,22 @@
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Folder" ToolTip="Open weather's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
-                <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="Open weather's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
-                <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share preset (Ctrl+Page Up)" IsEnabled="False" />
+                <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}" ToolTip="Share preset (Ctrl+Page Up)" IsEnabled="False" />
                 <Button Content="Pack" Command="{Binding PackCommand}" ToolTip="Pack a new package for quick installation on a remote machine (Ctrl+P)"
                         IsEnabled="False" />
                 <Button Content="Run" Style="{StaticResource Go.ToolBarButton}" Command="{Binding GoCommand}"
                         ToolTip="Run a new server using this preset (Ctrl+G)" IsEnabled="False" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
-                <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Enable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Enable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed ini-file (Ctrl+S)" />
-                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}" ToolTip="{x:Static g:AppStrings.Toolbar_Save_IniTooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 

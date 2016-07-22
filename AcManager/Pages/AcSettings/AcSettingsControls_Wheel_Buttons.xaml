@@ -38,7 +38,7 @@
             </StackPanel>
 
             <DockPanel Margin="0 0 0 20" ToolTip="Prevents accidental gearshifts due to faulty hardware">
-                <mui:ValueLabel Value="{Binding DebouncingInterval}" Postfix="{x:Static c:Resources.Common_MillisecondsPostfix}" DockPanel.Dock="Left"
+                <mui:ValueLabel Value="{Binding DebouncingInterval}" Postfix="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" DockPanel.Dock="Left"
                         VerticalAlignment="Center" Width="200" Content="Gear shift debouncing" />
                 <Slider Minimum="0" Maximum="250" Value="{Binding DebouncingInterval}" TickFrequency="25" TickPlacement="BottomRight" />
             </DockPanel>

@@ -7,7 +7,8 @@
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
         xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
         xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom;assembly=AcManager.Controls"
-        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager"
+        xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarPage+ViewModel}">
     <UserControl.Resources>
@@ -27,33 +28,34 @@
     <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseDown="AcObjectBase_IconMouseDown" Icon="{Binding SelectedObject.BrandBadge}">
         <c:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Folder" Command="{Binding SelectedObject.ViewInExplorerCommand}">
-                    <Button.ToolTip>Open car’s folder (Ctrl+F)</Button.ToolTip>
-                </Button>
-                <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Folder_CarTooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
+                        Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
-                <mui:ButtonWithComboBox Content="Showroom" ButtonToolTip="View car in showroom (Ctrl+H)" Command="{Binding OpenInShowroomCommand}"
-                        PreviewMouseDown="ToolbarButtonShowroom_OnPreviewMouseDown">
-                    <MenuItem Header="Options" ToolTip="Select showroom, filter and etc." InputGestureText="Ctrl+Shift+H"
-                            Command="{Binding OpenInShowroomOptionsCommand}" />
-                    <MenuItem Header="Presets">
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Showroom}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Showroom_Tooltip}"
+                        Command="{Binding OpenInShowroomCommand}" PreviewMouseDown="ToolbarButtonShowroom_OnPreviewMouseDown">
+                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_ShowroomOptions_Tooltip}"
+                            InputGestureText="Ctrl+Shift+H" Command="{Binding OpenInShowroomOptionsCommand}" />
+                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
                         <MenuItem.ItemsSource>
                             <CompositeCollection>
                                 <CollectionContainer Collection="{Binding Source={StaticResource ShowroomPresetsItems}}" />
                             </CompositeCollection>
                         </MenuItem.ItemsSource>
                     </MenuItem>
-                    <MenuItem Header="Custom Showroom">
-                        <MenuItem x:Name="LiteCustomShowroomMenuItem" Header="Lite Custom Showroom"
-                                ToolTip="Faster and more accurate, helpful for modding or skins drawing" Command="{Binding OpenInCustomShowroomCommand}"
+                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_CustomShowroom}">
+                        <MenuItem x:Name="LiteCustomShowroomMenuItem" Header="{x:Static g:AppStrings.Toolbar_CustomShowroom_Lite}"
+                                ToolTip="{x:Static g:AppStrings.Toolbar_CustomShowroom_Lite_Tooltip}" Command="{Binding OpenInCustomShowroomCommand}"
                                 CommandParameter="{x:Static customShowroom:CustomShowroomMode.Lite}" />
-                        <MenuItem x:Name="FancyCustomShowroomMenuItem" Header="Fancy Custom Showroom"
-                                ToolTip="Slower and less accurate, but with proper lighting and reflections" Command="{Binding OpenInCustomShowroomCommand}"
+                        <MenuItem x:Name="FancyCustomShowroomMenuItem" Header="{x:Static g:AppStrings.Toolbar_CustomShowroom_Fancy}"
+                                ToolTip="{x:Static g:AppStrings.Toolbar_CustomShowroom_Fancy_Tooltip}" Command="{Binding OpenInCustomShowroomCommand}"
                                 CommandParameter="{x:Static customShowroom:CustomShowroomMode.Fancy}" />
                     </MenuItem>
                 </mui:ButtonWithComboBox>
-                <mui:ButtonWithComboBox Content="Drive" ButtonToolTip="Use car in a Quick Drive session (Ctrl+G)" Command="{Binding DriveCommand}"
-                        PreviewMouseDown="ToolbarButtonQuickDrive_OnPreviewMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
+                        Command="{Binding DriveCommand}" PreviewMouseDown="ToolbarButtonQuickDrive_OnPreviewMouseDown"
+                        Style="{StaticResource Go.ToolBarButtonWithComboBox}">
                     <mui:ButtonWithComboBox.MenuItems>
                         <CompositeCollection>
                             <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
@@ -61,28 +63,36 @@
                     </mui:ButtonWithComboBox.MenuItems>
                 </mui:ButtonWithComboBox>
                 <Separator />
-                <Button Content="Analyze" IsEnabled="False" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Analyze}" IsEnabled="False" />
                 <Separator />
-                <Button Content="Skins" Command="{Binding ManageSkinsCommand}" ToolTip="Manage skins (Ctrl+K)" />
-                <Button Content="Setups" Command="{Binding ManageSetupsCommand}" ToolTip="Manage setups (Ctrl+U)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_CarSkins}" Command="{Binding ManageSkinsCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_CarSkins_Tooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_CarSetups}" Command="{Binding ManageSetupsCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_CarSetups_Tooltip}" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
-                <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Enable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Enable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed json-file (Ctrl+S)" />
-                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove car to the Recycle Bin (Ctrl+Delete)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Delete_CarTooltip}" />
                 <Separator />
-                <Button Content="Find Information" Command="{Binding FindInformationCommand}" ToolTip="Find information about car (Ctrl+I)" />
-                <mui:ButtonWithComboBox Content="Update Previews" Command="{Binding UpdatePreviewsCommand}" ButtonToolTip="Update all previews (Ctrl+P)"
-                        PreviewMouseDown="ToolbarButtonUpdatePreviews_OnPreviewMouseDown">
-                    <MenuItem Header="Manual Mode" ToolTip="Set camera position manually and then press F8 to start shooting" InputGestureText="Ctrl+Alt+P"
+                <Button Content="{x:Static g:AppStrings.Toolbar_FindInformation}" Command="{Binding FindInformationCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_FindInformation_CarTooltip}" />
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdatePreviews}" Command="{Binding UpdatePreviewsCommand}"
+                        ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviews_Tooltip}" PreviewMouseDown="ToolbarButtonUpdatePreviews_OnPreviewMouseDown">
+                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually}"
+                            ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsManually_Tooltip}" InputGestureText="Ctrl+Alt+P"
                             Command="{Binding UpdatePreviewsManuallyCommand}" />
-                    <MenuItem Header="Options" ToolTip="Select showroom, filter, camera position and etc." InputGestureText="Ctrl+Shift+P"
-                            Command="{Binding UpdatePreviewsOptionsCommand}" />
+                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Options}" ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewsOptions_Tooltip}"
+                            InputGestureText="Ctrl+Shift+P" Command="{Binding UpdatePreviewsOptionsCommand}" />
                     <Separator />
-                    <MenuItem Header="Presets">
+                    <MenuItem Header="{x:Static c:ControlsStrings.Common_Presets}">
                         <MenuItem.ItemsSource>
                             <CompositeCollection>
                                 <CollectionContainer Collection="{Binding Source={StaticResource UpdatePreviewsPresetsItems}}" />
@@ -92,11 +102,14 @@
                 </mui:ButtonWithComboBox>
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
-                <Button Content="Pack Data" Command="{Binding PackDataCommand}" ToolTip="For a decent online (Ctrl+J)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_PackData}" Command="{Binding PackDataCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_PackData_Tooltip}"
                         Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Unpack Data" Command="{Binding ReadDataCommand}" ToolTip="For development purposes only (Alt+J)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_UnpackData}" Command="{Binding ReadDataCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_UnpackData_Tooltip}"
                         Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Replace Sound" Command="{Binding ReplaceSoundCommand}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_ReplaceSound}" Command="{Binding ReplaceSoundCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_ReplaceSound_Tooltip}" />
             </ToolBar>
         </c:AcObjectBase.ToolBars>
 
@@ -147,16 +160,17 @@
                         attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <mui:TagsList.ItemContextMenu>
                         <mui:InheritingContextMenu>
-                            <MenuItem Header="Filter By Tag" Command="{Binding Data.FilterTagCommand, Source={StaticResource Model}}"
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByTag}" Command="{Binding Data.FilterTagCommand, Source={StaticResource Model}}"
                                     CommandParameter="{Binding}" />
                         </mui:InheritingContextMenu>
                     </mui:TagsList.ItemContextMenu>
                     <mui:TagsList.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Clean Up Tags" Command="{Binding Data.TagsCleanUpCommand, Source={StaticResource Selected}}" />
-                            <MenuItem Header="Sort Tags" Command="{Binding Data.TagsSortCommand, Source={StaticResource Selected}}" />
-                            <MenuItem Header="Clean Up &amp; Sort Tags" Command="{Binding Data.TagsCleanUpAndSortCommand, Source={StaticResource Selected}}"
-                                    InputGestureText="Ctrl+Alt+T" />
+                            <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUp}"
+                                    Command="{Binding Data.TagsCleanUpCommand, Source={StaticResource Selected}}" />
+                            <MenuItem Header="{x:Static g:AppStrings.Tags_Sort}" Command="{Binding Data.TagsSortCommand, Source={StaticResource Selected}}" />
+                            <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUpAndSort}"
+                                    Command="{Binding Data.TagsCleanUpAndSortCommand, Source={StaticResource Selected}}" InputGestureText="Ctrl+Alt+T" />
                         </ContextMenu>
                     </mui:TagsList.ContextMenu>
                 </mui:TagsList>
@@ -177,11 +191,11 @@
                     <DockPanel Grid.Row="0" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Brand" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByBrand}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                         CommandParameter="brand" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:Resources.AcObject_CarBrandLabel}" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}" />
                         <ComboBox Text="{Binding SelectedObject.Brand, UpdateSourceTrigger=LostFocus}"
                                 ItemsSource="{x:Static managers:SuggestionLists.CarBrandsListView}" />
                     </DockPanel>
@@ -189,11 +203,11 @@
                     <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Country" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                        CommandParameter="country" />
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}"
+                                        Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="country" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:Resources.AcObject_ContryLabel}" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" />
                         <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
                                 ItemsSource="{x:Static managers:SuggestionLists.CountriesListView}" />
                     </DockPanel>
@@ -202,11 +216,11 @@
                     <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Class" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByClass}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                         CommandParameter="class" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:Resources.AcObject_CarClassLabel}">
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarClassLabel}">
                             <TextBlock.ToolTip>Car class (such as “race” or “street”) in lowercase</TextBlock.ToolTip>
                         </TextBlock>
                         <ComboBox Text="{Binding SelectedObject.CarClass, UpdateSourceTrigger=LostFocus}"
@@ -216,31 +230,44 @@
                     <DockPanel Grid.Row="1" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Year" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="year" />
-                                <MenuItem Header="Filter By Decade" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByYear}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                        CommandParameter="year" />
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByDecade}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                         CommandParameter="decade" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:Resources.AcObject_YearLabel}" ToolTip="Year of production start" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" ToolTip="Year of production start" />
                         <TextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer"
                                 attached:WatermarkService.Watermark="?" />
                     </DockPanel>
 
                     <!-- third row -->
                     <DockPanel Grid.Row="2" Grid.Column="0">
-                        <TextBlock Text="Parent:" ToolTip="Parent car (if set, this car will be a tuned version of it)" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}"
+                                ToolTip="{x:Static c:ControlsStrings.AcObject_CarParentLabel_Tooltip}" />
                         <mui:BbCodeBlock Text="{Binding SelectedObject.ParentDisplayName}"
-                                attached:WatermarkService.Watermark="{x:Static t:Resources.Common_None}" MouseDown="ParentBlock_OnMouseDown" />
+                                attached:WatermarkService.Watermark="{x:Static t:ToolsStrings.Common_None}" MouseDown="ParentBlock_OnMouseDown">
+                            <mui:BbCodeBlock.ToolTip>
+                                <ToolTip
+                                        Visibility="{Binding SelectedObject.Parent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                                    <StackPanel Margin="4 8">
+                                        <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedObject.Parent.DisplayName}" Margin="0 0 0 4" />
+                                        <userControls:CarBlock Car="{Binding SelectedObject.Parent}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512"
+                                                MaxHeight="320" />
+                                    </StackPanel>
+                                </ToolTip>
+                            </mui:BbCodeBlock.ToolTip>
+                        </mui:BbCodeBlock>
                     </DockPanel>
 
                     <DockPanel Grid.Row="2" Grid.Column="1">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Author" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                         CommandParameter="author" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="Author:" ToolTip="Author, version, URL" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
                         <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" attached:WatermarkService.Watermark="?"
                                 MouseUp="VersionInfoBlock_OnMouse" />
                     </DockPanel>
@@ -249,21 +276,21 @@
                     <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Similar Power" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByPower}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                         CommandParameter="power" />
-                                <MenuItem Header="Filter By Similar Torque" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByTorque}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                         CommandParameter="torque" />
-                                <MenuItem Header="Filter By Similar Weight" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByWeight}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                         CommandParameter="weight" />
-                                <MenuItem Header="Filter By Similar P/W Ratio" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                        CommandParameter="pwratio" />
-                                <MenuItem Header="Filter By Similar Top Speed" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                        CommandParameter="topspeed" />
-                                <MenuItem Header="Filter By Similar Acceleration" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                        CommandParameter="acceleration" />
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByPwRatio}"
+                                        Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="pwratio" />
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByTopSpeed}"
+                                        Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="topspeed" />
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByAcceleration}"
+                                        Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="acceleration" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:Resources.AcObject_SpecsLabel}" ToolTip="Specifications" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" />
                         <mui:BbCodeBlock Text="{Binding SelectedObject.SpecsInfoDisplay}" attached:WatermarkService.Watermark="?"
                                 MouseDown="SpecsInfoBlock_OnMouseDown" />
                     </DockPanel>

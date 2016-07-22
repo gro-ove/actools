@@ -1,13 +1,16 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.LargeFilesSharing;
+using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
@@ -25,11 +28,7 @@ using StringBasedFilter;
 namespace AcManager.Pages.Selected {
     public partial class SelectedReplayPage : ILoadableContent, IParametrizedUriContent {
         public class ViewModel : SelectedAcObjectViewModel<ReplayObject> {
-            public ViewModel([NotNull] ReplayObject acObject) : base(acObject) {
-                DisplayParsed = acObject.ParsedSuccessfully ? "Yes" : "No";
-            }
-
-            public string DisplayParsed { get; }
+            public ViewModel([NotNull] ReplayObject acObject) : base(acObject) {}
 
             private WeatherObject _weather;
 
@@ -75,6 +74,7 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
+            [Localizable(false)]
             protected override void FilterExec(string type) {
                 switch (type) {
                     case "size":
@@ -105,6 +105,11 @@ namespace AcManager.Pages.Selected {
                 base.FilterExec(type);
             }
 
+            /// <summary>
+            /// Gets description for ReadMe.txt inside shared archive.
+            /// </summary>
+            /// <returns></returns>
+            [Localizable(false)]
             private string GetDescription() {
                 return Car == null
                         ? (Track == null ? "AC replay" : $"AC replay (on {Track.DisplayName})")
@@ -117,13 +122,13 @@ namespace AcManager.Pages.Selected {
                 UploadResult result;
 
                 try {
-                    using (var waiting = new WaitingDialog("Uploading…")) {
-                        waiting.Report("Preparing…");
+                    using (var waiting = new WaitingDialog(ControlsStrings.Common_Uploading)) {
+                        waiting.Report(ControlsStrings.Common_Preparing);
 
                         var uploader = Uploaders.List.First();
                         await uploader.SignIn(waiting.CancellationToken);
 
-                        waiting.Report("Compressing…");
+                        waiting.Report(ControlsStrings.Common_Compressing);
 
                         byte[] data = null;
                         await Task.Run(() => {
@@ -132,7 +137,7 @@ namespace AcManager.Pages.Selected {
                                 using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
                                     var readMe = $"{GetDescription()}\n\nTo play, unpack “{SelectedObject.Id}” to “…\\Documents\\Assetto Corsa\\replay”.";
                                     using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(readMe))) {
-                                        writer.Write("ReadMe.txt", stream);
+                                        writer.Write(@"ReadMe.txt", stream);
                                     }
 
                                     writer.Write(SelectedObject.Id, file, SelectedObject.CreationTime);
@@ -143,12 +148,13 @@ namespace AcManager.Pages.Selected {
                             }
                         });
 
-                        result = await uploader.Upload(SelectedObject.Name ?? "AC Replay", Path.GetFileNameWithoutExtension(SelectedObject.Location) + ".zip",
-                                "application/zip", GetDescription(), data, waiting,
+                        result = await uploader.Upload(SelectedObject.Name ?? AppStrings.Replay_DefaultUploadedName,
+                                Path.GetFileNameWithoutExtension(SelectedObject.Location) + @".zip",
+                                @"application/zip", GetDescription(), data, waiting,
                                 waiting.CancellationToken);
                     }
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t share replay", "Make sure Internet-connection works.", e);
+                    NonfatalError.Notify(AppStrings.Replay_CannotShare, ToolsStrings.Common_MakeSureInternetWorks, e);
                     return;
                 }
 
@@ -172,7 +178,7 @@ namespace AcManager.Pages.Selected {
         void IParametrizedUriContent.OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
             if (_id == null) {
-                throw new Exception("ID is missing");
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
         }
 
@@ -231,7 +237,7 @@ namespace AcManager.Pages.Selected {
         private ViewModel _model;
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
             InitializeAcObjectPage(_model = new ViewModel(_object) {
                 Track = _trackObject,

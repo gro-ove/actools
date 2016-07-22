@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
                 case ArchiveType.Tar:
                 case ArchiveType.SevenZip:
                 case ArchiveType.GZip:
-                    throw new NotSupportedException(string.Format(Resources.ArchiveInstallator_UnsupportedEncryption, archive.Type));
+                    throw new NotSupportedException(string.Format(ToolsStrings.ArchiveInstallator_UnsupportedEncryption, archive.Type));
                 default:
                     throw new ArgumentOutOfRangeException();
             }

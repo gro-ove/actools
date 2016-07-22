@@ -20,19 +20,19 @@ namespace AcManager.Tools.Data {
 
         public static AsyncProgressEntry CreateDownloading(long receivedBytes, long totalBytes) {
             if (totalBytes == -1) {
-                return new AsyncProgressEntry(string.Format(Resources.Progress_Downloading, receivedBytes.ToReadableSize(1)), null);
+                return new AsyncProgressEntry(string.Format(ToolsStrings.Progress_Downloading, receivedBytes.ToReadableSize(1)), null);
             }
 
-            return new AsyncProgressEntry(string.Format(Resources.Progress_Downloading_KnownTotal, receivedBytes.ToReadableSize(1), totalBytes.ToReadableSize(1)),
+            return new AsyncProgressEntry(string.Format(ToolsStrings.Progress_Downloading_KnownTotal, receivedBytes.ToReadableSize(1), totalBytes.ToReadableSize(1)),
                     (double)receivedBytes / totalBytes);
         }
 
         public static AsyncProgressEntry CreateUploading(long sentBytes, long totalBytes) {
             if (totalBytes == -1) {
-                return new AsyncProgressEntry(string.Format(Resources.Progress_Uploading, sentBytes.ToReadableSize(1)), null);
+                return new AsyncProgressEntry(string.Format(ToolsStrings.Progress_Uploading, sentBytes.ToReadableSize(1)), null);
             }
 
-            return new AsyncProgressEntry(string.Format(Resources.Progress_Uploading_KnownTotal, sentBytes.ToReadableSize(1), totalBytes.ToReadableSize(1)),
+            return new AsyncProgressEntry(string.Format(ToolsStrings.Progress_Uploading_KnownTotal, sentBytes.ToReadableSize(1), totalBytes.ToReadableSize(1)),
                     (double)sentBytes / totalBytes);
         }
     }

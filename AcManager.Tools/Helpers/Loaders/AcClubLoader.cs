@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
             var match = Regex.Match(downloadPage, @"<p class=""download""><a href=""([^""]+)");
             if (!match.Success) {
-                NonfatalError.Notify(Resources.Common_CannotDownloadFile, Resources.DirectLoader_AcClubChanged);
+                NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_AcClubChanged);
                 return false;
             }
 
@@ -29,7 +29,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             Logging.Write("AssettoCorsa.club download link: " + Url);
 
             _innerLoader = FlexibleLoader.CreateLoader(Url);
-            if (_innerLoader is AcClubLoader) throw new Exception(Resources.DirectLoader_RecursionDetected);
+            if (_innerLoader is AcClubLoader) throw new Exception(ToolsStrings.DirectLoader_RecursionDetected);
             return await _innerLoader.PrepareAsync(client, cancellation);
         }
 

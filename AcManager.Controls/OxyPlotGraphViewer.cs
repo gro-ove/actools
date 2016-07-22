@@ -61,7 +61,7 @@ namespace AcManager.Controls {
 
             model.Axes.Add(new LinearAxis {
                 Key = KeyBhp,
-                Title = Tools.Resources.Units_BHP,
+                Title = Tools.ToolsStrings.Units_BHP,
                 TextColor = powerColor,
                 TitleColor = powerColor,
                 TicklineColor = powerColor,
@@ -70,7 +70,7 @@ namespace AcManager.Controls {
 
             model.Axes.Add(new LinearAxis {
                 Key = KeyNm,
-                Title = Tools.Resources.Units_Nm,
+                Title = Tools.ToolsStrings.Units_Nm,
                 TextColor = torqueColor,
                 TitleColor = torqueColor,
                 TicklineColor = torqueColor,
@@ -81,7 +81,7 @@ namespace AcManager.Controls {
             if (sourcePower != null) {
                 var powerLineSeries = new LineSeries {
                     Color = powerColor,
-                    Title = Tools.Resources.Common_Power,
+                    Title = Tools.ToolsStrings.Common_Power,
                     XAxisKey = KeyRpm,
                     YAxisKey = KeyBhp,
                     TrackerKey = KeyBhp
@@ -96,7 +96,7 @@ namespace AcManager.Controls {
             if (sourceTorque != null) {
                 var torqueLineSeries = new LineSeries {
                     Color = torqueColor,
-                    Title = Tools.Resources.Common_Torque,
+                    Title = Tools.ToolsStrings.Common_Torque,
                     XAxisKey = KeyRpm,
                     YAxisKey = KeyNm,
                     TrackerKey = KeyNm

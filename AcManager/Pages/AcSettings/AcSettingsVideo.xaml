@@ -5,6 +5,7 @@
         xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
+        xmlns:g="clr-namespace:AcManager"
         mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+ViewModel}">
     <UserControl.Resources>
@@ -171,7 +172,7 @@
                     </DockPanel>
 
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding Video.CubemapDistance}" Mode="Integer" Postfix="{x:Static c:Resources.Common_MetersPostfix}" Content="Rendering distance" />
+                        <mui:ValueLabel Value="{Binding Video.CubemapDistance}" Mode="Integer" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" Content="Rendering distance" />
                         <Slider Minimum="0" Maximum="1200" Value="{Binding Video.CubemapDistance}" TickFrequency="120" TickPlacement="BottomRight" />
                     </DockPanel>
                 </StackPanel>
@@ -223,7 +224,7 @@
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
             <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" MinWidth="300" Margin="0 0 4 0" />
-            <Button Command="{Binding ShareCommand}" ToolTip="Share current settings (Ctrl+Page Up)" Content="Share" />
+            <Button Command="{Binding ShareCommand}" ToolTip="Share current settings (Ctrl+Page Up)" Content="{x:Static g:AppStrings.Common_Share}" />
         </StackPanel>
     </Grid>
 </UserControl>

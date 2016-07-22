@@ -4,7 +4,9 @@
         xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
         xmlns:directInput="clr-namespace:AcManager.Tools.Helpers.DirectInput;assembly=AcManager.Tools" xmlns:tools="clr-namespace:AcManager.Tools"
         xmlns:helpers="clr-namespace:AcManager.Controls.Helpers;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:g="clr-namespace:AcManager"
+        mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsControls+AcControlsViewModel}"
         SizeChanged="AcSettingsControls_OnSizeChanged" Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded"
         PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
@@ -164,7 +166,7 @@
                         Content="Save Preset" />
             </Grid>
             <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0" ToolTip="Share current settings (Ctrl+Page Up)"
-                    Content="Share">
+                    Content="{x:Static g:AppStrings.Common_Share}">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="ShareContextMenu">
                         <MenuItem Header="Share Preset" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="Basic"
@@ -175,7 +177,7 @@
                 </Button.ContextMenu>
             </Button>
             <Button Command="{Binding TestCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="Test current preset with Quick Drive"
-                    Style="{StaticResource Go.Button}" Content="Test" />
+                    Style="{StaticResource Go.Button}" Content="{x:Static g:AppStrings.Common_Test}" />
         </StackPanel>
     </Grid>
 </UserControl>

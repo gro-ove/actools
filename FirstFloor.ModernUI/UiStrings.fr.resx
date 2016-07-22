@@ -235,7 +235,7 @@
     <value>Shift (Droite)</value>
   </data>
   <data name="KeySpace" xml:space="preserve">
-    <value>Espace</value>
+    <value>Space</value>
   </data>
   <data name="KeyTab" xml:space="preserve">
     <value>Tab</value>

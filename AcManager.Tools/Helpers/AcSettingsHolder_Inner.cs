@@ -140,7 +140,7 @@ namespace AcManager.Tools.Helpers {
                     IgnoreChangesForAWhile();
                     await Ini.SaveAsAsync(Filename);
                 } catch (Exception e) {
-                    NonfatalError.Notify(Resources.AcSettings_CannotSave, Resources.AcSettings_CannotSave_Commentary, e);
+                    NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
                 } finally {
                     _saving = false;
                 }
@@ -187,11 +187,11 @@ namespace AcManager.Tools.Helpers {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 double d;
                 return value == null || double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out d) && Equals(d, 0d)
-                        ? (parameter ?? Resources.AcSettings_Off) : value;
+                        ? (parameter ?? ToolsStrings.AcSettings_Off) : value;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-                return value == parameter || value as string ==  Resources.AcSettings_Off ? 0d : value;
+                return value == parameter || value as string ==  ToolsStrings.AcSettings_Off ? 0d : value;
             }
         }
 

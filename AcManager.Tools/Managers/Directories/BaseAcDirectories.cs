@@ -29,13 +29,13 @@ namespace AcManager.Tools.Managers.Directories {
 
         public string GetLocation(string id, bool enabled) {
             if (id == null) throw new ArgumentNullException(nameof(id));
-            if (!Actual) throw new Exception(Resources.AcObject_NotValidAnymore);
-            if (DisabledDirectory == null && !enabled) throw new Exception(Resources.AcObject_CannotBeDisabled);
+            if (!Actual) throw new Exception(ToolsStrings.AcObject_NotValidAnymore);
+            if (DisabledDirectory == null && !enabled) throw new Exception(ToolsStrings.AcObject_CannotBeDisabled);
             return Path.Combine(enabled ? EnabledDirectory : DisabledDirectory, id);
         }
 
         private IEnumerable<string> GetSubSomething(Func<string, string[]> selector) {
-            if (!Actual) throw new Exception(Resources.AcObject_NotValidAnymore);
+            if (!Actual) throw new Exception(ToolsStrings.AcObject_NotValidAnymore);
 
             List<string> enabled;
             if (Directory.Exists(EnabledDirectory)) {

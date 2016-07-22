@@ -8,6 +8,7 @@ using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
@@ -81,8 +82,8 @@ namespace AcManager.Pages.Selected {
             public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(o => {
                 var data = SharingHelper.SetMetadata(SharedEntryType.CarSetup, FileUtils.ReadAllText(SelectedObject.Location),
                         new SharedMetadata {
-                            ["car"] = Car.Id,
-                            ["track"] = SelectedObject.TrackId
+                            [@"car"] = Car.Id,
+                            [@"track"] = SelectedObject.TrackId
                         });
                 var target = SelectedObject.Track == null ? Car.DisplayName : $"{Car.DisplayName} ({SelectedObject.Track.DisplayName})";
                 return SharingUiHelper.ShareAsync(SharedEntryType.CarSetup, SelectedObject.Name, target, data);
@@ -100,10 +101,10 @@ namespace AcManager.Pages.Selected {
 
         void IParametrizedUriContent.OnUri(Uri uri) {
             _carId = uri.GetQueryParam("CarId");
-            if (_carId == null) throw new ArgumentException("Car ID is missing");
+            if (_carId == null) throw new ArgumentException(ToolsStrings.Common_CarIdIsMissing);
 
             _id = uri.GetQueryParam("Id");
-            if (_id == null) throw new ArgumentException("ID is missing");
+            if (_id == null) throw new ArgumentException(ToolsStrings.Common_IdIsMissing);
         }
 
         private CarObject _carObject;
@@ -139,8 +140,8 @@ namespace AcManager.Pages.Selected {
         }
 
         void ILoadableContent.Initialize() {
-            if (_carObject == null) throw new ArgumentException("Can’t find car with provided ID");
-            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+            if (_carObject == null) throw new ArgumentException(AppStrings.Common_CannotFindCarById);
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
             InitializeAcObjectPage(_model = new ViewModel(_carObject, _object));
             InputBindings.AddRange(new[] {

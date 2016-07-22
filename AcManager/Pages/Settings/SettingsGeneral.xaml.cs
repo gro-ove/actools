@@ -24,7 +24,7 @@ namespace AcManager.Pages.Settings {
             private RelayCommand _changeAcRootCommand;
 
             public RelayCommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new RelayCommand(o => {
-                if (ModernDialog.ShowMessage(AcManager.Resources.Settings_General_ChangeAcRoot_Message, AcManager.Resources.Settings_General_ChangeAcRoot,
+                if (ModernDialog.ShowMessage(AcManager.AppStrings.Settings_General_ChangeAcRoot_Message, AcManager.AppStrings.Settings_General_ChangeAcRoot,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
                 AcRootDirectory.Instance.Reset();
                 WindowsHelper.RestartCurrentApplication();

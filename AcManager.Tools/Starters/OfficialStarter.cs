@@ -18,7 +18,7 @@ namespace AcManager.Tools.Starters {
 
         private void CheckVersion() {
             if (!File.Exists(LauncherFilename)) {
-                throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.OfficialStarter_OriginalLauncherIsMissing);
+                throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.OfficialStarter_OriginalLauncherIsMissing);
             }
 
             if (!FileVersionInfo.GetVersionInfo(LauncherFilename).FileVersion.IsVersionOlderThan("0.16.714")) return;
@@ -26,19 +26,19 @@ namespace AcManager.Tools.Starters {
             if (StarterPlus.IsPatched(LauncherFilename)) {
                 var backupFilename = StarterPlus.BackupFilename;
                 if (!File.Exists(backupFilename)) {
-                    ModernDialog.ShowMessage(Resources.OfficialStarter_DownloadAndRestore, Resources.OfficialStarter_CannotRun, MessageBoxButton.OK);
-                    throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.OfficialStarter_RestoreOriginalLauncher);
+                    ModernDialog.ShowMessage(ToolsStrings.OfficialStarter_DownloadAndRestore, ToolsStrings.OfficialStarter_CannotRun, MessageBoxButton.OK);
+                    throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.OfficialStarter_RestoreOriginalLauncher);
                 }
 
                 try {
                     File.Delete(LauncherFilename);
                 } catch (Exception) {
                     if (ModernDialog.ShowMessage(
-                            Resources.OfficialStarter_RestoreLauncherManually,
-                            Resources.OfficialStarter_CannotRun, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                            ToolsStrings.OfficialStarter_RestoreLauncherManually,
+                            ToolsStrings.OfficialStarter_CannotRun, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                         WindowsHelper.ViewFile(backupFilename);
                     }
-                    throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.OfficialStarter_RestoreOriginalLauncher);
+                    throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.OfficialStarter_RestoreOriginalLauncher);
                 }
 
                 File.Copy(backupFilename, LauncherFilename);
@@ -51,12 +51,12 @@ namespace AcManager.Tools.Starters {
                 return;
             }
 
-            if (ModernDialog.ShowMessage(Resources.OfficialStarter_GameIsTooOld, Resources.NotSupported, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
-                throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.OfficialStarter_UpdateAC);
+            if (ModernDialog.ShowMessage(ToolsStrings.OfficialStarter_GameIsTooOld, ToolsStrings.NotSupported, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.OfficialStarter_UpdateAC);
             }
 
             SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.TrickyStarterType;
-            throw new InformativeException(Resources.OfficialStarter_CannotRunGame, Resources.TryAgainDot);
+            throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.TryAgainDot);
         }
 
         private void RunInner() {

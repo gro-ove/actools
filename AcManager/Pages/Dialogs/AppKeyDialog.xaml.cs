@@ -23,7 +23,7 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
 
             Buttons = new[] {
-                CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, Model.ApplyCommand),
+                CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, Model.ApplyCommand),
                 CreateExtraDialogButton(@"Get a New Key", Model.GetNewKeyCommand),
                 CancelButton
             };

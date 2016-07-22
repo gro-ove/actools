@@ -138,7 +138,7 @@ namespace AcManager.Tools.Managers.Plugins {
                     PluginEnabled?.Invoke(this, new AppAddonEventHandlerArgs { PluginId = plugin.Id });
                 }
             } catch (Exception e) {
-                NonfatalError.Notify(Resources.Plugins_CannotInstall, e);
+                NonfatalError.Notify(ToolsStrings.Plugins_CannotInstall, e);
             } finally {
                 plugin.IsInstalling = false;
             }

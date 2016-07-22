@@ -6,7 +6,7 @@
                   Loaded="OnLoaded" Unloaded="OnUnloaded">
     <mui:ModernDialog.ButtonsRowContent>
         <StackPanel Orientation="Horizontal">
-            <Button Content="{x:Static modernUi:Resources.Ok}" IsDefault="True" Command="{Binding RunCommand}" />
+            <Button Content="{x:Static modernUi:UiStrings.Ok}" IsDefault="True" Command="{Binding RunCommand}" />
             <Button Content="Solve All Similar Errors" Command="{Binding RunAllCommand}" Margin="4 0 0 0"
                     Visibility="{Binding MultiAppliable, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </StackPanel>

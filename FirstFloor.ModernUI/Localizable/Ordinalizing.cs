@@ -14,76 +14,76 @@ namespace FirstFloor.ModernUI.Localizable {
         /// <returns></returns>
         private static string Base(int v) {
             if (v < 0) {
-                return string.Format(Resources.Ordinalizing_Minus, Base(-v).ToLowerInvariant());
+                return string.Format(UiStrings.Ordinalizing_Minus, Base(-v).ToLowerInvariant());
             }
 
             switch (v) {
                 case 0:
-                    return Resources.Ordinalizing_Zeroth;
+                    return UiStrings.Ordinalizing_Zeroth;
                 case 1:
-                    return Resources.Ordinalizing_First;
+                    return UiStrings.Ordinalizing_First;
                 case 2:
-                    return Resources.Ordinalizing_Second;
+                    return UiStrings.Ordinalizing_Second;
                 case 3:
-                    return Resources.Ordinalizing_Third;
+                    return UiStrings.Ordinalizing_Third;
                 case 4:
-                    return Resources.Ordinalizing_Fourth;
+                    return UiStrings.Ordinalizing_Fourth;
                 case 5:
-                    return Resources.Ordinalizing_Fifth;
+                    return UiStrings.Ordinalizing_Fifth;
                 case 6:
-                    return Resources.Ordinalizing_Sixth;
+                    return UiStrings.Ordinalizing_Sixth;
                 case 7:
-                    return Resources.Ordinalizing_Seventh;
+                    return UiStrings.Ordinalizing_Seventh;
                 case 8:
-                    return Resources.Ordinalizing_Eighth;
+                    return UiStrings.Ordinalizing_Eighth;
                 case 9:
-                    return Resources.Ordinalizing_Ninth;
+                    return UiStrings.Ordinalizing_Ninth;
                 case 10:
-                    return Resources.Ordinalizing_Tenth;
+                    return UiStrings.Ordinalizing_Tenth;
                 case 11:
-                    return Resources.Ordinalizing_Eleventh;
+                    return UiStrings.Ordinalizing_Eleventh;
                 case 12:
-                    return Resources.Ordinalizing_Twelfth;
+                    return UiStrings.Ordinalizing_Twelfth;
                 case 13:
-                    return Resources.Ordinalizing_Thirteenth;
+                    return UiStrings.Ordinalizing_Thirteenth;
                 case 14:
-                    return Resources.Ordinalizing_Fourteenth;
+                    return UiStrings.Ordinalizing_Fourteenth;
                 case 15:
-                    return Resources.Ordinalizing_Fifteenth;
+                    return UiStrings.Ordinalizing_Fifteenth;
                 case 16:
-                    return Resources.Ordinalizing_Sixteenth;
+                    return UiStrings.Ordinalizing_Sixteenth;
                 case 17:
-                    return Resources.Ordinalizing_Seventeenth;
+                    return UiStrings.Ordinalizing_Seventeenth;
                 case 18:
-                    return Resources.Ordinalizing_Eighteenth;
+                    return UiStrings.Ordinalizing_Eighteenth;
                 case 19:
-                    return Resources.Ordinalizing_Nineteenth;
+                    return UiStrings.Ordinalizing_Nineteenth;
                 case 20:
-                    return Resources.Ordinalizing_Twentieth;
+                    return UiStrings.Ordinalizing_Twentieth;
                 case 21:
-                    return Resources.Ordinalizing_TwentyFirst;
+                    return UiStrings.Ordinalizing_TwentyFirst;
                 case 22:
-                    return Resources.Ordinalizing_TwentySecond;
+                    return UiStrings.Ordinalizing_TwentySecond;
                 case 23:
-                    return Resources.Ordinalizing_TwentyThird;
+                    return UiStrings.Ordinalizing_TwentyThird;
                 case 24:
-                    return Resources.Ordinalizing_TwentyFourth;
+                    return UiStrings.Ordinalizing_TwentyFourth;
                 case 25:
-                    return Resources.Ordinalizing_TwentyFifth;
+                    return UiStrings.Ordinalizing_TwentyFifth;
                 case 26:
-                    return Resources.Ordinalizing_TwentySixth;
+                    return UiStrings.Ordinalizing_TwentySixth;
                 case 27:
-                    return Resources.Ordinalizing_TwentySeventh;
+                    return UiStrings.Ordinalizing_TwentySeventh;
                 case 28:
-                    return Resources.Ordinalizing_TwentyEighth;
+                    return UiStrings.Ordinalizing_TwentyEighth;
                 case 29:
-                    return Resources.Ordinalizing_TwentyNinth;
+                    return UiStrings.Ordinalizing_TwentyNinth;
                 case 30:
-                    return Resources.Ordinalizing_Thirtieth;
+                    return UiStrings.Ordinalizing_Thirtieth;
                 case 31:
-                    return Resources.Ordinalizing_ThirtyFirst;
+                    return UiStrings.Ordinalizing_ThirtyFirst;
                 default:
-                    return string.Format(Resources.Ordinalizing_Nth, v);
+                    return string.Format(UiStrings.Ordinalizing_Nth, v);
             }
         }
 
@@ -99,7 +99,7 @@ namespace FirstFloor.ModernUI.Localizable {
                     break;
             }
 
-            return result == @"-" ? string.Format(Resources.Ordinalizing_Nth, v) : result;
+            return result == @"-" ? string.Format(UiStrings.Ordinalizing_Nth, v) : result;
         }
     }
 }

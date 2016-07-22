@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="Main_Title" xml:space="preserve">
+    <value>Content Manager (Lite-режим)</value>
+  </data>
+	<data name="App_NewVersion_Details" xml:space="preserve">
+    <value>Новая версия: {0}</value>
+  </data>
+	<data name="App_ContentUpdated_Details" xml:space="preserve">
+    <value>Текущая версия: {0}</value>
+  </data>
+	<data name="Main_UnhandledException" xml:space="preserve">
+    <value>Непойманная ошибка:
+
+{0}</value>
+  </data>
+	<data name="App_ContentUpdated" xml:space="preserve">
+    <value>Данные обновлены</value>
+  </data>
+	<data name="App_NewVersion" xml:space="preserve">
+    <value>Новая версия</value>
+  </data>
+	<data name="Main_Link_Apps" xml:space="preserve">
+    <value>Приложения</value>
+  </data>
+	<data name="Main_Link_Fonts" xml:space="preserve">
+    <value>Шрифты</value>
+  </data>
+	<data name="Main_Link_PpFilters" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+	<data name="Main_Link_Weather" xml:space="preserve">
+    <value>Погода</value>
+  </data>
+	<data name="Main_Link_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+	<data name="Main_Link_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+	<data name="Main_Link_QuickDrive" xml:space="preserve">
+    <value>Быстрый заезд</value>
+  </data>
+	<data name="Main_Link_Career" xml:space="preserve">
+    <value>Карьера</value>
+  </data>
+	<data name="Main_Link_Challenges" xml:space="preserve">
+    <value>Испытания</value>
+  </data>
+	<data name="Main_Group_Single" xml:space="preserve">
+    <value>офлайн</value>
+  </data>
+	<data name="Main_Group_Live" xml:space="preserve">
+    <value>лайв</value>
+  </data>
+	<data name="Main_Group_Online" xml:space="preserve">
+    <value>онлайн</value>
+  </data>
+	<data name="Main_Group_Lan" xml:space="preserve">
+    <value>локальная сеть</value>
+  </data>
+	<data name="Main_Group_Screenshots" xml:space="preserve">
+    <value>скриншоты</value>
+  </data>
+	<data name="Main_Group_Replays" xml:space="preserve">
+    <value>реплеи</value>
+  </data>
+	<data name="Main_Group_Cars" xml:space="preserve">
+    <value>машины</value>
+  </data>
+	<data name="Main_Group_Tracks" xml:space="preserve">
+    <value>трассы</value>
+  </data>
+	<data name="Main_Group_Showrooms" xml:space="preserve">
+    <value>шоурумы</value>
+  </data>
+	<data name="Main_Group_Miscellaneous" xml:space="preserve">
+    <value>разное</value>
+  </data>
+	<data name="Main_Group_ServerPresets" xml:space="preserve">
+    <value>пресеты</value>
+  </data>
+	<data name="Main_Group_ServerRunned" xml:space="preserve">
+    <value>запущенное</value>
+  </data>
+	<data name="Main_Link_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+	<data name="Main_Link_About" xml:space="preserve">
+    <value>О программе</value>
+  </data>
+	<data name="Main_Link_ReleaseNotes" xml:space="preserve">
+    <value>Релизные заметки</value>
+  </data>
+	<data name="Main_Link_ImportantTips" xml:space="preserve">
+    <value>Советы</value>
+  </data>
+	<data name="Main_About" xml:space="preserve">
+    <value>о программе</value>
+  </data>
+	<data name="Main_Settings" xml:space="preserve">
+    <value>настройки</value>
+  </data>
+	<data name="Main_Server" xml:space="preserve">
+    <value>сервер</value>
+  </data>
+	<data name="Main_Drive" xml:space="preserve">
+    <value>вождение</value>
+  </data>
+	<data name="Main_Media" xml:space="preserve">
+    <value>медиа</value>
+  </data>
+	<data name="Main_Content" xml:space="preserve">
+    <value>контент</value>
+  </data>
+	<data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} мс</value>
+  </data>
+	<data name="Settings_General_ValuesNumber" xml:space="preserve">
+    <value>{0} запись</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+	<data name="Settings_General" xml:space="preserve">
+    <value>общее</value>
+  </data>
+	<data name="Settings_Plugins" xml:space="preserve">
+    <value>плагины</value>
+  </data>
+	<data name="Settings_Drive" xml:space="preserve">
+    <value>вождение</value>
+  </data>
+	<data name="Settings_Replays" xml:space="preserve">
+    <value>реплеи</value>
+  </data>
+	<data name="Settings_Live" xml:space="preserve">
+    <value>лайв</value>
+  </data>
+	<data name="Settings_Online" xml:space="preserve">
+    <value>онлайн</value>
+  </data>
+	<data name="Settings_QuickSwitches" xml:space="preserve">
+    <value>переключатели</value>
+  </data>
+	<data name="Settings_CustomShowroom" xml:space="preserve">
+    <value>кастомный шоурум</value>
+  </data>
+	<data name="Settings_Content" xml:space="preserve">
+    <value>контент</value>
+  </data>
+	<data name="Settings_Sharing" xml:space="preserve">
+    <value>шаринг</value>
+  </data>
+	<data name="Settings_Appearance" xml:space="preserve">
+    <value>оформление</value>
+  </data>
+	<data name="Settings_Dev" xml:space="preserve">
+    <value>системное</value>
+  </data>
+	<data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+	<data name="Arguments_SharedMessage_For" xml:space="preserve">
+    <value>Для</value>
+  </data>
+	<data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
+    <value>Применить и сохранить</value>
+  </data>
+	<data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
+    <value>Сохранить и применить</value>
+  </data>
+	<data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
+    <value>Только применить</value>
+  </data>
+	<data name="Arguments_Shared_Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+	<data name="Arguments_Shared_SaveOnly" xml:space="preserve">
+    <value>Только сохранить</value>
+  </data>
+	<data name="Arguments_Shared_Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+	<data name="Arguments_MetadataIsMissing" xml:space="preserve">
+    <value>Метаданные отсутствуют.</value>
+  </data>
+	<data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
+    <value>Применить лишь FFB</value>
+  </data>
+	<data name="Arguments_Shared_JustGo" xml:space="preserve">
+    <value>Поехали</value>
+  </data>
+	<data name="Common_NewName" xml:space="preserve">
+    <value>Новое имя</value>
+  </data>
+	<data name="Solution_SetName_Prompt" xml:space="preserve">
+    <value>Введите новое имя:</value>
+  </data>
+	<data name="Common_Change" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+	<data name="Common_DevMode" xml:space="preserve">
+    <value>Режим разработчика</value>
+  </data>
+	<data name="Common_NewBrandName" xml:space="preserve">
+    <value>Новое имя бренда</value>
+  </data>
+	<data name="Common_Restart" xml:space="preserve">
+    <value>Перезапустить</value>
+  </data>
+	<data name="Settings_AcSettingsHeader" xml:space="preserve">
+    <value>Настройки AC:</value>
+  </data>
+	<data name="Common_Update" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+	<data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
+    <value>Качество:</value>
+  </data>
+	<data name="AcSettings_RecommendedMaximumSize" xml:space="preserve">
+    <value>Максимальный размер (рекомендуемый): {0} МБ</value>
+  </data>
+	<data name="Common_IdFormat" xml:space="preserve">
+    <value>ID: {0}</value>
+  </data>
+	<data name="Common_SignIn" xml:space="preserve">
+    <value>Залогиниться</value>
+  </data>
+	<data name="Common_SignOut" xml:space="preserve">
+    <value>Разлогиниться</value>
+  </data>
+	<data name="Main_OfficialSupportNotification" xml:space="preserve">
+    <value>Теперь с официальной поддержкой!</value>
+  </data>
+	<data name="Main_OfficialSupportNotification_Details" xml:space="preserve">
+    <value>Новый стартер готов, теперь без всякого патчинга</value>
+  </data>
+	<data name="Settings_Appearance_ColorLabel" xml:space="preserve">
+    <value>Цвет:</value>
+  </data>
+	<data name="Settings_Appearance_DynamicBackground" xml:space="preserve">
+    <value>Динамический фон</value>
+  </data>
+	<data name="Settings_Appearance_ImageScaling_Tooltip" xml:space="preserve">
+    <value>Перезапустите CM, чтобы увидеть изменения</value>
+  </data>
+	<data name="Settings_Appearance_ImageScalingLabel" xml:space="preserve">
+    <value>Отрисовка изображений:</value>
+  </data>
+	<data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
+    <value>Оформление:</value>
+  </data>
+	<data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
+    <value>Анимация переходов:</value>
+  </data>
+	<data name="Settings_Appearance_TextRenderingLabel" xml:space="preserve">
+    <value>Отрисовка шрифтов:</value>
+  </data>
+	<data name="Settings_Content_CarsHeader" xml:space="preserve">
+    <value>Машины:</value>
+  </data>
+	<data name="Solution_CreateEmptySkin" xml:space="preserve">
+		<value>Создать пустой скин</value>
+	</data>
+	<data name="Solution_Enable" xml:space="preserve">
+		<value>Включить</value>
+	</data>
+	<data name="Solution_FindTrack" xml:space="preserve">
+		<value>Найти трассу</value>
+	</data>
+	<data name="Solution_FixName" xml:space="preserve">
+		<value>Поправить имя</value>
+	</data>
+	<data name="Settings_Appearance_SmallFont" xml:space="preserve">
+		<value>Уменьшенный шрифт</value>
+	</data>
+	<data name="Settings_General_ValuesSizeLabel" xml:space="preserve">
+		<value>Размер</value>
+	</data>
+	<data name="Settings_General_AppVersionLabel" xml:space="preserve">
+		<value>Версия:</value>
+	</data>
+	<data name="Settings_General_ContentVersionLabel" xml:space="preserve">
+		<value>Версия данных:</value>
+	</data>
+	<data name="Settings_Drive_CustomClouds" xml:space="preserve">
+		<value>Заменять облака погодными облаками</value>
+	</data>
+	<data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
+		<value>Автоматически конвертировать скриншоты из BMP в JPEG при выходе</value>
+	</data>
+	<data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
+		<value>Максимальный размер</value>
+	</data>
+  <data name="Common_Go" xml:space="preserve">
+    <value>Поехали!</value>
+  </data>
+  <data name="Common_Share" xml:space="preserve">
+    <value>Расшарить</value>
+  </data>
+</root>

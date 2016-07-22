@@ -5,7 +5,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="LimitedMarkStyle" TargetType="TextBlock" BasedOn="{StaticResource Label}">
-        <Setter Property="Text" Value="{x:Static modernUi:Resources.MarkLimited}" />
+        <Setter Property="Text" Value="{x:Static modernUi:UiStrings.MarkLimited}" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="FontSize" Value="10" />
@@ -16,7 +16,7 @@
     </Style>
 
     <Style x:Key="NewMarkStyle" TargetType="TextBlock" BasedOn="{StaticResource Label}">
-        <Setter Property="Text" Value="{x:Static modernUi:Resources.MarkNew}" />
+        <Setter Property="Text" Value="{x:Static modernUi:UiStrings.MarkNew}" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="FontSize" Value="10" />

@@ -32,7 +32,7 @@ namespace AcManager.Tools.AcManagersNew {
         [NotNull]
         protected virtual string LocationToId(string directory) {
             var name = Path.GetFileName(directory);
-            if (name == null) throw new Exception("Cannot get file name from path");
+            if (name == null) throw new Exception(ToolsStrings.AcObject_CannotGetId);
             return name;
         }
 
@@ -52,7 +52,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         protected virtual void DeleteInner(string id, string location) {
-            FileUtils.Recycle(location);
+            FileUtils.RecycleVisible(location);
             if (!FileUtils.Exists(location)) {
                 RemoveFromList(id);
             }
@@ -63,14 +63,14 @@ namespace AcManager.Tools.AcManagersNew {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException("ID is wrong", nameof(id));
+            if (wrapper == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
 
             var currentLocation = ((AcCommonObject)wrapper.Value).Location;
             var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (path == null) throw new InformativeException(Resources.AcObject_DisablingNotSupported, Resources.AcObject_DisablingNotSupported_Commentary);
+            if (path == null) throw new InformativeException(ToolsStrings.AcObject_DisablingNotSupported, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
 
             var newLocation = Path.Combine(path, newId);
-            if (FileUtils.Exists(newLocation)) throw new ToggleException(Resources.AcObject_PlaceIsTaken);
+            if (FileUtils.Exists(newLocation)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
 
             try {
                 MoveInner(id, newId, currentLocation, newLocation, newEnabled);
@@ -85,7 +85,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             var wrapper = GetWrapperById(id);
             if (wrapper == null) {
-                throw new ArgumentException("ID is wrong", nameof(id));
+                throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
             }
 
             Rename(id, id, !wrapper.Value.Enabled);
@@ -96,7 +96,7 @@ namespace AcManager.Tools.AcManagersNew {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var obj = GetById(id);
-            if (obj == null) throw new ArgumentException("ID is wrong", nameof(id));
+            if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
             
             DeleteInner(id, obj.Location);
         }
@@ -108,10 +108,10 @@ namespace AcManager.Tools.AcManagersNew {
             var location = existing?.Location ?? Directories.GetLocation(id, true);
 
             if (removeExisting && FileUtils.Exists(location)) {
-                FileUtils.Recycle(location);
+                FileUtils.RecycleVisible(location);
 
                 if (FileUtils.Exists(location)) {
-                    throw new OperationCanceledException(Resources.AcObject_CannotRemove);
+                    throw new OperationCanceledException(ToolsStrings.AcObject_CannotRemove);
                 }
             }
 

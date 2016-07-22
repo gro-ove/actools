@@ -114,7 +114,7 @@
                                                     <Button.ToolTip>
                                                         <ToolTip>
                                                             <TextBlock
-                                                                    Text="{Binding AppUpdateAvailable, RelativeSource={RelativeSource TemplatedParent}, StringFormat={x:Static modernui:Resources.UpdateAvailable}}" />
+                                                                    Text="{Binding AppUpdateAvailable, RelativeSource={RelativeSource TemplatedParent}, StringFormat={x:Static modernui:UiStrings.UpdateAvailable}}" />
                                                         </ToolTip>
                                                     </Button.ToolTip>
                                                     <Button.Content>
@@ -125,7 +125,7 @@
                                                     </Button.Content>
                                                 </Button>
                                                 <Button Command="{Binding Source={x:Static SystemCommands.MinimizeWindowCommand}}"
-                                                        ToolTip="{x:Static modernui:Resources.Minimize}" Style="{StaticResource SystemButton}"
+                                                        ToolTip="{x:Static modernui:UiStrings.Minimize}" Style="{StaticResource SystemButton}"
                                                         RenderOptions.EdgeMode="Aliased">
                                                     <Button.Content>
                                                         <Path Data="M0,5 L9,5 Z" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
@@ -135,7 +135,7 @@
                                                 </Button>
                                                 <Grid>
                                                     <Button x:Name="Restore" Command="{Binding Source={x:Static SystemCommands.RestoreWindowCommand}}"
-                                                            ToolTip="{x:Static modernui:Resources.Restore}" Style="{StaticResource SystemButton}"
+                                                            ToolTip="{x:Static modernui:UiStrings.Restore}" Style="{StaticResource SystemButton}"
                                                             Visibility="Collapsed" RenderOptions.EdgeMode="Aliased">
                                                         <Path Data="M0,2 L7,2 L7,9 L0,9 L0,1 M2,2 L2,0 L9,0 L9,7 L7,7" Width="10" Height="10"
                                                                 VerticalAlignment="Center" HorizontalAlignment="Center"
@@ -143,7 +143,7 @@
                                                                 StrokeThickness="1" />
                                                     </Button>
                                                     <Button x:Name="Maximize" Command="{Binding Source={x:Static SystemCommands.MaximizeWindowCommand}}"
-                                                            ToolTip="{x:Static modernui:Resources.Maximize}" Style="{StaticResource SystemButton}"
+                                                            ToolTip="{x:Static modernui:UiStrings.Maximize}" Style="{StaticResource SystemButton}"
                                                             SnapsToDevicePixels="True" RenderOptions.EdgeMode="Aliased">
                                                         <Path Data="M0,0 L9,0 L9,9 L0,9 Z" Width="10" Height="10" VerticalAlignment="Center"
                                                                 HorizontalAlignment="Center"
@@ -152,7 +152,7 @@
                                                     </Button>
                                                 </Grid>
                                                 <Button Command="{Binding Source={x:Static SystemCommands.CloseWindowCommand}}"
-                                                        ToolTip="{x:Static modernui:Resources.Close}" Style="{StaticResource SystemCloseButton}"
+                                                        ToolTip="{x:Static modernui:UiStrings.Close}" Style="{StaticResource SystemCloseButton}"
                                                         RenderOptions.EdgeMode="Aliased">
                                                     <Path Data="M0,0 L9,9 M9,0 L0,9 Z" Width="10" Height="10" VerticalAlignment="Center"
                                                             HorizontalAlignment="Center"
@@ -174,7 +174,7 @@
                                                     IconWidth="12" IconHeight="12"
                                                     IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
                                                     Command="NavigationCommands.BrowseBack" CommandTarget="{Binding ElementName=ContentFrame}"
-                                                    ToolTip="{x:Static modernui:Resources.Back}" WindowChrome.IsHitTestVisibleInChrome="True" />
+                                                    ToolTip="{x:Static modernui:UiStrings.Back}" WindowChrome.IsHitTestVisibleInChrome="True" />
 
                                             <!-- main menu -->
                                             <controls:ModernMenu Grid.Column="1" LinkGroups="{TemplateBinding MenuLinkGroups}" x:Name="PART_Menu"

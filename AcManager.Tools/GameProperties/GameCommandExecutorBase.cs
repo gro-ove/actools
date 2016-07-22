@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
@@ -32,7 +32,7 @@ namespace AcManager.Tools.GameProperties {
                 });
 
                 if (proc == null) {
-                    throw new Exception(Resources.GameCommand_UnknownProblem);
+                    throw new Exception(ToolsStrings.GameCommand_UnknownProblem);
                 }
 
                 proc.OutputDataReceived += Process_OutputDataReceived;
@@ -43,11 +43,11 @@ namespace AcManager.Tools.GameProperties {
                 
                 if (!proc.WaitForExit(OptionCommandTimeout)) {
                     proc.Kill();
-                    throw new InformativeException(Resources.GameCommand_TimeoutExceeded,
-                            string.Format(Resources.GameCommand_TimeoutExceeded_Commentary, (double)OptionCommandTimeout / 1000));
+                    throw new InformativeException(ToolsStrings.GameCommand_TimeoutExceeded,
+                            string.Format(ToolsStrings.GameCommand_TimeoutExceeded_Commentary, (double)OptionCommandTimeout / 1000));
                 }
             } catch (Exception e) {
-                NonfatalError.Notify(Resources.GameCommand_CannotExecute, e);
+                NonfatalError.Notify(ToolsStrings.GameCommand_CannotExecute, e);
             }
         }
 

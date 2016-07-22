@@ -39,7 +39,7 @@ namespace AcManager.Tools.Managers.Online {
             public string DisplayTypeShort => DisplayType.Substring(0, 1);
 
             public string DisplayDuration => Type == Game.SessionType.Race ?
-                    PluralizingConverter.PluralizeExt((int)Duration, Resources.Online_Session_LapsDuration) :
+                    PluralizingConverter.PluralizeExt((int)Duration, ToolsStrings.Online_Session_LapsDuration) :
                     Duration.ToReadableTime();
         }
 
@@ -195,14 +195,14 @@ namespace AcManager.Tools.Managers.Online {
             if (!list.Any()) return;
             Status = ServerStatus.Error;
             ErrorMessage += (list.Count == 1
-                    ? string.Format(Resources.Online_Server_CarIsMissing, IdToBb(list[0]))
-                    : string.Format(Resources.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToString(", "))) + "\n";
+                    ? string.Format(ToolsStrings.Online_Server_CarIsMissing, IdToBb(list[0]))
+                    : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToString(", "))) + "\n";
         }
 
         private void SetMissingTrackErrorIfNeeded() {
             if (Track != null) return;
             Status = ServerStatus.Error;
-            ErrorMessage += string.Format(Resources.Online_Server_TrackIsMissing, IdToBb(TrackId, false)) + "\n";
+            ErrorMessage += string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false)) + "\n";
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace AcManager.Tools.Managers.Online {
         public string Country {
             get { return _country; }
             set {
-                if (value == @"na") value = Resources.Online_Server_CountryNA;
+                if (value == @"na") value = ToolsStrings.Online_Server_CountryNA;
                 if (Equals(value, _country)) return;
                 _country = value;
                 OnPropertyChanged();
@@ -349,7 +349,7 @@ namespace AcManager.Tools.Managers.Online {
         public string DisplayTimeLeft {
             get {
                 var now = DateTime.Now;
-                return SessionEnd <= now ? Resources.Online_Server_SessionEnded : (SessionEnd - now).ToProperString();
+                return SessionEnd <= now ? ToolsStrings.Online_Server_SessionEnded : (SessionEnd - now).ToProperString();
             }
         }
 
@@ -522,11 +522,11 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private static string IdToBb(string id, bool car = true) {
-            if (car) return string.Format(Resources.Online_Server_MissingCarBbCode, id);
+            if (car) return string.Format(ToolsStrings.Online_Server_MissingCarBbCode, id);
 
             id = Regex.Replace(id, @"-([^-]+)$", "/$1");
             if (!id.Contains("/")) id = $"{id}/{id}";
-            return string.Format(Resources.Online_Server_MissingTrackBbCode, id);
+            return string.Format(ToolsStrings.Online_Server_MissingTrackBbCode, id);
         }
 
         private BetterObservableCollection<CurrentDriver> _currentDrivers;
@@ -575,12 +575,12 @@ namespace AcManager.Tools.Managers.Online {
                             KunosApiProvider.TryToGetInformation(Ip, Port));
                     if (newInformation == null) {
                         Status = ServerStatus.Error;
-                        ErrorMessage += Resources.Online_Server_CannotRefresh;
+                        ErrorMessage += ToolsStrings.Online_Server_CannotRefresh;
                     } else {
                         // TODO
                         if (!UpdateValuesFrom(newInformation)) {
                             Status = ServerStatus.Error;
-                            ErrorMessage += Resources.Online_Server_NotImplemented;
+                            ErrorMessage += ToolsStrings.Online_Server_NotImplemented;
                         }
                     }
                 } else {
@@ -600,14 +600,14 @@ namespace AcManager.Tools.Managers.Online {
                 } else {
                     Ping = null;
                     Status = ServerStatus.Error;
-                    ErrorMessage += Resources.Online_Server_CannotPing;
+                    ErrorMessage += ToolsStrings.Online_Server_CannotPing;
                     return;
                 }
 
                 var information = await KunosApiProvider.TryToGetCurrentInformationAsync(Ip, PortC);
                 if (information == null) {
                     Status = ServerStatus.Error;
-                    ErrorMessage = Resources.Online_Server_Unavailable;
+                    ErrorMessage = ToolsStrings.Online_Server_Unavailable;
                     return;
                 }
 
@@ -659,7 +659,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 if (cars.Contains(null)) {
                     Status = ServerStatus.Error;
-                    ErrorMessage = Resources.Online_Server_CarsDoNotMatch;
+                    ErrorMessage = ToolsStrings.Online_Server_CarsDoNotMatch;
                     return;
                 }
 
@@ -678,7 +678,7 @@ namespace AcManager.Tools.Managers.Online {
                 Status = ServerStatus.Ready;
             } catch (Exception e) {
                 Status = ServerStatus.Error;
-                ErrorMessage = Resources.Online_Server_UnhandledError;
+                ErrorMessage = ToolsStrings.Online_Server_UnhandledError;
                 Logging.Warning("ServerEntry error:" + e);
             }
         }

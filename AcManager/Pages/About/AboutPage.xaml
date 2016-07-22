@@ -1,8 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.About.AboutPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:about="clr-namespace:AcManager.Pages.About" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance about:AboutPage+AboutPageViewModel}">
+        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:about="clr-namespace:AcManager.Pages.About"
+        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance about:AboutPage+ViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -25,7 +26,7 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0 20 0 40" PreviewMouseLeftButtonUp="Version_OnMouseLeftButtonUp">
-                    <TextBlock Style="{StaticResource Label}" Text="Version:" />
+                    <TextBlock Style="{StaticResource Label}" Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}" />
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.Label.ReadOnly}" Margin="8 0 0 0"
                             Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, Mode=OneTime}" />
                 </StackPanel>

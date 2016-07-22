@@ -4,8 +4,9 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
         xmlns:miscellaneous="clr-namespace:AcManager.Tools.Miscellaneous;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:largeFilesSharing="clr-namespace:AcManager.LargeFilesSharing;assembly=AcManager.LargeFilesSharing" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsSharing+SharingViewModel}">
+        xmlns:largeFilesSharing="clr-namespace:AcManager.LargeFilesSharing;assembly=AcManager.LargeFilesSharing" xmlns:g="clr-namespace:AcManager"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance settings:SettingsSharing+SharingViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,62 +24,63 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding Sharing.CopyLinkToClipboard}">
-                <Label Content="Copy link to clipboard" />
+                <Label Content="{x:Static g:AppStrings.Settings_Sharing_CopyLinkAutomatically}" />
             </CheckBox>
 
             <DockPanel IsEnabled="{Binding Sharing.ShareAnonymously, Converter={StaticResource InvertBooleanConverter}}">
-                <Label Content="Sharing nickname:" />
+                <Label Content="{x:Static g:AppStrings.Settings_Sharing_NameLabel}" />
                 <TextBox Text="{Binding Sharing.SharingName}" attached:WatermarkService.Watermark="?" MaxLength="60" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Sharing.ShareAnonymously}">
-                <Label Content="Share anonymously" />
+                <Label Content="{x:Static g:AppStrings.Settings_Sharing_Anonymously}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Sharing.ShareWithoutName}">
-                <Label Content="Disable custom names for sharing" />
+                <Label Content="{x:Static g:AppStrings.Settings_Sharing_Unnamed}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Sharing.VerifyBeforeSharing}">
-                <Label Content="Verify params before sharing" />
+                <Label Content="{x:Static g:AppStrings.Settings_Sharing_VerifyParams}" />
             </CheckBox>
 
-            <StackPanel
-                    Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <!--special options-->
-                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Special:" />
+                <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Sharing_SpecialHeader}" />
 
                 <CheckBox IsChecked="{Binding Sharing.CustomIds}">
-                    <Label Content="Custom IDs" />
+                    <Label Content="{x:Static g:AppStrings.Settings_Sharing_CustomIds}" />
                 </CheckBox>
             </StackPanel>
 
             <!--big files-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Big files:" />
-            <DockPanel ToolTip="I hope more destinations will be added later">
-                <Label Content="Destination:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Sharing_BigFilesHeader}" />
+            <DockPanel>
+                <Label Content="{x:Static g:AppStrings.Settings_Sharing_BigFilesDestinationLabel}" />
                 <Button Visibility="{Binding SelectedUploader.SupportsSigning, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Command="{Binding SignInCommand}" Width="120">
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Sign Out" Command="{Binding ResetCommand}" />
+                            <MenuItem Header="{x:Static g:AppStrings.Common_SignOut}" Command="{Binding ResetCommand}" />
                         </ContextMenu>
                     </Button.ContextMenu>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Foreground="GreenYellow" Margin="0 0 4 0"
                                 Visibility="{Binding SelectedUploader.IsReady, Converter={StaticResource BooleanToVisibilityConverter}}" Text="✓" />
-                        <TextBlock Text="Sign In" />
+                        <TextBlock Text="{x:Static g:AppStrings.Common_SignIn}" />
                     </StackPanel>
                 </Button>
                 <ComboBox ItemsSource="{Binding UploadersList}" SelectedItem="{Binding SelectedUploader}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <DockPanel Visibility="{Binding SelectedUploader.SupportsDirectories, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Label Content="Folder:" />
-                <Button Width="120" Command="{Binding UpdateDirectoriesCommand}" VerticalAlignment="Top" Content="Update" />
-                <TextBlock Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}}" Opacity="0.5" FontStyle="Italic" Text="Press “Update” to reload list of folders" />
+                <Label Content="{x:Static g:AppStrings.Settings_Sharing_BigFilesFolderLabel}" />
+                <Button Width="120" Command="{Binding UpdateDirectoriesCommand}" VerticalAlignment="Top" Content="{x:Static g:AppStrings.Common_Update}" />
+                <TextBlock Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}}" Opacity="0.5" FontStyle="Italic"
+                        Text="{x:Static g:AppStrings.Settings_Sharing_BigFilesFoldersUpdate_Tooltip}" />
                 <StackPanel Visibility="{Binding UploaderDirectories, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <TextBlock Text="{Binding UploaderDirectory.DisplayName, StringFormat='{}Selected folder: {0}'}" Margin="0 0 0 4" />
+                    <TextBlock Text="{Binding UploaderDirectory.DisplayName, StringFormat={x:Static g:AppStrings.Settings_Sharing_BigFilesSelectedFolder}}"
+                            Margin="0 0 0 4" />
                     <TreeView x:Name="UploaderDirectoriesTreeView" ItemsSource="{Binding UploaderDirectories}"
                             SelectedItemChanged="TreeView_OnSelectedItemChanged" MaxHeight="200" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             ScrollViewer.CanContentScroll="False">
@@ -86,7 +88,7 @@
                             <HierarchicalDataTemplate DataType="{x:Type largeFilesSharing:DirectoryEntry}" ItemsSource="{Binding Children}">
                                 <TextBlock Text="{Binding DisplayName}">
                                     <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding Id, StringFormat='{}ID: {0}', TargetNullValue='?'}"></TextBlock>
+                                        <TextBlock Text="{Binding Id, StringFormat={x:Static g:AppStrings.Common_IdFormat}, TargetNullValue='?'}" />
                                     </TextBlock.ToolTip>
                             </TextBlock>
                             </HierarchicalDataTemplate>
@@ -96,17 +98,21 @@
             </DockPanel>
 
             <!--history-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="History:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Sharing_HistoryHeader}" />
             <DockPanel>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="400"
                         PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
                     <DataGrid ItemsSource="{Binding History}" Style="{StaticResource DataGrid.ReadOnly}" MouseDoubleClick="History_OnMouseDoubleClick"
                             Name="HistoryDataGrid">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Width="160" Header="Type" SortMemberPath="EntryType" CellTemplate="{StaticResource HistoryEntryType}" />
-                            <DataGridTextColumn Width="1*" Header="Name" Binding="{Binding Name, TargetNullValue='?'}" />
-                            <DataGridTextColumn Width="1*" Header="Target" Binding="{Binding Target, TargetNullValue='?'}" />
-                            <DataGridTextColumn MinWidth="160" Width="0.7*" Header="URL" Binding="{Binding Url, TargetNullValue='?'}" />
+                            <DataGridTemplateColumn Width="160" Header="{x:Static g:AppStrings.Settings_Sharing_HistoryTableType}" SortMemberPath="EntryType"
+                                    CellTemplate="{StaticResource HistoryEntryType}" />
+                            <DataGridTextColumn Width="1*" Header="{x:Static g:AppStrings.Settings_Sharing_HistoryTableName}"
+                                    Binding="{Binding Name, TargetNullValue='?'}" />
+                            <DataGridTextColumn Width="1*" Header="{x:Static g:AppStrings.Settings_Sharing_HistoryTableTarget}"
+                                    Binding="{Binding Target, TargetNullValue='?'}" />
+                            <DataGridTextColumn MinWidth="160" Width="0.7*" Header="{x:Static g:AppStrings.Settings_Sharing_HistoryTableUrl}"
+                                    Binding="{Binding Url, TargetNullValue='?'}" />
                         </DataGrid.Columns>
 
                         <!--<DataGrid.RowDetailsTemplate>

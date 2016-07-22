@@ -176,7 +176,7 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            private string _saveableTitle = Controls.Resources.ImageViewer_SaveTitle;
+            private string _saveableTitle = Controls.ControlsStrings.ImageViewer_SaveTitle;
 
             public string SaveableTitle {
                 get { return _saveableTitle; }
@@ -224,7 +224,7 @@ namespace AcManager.Controls.Dialogs {
 
             public object CurrentOriginalImage => _originalImages[_currentPosition];
 
-            public string CurrentImageName => Path.GetFileName(CurrentOriginalImage as string ?? Controls.Resources.ImageViewer_DefaultName);
+            public string CurrentImageName => Path.GetFileName(CurrentOriginalImage as string ?? Controls.ControlsStrings.ImageViewer_DefaultName);
 
             private bool _selectionMode;
 
@@ -272,7 +272,7 @@ namespace AcManager.Controls.Dialogs {
                 try {
                     await Task.Run(() => File.Copy(origin, dialog.FileName));
                 } catch (Exception ex) {
-                    NonfatalError.Notify(Controls.Resources.ImageViewer_CannotSave, ex);
+                    NonfatalError.Notify(Controls.ControlsStrings.ImageViewer_CannotSave, ex);
                 }
             }, o => CurrentOriginalImage is string));
         }

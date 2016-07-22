@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -211,7 +212,7 @@ namespace AcTools.DataFile {
         /// </summary>
         /// <param name="prefixName">Prefix (e.g. “SECTION”)</param>
         /// <param name="startFrom">ID of first section (use -1 if first section is SECTION and second is SECTION_1)</param>
-        public IEnumerable<IniFileSection> GetSections(string prefixName, int startFrom = 0) {
+        public IEnumerable<IniFileSection> GetSections([Localizable(false)] string prefixName, int startFrom = 0) {
             return GetSectionNames(prefixName, startFrom).Select(key => this[key]);
         }
 

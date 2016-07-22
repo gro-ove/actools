@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
@@ -238,17 +239,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     var cropRect = new Rectangle(padding, padding, size, size);
                     g.DrawImage(image, new Rectangle(0, 0, target.Width, target.Height),
                             cropRect, GraphicsUnit.Pixel);
-
-                    var output = Path.Combine(outputDirectory, name);
-                    try {
-                        if (File.Exists(output)) {
-                            FileUtils.Recycle(output);
-                        }
-                    } catch (Exception) {
-                        // ignored
-                    }
-
-                    target.Save(output);
+                    target.Save(Path.Combine(outputDirectory, name));
                 }
             }
         }
@@ -279,10 +270,35 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _shadowDestinationTransform = Matrix.Scaling(new Vector3(-_shadowSize.X, _shadowSize.Y, _shadowSize.Z)) * Matrix.RotationY(MathF.PI);
         }
 
+        private void BackupAndRecycle(string outputDirectory) {
+            var original = new [] {
+                "body", "tyre_0", "tyre_1", "tyre_2", "tyre_3"
+            }.Select(x => Path.Combine(outputDirectory, x + "_shadow.png")).Select(x => new {
+                Original = x,
+                Backup = x.ApartFromLast(".png") + "~bak.png"
+            }).ToList();
+
+            try {
+                foreach (var p in original) {
+                    File.Move(p.Original, p.Backup);
+                }
+            } catch (Exception e) {
+                throw new Exception("Cannot remove original files", e);
+            }
+
+            Task.Run(() => {
+                foreach (var p in original) {
+                    FileUtils.Recycle(p.Backup);
+                }
+            });
+        }
+
         public void Shot(string outputDirectory) {
             if (!Initialized) {
                 Initialize();
             }
+
+            BackupAndRecycle(outputDirectory);
 
             // body shadow
             PrepareBuffers(BodySize + BodyPadding * 2, 1024);

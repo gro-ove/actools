@@ -290,10 +290,10 @@
     </Compile>
     <Compile Include="Plugins\AwesomiumPluginWrapper.cs" />
     <Compile Include="Plugins\MagickPluginWrapper.cs" />
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="AppStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>AppStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
@@ -1086,15 +1086,15 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>BinaryResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="AppStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>AppStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.it.resx">
+    <EmbeddedResource Include="AppStrings.it.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.ru.resx">
+    <EmbeddedResource Include="AppStrings.ru.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

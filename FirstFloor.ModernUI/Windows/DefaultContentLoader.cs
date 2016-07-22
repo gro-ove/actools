@@ -18,7 +18,7 @@ namespace FirstFloor.ModernUI.Windows {
             if (ModernUiHelper.IsInDesignMode) return null;
 
             if (!Application.Current.Dispatcher.CheckAccess()) {
-                throw new InvalidOperationException(Resources.UIThreadRequired);
+                throw new InvalidOperationException(UiStrings.UIThreadRequired);
             }
 
             // scheduler ensures LoadContent is executed on the current UI thread

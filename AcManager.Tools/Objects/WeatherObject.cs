@@ -538,14 +538,14 @@ namespace AcManager.Tools.Objects {
         public void EnsureLoadedExtended() {
             if (ColorCurves == null) {
                 ColorCurves = new[] {
-                    new WeatherColorEntry(@"HORIZON", @"LOW", Resources.Weather_ColorCurves_HorizonLow, Color.FromRgb(255, 138, 34), 1.9, 7d),
-                    new WeatherColorEntry(@"HORIZON", @"HIGH", Resources.Weather_ColorCurves_HorizonHigh, Color.FromRgb(150, 170, 220), 3.5, 7d),
-                    new WeatherColorEntry(@"SKY", @"LOW", Resources.Weather_ColorCurves_SkyLow, Color.FromRgb(30, 73, 167), 2.8, 5d),
-                    new WeatherColorEntry(@"SKY", @"HIGH", Resources.Weather_ColorCurves_SkyHigh, Color.FromRgb(30, 73, 167), 3.0, 5d),
-                    new WeatherColorEntry(@"SUN", @"LOW", Resources.Weather_ColorCurves_SunLow, Color.FromRgb(229, 140, 70), 40d, 50d),
-                    new WeatherColorEntry(@"SUN", @"HIGH", Resources.Weather_ColorCurves_SunHigh, Color.FromRgb(170, 160, 140), 20d, 50d),
-                    new WeatherColorEntry(@"AMBIENT", @"LOW", Resources.Weather_ColorCurves_AmbientLow, Color.FromRgb(124, 124, 124), 18d, 30d),
-                    new WeatherColorEntry(@"AMBIENT", @"HIGH", Resources.Weather_ColorCurves_AmbientHigh, Color.FromRgb(105, 105, 105), 11d, 30d),
+                    new WeatherColorEntry(@"HORIZON", @"LOW", ToolsStrings.Weather_ColorCurves_HorizonLow, Color.FromRgb(255, 138, 34), 1.9, 7d),
+                    new WeatherColorEntry(@"HORIZON", @"HIGH", ToolsStrings.Weather_ColorCurves_HorizonHigh, Color.FromRgb(150, 170, 220), 3.5, 7d),
+                    new WeatherColorEntry(@"SKY", @"LOW", ToolsStrings.Weather_ColorCurves_SkyLow, Color.FromRgb(30, 73, 167), 2.8, 5d),
+                    new WeatherColorEntry(@"SKY", @"HIGH", ToolsStrings.Weather_ColorCurves_SkyHigh, Color.FromRgb(30, 73, 167), 3.0, 5d),
+                    new WeatherColorEntry(@"SUN", @"LOW", ToolsStrings.Weather_ColorCurves_SunLow, Color.FromRgb(229, 140, 70), 40d, 50d),
+                    new WeatherColorEntry(@"SUN", @"HIGH", ToolsStrings.Weather_ColorCurves_SunHigh, Color.FromRgb(170, 160, 140), 20d, 50d),
+                    new WeatherColorEntry(@"AMBIENT", @"LOW", ToolsStrings.Weather_ColorCurves_AmbientLow, Color.FromRgb(124, 124, 124), 18d, 30d),
+                    new WeatherColorEntry(@"AMBIENT", @"HIGH", ToolsStrings.Weather_ColorCurves_AmbientHigh, Color.FromRgb(105, 105, 105), 11d, 30d),
                 };
 
                 foreach (var entry in ColorCurves) {
@@ -585,7 +585,7 @@ namespace AcManager.Tools.Objects {
 
             if (_loadedExtended && FileUtils.IsAffected(filename, ColorCurvesIniFilename)) {
                 if (!Changed ||
-                        ModernDialog.ShowMessage(Resources.AcObject_ReloadAutomatically_Ini, Resources.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) ==
+                        ModernDialog.ShowMessage(ToolsStrings.AcObject_ReloadAutomatically_Ini, ToolsStrings.AcObject_ReloadAutomatically, MessageBoxButton.YesNo) ==
                                 MessageBoxResult.Yes) {
                     var c = Changed;
                     ReloadColorCurves();

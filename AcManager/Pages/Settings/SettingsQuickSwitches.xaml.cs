@@ -27,8 +27,8 @@ namespace AcManager.Pages.Settings {
             var active = SettingsHolder.Drive.QuickSwitchesList;
 
             if (_widgets == null) {
-                _widgets = Resources.MergedDictionaries.SelectMany(x => x.Keys.OfType<string>()).Where(x => x.StartsWith("Widget")).ToArray();
-                Logging.Write("_widgets: " + _widgets.JoinToString(", "));
+                _widgets = Resources.MergedDictionaries.SelectMany(x => x.Keys.OfType<string>()).Where(x => x.StartsWith(@"Widget")).ToArray();
+                Logging.Write("Widgets: " + _widgets.JoinToString(@", "));
 
                 if (active.Any(x => !_widgets.Contains(x))) {
                     active = active.Where(x => _widgets.Contains(x)).ToArray();
@@ -163,8 +163,7 @@ namespace AcManager.Pages.Settings {
                 e.Effects = DragDropEffects.None;
                 return;
             }
-
-            var oldIndex = _draggedSource.Items.IndexOf(_draggedValue);
+            
             var newIndex = -1;
             for (var i = 0; i < destination.Items.Count; i++) {
                 var item = GetListViewItem(destination, i);
@@ -173,8 +172,6 @@ namespace AcManager.Pages.Settings {
                     break;
                 }
             }
-
-            Logging.Write($"OnDrop(): from {oldIndex} to {newIndex}");
             
             _draggedSource.Items.Remove(_draggedValue);
             if (newIndex == -1) {

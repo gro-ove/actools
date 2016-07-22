@@ -231,10 +231,10 @@
     <Compile Include="GameProperties\GameCommandExecutorBase.cs" />
     <Compile Include="Objects\ServerPresetObject.cs" />
     <Compile Include="Objects\WeatherColorEntry.cs" />
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="ToolsStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>ToolsStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="SemiGui\GameEndedArgs.cs" />
     <Compile Include="SemiGui\GameFinishedArgs.cs" />
@@ -377,15 +377,15 @@
     <None Include="Packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
+    <EmbeddedResource Include="ToolsStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>ToolsStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.it.resx">
+    <EmbeddedResource Include="ToolsStrings.it.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.ru.resx">
+    <EmbeddedResource Include="ToolsStrings.ru.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

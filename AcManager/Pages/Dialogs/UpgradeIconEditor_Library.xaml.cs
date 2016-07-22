@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using AcManager.Annotations;
 using AcManager.Controls.Helpers;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
@@ -43,7 +44,7 @@ namespace AcManager.Pages.Dialogs {
             var mainDialog = UpgradeIconEditor.Instance;
             if (mainDialog != null) {
                 Car = mainDialog.Car;
-                _key = "__upgradeiconeditor_" + Car.Id;
+                _key = @"__upgradeiconeditor_" + Car.Id;
             }
 
             InitializeComponent();
@@ -79,7 +80,7 @@ namespace AcManager.Pages.Dialogs {
 
                 File.Copy(Selected.Filename, Car.UpgradeIcon);
             }  catch (Exception) {
-                ModernDialog.ShowMessage(@"Can’t change upgrade icon.", @"Fail", MessageBoxButton.OK);
+                ModernDialog.ShowMessage("Can’t change upgrade icon.", ToolsStrings.Common_CannotDo, MessageBoxButton.OK);
             }
         }
 
@@ -87,8 +88,7 @@ namespace AcManager.Pages.Dialogs {
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

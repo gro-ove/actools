@@ -380,4 +380,22 @@
   <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
     <value>Б</value>
   </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (левый)</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt (правый)</value>
+  </data>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>Ctrl (левый)</value>
+  </data>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>Ctrl (правый)</value>
+  </data>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>Shift (левый)</value>
+  </data>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>Shift (правый)</value>
+  </data>
 </root>

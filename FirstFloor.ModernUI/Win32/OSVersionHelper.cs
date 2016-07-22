@@ -374,7 +374,7 @@ namespace FirstFloor.ModernUI.Win32 {
 
                 return osEntry.MatchesOrGreater.Value;
             } catch (KeyNotFoundException e) {
-                throw new ArgumentException(Resources.UnknownOS, e);
+                throw new ArgumentException(UiStrings.UnknownOS, e);
             }
         }
 

@@ -15,42 +15,42 @@
     <ScrollViewer>
         <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding LiveSettings.RsrEnabled}">
-                <Label Content="{x:Static AcManager:Resources.Settings_Live_EnableRsr}" />
+                <Label Content="{x:Static AcManager:AppStrings.Settings_Live_EnableRsr}" />
             </CheckBox>
 
             <StackPanel IsEnabled="{Binding LiveSettings.RsrEnabled}" Margin="20 0 0 8">
-                <CheckBox IsChecked="{Binding LiveSettings.RsrCustomStyle}" ToolTip="{x:Static AcManager:Resources.Settings_Live_RsrCustomStyle_Tooltip}">
-                    <Label Content="{x:Static AcManager:Resources.Settings_Live_CustomStyle}" />
+                <CheckBox IsChecked="{Binding LiveSettings.RsrCustomStyle}" ToolTip="{x:Static AcManager:AppStrings.Settings_Live_RsrCustomStyle_Tooltip}">
+                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_CustomStyle}" />
                 </CheckBox>
 
                 <DockPanel>
-                    <Label Content="{x:Static AcManager:Resources.Settings_Live_RsrNameLabel}" />
+                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_RsrNameLabel}" />
                     <CheckBox DockPanel.Dock="Left" IsChecked="{Binding LiveSettings.RsrDifferentPlayerName}"
-                            ToolTip="{x:Static AcManager:Resources.Settings_Live_RsrName_Tooltip}" VerticalAlignment="Center" />
+                            ToolTip="{x:Static AcManager:AppStrings.Settings_Live_RsrName_Tooltip}" VerticalAlignment="Center" />
                     <TextBox Text="{Binding LiveSettings.RsrPlayerName}" attached:WatermarkService.Watermark="?"
                             attached:FocusAdvancement.AdvancesByEnterKey="True" IsEnabled="{Binding LiveSettings.RsrDifferentPlayerName}" />
                 </DockPanel>
 
-                <CheckBox IsChecked="{Binding LiveSettings.RsrDisableAppAutomatically}" ToolTip="{x:Static AcManager:Resources.Settings_Live_RsrAutoToggleApp_Tooltip}">
-                    <Label Content="{x:Static AcManager:Resources.Settings_Live_RsrAutoToggleApp}" />
+                <CheckBox IsChecked="{Binding LiveSettings.RsrDisableAppAutomatically}" ToolTip="{x:Static AcManager:AppStrings.Settings_Live_RsrAutoToggleApp_Tooltip}">
+                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_RsrAutoToggleApp}" />
                 </CheckBox>
             </StackPanel>
 
             <CheckBox IsChecked="{Binding LiveSettings.SrsEnabled}" Margin="0 20 0 8">
-                <Label Content="{x:Static AcManager:Resources.Settings_Live_EnableSrs}" />
+                <Label Content="{x:Static AcManager:AppStrings.Settings_Live_EnableSrs}" />
             </CheckBox>
 
             <StackPanel IsEnabled="{Binding LiveSettings.SrsEnabled}" Margin="20 0 0 8">
-                <CheckBox IsChecked="{Binding LiveSettings.SrsCustomStyle}" ToolTip="{x:Static AcManager:Resources.Settings_Live_SrsCustomStyle_Tooltip}">
-                    <Label Content="{x:Static AcManager:Resources.Settings_Live_CustomStyle}" />
+                <CheckBox IsChecked="{Binding LiveSettings.SrsCustomStyle}" ToolTip="{x:Static AcManager:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
+                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_CustomStyle}" />
                 </CheckBox>
 
-                <CheckBox IsChecked="{Binding LiveSettings.SrsAutoMode}" ToolTip="{x:Static AcManager:Resources.Settings_Live_SrsJoinFromOnline_Tooltip}">
-                    <Label Content="{x:Static AcManager:Resources.Settings_Live_SrsJoinFromOnline}" />
+                <CheckBox IsChecked="{Binding LiveSettings.SrsAutoMode}" ToolTip="{x:Static AcManager:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
+                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_SrsJoinFromOnline}" />
                 </CheckBox>
 
-                <DockPanel ToolTip="{x:Static AcManager:Resources.Settings_Live_SrsOnlineMask_Tooltip}">
-                    <Label Content="{x:Static AcManager:Resources.Settings_Live_SrsOnlineMaskLabel}" />
+                <DockPanel ToolTip="{x:Static AcManager:AppStrings.Settings_Live_SrsOnlineMask_Tooltip}">
+                    <Label Content="{x:Static AcManager:AppStrings.Settings_Live_SrsOnlineMaskLabel}" />
                     <TextBox Text="{Binding LiveSettings.SrsAutoMask}" attached:WatermarkService.Watermark="?"
                             attached:FocusAdvancement.AdvancesByEnterKey="True" />
                 </DockPanel>

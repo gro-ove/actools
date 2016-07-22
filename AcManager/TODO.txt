@@ -513,6 +513,7 @@ fixme:
     - fix brands list (removed brands)
 
 todo:
+    - use Escape, Ctrl+W and Ctrl+F4 to exit from some dialogs
     - add AC credits (and version?)
     - shape with triangle at right bottom (audi r8)
     - change "Author:" to "Version:" or "URL:" if author is missing
@@ -521,14 +522,23 @@ todo:
     - weather: test button
     - managers: loading progress
 
+    + move culture initialization to EntryPoint
     - make project localizable
-        - .mui
-        - .tools
-        - .LargeFilesSharing
-        - .controls
+        + .mui
+        + .tools
+        + .LargeFilesSharing
+        + .controls
         - main project
+            + main window
+            + settings
+            - selected
+            - miscellaneous & lists
+            - drive
+            - dialogs
+            - acsettings
+            - about
     - changeable locale
-    - move culture initialization to EntryPoint
+    - custom locale
 
     - notification for plugins
     - upload Content to Trello for those who doesn't have Internet connection

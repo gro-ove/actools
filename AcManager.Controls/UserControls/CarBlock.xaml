@@ -58,9 +58,9 @@
                     </Grid.RowDefinitions>
 
                     <!-- first row -->
-                    <TextBlock Text="{x:Static Controls:Resources.AcObject_CarBrandLabel}" Grid.Column="0" Grid.Row="0"
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_CarBrandLabel}" Grid.Column="0" Grid.Row="0"
                             Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="{x:Static Controls:Resources.AcObject_ContryLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_ContryLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
 
                     <TextBlock Text="{Binding Brand}" Grid.Column="1" Grid.Row="0" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
@@ -68,9 +68,9 @@
                             TextTrimming="CharacterEllipsis" />
 
                     <!-- second row -->
-                    <TextBlock Text="{x:Static Controls:Resources.AcObject_CarClassLabel}" Grid.Column="0" Grid.Row="1"
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_CarClassLabel}" Grid.Column="0" Grid.Row="1"
                             Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Text="{x:Static Controls:Resources.AcObject_YearLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_YearLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
                     <TextBlock Text="{Binding CarClass}" Grid.Column="1" Grid.Row="1" attached:WatermarkService.Watermark="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
@@ -78,9 +78,9 @@
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <!-- third row -->
-                    <TextBlock Text="{x:Static Controls:Resources.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2"
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_CarParentLabel}" Grid.Column="0" Grid.Row="2"
                             Style="{StaticResource LabelWithPadding}" />
-                    <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}" ToolTip="{x:Static Controls:Resources.AcObject_Author_Tooltip}">
+                    <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}" ToolTip="{x:Static Controls:ControlsStrings.AcObject_Author_Tooltip}">
                         <TextBlock.Text>
                             <MultiBinding Converter="{StaticResource AuthorVersionUrlToLabelConverter}">
                                 <Binding Path="Author" />
@@ -90,13 +90,13 @@
                         </TextBlock.Text>
                     </TextBlock>
 
-                    <TextBlock Text="{Binding ParentDisplayName}" attached:WatermarkService.Watermark="{x:Static Tools:Resources.Common_None}" Grid.Column="1"
+                    <TextBlock Text="{Binding ParentDisplayName}" attached:WatermarkService.Watermark="{x:Static Tools:ToolsStrings.Common_None}" Grid.Column="1"
                             Grid.Row="2" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="3" Grid.Row="2"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                     <!-- last row -->
-                    <TextBlock Text="{x:Static Controls:Resources.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
+                    <TextBlock Text="{x:Static Controls:ControlsStrings.AcObject_SpecsLabel}" Grid.Column="0" Grid.Row="3" Style="{StaticResource LabelWithPadding}" />
                     <TextBlock Text="{Binding SpecsInfoDisplay}" attached:WatermarkService.Watermark="?" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
                             TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 </Grid>

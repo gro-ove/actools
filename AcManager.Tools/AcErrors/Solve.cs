@@ -15,8 +15,8 @@ namespace AcManager.Tools.AcErrors {
         public static IEnumerable<Solution> TryToFindRenamedFile(string baseDirectory, string filename, bool skipOff = false) {
             return FileUtils.FindRenamedFile(baseDirectory, filename)
                             .Where(x => skipOff == false || x.EndsWith(@"-off", StringComparison.OrdinalIgnoreCase))
-                            .Select(x => new Solution(string.Format(Resources.Solving_RestoreFrom, x.Substring(baseDirectory.Length)),
-                                    Resources.Solving_RestoreFrom_Commentary,
+                            .Select(x => new Solution(string.Format(ToolsStrings.Solving_RestoreFrom, x.Substring(baseDirectory.Length)),
+                                    ToolsStrings.Solving_RestoreFrom_Commentary,
                                     e => {
                                         var directory = Path.GetDirectoryName(filename);
                                         if (directory == null) throw new IOException("directory = null");
@@ -35,8 +35,8 @@ namespace AcManager.Tools.AcErrors {
 
         public static IEnumerable<Solution> TryToFindAnyFile(string baseDirectory, string filename, string searchPattern) {
             return Directory.GetFiles(baseDirectory, searchPattern)
-                            .Select(x => new Solution(string.Format(Resources.Solving_RestoreFrom, x.Substring(baseDirectory.Length)),
-                                    Resources.Solving_RestoreFrom_Commentary,
+                            .Select(x => new Solution(string.Format(ToolsStrings.Solving_RestoreFrom, x.Substring(baseDirectory.Length)),
+                                    ToolsStrings.Solving_RestoreFrom_Commentary,
                                     e => {
                                         var directory = Path.GetDirectoryName(filename);
                                         if (directory == null) throw new IOException("directory = null");
@@ -66,8 +66,8 @@ namespace AcManager.Tools.AcErrors {
         public static MultiSolution TryToCreateNewFile(AcJsonObjectNew target) {
             if (target is ShowroomObject) {
                 return new MultiSolution(
-                    Resources.Solving_CreateNewFile,
-                    Resources.Solving_CreateNewFile_Commentary,
+                    ToolsStrings.Solving_CreateNewFile,
+                    ToolsStrings.Solving_CreateNewFile_Commentary,
                     e => {
                         var jObject = new JObject {
                             [@"name"] = AcStringValues.NameFromId(e.Target.Id)
@@ -80,8 +80,8 @@ namespace AcManager.Tools.AcErrors {
 
             if (target is CarSkinObject) {
                 return new MultiSolution(
-                    Resources.Solving_CreateNewFile,
-                    Resources.Solving_CreateNewFile_Commentary,
+                    ToolsStrings.Solving_CreateNewFile,
+                    ToolsStrings.Solving_CreateNewFile_Commentary,
                     e => {
                         var jObject = new JObject {
                             [@"skinname"] = AcStringValues.NameFromId(e.Target.Id),

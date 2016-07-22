@@ -11,7 +11,7 @@
     <Rectangle DockPanel.Dock="Right" HorizontalAlignment="Right" Width="1" Fill="{DynamicResource Accent}" />
 
     <StackPanel Margin="16 8 8 48" VerticalAlignment="Center">
-        <TextBlock Text="{x:Static Controls:Resources.QuickSwitches_Header}" Style="{StaticResource Heading1}" />
+        <TextBlock Text="{x:Static Controls:ControlsStrings.QuickSwitches_Header}" Style="{StaticResource Heading1}" />
 
         <ItemsControl Name="List">
             <ItemsControl.ItemsPanel>

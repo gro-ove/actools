@@ -114,7 +114,7 @@ namespace AcManager.Controls.CustomShowroom {
                 int width, height;
                 switch (p) {
                     case "custom":
-                        var result = Prompt.Show(Controls.Resources.CustomShowroom_ViewMapping_Prompt, Controls.Resources.CustomShowroom_ViewMapping,
+                        var result = Prompt.Show(Controls.ControlsStrings.CustomShowroom_ViewMapping_Prompt, Controls.ControlsStrings.CustomShowroom_ViewMapping,
                                 ValuesStorage.GetString(KeyDimensions, ""), @"2048x2048");
                         if (string.IsNullOrWhiteSpace(result)) return;
 
@@ -129,8 +129,8 @@ namespace AcManager.Controls.CustomShowroom {
                             if (FlexibleParser.TryParseInt(result, out value)) {
                                 width = height = value;
                             } else {
-                                NonfatalError.Notify(Controls.Resources.CustomShowroom_ViewMapping_ParsingFailed,
-                                        Controls.Resources.CustomShowroom_ViewMapping_ParsingFailed_Commentary);
+                                NonfatalError.Notify(Controls.ControlsStrings.CustomShowroom_ViewMapping_ParsingFailed,
+                                        Controls.ControlsStrings.CustomShowroom_ViewMapping_ParsingFailed_Commentary);
                                 return;
                             }
                         }
@@ -153,7 +153,7 @@ namespace AcManager.Controls.CustomShowroom {
                 new ImageViewer(filename) {
                     Model = {
                         Saveable = true,
-                        SaveableTitle = Controls.Resources.CustomShowroom_ViewMapping_Export,
+                        SaveableTitle = Controls.ControlsStrings.CustomShowroom_ViewMapping_Export,
                         SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename)
                     }
                 }.ShowDialog();
@@ -173,7 +173,7 @@ namespace AcManager.Controls.CustomShowroom {
                 try {
                     await Task.Run(() => File.WriteAllBytes(dialog.FileName, Data));
                 } catch (Exception e) {
-                    NonfatalError.Notify(Controls.Resources.CustomShowroom_CannotExport, e);
+                    NonfatalError.Notify(Controls.ControlsStrings.CustomShowroom_CannotExport, e);
                 }
             }, o => Data != null));
 

@@ -49,7 +49,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public static DependencyProperty LinkNavigatorProperty = DependencyProperty.Register("LinkNavigator", typeof(ILinkNavigator), typeof(ModernWindow), new PropertyMetadata(new DefaultLinkNavigator()));
 
-        public static RoutedUICommand NavigateTitleLink { get; } = new RoutedUICommand(ModernUI.Resources.NavigateLink, "NavigateTitleLink", typeof(LinkCommands));
+        public static RoutedUICommand NavigateTitleLink { get; } = new RoutedUICommand(ModernUI.UiStrings.NavigateLink, "NavigateTitleLink", typeof(LinkCommands));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModernWindow"/> class.

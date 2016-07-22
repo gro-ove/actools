@@ -180,19 +180,15 @@
   <data name="UpdateAvailable" xml:space="preserve">
     <value>Newer version {0} is ready to be installed</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BrokenImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>assets\brokenimage.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="ImagesFilter" xml:space="preserve">
     <value>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
   </data>
   <data name="KeyBackspace" xml:space="preserve">
     <value>Backspace</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyControl" xml:space="preserve">
     <value>Control</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyControlLeft" xml:space="preserve">
     <value>Control (Left)</value>
   </data>
@@ -204,16 +200,16 @@
   </data>
   <data name="KeyEnd" xml:space="preserve">
     <value>End</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyEnter" xml:space="preserve">
     <value>Enter</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyEscape" xml:space="preserve">
     <value>Escape</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyHome" xml:space="preserve">
     <value>Home</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyLeftArrow" xml:space="preserve">
     <value>Left Arrow</value>
   </data>
@@ -222,16 +218,16 @@
   </data>
   <data name="KeyPageDown" xml:space="preserve">
     <value>Page Down</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyPageUp" xml:space="preserve">
     <value>Page Up</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyRightArrow" xml:space="preserve">
     <value>Right Arrow</value>
   </data>
   <data name="KeyShift" xml:space="preserve">
     <value>Shift</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyShiftLeft" xml:space="preserve">
     <value>Shift (Left)</value>
   </data>
@@ -240,10 +236,10 @@
   </data>
   <data name="KeySpace" xml:space="preserve">
     <value>Space</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyTab" xml:space="preserve">
     <value>Tab</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyUpArrow" xml:space="preserve">
     <value>Up Arrow</value>
   </data>
@@ -270,7 +266,7 @@
   </data>
   <data name="KeyAlt" xml:space="preserve">
     <value>Alt</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyAltLeft" xml:space="preserve">
     <value>Alt (Left)</value>
   </data>
@@ -279,28 +275,28 @@
   </data>
   <data name="KeyPause" xml:space="preserve">
     <value>Pause</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyCapsLock" xml:space="preserve">
     <value>Caps Lock</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyNumLock" xml:space="preserve">
     <value>Num Lock</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyScrollLock" xml:space="preserve">
     <value>Scroll Lock</value>
   </data>
   <data name="KeyPrintScreen" xml:space="preserve">
     <value>Print Screen</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyInsert" xml:space="preserve">
     <value>Insert</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyDelete" xml:space="preserve">
     <value>Delete</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyHelp" xml:space="preserve">
     <value>Help</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyWindowsLeft" xml:space="preserve">
     <value>Windows (Left)</value>
   </data>
@@ -345,13 +341,13 @@
   </data>
   <data name="KeyMediaPlayPause" xml:space="preserve">
     <value>Play</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyMediaPreviousTrack" xml:space="preserve">
     <value>Previous Track</value>
   </data>
   <data name="KeyMediaStop" xml:space="preserve">
     <value>Stop</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeySelectMedia" xml:space="preserve">
     <value>Select Media</value>
   </data>
@@ -366,7 +362,7 @@
   </data>
   <data name="KeyZoom" xml:space="preserve">
     <value>Zoom</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
     <value>EB</value>
     <comment>Exabyte</comment>

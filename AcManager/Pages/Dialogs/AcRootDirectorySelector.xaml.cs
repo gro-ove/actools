@@ -18,7 +18,7 @@ namespace AcManager.Pages.Dialogs {
             DataContext = new AcRootDirectorySelectorViewModel();
 
             Buttons = new[] {
-                CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, new CombinedCommand(Model.ApplyCommand, new RelayCommand(o => {
+                CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new RelayCommand(o => {
                     new MainWindow {
                         Owner = null
                     }.Show();

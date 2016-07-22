@@ -19,8 +19,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
     public class ShowroomObject : AcJsonObjectNew {
-        public ShowroomObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) { }
+        public ShowroomObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {}
 
         public override void Reload() {
             base.Reload();
@@ -146,7 +145,7 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override bool TestIfKunos() {
-            return base.TestIfKunos() || (DataProvider.Instance.KunosContent["showrooms"]?.Contains(Id) ?? false);
+            return base.TestIfKunos() || (DataProvider.Instance.KunosContent[@"showrooms"]?.Contains(Id) ?? false);
         }
 
         public void ToggleSound() {
@@ -185,8 +184,8 @@ namespace AcManager.Tools.Objects {
             try {
                 ToggleSound();
             } catch (ToggleException ex) {
-                NonfatalError.Notify(Resources.ShowroomObject_CannotToggleSound,
-                    Resources.ShowroomObject_CannotToggleSound_Commentary, ex);
+                NonfatalError.Notify(ToolsStrings.ShowroomObject_CannotToggleSound,
+                    ToolsStrings.ShowroomObject_CannotToggleSound_Commentary, ex);
             }
         }, o => HasSound));
     }

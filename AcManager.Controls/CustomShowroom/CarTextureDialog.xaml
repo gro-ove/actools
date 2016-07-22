@@ -39,25 +39,25 @@
 
         <DockPanel Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}}" Grid.Column="1" Grid.Row="1">
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Right" />
-            <TextBlock Text="{x:Static Controls:Resources.CustomShowroom_TextureIsMissing}" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
+            <TextBlock Text="{x:Static Controls:ControlsStrings.CustomShowroom_TextureIsMissing}" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
         </DockPanel>
 
         <Grid Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Grid.Column="1" Grid.Row="1">
             <StackPanel VerticalAlignment="Top">
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:Resources.CustomShowroom_TextureTypeLabel}" />
+                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:ControlsStrings.CustomShowroom_TextureTypeLabel}" />
                     <TextBlock Text="{Binding TextureFormat}" attached:WatermarkService.Watermark="?" />
                 </DockPanel>
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:Resources.CustomShowroom_TextureFormatLabel}" />
+                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:ControlsStrings.CustomShowroom_TextureFormatLabel}" />
                     <TextBlock Text="{Binding TextureFormatDescription}" attached:WatermarkService.Watermark="?" />
                 </DockPanel>
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:Resources.CustomShowroom_TextureDimensionsLabel}" />
+                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:ControlsStrings.CustomShowroom_TextureDimensionsLabel}" />
                     <TextBlock Text="{Binding TextureDimensions}" attached:WatermarkService.Watermark="?" />
                 </DockPanel>
                 <DockPanel>
-                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:Resources.CustomShowroom_TextureSizeLabel}" />
+                    <Label DockPanel.Dock="Left" Width="100" Content="{x:Static Controls:ControlsStrings.CustomShowroom_TextureSizeLabel}" />
                     <TextBlock Text="{Binding Data.Length, Converter={StaticResource FileSizeConverter}}" />
                 </DockPanel>
             </StackPanel>
@@ -66,22 +66,22 @@
 
     <mui:ModernDialog.ButtonsRowContent>
         <StackPanel Orientation="Horizontal" Visibility="{Binding Data, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-            <Button Command="{Binding UvCommand}" CommandParameter="2048" ToolTip="{x:Static Controls:Resources.CustomShowroom_ViewMapping_2048}"
-                    Content="{x:Static Controls:Resources.CustomShowroom_ViewMapping}">
+            <Button Command="{Binding UvCommand}" CommandParameter="2048" ToolTip="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_2048}"
+                    Content="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping}">
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{Binding UvCommand}" CommandParameter="512" Header="{x:Static Controls:Resources.CustomShowroom_ViewMapping_512}" />
-                        <MenuItem Command="{Binding UvCommand}" CommandParameter="1024" Header="{x:Static Controls:Resources.CustomShowroom_ViewMapping_1024}" />
-                        <MenuItem Command="{Binding UvCommand}" CommandParameter="2048" Header="{x:Static Controls:Resources.CustomShowroom_ViewMapping_2048}" />
-                        <MenuItem Command="{Binding UvCommand}" CommandParameter="4096" Header="{x:Static Controls:Resources.CustomShowroom_ViewMapping_4096}" />
+                        <MenuItem Command="{Binding UvCommand}" CommandParameter="512" Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_512}" />
+                        <MenuItem Command="{Binding UvCommand}" CommandParameter="1024" Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_1024}" />
+                        <MenuItem Command="{Binding UvCommand}" CommandParameter="2048" Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_2048}" />
+                        <MenuItem Command="{Binding UvCommand}" CommandParameter="4096" Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_4096}" />
                         <MenuItem Command="{Binding UvCommand}" CommandParameter="custom"
-                                Header="{x:Static Controls:Resources.CustomShowroom_ViewMapping_Custom}" />
+                                Header="{x:Static Controls:ControlsStrings.CustomShowroom_ViewMapping_Custom}" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
             <Button Command="{Binding ExportCommand}" Margin="4 0 0 0"
                     Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Content="{x:Static Controls:Resources.CustomShowroom_Export}" />
+                    Content="{x:Static Controls:ControlsStrings.CustomShowroom_Export}" />
         </StackPanel>
     </mui:ModernDialog.ButtonsRowContent>
 </mui:ModernDialog>

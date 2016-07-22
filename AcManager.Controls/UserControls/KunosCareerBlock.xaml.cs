@@ -28,7 +28,7 @@ namespace AcManager.Controls.UserControls {
                     var videoViewer = new VideoViewer(career.StartVideo, career.Name);
                     videoViewer.ShowDialog();
                 } else {
-                    NonfatalError.Notify(Controls.Resources.Video_CannotPlay, Controls.Resources.Video_CannotPlay_Commentary);
+                    NonfatalError.Notify(Controls.ControlsStrings.Video_CannotPlay, Controls.ControlsStrings.Video_CannotPlay_Commentary);
                 }
             }
             

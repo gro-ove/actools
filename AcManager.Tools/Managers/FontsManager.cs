@@ -92,17 +92,17 @@ namespace AcManager.Tools.Managers {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException(Resources.AcObject_IdIsWrong, nameof(id));
+            if (wrapper == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
 
             var currentLocation = ((AcCommonObject)wrapper.Value).Location;
             var currentBitmapLocation = ((FontObject)wrapper.Value).FontBitmap;
             var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (path == null) throw new ToggleException(Resources.AcObject_CannotBeMoved);
+            if (path == null) throw new ToggleException(ToolsStrings.AcObject_CannotBeMoved);
 
             var newLocation = Path.Combine(path, newFileName);
             var newBitmapLocation = currentBitmapLocation == null
                     ? null : Path.Combine(path, Path.GetFileNameWithoutExtension(newLocation) + Path.GetExtension(currentBitmapLocation));
-            if (FileUtils.Exists(newLocation) || currentBitmapLocation != null && File.Exists(newBitmapLocation)) throw new ToggleException(Resources.AcObject_PlaceIsTaken);
+            if (FileUtils.Exists(newLocation) || currentBitmapLocation != null && File.Exists(newBitmapLocation)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);
 
             try {
                 using (IgnoreChanges()) {
@@ -128,7 +128,7 @@ namespace AcManager.Tools.Managers {
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             var obj = GetById(id);
-            if (obj == null) throw new ArgumentException(Resources.AcObject_IdIsWrong, nameof(id));
+            if (obj == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
 
             using (IgnoreChanges()) {
                 FileUtils.Recycle(obj.Location, obj.FontBitmap);
@@ -181,7 +181,7 @@ namespace AcManager.Tools.Managers {
             } catch (TaskCanceledException) {
                 return null;
             } catch (Exception e) {
-                NonfatalError.Notify(Resources.Fonts_RescanUsings, e);
+                NonfatalError.Notify(ToolsStrings.Fonts_RescanUsings, e);
                 return null;
             } finally {
                 LastUsingsRescan = DateTime.Now;

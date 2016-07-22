@@ -96,7 +96,7 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
 
             Buttons = new[] {
-                CreateExtraDialogButton(FirstFloor.ModernUI.Resources.Ok, InstallCommand),
+                CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, InstallCommand),
                 CancelButton
             };
         }

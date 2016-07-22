@@ -233,11 +233,11 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 } else if (token.TokenType == BbCodeLexer.TokenLineBreak) {
                     span.Inlines.Add(new LineBreak());
                 } else if (token.TokenType == BbCodeLexer.TokenAttribute) {
-                    throw new ParseException(Resources.UnexpectedToken);
+                    throw new ParseException(UiStrings.UnexpectedToken);
                 } else if (token.TokenType == Lexer.TokenEnd) {
                     break;
                 } else {
-                    throw new ParseException(Resources.UnknownTokenType);
+                    throw new ParseException(UiStrings.UnknownTokenType);
                 }
             }
         }

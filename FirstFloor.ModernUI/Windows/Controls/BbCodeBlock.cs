@@ -104,7 +104,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 LinkNavigator.Navigate(e.Uri, this, e.Target);
             } catch (Exception error) {
                 // display navigation failures
-                ModernDialog.ShowMessage(error.Message, ModernUI.Resources.NavigationFailed, MessageBoxButton.OK);
+                ModernDialog.ShowMessage(error.Message, ModernUI.UiStrings.NavigationFailed, MessageBoxButton.OK);
             }
         }
 

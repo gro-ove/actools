@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -23,9 +24,9 @@ namespace AcManager.Pages.Selected {
             SelectedObject = acObject;
         }
 
-        public virtual void Load() { }
+        public virtual void Load() {}
 
-        public virtual void Unload() { }
+        public virtual void Unload() {}
 
         private ICommand _findInformationCommand;
 
@@ -36,7 +37,7 @@ namespace AcManager.Pages.Selected {
         private ICommand _changeIdCommand;
 
         public ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new RelayCommand(o => {
-            var newId = Prompt.Show("Enter new ID:", "Change ID", SelectedObject.Id, "?", "Be careful, changing ID might cause some problems with online!");
+            var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.AcObject_ChangeIdTitle, SelectedObject.Id, @"?", AppStrings.AcObject_ChangeId_Tooltip);
             if (string.IsNullOrWhiteSpace(newId)) return;
             SelectedObject.ChangeIdCommand.Execute(newId);
         }));
@@ -44,11 +45,11 @@ namespace AcManager.Pages.Selected {
         private ICommand _cloneCommand;
 
         public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand(async o => {
-            var newId = Prompt.Show("Enter new ID:", "Clone", SelectedObject.Id, "?");
+            var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.AcObject_CloneTitle, SelectedObject.Id, @"?");
             if (string.IsNullOrWhiteSpace(newId)) return;
 
             using (var waiting = new WaitingDialog()) {
-                waiting.Report("Cloning…");
+                waiting.Report(AppStrings.AcObject_Cloning);
                 await SelectedObject.CloneAsync(newId);
             }
         }));
@@ -72,11 +73,11 @@ namespace AcManager.Pages.Selected {
             var delta = (relative ? range * value : range) / 2d;
             NewFilterTab(Equals(roundTo, 1d) && delta.Round(roundTo) < roundTo ?
                     $"{key}={value.Round(roundTo).ToInvariantString()}" :
-                    string.Format("{0}>{1} & {0}<{2}", key, (Math.Max(value - delta, 0d).Round(roundTo) - Math.Min(roundTo, 1d)).ToInvariantString(),
+                    string.Format(@"{0}>{1} & {0}<{2}", key, (Math.Max(value - delta, 0d).Round(roundTo) - Math.Min(roundTo, 1d)).ToInvariantString(),
                             ((value + delta).Round(roundTo) + Math.Min(roundTo, 1d)).ToInvariantString()));
         }
 
-        protected void FilterRange(string key, string value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
+        protected void FilterRange([Localizable(false)] string key, string value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
             double actual;
             if (!string.IsNullOrWhiteSpace(value) && FlexibleParser.TryParseDouble(value, out actual)) {
                 FilterRange(key, actual, range, relative, roundTo);
@@ -90,25 +91,25 @@ namespace AcManager.Pages.Selected {
             switch (type) {
                 case "author":
                     if (jsonObject == null) return;
-                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Author) ? "author-" : $"author:{Filter.Encode(jsonObject.Author)}");
+                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Author) ? @"author-" : $"author:{Filter.Encode(jsonObject.Author)}");
                     break;
 
                 case "age":
-                    FilterRange("age", SelectedObject.AgeInDays);
+                    FilterRange(@"age", SelectedObject.AgeInDays);
                     break;
 
                 case "country":
                     if (jsonObject == null) return;
-                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Country) ? "country-" : $"country:{Filter.Encode(jsonObject.Country)}");
+                    NewFilterTab(string.IsNullOrWhiteSpace(jsonObject.Country) ? @"country-" : $"country:{Filter.Encode(jsonObject.Country)}");
                     break;
 
                 case "year":
-                    NewFilterTab(SelectedObject.Year.HasValue ? $"year:{SelectedObject.Year}" : "year-");
+                    NewFilterTab(SelectedObject.Year.HasValue ? $"year:{SelectedObject.Year}" : @"year-");
                     break;
 
                 case "decade":
                     if (!SelectedObject.Year.HasValue) {
-                        NewFilterTab("year-");
+                        NewFilterTab(@"year-");
                     }
 
                     var start = (int)Math.Floor((SelectedObject.Year ?? 0) / 10d) * 10;

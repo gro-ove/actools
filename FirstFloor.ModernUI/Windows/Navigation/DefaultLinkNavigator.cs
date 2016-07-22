@@ -59,13 +59,13 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
             } else {
                 // perform frame navigation
                 if (source == null) {   // source required
-                    throw new ArgumentException(string.Format(CultureInfo.CurrentUICulture, Resources.NavigationFailedSourceNotSpecified, uri));
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentUICulture, UiStrings.NavigationFailedSourceNotSpecified, uri));
                 }
 
                 // use optional parameter as navigation target to identify target frame (_self, _parent, _top or named target frame)
                 var frame = NavigationHelper.FindFrame(parameter, source);
                 if (frame == null) {
-                    throw new ArgumentException(string.Format(CultureInfo.CurrentUICulture, Resources.NavigationFailedFrameNotFound, uri, parameter));
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentUICulture, UiStrings.NavigationFailedFrameNotFound, uri, parameter));
                 }
 
                 // delegate navigation to the frame

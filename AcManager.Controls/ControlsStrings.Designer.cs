@@ -22,14 +22,14 @@ namespace AcManager.Controls {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
+    public class ControlsStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal ControlsStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace AcManager.Controls {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -106,6 +106,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parent car (if set, this car will be a tuned version of it).
+        /// </summary>
+        public static string AcObject_CarParentLabel_Tooltip {
+            get {
+                return ResourceManager.GetString("AcObject_CarParentLabel_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to City:.
         /// </summary>
         public static string AcObject_CityLabel {
@@ -133,6 +142,24 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fuel.
+        /// </summary>
+        public static string AcObject_Fuel {
+            get {
+                return ResourceManager.GetString("AcObject_Fuel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fuel:.
+        /// </summary>
+        public static string AcObject_FuelLabel {
+            get {
+                return ResourceManager.GetString("AcObject_FuelLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specs:.
         /// </summary>
         public static string AcObject_SpecsLabel {
@@ -147,6 +174,15 @@ namespace AcManager.Controls {
         public static string AcObject_TrackGeoTagsLabel {
             get {
                 return ResourceManager.GetString("AcObject_TrackGeoTagsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tyres:.
+        /// </summary>
+        public static string AcObject_TyresLabel {
+            get {
+                return ResourceManager.GetString("AcObject_TyresLabel", resourceCulture);
             }
         }
         
@@ -358,11 +394,29 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change.
+        /// </summary>
+        public static string Common_Change {
+            get {
+                return ResourceManager.GetString("Common_Change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear.
         /// </summary>
         public static string Common_Clear {
             get {
                 return ResourceManager.GetString("Common_Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compressing….
+        /// </summary>
+        public static string Common_Compressing {
+            get {
+                return ResourceManager.GetString("Common_Compressing", resourceCulture);
             }
         }
         
@@ -399,6 +453,15 @@ namespace AcManager.Controls {
         public static string Common_FolderExists {
             get {
                 return ResourceManager.GetString("Common_FolderExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generic.
+        /// </summary>
+        public static string Common_Generic {
+            get {
+                return ResourceManager.GetString("Common_Generic", resourceCulture);
             }
         }
         
@@ -457,6 +520,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string Common_Options {
+            get {
+                return ResourceManager.GetString("Common_Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please, wait….
         /// </summary>
         public static string Common_PleaseWait {
@@ -466,11 +538,29 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preparing….
+        /// </summary>
+        public static string Common_Preparing {
+            get {
+                return ResourceManager.GetString("Common_Preparing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Presets.
         /// </summary>
         public static string Common_Presets {
             get {
                 return ResourceManager.GetString("Common_Presets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  psi.
+        /// </summary>
+        public static string Common_PsiPostfix {
+            get {
+                return ResourceManager.GetString("Common_PsiPostfix", resourceCulture);
             }
         }
         
@@ -489,6 +579,15 @@ namespace AcManager.Controls {
         public static string Common_Unpack {
             get {
                 return ResourceManager.GetString("Common_Unpack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploading….
+        /// </summary>
+        public static string Common_Uploading {
+            get {
+                return ResourceManager.GetString("Common_Uploading", resourceCulture);
             }
         }
         
@@ -669,6 +768,15 @@ namespace AcManager.Controls {
         public static string CustomShowroom_AmbientShadows_Brightness {
             get {
                 return ResourceManager.GetString("CustomShowroom_AmbientShadows_Brightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t update ambient shadows.
+        /// </summary>
+        public static string CustomShowroom_AmbientShadows_CannotUpdate {
+            get {
+                return ResourceManager.GetString("CustomShowroom_AmbientShadows_CannotUpdate", resourceCulture);
             }
         }
         
@@ -1619,6 +1727,24 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replay will be overwritten after the next race. Rename it to keep it..
+        /// </summary>
+        public static string Replay_CrMessage {
+            get {
+                return ResourceManager.GetString("Replay_CrMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can go to Settings and enable “Save replays automatically” option to avoid losing something valuable..
+        /// </summary>
+        public static string Replay_CrMessage_Commentary {
+            get {
+                return ResourceManager.GetString("Replay_CrMessage_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t share {0}.
         /// </summary>
         public static string Share_CannotShare {
@@ -1815,6 +1941,24 @@ namespace AcManager.Controls {
         public static string Theme_Nordschleife {
             get {
                 return ResourceManager.GetString("Theme_Nordschleife", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a new ui_skin.json file (Alt+S).
+        /// </summary>
+        public static string Toolbar_CreateJson_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_CreateJson_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove ui_skin.json to Recycle Bin (Alt+Delete).
+        /// </summary>
+        public static string Toolbar_DeleteJson_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_DeleteJson_Tooltip", resourceCulture);
             }
         }
         

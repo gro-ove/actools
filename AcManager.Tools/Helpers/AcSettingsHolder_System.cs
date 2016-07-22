@@ -9,8 +9,8 @@ namespace AcManager.Tools.Helpers {
             internal SystemSettings() : base(@"assetto_corsa", systemConfig: true) { }
 
             public SettingEntry[] ScreenshotFormats { get; } = {
-                new SettingEntry("JPG", Resources.AcSettings_ScreenshotFormat_Jpeg),
-                new SettingEntry("BMP", Resources.AcSettings_ScreenshotFormat_Bmp)
+                new SettingEntry("JPG", ToolsStrings.AcSettings_ScreenshotFormat_Jpeg),
+                new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp)
             };
 
             #region Some controls stuff

@@ -70,12 +70,12 @@ namespace AcTools.Utils {
             }
         }
 
-        public static bool Recycle([CanBeNull] params string[] path) {
+        public static bool RecycleVisible([CanBeNull] params string[] path) {
             return DeleteFile(path, FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMATION |
                                     FileOperationFlags.FOF_WANTNUKEWARNING);
         }
 
-        public static bool RecycleSilent([CanBeNull] params string[] path) {
+        public static bool Recycle([CanBeNull] params string[] path) {
             return DeleteFile(path, FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMATION |
                                     FileOperationFlags.FOF_NOERRORUI | FileOperationFlags.FOF_SILENT);
         }

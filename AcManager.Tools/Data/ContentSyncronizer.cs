@@ -109,7 +109,7 @@ namespace AcManager.Tools.Data {
                     await LoadAndInstall();
                 }
             } catch (Exception e) {
-                LatestError = Resources.ContentSyncronizer_UnhandledError;
+                LatestError = ToolsStrings.ContentSyncronizer_UnhandledError;
                 Logging.Warning("Cannot check and update content: " + e);
             } finally {
                 CheckingInProcess = false;
@@ -158,7 +158,7 @@ namespace AcManager.Tools.Data {
                 var data = await CmApiProvider.GetStringAsync("content/manifest");
                 return data == null ? null : VersionFromData(data);
             } catch (Exception e) {
-                LatestError = Resources.ContentSyncronizer_CannotDownloadInformation;
+                LatestError = ToolsStrings.ContentSyncronizer_CannotDownloadInformation;
                 Logging.Warning("Cannot get content/manifest.json: " + e);
                 return null;
             } finally {
@@ -190,7 +190,7 @@ namespace AcManager.Tools.Data {
                 InstalledVersion = installedVersion;
                 Logging.Write("Content loaded: " + InstalledVersion);
             } catch (Exception e) {
-                NonfatalError.Notify(Resources.ContentSyncronizer_CannotLoadContent, Resources.ContentSyncronizer_CannotLoadContent_Commentary, e);
+                NonfatalError.Notify(ToolsStrings.ContentSyncronizer_CannotLoadContent, ToolsStrings.ContentSyncronizer_CannotLoadContent_Commentary, e);
             } finally {
                 _isInstalling = false;
             }

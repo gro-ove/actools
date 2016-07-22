@@ -177,7 +177,7 @@ namespace AcManager.Controls.Dialogs {
                         UseBmp = false
                     }));
                 } catch (Exception e) {
-                    NonfatalError.Notify(Controls.Resources.Showroom_CannotStart, e);
+                    NonfatalError.Notify(Controls.ControlsStrings.Showroom_CannotStart, e);
                 }
             }
         }

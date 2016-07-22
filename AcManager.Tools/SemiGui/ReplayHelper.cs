@@ -45,7 +45,7 @@ namespace AcManager.Tools.SemiGui {
                     _isReplayRenamed = value;
                     OnPropertyChanged();
                 } catch (Exception e) {
-                    NonfatalError.Notify(value ? Resources.ReplayHelper_CannotSaveReplay : Resources.ReplayHelper_CannotUnsaveReplay, e);
+                    NonfatalError.Notify(value ? ToolsStrings.ReplayHelper_CannotSaveReplay : ToolsStrings.ReplayHelper_CannotUnsaveReplay, e);
                 }
             }
         }

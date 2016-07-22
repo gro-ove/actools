@@ -4,8 +4,8 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedCarSkinPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,37 +20,45 @@
             Icon="{Binding SelectedObject.LiveryImage}">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Folder" Command="{Binding SelectedObject.ViewInExplorerCommand}">
-                    <Button.ToolTip>Open skin’s folder (Ctrl+F)</Button.ToolTip>
+                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Folder_SkinTooltip}">
                 </Button>
-                <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
+                        Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
-                <Button Content="Analyze" IsEnabled="False" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Analyze}" IsEnabled="False" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
-                <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Enable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Enable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="Change ID" Command="{Binding ChangeIdCommand}">
-                    <Button.ToolTip>Change skin’s ID (Ctrl+Shift+F2)</Button.ToolTip>
+                <Button Content="{x:Static g:AppStrings.Toolbar_ChangeId}" Command="{Binding ChangeIdCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_ChangeId_SkinTooltip}">
                 </Button>
-                <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed json-file (Ctrl+S)" />
-                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove skin to Recycle Bin (Ctrl+Delete)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Delete_SkinTooltip}" />
                 <Separator />
-                <Button Content="Delete JSON-file" Command="{Binding DeleteJsonCommand}" ToolTip="Remove ui_skin.json to Recycle Bin (Alt+Delete)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_DeleteJson}" Command="{Binding DeleteJsonCommand}"
+                        ToolTip="{x:Static ac:ControlsStrings.Toolbar_DeleteJson_Tooltip}"
                         Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Create JSON-file" Command="{Binding CreateJsonCommand}" ToolTip="Create a new ui_skin.json file (Alt+S)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_CreateJson}" Command="{Binding CreateJsonCommand}"
+                        ToolTip="{x:Static ac:ControlsStrings.Toolbar_CreateJson_Tooltip}"
                         Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Separator />
-                <Button Content="Update Preview" Command="{Binding UpdatePreviewCommand}">
-                    <Button.ToolTip>Update skin’s preview (Ctrl+P)</Button.ToolTip>
+                <Button Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_SkinTooltip}">
                 </Button>
-                <mui:ButtonWithComboBox Content="Change Livery" Command="{Binding ChangeLiveryCommand}">
-                    <mui:ButtonWithComboBox.ButtonToolTip>Change skin’s livery.png (Ctrl+L)</mui:ButtonWithComboBox.ButtonToolTip>
-                    <MenuItem Header="Generate Livery" ToolTip="Generate a new livery using last settings of Livery Editor" InputGestureText="Ctrl+Shift+L"
-                            Command="{Binding GenerateLiveryCommand}" />
-                    <MenuItem Header="Generate Random Livery" ToolTip="Generate a new livery using random settings" InputGestureText="Ctrl+Alt+L"
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_ChangeLivery}" Command="{Binding ChangeLiveryCommand}"
+                        ButtonToolTip="{x:Static g:AppStrings.Toolbar_ChangeLivery_Tooltip}">
+                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_GenerateLivery}" ToolTip="{x:Static g:AppStrings.Toolbar_GenerateLivery_Tooltip}"
+                            InputGestureText="Ctrl+Shift+L" Command="{Binding GenerateLiveryCommand}" />
+                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_GenerateRandomLivery}"
+                            ToolTip="{x:Static g:AppStrings.Toolbar_GenerateRandomLivery_Tooltip}" InputGestureText="Ctrl+Alt+L"
                             Command="{Binding GenerateRandomLiveryCommand}" />
                 </mui:ButtonWithComboBox>
             </ToolBar>
@@ -78,11 +86,11 @@
                 <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Country" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                     CommandParameter="country" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
-                    <TextBlock Text="{x:Static ac:Resources.AcObject_ContryLabel}" />
+                    <TextBlock Text="{x:Static ac:ControlsStrings.AcObject_ContryLabel}" />
                     <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
                             ItemsSource="{x:Static managers:SuggestionLists.CountriesListView}" />
                 </DockPanel>
@@ -91,10 +99,11 @@
                 <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Team" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="team" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByTeam}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                    CommandParameter="team" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
-                    <TextBlock Text="Team:" />
+                    <TextBlock Text="{x:Static g:AppStrings.AcObject_TeamLabel}" />
                     <ComboBox Text="{Binding SelectedObject.Team, UpdateSourceTrigger=LostFocus}"
                             ItemsSource="{x:Static managers:SuggestionLists.CarSkinTeamsListView}" />
                 </DockPanel>
@@ -102,10 +111,11 @@
                 <DockPanel Grid.Row="1" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Team" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="driver" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                    CommandParameter="driver" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
-                    <TextBlock Text="Driver:" />
+                    <TextBlock Text="{x:Static g:AppStrings.AcObject_DriverLabel}" />
                     <ComboBox Text="{Binding SelectedObject.DriverName, UpdateSourceTrigger=LostFocus}"
                             ItemsSource="{x:Static managers:SuggestionLists.CarSkinDriverNamesListView}" />
                 </DockPanel>
@@ -114,21 +124,22 @@
                 <DockPanel Grid.Row="2" Grid.Column="0">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Number" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="number" />
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByNumber}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                    CommandParameter="number" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
-                    <TextBlock Text="Number:" />
+                    <TextBlock Text="{x:Static g:AppStrings.AcObject_NumberLabel}" />
                     <TextBox Text="{Binding SelectedObject.SkinNumber}" attached:TextBoxAdvancement.SpecialMode="Integer" />
                 </DockPanel>
 
                 <DockPanel Grid.Row="2" Grid.Column="1">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Filter By Priority" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                            <MenuItem Header="{x:Static g:AppStrings.Filter_ByPriority}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                     CommandParameter="priority" />
                         </ContextMenu>
                     </DockPanel.ContextMenu>
-                    <TextBlock Text="Priority:" />
+                    <TextBlock Text="{x:Static g:AppStrings.AcObject_PriorityLabel}" />
                     <TextBox Text="{Binding SelectedObject.Priority, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer" />
                 </DockPanel>
             </Grid>

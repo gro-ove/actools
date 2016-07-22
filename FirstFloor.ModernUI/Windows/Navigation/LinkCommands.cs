@@ -2,6 +2,6 @@
 
 namespace FirstFloor.ModernUI.Windows.Navigation {
     public static class LinkCommands {
-        public static RoutedUICommand NavigateLink { get; } = new RoutedUICommand(Resources.NavigateLink, "NavigateLink", typeof(LinkCommands));
+        public static RoutedUICommand NavigateLink { get; } = new RoutedUICommand(UiStrings.NavigateLink, "NavigateLink", typeof(LinkCommands));
     }
 }

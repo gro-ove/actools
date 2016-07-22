@@ -67,7 +67,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
         }
 
         protected override Task<IEnumerable<IFileInfo>> GetFileEntriesAsync() {
-            if (_extractor == null) throw new Exception(Resources.ArchiveInstallator_InitializationFault);
+            if (_extractor == null) throw new Exception(ToolsStrings.ArchiveInstallator_InitializationFault);
             return Task.FromResult(
                     _extractor.Entries.Where(x => !x.IsDirectory).Select(x => (IFileInfo)new ArchiveFileInfo(x)));
         }
@@ -81,13 +81,13 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
             try {
                 var extractor = SharpCompressExtension.Open(filename, password);
                 if (extractor.HasAnyEncryptedFiles()) {
-                    throw new PasswordException(password == null ? Resources.ArchiveInstallator_PasswordIsRequired :
-                            Resources.ArchiveInstallator_PasswordIsInvalid);
+                    throw new PasswordException(password == null ? ToolsStrings.ArchiveInstallator_PasswordIsRequired :
+                            ToolsStrings.ArchiveInstallator_PasswordIsInvalid);
                 }
                 return extractor;
             } catch (CryptographicException) {
-                throw new PasswordException(password == null ? Resources.ArchiveInstallator_PasswordIsRequired :
-                        Resources.ArchiveInstallator_PasswordIsInvalid);
+                throw new PasswordException(password == null ? ToolsStrings.ArchiveInstallator_PasswordIsRequired :
+                        ToolsStrings.ArchiveInstallator_PasswordIsInvalid);
             }
         }
 

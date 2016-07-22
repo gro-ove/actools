@@ -10,49 +10,49 @@
     </UserControl.Resources>
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
-            <DockPanel ToolTip="{x:Static g:Resources.Settings_Drive_OnlineName_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_Drive_OnlineNameLabel}" />
+            <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Drive_OnlineNameLabel}" />
                 <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" VerticalAlignment="Center" />
                 <TextBox Text="{Binding Drive.PlayerNameOnline}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True"
                         IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Online.RememberPasswords}">
-                <Label Content="{x:Static g:Resources.Settings_Online_RememberPasswords}" />
+                <Label Content="{x:Static g:AppStrings.Settings_Online_RememberPasswords}" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Online.CompactUi}">
-                <Label Content="{x:Static g:Resources.Settings_Online_CompactUi}" />
+                <Label Content="{x:Static g:AppStrings.Settings_Online_CompactUi}" />
             </CheckBox>
 
             <!--connection-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_Online_ConnectionHeader}" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_ConnectionHeader}" />
             <DockPanel>
-                <Label Content="{x:Static g:Resources.Settings_Online_ServerLabel}" />
+                <Label Content="{x:Static g:AppStrings.Settings_Online_ServerLabel}" />
                 <ComboBox ItemsSource="{Binding Online.OnlineServers}" SelectedItem="{Binding Online.OnlineServer}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Online.LoadServerInformationDirectly}"
-                    ToolTip="{x:Static g:Resources.Settings_Online_LoadInformationDirectly_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_Online_LoadInformationDirectly}" />
+                    ToolTip="{x:Static g:AppStrings.Settings_Online_LoadInformationDirectly_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Online_LoadInformationDirectly}" />
             </CheckBox>
 
             <!--pinging-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_Online_PingingHeader}" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_PingingHeader}" />
 
-            <CheckBox IsChecked="{Binding Online.ThreadsPing}" ToolTip="{x:Static g:Resources.Settings_Online_PingWithThreads_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_Online_PingWithThreads}" />
+            <CheckBox IsChecked="{Binding Online.ThreadsPing}" ToolTip="{x:Static g:AppStrings.Settings_Online_PingWithThreads_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Online_PingWithThreads}" />
             </CheckBox>
 
             <DockPanel IsEnabled="{Binding Online.ThreadsPing, Converter={StaticResource InvertBooleanConverter}}"
-                    ToolTip="{x:Static g:Resources.Settings_Online_PingConcurrency_Tooltip}">
-                <mui:ValueLabel Value="{Binding Online.PingConcurrency}" Mode="Integer" Content="{x:Static g:Resources.Settings_Online_PingConcurrency}" />
+                    ToolTip="{x:Static g:AppStrings.Settings_Online_PingConcurrency_Tooltip}">
+                <mui:ValueLabel Value="{Binding Online.PingConcurrency}" Mode="Integer" Content="{x:Static g:AppStrings.Settings_Online_PingConcurrency}" />
                 <Slider Minimum="10" Maximum="300" Value="{Binding Online.PingConcurrency}" TickFrequency="29" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Online.PingTimeout}" Mode="Integer" Postfix="{x:Static c:Resources.Common_MillisecondsPostfix}"
-                        Content="{x:Static g:Resources.Settings_Online_PingTimeout}" />
+                <mui:ValueLabel Value="{Binding Online.PingTimeout}" Mode="Integer" Postfix="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}"
+                        Content="{x:Static g:AppStrings.Settings_Online_PingTimeout}" />
                 <Slider Minimum="200" Maximum="5000" Value="{Binding Online.PingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>
 
@@ -61,32 +61,32 @@
             </CheckBox>-->
 
             <!--adding by ip-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_Online_AddingByIpHeader}" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_AddingByIpHeader}" />
 
-            <DockPanel ToolTip="{x:Static g:Resources.Settings_Online_PortsByIp_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_Online_PortsLabel}" />
+            <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Online_PortsByIp_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Online_PortsLabel}" />
                 <TextBox Text="{Binding Online.PortsEnumeration}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Online.ScanPingTimeout}" Mode="Integer" Postfix="{x:Static c:Resources.Common_MillisecondsPostfix}"
-                        Content="{x:Static g:Resources.Settings_Online_AddingByIpScanTimeout}" />
+                <mui:ValueLabel Value="{Binding Online.ScanPingTimeout}" Mode="Integer" Postfix="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}"
+                        Content="{x:Static g:AppStrings.Settings_Online_AddingByIpScanTimeout}" />
                 <Slider Minimum="200" Maximum="5000" Value="{Binding Online.ScanPingTimeout}" TickFrequency="480" TickPlacement="BottomRight" />
             </DockPanel>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_Online_LanHeader}" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_LanHeader}" />
 
             <!--<CheckBox IsChecked="{Binding Holder.AlternativeScanningMethod}" Margin="0 0 0 8" IsEnabled="False">
                 <Label Content="Alternative scanning method" />
             </CheckBox>-->
 
-            <DockPanel ToolTip="{x:Static g:Resources.Settings_Online_PortsLan_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_Online_PortsLabel}" />
+            <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Online_PortsLan_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_Online_PortsLabel}" />
                 <TextBox Text="{Binding Online.LanPortsEnumeration}" attached:WatermarkService.Watermark="?" attached:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
             <DockPanel>
-                <Label Content="{x:Static g:Resources.Settings_Online_LanScanConnectionLabel}" />
+                <Label Content="{x:Static g:AppStrings.Settings_Online_LanScanConnectionLabel}" />
                 <ListBox Name="IgnoredInterfacesListBox" ItemsSource="{Binding NetworkInterfaces}" SelectionMode="Multiple"
                         SelectionChanged="IgnoredInterfacesListBox_OnSelectionChanged" ItemContainerStyle="{StaticResource CheckBoxListBoxItem}">
                     <ListBox.ItemTemplate>
@@ -102,9 +102,9 @@
 
             <!--connection-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" attached:NewMarkService.New="True"
-                    Text="{x:Static g:Resources.Settings_Online_ServerPresetsManagerHeader}" />
+                    Text="{x:Static g:AppStrings.Settings_Online_ServerPresetsManagerHeader}" />
             <CheckBox IsChecked="{Binding Online.ServerPresetsManaging}" attached:LimitedService.Limited="True">
-                <Label Content="{x:Static g:Resources.Settings_Online_ServerPresetsManagerEnable}" />
+                <Label Content="{x:Static g:AppStrings.Settings_Online_ServerPresetsManagerEnable}" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

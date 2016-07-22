@@ -75,7 +75,7 @@ namespace AcManager.Controls.Dialogs {
 
         public new string Title {
             get { return base.Title; }
-            set { base.Title = value ?? Controls.Resources.Common_PleaseWait; }
+            set { base.Title = value ?? Controls.ControlsStrings.Common_PleaseWait; }
         }
 
         private CancellationTokenSource _cancellationTokenSource;

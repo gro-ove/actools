@@ -41,14 +41,14 @@
                         </Menu>
                         <Button Command="{Binding SaveCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0"
                                 Visibility="{TemplateBinding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="{x:Static ac:Resources.Presets_Save_Tooltip}" Content="{x:Static ac:Resources.Presets_Save}" />
+                                ToolTip="{x:Static ac:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static ac:ControlsStrings.Presets_Save}" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Changed" Value="True">
                             <Setter Property="FontStyle" Value="Italic" TargetName="CurrentUserPresetTextBlock" />
                         </Trigger>
                         <Trigger Property="CurrentUserPreset" Value="{x:Null}">
-                            <Setter Property="Text" Value="{x:Static ac:Resources.Presets_Unsaved}" TargetName="CurrentUserPresetTextBlock" />
+                            <Setter Property="Text" Value="{x:Static ac:ControlsStrings.Presets_Unsaved}" TargetName="CurrentUserPresetTextBlock" />
                             <Setter Property="FontStyle" Value="Italic" TargetName="CurrentUserPresetTextBlock" />
                         </Trigger>
                     </ControlTemplate.Triggers>

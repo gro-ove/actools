@@ -1,7 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsPlugins" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:g="clr-namespace:AcManager"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance settings:SettingsPlugins+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -45,7 +47,7 @@
                                         Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                                     <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                             x:Name="ErrorIcon" DockPanel.Dock="Left" />
-                                    <TextBlock Text="{Binding AppVersion, StringFormat='{}Not available, required app version is {0}.'}"
+                                    <TextBlock Text="{Binding AppVersion, StringFormat={x:Static g:AppStrings.Settings_Plugins_NotAvailable}}"
                                             Style="{StaticResource Small}" FontWeight="Bold" Margin="0 4 0 8" />
                                 </DockPanel>
 
@@ -53,7 +55,7 @@
                                     <!--installation button-->
                                     <Button Command="{Binding InstallCommand}"
                                             Visibility="{Binding AvailableToInstall, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock Text="{Binding DisplaySize, StringFormat='Download and Install ({0})'}" />
+                                        <TextBlock Text="{Binding DisplaySize, StringFormat={x:Static g:AppStrings.Settings_Plugins_DownloadAndInstall}}" />
                                     </Button>
 
                                     <!--cancel button-->
@@ -70,7 +72,7 @@
 
                                     <!--update button-->
                                     <Button Visibility="{Binding HasUpdate, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                            Content="{Binding Version, StringFormat='Update (New Version: {0})'}" />
+                                            Content="{Binding Version, StringFormat={x:Static g:AppStrings.Settings_Plugins_Update}}" />
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>

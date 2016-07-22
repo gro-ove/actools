@@ -13,46 +13,46 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
-                <Label Content="{x:Static g:Resources.Settings_CustomShowroom_DefaultType}" />
+                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_DefaultType}" />
                 <ComboBox ItemsSource="{Binding Holder.ShowroomTypes}" SelectedItem="{Binding Holder.ShowroomType}"
-                        ToolTip="{x:Static g:Resources.Settings_CustomShowroom_DefaultType_Tooltip}" />
+                        ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_DefaultType_Tooltip}" />
             </DockPanel>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Small}" Margin="0 0 0 20" Text="{x:Static g:Resources.Settings_CustomShowroom_TypeComment}" />
+            <TextBlock Style="{StaticResource SettingsPanel.Small}" Margin="0 0 0 20" Text="{x:Static g:AppStrings.Settings_CustomShowroom_TypeComment}" />
 
-            <CheckBox IsChecked="{Binding Holder.SmartCameraPivot}" ToolTip="{x:Static g:Resources.Settings_CustomShowroom_AutoAdjustPivot_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_CustomShowroom_AutoAdjustPivot}" />
+            <CheckBox IsChecked="{Binding Holder.SmartCameraPivot}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_AutoAdjustPivot_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_AutoAdjustPivot}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.AlternativeControlScheme}" ToolTip="{x:Static g:Resources.Settings_CustomShowroom_InvertMouseButtons_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_CustomShowroom_InvertMouseButtons}" />
+            <CheckBox IsChecked="{Binding Holder.AlternativeControlScheme}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_InvertMouseButtons_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_InvertMouseButtons}" />
             </CheckBox>
 
             <!--lite specific-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_CustomShowroom_LiteHeader}" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_CustomShowroom_LiteHeader}" />
 
-            <CheckBox IsChecked="{Binding Holder.LiteUseBloom}" ToolTip="{x:Static g:Resources.Settings_CustomShowroom_Bloom_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_CustomShowroom_Bloom}" />
+            <CheckBox IsChecked="{Binding Holder.LiteUseBloom}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Bloom_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Bloom}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.LiteUseMsaa}" ToolTip="{x:Static g:Resources.Settings_CustomShowroom_Msaa_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_CustomShowroom_Msaa}" />
+            <CheckBox IsChecked="{Binding Holder.LiteUseMsaa}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Msaa_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Msaa}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Holder.LiteUseFxaa}" ToolTip="{x:Static g:Resources.Settings_CustomShowroom_Fxaa_Tooltip}">
-                <Label Content="{x:Static g:Resources.Settings_CustomShowroom_Fxaa}" />
+            <CheckBox IsChecked="{Binding Holder.LiteUseFxaa}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Fxaa_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Fxaa}" />
             </CheckBox>
 
             <!--fancy specific-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:Resources.Settings_CustomShowroom_FancyHeader}" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_CustomShowroom_FancyHeader}" />
 
             <DockPanel>
-                <Label Content="{x:Static g:Resources.Settings_CustomShowroom_Showroom}" />
+                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Showroom}" />
                 <ComboBox SelectedItem="{Binding SelectedShowroom}" ItemsSource="{Binding Showrooms}" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Holder.UseFxaa}">
-                <Label Content="{x:Static g:Resources.Settings_CustomShowroom_Fxaa}" />
+                <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Fxaa}" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

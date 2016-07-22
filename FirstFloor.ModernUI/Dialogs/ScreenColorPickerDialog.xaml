@@ -51,7 +51,7 @@
     <Grid Cursor="{x:Static Cursors.Cross}">
         <Image x:Name="CapturedImage" RenderOptions.BitmapScalingMode="NearestNeighbor" />
         <TextBlock x:Name="TitleTextBlock" Style="{StaticResource Heading1}" Background="#55000000" VerticalAlignment="Top" HorizontalAlignment="Center"
-                Padding="20" Text="{x:Static modernUi:Resources.PickColor}" />
+                Padding="20" Text="{x:Static modernUi:UiStrings.PickColor}" />
         <Border x:Name="UpperPart" Background="Transparent" VerticalAlignment="Top" Height="200" />
         <Border x:Name="Flash" Background="White" IsHitTestVisible="False" />
         <Popup x:Name="FloatingTip" AllowsTransparency="True" Placement="Relative" IsHitTestVisible="False">

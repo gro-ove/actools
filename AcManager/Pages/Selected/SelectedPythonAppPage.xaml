@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance selected:SelectedPythonAppPage+ViewModel}" Unloaded="OnUnloaded">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -12,25 +12,31 @@
     <ac:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Folder" ToolTip="Open app's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
-                <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_AppTooltip}"
+                        Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
+                        Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <!--<Separator />
-                <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share app (Ctrl+Page Up)" />
-                <Button Content="Test" Command="{Binding TestCommand}" ToolTip="Test filter in showroom (Ctrl+G)" />-->
+                <Button Content="{x:Static g:AppStrings.Toolbar_Share}" Command="{Binding ShareCommand}" ToolTip="Share app (Ctrl+Page Up)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Test}" Command="{Binding TestCommand}" ToolTip="Test filter in showroom (Ctrl+G)" />-->
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
-                <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Enable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Enable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
-                <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed name (Ctrl+S)" />
-                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Rename}" Command="{Binding SelectedObject.SaveCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Rename_AppTooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Delete_AppTooltip}" />
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
         <StackPanel Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding IsActivated}" IsEnabled="{Binding SelectedObject.Enabled}">
-                <Label Content="_Activated" />
+                <Label Content="{x:Static g:AppStrings.AcObject_AppActivated}" />
             </CheckBox>
         </StackPanel>
     </ac:AcObjectBase>

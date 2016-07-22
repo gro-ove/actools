@@ -224,14 +224,14 @@ namespace AcManager {
 
         private void ContentSyncronizer_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(ContentSyncronizer.InstalledVersion)) {
-                Toast.Show(AcManager.Resources.App_ContentUpdated, string.Format(AcManager.Resources.App_ContentUpdated_Details, ContentSyncronizer.Instance.InstalledVersion));
+                Toast.Show(AcManager.AppStrings.App_ContentUpdated, string.Format(AcManager.AppStrings.App_ContentUpdated_Details, ContentSyncronizer.Instance.InstalledVersion));
             }
         }
 
         private void AppUpdater_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(AppUpdater.UpdateIsReady)) {
-                Toast.Show(AcManager.Resources.App_NewVersion,
-                        string.Format(AcManager.Resources.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
+                Toast.Show(AcManager.AppStrings.App_NewVersion,
+                        string.Format(AcManager.AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
                             AppUpdater.Instance.FinishUpdateCommand.Execute(null);
                         });
             }
@@ -240,9 +240,9 @@ namespace AcManager {
         private static void InitializePresets() {
             PresetsManager.Initialize(FilesStorage.Instance.GetDirectory("Presets"));
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos, @"Previews", @"Kunos");
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, @"Assists", Controls.Resources.AssistsPreset_Gamer);
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, @"Assists", Controls.Resources.AssistsPreset_Intermediate);
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, @"Assists", Controls.Resources.AssistsPreset_Pro);
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, @"Assists", Controls.ControlsStrings.AssistsPreset_Gamer);
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, @"Assists", Controls.ControlsStrings.AssistsPreset_Intermediate);
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, @"Assists", Controls.ControlsStrings.AssistsPreset_Pro);
         }
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {

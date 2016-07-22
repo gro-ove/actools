@@ -5,8 +5,8 @@ namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
         public class GameplaySettings : IniSettings {
             public SettingEntry[] UnitsTypes { get; } = {
-                new SettingEntry("0", Resources.Gameplay_Units_Metrical),
-                new SettingEntry("1", Resources.Gameplay_Units_Imperial)
+                new SettingEntry("0", ToolsStrings.Gameplay_Units_Metrical),
+                new SettingEntry("1", ToolsStrings.Gameplay_Units_Imperial)
             };
 
             internal GameplaySettings() : base(@"gameplay") {}

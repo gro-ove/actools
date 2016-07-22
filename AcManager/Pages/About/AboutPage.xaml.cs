@@ -17,7 +17,7 @@ namespace AcManager.Pages.About {
         private int _clicks;
 
         public AboutPage() {
-            DataContext = new AboutPageViewModel();
+            DataContext = new ViewModel();
             InitializeComponent();
         }
 
@@ -38,7 +38,7 @@ namespace AcManager.Pages.About {
             }
         }
 
-        public class AboutPageViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private RelayCommand _moreInformationCommand;
 
             public RelayCommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new RelayCommand(o => {

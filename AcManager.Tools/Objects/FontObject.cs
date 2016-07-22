@@ -83,15 +83,15 @@ namespace AcManager.Tools.Objects {
         private ICommand _toggleCommand;
         public override ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new RelayCommand(o => {
             if (Enabled && UsingsCarsIds.Length > 0 &&
-                ModernDialog.ShowMessage(Resources.FontObject_Disabling_SomeCarsNeedThisFont, Resources.FontObject_DisableFont,
+                ModernDialog.ShowMessage(ToolsStrings.FontObject_Disabling_SomeCarsNeedThisFont, ToolsStrings.FontObject_DisableFont,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
             try {
                 Toggle();
             } catch (ToggleException ex) {
-                NonfatalError.Notify(string.Format(Resources.AcObject_CannotToggleExt, ex.Message), Resources.AcObject_CannotToggle_Commentary);
+                NonfatalError.Notify(string.Format(ToolsStrings.AcObject_CannotToggleExt, ex.Message), ToolsStrings.AcObject_CannotToggle_Commentary);
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotToggle, Resources.AcObject_CannotToggle_Commentary, ex);
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotToggle, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
             }
         }));
 
@@ -99,13 +99,13 @@ namespace AcManager.Tools.Objects {
 
         public override ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
             if (Enabled && UsingsCarsIds.Length > 0 &&
-                ModernDialog.ShowMessage(Resources.FontObject_Deleting_SomeCarsNeedThisFont, Resources.FontObject_DeleteFont,
+                ModernDialog.ShowMessage(ToolsStrings.FontObject_Deleting_SomeCarsNeedThisFont, ToolsStrings.FontObject_DeleteFont,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
             try {
                 Delete();
             } catch (Exception ex) {
-                NonfatalError.Notify(Resources.AcObject_CannotDelete, Resources.AcObject_CannotToggle_Commentary, ex);
+                NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
             }
         }));
 

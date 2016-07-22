@@ -43,36 +43,36 @@ namespace AcManager.Tools.Managers.Online {
             string ip;
             int port;
             if (!KunosApiProvider.ParseAddress(address, out ip, out port)) {
-                throw new Exception(Resources.Online_CannotParseAddress);
+                throw new Exception(ToolsStrings.Online_CannotParseAddress);
             }
 
             if (port > 0) {
-                progress?.Report(Resources.Online_GettingInformationDirectly);
+                progress?.Report(ToolsStrings.Online_GettingInformationDirectly);
                 var information = await KunosApiProvider.TryToGetInformationDirectAsync(ip, port);
                 if (cancellation.IsCancellationRequested) return;
 
                 // assume address is [HOSTNAME]:[TCP PORT]
                 if (information == null) {
-                    progress?.Report(Resources.Online_TryingToFindOutHttpPort);
+                    progress?.Report(ToolsStrings.Online_TryingToFindOutHttpPort);
                     var pair = await KunosApiProvider.TryToPingServerAsync(ip, port, SettingsHolder.Online.PingTimeout);
                     if (cancellation.IsCancellationRequested) return;
 
                     if (pair != null) {
-                        progress?.Report(Resources.Online_GettingInformationDirectly_SecondAttempt);
+                        progress?.Report(ToolsStrings.Online_GettingInformationDirectly_SecondAttempt);
                         information = await KunosApiProvider.TryToGetInformationDirectAsync(ip, pair.Item1);
                         if (cancellation.IsCancellationRequested) return;
                     }
                 }
 
                 if (information == null) {
-                    throw new Exception(Resources.Online_CannotAccessServer);
+                    throw new Exception(ToolsStrings.Online_CannotAccessServer);
                 }
 
                 AddToSavedList(information.Ip, information.PortC);
                 CreateAndAddEntry(information);
             } else {
                 // assume address is [HOSTNAME]
-                progress?.Report(Resources.Online_Scanning);
+                progress?.Report(ToolsStrings.Common_Scanning);
 
                 var scanned = 0;
                 var found = 0;
@@ -93,7 +93,7 @@ namespace AcManager.Tools.Managers.Online {
                             try {
                                 CreateAndAddEntry(information);
                             } catch (Exception e) {
-                                if (e.Message != Resources.OnlineManage_IdIsTaken) {
+                                if (e.Message != ToolsStrings.OnlineManage_IdIsTaken) {
                                     Logging.Warning("[RecentManager] Scan add error: " + e);
                                 }
                             }
@@ -102,12 +102,12 @@ namespace AcManager.Tools.Managers.Online {
 
                     scanned++;
                     if (progress == null) return;
-                    progress.Report(string.Format(Resources.Online_ScanningProgress, scanned, total,
-                            PluralizingConverter.PluralizeExt(found, Resources.Online_ScanningProgress_Found)));
+                    progress.Report(string.Format(ToolsStrings.Online_ScanningProgress, scanned, total,
+                            PluralizingConverter.PluralizeExt(found, ToolsStrings.Online_ScanningProgress_Found)));
                 }).WhenAll(200, cancellation);
 
                 if (found == 0) {
-                    throw new InformativeException(Resources.Online_ScanningNothingFound, Resources.Online_ScanningNothingFound_Commentary);
+                    throw new InformativeException(ToolsStrings.Online_ScanningNothingFound, ToolsStrings.Online_ScanningNothingFound_Commentary);
                 }
             }
         }

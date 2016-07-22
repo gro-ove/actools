@@ -138,10 +138,10 @@ namespace AcManager.Tools.Objects {
         }
 
         public TyrePressure[] TyresPressure { get; } = {
-            new TyrePressure("LF", Resources.CarSetupObject_TyresPressure_LeftFront),
-            new TyrePressure("RF", Resources.CarSetupObject_TyresPressure_RightFront),
-            new TyrePressure("LR", Resources.CarSetupObject_TyresPressure_LeftRear),
-            new TyrePressure("RR", Resources.CarSetupObject_TyresPressure_RightRear)
+            new TyrePressure("LF", ToolsStrings.CarSetupObject_TyresPressure_LeftFront),
+            new TyrePressure("RF", ToolsStrings.CarSetupObject_TyresPressure_RightFront),
+            new TyrePressure("LR", ToolsStrings.CarSetupObject_TyresPressure_LeftRear),
+            new TyrePressure("RR", ToolsStrings.CarSetupObject_TyresPressure_RightRear)
         };
 
         private string _oldName;
@@ -170,7 +170,7 @@ namespace AcManager.Tools.Objects {
 
             var dir = Path.GetDirectoryName(Id);
             if (string.IsNullOrEmpty(dir)) {
-                AddError(AcErrorType.Load_Base, Resources.CarSetupObject_Load_InvalidLocation);
+                AddError(AcErrorType.Load_Base, ToolsStrings.CarSetupObject_Load_InvalidLocation);
                 _oldTrackId = null;
                 TrackId = _oldTrackId;
                 SetHasData(false);

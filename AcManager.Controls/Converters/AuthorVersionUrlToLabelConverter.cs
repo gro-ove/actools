@@ -8,10 +8,10 @@ namespace AcManager.Controls.Converters {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
             if (values.Length != 3) return null;
 
-            if (values[0] != null) return Resources.AcObject_AuthorLabel;
-            if (values[1] != null) return Resources.AcObject_VersionLabel;
-            if (values[2] != null) return Resources.AcObject_UrlLabel;
-            return Resources.AcObject_AuthorLabel;
+            if (values[0] != null) return ControlsStrings.AcObject_AuthorLabel;
+            if (values[1] != null) return ControlsStrings.AcObject_VersionLabel;
+            if (values[2] != null) return ControlsStrings.AcObject_UrlLabel;
+            return ControlsStrings.AcObject_AuthorLabel;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {

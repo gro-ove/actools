@@ -15,17 +15,17 @@
 
     <DockPanel DockPanel.Dock="Top" Height="26" Margin="0 0 0 8">
         <mui:ModernButton Margin="0 0 8 0" HorizontalAlignment="Left" VerticalAlignment="Center" EllipseDiameter="24" IconWidth="12" IconHeight="12"
-                IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" ToolTip="{x:Static modernui:Resources.Back}"
+                IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" ToolTip="{x:Static modernui:UiStrings.Back}"
                 DockPanel.Dock="Left" Command="NavigationCommands.BrowseBack" />
         <mui:ModernButton Margin="0 0 8 0" HorizontalAlignment="Left" VerticalAlignment="Center" EllipseDiameter="24" IconWidth="12" IconHeight="12"
                 IconData="F1 M 19.0002,34L 19.0002,42L 43.7502,42L 33.7502,52L 44.2502,52L 58.2502,38L 44.2502,24L 33.7502,24L 43.7502,34L 19.0002,34 Z"
-                ToolTip="{x:Static modernui:Resources.Forward}" DockPanel.Dock="Left" Command="NavigationCommands.BrowseForward" />
+                ToolTip="{x:Static modernui:UiStrings.Forward}" DockPanel.Dock="Left" Command="NavigationCommands.BrowseForward" />
         <mui:ModernButton Margin="0 0 8 0" HorizontalAlignment="Left" VerticalAlignment="Center" EllipseDiameter="24" IconWidth="12" IconHeight="12"
                 IconData="F1 M 24.0033,56.0078L 24.0033,38.0053L 22.0031,40.0056L 19.0027,35.0049L 38.0053,20.0028L 45.0063,25.5299L 45.0063,21.753L 49.0068,21.0029L 49.0068,28.6882L 57.008,35.0049L 54.0075,40.0056L 52.0073,38.0053L 52.0073,56.0078L 24.0033,56.0078 Z M 38.0053,26.9204L 27.0038,36.005L 27.0038,53.0074L 33.0046,53.0074L 33.0046,42.006L 43.006,42.006L 43.006,53.0074L 49.0068,53.0074L 49.0068,36.005L 38.0053,26.9204 Z "
-                ToolTip="{x:Static modernui:Resources.Home}" DockPanel.Dock="Left" Command="NavigationCommands.BrowseHome" />
+                ToolTip="{x:Static modernui:UiStrings.Home}" DockPanel.Dock="Left" Command="NavigationCommands.BrowseHome" />
         <mui:ModernButton Margin="8 0 0 0" HorizontalAlignment="Right" VerticalAlignment="Center" EllipseDiameter="24" IconWidth="12" IconHeight="12"
                 IconData="F1 M 22,30L 47.75,30L 36.75,19L 48.25,19L 62.25,33L 47.25,48L 36.75,48L 47.75,37L 29,37L 29,59L 22,59L 22,30 Z"
-                ToolTip="{x:Static modernui:Resources.Go}" DockPanel.Dock="Right" Command="NavigationCommands.GoToPage" />
+                ToolTip="{x:Static modernui:UiStrings.Go}" DockPanel.Dock="Right" Command="NavigationCommands.GoToPage" />
         <TextBox Name="UrlTextBox" PreviewKeyDown="UrlTextBox_OnPreviewKeyDown" PreviewKeyUp="UrlTextBox_KeyUp" />
     </DockPanel>
 </DockPanel>

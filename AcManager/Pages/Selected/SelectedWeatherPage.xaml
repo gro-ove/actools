@@ -3,9 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-                               xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
-                               mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance selected:SelectedWeatherPage+ViewModel}" x:Name="This">
+        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance selected:SelectedWeatherPage+ViewModel}" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,7 +26,7 @@
                             <Label Content="ID:" />
                             <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Id, Mode=OneTime}" />
                         </DockPanel>
-                        
+
                         <DockPanel>
                             <Label Content="Use as:" />
                             <ComboBox ItemsSource="{Binding WeatherTypes}" SelectedItem="{Binding SelectedObject.Type}">
@@ -163,13 +163,15 @@
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}}" Postfix="%" Mode="Number" Content="Blend" />
+                            <mui:ValueLabel Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}}" Postfix="%" Mode="Number"
+                                    Content="Blend" />
                             <Slider Minimum="0" Maximum="100" TickFrequency="10" TickPlacement="BottomRight"
                                     Value="{Binding SelectedObject.FogBlend, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" />
                         </DockPanel>
 
                         <DockPanel>
-                            <mui:ValueLabel Value="{Binding SelectedObject.FogDistance, StringFormat='\{0:F0\}'}" Postfix="{x:Static c:Resources.Common_MetersPostfix}" Content="Distance" />
+                            <mui:ValueLabel Value="{Binding SelectedObject.FogDistance, StringFormat='\{0:F0\}'}"
+                                    Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}" Content="Distance" />
                             <Slider Minimum="0" Maximum="12000" Value="{Binding SelectedObject.FogDistance}" TickFrequency="1200" TickPlacement="BottomRight" />
                         </DockPanel>
 
@@ -220,16 +222,18 @@
     <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <c:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="Folder" ToolTip="Open weather's folder (Ctrl+F)" Command="{Binding SelectedObject.ViewInExplorerCommand}" />
-                <Button Content="Reload" ToolTip="Reload (Ctrl+R)" Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_WeatherTooltip}"
+                        Command="{Binding SelectedObject.ViewInExplorerCommand}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
+                        Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
                 <Button Content="Edit Mode" Command="{Binding ToggleEditModeCommand, ElementName=This}" ToolTip="Switch to Edit Mode (Ctrl+E)"
                         Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Button Content="Disable Edit Mode" Command="{Binding ToggleEditModeCommand, ElementName=This}" ToolTip="Switch from Edit Mode (Ctrl+E)"
                         Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Separator />
-                <Button Content="Share" Command="{Binding ShareCommand}" ToolTip="Share weather (Ctrl+Page Up)" />
-                <mui:ButtonWithComboBox Content="Test" Command="{Binding TestCommand}" ButtonToolTip="Test weather on track (Ctrl+G)">
+                <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}" ToolTip="Share weather (Ctrl+Page Up)" />
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Common_Test}" Command="{Binding TestCommand}" ButtonToolTip="Test weather on track (Ctrl+G)">
                     <MenuItem Header="9:00" InputGestureText="Ctrl+Alt+1" Command="{Binding TestCommand}" CommandParameter="9:00" />
                     <MenuItem Header="12:00" InputGestureText="Ctrl+Alt+2" Command="{Binding TestCommand}" CommandParameter="12:00" />
                     <MenuItem Header="15:00" InputGestureText="Ctrl+Alt+3" Command="{Binding TestCommand}" CommandParameter="15:00" />
@@ -237,18 +241,20 @@
                 </mui:ButtonWithComboBox>
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
-                <Button Content="Disable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Disable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Disable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Enable" Command="{Binding SelectedObject.ToggleCommand}" ToolTip="Enable (Ctrl+D)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Button Content="Change ID" Command="{Binding ChangeIdCommand}">
                     <Button.ToolTip>Change weather’s ID (Ctrl+Shift+F2)</Button.ToolTip>
                 </Button>
-                <Button Content="Save" Command="{Binding SelectedObject.SaveCommand}" ToolTip="Save changed ini-file (Ctrl+S)" />
-                <Button Content="Delete" Command="{Binding SelectedObject.DeleteCommand}" ToolTip="Remove object to Recycle Bin (Ctrl+Delete)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}" ToolTip="{x:Static g:AppStrings.Toolbar_Save_IniTooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Delete_WeatherTooltip}" />
                 <Separator />
-                <Button Content="Clone" Command="{Binding CloneCommand}">
-                    <Button.ToolTip>Clone weather (Ctrl+Shift+D)</Button.ToolTip>
+                <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" ToolTip="{x:Static g:AppStrings.Toolbar_Clone_WeatherTooltip}">
                 </Button>
                 <Separator />
                 <mui:ButtonWithComboBox Content="Update Preview" Command="{Binding UpdatePreviewCommand}" ButtonToolTip="Update preview (Ctrl+P)">
@@ -264,12 +270,12 @@
                 <mui:BetterImage Margin="0 0 0 12" Filename="{Binding SelectedObject.PreviewImage}" HideBroken="True"
                         services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1022"
                         Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
-                
+
                 <DockPanel>
                     <Label Content="ID:" />
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Id, Mode=OneTime}" />
                 </DockPanel>
-                
+
                 <DockPanel>
                     <Label Content="Use as:" />
                     <ComboBox ItemsSource="{Binding WeatherTypes}" SelectedItem="{Binding SelectedObject.Type}">
@@ -285,7 +291,7 @@
                     <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
                     <StackPanel Margin="8">
                         <TextBlock Style="{StaticResource Label}" Text="Seems empty?" />
-                        <TextBlock TextWrapping="Wrap" Text="Switch to Edit Mode if you want to modify other weather’s parameters." />
+                        <TextBlock TextWrapping="Wrap" Text="Switch to Edit Mode if you want to modify other weather's parameters." />
                     </StackPanel>
                 </Grid>
             </StackPanel>
