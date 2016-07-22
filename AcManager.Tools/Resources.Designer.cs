@@ -664,6 +664,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ideal.
+        /// </summary>
+        public static string AcSettings_Quality_Ideal {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_Ideal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Low.
         /// </summary>
         public static string AcSettings_Quality_Low {
@@ -696,6 +705,24 @@ namespace AcManager.Tools {
         public static string AcSettings_Quality_Minimum {
             get {
                 return ResourceManager.GetString("AcSettings_Quality_Minimum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normal.
+        /// </summary>
+        public static string AcSettings_Quality_Normal {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_Normal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subpixel.
+        /// </summary>
+        public static string AcSettings_Quality_Subpixel {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_Subpixel", resourceCulture);
             }
         }
         
@@ -957,6 +984,15 @@ namespace AcManager.Tools {
         public static string CannotFindSteamId {
             get {
                 return ResourceManager.GetString("CannotFindSteamId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car’s parent is missing.
+        /// </summary>
+        public static string CarParentIsMissing {
+            get {
+                return ResourceManager.GetString("CarParentIsMissing", resourceCulture);
             }
         }
         

@@ -3,12 +3,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
         xmlns:directInput="clr-namespace:AcManager.Tools.Helpers.DirectInput;assembly=AcManager.Tools" xmlns:tools="clr-namespace:AcManager.Tools"
-             xmlns:helpers="clr-namespace:AcManager.Controls.Helpers;assembly=AcManager.Controls"
-             xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance acSettings:AcSettingsControls+AcControlsViewModel}" SizeChanged="AcSettingsControls_OnSizeChanged"
-        Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded" PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        xmlns:helpers="clr-namespace:AcManager.Controls.Helpers;assembly=AcManager.Controls"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsControls+AcControlsViewModel}"
+        SizeChanged="AcSettingsControls_OnSizeChanged" Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded"
+        PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -121,11 +120,17 @@
 
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0 20 20 20" Orientation="Horizontal">
             <Grid MinWidth="300">
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Warn About Unsaved Changes" IsCheckable="True"
+                                ToolTip="Otherwise, app will move previous changed versions to the Recycle Bin silently"
+                                IsChecked="{Binding WarnIfChanged, Source={x:Static helpers:ControlsPresets.Instance}}" />
+                    </ContextMenu>
+                </Grid.ContextMenu>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
                 <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                         Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="Menu"
                         IsEnabled="{Binding PresetsReady, Source={x:Static helpers:ControlsPresets.Instance}}">
@@ -155,12 +160,13 @@
                     </MenuItem>
                 </Menu>
 
-                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset" Content="Save Preset" />
+                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset (Ctrl+S)"
+                        Content="Save Preset" />
             </Grid>
             <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0" ToolTip="Share current settings (Ctrl+Page Up)"
                     Content="Share">
                 <Button.ContextMenu>
-                    <ContextMenu Name="ShareContextMenu">
+                    <ContextMenu x:Name="ShareContextMenu">
                         <MenuItem Header="Share Preset" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="Basic"
                                 ToolTip="Only basic properties, without experimental ones" />
                         <MenuItem Header="Share FFB Settings Only" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="FFBOnly"

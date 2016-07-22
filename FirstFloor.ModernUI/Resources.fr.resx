@@ -180,10 +180,6 @@
   <data name="UpdateAvailable" xml:space="preserve">
     <value>Une nouvelle version {0} est prête à être installée</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BrokenImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>assets\brokenimage.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="ImagesFilter" xml:space="preserve">
     <value>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
   </data>

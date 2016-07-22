@@ -80,7 +80,7 @@
                 </Button.ContextMenu>
             </Button>
             <Button Command="{Binding ExportCommand}" Margin="4 0 0 0"
-                    Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Content="{x:Static Controls:Resources.CustomShowroom_Export}" />
         </StackPanel>
     </mui:ModernDialog.ButtonsRowContent>

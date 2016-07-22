@@ -44,7 +44,7 @@
             </CheckBox>
 
             <StackPanel
-                    Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <!--special options-->
                 <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Special:" />
 

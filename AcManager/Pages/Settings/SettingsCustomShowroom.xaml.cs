@@ -11,10 +11,9 @@ using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsCustomShowroom : ILoadableContent {
-        public class CustomShowroomViewModel
-                : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             public class NoneShowroom {
-                public override string ToString() => "None";
+                public override string ToString() => Tools.Resources.Common_None;
             }
 
             public SettingsHolder.CustomShowroomSettings Holder => SettingsHolder.CustomShowroom;
@@ -33,7 +32,7 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            internal CustomShowroomViewModel() {
+            internal ViewModel() {
                 Showrooms = new ObservableCollection<object>(
                         ShowroomsManager.Instance.LoadedOnlyCollection.OrderBy(x => x.DisplayName).Prepend((object)new NoneShowroom()));
                 SelectedShowroom = Holder.ShowroomId == null ? (object)new NoneShowroom() : ShowroomsManager.Instance.GetById(Holder.ShowroomId);
@@ -50,7 +49,7 @@ namespace AcManager.Pages.Settings {
 
         public void Initialize() {
             InitializeComponent();
-            DataContext = new CustomShowroomViewModel();
+            DataContext = new ViewModel();
         }
     }
 }

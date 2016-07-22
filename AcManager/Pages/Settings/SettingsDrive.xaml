@@ -1,10 +1,10 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsDrive" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System"
-        xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:h="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDrive+SettingsDriveViewModel}">
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDrive+ViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
@@ -53,10 +53,9 @@
                 <TextBox Text="{Binding Drive.PlayerNationality}" h:WatermarkService.Watermark="?" h:FocusAdvancement.AdvancesByEnterKey="True" />
             </DockPanel>
 
-            <DockPanel>
+            <DockPanel ToolTip="{x:Static g:Resources.Settings_Drive_OnlineName_Tooltip}">
                 <Label Content="{x:Static g:Resources.Settings_Drive_OnlineNameLabel}" />
-                <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}"
-                        ToolTip="{x:Static g:Resources.Settings_Drive_OnlineName_Tooltip}" VerticalAlignment="Center" />
+                <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" VerticalAlignment="Center" />
                 <TextBox Text="{Binding Drive.PlayerNameOnline}" h:WatermarkService.Watermark="?" h:FocusAdvancement.AdvancesByEnterKey="True"
                         IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
             </DockPanel>

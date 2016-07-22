@@ -9,17 +9,17 @@ namespace AcManager.Pages.Settings {
     public partial class SettingsAppearance {
         public SettingsAppearance() {
             InitializeComponent();
-            DataContext = new AppearanceViewModel();
+            DataContext = new ViewModel();
         }
 
-        public class AppearanceViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private static BitmapScalingMode? _originalScalingMode;
 
             public FancyBackgroundManager FancyBackgroundManager => FancyBackgroundManager.Instance;
 
             public AppAppearanceManager AppAppearanceManager => AppAppearanceManager.Instance;
 
-            internal AppearanceViewModel() {
+            internal ViewModel() {
                 BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
                 TextFormatting = AppAppearanceManager.IdealFormattingMode ? TextFormattings[1] : TextFormattings[0];
 
@@ -66,9 +66,9 @@ namespace AcManager.Pages.Settings {
             }
 
             public BitmapScalingEntry[] BitmapScalings { get; } = {
-                new BitmapScalingEntry { DisplayName = "Low", Value = BitmapScalingMode.NearestNeighbor },
-                new BitmapScalingEntry { DisplayName = "Normal", Value = BitmapScalingMode.LowQuality },
-                new BitmapScalingEntry { DisplayName = "High", Value = BitmapScalingMode.HighQuality }
+                new BitmapScalingEntry { DisplayName = Tools.Resources.AcSettings_Quality_Low, Value = BitmapScalingMode.NearestNeighbor },
+                new BitmapScalingEntry { DisplayName = Tools.Resources.AcSettings_Quality_Normal, Value = BitmapScalingMode.LowQuality },
+                new BitmapScalingEntry { DisplayName = Tools.Resources.AcSettings_Quality_High, Value = BitmapScalingMode.HighQuality }
             };
 
             private Displayable _textFormatting;
@@ -84,8 +84,8 @@ namespace AcManager.Pages.Settings {
             }
 
             public Displayable[] TextFormattings { get; } = {
-                new Displayable { DisplayName = "Subpixel" },
-                new Displayable { DisplayName = "Ideal" },
+                new Displayable { DisplayName = Tools.Resources.AcSettings_Quality_Subpixel },
+                new Displayable { DisplayName = Tools.Resources.AcSettings_Quality_Ideal },
             };
         }
     }

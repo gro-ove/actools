@@ -2,6 +2,7 @@
 using System.IO;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcTools.Utils {
     public partial class FileUtils {
@@ -179,7 +180,10 @@ namespace AcTools.Utils {
         /// <param name="filename">Ex.: C:\Windows\System32\explorer.exe</param>
         /// <param name="directory">Ex.: C:\Windows</param>
         /// <returns>System32\explorer.exe</returns>
-        public static string GetRelativePath(string filename, string directory) {
+        public static string GetRelativePath([NotNull] string filename, [NotNull] string directory) {
+            if (filename == null) throw new ArgumentNullException(nameof(filename));
+            if (directory == null) throw new ArgumentNullException(nameof(directory));
+
             filename = filename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             directory = directory.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 

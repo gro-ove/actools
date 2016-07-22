@@ -17,7 +17,6 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -41,15 +40,16 @@ namespace AcManager.Pages.Drive {
         public const string PresetableKeyValue = "Quick Drive";
         private const string KeySaveable = "__QuickDrive_Main";
         
-        private QuickDriveViewModel Model => (QuickDriveViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         public QuickDrive() {
-            DataContext = new QuickDriveViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack);
+            DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack);
+            InitializeComponent();
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control))
+                new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
+                new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
             });
-            InitializeComponent();
 
             _selectNextCar = null;
             _selectNextCarSkinId = null;
@@ -58,7 +58,7 @@ namespace AcManager.Pages.Drive {
 
         private DispatcherTimer _realConditionsTimer;
 
-        private void QuickDrive_Loaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             _realConditionsTimer = new DispatcherTimer();
             _realConditionsTimer.Tick += (o, args) => {
                 if (Model.RealConditions) {
@@ -69,7 +69,7 @@ namespace AcManager.Pages.Drive {
             _realConditionsTimer.Start();
         }
 
-        private void QuickDrive_Unloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             _realConditionsTimer.Stop();
         }
 
@@ -86,7 +86,7 @@ namespace AcManager.Pages.Drive {
             new AssistsDialog(Model.AssistsViewModel).ShowDialog();
         }
 
-        public class QuickDriveViewModel : NotifyPropertyChanged, IUserPresetable {
+        public class ViewModel : NotifyPropertyChanged, IUserPresetable {
             private readonly bool _uiMode;
 
             #region Notifieable Stuff
@@ -372,7 +372,7 @@ namespace AcManager.Pages.Drive {
             private readonly string _carSetupId, _weatherId;
             private readonly int? _forceTime;
 
-            internal QuickDriveViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null,
+            internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null,
                     TrackBaseObject trackObject = null, string carSetupId = null, string weatherId = null, int? time = null, bool savePreset = false) {
                 _uiMode = uiMode;
                 _carSetupId = carSetupId;
@@ -749,12 +749,12 @@ namespace AcManager.Pages.Drive {
         }
 
         public static bool Run(CarObject car = null, string carSkinId = null, TrackBaseObject track = null, string carSetupId = null) {
-            return new QuickDriveViewModel(string.Empty, false, car, carSkinId, track, carSetupId).Run();
+            return new ViewModel(string.Empty, false, car, carSkinId, track, carSetupId).Run();
         }
 
         public static async Task<bool> RunAsync(CarObject car = null, string carSkinId = null, TrackBaseObject track = null, string carSetupId = null,
                 string weatherId = null, int? time = null) {
-            var model = new QuickDriveViewModel(string.Empty, false, car, carSkinId, track, carSetupId, weatherId, time);
+            var model = new ViewModel(string.Empty, false, car, carSkinId, track, carSetupId, weatherId, time);
             if (!model.GoCommand.CanExecute(null)) return false;
             await model.Go();
             return true;
@@ -762,11 +762,11 @@ namespace AcManager.Pages.Drive {
 
         public static bool RunPreset(string presetFilename, CarObject car = null, string carSkinId = null, TrackBaseObject track = null,
                 string carSetupId = null) {
-            return new QuickDriveViewModel(File.ReadAllText(presetFilename), false, car, carSkinId, track, carSetupId).Run();
+            return new ViewModel(File.ReadAllText(presetFilename), false, car, carSkinId, track, carSetupId).Run();
         }
 
         public static bool RunSerializedPreset(string preset) {
-            return new QuickDriveViewModel(preset, false).Run();
+            return new ViewModel(preset, false).Run();
         }
 
         public static void LoadPreset(string presetFilename) {
@@ -803,39 +803,5 @@ namespace AcManager.Pages.Drive {
         }
 
         public static IContentLoader ContentLoader { get; } = new ImmediateContentLoader();
-    }
-
-    public interface IQuickDriveModeControl {
-        QuickDriveModeViewModel Model { get; set; }
-    }
-
-    public abstract class QuickDriveModeViewModel : NotifyPropertyChanged {
-        protected ISaveHelper Saveable { set; get; }
-
-        public event EventHandler Changed;
-
-        protected void SaveLater() {
-            Saveable.SaveLater();
-            Changed?.Invoke(this, new EventArgs());
-        }
-
-        public abstract Task Drive(Game.BasicProperties basicProperties,
-                Game.AssistsProperties assistsProperties,
-                Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties);
-
-        protected Task StartAsync(Game.StartProperties properties) {
-            return GameWrapper.StartAsync(properties);
-        }
-
-        public virtual void OnSelectedUpdated(CarObject selectedCar, TrackBaseObject selectedTrack) {
-        }
-
-        public string ToSerializedString() {
-            return Saveable.ToSerializedString();
-        }
-
-        public void FromSerializedString(string data) {
-            Saveable.FromSerializedString(data);
-        }
     }
 }

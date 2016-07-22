@@ -3,50 +3,52 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
         xmlns:internal="clr-namespace:AcManager.Internal;assembly=AcManager.Internal"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsGeneral+GeneralViewModel}">
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:AcManager="clr-namespace:AcManager"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance settings:SettingsGeneral+ViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <DockPanel>
-                <Label Content="Assetto Corsa folder:" />
-                <Button Command="{Binding ChangeAcRootCommand}" Content="Change" />
+                <Label Content="{x:Static AcManager:Resources.Settings_General_AcFolderLabel}" />
+                <Button Command="{Binding ChangeAcRootCommand}" Content="{x:Static AcManager:Resources.Common_Change}" />
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
             </DockPanel>
 
             <CheckBox IsChecked="{Binding CommonSettings.DeveloperMode}"
                     Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}">
-                <Label Content="Developer mode" />
+                <Label Content="{x:Static AcManager:Resources.Common_DevMode}" />
             </CheckBox>
 
             <!--versions-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="App:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static AcManager:Resources.Settings_General_AppHeader}" />
 
             <DockPanel>
-                <Label Content="App key:" />
-                <Button Command="{Binding ChangeAppKeyCommand}" Content="Change" />
+                <Label Content="{x:Static AcManager:Resources.Settings_General_AppKeyLabel}" />
+                <Button Command="{Binding ChangeAppKeyCommand}" Content="{x:Static AcManager:Resources.Common_Change}" />
                 <TextBlock Text="{Binding Source={x:Static internal:AppKeyHolder.KeySafe}, Mode=OneTime}" attached:WatermarkService.Watermark="?" />
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding CommonSettings.CreateStartMenuShortcutIfMissing}">
-                <CheckBox.ToolTip>Create Start Menu shortcut if it’s missing; required for showing proper notifications in Windows 8 and 10</CheckBox.ToolTip>
-                <Label Content="Start Menu shortcut (for modern notifications)" />
+            <CheckBox IsChecked="{Binding CommonSettings.CreateStartMenuShortcutIfMissing}"
+                    ToolTip="{x:Static AcManager:Resources.Settings_General_WindowsShortcut_Tooltip}">
+                <Label Content="{x:Static AcManager:Resources.Settings_General_WindowsShortcut}" />
             </CheckBox>
 
             <!--versions-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Auto Updates:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static AcManager:Resources.Settings_General_AutoUpdatesHeader}" />
 
             <DockPanel>
-                <Label Content="Check for updates:" />
+                <Label Content="{x:Static AcManager:Resources.Settings_General_CheckForUpdatesLabel}" />
                 <ComboBox ItemsSource="{Binding CommonSettings.Periods}" SelectedItem="{Binding CommonSettings.UpdatePeriod}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <!--app version-->
             <DockPanel>
-                <Label Content="App version:" />
-                <Button Command="{Binding AppUpdater.CheckAndPrepareIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}" Content="Check for Updates" />
+                <Label Content="{x:Static AcManager:Resources.Settings_General_AppVersionLabel}" />
+                <Button Command="{Binding AppUpdater.CheckAndPrepareIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}"
+                        Content="{x:Static AcManager:Resources.Settings_General_CheckForUpdates}" />
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}"
                         Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, Mode=OneTime}" attached:WatermarkService.Watermark="?" />
             </DockPanel>
@@ -56,8 +58,9 @@
 
             <!--content version-->
             <DockPanel>
-                <Label Content="Content version:" />
-                <Button Command="{Binding ContentSyncronizer.CheckAndUpdateIfNeededCommand}" Content="Check for Updates" />
+                <Label Content="{x:Static AcManager:Resources.Settings_General_ContentVersionLabel}" />
+                <Button Command="{Binding ContentSyncronizer.CheckAndUpdateIfNeededCommand}"
+                        Content="{x:Static AcManager:Resources.Settings_General_CheckForUpdates}" />
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding ContentSyncronizer.InstalledVersion, Mode=OneWay}"
                         attached:WatermarkService.Watermark="?" />
             </DockPanel>
@@ -65,25 +68,28 @@
                     Visibility="{Binding ContentSyncronizer.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
             <!--values storage-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Values Storage:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static AcManager:Resources.Settings_General_ValuesHeader}" />
 
             <DockPanel>
-                <Label Content="Size:" />
-                <Button Command="{Binding CleanUpStorageCommand}" ToolTip="Remove all nonimportant values" Content="Clean Up" />
-                <TextBlock Text="{Binding ValuesStorage.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} entry', Mode=OneWay}" />
+                <Label Content="{x:Static AcManager:Resources.Settings_General_ValuesSizeLabel}" />
+                <Button Command="{Binding CleanUpStorageCommand}" ToolTip="{x:Static AcManager:Resources.Settings_General_ValuesCleanUp_Tooltip}"
+                        Content="{x:Static AcManager:Resources.Settings_General_ValuesCleanUp}" />
+                <TextBlock
+                        Text="{Binding ValuesStorage.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static AcManager:Resources.Settings_General_ValuesNumber}, Mode=OneWay}" />
             </DockPanel>
 
             <DockPanel>
-                <Label Content="Saving time:" />
-                <TextBlock Text="{Binding ValuesStorage.PreviosSaveTime.TotalMilliseconds, StringFormat='{}{0:F2} ms', Mode=OneWay}"
-                        attached:WatermarkService.Watermark="?" />
+                <Label Content="{x:Static AcManager:Resources.Settings_General_ValuesSavingTimeLabel}" />
+                <Label Content="{x:Static AcManager:Resources.Common_MillisecondsFormat}" />
+                <TextBlock attached:WatermarkService.Watermark="?"
+                        Text="{Binding ValuesStorage.PreviosSaveTime.TotalMilliseconds, StringFormat={x:Static AcManager:Resources.Common_MillisecondsFormat}, Mode=OneWay}" />
             </DockPanel>
 
             <!--beta access-->
-            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Testing Access:" />
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static AcManager:Resources.Settings_General_TestingAccessHeader}" />
             <CheckBox IsChecked="{Binding CommonSettings.UpdateToNontestedVersions}" attached:LimitedService.Limited="True" HorizontalAlignment="Left"
                     ClipToBounds="False" Padding="0 0 24 0">
-                <Label Content="Update to non-tested versions" />
+                <Label Content="{x:Static AcManager:Resources.Settings_General_TestingAccess}" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

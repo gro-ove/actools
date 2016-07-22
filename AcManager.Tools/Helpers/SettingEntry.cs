@@ -1,4 +1,5 @@
-﻿using AcTools.Utils.Helpers;
+﻿using System.ComponentModel;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -20,6 +21,7 @@ namespace AcManager.Tools.Helpers {
 
         public int? IntValue { get; }
 
+        [Localizable(false)]
         public string Id => Value;
     }
 }

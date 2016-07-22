@@ -180,6 +180,34 @@ namespace AcManager.Controls {
             SelectedPresetFilename = resultFilename;
         }
 
+        public void SwitchToNext() {
+            var presets = SavedPresets;
+            
+            var selectedId = presets.FindIndex(x => x.Filename == SelectedPresetFilename);
+            if (selectedId == -1) {
+                var defaultPreset = _presetable.DefaultPreset;
+                CurrentUserPreset = presets.FirstOrDefault(x => x.DisplayName == defaultPreset) ?? presets.FirstOrDefault();
+            } else if (++selectedId >= presets.Count) {
+                CurrentUserPreset = presets.FirstOrDefault();
+            } else {
+                CurrentUserPreset = presets.ElementAtOrDefault(selectedId);
+            }
+        }
+
+        public void SwitchToPrevious() {
+            var presets = SavedPresets;
+
+            var selectedId = presets.FindIndex(x => x.Filename == SelectedPresetFilename);
+            if (selectedId == -1) {
+                var defaultPreset = _presetable.DefaultPreset;
+                CurrentUserPreset = presets.FirstOrDefault(x => x.DisplayName == defaultPreset) ?? presets.FirstOrDefault();
+            } else if (--selectedId < 0) {
+                CurrentUserPreset = presets.LastOrDefault();
+            } else {
+                CurrentUserPreset = presets.ElementAtOrDefault(selectedId);
+            }
+        }
+
         public static readonly DependencyProperty UserPresetableProperty = DependencyProperty.Register("UserPresetable", typeof(IUserPresetable),
             typeof(UserPresetsControl), new PropertyMetadata(OnUserPresetableChanged));
 
@@ -319,8 +347,7 @@ namespace AcManager.Controls {
             }
         }
 
-        public static IEnumerable<MenuItem> GroupPresets(string presetableKey,
-                RoutedEventHandler clickHandler,
+        public static IEnumerable<MenuItem> GroupPresets(string presetableKey, RoutedEventHandler clickHandler,
                 IPreviewProvider previewProvider = null) {
             return GroupPresets(PresetsManager.Instance.GetSavedPresets(presetableKey),
                     PresetsManager.Instance.GetDirectory(presetableKey), clickHandler, previewProvider);
@@ -329,10 +356,8 @@ namespace AcManager.Controls {
         private void UpdateSavedPresets() {
             if (_presetable == null) return;
 
-            var presets = PresetsManager.Instance.GetSavedPresets(_presetable.PresetableCategory)
-                    .ToIReadOnlyListIfItsNot();
-
-            SetValue(SavedPresetsPropertyKey, new ObservableCollection<ISavedPresetEntry>(presets));
+            var presets = new ObservableCollection<ISavedPresetEntry>(PresetsManager.Instance.GetSavedPresets(_presetable.PresetableCategory));
+            SetValue(SavedPresetsPropertyKey, presets);
             SetValue(SavedPresetsGroupedPropertyKey, new ObservableCollection<MenuItem>(
                     GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory), MenuItem_Click, _presetable as IPreviewProvider)));
             

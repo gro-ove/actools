@@ -144,7 +144,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public Button GoButton => _goButton ??
                 (_goButton =
-                        CreateStyledCloseDialogButton("Go.Button", ModernUI.Resources.Go, true, false, MessageBoxResult.OK));
+                        CreateStyledCloseDialogButton(@"Go.Button", ModernUI.Resources.Go, true, false, MessageBoxResult.OK));
 
         /// <summary>
         /// Gets the Cancel button.

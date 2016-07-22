@@ -86,7 +86,7 @@ namespace AcTools.DataFile {
             }
 
             if (File.Exists(filename) && backup) {
-                FileUtils.Recycle(filename);
+                FileUtils.RecycleSilent(filename);
             }
 
             File.WriteAllText(filename, Stringify());
@@ -99,7 +99,7 @@ namespace AcTools.DataFile {
             }
 
             if (File.Exists(filename) && backup) {
-                FileUtils.Recycle(filename);
+                FileUtils.RecycleSilent(filename);
             }
 
             await FileUtils.WriteAllBytesAsync(filename, Encoding.UTF8.GetBytes(Stringify()));

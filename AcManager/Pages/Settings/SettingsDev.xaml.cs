@@ -12,10 +12,10 @@ namespace AcManager.Pages.Settings {
     public partial class SettingsDev {
         public SettingsDev() {
             InitializeComponent();
-            DataContext = new DevViewModel();
+            DataContext = new ViewModel();
         }
 
-        public class DevViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private AsyncCommand _magickNetMemoryLeakingCommand;
 
             public AsyncCommand MagickNetMemoryLeakingCommand => _magickNetMemoryLeakingCommand ?? (_magickNetMemoryLeakingCommand = new AsyncCommand(async o => {

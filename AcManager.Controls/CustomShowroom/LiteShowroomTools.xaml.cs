@@ -401,7 +401,7 @@ namespace AcManager.Controls.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify(string.Format(Tools.Resources.Common_CannotUnpack, Tools.Resources.Common_KN5), e);
                 }
-            }, o => SettingsHolder.Common.DeveloperMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.Kn5 != null));
+            }, o => SettingsHolder.Common.MsMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.Kn5 != null));
             #endregion
 
             #region Materials & Textures

@@ -127,7 +127,7 @@
                         Content="{x:Static c:Resources.CustomShowroom_AmbientShadows_Update}" />
 
                 <StackPanel
-                        Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock Text="{x:Static c:Resources.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                     <Button Margin="0 12 0 0" Command="{Binding UnpackKn5Command}">
                         <Button.Content>

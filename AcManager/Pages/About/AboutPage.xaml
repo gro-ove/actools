@@ -8,7 +8,7 @@
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <ScrollViewer HorizontalScrollBarVisibility="Disabled">
             <StackPanel Margin="20 8">
                 <DockPanel>
@@ -25,8 +25,7 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0 20 0 40" PreviewMouseLeftButtonUp="Version_OnMouseLeftButtonUp">
-                    <TextBlock Style="{StaticResource Label}"
-                            Text="Version:" />
+                    <TextBlock Style="{StaticResource Label}" Text="Version:" />
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.Label.ReadOnly}" Margin="8 0 0 0"
                             Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, Mode=OneTime}" />
                 </StackPanel>
@@ -36,8 +35,13 @@
             </StackPanel>
         </ScrollViewer>
 
-        <mui:BbCodeBlock Grid.Row="1" Margin="20 8" Style="{StaticResource BbCodeBlock.Small}">Copyright © 2016 AcClub. All rights reserved.
-            [br]Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source software[/url].
-            [br]Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</mui:BbCodeBlock>
+        <StackPanel Grid.Row="1" Margin="20 8">
+            <TextBlock Style="{StaticResource Small}">
+                <Run>Copyright © 2016</Run>
+                <Run PreviewMouseLeftButtonDown="ContentElement_OnPreviewMouseLeftButtonDown" Background="Transparent">AcClub</Run><Run>. All rights reserved.</Run>
+            </TextBlock>
+            <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}">Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source software[/url].
+[br]Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</mui:BbCodeBlock>
+        </StackPanel>
     </Grid>
 </UserControl>

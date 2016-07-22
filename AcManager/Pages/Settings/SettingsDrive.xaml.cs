@@ -6,19 +6,19 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsDrive {
-        private SettingsDriveViewModel Model => (SettingsDriveViewModel)DataContext;
+        public ViewModel Model => (ViewModel)DataContext;
 
         public SettingsDrive() {
-            DataContext = new SettingsDriveViewModel();
+            DataContext = new ViewModel();
             InitializeComponent();
         }
 
-        public class SettingsDriveViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             public AcSettingsHolder.ReplaySettings Replay => AcSettingsHolder.Replay;
 
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 
-            public SettingsDriveViewModel() {
+            public ViewModel() {
                 if (!Drive.SelectedStarterType.IsAvailable) {
                     Drive.SelectedStarterType = SettingsHolder.DriveSettings.TrickyStarterType;
                 }

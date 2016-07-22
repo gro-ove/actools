@@ -27,7 +27,9 @@ namespace AcManager {
 
         [STAThread]
         private static void Main(string[] a) {
-            if (!Debugger.IsAttached) {
+            var logging = Assembly.GetEntryAssembly().Location.Contains(@"_log");
+
+            if (!Debugger.IsAttached && !logging) {
                 SetUnhandledExceptionHandler();
             }
             
@@ -36,7 +38,7 @@ namespace AcManager {
             LocalesHelper.Initialize();
 
             AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References",
-                    Assembly.GetEntryAssembly().Location.Contains(@"_log_packed")).Handler;
+                    logging || AppArguments.GetBool(AppFlag.LogPacked)).Handler;
             MainInner(a);
         }
 
@@ -123,8 +125,7 @@ namespace AcManager {
 
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         public static void SetUnhandledExceptionHandler() {
-            var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += UnhandledExceptionHandler;
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

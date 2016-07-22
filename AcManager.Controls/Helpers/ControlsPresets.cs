@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -21,6 +22,20 @@ namespace AcManager.Controls.Helpers {
         private static ControlsPresets _instance;
 
         public static ControlsPresets Instance => _instance ?? (_instance = new ControlsPresets());
+
+        private const string KeyWarnIfChanged = "cp.warnifchanged";
+
+        private bool? _warnIfChanged;
+
+        public bool WarnIfChanged {
+            get { return (bool)(_warnIfChanged ?? (_warnIfChanged = ValuesStorage.GetBool(KeyWarnIfChanged, true))); }
+            set {
+                if (Equals(value, WarnIfChanged)) return;
+                _warnIfChanged = value;
+                OnPropertyChanged();
+                ValuesStorage.Set(KeyWarnIfChanged, true);
+            }
+        }
 
         public class PresetEntry : NotifyPropertyChanged, ISavedPresetEntry {
             public PresetEntry(string filename) {
@@ -76,11 +91,15 @@ namespace AcManager.Controls.Helpers {
 
         private AcSettingsHolder.ControlsSettings Controls => AcSettingsHolder.Controls;
 
-        private async Task<MenuItem> RebuildAsync(string header, [Localizable(false)] string sub) {
+        private Task<List<PresetEntry>> ScanAsync([Localizable(false)] string sub) {
+            var directory = Path.Combine(Controls.PresetsDirectory, sub);
+            return Task.Run(() => FileUtils.GetFiles(directory, @"*" + AcSettingsHolder.ControlsSettings.PresetExtension).Select(x => new PresetEntry(x)).ToList());
+        }
+
+        private MenuItem Rebuild(string header, [Localizable(false)] string sub, IEnumerable<PresetEntry> presets) {
             var result = new MenuItem { Header = header };
             var directory = Path.Combine(Controls.PresetsDirectory, sub);
-            var list = await Task.Run(() => FileUtils.GetFiles(directory, @"*.ini").Select(x => new PresetEntry(x)).ToList());
-            foreach (var item in UserPresetsControl.GroupPresets(list, directory, ClickHandler, this, @".ini")) {
+            foreach (var item in UserPresetsControl.GroupPresets(presets, directory, ClickHandler, this, AcSettingsHolder.ControlsSettings.PresetExtension)) {
                 result.Items.Add(item);
             }
             return result;
@@ -91,15 +110,50 @@ namespace AcManager.Controls.Helpers {
             e.Handled = true;
 
             var entry = (((MenuItem)sender).Tag as UserPresetsControl.TagHelper)?.Entry as PresetEntry;
-            if (entry == null || (Controls.CurrentPresetName == null || Controls.CurrentPresetChanged) &&
-                    ModernDialog.ShowMessage(
-                            string.Format(Resources.Controls_LoadPresetWarning, entry.DisplayName),
-                            Resources.Common_AreYouSure, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+            if (entry == null) return;
+            SwitchToPreset(entry);
+        }
+
+        public void SwitchToPreset(PresetEntry entry) {
+            var backup = Controls.CurrentPresetName == null || Controls.CurrentPresetChanged;
+            if (backup && WarnIfChanged && ModernDialog.ShowMessage(
+                    string.Format(Resources.Controls_LoadPresetWarning, entry.DisplayName),
+                    Resources.Common_AreYouSure, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                 return;
             }
-            
-            Controls.LoadPreset(entry.Filename);
+
+            Controls.LoadPreset(entry.Filename, backup);
         }
+
+        public void SwitchToNext() {
+            var presets = _userPresets;
+            if (presets.Count < 2) return;
+
+            var current = Controls.CurrentPresetFilename;
+            var selectedId = presets.FindIndex(x => x.Filename == current);
+            if (selectedId == -1 || ++selectedId >= presets.Count) {
+                SwitchToPreset(presets.FirstOrDefault());
+            } else {
+                SwitchToPreset(presets.ElementAtOrDefault(selectedId));
+            }
+        }
+
+        public void SwitchToPrevious() {
+            var presets = _userPresets;
+            if (presets.Count < 2) return;
+
+            var current = Controls.CurrentPresetFilename;
+            var selectedId = presets.FindIndex(x => x.Filename == current);
+            if (selectedId == -1) {
+                SwitchToPreset(presets.FirstOrDefault());
+            } else if (--selectedId < 0) {
+                SwitchToPreset(presets.LastOrDefault());
+            } else {
+                SwitchToPreset(presets.ElementAtOrDefault(selectedId));
+            }
+        }
+
+        private List<PresetEntry> _builtInPresets, _userPresets;
 
         private async Task RebuildPresetsList() {
             if (_reloading) return;
@@ -109,8 +163,12 @@ namespace AcManager.Controls.Helpers {
 
             try {
                 Presets.Clear();
-                Presets.Add(await RebuildAsync(Resources.Controls_BuiltInPresets, "presets"));
-                Presets.Add(await RebuildAsync(Resources.Controls_UserPresets, "savedsetups"));
+
+                _builtInPresets = await ScanAsync(AcSettingsHolder.ControlsSettings.SubBuiltInPresets);
+                _userPresets = await ScanAsync(AcSettingsHolder.ControlsSettings.SubUserPresets);
+
+                Presets.Add(Rebuild(Resources.Controls_BuiltInPresets, AcSettingsHolder.ControlsSettings.SubBuiltInPresets, _builtInPresets));
+                Presets.Add(Rebuild(Resources.Controls_UserPresets, AcSettingsHolder.ControlsSettings.SubUserPresets, _userPresets));
                 PresetsReady = true;
             } catch (Exception e) {
                 Logging.Warning("RebuildPresetsList() exception: " + e);

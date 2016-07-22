@@ -394,10 +394,16 @@ namespace AcTools.Render.Kn5Specific.Utils {
         public void AdjustPosition(Kn5RenderableList node) {
             node.UpdateBoundingBox();
 
-            var y1 = Math.Min(node.GetDummyByName("WHEEL_LF")?.BoundingBox?.Minimum.Y ?? float.MaxValue,
-                    node.GetDummyByName("WHEEL_RF")?.BoundingBox?.Minimum.Y ?? float.MaxValue);
-            var y2 = Math.Min(node.GetDummyByName("WHEEL_LR")?.BoundingBox?.Minimum.Y ?? float.MaxValue,
-                    node.GetDummyByName("WHEEL_RR")?.BoundingBox?.Minimum.Y ?? float.MaxValue);
+            var wheelLf = node.GetDummyByName("WHEEL_LF");
+            var wheelRf = node.GetDummyByName("WHEEL_RF");
+            var wheelLr = node.GetDummyByName("WHEEL_LR");
+            var wheelRr = node.GetDummyByName("WHEEL_RR");
+            if (wheelLf == null || wheelRf == null || wheelLr == null || wheelRr == null) return;
+
+            var y1 = Math.Min(wheelLf.BoundingBox?.Minimum.Y ?? float.MaxValue,
+                    wheelRf.BoundingBox?.Minimum.Y ?? float.MaxValue);
+            var y2 = Math.Min(wheelLr.BoundingBox?.Minimum.Y ?? float.MaxValue,
+                    wheelRr.BoundingBox?.Minimum.Y ?? float.MaxValue);
 
             if (float.IsPositiveInfinity(y1) || float.IsPositiveInfinity(y2)) {
                 node.LocalMatrix = Matrix.Translation(0, -node.BoundingBox?.Minimum.Y ?? 0f, 0) * node.LocalMatrix;

@@ -379,10 +379,13 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.it.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.ru-RU.resx">
+    <EmbeddedResource Include="Resources.ru.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

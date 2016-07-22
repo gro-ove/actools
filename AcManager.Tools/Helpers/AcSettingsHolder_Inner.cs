@@ -70,6 +70,15 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            protected void Replace(IniFile ini, bool backup = false) {
+                IgnoreChangesForAWhile();
+                ini.SaveAs(Filename, backup);
+                Ini = ini;
+                IsLoading = true;
+                LoadFromIni();
+                IsLoading = false;
+            }
+
             protected void Reload() {
                 Ini = new IniFile(Filename);
                 IsLoading = true;
@@ -151,7 +160,7 @@ namespace AcManager.Tools.Helpers {
                 IsLoading = l;
             }
 
-            public IniFile Ini;
+            public IniFile Ini { get; private set; }
 
             /// <summary>
             /// Called from IniSettings constructor!

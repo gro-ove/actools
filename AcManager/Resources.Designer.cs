@@ -351,6 +351,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change.
+        /// </summary>
+        public static string Common_Change {
+            get {
+                return ResourceManager.GetString("Common_Change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Developer mode.
+        /// </summary>
+        public static string Common_DevMode {
+            get {
+                return ResourceManager.GetString("Common_DevMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:F2} ms.
+        /// </summary>
+        public static string Common_MillisecondsFormat {
+            get {
+                return ResourceManager.GetString("Common_MillisecondsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Brand Name.
         /// </summary>
         public static string Common_NewBrandName {
@@ -740,6 +767,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to appearance.
+        /// </summary>
+        public static string Settings_Appearance {
+            get {
+                return ResourceManager.GetString("Settings_Appearance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color:.
         /// </summary>
         public static string Settings_Appearance_ColorLabel {
@@ -844,6 +880,15 @@ namespace AcManager {
         public static string Settings_Appearance_TransitionAnimationLabel {
             get {
                 return ResourceManager.GetString("Settings_Appearance_TransitionAnimationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to content.
+        /// </summary>
+        public static string Settings_Content {
+            get {
+                return ResourceManager.GetString("Settings_Content", resourceCulture);
             }
         }
         
@@ -1001,6 +1046,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to custom showroom.
+        /// </summary>
+        public static string Settings_CustomShowroom {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto-adjusting camera pivot.
         /// </summary>
         public static string Settings_CustomShowroom_AutoAdjustPivot {
@@ -1141,6 +1195,24 @@ namespace AcManager {
         public static string Settings_CustomShowroom_TypeComment {
             get {
                 return ResourceManager.GetString("Settings_CustomShowroom_TypeComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to dev.
+        /// </summary>
+        public static string Settings_Dev {
+            get {
+                return ResourceManager.GetString("Settings_Dev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to drive.
+        /// </summary>
+        public static string Settings_Drive {
+            get {
+                return ResourceManager.GetString("Settings_Drive", resourceCulture);
             }
         }
         
@@ -1379,6 +1451,555 @@ namespace AcManager {
         public static string Settings_Drive_StartImmediately {
             get {
                 return ResourceManager.GetString("Settings_Drive_StartImmediately", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to general.
+        /// </summary>
+        public static string Settings_General {
+            get {
+                return ResourceManager.GetString("Settings_General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assetto Corsa folder:.
+        /// </summary>
+        public static string Settings_General_AcFolderLabel {
+            get {
+                return ResourceManager.GetString("Settings_General_AcFolderLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App:.
+        /// </summary>
+        public static string Settings_General_AppHeader {
+            get {
+                return ResourceManager.GetString("Settings_General_AppHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App key:.
+        /// </summary>
+        public static string Settings_General_AppKeyLabel {
+            get {
+                return ResourceManager.GetString("Settings_General_AppKeyLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App version:.
+        /// </summary>
+        public static string Settings_General_AppVersionLabel {
+            get {
+                return ResourceManager.GetString("Settings_General_AppVersionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto Updates:.
+        /// </summary>
+        public static string Settings_General_AutoUpdatesHeader {
+            get {
+                return ResourceManager.GetString("Settings_General_AutoUpdatesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change path to AC root folder.
+        /// </summary>
+        public static string Settings_General_ChangeAcRoot {
+            get {
+                return ResourceManager.GetString("Settings_General_ChangeAcRoot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to change path? App will be restarted..
+        /// </summary>
+        public static string Settings_General_ChangeAcRoot_Message {
+            get {
+                return ResourceManager.GetString("Settings_General_ChangeAcRoot_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check For Updates.
+        /// </summary>
+        public static string Settings_General_CheckForUpdates {
+            get {
+                return ResourceManager.GetString("Settings_General_CheckForUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check for updates:.
+        /// </summary>
+        public static string Settings_General_CheckForUpdatesLabel {
+            get {
+                return ResourceManager.GetString("Settings_General_CheckForUpdatesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content version:.
+        /// </summary>
+        public static string Settings_General_ContentVersionLabel {
+            get {
+                return ResourceManager.GetString("Settings_General_ContentVersionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update to non-tested versions.
+        /// </summary>
+        public static string Settings_General_TestingAccess {
+            get {
+                return ResourceManager.GetString("Settings_General_TestingAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Testing Access:.
+        /// </summary>
+        public static string Settings_General_TestingAccessHeader {
+            get {
+                return ResourceManager.GetString("Settings_General_TestingAccessHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clean Up.
+        /// </summary>
+        public static string Settings_General_ValuesCleanUp {
+            get {
+                return ResourceManager.GetString("Settings_General_ValuesCleanUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove all nonimportant values.
+        /// </summary>
+        public static string Settings_General_ValuesCleanUp_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_General_ValuesCleanUp_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Values Storage:.
+        /// </summary>
+        public static string Settings_General_ValuesHeader {
+            get {
+                return ResourceManager.GetString("Settings_General_ValuesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} entry.
+        /// </summary>
+        public static string Settings_General_ValuesNumber {
+            get {
+                return ResourceManager.GetString("Settings_General_ValuesNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving time:.
+        /// </summary>
+        public static string Settings_General_ValuesSavingTimeLabel {
+            get {
+                return ResourceManager.GetString("Settings_General_ValuesSavingTimeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size:.
+        /// </summary>
+        public static string Settings_General_ValuesSizeLabel {
+            get {
+                return ResourceManager.GetString("Settings_General_ValuesSizeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Menu shortcut (for modern notifications).
+        /// </summary>
+        public static string Settings_General_WindowsShortcut {
+            get {
+                return ResourceManager.GetString("Settings_General_WindowsShortcut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Start Menu shortcut if it’s missing; required for showing proper notifications in Windows 8 and 10.
+        /// </summary>
+        public static string Settings_General_WindowsShortcut_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_General_WindowsShortcut_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to live.
+        /// </summary>
+        public static string Settings_Live {
+            get {
+                return ResourceManager.GetString("Settings_Live", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom style.
+        /// </summary>
+        public static string Settings_Live_CustomStyle {
+            get {
+                return ResourceManager.GetString("Settings_Live_CustomStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable RSR Live Timing tab.
+        /// </summary>
+        public static string Settings_Live_EnableRsr {
+            get {
+                return ResourceManager.GetString("Settings_Live_EnableRsr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Sim Racing System (SRS) tab.
+        /// </summary>
+        public static string Settings_Live_EnableSrs {
+            get {
+                return ResourceManager.GetString("Settings_Live_EnableSrs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically toggle RSR app.
+        /// </summary>
+        public static string Settings_Live_RsrAutoToggleApp {
+            get {
+                return ResourceManager.GetString("Settings_Live_RsrAutoToggleApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically show or hide RSR app if starting race isn’t RSR-related.
+        /// </summary>
+        public static string Settings_Live_RsrAutoToggleApp_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Live_RsrAutoToggleApp_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom optimized style for built-in RSR website.
+        /// </summary>
+        public static string Settings_Live_RsrCustomStyle_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Live_RsrCustomStyle_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use different name when RSR form is enabled.
+        /// </summary>
+        public static string Settings_Live_RsrName_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Live_RsrName_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RSR name:.
+        /// </summary>
+        public static string Settings_Live_RsrNameLabel {
+            get {
+                return ResourceManager.GetString("Settings_Live_RsrNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom optimized style for built-in SRS website.
+        /// </summary>
+        public static string Settings_Live_SrsCustomStyle_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Live_SrsCustomStyle_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joining from Online.
+        /// </summary>
+        public static string Settings_Live_SrsJoinFromOnline {
+            get {
+                return ResourceManager.GetString("Settings_Live_SrsJoinFromOnline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App will set a special SRS name automatically to avoid problems.
+        /// </summary>
+        public static string Settings_Live_SrsJoinFromOnline_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Live_SrsJoinFromOnline_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default value: “SimRacingSystem*”.
+        /// </summary>
+        public static string Settings_Live_SrsOnlineMask_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Live_SrsOnlineMask_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mask for SRS servers:.
+        /// </summary>
+        public static string Settings_Live_SrsOnlineMaskLabel {
+            get {
+                return ResourceManager.GetString("Settings_Live_SrsOnlineMaskLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to online.
+        /// </summary>
+        public static string Settings_Online {
+            get {
+                return ResourceManager.GetString("Settings_Online", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding by IP:.
+        /// </summary>
+        public static string Settings_Online_AddingByIpHeader {
+            get {
+                return ResourceManager.GetString("Settings_Online_AddingByIpHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan timeout.
+        /// </summary>
+        public static string Settings_Online_AddingByIpScanTimeout {
+            get {
+                return ResourceManager.GetString("Settings_Online_AddingByIpScanTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compact UI.
+        /// </summary>
+        public static string Settings_Online_CompactUi {
+            get {
+                return ResourceManager.GetString("Settings_Online_CompactUi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection:.
+        /// </summary>
+        public static string Settings_Online_ConnectionHeader {
+            get {
+                return ResourceManager.GetString("Settings_Online_ConnectionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LAN:.
+        /// </summary>
+        public static string Settings_Online_LanHeader {
+            get {
+                return ResourceManager.GetString("Settings_Online_LanHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan using connections:.
+        /// </summary>
+        public static string Settings_Online_LanScanConnectionLabel {
+            get {
+                return ResourceManager.GetString("Settings_Online_LanScanConnectionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load server information directly.
+        /// </summary>
+        public static string Settings_Online_LoadInformationDirectly {
+            get {
+                return ResourceManager.GetString("Settings_Online_LoadInformationDirectly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load server information directly instead of using AC servers; could be faster and more actual, but some information (such as active session) will be missing.
+        /// </summary>
+        public static string Settings_Online_LoadInformationDirectly_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Online_LoadInformationDirectly_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping concurrency.
+        /// </summary>
+        public static string Settings_Online_PingConcurrency {
+            get {
+                return ResourceManager.GetString("Settings_Online_PingConcurrency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Increase value to make pinging of the whole list go faster, but it’ll be less accurate.
+        /// </summary>
+        public static string Settings_Online_PingConcurrency_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Online_PingConcurrency_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pinging:.
+        /// </summary>
+        public static string Settings_Online_PingingHeader {
+            get {
+                return ResourceManager.GetString("Settings_Online_PingingHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping timeout.
+        /// </summary>
+        public static string Settings_Online_PingTimeout {
+            get {
+                return ResourceManager.GetString("Settings_Online_PingTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use threads instead of asynchronous API.
+        /// </summary>
+        public static string Settings_Online_PingWithThreads {
+            get {
+                return ResourceManager.GetString("Settings_Online_PingWithThreads", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The most correct pinging, but the slowest one.
+        /// </summary>
+        public static string Settings_Online_PingWithThreads_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Online_PingWithThreads_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some enumeration like “9000-10000”.
+        /// </summary>
+        public static string Settings_Online_PortsByIp_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Online_PortsByIp_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan ports:.
+        /// </summary>
+        public static string Settings_Online_PortsLabel {
+            get {
+                return ResourceManager.GetString("Settings_Online_PortsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some enumeration like “9600,9602,9700-9750”.
+        /// </summary>
+        public static string Settings_Online_PortsLan_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Online_PortsLan_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remember passwords.
+        /// </summary>
+        public static string Settings_Online_RememberPasswords {
+            get {
+                return ResourceManager.GetString("Settings_Online_RememberPasswords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server:.
+        /// </summary>
+        public static string Settings_Online_ServerLabel {
+            get {
+                return ResourceManager.GetString("Settings_Online_ServerLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable.
+        /// </summary>
+        public static string Settings_Online_ServerPresetsManagerEnable {
+            get {
+                return ResourceManager.GetString("Settings_Online_ServerPresetsManagerEnable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server presets manager:.
+        /// </summary>
+        public static string Settings_Online_ServerPresetsManagerHeader {
+            get {
+                return ResourceManager.GetString("Settings_Online_ServerPresetsManagerHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to plugins.
+        /// </summary>
+        public static string Settings_Plugins {
+            get {
+                return ResourceManager.GetString("Settings_Plugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to quick switches.
+        /// </summary>
+        public static string Settings_QuickSwitches {
+            get {
+                return ResourceManager.GetString("Settings_QuickSwitches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to replays.
+        /// </summary>
+        public static string Settings_Replays {
+            get {
+                return ResourceManager.GetString("Settings_Replays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sharing.
+        /// </summary>
+        public static string Settings_Sharing {
+            get {
+                return ResourceManager.GetString("Settings_Sharing", resourceCulture);
             }
         }
         

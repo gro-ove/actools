@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
@@ -36,8 +37,11 @@ namespace AcManager.Pages.AcSettings {
         private bool _ignore;
 
         public void Initialize() {
-            InitializeComponent();
             DataContext = new AcPythonViewModel();
+            InitializeComponent();
+            InputBindings.AddRange(new[] {
+                new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
+            });
 
             UpdateListBox();
             Model.Python.PropertyChanged += Python_PropertyChanged;

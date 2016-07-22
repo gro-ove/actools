@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Data;
 using System.Globalization;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Converters {
     [ValueConversion(typeof(bool), typeof(string))]
@@ -15,7 +16,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 flag = !flag;
             }
 
-            return flag ? Resources.Yes : Resources.No;
+            return flag.ToReadableBoolean();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {

@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// For internal use.
+        /// Example: --log-packed.
+        /// </summary>
+        LogPacked,
+
+        /// <summary>
         /// Force specific locale even if it’s not supported at the moment. Could be useful
         /// if you want app to load locale from Locales folder.
         /// Example: --force-locale=ru-RU.

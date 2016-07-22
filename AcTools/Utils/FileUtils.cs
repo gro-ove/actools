@@ -319,13 +319,23 @@ namespace AcTools.Utils {
             return result;
         }
 
-        public static bool IsAffected([NotNull] string directoryOrFilename, [NotNull] string filename) {
-            if (directoryOrFilename == null) throw new ArgumentNullException(nameof(directoryOrFilename));
-            if (filename == null) throw new ArgumentNullException(nameof(filename));
-            if (string.Equals(directoryOrFilename, filename, StringComparison.OrdinalIgnoreCase)) return true;
+        /// <summary>
+        /// Is A in any way a parent of B?
+        /// </summary>
+        /// <param name="parent">For example, “C:\Windows”</param>
+        /// <param name="child">For example, “c:/windows/system32”</param>
+        /// <returns>For example, true</returns>
+        public static bool IsAffected([NotNull] string parent, [NotNull] string child) {
+            if (parent == null) throw new ArgumentNullException(nameof(parent));
+            if (child == null) throw new ArgumentNullException(nameof(child));
 
-            var s = filename.SubstringExt(directoryOrFilename.Length);
-            return s.Length > 0 && (s[0] == Path.DirectorySeparatorChar || s[0] == Path.AltDirectorySeparatorChar);
+            parent = parent.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            child = child.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            if (string.Equals(parent, child, StringComparison.OrdinalIgnoreCase)) return true;
+
+            var s = child.SubstringExt(parent.Length);
+            return s.Length > 0 && s[0] == Path.DirectorySeparatorChar;
         }
 
         public static void Hardlink([NotNull] string source, [NotNull] string destination, bool overwrite = false) {

@@ -80,9 +80,7 @@ namespace AcManager.Tools.Helpers {
 
             public void Import(string serialized) {
                 if (serialized == null) return;
-                Ini = IniFile.Parse(serialized);
-                LoadFromIni();
-                Save();
+                Replace(IniFile.Parse(serialized));
             }
 
             public string Export() {

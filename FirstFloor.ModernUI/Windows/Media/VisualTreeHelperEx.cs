@@ -34,6 +34,29 @@ namespace FirstFloor.ModernUI.Windows.Media {
             return FindVisualChildren<T>(obj).FirstOrDefault();
         }
 
+        [Pure]
+        public static IEnumerable<T> FindLogicalChildren<T>([NotNull] this DependencyObject depObj) where T : DependencyObject {
+            if (depObj == null) throw new ArgumentNullException(nameof(depObj));
+            
+            foreach (var child in LogicalTreeHelper.GetChildren(depObj).OfType<DependencyObject>()) {
+                var childT = child as T;
+                if (childT != null) {
+                    yield return childT;
+                }
+                
+                foreach (var childOfChild in FindLogicalChildren<T>(child)) {
+                    yield return childOfChild;
+                }
+            }
+        }
+
+        [Pure]
+        [CanBeNull]
+        public static T FindLogicalChild<T>([NotNull] this DependencyObject obj) where T : DependencyObject {
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+            return FindLogicalChildren<T>(obj).FirstOrDefault();
+        }
+
         /// <summary>
         /// Gets specified visual state group.
         /// </summary>

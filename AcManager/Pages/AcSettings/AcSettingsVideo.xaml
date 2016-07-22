@@ -6,7 +6,7 @@
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+AcVideoViewModel}">
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+ViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
@@ -222,7 +222,7 @@
         </ScrollViewer>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
-            <c:UserPresetsControl Name="UserPresetsControl" UserPresetable="{Binding Presets}" MinWidth="300" Margin="0 0 4 0" />
+            <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" MinWidth="300" Margin="0 0 4 0" />
             <Button Command="{Binding ShareCommand}" ToolTip="Share current settings (Ctrl+Page Up)" Content="Share" />
         </StackPanel>
     </Grid>

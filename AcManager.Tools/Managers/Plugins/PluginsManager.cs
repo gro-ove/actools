@@ -89,7 +89,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
             foreach (var plugin in list) {
                 var local = GetById(plugin.Id);
-                if (plugin.IsHidden && !SettingsHolder.Common.DeveloperMode) continue;
+                if (plugin.IsHidden && !SettingsHolder.Common.MsMode) continue;
 
                 if (local != null) {
                     List.Remove(local);

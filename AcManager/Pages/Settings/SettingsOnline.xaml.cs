@@ -8,10 +8,10 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsOnline {
-        private SettingsOnlineViewModel Model => (SettingsOnlineViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         public SettingsOnline() {
-            DataContext = new SettingsOnlineViewModel();
+            DataContext = new ViewModel();
             InitializeComponent();
 
             var list = Model.Online.IgnoredInterfaces;
@@ -25,17 +25,16 @@ namespace AcManager.Pages.Settings {
             Model.Online.IgnoredInterfaces = Model.NetworkInterfaces.Where(x => !selected.Contains(x.Id)).Select(x => x.Id);
         }
 
-        public class SettingsOnlineViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             public SettingsHolder.OnlineSettings Online => SettingsHolder.Online;
 
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 
             public List<NetworkInterface> NetworkInterfaces { get; }
 
-            public SettingsOnlineViewModel() {
+            public ViewModel() {
                 NetworkInterfaces = NetworkInterface.GetAllNetworkInterfaces().Where(
-                        x => x.GetIPProperties().UnicastAddresses.Any(
-                                y => y.Address.AddressFamily == AddressFamily.InterNetwork)).ToList();
+                        x => x.GetIPProperties().UnicastAddresses.Any(y => y.Address.AddressFamily == AddressFamily.InterNetwork)).ToList();
             }
         }
     }

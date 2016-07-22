@@ -286,12 +286,32 @@ namespace AcManager.Tools.Helpers {
             private bool? _developerMode;
 
             public bool DeveloperMode {
-                get { return _developerMode ?? (_developerMode = ValuesStorage.GetBool("Settings.CommonSettings.DeveloperMode", false)).Value; }
+                get { return MsMode || (_developerMode ?? (_developerMode = ValuesStorage.GetBool("Settings.CommonSettings.DeveloperModeN", false)).Value); }
                 set {
                     if (Equals(value, _developerMode)) return;
                     _developerMode = value;
+                    ValuesStorage.Set("Settings.CommonSettings.DeveloperModeN", value);
+                    OnPropertyChanged();
+
+                    if (!value) {
+                        MsMode = false;
+                    }
+                }
+            }
+
+            private bool? _msMode;
+
+            public bool MsMode {
+                get { return _msMode ?? (_msMode = ValuesStorage.GetBool("Settings.CommonSettings.DeveloperMode", false)).Value; }
+                set {
+                    if (Equals(value, _msMode)) return;
+                    _msMode = value;
                     ValuesStorage.Set("Settings.CommonSettings.DeveloperMode", value);
                     OnPropertyChanged();
+
+                    if (value) {
+                        OnPropertyChanged(nameof(DeveloperMode));
+                    }
                 }
             }
 

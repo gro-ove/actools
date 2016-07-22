@@ -44,6 +44,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         protected DpiAwareWindow() {
             SourceInitialized += OnSourceInitialized;
+            LocationChanged += OnLocationChanged;
             SizeChanged += OnSizeChanged;
             StateChanged += OnStateChanged;
 
@@ -126,6 +127,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public double ActualTop => (double)GetValue(ActualTopProperty);
 
+        public static readonly DependencyPropertyKey ActualRightPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualRight), typeof(double),
+                typeof(DpiAwareWindow), new PropertyMetadata(0d));
+
+        public static readonly DependencyProperty ActualRightProperty = ActualRightPropertyKey.DependencyProperty;
+
+        public double ActualRight => (double)GetValue(ActualRightProperty);
+
+        public static readonly DependencyPropertyKey ActualBottomPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualBottom), typeof(double),
+                typeof(DpiAwareWindow), new PropertyMetadata(0d));
+
+        public static readonly DependencyProperty ActualBottomProperty = ActualBottomPropertyKey.DependencyProperty;
+
+        public double ActualBottom => (double)GetValue(ActualBottomProperty);
+
         private void UpdateActualLocation() {
             if (WindowState == WindowState.Maximized) {
                 var rect = GetWindowRectangle();
@@ -135,11 +150,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 SetValue(ActualTopPropertyKey, Top);
                 SetValue(ActualLeftPropertyKey, Left);
             }
+
+            SetValue(ActualBottomPropertyKey, ActualTop + ActualHeight);
+            SetValue(ActualRightPropertyKey, ActualLeft + ActualWidth);
+        }
+
+        protected virtual void OnLocationChanged(object sender, EventArgs e) {
+            UpdateActualLocation();
+            SaveLocationAndSize();
         }
 
         protected virtual void OnSizeChanged(object sender, SizeChangedEventArgs e) {
-            SaveLocationAndSize();
             UpdateActualLocation();
+            SaveLocationAndSize();
         }
 
         [DllImport(@"user32.dll")]
@@ -153,8 +176,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected virtual void OnStateChanged(object sender, EventArgs e) {
-            SaveLocationAndSize();
             UpdateActualLocation();
+            SaveLocationAndSize();
         }
 
         /// <summary>

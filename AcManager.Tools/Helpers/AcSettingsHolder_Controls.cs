@@ -22,10 +22,12 @@ using Key = System.Windows.Input.Key;
 
 namespace AcManager.Tools.Helpers {
     public partial class AcSettingsHolder {
-
-        public static event EventHandler ControlsPresetLoading;
-
         public class ControlsSettings : IniSettings, IDisposable {
+
+            public const string SubBuiltInPresets = "presets";
+            public const string SubUserPresets = "savedsetups";
+            public const string PresetExtension = ".ini";
+
             public IAcControlsConflictResolver ConflictResolver { get; set; }
 
             internal ControlsSettings() : base(@"controls", false) {
@@ -41,7 +43,7 @@ namespace AcManager.Tools.Helpers {
                     _directInput = new SlimDX.DirectInput.DirectInput();
                     _keyboardInput = new Dictionary<int, KeyboardInputButton>();
                     PresetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
-                    UserPresetsDirectory = Path.Combine(PresetsDirectory, "savedsetups");
+                    UserPresetsDirectory = Path.Combine(PresetsDirectory, SubUserPresets);
 
                     _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
                 } catch (Exception e) {
@@ -300,21 +302,28 @@ namespace AcManager.Tools.Helpers {
 
             public event EventHandler PresetsUpdated;
 
-            private string _currentPresetName;
-
-            public string CurrentPresetName {
-                get { return _currentPresetName; }
-                set {
-                    if (Equals(value, _currentPresetName)) return;
-                    _currentPresetName = value;
-                    OnPropertyChanged(false);
-                }
-            }
-
             private string GetCurrentPresetName(string filename) {
                 filename = FileUtils.GetRelativePath(filename, PresetsDirectory);
-                var f = new[] { @"presets", @"savedsetups" }.FirstOrDefault(s => filename.StartsWith(s, StringComparison.OrdinalIgnoreCase));
-                return (f == null ? filename : filename.SubstringExt(f.Length + 1)).ApartFromLast(@".ini", StringComparison.OrdinalIgnoreCase);
+                var f = new[] { SubBuiltInPresets, SubUserPresets }.FirstOrDefault(s => filename.StartsWith(s, StringComparison.OrdinalIgnoreCase));
+                return (f == null ? filename : filename.SubstringExt(f.Length + 1)).ApartFromLast(PresetExtension, StringComparison.OrdinalIgnoreCase);
+            }
+
+            [CanBeNull]
+            public string CurrentPresetName { get; private set; }
+
+            private string _currentPresetFilename;
+
+            [CanBeNull]
+            public string CurrentPresetFilename {
+                get { return _currentPresetFilename; }
+                set {
+                    if (Equals(value, _currentPresetFilename)) return;
+                    _currentPresetFilename = value;
+                    OnPropertyChanged();
+
+                    CurrentPresetName = value == null ? null : GetCurrentPresetName(value);
+                    OnPropertyChanged(nameof(CurrentPresetName));
+                }
             }
 
             private bool _currentPresetChanged = true;
@@ -338,14 +347,13 @@ namespace AcManager.Tools.Helpers {
                 base.Save();
             }
 
-            public void LoadPreset(string presetFilename) {
-                ControlsPresetLoading?.Invoke(this, EventArgs.Empty);
-                new IniFile(presetFilename) {
+            public void LoadPreset(string presetFilename, bool backup) {
+                Replace(new IniFile(presetFilename) {
                     ["__LAUNCHER_CM"] = {
                         ["PRESET_NAME"] = presetFilename.SubstringExt(PresetsDirectory.Length + 1),
                         ["PRESET_CHANGED"] = false
                     }
-                }.SaveAs(Filename, true);
+                });
             }
             #endregion
 
@@ -848,7 +856,8 @@ namespace AcManager.Tools.Helpers {
                 KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
 
                 section = Ini["__LAUNCHER_CM"];
-                CurrentPresetName = section.ContainsKey(@"PRESET_NAME") ? GetCurrentPresetName(section.Get("PRESET_NAME")) : null;
+                var name = section.Get("PRESET_NAME");
+                CurrentPresetFilename = name == null ? null : Path.Combine(PresetsDirectory, name);
                 CurrentPresetChanged = CurrentPresetName != null && section.GetBool("PRESET_CHANGED", true);
             }
 
@@ -916,7 +925,7 @@ namespace AcManager.Tools.Helpers {
                 section.Set("MOUSE_SPEED", KeyboardMouseSteeringSpeed);
 
                 section = Ini["__LAUNCHER_CM"];
-                section.Set("PRESET_NAME", CurrentPresetName);
+                section.Set("PRESET_NAME", CurrentPresetFilename.SubstringExt(PresetsDirectory.Length + 1));
                 section.Set("PRESET_CHANGED", CurrentPresetChanged);
 
                 SaveControllers();
@@ -927,16 +936,11 @@ namespace AcManager.Tools.Helpers {
             }
 
             public void SavePreset(string filename) {
-                SetToIni();
-
-                var section = Ini["__LAUNCHER_CM"];
-                section.Set("PRESET_NAME", filename.SubstringExt(PresetsDirectory.Length + 1));
-                section.Set("PRESET_CHANGED", false);
-
-                Ini.SaveAs(filename);
-
-                CurrentPresetName = GetCurrentPresetName(section.Get("PRESET_NAME"));
+                CurrentPresetFilename = filename;
                 CurrentPresetChanged = false;
+                
+                SaveImmediately(); // save original PRESET_NAME
+                Ini.SaveAs(filename); // and as a preset
             }
             #endregion
         }

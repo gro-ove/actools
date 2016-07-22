@@ -95,7 +95,7 @@
                 <Button Content="Pack Data" Command="{Binding PackDataCommand}" ToolTip="For a decent online (Ctrl+J)"
                         Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="Unpack Data" Command="{Binding ReadDataCommand}" ToolTip="For development purposes only (Alt+J)"
-                        Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="Replace Sound" Command="{Binding ReplaceSoundCommand}" />
             </ToolBar>
         </c:AcObjectBase.ToolBars>

@@ -1,12 +1,18 @@
-﻿using System;
+﻿#define LOCALIZABLE
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+#if LOCALIZABLE
+using System.Globalization;
+#endif
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 
 namespace AcManager {
     [Localizable(false)]
@@ -26,9 +32,19 @@ namespace AcManager {
                 File.WriteAllBytes(filename, new byte[0]);
             } else {
                 using (var writer = new StreamWriter(filename, true)) {
-                    writer.WriteLine(DateTime.Now + ": " + s);
+                    writer.WriteLine(s);
                 }
             }
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
+        public void SetUnhandledExceptionHandler() {
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+        }
+
+        private void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e) {
+            Log("unhandled exception: " + e.ExceptionObject);
+            Environment.Exit(1);
         }
 
         internal ResolveEventHandler Handler { get; }
@@ -42,6 +58,10 @@ namespace AcManager {
             Handler = HandlerImpl;
 
             _references = new ResourceManager(referencesId, Assembly.GetExecutingAssembly());
+
+            if (logging) {
+                SetUnhandledExceptionHandler();
+            }
         }
         
         private string ExtractResource(string id) {
@@ -51,13 +71,15 @@ namespace AcManager {
                 return null;
             }
 
+            _first = false;
+
             var prefix = id + "_";
             var name = prefix + hash + ".dll";
             var filename = Path.Combine(_temporaryDirectory, name);
             Log("extracting resource: " + filename);
 
             if (File.Exists(filename)) {
-                Log("already extracted, reusing");
+                Log("already extracted, reusing: " + filename);
                 return filename;
             }
 
@@ -101,12 +123,38 @@ namespace AcManager {
             return filename;
         }
 
+#if LOCALIZABLE
+        private bool _first = true;
+#endif
+
         private Assembly HandlerImpl(object sender, ResolveEventArgs args) {
-            var name = args.Name.Split(new[] { "," }, StringSplitOptions.None)[0];
-            if (name.Contains(".resources")) {
-                Log("skip: " + args.Name);
+            var splitted = args.Name.Split(',');
+            var name = splitted[0];
+
+#if LOCALIZABLE
+            if (name == "Content Manager.resources" && _first) {
+                Log(">> Content Manager.resources <<");
                 return null;
             }
+
+            if (name.EndsWith(".resources")) {
+                var culture = splitted.ElementAtOrDefault(2)?.Split(new[] { "Culture=" }, StringSplitOptions.None).ElementAtOrDefault(1);
+                Log("splitted: " + splitted.ElementAtOrDefault(2));
+                Log("culture: " + culture);
+                if (culture == "neutral") return null;
+
+                var resourceId = CultureInfo.CurrentUICulture.IetfLanguageTag;
+                if (!string.Equals(resourceId, "en-US", StringComparison.OrdinalIgnoreCase)) {
+                    name = name.Replace(".resources", "." + resourceId);
+                    Log("localized: " + name);
+                } else {
+                    Log("skip: " + args.Name);
+                    return null;
+                }
+            }
+#else
+            if (name.EndsWith(".resources")) return null;
+#endif
 
             Log("resolve: " + args.Name + " as " + name);
 

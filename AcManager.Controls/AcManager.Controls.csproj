@@ -395,7 +395,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.ru-RU.resx">
+    <EmbeddedResource Include="Resources.ru.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="App.config" />

@@ -1,0 +1,386 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Championship" xml:space="preserve">
+    <value>Чемпионат</value>
+  </data>
+  <data name="Online_ScanningProgress" xml:space="preserve">
+    <value>Сканирование ({0}/{1}), найдено {2}…</value>
+  </data>
+  <data name="Online_ScanningProgress_Found" xml:space="preserve">
+    <value>{0} сервер</value>
+  </data>
+  <data name="Online_Server_MissingCarBbCode" xml:space="preserve">
+    <value>«[url="http://assetto-db.com/car/{0}"]{0}[/url]»</value>
+  </data>
+  <data name="Online_Server_MissingTrackBbCode" xml:space="preserve">
+    <value>«[url="http://assetto-db.com/track/{0}"]{0}[/url]»</value>
+  </data>
+  <data name="SingleEvents" xml:space="preserve">
+    <value>События</value>
+  </data>
+  <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
+    <value>{0} пит-стоп</value>
+  </data>
+  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
+    <value>{0}×{1}, {2} ГГц</value>
+    <comment>Parameters: width, height, refresh rate</comment>
+  </data>
+  <data name="AcSettings_CustomResolution" xml:space="preserve">
+    <value>Заданное вручную</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>JPEG</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
+    <value>Bitmap (без сжатия)</value>
+  </data>
+  <data name="AcSettings_Off" xml:space="preserve">
+    <value>Выкл.</value>
+    <comment>For example, for video settings, displayed instead of 0</comment>
+  </data>
+  <data name="Windows_Kn5Commentary" xml:space="preserve">
+    <value>KN5 модель</value>
+  </data>
+  <data name="Windows_AcReplayCommentary" xml:space="preserve">
+    <value>AC реплей</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Яндекс</value>
+  </data>
+  <data name="Period_Month" xml:space="preserve">
+    <value>Месяц</value>
+  </data>
+  <data name="CustomShowroom_Fancy" xml:space="preserve">
+    <value>Графонистый</value>
+  </data>
+  <data name="CustomShowroom_Lite" xml:space="preserve">
+    <value>Простой</value>
+  </data>
+  <data name="CarParentIsMissing" xml:space="preserve">
+    <value>Нет базовой версии</value>
+  </data>
+  <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
+    <value>Не получится запустить игру</value>
+  </data>
+  <data name="NotSupported" xml:space="preserve">
+    <value>Не поддерживается</value>
+  </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>л. с.</value>
+  </data>
+  <data name="Units_Nm" xml:space="preserve">
+    <value>Н·м</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Мощность</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Крутящий момент</value>
+  </data>
+  <data name="Period_Week" xml:space="preserve">
+    <value>Неделя</value>
+  </data>
+  <data name="Period_TwoWeeks" xml:space="preserve">
+    <value>Две недели</value>
+  </data>
+  <data name="Period_OneDay" xml:space="preserve">
+    <value>Один день</value>
+  </data>
+  <data name="Period_ThreeDays" xml:space="preserve">
+    <value>Три дня</value>
+  </data>
+  <data name="Common_Recommended" xml:space="preserve">
+    <value>{0} (рекомендуется)</value>
+  </data>
+  <data name="Settings_Starter_Official" xml:space="preserve">
+    <value>Официальный</value>
+  </data>
+  <data name="Settings_Starter_Naive" xml:space="preserve">
+    <value>Наивный</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Стартер+</value>
+  </data>
+  <data name="Common_Disabled" xml:space="preserve">
+    <value>Выкл.</value>
+  </data>
+  <data name="Settings_Autoupdate_Startup" xml:space="preserve">
+    <value>При запуске</value>
+  </data>
+  <data name="Settings_Autoupdate_ThirtyMinutes" xml:space="preserve">
+    <value>Каждые 30 минут</value>
+  </data>
+  <data name="Settings_Autoupdate_ThreeHours" xml:space="preserve">
+    <value>Каждые три часа</value>
+  </data>
+  <data name="Settings_Autoupdate_TenHours" xml:space="preserve">
+    <value>Каждые десять часов</value>
+  </data>
+  <data name="Settings_Autoupdate_Day" xml:space="preserve">
+    <value>Каждый день</value>
+  </data>
+  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
+    <value>Минимум</value>
+  </data>
+  <data name="AcSettings_Quality_Low" xml:space="preserve">
+    <value>Низко</value>
+  </data>
+  <data name="AcSettings_Quality_Medium" xml:space="preserve">
+    <value>Средне</value>
+  </data>
+  <data name="AcSettings_Quality_High" xml:space="preserve">
+    <value>Высоко</value>
+  </data>
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
+    <value>Ультра</value>
+  </data>
+  <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
+    <value>Очень высоко</value>
+  </data>
+  <data name="AcSettings_Quality_Maximum" xml:space="preserve">
+    <value>Максимум</value>
+  </data>
+  <data name="AcSettings_Cubemap_Static" xml:space="preserve">
+    <value>Статичные</value>
+  </data>
+  <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
+    <value>Одна сторона за кадр</value>
+  </data>
+  <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
+    <value>Две стороны за кадр</value>
+  </data>
+  <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
+    <value>Три стороны за кадр</value>
+  </data>
+  <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
+    <value>Четыре стороны за кадр</value>
+  </data>
+  <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
+    <value>Пять сторон за кадр</value>
+  </data>
+  <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
+    <value>Шесть сторон за кадр</value>
+  </data>
+  <data name="AcSettings_ExperimentalValue" xml:space="preserve">
+    <value>{0} (экспериментально)</value>
+  </data>
+  <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
+    <value>Один монитор</value>
+  </data>
+  <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
+    <value>Три монитора</value>
+  </data>
+  <data name="Gameplay_Units_Metrical" xml:space="preserve">
+    <value>Метрические (км/ч)</value>
+  </data>
+  <data name="Gameplay_Units_Imperial" xml:space="preserve">
+    <value>Империальные (м/ч)</value>
+  </data>
+  <data name="AdditionalContent_Car" xml:space="preserve">
+    <value>машина</value>
+  </data>
+  <data name="AdditionalContent_CarSkin" xml:space="preserve">
+    <value>скин</value>
+  </data>
+  <data name="AdditionalContent_Font" xml:space="preserve">
+    <value>шрифт</value>
+  </data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>шоурум</value>
+  </data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>трасса</value>
+  </data>
+  <data name="AdditionalContent_Weather" xml:space="preserve">
+    <value>погода</value>
+  </data>
+  <data name="AcObject_PlaceIsTaken" xml:space="preserve">
+    <value>Место занято</value>
+  </data>
+  <data name="CannotFindSteamId" xml:space="preserve">
+    <value>Не удаётся найти Steam ID</value>
+  </data>
+  <data name="TryAgainDot" xml:space="preserve">
+    <value>Попробуйте ещё раз.</value>
+  </data>
+  <data name="ReplayHelper_CannotSaveReplay" xml:space="preserve">
+    <value>Не удаётся сохранить реплей</value>
+  </data>
+  <data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
+    <value>Не удаётся удалить реплей</value>
+  </data>
+  <data name="FontObject_DisableFont" xml:space="preserve">
+    <value>Отключить шрифт</value>
+  </data>
+  <data name="Uploader_RootDirectory" xml:space="preserve">
+    <value>Корень</value>
+  </data>
+  <data name="AcError_NameIsMissing" xml:space="preserve">
+    <value>Имя отсутствует</value>
+  </data>
+  <data name="AcError_BrandNameIsMissing" xml:space="preserve">
+    <value>Имя бренда отстутствует</value>
+  </data>
+  <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
+    <value>Папка “ui” отсутствует</value>
+  </data>
+  <data name="AcError_CarParentIsMissing" xml:space="preserve">
+    <value>Базовая версия отсутствует</value>
+  </data>
+  <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
+    <value>Иконка бренда отсутствует</value>
+  </data>
+  <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
+    <value>Иконка апгрейда отсутствует</value>
+  </data>
+  <data name="AcError_SkinsAreMissing" xml:space="preserve">
+    <value>Скины отсутствуют</value>
+  </data>
+  <data name="Common_None" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="Common_Width" xml:space="preserve">
+    <value>Ширина</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Длина</value>
+  </data>
+  <data name="Common_Exporting" xml:space="preserve">
+    <value>Экспорт…</value>
+  </data>
+  <data name="Common_CannotUnpack" xml:space="preserve">
+    <value>Не удаётся распаковать {0}</value>
+  </data>
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
+    <value>Нормально</value>
+  </data>
+  <data name="Common_CannotDownloadFile" xml:space="preserve">
+    <value>Не удаётся загрузить файл</value>
+  </data>
+  <data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
+    <value>Проверьте, имеется ли интернет-соединение</value>
+  </data>
+  <data name="Common_Destination" xml:space="preserve">
+    <value>Назначение</value>
+  </data>
+  <data name="Common_SteamIdIsMissing" xml:space="preserve">
+    <value>Steam ID отсутствует</value>
+  </data>
+</root>

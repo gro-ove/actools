@@ -10,6 +10,10 @@ using FirstFloor.ModernUI.Windows.Converters;
 // Localize me!
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
+        public static string ToReadableBoolean(this bool value) {
+            return value ? Resources.Yes : Resources.No;
+        }
+
         public static string ToOrdinal(this int value, string subject, CultureInfo culture = null) {
             return Ordinalizing.Convert(value, subject);
         }

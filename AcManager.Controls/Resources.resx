@@ -220,7 +220,7 @@
     <value>Save Preset</value>
   </data>
   <data name="Presets_Save_Tooltip" xml:space="preserve">
-    <value>Save current settings as preset</value>
+    <value>Save current settings as preset (Ctrl+S)</value>
   </data>
   <data name="Presets_Unsaved" xml:space="preserve">
     <value>Unsaved</value>
@@ -335,7 +335,7 @@
   </data>
   <data name="Theme_Nordschleife" xml:space="preserve">
     <value>Nordschleife</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="Animation_Modern" xml:space="preserve">
     <value>Modern</value>
   </data>
@@ -535,7 +535,7 @@ Entry type: [b]{2}[/b]</value>
   </data>
   <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
     <value>FPS:</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
     <value>Objects:</value>
   </data>
@@ -621,7 +621,7 @@ Entry type: [b]{2}[/b]</value>
     <value>Version:</value>
   </data>
   <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL</value>
+    <value>URL:</value>
   </data>
   <data name="Common_FolderExists" xml:space="preserve">
     <value>Folder “{0}” already exists. Overwrite files?</value>

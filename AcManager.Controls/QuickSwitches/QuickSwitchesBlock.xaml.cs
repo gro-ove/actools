@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -18,6 +20,8 @@ namespace AcManager.Controls.QuickSwitches {
                 Rebuild();
             }
         }
+
+        public IEnumerable<FrameworkElement> Items => List.Items.OfType<FrameworkElement>();
 
         private void Rebuild() {
             List.Items.Clear();

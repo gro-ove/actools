@@ -151,7 +151,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to URL.
+        ///   Looks up a localized string similar to URL:.
         /// </summary>
         public static string AcObject_UrlLabel {
             get {
@@ -1295,7 +1295,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save current settings as preset.
+        ///   Looks up a localized string similar to Save current settings as preset (Ctrl+S).
         /// </summary>
         public static string Presets_Save_Tooltip {
             get {

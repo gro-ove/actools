@@ -266,7 +266,7 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t read data", "Make sure file exists and there is enough space.", e);
                 }
-            }, o => SettingsHolder.Common.DeveloperMode && SelectedObject.AcdData.IsPacked));
+            }, o => SettingsHolder.Common.MsMode && SelectedObject.AcdData.IsPacked));
 
             private RelayCommand _packDataCommand;
 
@@ -348,7 +348,7 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t replace car’s sound", "Make sure there is enough space and original files could be removed.", e);
                 }
-            }, o => SettingsHolder.Common.DeveloperMode));
+            }, o => SettingsHolder.Common.MsMode));
         }
 
         private string _id;

@@ -222,12 +222,106 @@
     <value>сервер</value>
   </data>
   <data name="Main_Drive" xml:space="preserve">
-    <value>поехали</value>
+    <value>вождение</value>
   </data>
   <data name="Main_Media" xml:space="preserve">
     <value>медиа</value>
   </data>
   <data name="Main_Content" xml:space="preserve">
     <value>контент</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} мс</value>
+  </data>
+  <data name="Settings_General_ValuesNumber" xml:space="preserve">
+    <value>{0} запись</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="Settings_General" xml:space="preserve">
+    <value>общее</value>
+  </data>
+  <data name="Settings_Plugins" xml:space="preserve">
+    <value>плагины</value>
+  </data>
+  <data name="Settings_Drive" xml:space="preserve">
+    <value>вождение</value>
+  </data>
+  <data name="Settings_Replays" xml:space="preserve">
+    <value>реплеи</value>
+  </data>
+  <data name="Settings_Live" xml:space="preserve">
+    <value>лайв</value>
+  </data>
+  <data name="Settings_Online" xml:space="preserve">
+    <value>онлайн</value>
+  </data>
+  <data name="Settings_QuickSwitches" xml:space="preserve">
+    <value>переключатели</value>
+  </data>
+  <data name="Settings_CustomShowroom" xml:space="preserve">
+    <value>кастомный шоурум</value>
+  </data>
+  <data name="Settings_Content" xml:space="preserve">
+    <value>контент</value>
+  </data>
+  <data name="Settings_Sharing" xml:space="preserve">
+    <value>шаринг</value>
+  </data>
+  <data name="Settings_Appearance" xml:space="preserve">
+    <value>оформление</value>
+  </data>
+  <data name="Settings_Dev" xml:space="preserve">
+    <value>системное</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Arguments_SharedMessage_For" xml:space="preserve">
+    <value>Для</value>
+  </data>
+  <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
+    <value>Применить и сохранить</value>
+  </data>
+  <data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
+    <value>Сохранить и применить</value>
+  </data>
+  <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
+    <value>Только применить</value>
+  </data>
+  <data name="Arguments_Shared_Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
+    <value>Только сохранить</value>
+  </data>
+  <data name="Arguments_Shared_Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="Arguments_MetadataIsMissing" xml:space="preserve">
+    <value>Метаданные отсутствуют.</value>
+  </data>
+  <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
+    <value>Применить лишь FFB</value>
+  </data>
+  <data name="Arguments_Shared_JustGo" xml:space="preserve">
+    <value>Поехали</value>
+  </data>
+  <data name="Common_NewName" xml:space="preserve">
+    <value>Новое имя</value>
+  </data>
+  <data name="Solution_SetName_Prompt" xml:space="preserve">
+    <value>Введите новое имя:</value>
+  </data>
+  <data name="Common_Change" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="Common_DevMode" xml:space="preserve">
+    <value>Режим разработчика</value>
+  </data>
+  <data name="Common_NewBrandName" xml:space="preserve">
+    <value>Новое имя бренда</value>
+  </data>
+  <data name="Common_Restart" xml:space="preserve">
+    <value>Перезапустить</value>
   </data>
 </root>

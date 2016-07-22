@@ -1,4 +1,4 @@
 ﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <Rectangle Fill="{Binding Base}" />
-    <Image Source="Metallic.png" />
+    <Image Source="Gloss.png" />
 </Grid>

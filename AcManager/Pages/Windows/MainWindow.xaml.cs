@@ -6,10 +6,14 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.QuickSwitches;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
@@ -28,6 +32,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Media;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
@@ -65,7 +70,7 @@ namespace AcManager.Pages.Windows {
                 return;
             }
 
-            DataContext = new MainWindowViewModel();
+            DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
                 new InputBinding(new NavigateCommand(this, AcManager.Resources.Main_About), new KeyGesture(Key.F1, ModifierKeys.Alt)),
                 new InputBinding(new NavigateCommand(this, AcManager.Resources.Main_Drive), new KeyGesture(Key.F1)),
@@ -241,9 +246,9 @@ namespace AcManager.Pages.Windows {
             base.Show();
         }
 
-        private MainWindowViewModel Model => (MainWindowViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
-        public class MainWindowViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private RelayCommand _enterKeyCommand;
 
             public RelayCommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new RelayCommand(o => {
@@ -264,7 +269,7 @@ namespace AcManager.Pages.Windows {
         private HwndSourceHook _hook;
         private bool _loaded;
 
-        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;
 
@@ -298,7 +303,7 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private void MainWindow_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
 
@@ -334,7 +339,7 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private void MainWindow_OnDrop(object sender, DragEventArgs e) {
+        private void OnDrop(object sender, DragEventArgs e) {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
 
             Focus();
@@ -347,7 +352,7 @@ namespace AcManager.Pages.Windows {
             Dispatcher.InvokeAsync(() => ProcessDroppedFiles(data));
         }
 
-        private void MainWindow_OnDragEnter(object sender, DragEventArgs e) {
+        private void OnDragEnter(object sender, DragEventArgs e) {
             if (e.AllowedEffects.HasFlag(DragDropEffects.All) &&
                 (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.UnicodeText))) {
                 e.Effects = DragDropEffects.All;
@@ -361,39 +366,137 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private void MainWindow_OnClosed(object sender, EventArgs e) {
+        private void OnClosed(object sender, EventArgs e) {
             Application.Current.Shutdown();
         }
 
-        private async void MainWindow_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
-            if (!SettingsHolder.Drive.QuickSwitches) return;
+        private void InitializePopup() {
+            if (Popup.Child == null) {
+                Popup.Child = new QuickSwitchesBlock();
+            }
+        }
 
-            await Task.Delay(50);
-            if (e.Handled) return;
+        public IEnumerable<FrameworkElement> GetQuickSwitches() {
+            InitializePopup();
+            return ((QuickSwitchesBlock)Popup.Child).Items;
+        } 
 
+        private void ToggleQuickSwitches(bool force = true) {
             if (Popup.IsOpen) {
                 Popup.IsOpen = false;
-            } else if (_openOnNext) {
-                if (Popup.Child == null) {
-                    Popup.Child = new QuickSwitchesBlock();
-                    AcSettingsHolder.ControlsPresetLoading += Controls_PresetLoading;
-                }
-
+            } else if (force || _openOnNext) {
+                InitializePopup();
                 Popup.IsOpen = true;
                 Popup.Focus();
+            }
+        }
+
+        private ICommand _quickSwitchesCommand;
+
+        public ICommand QuickSwitchesCommand => _quickSwitchesCommand ?? (_quickSwitchesCommand = new RelayCommand(o => {
+            ToggleQuickSwitches();
+        }));
+
+        private int _popupId;
+
+        private async void ShowQuickSwitchesPopup(Geometry icon, string message, object toolTip) {
+            if (Popup.IsOpen) return;
+
+            var id = ++_popupId;
+            QuickSwitchesNotificationIcon.Data = icon;
+            QuickSwitchesNotificationText.Text = message?.ToUpper(CultureInfo.CurrentUICulture);
+            QuickSwitchesNotification.IsOpen = true;
+            QuickSwitchesNotification.ToolTip = toolTip;
+
+            await Task.Delay(2000);
+
+            if (_popupId == id) {
+                QuickSwitchesNotification.IsOpen = false;
+            }
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e) {
+            if (Keyboard.Modifiers != ModifierKeys.Alt && Keyboard.Modifiers != (ModifierKeys.Alt | ModifierKeys.Shift) ||
+                    !SettingsHolder.Drive.QuickSwitches) return;
+           
+            switch (e.SystemKey) {
+                case Key.OemTilde:
+                    ToggleQuickSwitches();
+                    break;
+
+                default:
+                    var k = e.SystemKey - Key.D1;
+                    if (k < 0 || k > 9) return;
+
+                    InitializePopup();
+                    var child = GetQuickSwitches().ElementAtOrDefault(k);
+                    if (child == null) break;
+
+                    var toggle = child as ModernToggleButton;
+                    if (toggle != null) {
+                        toggle.IsChecked = !toggle.IsChecked;
+                        ShowQuickSwitchesPopup(toggle.IconData, $@"{toggle.Content}: {toggle.IsChecked.ToReadableBoolean()}", child.ToolTip);
+                        break;
+                    }
+
+                    var presets = child as QuickSwitchPresetsControl;
+                    if (presets != null) {
+                        if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) {
+                            presets.SwitchToPrevious();
+                        } else {
+                            presets.SwitchToNext();
+                        }
+                        ShowQuickSwitchesPopup(presets.IconData, $@"{presets.CurrentUserPreset.DisplayName}", child.ToolTip);
+                        break;
+                    }
+
+                    var combo = child as QuickSwitchComboBox;
+                    if (combo != null && combo.Items.Count > 1) {
+                        var index = combo.SelectedIndex;
+                        combo.SelectedItem = combo.Items[(index + (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? -1 : 1) +
+                                combo.Items.Count) % combo.Items.Count];
+                        ShowQuickSwitchesPopup(combo.IconData, $@"{combo.SelectedItem}", child.ToolTip);
+                        break;
+                    }
+
+                    var slider = child as QuickSwitchSlider;
+                    if (slider != null) {
+                        var step = (slider.Maximum - slider.Minimum) / 6d;
+                        var position = (((slider.Value - slider.Minimum) / step - 1).Clamp(0, 4).Round(1d) +
+                                (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? -1 : 1) + 5) % 5;
+                        slider.Value = slider.Minimum + (position + 1) * step;
+                        ShowQuickSwitchesPopup(slider.IconData, $@"{slider.Content}: {slider.DisplayValue}", child.ToolTip);
+                    }
+
+                    // special case for controls presets
+                    var dock = child as DockPanel;
+                    if (dock != null) {
+                        if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) {
+                            ControlsPresets.Instance.SwitchToPrevious();
+                        } else {
+                            ControlsPresets.Instance.SwitchToNext();
+                        }
+
+                        ShowQuickSwitchesPopup(dock.FindLogicalChild<Path>()?.Data, $@"{AcSettingsHolder.Controls.CurrentPresetName}", child.ToolTip);
+                    }
+
+                    break;
             }
 
             e.Handled = true;
         }
 
-        private async void Controls_PresetLoading(object sender, EventArgs e) {
-            // shitty fix, but it works (?)
-            Popup.StaysOpen = true;
-            await Task.Delay(1);
-            Popup.StaysOpen = false;
+        private async void OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+            if (!SettingsHolder.Drive.QuickSwitches) return;
+
+            await Task.Delay(50);
+            if (e.Handled) return;
+
+            ToggleQuickSwitches(false);
+            e.Handled = true;
         }
 
-        private void MainWindow_OnPreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
+        private void OnPreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e) {
             if (Popup.IsOpen) {
                 e.Handled = true;
             }
@@ -401,12 +504,8 @@ namespace AcManager.Pages.Windows {
 
         private bool _openOnNext;
 
-        private void MainWindow_OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
             _openOnNext = !Popup.IsOpen;
-            if (Popup.IsOpen) {
-                // Popup.IsOpen = false;
-                // e.Handled = true;
-            }
         }
 
         private class InnerPopupHeightConverter : IValueConverter {

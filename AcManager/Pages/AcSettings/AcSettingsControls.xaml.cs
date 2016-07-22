@@ -13,7 +13,9 @@ using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
@@ -27,7 +29,8 @@ namespace AcManager.Pages.AcSettings {
 
             DataContext = new AcControlsViewModel();
             InputBindings.AddRange(new[] {
-                new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control))
+                new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
+                new InputBinding(Model.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
             });
             InitializeComponent();
 
@@ -44,17 +47,16 @@ namespace AcManager.Pages.AcSettings {
             private RelayCommand _saveCommand;
 
             public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
-                var presetsDirectory = Path.Combine(Controls.PresetsDirectory, "savedsetups");
-
                 var dialog = new SaveFileDialog {
-                    InitialDirectory = presetsDirectory,
-                    Filter = string.Format(@"Presets (*{0})|*{0}", ".ini"),
+                    InitialDirectory = Controls.UserPresetsDirectory,
+                    FileName = Path.GetFileNameWithoutExtension(Controls.CurrentPresetFilename),
+                    Filter = string.Format("Presets (*{0})|*{0}", ".ini"),
                     DefaultExt = ".ini",
                     OverwritePrompt = true
                 };
 
-                var filename = Controls.Ini["__LAUNCHER_CM"].Get("PRESET_NAME");
-                if (filename?.StartsWith("savedsetups", StringComparison.OrdinalIgnoreCase) != null) {
+                var filename = Controls.CurrentPresetFilename;
+                if (filename != null && FileUtils.IsAffected(Controls.UserPresetsDirectory, filename)) {
                     dialog.InitialDirectory = Path.GetDirectoryName(Path.Combine(Controls.PresetsDirectory, filename));
                     dialog.FileName = Path.GetFileNameWithoutExtension(filename);
                 }
@@ -68,13 +70,13 @@ namespace AcManager.Pages.AcSettings {
                 }
 
                 filename = dialog.FileName;
-                if (!filename.StartsWith(presetsDirectory)) {
-                    if (ModernDialog.ShowMessage("Please, choose a file in initial directory or some subdirectory.",
+                if (!FileUtils.IsAffected(Controls.UserPresetsDirectory, filename)) {
+                    if (ModernDialog.ShowMessage("Please, choose a file in initial directory (“cfg\\controllers\\savedsetups”) or some subdirectory.",
                                                  "Can’t Do", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                         SaveCommand?.Execute(Path.GetFileName(filename));
-                    } else {
-                        return;
                     }
+
+                    return;
                 }
 
                 Controls.SavePreset(filename);
@@ -91,13 +93,14 @@ namespace AcManager.Pages.AcSettings {
             public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
             private async Task Share(object o) {
-                if (o as string == "FFBOnly") {
+                if (o as string == @"FFBOnly") {
                     var iniFile = new IniFile();
                     AcSettingsHolder.Controls.SaveFfbToIni(iniFile);
                     AcSettingsHolder.System.SaveFfbToIni(iniFile);
 
-                    await SharingUiHelper.ShareAsync(SharedEntryType.ForceFeedbackPreset, Path.GetFileName(Controls.CurrentPresetName) + " (FFB Only)", null, iniFile.Stringify());
-                } else if (o as string == "Basic") {
+                    await SharingUiHelper.ShareAsync(SharedEntryType.ForceFeedbackPreset,
+                            string.Format("{0} (FFB Only)", Path.GetFileName(Controls.CurrentPresetName)), null, iniFile.Stringify());
+                } else if (o as string == @"Basic") {
                     var target = Controls.InputMethod.Id == "KEYBOARD" ? "keyboard" :
                             Controls.InputMethod.Id == "X360" ? "Xbox 360 controller" :
                                     Controls.WheelAxleEntries.FirstOrDefault()?.Input?.Device?.DisplayName;

@@ -453,13 +453,20 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources.fr-FR.resx" />
+    <EmbeddedResource Include="Resources.it.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.ru-RU.resx" />
+    <EmbeddedResource Include="Resources.ru.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Fonts\Segoe Condensed Bold.ttf" />

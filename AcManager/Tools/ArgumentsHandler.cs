@@ -497,7 +497,7 @@ namespace AcManager.Tools {
                             Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                             File.WriteAllBytes(filename, data);
                             if (result == Choise.ApplyAndSave) {
-                                AcSettingsHolder.Controls.LoadPreset(filename);
+                                AcSettingsHolder.Controls.LoadPreset(filename, true);
                             }
                             return ArgumentHandleResult.SuccessfulShow;
                         case Choise.Apply:

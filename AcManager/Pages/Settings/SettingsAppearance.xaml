@@ -4,7 +4,7 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
              xmlns:AcManager="clr-namespace:AcManager"
              mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance settings:SettingsAppearance+AppearanceViewModel}">
+        d:DataContext="{d:DesignInstance settings:SettingsAppearance+ViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>

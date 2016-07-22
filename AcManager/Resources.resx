@@ -731,4 +731,224 @@ Author: [b]{3}[/b]</value>
   <data name="Settings_Drive_ExpandBounds_Tooltip" xml:space="preserve">
     <value>Allows to set up to 999 laps and stuff, use on your own risk.</value>
   </data>
+  <data name="Settings_General_AcFolderLabel" xml:space="preserve">
+    <value>Assetto Corsa folder:</value>
+  </data>
+  <data name="Common_Change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Common_DevMode" xml:space="preserve">
+    <value>Developer mode</value>
+  </data>
+  <data name="Settings_General_AppHeader" xml:space="preserve">
+    <value>App:</value>
+  </data>
+  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
+    <value>App key:</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut" xml:space="preserve">
+    <value>Start Menu shortcut (for modern notifications)</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut_Tooltip" xml:space="preserve">
+    <value>Create Start Menu shortcut if it’s missing; required for showing proper notifications in Windows 8 and 10</value>
+  </data>
+  <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
+    <value>Auto Updates:</value>
+  </data>
+  <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
+    <value>Check for updates:</value>
+  </data>
+  <data name="Settings_General_AppVersionLabel" xml:space="preserve">
+    <value>App version:</value>
+  </data>
+  <data name="Settings_General_CheckForUpdates" xml:space="preserve">
+    <value>Check For Updates</value>
+  </data>
+  <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
+    <value>Content version:</value>
+  </data>
+  <data name="Settings_General_ValuesHeader" xml:space="preserve">
+    <value>Values Storage:</value>
+  </data>
+  <data name="Settings_General_ValuesSizeLabel" xml:space="preserve">
+    <value>Size:</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
+    <value>Clean Up</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp_Tooltip" xml:space="preserve">
+    <value>Remove all nonimportant values</value>
+  </data>
+  <data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
+    <value>Saving time:</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} ms</value>
+  </data>
+  <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
+    <value>Testing Access:</value>
+  </data>
+  <data name="Settings_General_TestingAccess" xml:space="preserve">
+    <value>Update to non-tested versions</value>
+  </data>
+  <data name="Settings_General_ValuesNumber" xml:space="preserve">
+    <value>{0} entry</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="Settings_General_ChangeAcRoot_Message" xml:space="preserve">
+    <value>Do you want to change path? App will be restarted.</value>
+  </data>
+  <data name="Settings_General_ChangeAcRoot" xml:space="preserve">
+    <value>Change path to AC root folder</value>
+  </data>
+  <data name="Settings_Live_EnableRsr" xml:space="preserve">
+    <value>Enable RSR Live Timing tab</value>
+  </data>
+  <data name="Settings_Live_CustomStyle" xml:space="preserve">
+    <value>Custom style</value>
+  </data>
+  <data name="Settings_Live_RsrCustomStyle_Tooltip" xml:space="preserve">
+    <value>Custom optimized style for built-in RSR website</value>
+  </data>
+  <data name="Settings_Live_SrsCustomStyle_Tooltip" xml:space="preserve">
+    <value>Custom optimized style for built-in SRS website</value>
+  </data>
+  <data name="Settings_Live_RsrNameLabel" xml:space="preserve">
+    <value>RSR name:</value>
+  </data>
+  <data name="Settings_Live_RsrName_Tooltip" xml:space="preserve">
+    <value>Use different name when RSR form is enabled</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp" xml:space="preserve">
+    <value>Automatically toggle RSR app</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp_Tooltip" xml:space="preserve">
+    <value>Automatically show or hide RSR app if starting race isn’t RSR-related</value>
+  </data>
+  <data name="Settings_Live_EnableSrs" xml:space="preserve">
+    <value>Enable Sim Racing System (SRS) tab</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline" xml:space="preserve">
+    <value>Joining from Online</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline_Tooltip" xml:space="preserve">
+    <value>App will set a special SRS name automatically to avoid problems</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMaskLabel" xml:space="preserve">
+    <value>Mask for SRS servers:</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMask_Tooltip" xml:space="preserve">
+    <value>Default value: “SimRacingSystem*”</value>
+  </data>
+  <data name="Settings_Online_RememberPasswords" xml:space="preserve">
+    <value>Remember passwords</value>
+  </data>
+  <data name="Settings_Online_CompactUi" xml:space="preserve">
+    <value>Compact UI</value>
+  </data>
+  <data name="Settings_Online_ConnectionHeader" xml:space="preserve">
+    <value>Connection:</value>
+  </data>
+  <data name="Settings_Online_ServerLabel" xml:space="preserve">
+    <value>Server:</value>
+  </data>
+  <data name="Settings_Online_LoadInformationDirectly" xml:space="preserve">
+    <value>Load server information directly</value>
+  </data>
+  <data name="Settings_Online_LoadInformationDirectly_Tooltip" xml:space="preserve">
+    <value>Load server information directly instead of using AC servers; could be faster and more actual, but some information (such as active session) will be missing</value>
+  </data>
+  <data name="Settings_Online_PingingHeader" xml:space="preserve">
+    <value>Pinging:</value>
+  </data>
+  <data name="Settings_Online_PingWithThreads" xml:space="preserve">
+    <value>Use threads instead of asynchronous API</value>
+  </data>
+  <data name="Settings_Online_PingWithThreads_Tooltip" xml:space="preserve">
+    <value>The most correct pinging, but the slowest one</value>
+  </data>
+  <data name="Settings_Online_PingConcurrency" xml:space="preserve">
+    <value>Ping concurrency</value>
+  </data>
+  <data name="Settings_Online_PingConcurrency_Tooltip" xml:space="preserve">
+    <value>Increase value to make pinging of the whole list go faster, but it’ll be less accurate</value>
+  </data>
+  <data name="Settings_Online_PingTimeout" xml:space="preserve">
+    <value>Ping timeout</value>
+  </data>
+  <data name="Settings_Online_AddingByIpHeader" xml:space="preserve">
+    <value>Adding by IP:</value>
+  </data>
+  <data name="Settings_Online_PortsLabel" xml:space="preserve">
+    <value>Scan ports:</value>
+  </data>
+  <data name="Settings_Online_PortsByIp_Tooltip" xml:space="preserve">
+    <value>Some enumeration like “9000-10000”</value>
+  </data>
+  <data name="Settings_Online_PortsLan_Tooltip" xml:space="preserve">
+    <value>Some enumeration like “9600,9602,9700-9750”</value>
+  </data>
+  <data name="Settings_Online_AddingByIpScanTimeout" xml:space="preserve">
+    <value>Scan timeout</value>
+  </data>
+  <data name="Settings_Online_LanHeader" xml:space="preserve">
+    <value>LAN:</value>
+  </data>
+  <data name="Settings_Online_LanScanConnectionLabel" xml:space="preserve">
+    <value>Scan using connections:</value>
+  </data>
+  <data name="Settings_Online_ServerPresetsManagerHeader" xml:space="preserve">
+    <value>Server presets manager:</value>
+  </data>
+  <data name="Settings_Online_ServerPresetsManagerEnable" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="Settings_General" xml:space="preserve">
+    <value>general</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_Plugins" xml:space="preserve">
+    <value>plugins</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_Drive" xml:space="preserve">
+    <value>drive</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_Replays" xml:space="preserve">
+    <value>replays</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_Live" xml:space="preserve">
+    <value>live</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_Online" xml:space="preserve">
+    <value>online</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_QuickSwitches" xml:space="preserve">
+    <value>quick switches</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_CustomShowroom" xml:space="preserve">
+    <value>custom showroom</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_Content" xml:space="preserve">
+    <value>content</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_Sharing" xml:space="preserve">
+    <value>sharing</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_Appearance" xml:space="preserve">
+    <value>appearance</value>
+    <comment>In lowercase</comment>
+  </data>
+  <data name="Settings_Dev" xml:space="preserve">
+    <value>dev</value>
+    <comment>In lowercase</comment>
+  </data>
 </root>

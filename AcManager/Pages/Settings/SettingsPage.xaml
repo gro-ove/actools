@@ -1,22 +1,23 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:internal="clr-namespace:AcManager.Internal;assembly=AcManager.Internal" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}">
+        xmlns:internal="clr-namespace:AcManager.Internal;assembly=AcManager.Internal" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}">
     <Grid Style="{StaticResource ContentRoot}">
         <mui:ModernTab x:Name="Tab" Layout="List" SelectedSource="/Pages/Settings/SettingsGeneral.xaml" SaveKey="__SettingsPage.SelectedPage">
             <mui:ModernTab.Links>
-                <mui:Link DisplayName="general" Source="/Pages/Settings/SettingsGeneral.xaml" />
-                <mui:Link DisplayName="plugins" Source="/Pages/Settings/SettingsPlugins.xaml" />
-                <mui:Link DisplayName="drive" Source="/Pages/Settings/SettingsDrive.xaml" />
-                <mui:Link DisplayName="replays" Source="/Pages/Settings/SettingsReplays.xaml" IsNew="True" />
-                <mui:Link DisplayName="live" Source="/Pages/Settings/SettingsLive.xaml" />
-                <mui:Link DisplayName="online" Source="/Pages/Settings/SettingsOnline.xaml" IsEnabled="{x:Static internal:AppKeyHolder.IsAllRight}" />
-                <mui:Link DisplayName="quick switches" Source="/Pages/Settings/SettingsQuickSwitches.xaml" />
-                <mui:Link DisplayName="custom showroom" Source="/Pages/Settings/SettingsCustomShowroom.xaml" />
-                <mui:Link DisplayName="content" Source="/Pages/Settings/SettingsContent.xaml" />
-                <mui:Link DisplayName="sharing" Source="/Pages/Settings/SettingsSharing.xaml" IsNew="True" />
-                <mui:Link DisplayName="appearance" Source="/Pages/Settings/SettingsAppearance.xaml" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_General}" Source="/Pages/Settings/SettingsGeneral.xaml" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_Plugins}" Source="/Pages/Settings/SettingsPlugins.xaml" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_Drive}" Source="/Pages/Settings/SettingsDrive.xaml" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_Replays}" Source="/Pages/Settings/SettingsReplays.xaml" IsNew="True" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_Live}" Source="/Pages/Settings/SettingsLive.xaml" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_Online}" Source="/Pages/Settings/SettingsOnline.xaml"
+                        IsEnabled="{x:Static internal:AppKeyHolder.IsAllRight}" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_QuickSwitches}" Source="/Pages/Settings/SettingsQuickSwitches.xaml" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_CustomShowroom}" Source="/Pages/Settings/SettingsCustomShowroom.xaml" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_Content}" Source="/Pages/Settings/SettingsContent.xaml" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_Sharing}" Source="/Pages/Settings/SettingsSharing.xaml" IsNew="True" />
+                <mui:Link DisplayName="{x:Static g:Resources.Settings_Appearance}" Source="/Pages/Settings/SettingsAppearance.xaml" />
             </mui:ModernTab.Links>
         </mui:ModernTab>
     </Grid>

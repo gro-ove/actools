@@ -16,8 +16,8 @@ using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsVideo: ILoadableContent {
-        public class AcVideoViewModel : NotifyPropertyChanged {
-            internal AcVideoViewModel() {}
+        public class ViewModel : NotifyPropertyChanged {
+            internal ViewModel() {}
 
             public AcSettingsHolder.VideoSettings Video => AcSettingsHolder.Video;
 
@@ -52,9 +52,15 @@ namespace AcManager.Pages.AcSettings {
             PpFiltersManager.Instance.EnsureLoaded();
         }
 
+        public ViewModel Model => (ViewModel)DataContext;
+
         public void Initialize() {
+            DataContext = new ViewModel();
             InitializeComponent();
-            DataContext = new AcVideoViewModel();
+            InputBindings.AddRange(new[] {
+                new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
+                new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
+            });
         }
     }
 }

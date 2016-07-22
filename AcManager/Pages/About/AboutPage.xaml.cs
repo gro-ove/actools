@@ -23,9 +23,18 @@ namespace AcManager.Pages.About {
 
         private void Version_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             if (!SettingsHolder.Common.DeveloperMode && ++_clicks == 10 &&
-                    ModernDialog.ShowMessage("Enable developer mode? Using it might cause data corruption.", "Developer Mode", MessageBoxButton.YesNo) ==
+                    ModernDialog.ShowMessage("Enable developer mode?", "Developer Mode", MessageBoxButton.YesNo) ==
                             MessageBoxResult.Yes) {
                 SettingsHolder.Common.DeveloperMode = true;
+            }
+        }
+
+        private void ContentElement_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            if (Keyboard.Modifiers != (ModifierKeys.Alt | ModifierKeys.Control)) _clicks += 11;
+            if (!SettingsHolder.Common.MsMode && (_clicks += 99) == 990 &&
+                    ModernDialog.ShowMessage("Enable most secret mode? Using it might cause data corruption.", "Most Secret Mode", MessageBoxButton.YesNo) ==
+                            MessageBoxResult.Yes) {
+                SettingsHolder.Common.MsMode = true;
             }
         }
 

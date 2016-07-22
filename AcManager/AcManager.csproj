@@ -229,6 +229,8 @@
     <Compile Include="Pages\Dialogs\FindInformationDialog.xaml.cs">
       <DependentUpon>FindInformationDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\IQuickDriveModeControl.cs" />
+    <Compile Include="Pages\Drive\QuickDriveModeViewModel.cs" />
     <Compile Include="Pages\Drive\QuickDrive_Weekend.xaml.cs">
       <DependentUpon>QuickDrive_Weekend.xaml</DependentUpon>
     </Compile>
@@ -1089,7 +1091,10 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.ru-RU.resx">
+    <EmbeddedResource Include="Resources.it.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.ru.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

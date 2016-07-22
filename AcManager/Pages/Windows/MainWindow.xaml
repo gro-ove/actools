@@ -1,14 +1,13 @@
 ﻿<mui:ModernWindow x:Class="AcManager.Pages.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager"
-        xmlns:Controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" Title="{x:Static g:Resources.Main_Title}"
+        xmlns:windows="clr-namespace:AcManager.Pages.Windows" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Title="{x:Static g:Resources.Main_Title}"
         IsTitleVisible="True" MinWidth="800" MinHeight="640" Width="800" Height="720" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
-        Drop="MainWindow_OnDrop" DragEnter="MainWindow_OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="MainWindow_OnLoaded"
-        Unloaded="MainWindow_OnUnloaded" Closed="MainWindow_OnClosed" MouseRightButtonUp="MainWindow_OnMouseRightButtonDown"
-        PreviewMouseRightButtonUp="MainWindow_OnPreviewMouseRightButtonUp" PreviewMouseRightButtonDown="MainWindow_OnPreviewMouseRightButtonDown"
-        d:DataContext="{d:DesignInstance windows:MainWindow+MainWindowViewModel}" AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}"
-        AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow" LocationAndSizeKey="MainWindow_LS" x:Name="Window">
+        Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closed="OnClosed"
+        MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
+        PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}"
+        AppUpdateAvailable="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" AppUpdateCommand="{Binding AppUpdater.FinishUpdateCommand}" SaveKey="MainWindow"
+        LocationAndSizeKey="MainWindow_LS" x:Name="Window">
     <mui:ModernWindow.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
     </mui:ModernWindow.Resources>
@@ -100,8 +99,22 @@
         <mui:TitleLink DisplayName="enter key" Source="cmd://enterkey" IsAccented="True" />
     </mui:ModernWindow.TitleLinks>
 
-    <Popup Placement="Absolute" HorizontalOffset="{Binding ActualLeft, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
-            VerticalOffset="{Binding ActualTop, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
-            Height="{Binding ActualHeight, ElementName=Window, Converter={x:Static windows:MainWindow.PopupHeightConverter}}" x:Name="Popup" StaysOpen="False"
-            PopupAnimation="Slide" AllowsTransparency="True" />
+    <Grid>
+        <Popup Placement="Absolute" HorizontalOffset="{Binding ActualLeft, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
+                VerticalOffset="{Binding ActualTop, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
+                Height="{Binding ActualHeight, ElementName=Window, Converter={x:Static windows:MainWindow.PopupHeightConverter}}" x:Name="Popup"
+                StaysOpen="False" PopupAnimation="Slide" AllowsTransparency="True" />
+        <Popup Placement="Absolute"
+                HorizontalOffset="{Binding ActualRight, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=-140}"
+                VerticalOffset="{Binding ActualBottom, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=-100}" Height="80"
+                Width="120" x:Name="QuickSwitchesNotification" StaysOpen="True" PopupAnimation="Fade" AllowsTransparency="True">
+            <Border Background="{DynamicResource WindowBackground}" Padding="12" CornerRadius="0" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1">
+                <DockPanel>
+                    <TextBlock x:Name="QuickSwitchesNotificationText" DockPanel.Dock="Bottom" Style="{StaticResource Label}" Margin="0 4 0 0" HorizontalAlignment="Center" />
+                    <Path x:Name="QuickSwitchesNotificationIcon" Width="24" Height="24" Fill="{DynamicResource ButtonText}" Stretch="Uniform"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                </DockPanel>
+            </Border>
+        </Popup>
+    </Grid>
 </mui:ModernWindow>

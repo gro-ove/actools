@@ -5,15 +5,14 @@ namespace AcManager.Pages.Settings {
     public partial class SettingsContent {
         public SettingsContent() {
             InitializeComponent();
-            DataContext = new ContentViewModel();
+            DataContext = new ViewModel();
         }
 
 
-        public class ContentViewModel
-                : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             public SettingsHolder.ContentSettings Holder => SettingsHolder.Content;
 
-            internal ContentViewModel() {}
+            internal ViewModel() {}
         }
     }
 }

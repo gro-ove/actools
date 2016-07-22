@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" Loaded="QuickDrive_Loaded" Unloaded="QuickDrive_Unloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+QuickDriveViewModel}"
+        d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
 
     <UserControl.Resources>
@@ -224,7 +224,7 @@
         </Grid>
 
         <StackPanel Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
-            <controls:UserPresetsControl Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
+            <controls:UserPresetsControl x:Name="UserPresetsControl" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
             <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="Share current settings (Ctrl+Page Up)" Content="Share" />
             <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)" Content="Go!" />
         </StackPanel>
