@@ -105,7 +105,7 @@ namespace StringBasedFilter.Parsing {
             }
 
             if (node == null) {
-                node = new FilterTreeNodeValue(buffer.ToString().Trim(), StrictMode, out s);
+                node = FilterTreeNodeValue.Create(buffer.ToString().Trim(), StrictMode, out s);
             }
 
             if (s != null) {

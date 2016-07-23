@@ -84,6 +84,7 @@ namespace AcTools.Processes {
         public abstract class BaseModeProperties : RaceIniProperties {
             public bool? Penalties = true;
             public bool? FixedSetup = false;
+            public bool? JumpStartPenalty = false;
 
             /// <summary>
             /// Session duration in minutes.
@@ -96,6 +97,7 @@ namespace AcTools.Processes {
                 raceSection.Set("DRIFT_MODE", false);
                 raceSection.Set("FIXED_SETUP", FixedSetup);
                 raceSection.Set("PENALTIES", Penalties);
+                raceSection.Set("JUMP_START_PENALTY", JumpStartPenalty);
             }
 
             protected void SetGhostCar(IniFile file, bool? ghostCarEnabled, double? ghostCarAdvantage = null) {
@@ -243,6 +245,7 @@ namespace AcTools.Processes {
                 section.Set("RACE_LAPS", RaceLaps);
                 section.Set("FIXED_SETUP", FixedSetup);
                 section.Set("PENALTIES", Penalties);
+                section.Set("JUMP_START_PENALTY", JumpStartPenalty);
             }
 
             protected virtual void SetSessions(IniFile file) {

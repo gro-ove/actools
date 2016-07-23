@@ -125,7 +125,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private IEnumerable<string> FilterList(IEnumerable<string> list) {
-            return list.Select(x => x.Trim()).Where(x => x.Length > 0 && !x.StartsWith("#"));
+            return list.Select(x => x.Trim()).Where(x => x.Length > 0 && !x.StartsWith(@"#"));
         }
 
         private IEnumerable<string> LoadAndFilterList(string filename) {

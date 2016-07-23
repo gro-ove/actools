@@ -6,6 +6,7 @@
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:g="clr-namespace:AcManager"
+        xmlns:helpers1="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools"
         mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsVideo+ViewModel}">
     <UserControl.Resources>
@@ -139,7 +140,7 @@
                     </DockPanel>
 
                     <DockPanel>
-                        <mui:ValueLabel Value="{Binding Video.MotionBlur, Converter={x:Static helpers:AcSettingsHolder.ZeroToOffConverter}}"
+                        <mui:ValueLabel Value="{Binding Video.MotionBlur, Converter={x:Static helpers1:AcSettingsHolder.ZeroToOffConverter}}"
                                 Mode="IntegerOrZeroLabel" Content="Motion blur" />
                         <Slider Minimum="0" Maximum="12" Value="{Binding Video.MotionBlur}" TickFrequency="2" TickPlacement="BottomRight" />
                     </DockPanel>
@@ -215,7 +216,7 @@
 
                 <DockPanel ToolTip="Maximum frame latency; auto — defined by videocard settings">
                     <mui:ValueLabel
-                            Value="{Binding Graphics.MaximumFrameLatency, Converter={x:Static helpers:AcSettingsHolder.ZeroToOffConverter}, ConverterParameter='Auto'}"
+                            Value="{Binding Graphics.MaximumFrameLatency, Converter={x:Static helpers1:AcSettingsHolder.ZeroToOffConverter}, ConverterParameter='Auto'}"
                             Mode="IntegerOrZeroLabel" Content="Max. frame latency" />
                     <Slider Minimum="0" Maximum="6" Value="{Binding Graphics.MaximumFrameLatency}" TickFrequency="1" TickPlacement="BottomRight" />
                 </DockPanel>

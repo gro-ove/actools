@@ -11,23 +11,23 @@ using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsControls : IAcControlsConflictResolver {
-        private AcControlsViewModel Model => (AcControlsViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         public AcSettingsControls() {
             AcSettingsHolder.Controls.ConflictResolver = this;
 
-            DataContext = new AcControlsViewModel();
+            DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(Model.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
@@ -41,8 +41,8 @@ namespace AcManager.Pages.AcSettings {
             DetectedControllers.Visibility = ActualWidth > 640 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public class AcControlsViewModel : NotifyPropertyChanged {
-            internal AcControlsViewModel() {}
+        public class ViewModel : NotifyPropertyChanged {
+            internal ViewModel() {}
 
             private RelayCommand _saveCommand;
 
@@ -110,9 +110,9 @@ namespace AcManager.Pages.AcSettings {
                 }
             }
 
-            public AcSettingsHolder.ControlsSettings Controls => AcSettingsHolder.Controls;
+            public ControlsSettings Controls => AcSettingsHolder.Controls;
 
-            public AcSettingsHolder.SystemSettings System => AcSettingsHolder.System;
+            public SystemSettings System => AcSettingsHolder.System;
         }
 
         private void AcSettingsControls_OnSizeChanged(object sender, SizeChangedEventArgs e) {

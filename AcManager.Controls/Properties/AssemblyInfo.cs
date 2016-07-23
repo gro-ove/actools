@@ -1,18 +1,18 @@
 ﻿using System.Reflection;
 using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Markup;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AcManagerControls")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("AcManager.Controls")]
+[assembly: AssemblyDescription("Controls library for Content Manager")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AcManagerControls")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("AcClub")]
+[assembly: AssemblyProduct("AcManager.Controls")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -40,7 +40,6 @@ using System.Windows;
                                       // app, or any theme specific resource dictionaries)
 )]
 
-
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
@@ -53,3 +52,16 @@ using System.Windows;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Converters")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.CustomShowroom")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Dialogs")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Helpers")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Presentation")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.QuickSwitches")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Services")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.UserControls")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.ViewModels")]
+[assembly: XmlnsPrefix("http://acstuff.ru/app/controls", "c")]
+
+[assembly: NeutralResourcesLanguage("en-US")]

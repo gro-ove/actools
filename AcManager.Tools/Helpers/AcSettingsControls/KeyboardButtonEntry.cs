@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 using JetBrains.Annotations;

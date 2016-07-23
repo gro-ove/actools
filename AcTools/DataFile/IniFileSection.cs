@@ -47,12 +47,12 @@ namespace AcTools.DataFile {
             }
         }
 
-        [CanBeNull]
+        [CanBeNull, Pure]
         public string Get([NotNull, LocalizationRequired(false)] string key) {
             return ContainsKey(key) ? base[key] : null;
         }
 
-        [CanBeNull]
+        [CanBeNull, Pure]
         public string Get([NotNull, LocalizationRequired(false)] string key, [Localizable(false)] string defaultValue) {
             return ContainsKey(key) ? base[key] : defaultValue;
         }
@@ -60,19 +60,21 @@ namespace AcTools.DataFile {
         /// <summary>
         /// Warning! Throws exception if value is missing!
         /// </summary>
-        [Obsolete]
+        [Obsolete, Pure]
         public bool GetBool([NotNull, LocalizationRequired(false)] string key) {
             if (!ContainsKey(key)) throw new Exception("Value is missing!");
             var value = Get(key);
             return value == "1";
         }
 
+        [Pure]
         public bool GetBool([NotNull, LocalizationRequired(false)] string key, bool defaultValue) {
             if (!ContainsKey(key)) return defaultValue;
             var value = Get(key);
             return value == "1";
         }
 
+        [Pure]
         public bool? GetBoolNullable([NotNull, LocalizationRequired(false)] string key) {
             if (!ContainsKey(key)) return null;
             var value = Get(key);
@@ -80,12 +82,12 @@ namespace AcTools.DataFile {
                     string.Equals(value, "yes", StringComparison.OrdinalIgnoreCase) || string.Equals(value, "y", StringComparison.OrdinalIgnoreCase);
         }
 
-        [NotNull]
+        [NotNull, Pure]
         public string[] GetStrings([NotNull, LocalizationRequired(false)] string key, char delimiter = ',') {
             return Get(key)?.Split(delimiter).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray() ?? new string[0];
         }
 
-        [NotNull]
+        [NotNull, Pure]
         public double[] GetVector3([NotNull, LocalizationRequired(false)] string key) {
             var result = GetStrings(key).Select(x => FlexibleParser.ParseDouble(x, 0d)).ToArray();
             return result.Length == 3 ? result : new double[3];
@@ -94,15 +96,17 @@ namespace AcTools.DataFile {
         /// <summary>
         /// Warning! Throws exception if value is missing!
         /// </summary>
-        [Obsolete]
+        [Obsolete, Pure]
         public double GetDouble([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.ParseDouble(Get(key));
         }
 
+        [Pure]
         public double? GetDoubleNullable([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.TryParseDouble(Get(key));
         }
 
+        [Pure]
         public double GetDouble([NotNull, LocalizationRequired(false)] string key, double defaultValue) {
             return FlexibleParser.ParseDouble(Get(key), defaultValue);
         }
@@ -110,15 +114,17 @@ namespace AcTools.DataFile {
         /// <summary>
         /// Warning! Throws exception if value is missing!
         /// </summary>
-        [Obsolete]
+        [Obsolete, Pure]
         public int GetInt([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.ParseInt(Get(key));
         }
 
+        [Pure]
         public int? GetIntNullable([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.TryParseInt(Get(key));
         }
 
+        [Pure]
         public int GetInt([NotNull, LocalizationRequired(false)] string key, int defaultValue) {
             return FlexibleParser.TryParseInt(Get(key)) ?? defaultValue;
         }
@@ -126,15 +132,17 @@ namespace AcTools.DataFile {
         /// <summary>
         /// Warning! Throws exception if value is missing!
         /// </summary>
-        [Obsolete]
+        [Obsolete, Pure]
         public long GetLong([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.ParseLong(Get(key));
         }
 
+        [Pure]
         public long? GetLongNullable([NotNull, LocalizationRequired(false)] string key) {
             return FlexibleParser.TryParseLong(Get(key));
         }
 
+        [Pure]
         public long GetLong([NotNull, LocalizationRequired(false)] string key, int defaultValue) {
             return FlexibleParser.TryParseLong(Get(key)) ?? defaultValue;
         }
@@ -142,7 +150,7 @@ namespace AcTools.DataFile {
         /// <summary>
         /// Warning! Throws exception if value is missing!
         /// </summary>
-        [Obsolete]
+        [Obsolete, Pure]
         public T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
@@ -152,6 +160,7 @@ namespace AcTools.DataFile {
             return (T)Enum.Parse(typeof(T), value ?? "", ignoreCase);
         }
 
+        [Pure]
         public T? GetEnumNullable<T>([NotNull, LocalizationRequired(false)] string key, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
@@ -161,6 +170,7 @@ namespace AcTools.DataFile {
             return Enum.TryParse(Get(key), ignoreCase, out result) ? result : (T?)null;
         }
 
+        [Pure]
         public T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue, bool ignoreCase = true) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");
@@ -170,6 +180,7 @@ namespace AcTools.DataFile {
             return Enum.TryParse(Get(key), ignoreCase, out result) ? result : defaultValue;
         }
 
+        [Pure]
         public T GetIntEnum<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue) where T : struct, IConvertible {
             if (!typeof(T).IsEnum) {
                 throw new ArgumentException("T must be an enumerated type");

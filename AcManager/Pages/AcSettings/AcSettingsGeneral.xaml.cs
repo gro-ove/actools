@@ -1,4 +1,5 @@
 ﻿using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.AcSettings {
@@ -11,9 +12,9 @@ namespace AcManager.Pages.AcSettings {
         public class AcGeneralViewModel : NotifyPropertyChanged {
             internal AcGeneralViewModel() { }
 
-            public AcSettingsHolder.ExposureSettings Exposure => AcSettingsHolder.Exposure;
+            public ExposureSettings Exposure => AcSettingsHolder.Exposure;
 
-            public AcSettingsHolder.ReplaySettings Replay => AcSettingsHolder.Replay;
+            public ReplaySettings Replay => AcSettingsHolder.Replay;
         }
     }
 }

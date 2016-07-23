@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
@@ -89,17 +90,17 @@ namespace AcManager.Controls.Helpers {
             }
         }
 
-        private AcSettingsHolder.ControlsSettings Controls => AcSettingsHolder.Controls;
+        private ControlsSettings Controls => AcSettingsHolder.Controls;
 
         private Task<List<PresetEntry>> ScanAsync([Localizable(false)] string sub) {
             var directory = Path.Combine(Controls.PresetsDirectory, sub);
-            return Task.Run(() => FileUtils.GetFiles(directory, @"*" + AcSettingsHolder.ControlsSettings.PresetExtension).Select(x => new PresetEntry(x)).ToList());
+            return Task.Run(() => FileUtils.GetFiles(directory, @"*" + ControlsSettings.PresetExtension).Select(x => new PresetEntry(x)).ToList());
         }
 
         private MenuItem Rebuild(string header, [Localizable(false)] string sub, IEnumerable<PresetEntry> presets) {
             var result = new MenuItem { Header = header };
             var directory = Path.Combine(Controls.PresetsDirectory, sub);
-            foreach (var item in UserPresetsControl.GroupPresets(presets, directory, ClickHandler, this, AcSettingsHolder.ControlsSettings.PresetExtension)) {
+            foreach (var item in UserPresetsControl.GroupPresets(presets, directory, ClickHandler, this, ControlsSettings.PresetExtension)) {
                 result.Items.Add(item);
             }
             return result;
@@ -164,11 +165,11 @@ namespace AcManager.Controls.Helpers {
             try {
                 Presets.Clear();
 
-                _builtInPresets = await ScanAsync(AcSettingsHolder.ControlsSettings.SubBuiltInPresets);
-                _userPresets = await ScanAsync(AcSettingsHolder.ControlsSettings.SubUserPresets);
+                _builtInPresets = await ScanAsync(ControlsSettings.SubBuiltInPresets);
+                _userPresets = await ScanAsync(ControlsSettings.SubUserPresets);
 
-                Presets.Add(Rebuild(ControlsStrings.Controls_BuiltInPresets, AcSettingsHolder.ControlsSettings.SubBuiltInPresets, _builtInPresets));
-                Presets.Add(Rebuild(ControlsStrings.Controls_UserPresets, AcSettingsHolder.ControlsSettings.SubUserPresets, _userPresets));
+                Presets.Add(Rebuild(ControlsStrings.Controls_BuiltInPresets, ControlsSettings.SubBuiltInPresets, _builtInPresets));
+                Presets.Add(Rebuild(ControlsStrings.Controls_UserPresets, ControlsSettings.SubUserPresets, _userPresets));
                 PresetsReady = true;
             } catch (Exception e) {
                 Logging.Warning("RebuildPresetsList() exception: " + e);

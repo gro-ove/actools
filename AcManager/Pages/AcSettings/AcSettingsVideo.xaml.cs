@@ -9,6 +9,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Internal;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using FirstFloor.ModernUI.Presentation;
@@ -19,11 +20,11 @@ namespace AcManager.Pages.AcSettings {
         public class ViewModel : NotifyPropertyChanged {
             internal ViewModel() {}
 
-            public AcSettingsHolder.VideoSettings Video => AcSettingsHolder.Video;
+            public VideoSettings Video => AcSettingsHolder.Video;
 
-            public AcSettingsHolder.OculusSettings Oculus => AcSettingsHolder.Oculus;
+            public OculusSettings Oculus => AcSettingsHolder.Oculus;
 
-            public AcSettingsHolder.GraphicsSettings Graphics => AcSettingsHolder.Graphics;
+            public GraphicsSettings Graphics => AcSettingsHolder.Graphics;
 
             public IUserPresetable Presets => AcSettingsHolder.VideoPresets;
 

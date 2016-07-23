@@ -337,7 +337,7 @@
   <data name="Online_CannotLoadData" xml:space="preserve">
     <value>Impossibile caricare il data</value>
   </data>
-  <data name="Online_CannotLoadData_Commentary" xml:space="preserve">
+  <data name="Common_MakeSureInternetWorks" xml:space="preserve">
     <value>Assicurarsi che la connessione internet sia attiva e funzionante.</value>
   </data>
   <data name="Online_CannotParseAddress" xml:space="preserve">
@@ -762,7 +762,7 @@
   <data name="Windows_Kn5Commentary" xml:space="preserve">
     <value>modello KN5</value>
   </data>
-  <data name="Windows_AcReplayCommentary" xml:space="preserve">
+  <data name="Common_AcReplay" xml:space="preserve">
     <value>AC replay</value>
   </data>
   <data name="Common_Disabled" xml:space="preserve">

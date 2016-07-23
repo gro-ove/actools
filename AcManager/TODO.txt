@@ -461,6 +461,12 @@ done:
             + option to disable reading
             + sharing
             × length in minutes
+        + weather
+            + filtering
+            + testing?
+            + sharing
+            + editing
+            + base properties?
     + color picker
         + additinal switchable schemes
         + pick color from screen
@@ -492,6 +498,8 @@ done:
         + transparent switching
     + official starter
     + remember track's layout
+    + weather: test button
+    + optional auto-change brand badge
 
 fixme:
     - notifypropertychanged for commands
@@ -503,7 +511,6 @@ fixme:
     - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
     - race: last position isn't fixed enough
     - race: something's wrong with the laps number
-    - race: last position vs nth position (also last)
     - are all async requests killed by timeout?
     - practice: gold medals
     - SRS: three minutes instead of five
@@ -513,14 +520,26 @@ fixme:
     - fix brands list (removed brands)
 
 todo:
+    - include “dev apps” option to apps presets
+        - promixity indicator as well?
+
     - use Escape, Ctrl+W and Ctrl+F4 to exit from some dialogs
     - add AC credits (and version?)
     - shape with triangle at right bottom (audi r8)
     - change "Author:" to "Version:" or "URL:" if author is missing
 
+    - convert BMP to JPG automatically
+        + for races and replays
+        - for showroom as well
+        - don't forget about some places where BMP is needed!
+            + track & weather previews
+            - showroom previews
+            - car previews
+
     - open new links in find information dialog in same tab
-    - weather: test button
     - managers: loading progress
+    - more informative online errors
+        - try to guess if steam id is wrong
 
     + move culture initialization to EntryPoint
     - make project localizable
@@ -531,7 +550,7 @@ todo:
         - main project
             + main window
             + settings
-            - selected
+            + selected
             - miscellaneous & lists
             - drive
             - dialogs
@@ -588,8 +607,8 @@ todo:
 
     > proper sharing
         > special types:
+            + weather
             - replays?
-            - weather?
         - deleting shared
 
     > ac options
@@ -627,13 +646,13 @@ todo:
         + online
             + custom sorting
             + flag fitting
-            - booking
+            - booking!
             - favorites
             - periodic refreshing of all servers 
             - periodic refreshing of selected server
-            - list all cars
             - keyboard shortcuts
             - login as admin?
+            - list all cars?
         - test and fix for AcManager content autoupdating feature
             - handle obsolete!
         - challenges
@@ -646,17 +665,17 @@ todo:
             + quickly switchable controls configs?
             - specially syncronized steering wheel
         - race results: total time
-        - SRS
+        + SRS
             + built-in browser
             + view even properties
             + custom style
             + time counter
-            ? start the race
-            - quit
-            - set to limited only for now
-            - notifications about coming race
-            - update status in background
+            + quit
+            + start the race
+            + notifications about coming race
+            - update status in background?
             - some widget?
+            × set to limited only for now
 
     + go buttons keyboard shortcut
         + quick drive
@@ -734,14 +753,6 @@ todo:
 
     - favorites
 
-    > additional section “miscellaneous”
-        > weather
-            + filtering
-            - testing?
-            × sharing
-            × editing
-            × base properties?
-
     > screenshots tab
         - find a way to optimize previews loading!
         - cache for tiling virtualizing panel
@@ -768,7 +779,8 @@ later:
     - use bgr0X.jpg for dynamic background
 
     - improve filters
-        - make them truly superb just by converting “car.weight>800” to “car(weight>800)”
+        + make them truly superb just by converting “car.weight>800” to “car(weight>800)”
+        + and parse #tag as tag:tag
         - also, don't forget to add option to use regular expressions or exact value
         - and replace brand filters by exact value
 
@@ -849,7 +861,6 @@ later:
         - sync with OV1?
         - or maybe replace OV1 with something similar self-written?
 
-    - optional auto-change brand badge
     - optional brand-in-name (and optional brand-out-name)?
 
     - hud configuration editor (apps tab?)

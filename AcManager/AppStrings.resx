@@ -1487,9 +1487,6 @@ Author: [b]{3}[/b]</value>
     <value>Create JSON-file</value>
     <comment>For skin</comment>
   </data>
-  <data name="Toolbar_UpdatePreview" xml:space="preserve">
-    <value>Update Preview</value>
-  </data>
   <data name="Common_Go" xml:space="preserve">
     <value>Go!</value>
   </data>
@@ -1568,5 +1565,234 @@ Author: [b]{3}[/b]</value>
   </data>
   <data name="AcObject_AppActivated" xml:space="preserve">
     <value>_Activated</value>
+  </data>
+  <data name="Toolbar_Rename_AppTooltip" xml:space="preserve">
+    <value>Rename app according to the new name (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Play" xml:space="preserve">
+    <value>Play</value>
+    <comment>For replay</comment>
+  </data>
+  <data name="Toolbar_Play_Tooltip" xml:space="preserve">
+    <value>Run replay (Ctrl+G)</value>
+  </data>
+  <data name="AcObject_DateLabel" xml:space="preserve">
+    <value>Date:</value>
+  </data>
+  <data name="AcObject_SizeLabel" xml:space="preserve">
+    <value>Size:</value>
+  </data>
+  <data name="AcObject_DriverNameLabel" xml:space="preserve">
+    <value>Driver Name:</value>
+  </data>
+  <data name="AcObject_WeatherLabel" xml:space="preserve">
+    <value>Weather:</value>
+  </data>
+  <data name="Replay_CannotShare" xml:space="preserve">
+    <value>Can’t share replay</value>
+  </data>
+  <data name="Replay_DefaultUploadedName" xml:space="preserve">
+    <value>AC Replay</value>
+  </data>
+  <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
+    <value>Open showroom’s folder (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
+    <value>Create New Showroom</value>
+  </data>
+  <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
+    <value>Create new showroom from existing panorama (Ctrl+N)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
+    <value>Update showroom’s preview (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_TurnOffSound" xml:space="preserve">
+    <value>Turn Off Sound</value>
+  </data>
+  <data name="Toolbar_TurnOnSound" xml:space="preserve">
+    <value>Turn On Sound</value>
+  </data>
+  <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
+    <value>Disable sound (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
+    <value>Enable sound (Ctrl+I)</value>
+  </data>
+  <data name="Common_ShootingCancelled" xml:space="preserve">
+    <value>Shooting cancelled</value>
+  </data>
+  <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
+    <value>Can’t update showroom’s preview</value>
+  </data>
+  <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
+    <value>Use track in a Quick Drive session (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
+    <value>Find information about track (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_CopyValues" xml:space="preserve">
+    <value>Copy Values</value>
+  </data>
+  <data name="Toolbar_CopyValues_Tooltip" xml:space="preserve">
+    <value>Copy values to other layouts</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_TrackTooltip" xml:space="preserve">
+    <value>Update track’s preview (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
+    <value>Without Shooting</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
+    <value>Just select existing image</value>
+  </data>
+  <data name="Toolbar_UpdateMap" xml:space="preserve">
+    <value>Update Map</value>
+  </data>
+  <data name="AcObject_TrackLayoutNameLabel" xml:space="preserve">
+    <value>Layout Name:</value>
+  </data>
+  <data name="Filter_ByCity" xml:space="preserve">
+    <value>Filter By City</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>City:</value>
+  </data>
+  <data name="AcObject_GeoTagsLabel" xml:space="preserve">
+    <value>Geo Tags:</value>
+  </data>
+  <data name="Toolbar_EditMode" xml:space="preserve">
+    <value>Edit Mode</value>
+  </data>
+  <data name="Toolbar_DisableEditMode" xml:space="preserve">
+    <value>Disable Edit Mode</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
+    <value>Update weather’s preview (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_ChangeId_WeatherTooltip" xml:space="preserve">
+    <value>Change weather’s ID (Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Common_Test_WeatherTooltip" xml:space="preserve">
+    <value>Test weather on track (Ctrl+G)</value>
+  </data>
+  <data name="Common_Share_WeatherTooltip" xml:space="preserve">
+    <value>Share weather (Ctrl+Page Up)</value>
+  </data>
+  <data name="AcObject_IdLabel" xml:space="preserve">
+    <value>ID:</value>
+  </data>
+  <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
+    <value>Use as:</value>
+  </data>
+  <data name="Weather_SeemsEmpty" xml:space="preserve">
+    <value>Seems empty?</value>
+  </data>
+  <data name="Weather_SeemsEmpty_Commentary" xml:space="preserve">
+    <value>Switch to Edit Mode if you want to modify other weather's parameters.</value>
+  </data>
+  <data name="WeatherEdit_Headlights" xml:space="preserve">
+    <value>Turn on headlights</value>
+  </data>
+  <data name="WeatherEdit_ViewReadmeHeader" xml:space="preserve">
+    <value>View “readme__weather.txt”</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient_Tooltip" xml:space="preserve">
+    <value>Creates a variation of the asphalt temperature relative to the weather, ambient temperature and time. More information in “readme_weather.txt”</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient" xml:space="preserve">
+    <value>Temp. coefficient</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientTesting" xml:space="preserve">
+    <value>Temperature coefficient testing:</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
+    <value>Air temp.</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientRoadTemperatureFormat" xml:space="preserve">
+    <value>Road temperature: {0:F1} °C</value>
+  </data>
+  <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
+    <value>Clouds:</value>
+  </data>
+  <data name="WeatherEdit_Cover" xml:space="preserve">
+    <value>Cover</value>
+  </data>
+  <data name="WeatherEdit_CutOff" xml:space="preserve">
+    <value>Cut-off</value>
+  </data>
+  <data name="WeatherEdit_Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="WeatherEdit_FogHeader" xml:space="preserve">
+    <value>Fog:</value>
+  </data>
+  <data name="WeatherEdit_ColorLabel" xml:space="preserve">
+    <value>Color:</value>
+  </data>
+  <data name="WeatherEdit_Brightness" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="WeatherEdit_Blend" xml:space="preserve">
+    <value>Blend</value>
+  </data>
+  <data name="WeatherEdit_Distance" xml:space="preserve">
+    <value>Distance</value>
+  </data>
+  <data name="WeatherEdit_AngleGamma" xml:space="preserve">
+    <value>Angle gamma</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
+    <value>HDR-off mult.</value>
+  </data>
+  <data name="WeatherEdit_Multipler" xml:space="preserve">
+    <value>Multipler</value>
+  </data>
+  <data name="Toolbar_EditMode_Tooltip" xml:space="preserve">
+    <value>Switch to Edit Mode (Ctrl+E)</value>
+  </data>
+  <data name="Toolbar_DisableEditMode_Tooltip" xml:space="preserve">
+    <value>Switch from Edit Mode (Ctrl+E)</value>
+  </data>
+  <data name="WeatherEdit_ColorCurvesHeader" xml:space="preserve">
+    <value>Color curves:</value>
+  </data>
+  <data name="WeatherEdit_AdditionalHeader" xml:space="preserve">
+    <value>Additional:</value>
+  </data>
+  <data name="WeatherEdit_Cover_Tooltip" xml:space="preserve">
+    <value>Regulates clouds transparency</value>
+  </data>
+  <data name="WeatherEdit_CutOff_Tooltip" xml:space="preserve">
+    <value>Regulates other colors influencies on the cloud:
+ • [b]0%:[/b] just the color effects on the clouds are considered;
+ • [b]50%:[/b] 50% of cloud color and 50% of effects;
+ • [b]100%:[/b] just the color of the cloud is considered</value>
+  </data>
+  <data name="WeatherEdit_Color_Tooltip" xml:space="preserve">
+    <value>Base color; the sunlight, light color and ambient will be added to this</value>
+  </data>
+  <data name="WeatherEdit_Width_Tooltip" xml:space="preserve">
+    <value>Width of the quad</value>
+  </data>
+  <data name="WeatherEdit_Height_Tooltip" xml:space="preserve">
+    <value>Height of the quad</value>
+  </data>
+  <data name="WeatherEdit_Radius_Tooltip" xml:space="preserve">
+    <value>Distance from the center of the skybox to the quad</value>
+  </data>
+  <data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
+    <value>Number of clouds</value>
+  </data>
+  <data name="WeatherEdit_SpeedMultipler_Tooltip" xml:space="preserve">
+    <value>Base speed multipler</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler_Tooltip" xml:space="preserve">
+    <value>Used when HDR is disabled</value>
+  </data>
+  <data name="Replay_SharedReadMe" xml:space="preserve">
+    <value>{0}
+
+To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
+    <comment>0 — replay description, 1 — file name</comment>
   </data>
 </root>

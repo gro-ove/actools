@@ -56,9 +56,9 @@ namespace AcManager.Pages.Drive {
             set { DataContext = value; }
         }
 
-        public QuickDrive_RaceViewModel ActualModel => (QuickDrive_RaceViewModel)DataContext;
+        public ViewModel ActualModel => (ViewModel)DataContext;
 
-        public class QuickDrive_RaceViewModel : QuickDriveModeViewModel, IComparer {
+        public class ViewModel : QuickDriveModeViewModel, IComparer {
             private bool _penalties;
 
             public bool Penalties {
@@ -68,6 +68,17 @@ namespace AcManager.Pages.Drive {
                     _penalties = value;
                     OnPropertyChanged();
                     SaveLater();
+                }
+            }
+
+            private bool _jumpStartPenalty;
+
+            public bool JumpStartPenalty {
+                get { return _jumpStartPenalty; }
+                set {
+                    if (Equals(value, _jumpStartPenalty)) return;
+                    _jumpStartPenalty = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -257,7 +268,7 @@ namespace AcManager.Pages.Drive {
             public int OpponentsNumberLimit => TrackPitsNumber - 1;
 
             protected class SaveableData {
-                public bool? Penalties, AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse;
+                public bool? Penalties, AiLevelFixed, AiLevelArrangeRandomly, JumpStartPenalty, AiLevelArrangeReverse;
                 public int? AiLevel, AiLevelMin, LapsNumber, OpponentsNumber, StartingPosition;
                 public string GridTypeId, OpponentsCarsFilter;
                 public string[] ManualList;
@@ -265,6 +276,7 @@ namespace AcManager.Pages.Drive {
 
             protected virtual void Save(SaveableData result) {
                 result.Penalties = Penalties;
+                result.JumpStartPenalty = JumpStartPenalty;
                 result.AiLevelFixed = AiLevelFixed;
                 result.AiLevelArrangeRandomly = AiLevelArrangeRandomly;
                 result.AiLevelArrangeReverse = AiLevelArrangeReverse;
@@ -280,6 +292,7 @@ namespace AcManager.Pages.Drive {
 
             protected virtual void Load(SaveableData o) {
                 Penalties = o.Penalties ?? true;
+                JumpStartPenalty = o.JumpStartPenalty ?? false;
                 AiLevelFixed = o.AiLevelFixed ?? true;
                 AiLevelArrangeRandomly = o.AiLevelArrangeRandomly ?? true;
                 AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? false;
@@ -298,6 +311,7 @@ namespace AcManager.Pages.Drive {
 
             protected virtual void Reset() {
                 Penalties = true;
+                JumpStartPenalty = false;
                 AiLevelFixed = true;
                 AiLevelArrangeRandomly = true;
                 AiLevelArrangeReverse = false;
@@ -321,7 +335,7 @@ namespace AcManager.Pages.Drive {
                 }, Load, Reset);
             }
 
-            public QuickDrive_RaceViewModel(bool initialize = true) {
+            public ViewModel(bool initialize = true) {
                 OpponentsCars = new BetterObservableCollection<CarObject>();
                 OpponentsCarsView = new BetterListCollectionView(OpponentsCars) { CustomSort = this };
 
@@ -341,27 +355,27 @@ namespace AcManager.Pages.Drive {
                 public static readonly GridType FilteredBy = new GridType("Filtered by…");
                 public static readonly GridType Manual = new GridType("Manual");
 
-                [JsonProperty(PropertyName = "id")]
+                [JsonProperty(PropertyName = @"id")]
                 private string _id;
 
                 public string Id => _id ?? (_id = AcStringValues.IdFromName(DisplayName));
 
-                [JsonProperty(PropertyName = "name")]
+                [JsonProperty(PropertyName = @"name")]
                 private readonly string _displayName;
 
                 public string DisplayName => _displayName;
 
-                [JsonProperty(PropertyName = "filter")]
+                [JsonProperty(PropertyName = @"filter")]
                 private readonly string _filter;
 
                 public string Filter => _filter;
 
-                [JsonProperty(PropertyName = "script")]
+                [JsonProperty(PropertyName = @"script")]
                 private readonly string _script;
 
                 public string Script => _script;
 
-                [JsonProperty(PropertyName = "test")]
+                [JsonProperty(PropertyName = @"test")]
                 private readonly bool _test;
 
                 public bool Test => _test;
@@ -663,6 +677,7 @@ namespace AcManager.Pages.Drive {
                 return new Game.RaceProperties {
                     AiLevel = AiLevelFixed ? AiLevel : 100,
                     Penalties = Penalties,
+                    JumpStartPenalty = JumpStartPenalty,
                     StartingPosition = StartingPosition == 0 ? MathUtils.Random(1, OpponentsNumber + 2) : StartingPosition,
                     RaceLaps = LapsNumber,
                     BotCars = botCars
@@ -822,7 +837,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OpponentsCarsFilterTextBox_OnLostFocus(object sender, RoutedEventArgs e) {
-            ((QuickDrive_RaceViewModel)Model).AddOpponentsCarsFilter();
+            ((ViewModel)Model).AddOpponentsCarsFilter();
         }
     }
 }

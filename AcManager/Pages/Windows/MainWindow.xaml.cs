@@ -19,6 +19,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.About;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Managers.Plugins;

@@ -19,7 +19,7 @@
     <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="False">
         <c:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
-                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="Open showroom's folder (Ctrl+F)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" ToolTip="{x:Static g:AppStrings.Toolbar_Folder_ShowroomTooltip}"
                         Command="{Binding SelectedObject.ViewInExplorerCommand}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
@@ -27,7 +27,8 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Analyze}" IsEnabled="False" />
             </ToolBar>
             <ToolBar Band="0" BandIndex="0">
-                <Button Content="Create New Showroom" Command="{Binding CreateNewShowroomCommand}" ToolTip="Create new showroom from existing panorama (Ctrl+N)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_CreateNewShowroom}" Command="{Binding CreateNewShowroomCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_CreateNewShowroom_Tooltip}" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Disable}" Command="{Binding SelectedObject.ToggleCommand}"
@@ -41,12 +42,15 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Delete_ShowroomTooltip}" />
                 <Separator />
-                <Button Content="Update Preview" Command="{Binding UpdatePreviewCommand}" ToolTip="Update showroom's preview (Ctrl+P)" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_ShowroomTooltip}" />
             </ToolBar>
             <ToolBar Band="1" BandIndex="1" Visibility="{Binding SelectedObject.HasSound, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Button Content="Turn Off Sound" Command="{Binding SelectedObject.ToggleSoundCommand}" ToolTip="Disable sound (Ctrl+I)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_TurnOffSound}" Command="{Binding SelectedObject.ToggleSoundCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_TurnOffSound_Tooltip}"
                         Visibility="{Binding SelectedObject.SoundEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="Turn On Sound" Command="{Binding SelectedObject.ToggleSoundCommand}" ToolTip="Enable sound (Ctrl+I)"
+                <Button Content="{x:Static g:AppStrings.Toolbar_TurnOnSound}" Command="{Binding SelectedObject.ToggleSoundCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_TurnOnSound_Tooltip}"
                         Visibility="{Binding SelectedObject.SoundEnabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
             </ToolBar>
         </c:AcObjectBase.ToolBars>
@@ -94,7 +98,7 @@
                                         CommandParameter="decade" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" ToolTip="Year of production start" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" />
                         <TextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer"
                                 attached:WatermarkService.Watermark="?" />
                     </DockPanel>
@@ -107,7 +111,7 @@
                                         CommandParameter="author" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="Author, version, URL" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
                         <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" attached:WatermarkService.Watermark="?"
                                 MouseUp="VersionInfoBlock_OnMouse" />
                     </DockPanel>

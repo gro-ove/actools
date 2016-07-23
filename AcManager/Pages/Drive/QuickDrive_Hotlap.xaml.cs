@@ -1,13 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Objects;
 using AcTools.Processes;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Hotlap : IQuickDriveModeControl {
-        public class QuickDrive_HotlapViewModel : QuickDriveModeViewModel {
-            private bool _penalties, _ghostCar;
+        public class ViewModel : QuickDriveModeViewModel {
+            private bool _penalties;
 
             public bool Penalties {
                 get { return _penalties; }
@@ -18,6 +16,8 @@ namespace AcManager.Pages.Drive {
                     SaveLater();
                 }
             }
+
+            private bool _ghostCar;
 
             public bool GhostCar {
                 get { return _ghostCar; }
@@ -46,7 +46,7 @@ namespace AcManager.Pages.Drive {
                 public double GhostCarAdvantage;
             }
 
-            public QuickDrive_HotlapViewModel(bool initialize = true) {
+            public ViewModel(bool initialize = true) {
                 Saveable = new SaveHelper<SaveableData>("__QuickDrive_Hotlap", () => new SaveableData {
                     Penalties = Penalties,
                     GhostCar = GhostCar,
@@ -86,7 +86,6 @@ namespace AcManager.Pages.Drive {
 
         public QuickDrive_Hotlap() {
             InitializeComponent();
-            // DataContext = new QuickDrive_HotlapViewModel();
         }
 
         public QuickDriveModeViewModel Model {

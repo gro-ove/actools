@@ -1,4 +1,5 @@
 ﻿using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.AcSettings {
@@ -11,9 +12,9 @@ namespace AcManager.Pages.AcSettings {
         public class AcControlsViewModel : NotifyPropertyChanged {
             internal AcControlsViewModel() { }
 
-            public AcSettingsHolder.ControlsSettings Controls => AcSettingsHolder.Controls;
+            public ControlsSettings Controls => AcSettingsHolder.Controls;
 
-            public AcSettingsHolder.SystemSettings System => AcSettingsHolder.System;
+            public SystemSettings System => AcSettingsHolder.System;
         }
     }
 }

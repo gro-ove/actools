@@ -1,16 +1,17 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+using System.Resources;
 using System.Runtime.InteropServices;
+using System.Windows.Markup;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AcManager.Tools")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Tools library for Content Manager")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.Tools")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,3 +35,12 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.AcManagersNew")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.AcObjectsNew")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Data")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Managers")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Objects")]
+[assembly: XmlnsPrefix("http://acstuff.ru/app/tools", "t")]
+
+[assembly: NeutralResourcesLanguage("en-US")]

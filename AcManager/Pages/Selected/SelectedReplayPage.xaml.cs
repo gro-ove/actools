@@ -28,7 +28,7 @@ using StringBasedFilter;
 namespace AcManager.Pages.Selected {
     public partial class SelectedReplayPage : ILoadableContent, IParametrizedUriContent {
         public class ViewModel : SelectedAcObjectViewModel<ReplayObject> {
-            public ViewModel([NotNull] ReplayObject acObject) : base(acObject) {}
+            public ViewModel([NotNull] ReplayObject acObject) : base(acObject) { }
 
             private WeatherObject _weather;
 
@@ -109,11 +109,12 @@ namespace AcManager.Pages.Selected {
             /// Gets description for ReadMe.txt inside shared archive.
             /// </summary>
             /// <returns></returns>
-            [Localizable(false)]
             private string GetDescription() {
                 return Car == null
-                        ? (Track == null ? "AC replay" : $"AC replay (on {Track.DisplayName})")
-                        : (Track == null ? $"AC replay ({Car.DisplayName})" : $"AC replay ({Car.DisplayName} on {Track.DisplayName})");
+                        ? (Track == null ? ToolsStrings.Common_AcReplay : $"{ToolsStrings.Common_AcReplay} ({Track.DisplayName})")
+                        : (Track == null
+                                ? $"{ToolsStrings.Common_AcReplay} ({Car.DisplayName})"
+                                : $"{ToolsStrings.Common_AcReplay} ({Car.DisplayName}, {Track.DisplayName})");
             }
 
             private AsyncCommand _shareCommand;
@@ -135,7 +136,8 @@ namespace AcManager.Pages.Selected {
                             using (var file = new FileStream(SelectedObject.Location, FileMode.Open, FileAccess.Read, FileShare.Read))
                             using (var memory = new MemoryStream()) {
                                 using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
-                                    var readMe = $"{GetDescription()}\n\nTo play, unpack “{SelectedObject.Id}” to “…\\Documents\\Assetto Corsa\\replay”.";
+                                    var readMe = string.Format(AppStrings.Replay_SharedReadMe, GetDescription(),
+                                            SelectedObject.Id);
                                     using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(readMe))) {
                                         writer.Write(@"ReadMe.txt", stream);
                                     }
@@ -250,6 +252,8 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control))
             });
             InitializeComponent();
+
+            FancyBackgroundManager.Instance.ChangeBackground(_trackObject?.PreviewImage);
         }
     }
 }

@@ -337,7 +337,7 @@
   <data name="Online_CannotLoadData" xml:space="preserve">
     <value>Can’t load data</value>
   </data>
-  <data name="Online_CannotLoadData_Commentary" xml:space="preserve">
+  <data name="Common_MakeSureInternetWorks" xml:space="preserve">
     <value>Make sure Internet-connection works.</value>
   </data>
   <data name="Online_CannotParseAddress" xml:space="preserve">
@@ -355,7 +355,7 @@
   <data name="Online_CannotAccessServer" xml:space="preserve">
     <value>Can’t access server</value>
   </data>
-  <data name="Online_Scanning" xml:space="preserve">
+  <data name="Common_Scanning" xml:space="preserve">
     <value>Scanning…</value>
   </data>
   <data name="Online_ScanningNothingFound" xml:space="preserve">
@@ -762,7 +762,7 @@
   <data name="Windows_Kn5Commentary" xml:space="preserve">
     <value>KN5 model</value>
   </data>
-  <data name="Windows_AcReplayCommentary" xml:space="preserve">
+  <data name="Common_AcReplay" xml:space="preserve">
     <value>AC replay</value>
   </data>
   <data name="Common_Disabled" xml:space="preserve">
@@ -1239,5 +1239,26 @@
   </data>
   <data name="Common_IdIsMissing" xml:space="preserve">
     <value>ID is missing</value>
+  </data>
+  <data name="Common_CarIdIsMissing" xml:space="preserve">
+    <value>Car ID is missing</value>
+  </data>
+  <data name="Common_Height" xml:space="preserve">
+    <value>Height</value>
+  </data>
+  <data name="Common_Radius" xml:space="preserve">
+    <value>Radius</value>
+  </data>
+  <data name="Common_Number" xml:space="preserve">
+    <value>Number</value>
+  </data>
+  <data name="Common_Speed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
+    <value>Very Low</value>
   </data>
 </root>

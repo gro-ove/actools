@@ -1,17 +1,17 @@
-﻿using AcManager.Tools.Helpers;
+﻿using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsAudio {
         public AcSettingsAudio() {
             InitializeComponent();
-            DataContext = new AcAudioViewModel();
+            DataContext = new ViewModel();
         }
 
-        public class AcAudioViewModel : NotifyPropertyChanged {
-            internal AcAudioViewModel() { }
+        public class ViewModel : NotifyPropertyChanged {
+            internal ViewModel() { }
 
-            public AcSettingsHolder.AudioSettings Audio => AcSettingsHolder.Audio;
+            public AudioSettings Audio => AcSettingsHolder.Audio;
         }
     }
 }

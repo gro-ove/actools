@@ -2,7 +2,7 @@
     // Do not change numbers!
     public enum AssistState {
         Off = 0,
-        Factory = 2,
-        On = 1
+        Factory = 1,
+        On = 2
     }
 }

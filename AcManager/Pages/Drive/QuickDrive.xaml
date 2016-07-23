@@ -1,11 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.QuickDrive" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:g="clr-namespace:AcManager"
-        mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}"
+        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}"
         attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
 
     <UserControl.Resources>
@@ -105,7 +103,8 @@
 
                 <StackPanel Orientation="Vertical" Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
-                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number" Postfix=" °C">Temperature
+                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number"
+                            Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}">Temperature
                         <mui:ValueLabel.ToolTip>
                             <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{}Road temperature: {0:F1} °C" />
                         </mui:ValueLabel.ToolTip>
@@ -180,12 +179,12 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <controls:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 10" />
+                    <c:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 10" />
                     <DockPanel Grid.Row="1">
                         <Button DockPanel.Dock="Right" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp">
                             …
                             <Button.ToolTip>
-                                <controls:AssistsDescription />
+                                <c:AssistsDescription />
                             </Button.ToolTip>
                         </Button>
                         <CheckBox IsChecked="{Binding TyreBlankets}">
@@ -226,8 +225,9 @@
         </Grid>
 
         <StackPanel Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
-            <controls:UserPresetsControl x:Name="UserPresetsControl" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
-            <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="Share current settings (Ctrl+Page Up)" Content="{x:Static g:AppStrings.Common_Share}" />
+            <c:UserPresetsControl x:Name="UserPresetsControl" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
+            <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="Share current settings (Ctrl+Page Up)"
+                    Content="{x:Static g:AppStrings.Common_Share}" />
             <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)" Content="{x:Static g:AppStrings.Common_Go}" />
         </StackPanel>
     </Grid>

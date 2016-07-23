@@ -2,8 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance acSettings:AcSettingsView+AcViewViewModel}">
+             xmlns:helpers1="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools"
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance acSettings:AcSettingsView+ViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
@@ -61,7 +62,7 @@
             </DockPanel>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding CameraOnboard.HighSpeedShaking, Converter={x:Static helpers:AcSettingsHolder.ZeroToOffConverter}}"
+                <mui:ValueLabel Value="{Binding CameraOnboard.HighSpeedShaking, Converter={x:Static helpers1:AcSettingsHolder.ZeroToOffConverter}}"
                         ShowPostfix="{Binding CameraOnboard.HighSpeedShaking, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}"
                         Mode="IntegerOrZeroLabel" Postfix="%" Content="Highspeed shaking" />
                 <Slider Minimum="0" Maximum="200" Value="{Binding CameraOnboard.HighSpeedShaking}" TickFrequency="20" TickPlacement="BottomRight" />
@@ -118,7 +119,7 @@
             </CheckBox>
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding Gameplay.SteeringWheelLimit, Converter={x:Static helpers:AcSettingsHolder.ZeroToOffConverter}}"
+                <mui:ValueLabel Value="{Binding Gameplay.SteeringWheelLimit, Converter={x:Static helpers1:AcSettingsHolder.ZeroToOffConverter}}"
                         ShowPostfix="{Binding Gameplay.SteeringWheelLimit, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}"
                         Mode="IntegerOrZeroLabel" Postfix="°" ToolTip="Virtual steering wheel rotation limit" Content="Steering wheel limit" />
                 <Slider Minimum="0" Maximum="450" Value="{Binding Gameplay.SteeringWheelLimit}" TickFrequency="45" TickPlacement="BottomRight" />

@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -754,6 +754,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Very Low.
+        /// </summary>
+        public static string AcSettings_Quality_VeryLow {
+            get {
+                return ResourceManager.GetString("AcSettings_Quality_VeryLow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}×{1}, {2} Hz.
         /// </summary>
         public static string AcSettings_ResolutionFormat {
@@ -1060,6 +1069,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AC replay.
+        /// </summary>
+        public static string Common_AcReplay {
+            get {
+                return ResourceManager.GetString("Common_AcReplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t Do.
         /// </summary>
         public static string Common_CannotDo {
@@ -1105,6 +1123,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Car ID is missing.
+        /// </summary>
+        public static string Common_CarIdIsMissing {
+            get {
+                return ResourceManager.GetString("Common_CarIdIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Destination.
         /// </summary>
         public static string Common_Destination {
@@ -1128,6 +1155,15 @@ namespace AcManager.Tools {
         public static string Common_Exporting {
             get {
                 return ResourceManager.GetString("Common_Exporting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Height.
+        /// </summary>
+        public static string Common_Height {
+            get {
+                return ResourceManager.GetString("Common_Height", resourceCulture);
             }
         }
         
@@ -1186,11 +1222,29 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number.
+        /// </summary>
+        public static string Common_Number {
+            get {
+                return ResourceManager.GetString("Common_Number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Power.
         /// </summary>
         public static string Common_Power {
             get {
                 return ResourceManager.GetString("Common_Power", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radius.
+        /// </summary>
+        public static string Common_Radius {
+            get {
+                return ResourceManager.GetString("Common_Radius", resourceCulture);
             }
         }
         
@@ -1204,11 +1258,38 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scanning….
+        /// </summary>
+        public static string Common_Scanning {
+            get {
+                return ResourceManager.GetString("Common_Scanning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed.
+        /// </summary>
+        public static string Common_Speed {
+            get {
+                return ResourceManager.GetString("Common_Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Steam ID is missing.
         /// </summary>
         public static string Common_SteamIdIsMissing {
             get {
                 return ResourceManager.GetString("Common_SteamIdIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string Common_Time {
+            get {
+                return ResourceManager.GetString("Common_Time", resourceCulture);
             }
         }
         
@@ -2100,15 +2181,6 @@ namespace AcManager.Tools {
         public static string Online_GettingInformationDirectly_SecondAttempt {
             get {
                 return ResourceManager.GetString("Online_GettingInformationDirectly_SecondAttempt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scanning….
-        /// </summary>
-        public static string Online_Scanning {
-            get {
-                return ResourceManager.GetString("Online_Scanning", resourceCulture);
             }
         }
         
@@ -3336,15 +3408,6 @@ namespace AcManager.Tools {
         public static string Weather_Windy {
             get {
                 return ResourceManager.GetString("Weather_Windy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to AC replay.
-        /// </summary>
-        public static string Windows_AcReplayCommentary {
-            get {
-                return ResourceManager.GetString("Windows_AcReplayCommentary", resourceCulture);
             }
         }
         

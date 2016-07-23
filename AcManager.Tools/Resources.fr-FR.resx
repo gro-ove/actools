@@ -355,7 +355,7 @@
   <data name="Online_CannotAccessServer" xml:space="preserve">
     <value>Impossible d'accéder au serveur</value>
   </data>
-  <data name="Online_Scanning" xml:space="preserve">
+  <data name="Common_Scanning" xml:space="preserve">
     <value>Scanning…</value>
   </data>
   <data name="Online_ScanningNothingFound" xml:space="preserve">

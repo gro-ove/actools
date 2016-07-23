@@ -2,7 +2,6 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
@@ -34,6 +33,7 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
+        [CanBeNull]
         protected AcItemWrapper CurrentItem => MainList.CurrentItem as AcItemWrapper;
 
         private readonly bool _allowNonSelected;
@@ -167,7 +167,7 @@ namespace AcManager.Controls.ViewModels {
         private AcItemWrapper _testMeLater;
 
         private void RefreshFilter(AcPlaceholderNew obj) {
-            if (CurrentItem.Value == obj) {
+            if (CurrentItem?.Value == obj) {
                 _testMeLater = CurrentItem;
                 return;
             }

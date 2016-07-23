@@ -31,7 +31,7 @@ namespace AcManager.Tools.Managers.Online {
                 return data;
             }
                 
-            throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Online_CannotLoadData_Commentary);
+            throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
         }
 
         protected override async Task<IEnumerable<AcPlaceholderNew>> ScanInnerAsync() {
@@ -48,7 +48,7 @@ namespace AcManager.Tools.Managers.Online {
                 return data;
             }
 
-            throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Online_CannotLoadData_Commentary);
+            throw new InformativeException(ToolsStrings.Online_CannotLoadData, ToolsStrings.Common_MakeSureInternetWorks);
         }
     }
 }

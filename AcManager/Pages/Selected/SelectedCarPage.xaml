@@ -243,21 +243,20 @@
 
                     <!-- third row -->
                     <DockPanel Grid.Row="2" Grid.Column="0">
+                        <DockPanel.ToolTip>
+                            <ToolTip
+                                    Visibility="{Binding SelectedObject.Parent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                                <StackPanel Margin="4 8">
+                                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedObject.Parent.DisplayName}" Margin="0 0 0 4" />
+                                    <userControls:CarBlock Car="{Binding SelectedObject.Parent}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512"
+                                            MaxHeight="320" />
+                                </StackPanel>
+                            </ToolTip>
+                        </DockPanel.ToolTip>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}"
                                 ToolTip="{x:Static c:ControlsStrings.AcObject_CarParentLabel_Tooltip}" />
                         <mui:BbCodeBlock Text="{Binding SelectedObject.ParentDisplayName}"
-                                attached:WatermarkService.Watermark="{x:Static t:ToolsStrings.Common_None}" MouseDown="ParentBlock_OnMouseDown">
-                            <mui:BbCodeBlock.ToolTip>
-                                <ToolTip
-                                        Visibility="{Binding SelectedObject.Parent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                                    <StackPanel Margin="4 8">
-                                        <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedObject.Parent.DisplayName}" Margin="0 0 0 4" />
-                                        <userControls:CarBlock Car="{Binding SelectedObject.Parent}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512"
-                                                MaxHeight="320" />
-                                    </StackPanel>
-                                </ToolTip>
-                            </mui:BbCodeBlock.ToolTip>
-                        </mui:BbCodeBlock>
+                                attached:WatermarkService.Watermark="{x:Static t:ToolsStrings.Common_None}" MouseDown="ParentBlock_OnMouseDown" />
                     </DockPanel>
 
                     <DockPanel Grid.Row="2" Grid.Column="1">

@@ -12,6 +12,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -105,6 +106,10 @@ namespace AcManager.Pages.Selected {
                 var shots = Directory.GetFiles(directory);
 
                 await QuickDrive.RunAsync(track: SelectedTrackConfiguration);
+                if (ScreenshotsConverter.CurrentConversion?.IsCompleted == false) {
+                    await ScreenshotsConverter.CurrentConversion;
+                }
+
                 var newShots = Directory.GetFiles(directory).Where(x => !shots.Contains(x) && (
                         x.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
                                 x.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||

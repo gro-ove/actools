@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -13,6 +14,7 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
+    [Localizable(false)]
     public partial class ValuesStorage : NotifyPropertyChanged {
         private static ValuesStorage _instance;
 
@@ -273,13 +275,14 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        [CanBeNull]
+        [CanBeNull, Pure]
         public static string GetString([NotNull, LocalizationRequired(false)] string key, string defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             string value;
             return Instance._storage.TryGetValue(key, out value) ? value : defaultValue;
         }
 
+        [Pure]
         public static T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T)) where T : struct, IConvertible {
             if (key == null) throw new ArgumentNullException(nameof(key));
             T result;
@@ -288,6 +291,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     Enum.TryParse(value, out result) ? result : defaultValue;
         }
 
+        [Pure]
         public static T? GetEnumNullable<T>([NotNull, LocalizationRequired(false)] string key) where T : struct, IConvertible {
             if (key == null) throw new ArgumentNullException(nameof(key));
             T result;
@@ -296,6 +300,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     Enum.TryParse(value, out result) ? result : (T?)null;
         }
 
+        [Pure]
         public static int GetInt([NotNull, LocalizationRequired(false)] string key, int defaultValue = 0) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             int result;
@@ -304,6 +309,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : defaultValue;
         }
 
+        [Pure]
         public static int? GetIntNullable([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             int result;
@@ -312,6 +318,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : (int?)null;
         }
 
+        [Pure]
         public static double GetDouble([NotNull, LocalizationRequired(false)] string key, double defaultValue = 0) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             double result;
@@ -320,6 +327,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : defaultValue;
         }
 
+        [Pure]
         public static double? GetDoubleNullable([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             double result;
@@ -328,6 +336,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out result) ? result : (double?)null;
         }
 
+        [Pure]
         public static Point GetPoint([NotNull, LocalizationRequired(false)] string key, Point defaultValue = default(Point)) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
@@ -341,6 +350,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return defaultValue;
         }
 
+        [Pure]
         public static Point? GetPointNullable([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
@@ -354,12 +364,14 @@ namespace FirstFloor.ModernUI.Helpers {
             return null;
         }
 
+        [Pure]
         public static bool GetBool([NotNull, LocalizationRequired(false)] string key, bool defaultValue = false) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             string value;
             return Instance._storage.TryGetValue(key, out value) ? value == "1" : defaultValue;
         }
 
+        [Pure]
         public static bool? GetBoolNullable([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             string value;
@@ -372,7 +384,7 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="key">Value key</param>
         /// <param name="defaultValue">Default value</param>
         /// <returns>List if exists, default value otherwise, empty list if default value is null</returns>
-        [NotNull]
+        [NotNull, Pure]
         public static IEnumerable<string> GetStringList([NotNull, LocalizationRequired(false)] string key, IEnumerable<string> defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             string value;
@@ -380,7 +392,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     ? value.Split('\n').Select(Decode) : defaultValue ?? new string[] { };
         }
 
-        [NotNull]
+        [NotNull, Pure]
         public static Dictionary<string, string> GetDictionary([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
@@ -398,6 +410,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return result;
         }
 
+        [Pure]
         public static TimeSpan GetTimeSpan([NotNull, LocalizationRequired(false)] string key, TimeSpan defaultValue) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
@@ -407,6 +420,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        [Pure]
         public static TimeSpan? GetTimeSpan([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
@@ -416,6 +430,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        [Pure]
         public static DateTime GetDateTime([NotNull, LocalizationRequired(false)] string key, DateTime defaultValue) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
@@ -425,6 +440,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        [Pure]
         public static DateTime GetDateTimeOrEpochTime([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
@@ -434,6 +450,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        [Pure]
         public static DateTime? GetDateTime([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
@@ -443,6 +460,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        [Pure]
         public static TimeZoneInfo GetTimeZoneInfo([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
@@ -453,6 +471,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        [Pure]
         public static Uri GetUri([NotNull, LocalizationRequired(false)] string key, Uri defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Contains(key)) return defaultValue;
@@ -464,7 +483,21 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public static Color? GetColor([NotNull, LocalizationRequired(false)] string key, Color? defaultValue = null) {
+        [Pure]
+        public static Color? GetColor([NotNull, LocalizationRequired(false)] string key) {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (!Contains(key)) return null;
+            try {
+                var bytes = BitConverter.GetBytes(GetInt(key));
+                return Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]);
+            } catch (Exception e) {
+                Logging.Warning("Cannot load uri: " + e);
+                return null;
+            }
+        }
+
+        [Pure]
+        public static Color GetColor([NotNull, LocalizationRequired(false)] string key, Color defaultValue) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Contains(key)) return defaultValue;
             try {
@@ -476,6 +509,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        [Pure]
         public static bool Contains([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             return Instance._storage.ContainsKey(key);

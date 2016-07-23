@@ -69,7 +69,7 @@ namespace AcManager.Pages.Selected {
 
         public RelayCommand FilterCommand => _filterCommand ?? (_filterCommand = new RelayCommand(o => FilterExec(o as string)));
 
-        protected void FilterRange(string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
+        protected void FilterRange([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
             var delta = (relative ? range * value : range) / 2d;
             NewFilterTab(Equals(roundTo, 1d) && delta.Round(roundTo) < roundTo ?
                     $"{key}={value.Round(roundTo).ToInvariantString()}" :

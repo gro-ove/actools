@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools;
-using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
@@ -21,7 +21,7 @@ namespace AcManager.Pages.Selected {
             }
 
             private void Python_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-                if (e.PropertyName == nameof(AcSettingsHolder.PythonSettings.Apps)) {
+                if (e.PropertyName == nameof(PythonSettings.Apps)) {
                     IsActivated = AcSettingsHolder.Python.IsActivated(SelectedObject.Id);
                 }
             }

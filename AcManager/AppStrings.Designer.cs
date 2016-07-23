@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -93,6 +93,15 @@ namespace AcManager {
         public static string AcObject_ChangeIdTitle {
             get {
                 return ResourceManager.GetString("AcObject_ChangeIdTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to City:.
+        /// </summary>
+        public static string AcObject_CityLabel {
+            get {
+                return ResourceManager.GetString("AcObject_CityLabel", resourceCulture);
             }
         }
         
@@ -187,6 +196,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Geo Tags:.
+        /// </summary>
+        public static string AcObject_GeoTagsLabel {
+            get {
+                return ResourceManager.GetString("AcObject_GeoTagsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID:.
+        /// </summary>
+        public static string AcObject_IdLabel {
+            get {
+                return ResourceManager.GetString("AcObject_IdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number:.
         /// </summary>
         public static string AcObject_NumberLabel {
@@ -232,6 +259,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Layout Name:.
+        /// </summary>
+        public static string AcObject_TrackLayoutNameLabel {
+            get {
+                return ResourceManager.GetString("AcObject_TrackLayoutNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Again, please, use this field if you’re modder and you have a web-page with an additional information and new versions for this object.
         /// </summary>
         public static string AcObject_Url_TooltipExt {
@@ -264,6 +300,15 @@ namespace AcManager {
         public static string AcObject_WeatherLabel {
             get {
                 return ResourceManager.GetString("AcObject_WeatherLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use as:.
+        /// </summary>
+        public static string AcObject_WeatherUseAsLabel {
+            get {
+                return ResourceManager.GetString("AcObject_WeatherUseAsLabel", resourceCulture);
             }
         }
         
@@ -810,6 +855,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Share weather (Ctrl+Page Up).
+        /// </summary>
+        public static string Common_Share_WeatherTooltip {
+            get {
+                return ResourceManager.GetString("Common_Share_WeatherTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shooting cancelled.
+        /// </summary>
+        public static string Common_ShootingCancelled {
+            get {
+                return ResourceManager.GetString("Common_ShootingCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign In.
         /// </summary>
         public static string Common_SignIn {
@@ -833,6 +896,15 @@ namespace AcManager {
         public static string Common_Test {
             get {
                 return ResourceManager.GetString("Common_Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test weather on track (Ctrl+G).
+        /// </summary>
+        public static string Common_Test_WeatherTooltip {
+            get {
+                return ResourceManager.GetString("Common_Test_WeatherTooltip", resourceCulture);
             }
         }
         
@@ -887,6 +959,15 @@ namespace AcManager {
         public static string Filter_ByCar {
             get {
                 return ResourceManager.GetString("Filter_ByCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter By City.
+        /// </summary>
+        public static string Filter_ByCity {
+            get {
+                return ResourceManager.GetString("Filter_ByCity", resourceCulture);
             }
         }
         
@@ -1420,6 +1501,17 @@ namespace AcManager {
         public static string Replay_DefaultUploadedName {
             get {
                 return ResourceManager.GetString("Replay_DefaultUploadedName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///
+        ///To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”..
+        /// </summary>
+        public static string Replay_SharedReadMe {
+            get {
+                return ResourceManager.GetString("Replay_SharedReadMe", resourceCulture);
             }
         }
         
@@ -3015,6 +3107,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t update showroom’s preview.
+        /// </summary>
+        public static string Showroom_CannotUpdatePreview {
+            get {
+                return ResourceManager.GetString("Showroom_CannotUpdatePreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t remove ui_skin.json.
         /// </summary>
         public static string Skin_CannotRemoveUiSkin {
@@ -3618,6 +3719,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change weather’s ID (Ctrl+Shift+F2).
+        /// </summary>
+        public static string Toolbar_ChangeId_WeatherTooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_ChangeId_WeatherTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change Livery.
         /// </summary>
         public static string Toolbar_ChangeLivery {
@@ -3654,6 +3764,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy Values.
+        /// </summary>
+        public static string Toolbar_CopyValues {
+            get {
+                return ResourceManager.GetString("Toolbar_CopyValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy values to other layouts.
+        /// </summary>
+        public static string Toolbar_CopyValues_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_CopyValues_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create JSON-file.
         /// </summary>
         public static string Toolbar_CreateJson {
@@ -3677,6 +3805,24 @@ namespace AcManager {
         public static string Toolbar_CreateNewFont_Tooltip {
             get {
                 return ResourceManager.GetString("Toolbar_CreateNewFont_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create New Showroom.
+        /// </summary>
+        public static string Toolbar_CreateNewShowroom {
+            get {
+                return ResourceManager.GetString("Toolbar_CreateNewShowroom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new showroom from existing panorama (Ctrl+N).
+        /// </summary>
+        public static string Toolbar_CreateNewShowroom_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_CreateNewShowroom_Tooltip", resourceCulture);
             }
         }
         
@@ -3852,6 +3998,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable Edit Mode.
+        /// </summary>
+        public static string Toolbar_DisableEditMode {
+            get {
+                return ResourceManager.GetString("Toolbar_DisableEditMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch from Edit Mode (Ctrl+E).
+        /// </summary>
+        public static string Toolbar_DisableEditMode_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_DisableEditMode_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable Unused.
         /// </summary>
         public static string Toolbar_DisableUnused {
@@ -3888,6 +4052,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use track in a Quick Drive session (Ctrl+G).
+        /// </summary>
+        public static string Toolbar_Drive_TrackTooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_Drive_TrackTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Mode.
+        /// </summary>
+        public static string Toolbar_EditMode {
+            get {
+                return ResourceManager.GetString("Toolbar_EditMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to Edit Mode (Ctrl+E).
+        /// </summary>
+        public static string Toolbar_EditMode_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_EditMode_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
         public static string Toolbar_Enable {
@@ -3920,6 +4111,15 @@ namespace AcManager {
         public static string Toolbar_FindInformation_CarTooltip {
             get {
                 return ResourceManager.GetString("Toolbar_FindInformation_CarTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find information about track (Ctrl+I).
+        /// </summary>
+        public static string Toolbar_FindInformation_TrackTooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_FindInformation_TrackTooltip", resourceCulture);
             }
         }
         
@@ -3983,6 +4183,15 @@ namespace AcManager {
         public static string Toolbar_Folder_SetupTooltip {
             get {
                 return ResourceManager.GetString("Toolbar_Folder_SetupTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open showroom’s folder (Ctrl+F).
+        /// </summary>
+        public static string Toolbar_Folder_ShowroomTooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_Folder_ShowroomTooltip", resourceCulture);
             }
         }
         
@@ -4257,6 +4466,42 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Turn Off Sound.
+        /// </summary>
+        public static string Toolbar_TurnOffSound {
+            get {
+                return ResourceManager.GetString("Toolbar_TurnOffSound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable sound (Ctrl+I).
+        /// </summary>
+        public static string Toolbar_TurnOffSound_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_TurnOffSound_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn On Sound.
+        /// </summary>
+        public static string Toolbar_TurnOnSound {
+            get {
+                return ResourceManager.GetString("Toolbar_TurnOnSound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable sound (Ctrl+I).
+        /// </summary>
+        public static string Toolbar_TurnOnSound_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_TurnOnSound_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unpack Data.
         /// </summary>
         public static string Toolbar_UnpackData {
@@ -4275,6 +4520,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update Map.
+        /// </summary>
+        public static string Toolbar_UpdateMap {
+            get {
+                return ResourceManager.GetString("Toolbar_UpdateMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update Preview.
         /// </summary>
         public static string Toolbar_UpdatePreview {
@@ -4284,11 +4538,38 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update showroom’s preview (Ctrl+P).
+        /// </summary>
+        public static string Toolbar_UpdatePreview_ShowroomTooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_UpdatePreview_ShowroomTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update skin’s preview (Ctrl+P).
         /// </summary>
         public static string Toolbar_UpdatePreview_SkinTooltip {
             get {
                 return ResourceManager.GetString("Toolbar_UpdatePreview_SkinTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update track’s preview (Ctrl+P).
+        /// </summary>
+        public static string Toolbar_UpdatePreview_TrackTooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_UpdatePreview_TrackTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update weather’s preview (Ctrl+P).
+        /// </summary>
+        public static string Toolbar_UpdatePreview_WeatherTooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_UpdatePreview_WeatherTooltip", resourceCulture);
             }
         }
         
@@ -4338,6 +4619,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Without Shooting.
+        /// </summary>
+        public static string Toolbar_UpdatePreviewWithoutShooting {
+            get {
+                return ResourceManager.GetString("Toolbar_UpdatePreviewWithoutShooting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Just select existing image.
+        /// </summary>
+        public static string Toolbar_UpdatePreviewWithoutShooting_Tooltip {
+            get {
+                return ResourceManager.GetString("Toolbar_UpdatePreviewWithoutShooting_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Upload &amp; Share.
         /// </summary>
         public static string Toolbar_UploadAndShare {
@@ -4352,6 +4651,297 @@ namespace AcManager {
         public static string Toolbar_UploadAndShare_ReplayTooltip {
             get {
                 return ResourceManager.GetString("Toolbar_UploadAndShare_ReplayTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seems empty?.
+        /// </summary>
+        public static string Weather_SeemsEmpty {
+            get {
+                return ResourceManager.GetString("Weather_SeemsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to Edit Mode if you want to modify other weather&apos;s parameters..
+        /// </summary>
+        public static string Weather_SeemsEmpty_Commentary {
+            get {
+                return ResourceManager.GetString("Weather_SeemsEmpty_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Additional:.
+        /// </summary>
+        public static string WeatherEdit_AdditionalHeader {
+            get {
+                return ResourceManager.GetString("WeatherEdit_AdditionalHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Angle gamma.
+        /// </summary>
+        public static string WeatherEdit_AngleGamma {
+            get {
+                return ResourceManager.GetString("WeatherEdit_AngleGamma", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blend.
+        /// </summary>
+        public static string WeatherEdit_Blend {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Blend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brightness.
+        /// </summary>
+        public static string WeatherEdit_Brightness {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Brightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clouds:.
+        /// </summary>
+        public static string WeatherEdit_CloudsHeader {
+            get {
+                return ResourceManager.GetString("WeatherEdit_CloudsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color.
+        /// </summary>
+        public static string WeatherEdit_Color {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Base color; the sunlight, light color and ambient will be added to this.
+        /// </summary>
+        public static string WeatherEdit_Color_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Color_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color curves:.
+        /// </summary>
+        public static string WeatherEdit_ColorCurvesHeader {
+            get {
+                return ResourceManager.GetString("WeatherEdit_ColorCurvesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color:.
+        /// </summary>
+        public static string WeatherEdit_ColorLabel {
+            get {
+                return ResourceManager.GetString("WeatherEdit_ColorLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cover.
+        /// </summary>
+        public static string WeatherEdit_Cover {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Cover", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regulates clouds transparency.
+        /// </summary>
+        public static string WeatherEdit_Cover_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Cover_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cut-off.
+        /// </summary>
+        public static string WeatherEdit_CutOff {
+            get {
+                return ResourceManager.GetString("WeatherEdit_CutOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regulates other colors influencies on the cloud:
+        /// • [b]0%:[/b] just the color effects on the clouds are considered;
+        /// • [b]50%:[/b] 50% of cloud color and 50% of effects;
+        /// • [b]100%:[/b] just the color of the cloud is considered.
+        /// </summary>
+        public static string WeatherEdit_CutOff_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_CutOff_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Distance.
+        /// </summary>
+        public static string WeatherEdit_Distance {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Distance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fog:.
+        /// </summary>
+        public static string WeatherEdit_FogHeader {
+            get {
+                return ResourceManager.GetString("WeatherEdit_FogHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HDR-off mult..
+        /// </summary>
+        public static string WeatherEdit_HdrOffMultipler {
+            get {
+                return ResourceManager.GetString("WeatherEdit_HdrOffMultipler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Used when HDR is disabled.
+        /// </summary>
+        public static string WeatherEdit_HdrOffMultipler_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_HdrOffMultipler_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn on headlights.
+        /// </summary>
+        public static string WeatherEdit_Headlights {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Headlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Height of the quad.
+        /// </summary>
+        public static string WeatherEdit_Height_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Height_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multipler.
+        /// </summary>
+        public static string WeatherEdit_Multipler {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Multipler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of clouds.
+        /// </summary>
+        public static string WeatherEdit_Number_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Number_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Distance from the center of the skybox to the quad.
+        /// </summary>
+        public static string WeatherEdit_Radius_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Radius_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Base speed multipler.
+        /// </summary>
+        public static string WeatherEdit_SpeedMultipler_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_SpeedMultipler_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temp. coefficient.
+        /// </summary>
+        public static string WeatherEdit_TemperatureCoefficient {
+            get {
+                return ResourceManager.GetString("WeatherEdit_TemperatureCoefficient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creates a variation of the asphalt temperature relative to the weather, ambient temperature and time. More information in “readme_weather.txt”.
+        /// </summary>
+        public static string WeatherEdit_TemperatureCoefficient_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_TemperatureCoefficient_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Air temp..
+        /// </summary>
+        public static string WeatherEdit_TemperatureCoefficientAirTemperature {
+            get {
+                return ResourceManager.GetString("WeatherEdit_TemperatureCoefficientAirTemperature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Road temperature: {0:F1} °C.
+        /// </summary>
+        public static string WeatherEdit_TemperatureCoefficientRoadTemperatureFormat {
+            get {
+                return ResourceManager.GetString("WeatherEdit_TemperatureCoefficientRoadTemperatureFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temperature coefficient testing:.
+        /// </summary>
+        public static string WeatherEdit_TemperatureCoefficientTesting {
+            get {
+                return ResourceManager.GetString("WeatherEdit_TemperatureCoefficientTesting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View “readme__weather.txt”.
+        /// </summary>
+        public static string WeatherEdit_ViewReadmeHeader {
+            get {
+                return ResourceManager.GetString("WeatherEdit_ViewReadmeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Width of the quad.
+        /// </summary>
+        public static string WeatherEdit_Width_Tooltip {
+            get {
+                return ResourceManager.GetString("WeatherEdit_Width_Tooltip", resourceCulture);
             }
         }
     }

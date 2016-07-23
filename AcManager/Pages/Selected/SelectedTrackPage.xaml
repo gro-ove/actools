@@ -24,8 +24,9 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
-                <mui:ButtonWithComboBox Content="Drive" ButtonToolTip="Use track in a Quick Drive session (Ctrl+G)" Command="{Binding DriveCommand}"
-                        PreviewMouseDown="ToolbarButtonQuickDrive_OnPreviewMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_TrackTooltip}"
+                        Command="{Binding DriveCommand}" PreviewMouseDown="ToolbarButtonQuickDrive_OnPreviewMouseDown"
+                        Style="{StaticResource Go.ToolBarButtonWithComboBox}">
                     <mui:ButtonWithComboBox.MenuItems>
                         <CompositeCollection>
                             <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
@@ -47,21 +48,24 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Delete_TrackTooltip}" />
                 <Separator />
-                <Button Content="Find Information" Command="{Binding FindInformationCommand}" ToolTip="Find information about track (Ctrl+I)" />
-                <Button Content="Copy Values" ToolTip="Copy values to other layouts" IsEnabled="False"
+                <Button Content="{x:Static g:AppStrings.Toolbar_FindInformation}" Command="{Binding FindInformationCommand}"
+                        ToolTip="{x:Static g:AppStrings.Toolbar_FindInformation_TrackTooltip}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_CopyValues}" ToolTip="{x:Static g:AppStrings.Toolbar_CopyValues_Tooltip}" IsEnabled="False"
                         Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Separator />
-                <mui:ButtonWithComboBox Content="Update Preview" Command="{Binding UpdatePreviewCommand}" ButtonToolTip="Update preview (Ctrl+P)">
-                    <MenuItem Header="Without Shooting" ToolTip="Just select existing image" InputGestureText="Ctrl+Alt+P"
+                <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewCommand}"
+                        ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_TrackTooltip}">
+                    <MenuItem Header="{x:Static g:AppStrings.Toolbar_UpdatePreviewWithoutShooting}"
+                            ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreviewWithoutShooting_Tooltip}" InputGestureText="Ctrl+Alt+P"
                             Command="{Binding UpdatePreviewDirectCommand}" />
                 </mui:ButtonWithComboBox>
-                <Button Content="Update Map" IsEnabled="False" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_UpdateMap}" IsEnabled="False" />
             </ToolBar>
         </c:AcObjectBase.ToolBars>
 
         <StackPanel>
             <DockPanel Margin="8 0 0 8" Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock DockPanel.Dock="Left" Style="{StaticResource Label}" Margin="0 2 8 0" Text="Layout Name:" />
+                <TextBlock DockPanel.Dock="Left" Style="{StaticResource Label}" Margin="0 2 8 0" Text="{x:Static g:AppStrings.AcObject_TrackLayoutNameLabel}" />
                 <TextBox Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource TextBoxAsTextBlock}" Text="{Binding SelectedTrackConfiguration.LayoutName}"
                         h:FocusAdvancement.AdvancesByEnterKey="True" />
@@ -114,8 +118,8 @@
                     <DockPanel Grid.Row="0" Grid.Column="0" h:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Country" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                                        CommandParameter="country" />
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}"
+                                        Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="country" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" />
@@ -126,12 +130,13 @@
                     <DockPanel Grid.Row="0" Grid.Column="1" h:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Year" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="year" />
-                                <MenuItem Header="Filter By Decade" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByYear}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                        CommandParameter="year" />
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByDecade}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                         CommandParameter="decade" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" ToolTip="Year of production start" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" />
                         <TextBox Text="{Binding SelectedTrackConfiguration.Year, TargetNullValue=''}" h:TextBoxAdvancement.SpecialMode="Integer"
                                 h:WatermarkService.Watermark="?" />
                     </DockPanel>
@@ -140,17 +145,18 @@
                     <DockPanel Grid.Row="1" Grid.Column="0" h:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By City" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}" CommandParameter="city" />
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByCity}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                        CommandParameter="city" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="City:" />
+                        <TextBlock Text="{x:Static g:AppStrings.AcObject_CityLabel}" />
                         <ComboBox Text="{Binding SelectedTrackConfiguration.City, UpdateSourceTrigger=LostFocus}"
                                 ItemsSource="{x:Static m:SuggestionLists.CitiesListiew}" />
                     </DockPanel>
 
                     <!-- third row -->
                     <DockPanel Grid.Row="2" Grid.Column="0">
-                        <TextBlock Text="Geo Tags:" ToolTip="Geographic coordinates" />
+                        <TextBlock Text="{x:Static g:AppStrings.AcObject_GeoTagsLabel}" ToolTip="Geographic coordinates" />
                         <TextBlock Text="{Binding SelectedTrackConfiguration.GeoTags, TargetNullValue=''}" MouseDown="GeoTags_KeyDown"
                                 h:WatermarkService.Watermark="?" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Style="{StaticResource TextBlockValue}" />
                     </DockPanel>
@@ -158,11 +164,11 @@
                     <DockPanel Grid.Row="2" Grid.Column="1">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Filter By Author" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
+                                <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                                         CommandParameter="author" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="Author, version, URL" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
                         <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" h:WatermarkService.Watermark="?"
                                 MouseUp="VersionInfoBlock_OnMouse" />
                     </DockPanel>

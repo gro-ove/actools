@@ -169,7 +169,7 @@
     <value>Specs:</value>
   </data>
 	<data name="AcObject_Author_Tooltip" xml:space="preserve">
-    <value>Author, version &amp;amp; URL</value>
+    <value>Author, version &amp; URL</value>
   </data>
 	<data name="Car_OpenInShowroom" xml:space="preserve">
     <value>Open In Showroom</value>
@@ -744,9 +744,6 @@ Depth mode: [b]{4}[/b]</value>
 	<data name="Common_GoodNews" xml:space="preserve">
     <value>Good news!</value>
   </data>
-	<data name="Common_Options" xml:space="preserve">
-		<value>Options</value>
-	</data>
   <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
     <value>Parent car (if set, this car will be a tuned version of it)</value>
   </data>
@@ -782,5 +779,17 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Toolbar_CreateJson_Tooltip" xml:space="preserve">
     <value>Create a new ui_skin.json file (Alt+S)</value>
+  </data>
+  <data name="Common_Uploading" xml:space="preserve">
+    <value>Uploading…</value>
+  </data>
+  <data name="Common_Preparing" xml:space="preserve">
+    <value>Preparing…</value>
+  </data>
+  <data name="Common_Compressing" xml:space="preserve">
+    <value>Compressing…</value>
+  </data>
+  <data name="Common_CelsiusPostfix" xml:space="preserve">
+    <value> °C</value>
   </data>
 </root>

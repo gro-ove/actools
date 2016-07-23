@@ -10,6 +10,7 @@ namespace AcManager.Pages.Drive {
     public abstract class QuickDriveModeViewModel : NotifyPropertyChanged {
         protected ISaveHelper Saveable { set; get; }
 
+
         public event EventHandler Changed;
 
         protected void SaveLater() {

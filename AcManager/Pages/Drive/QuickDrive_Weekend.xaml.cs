@@ -13,7 +13,6 @@ namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Weekend : IQuickDriveModeControl {
         public QuickDrive_Weekend() {
             InitializeComponent();
-            // DataContext = new QuickDrive_WeekendViewModel();
         }
 
         private bool _loaded;
@@ -31,13 +30,13 @@ namespace AcManager.Pages.Drive {
         }
 
         public QuickDriveModeViewModel Model {
-            get { return (QuickDriveModeViewModel)DataContext; }
+            get { return ActualModel; }
             set { DataContext = value; }
         }
 
-        public QuickDrive_WeekendViewModel ActualModel => (QuickDrive_WeekendViewModel)DataContext;
+        public ViewModel ActualModel => (ViewModel)DataContext;
 
-        public class QuickDrive_WeekendViewModel : QuickDrive_Race.QuickDrive_RaceViewModel {
+        public class ViewModel : QuickDrive_Race.ViewModel {
             private int _practiceDuration;
 
             public int PracticeDuration {
@@ -62,13 +61,13 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public QuickDrive_WeekendViewModel(bool initialize = true) : base(initialize) {}
+            public ViewModel(bool initialize = true) : base(initialize) {}
 
-            private new class SaveableData : QuickDrive_Race.QuickDrive_RaceViewModel.SaveableData {
+            private new class SaveableData : QuickDrive_Race.ViewModel.SaveableData {
                 public int? PracticeLength, QualificationLength;
             }
 
-            protected override void Save(QuickDrive_Race.QuickDrive_RaceViewModel.SaveableData result) {
+            protected override void Save(QuickDrive_Race.ViewModel.SaveableData result) {
                 base.Save(result);
 
                 var r = (SaveableData)result;
@@ -76,7 +75,7 @@ namespace AcManager.Pages.Drive {
                 r.QualificationLength = QualificationDuration;
             }
 
-            protected override void Load(QuickDrive_Race.QuickDrive_RaceViewModel.SaveableData o) {
+            protected override void Load(QuickDrive_Race.ViewModel.SaveableData o) {
                 base.Load(o);
 
                 var r = (SaveableData)o;
@@ -102,6 +101,7 @@ namespace AcManager.Pages.Drive {
                 return new Game.WeekendProperties {
                     AiLevel = AiLevelFixed ? AiLevel : 100,
                     Penalties = Penalties,
+                    JumpStartPenalty = JumpStartPenalty,
                     StartingPosition = StartingPosition == 0 ? MathUtils.Random(1, OpponentsNumber + 2) : StartingPosition,
                     RaceLaps = LapsNumber,
                     BotCars = botCars,
@@ -132,6 +132,7 @@ namespace AcManager.Pages.Drive {
             }
         }
 
+        [ValueConversion(typeof(int), typeof(string))]
         private class SpecialSessionConverter_Inner : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null) return null;
@@ -143,6 +144,10 @@ namespace AcManager.Pages.Drive {
                 if (value == null) return null;
                 return value as string == "Skip" ? 0 : value.AsInt();
             }
+        }
+
+        private void OpponentsCarsFilterTextBox_OnLostFocus(object sender, RoutedEventArgs e) {
+            ((ViewModel)Model).AddOpponentsCarsFilter();
         }
     }
 }

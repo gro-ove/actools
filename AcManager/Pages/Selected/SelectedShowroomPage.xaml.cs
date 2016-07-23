@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Pages.Dialogs;
 using AcManager.Properties;
+using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -46,8 +47,8 @@ namespace AcManager.Pages.Selected {
                                 AcRoot = AcRootDirectory.Instance.Value,
                                 CarId = sphereId,
                                 ShowroomId = SelectedObject.Id,
-                                SkinIds = new[] {"0"},
-                                Filter = "default",
+                                SkinIds = new[] { @"0" },
+                                Filter = @"default",
                                 Mode = Showroom.ShotMode.Fixed,
                                 UseBmp = true,
                                 DisableWatermark = true,
@@ -55,20 +56,19 @@ namespace AcManager.Pages.Selected {
                                 MaximizeVideoSettings = true,
                                 SpecialResolution = false,
                                 Fxaa = true,
-                                FixedCameraPosition = "-1.8,0.8,3",
-                                FixedCameraLookAt = "0,0.5,0",
+                                FixedCameraPosition = @"-1.8,0.8,3",
+                                FixedCameraLookAt = @"0,0.5,0",
                                 FixedCameraFov = 40,
                             });
 
                             if (resultDirectory == null) {
-                                throw new Exception("Process cancelled");
+                                throw new Exception(AppStrings.Common_ShootingCancelled);
                             }
 
-                            ImageUtils.ApplyPreview(Path.Combine(resultDirectory, "0.bmp"), SelectedObject.PreviewImage,
-                                                    true);
+                            ImageUtils.ApplyPreview(Path.Combine(resultDirectory, "0.bmp"), SelectedObject.PreviewImage, true);
                         }
                     } catch (Exception e) {
-                        NonfatalError.Notify("Can’t update showroom’s preview", e);
+                        NonfatalError.Notify(AppStrings.Showroom_CannotUpdatePreview, e);
                     } finally {
                         if (Directory.Exists(sphereDirectory)) {
                             Directory.Delete(sphereDirectory, true);
@@ -97,7 +97,7 @@ namespace AcManager.Pages.Selected {
         void IParametrizedUriContent.OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
             if (_id == null) {
-                throw new Exception("ID is missing");
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
         }
 
@@ -112,7 +112,7 @@ namespace AcManager.Pages.Selected {
         }
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {

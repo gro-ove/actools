@@ -4,39 +4,57 @@ using StringBasedFilter.Utils;
 
 namespace StringBasedFilter.Parsing {
     internal class FilterTreeNodeValue : FilterTreeNode {
-        protected static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)\s*([:<>=+-])\s*", RegexOptions.Compiled);
+        protected static readonly Regex ParsingRegex = new Regex(@"^([a-zA-Z]+)(\.[a-zA-Z]+)?\s*([:<>=+-])\s*", RegexOptions.Compiled);
 
         private readonly string _key;
         private readonly ITestEntry _testEntry;
 
-        public FilterTreeNodeValue(string value, bool strictMode, out string keyName) {
-            var match = ParsingRegex.Match(value);
-            if (match.Success) {
-                _key = match.Groups[1].Value.ToLower();
-                var op = match.Groups[2].Value;
-                var end = value.Substring(match.Length);
+        public static FilterTreeNode Create(string value, bool strictMode, out string keyName) {
+            ITestEntry testEntry;
 
-                if (op == ":") {
-                    _testEntry = CreateTestEntry(end, true, false);
-                } else if (op == "+" || op == "-") {
-                    _testEntry = new BooleanTestEntry(op == "+");
-                } else if (end.Contains(".") || end.Contains(",")) {
-                    double num;
-                    _testEntry = FlexibleParser.TryParseDouble(end, out num)
-                            ? new NumberTestEntry(op == "<" ? Operator.Less : op == "=" ? Operator.Equal : Operator.More, num)
-                            : (ITestEntry)new ConstTestEntry(false);
-                } else {
-                    int num;
-                    _testEntry = FlexibleParser.TryParseInt(end, out num)
-                            ? new IntTestEntry(op == "<" ? Operator.Less : op == "=" ? Operator.Equal : Operator.More, num)
-                            : (ITestEntry)new ConstTestEntry(false);
-                }
+            if (value.Length > 0 && value[0] == '#') {
+                keyName = "tag";
+                testEntry = CreateTestEntry(value.Substring(1), true, false);
             } else {
-                _key = null;
-                _testEntry = CreateTestEntry(value, false, strictMode);
+                var match = ParsingRegex.Match(value);
+                if (match.Success) {
+                    keyName = match.Groups[1].Value.ToLower();
+                    var op = match.Groups[3].Value;
+                    var end = value.Substring(match.Length);
+
+                    if (match.Groups[2].Success) {
+                        var parser = new FilterParser();
+                        string[] properties;
+                        return new FilterTreeNodeChild(keyName, parser.Parse($"{match.Groups[2].Value.Substring(1)}{op}{end}", out properties), strictMode);
+                    }
+
+                    if (op == ":") {
+                        testEntry = CreateTestEntry(end, true, false);
+                    } else if (op == "+" || op == "-") {
+                        testEntry = new BooleanTestEntry(op == "+");
+                    } else if (end.Contains(".") || end.Contains(",")) {
+                        double num;
+                        testEntry = FlexibleParser.TryParseDouble(end, out num)
+                                ? new NumberTestEntry(op == "<" ? Operator.Less : op == "=" ? Operator.Equal : Operator.More, num)
+                                : (ITestEntry)new ConstTestEntry(false);
+                    } else {
+                        int num;
+                        testEntry = FlexibleParser.TryParseInt(end, out num)
+                                ? new IntTestEntry(op == "<" ? Operator.Less : op == "=" ? Operator.Equal : Operator.More, num)
+                                : (ITestEntry)new ConstTestEntry(false);
+                    }
+                } else {
+                    keyName = null;
+                    testEntry = CreateTestEntry(value, false, strictMode);
+                }
             }
 
-            keyName = _key;
+            return new FilterTreeNodeValue(keyName, testEntry);
+        }
+
+        private FilterTreeNodeValue(string value, ITestEntry testEntry) {
+            _key = value;
+            _testEntry = testEntry;
         }
 
         private static ITestEntry CreateTestEntry(string value, bool wholeMatch, bool strictMode) {

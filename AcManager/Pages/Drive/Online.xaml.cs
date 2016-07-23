@@ -85,6 +85,8 @@ namespace AcManager.Pages.Drive {
         private int _timerTick;
 
         private void Timer_Tick(object sender, EventArgs e) {
+            return;
+
             if (++_timerTick > 5) {
                 _timerTick = 0;
 

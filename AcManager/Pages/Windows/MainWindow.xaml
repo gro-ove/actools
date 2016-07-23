@@ -95,7 +95,6 @@
         <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Settings}" GroupKey="{x:Static g:AppStrings.Main_Settings}"
                 Source="/Pages/Settings/SettingsPage.xaml" />
         <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_About}" GroupKey="{x:Static g:AppStrings.Main_About}" Source="/Pages/About/AboutPage.xaml" />
-        <!-- ReSharper disable once Xaml.PathError -->
         <mui:TitleLink DisplayName="enter key" Source="cmd://enterkey" IsAccented="True" />
     </mui:ModernWindow.TitleLinks>
 

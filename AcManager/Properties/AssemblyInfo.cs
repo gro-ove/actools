@@ -1,5 +1,7 @@
 using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
+using System.Windows.Markup;
 using System.Windows.Media;
 
 // General Information about an assembly is controlled through the following 
@@ -10,7 +12,7 @@ using System.Windows.Media;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("Content Manager")]
-[assembly: AssemblyCopyright("Copyright © 2016")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -36,5 +38,10 @@ using System.Windows.Media;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.7.385.9192")]
-[assembly: AssemblyFileVersion("0.7.385.9192")]
+[assembly: AssemblyVersion("0.7.389.9228")]
+[assembly: AssemblyFileVersion("0.7.389.9228")]
+
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.About")]
+[assembly: XmlnsPrefix("http://acstuff.ru/app", "g")]
+
+[assembly: NeutralResourcesLanguage("en-US")]

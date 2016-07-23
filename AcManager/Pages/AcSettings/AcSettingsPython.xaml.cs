@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -16,9 +17,9 @@ namespace AcManager.Pages.AcSettings {
         public class AcPythonViewModel : NotifyPropertyChanged {
             internal AcPythonViewModel() { }
 
-            public AcSettingsHolder.PythonSettings Python => AcSettingsHolder.Python;
+            public PythonSettings Python => AcSettingsHolder.Python;
 
-            public AcSettingsHolder.FormsSettings Forms => AcSettingsHolder.Forms;
+            public FormsSettings Forms => AcSettingsHolder.Forms;
 
             public IUserPresetable Presets => AcSettingsHolder.AppsPresets;
 
@@ -57,7 +58,7 @@ namespace AcManager.Pages.AcSettings {
         }
 
         private void Python_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(AcSettingsHolder.PythonSettings.Apps)) {
+            if (e.PropertyName == nameof(PythonSettings.Apps)) {
                 UpdateListBox();
             }
         }

@@ -14,6 +14,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Loaders;
 using AcManager.Tools.Managers;

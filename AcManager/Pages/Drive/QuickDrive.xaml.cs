@@ -115,7 +115,7 @@ namespace AcManager.Pages.Drive {
                             break;
 
                         case "/Pages/Drive/QuickDrive_Hotlap.xaml":
-                            SelectedModeViewModel = new QuickDrive_Hotlap.QuickDrive_HotlapViewModel();
+                            SelectedModeViewModel = new QuickDrive_Hotlap.ViewModel();
                             break;
 
                         case "/Pages/Drive/QuickDrive_Practice.xaml":
@@ -123,11 +123,11 @@ namespace AcManager.Pages.Drive {
                             break;
 
                         case "/Pages/Drive/QuickDrive_Race.xaml":
-                            SelectedModeViewModel = new QuickDrive_Race.QuickDrive_RaceViewModel();
+                            SelectedModeViewModel = new QuickDrive_Race.ViewModel();
                             break;
 
                         case "/Pages/Drive/QuickDrive_Weekend.xaml":
-                            SelectedModeViewModel = new QuickDrive_Weekend.QuickDrive_WeekendViewModel();
+                            SelectedModeViewModel = new QuickDrive_Weekend.ViewModel();
                             break;
 
                         case "/Pages/Drive/QuickDrive_TimeAttack.xaml":

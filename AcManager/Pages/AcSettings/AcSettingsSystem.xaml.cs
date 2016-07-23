@@ -1,4 +1,5 @@
 ﻿using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.AcSettings {
@@ -9,17 +10,15 @@ namespace AcManager.Pages.AcSettings {
         }
 
         public class AcSystemViewModel : NotifyPropertyChanged {
-            internal AcSystemViewModel() {
-                // GhostDisplayColor = Va
-            }
+            internal AcSystemViewModel() {}
 
-            public AcSettingsHolder.ProximityIndicatorSettings ProximityIndicator => AcSettingsHolder.ProximityIndicator;
+            public ProximityIndicatorSettings ProximityIndicator => AcSettingsHolder.ProximityIndicator;
 
-            public AcSettingsHolder.SkidmarksSettings Skidmarks => AcSettingsHolder.Skidmarks;
+            public SkidmarksSettings Skidmarks => AcSettingsHolder.Skidmarks;
 
-            public AcSettingsHolder.SystemSettings System => AcSettingsHolder.System;
+            public SystemSettings System => AcSettingsHolder.System;
 
-            public AcSettingsHolder.GhostSettings Ghost => AcSettingsHolder.Ghost;
+            public GhostSettings Ghost => AcSettingsHolder.Ghost;
 
             private string _ghostDisplayColor;
 

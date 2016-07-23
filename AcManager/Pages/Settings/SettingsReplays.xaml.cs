@@ -1,5 +1,6 @@
 ﻿using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Settings {
@@ -10,7 +11,7 @@ namespace AcManager.Pages.Settings {
         }
 
         public class ViewModel : NotifyPropertyChanged {
-            public AcSettingsHolder.ReplaySettings Replay => AcSettingsHolder.Replay;
+            public ReplaySettings Replay => AcSettingsHolder.Replay;
 
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 

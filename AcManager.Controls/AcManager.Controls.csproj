@@ -381,11 +381,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BinaryResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
     <EmbeddedResource Include="Properties\BinaryResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>BinaryResources.Designer.cs</LastGenOutput>
@@ -401,10 +396,6 @@
     <None Include="App.config" />
     <None Include="Assets\Data\Flags.zip" />
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
