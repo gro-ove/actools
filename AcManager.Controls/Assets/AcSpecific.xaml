@@ -49,7 +49,7 @@
             <Ellipse Style="{StaticResource PlaceMark}" DockPanel.Dock="Left" Margin="0 0 8 4"
                     Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}"
                     Visibility="{Binding PrizePlace, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <TextBlock Text="{Binding Name}" Name="NameTextBlock" TextTrimming="CharacterEllipsis" />
+            <TextBlock Text="{Binding Name}" x:Name="NameTextBlock" TextTrimming="CharacterEllipsis" />
         </DockPanel>
 
         <DataTemplate.Triggers>

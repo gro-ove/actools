@@ -6,13 +6,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Navigation;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Properties;
+using AcManager.Tools;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -72,7 +72,7 @@ namespace AcManager.Pages.Drive {
                 ShowExtensionMessage = false;
             }));
 
-            public string StartPage => "http://www.radiators-champ.com/RSRLiveTiming/index.php?page=hottest_combos";
+            public string StartPage => @"http://www.radiators-champ.com/RSRLiveTiming/index.php?page=hottest_combos";
 
             private string _eventId;
 
@@ -139,13 +139,13 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private async Task<Tuple<string, string>>  LoadData() {
+            private async Task<Tuple<string, string>> LoadData() {
                 Car = null;
                 CarSkin = null;
                 Track = null;
 
                 string uri;
-                if (EventId.Contains("/")) {
+                if (EventId.Contains(@"/")) {
                     var splitted = EventId.Split('/');
                     uri = $"http://www.radiators-champ.com/RSRLiveTiming/index.php?page=rank&track={splitted[0]}&car={splitted[1]}";
                 } else {
@@ -156,7 +156,7 @@ namespace AcManager.Pages.Drive {
                 using (var client = new WebClient {
                     Headers = {
                         [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent(),
-                        ["X-User-Agent"] = CmApiProvider.UserAgent
+                        [@"X-User-Agent"] = CmApiProvider.UserAgent
                     }
                 }) {
                     page = await client.DownloadStringTaskAsync(uri);
@@ -182,7 +182,7 @@ namespace AcManager.Pages.Drive {
                 try {
                     var app = PythonAppsManager.Instance.GetById(RsrMark.AppId);
                     if (app == null) {
-                        throw new InformativeException("RSR app is missing", @"Download it [url=""http://www.radiators-champ.com/RSRLiveTiming/""]here[/url].");
+                        throw new InformativeException(AppStrings.Rsr_AppIsMissing, AppStrings.Rsr_AppIsMissing_Commentary);
                     }
 
                     if (!app.Enabled) {
@@ -191,20 +191,20 @@ namespace AcManager.Pages.Drive {
                     }
 
                     if (!app.Enabled) {
-                        throw new InformativeException("RSR app is disabled", @"You need to enable it first.");
+                        throw new InformativeException(AppStrings.Rsr_AppIsDisabled, AppStrings.Rsr_AppIsDisabled_Commentary);
                     }
 
                     var ids = await LoadData();
                     if (ids == null) {
-                        throw new InformativeException("Invalid RSR parameters", "Make sure RSR website is working properly.");
+                        throw new InformativeException(AppStrings.Rsr_InvalidParameters, AppStrings.Rsr_InvalidParameters_Commentary);
                     }
 
                     if (Car == null) {
-                        throw new InformativeException($"Car “{ids.Item1}” is missing", @"[url=""https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit""]Here[/url] is the list of mods used by RSR (download links included).");
+                        throw new InformativeException(string.Format(ToolsStrings.AcError_CarIsMissing, ids.Item1), AppStrings.Rsr_ContentIsMissing_Commentary);
                     }
 
                     if (Track == null) {
-                        throw new InformativeException($"Car “{ids.Item2}” is missing", @"[url=""https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit""]Here[/url] is the list of mods used by RSR (download links included).");
+                        throw new InformativeException(string.Format(ToolsStrings.AcError_TrackIsMissing, ids.Item2), AppStrings.Rsr_ContentIsMissing_Commentary);
                     }
 
                     await GameWrapper.StartAsync(new Game.StartProperties {
@@ -225,7 +225,7 @@ namespace AcManager.Pages.Drive {
                         },
                         TrackProperties = Game.GetDefaultTrackPropertiesPreset().Properties,
                         ModeProperties = new Game.HotlapProperties {
-                            SessionName = "RSR Hotlap",
+                            SessionName = AppStrings.Rsr_SessionName,
                             Penalties = true,
                             GhostCar = GhostCar,
                             GhostCarAdvantage = 0d
@@ -237,7 +237,7 @@ namespace AcManager.Pages.Drive {
 
                     return true;
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t start race", e);
+                    NonfatalError.Notify(AppStrings.Common_CannotStartRace, e);
                     return false;
                 }
             }
@@ -264,8 +264,8 @@ namespace AcManager.Pages.Drive {
         private string GetCustomStyle() {
             var color = AppAppearanceManager.Instance.AccentColor;
             return BinaryResources.RsrStyle
-                                  .Replace("#E20035", color.ToHexString())
-                                  .Replace("#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
+                                  .Replace(@"#E20035", color.ToHexString())
+                                  .Replace(@"#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
         }
 
         private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
@@ -277,16 +277,16 @@ namespace AcManager.Pages.Drive {
                 var trackId = Regex.Match(uri, @"\btrack(?:Id)?=(\d+)");
                 var carId = Regex.Match(uri, @"\bcar(?:Id)?=(\d+)");
                 if (trackId.Success && carId.Success) {
-                    Model.EventId = trackId.Groups[1].Value + "/" + carId.Groups[1].Value;
+                    Model.EventId = trackId.Groups[1].Value + @"/" + carId.Groups[1].Value;
                 } else {
                     Model.EventId = null;
                 }
             }
 
-            WebBrowser.UserStyle = SettingsHolder.Live.RsrCustomStyle && uri.StartsWith("http://www.radiators-champ.com/RSRLiveTiming/")
+            WebBrowser.UserStyle = SettingsHolder.Live.RsrCustomStyle && uri.StartsWith(@"http://www.radiators-champ.com/RSRLiveTiming/")
                     ? GetCustomStyle() : null;
 
-            if (uri.Contains("page=setups")) {
+            if (uri.Contains(@"page=setups")) {
                 WebBrowser.Execute(@"
 window.addEventListener('load', function(){
     var ths = document.getElementsByTagName('th');
@@ -302,7 +302,7 @@ window.addEventListener('load', function(){
             new AssistsDialog(Assists).ShowDialog();
         }
 
-        private void UIElement_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void SkinLivery_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             e.Handled = true;
 
             var control = new CarBlock {

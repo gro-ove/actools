@@ -60,13 +60,13 @@
     <DockPanel x:Key="WidgetControlsPresets" FocusVisualStyle="{x:Null}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_ControlsPresets_Tooltip}"
             Background="Transparent" Width="{StaticResource BlockSize}" Height="{StaticResource BlockSize}" Margin="{StaticResource BlockMargin}">
         <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-                Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="PART_Menu" DockPanel.Dock="Bottom"
+                Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="PART_Menu" DockPanel.Dock="Bottom"
                 IsEnabled="{Binding PresetsReady, Source={x:Static conhs:ControlsPresets.Instance}}" Margin="{StaticResource LabelMargin}">
             <MenuItem HorizontalAlignment="Center" Style="{StaticResource UserPresetsControlMenuItem}"
                     ItemsSource="{Binding Presets, Source={x:Static conhs:ControlsPresets.Instance}}" Background="Transparent" BorderThickness="0"
                     HorizontalContentAlignment="Center" Margin="8 6 -2 0" Padding="1 0 3 0">
                 <MenuItem.Header>
-                    <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"
+                    <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"
                             FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource FontFamily}" FontSize="{StaticResource FontSize}"
                             DataContext="{x:Static acSettings:AcSettingsHolder.Controls}"
                             Text="{Binding CurrentPresetName, TargetNullValue='Unsaved', Converter={StaticResource ToUpperConverter}}">

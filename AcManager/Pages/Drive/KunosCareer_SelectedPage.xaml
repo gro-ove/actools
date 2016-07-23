@@ -54,7 +54,7 @@
                                 Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
                     </Grid>
 
-                    <Border BorderBrush="{StaticResource Completed}" BorderThickness="1" Visibility="Collapsed" Name="FullyFinished" />
+                    <Border BorderBrush="{StaticResource Completed}" BorderThickness="1" Visibility="Collapsed" x:Name="FullyFinished" />
                 </Grid>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding IsAvailable}" Value="False">
@@ -118,7 +118,7 @@
         <!--career errors-->
         <c:AcObjectErrorsSection AcObject="{Binding AcObject}" />
 
-        <Grid Visibility="{Binding AcObject.HasErrors, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" Name="ContentGrid">
+        <Grid Visibility="{Binding AcObject.HasErrors, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" x:Name="ContentGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="124" />
                 <RowDefinition Height="Auto" />
@@ -203,7 +203,7 @@
                     </userControls:KunosCareerBlock.ButtonPlaceholder>
                 </userControls:KunosCareerBlock>
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Name="TableSection"
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:Name="TableSection"
                         PreviewMouseWheel="TableSection_OnPreviewMouseWheel" Margin="0 0 0 -12">
                     <ScrollViewer.Resources>
                         <mui:BindingProxy x:Key="TableSectionProxy" Data="{Binding ActualWidth, ElementName=TableSection}" />
@@ -223,7 +223,7 @@
             </DockPanel>
 
             <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding AcObject.LoadedOnlyEvents}"
-                    SelectedItem="{Binding AcObject.SelectedEvent, Mode=TwoWay}" ScrollViewer.CanContentScroll="False" Name="ListBox"
+                    SelectedItem="{Binding AcObject.SelectedEvent, Mode=TwoWay}" ScrollViewer.CanContentScroll="False" x:Name="ListBox"
                     ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                     ItemTemplate="{StaticResource ItemTemplate}" Margin="-4 0 -4 12" ScrollViewer.ScrollChanged="ListBox_ScrollChanged"
                     PreviewMouseDoubleClick="ListBox_OnPreviewMouseDoubleClick" SelectionChanged="ListBox_OnSelectionChanged">

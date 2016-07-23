@@ -59,7 +59,7 @@
 
                     <Ellipse StrokeThickness="2" Stroke="White" Fill="Transparent" Width="64" Height="64" />
                     <Path Data="{StaticResource InformationIconData}" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Height="32"
-                            Width="32" Stretch="Uniform" Name="InformationIcon" />
+                            Width="32" Stretch="Uniform" x:Name="InformationIcon" />
                 </Grid>
                 <Grid.Triggers>
                     <EventTrigger RoutedEvent="Grid.MouseEnter">
@@ -84,7 +84,7 @@
             </Grid>
         </Grid>
 
-        <ContentPresenter Name="ButtonPresenter" DockPanel.Dock="Bottom" MinWidth="320" />
+        <ContentPresenter x:Name="ButtonPresenter" DockPanel.Dock="Bottom" MinWidth="320" />
 
         <!-- code -->
         <Grid DockPanel.Dock="Left" Margin="0 0 8 0">
@@ -112,7 +112,7 @@
                         ToolTip="{x:Static c:ControlsStrings.KunosCareer_RequiredSeriesAreNotFinishedYet}" Background="Transparent">
                     <Path Data="{StaticResource LockIconData}" Fill="{DynamicResource WindowText}" SnapsToDevicePixels="True" MaxHeight="10" Stretch="Uniform"
                             DockPanel.Dock="Left" />
-                    <TextBlock Text="{Binding DisplayRequired, StringFormat={x:Static c:ControlsStrings.KunosCareer_RequiredSeries}}" Name="LockTextBlock"
+                    <TextBlock Text="{Binding DisplayRequired, StringFormat={x:Static c:ControlsStrings.KunosCareer_RequiredSeries}}" x:Name="LockTextBlock"
                             Margin="4 0 0 0" />
                 </DockPanel>
 

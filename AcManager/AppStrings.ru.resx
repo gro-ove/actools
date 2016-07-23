@@ -375,7 +375,7 @@
 	<data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
     <value>Не удалось установить контент</value>
   </data>
-	<data name="Arguments_CannotStartRace" xml:space="preserve">
+	<data name="Common_CannotStartRace" xml:space="preserve">
     <value>Не удалось начать заезд</value>
   </data>
 	<data name="Settings_Content_SearchEngine" xml:space="preserve">

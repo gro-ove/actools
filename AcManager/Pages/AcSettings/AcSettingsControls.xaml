@@ -37,13 +37,13 @@
             <mui:ModernFrame Margin="0 4 1 0" Source="{Binding Controls.InputMethod.Id, Converter={x:Static acset:AcSettingsControls.ModeToUriConverter}}" />
         </DockPanel>
 
-        <StackPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" Name="DetectedControllers">
+        <StackPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" x:Name="DetectedControllers">
             <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8" Text="Detected controllers:" />
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                 <ItemsControl ItemsSource="{Binding Controls.Devices}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" />
+                            <StackPanel />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
@@ -131,12 +131,12 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                        Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="Menu"
+                        Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="Menu"
                         IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}">
                     <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}"
                             ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}" Width="{Binding Path=ActualWidth, ElementName=Menu}">
                         <MenuItem.Header>
-                            <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" DataContext="{Binding Controls}"
+                            <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" DataContext="{Binding Controls}"
                                     Text="{Binding CurrentPresetName, TargetNullValue='Unsaved'}">
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">

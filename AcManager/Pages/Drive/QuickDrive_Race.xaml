@@ -2,9 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:h="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_Race+ViewModel}"
-        Loaded="QuickDrive_Race_OnLoaded" Unloaded="QuickDrive_Race_OnUnloaded">
-
+        xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_Race+ViewModel}" Loaded="QuickDrive_Race_OnLoaded"
+        Unloaded="QuickDrive_Race_OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -35,13 +35,14 @@
             </Grid.RowDefinitions>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
-                <mui:ValueLabel Value="{Binding LapsNumber}"
-                        Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter=' lap'}" Content="Race duration" />
+                <mui:ValueLabel Value="{Binding LapsNumber}" Content="{x:Static g:AppStrings.Drive_RaceDuration}"
+                        Postfix="{Binding Path=LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}">
+                </mui:ValueLabel>
                 <Slider Minimum="1" Maximum="{Binding LapsNumberMaximumLimited}" Value="{Binding LapsNumber}" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0">
-                <mui:ValueLabel Value="{Binding AiLevel}" Postfix='%' Content="Opponents strength" />
+                <mui:ValueLabel Value="{Binding AiLevel}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
                 <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevel}" />
             </StackPanel>
 
@@ -49,12 +50,13 @@
                     IsEnabled="{Binding AiLevelFixed, Converter={StaticResource InvertBooleanConverter}}">
                 <StackPanel.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Arrange randomly" IsCheckable="True" IsChecked="{Binding AiLevelArrangeRandomly, Mode=TwoWay}" />
-                        <MenuItem Header="Arrange in reverse order" IsCheckable="True" ToolTip="The strongest opponent will be the last at the start line"
-                                IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
+                        <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeRandomly}" IsCheckable="True"
+                                IsChecked="{Binding AiLevelArrangeRandomly, Mode=TwoWay}" />
+                        <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder}" IsCheckable="True"
+                                ToolTip="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder_Tooltip}" IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
                     </ContextMenu>
                 </StackPanel.ContextMenu>
-                <mui:ValueLabel Value="{Binding AiLevelMin}" Postfix='%' Content="Opponents strength (min)" />
+                <mui:ValueLabel Value="{Binding AiLevelMin}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrengthMin}" />
                 <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevelMin}" />
             </StackPanel>
 
@@ -67,41 +69,43 @@
 
                 <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0">
                     <CheckBox Margin="8 0 0 0" IsChecked="{Binding AiLevelFixed}">
-                        <Label Content="_Fixed opponents strength" />
+                        <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
                     </CheckBox>
                 </StackPanel>
 
                 <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1">
                     <CheckBox Margin="8 0 0 0" IsChecked="{Binding Penalties}">
-                        <Label Content="{x:Static t:ToolsStrings.Drive_Penalties}" />
+                        <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
                     </CheckBox>
                 </StackPanel>
 
                 <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2">
                     <CheckBox Margin="8 0 0 0" IsChecked="{Binding JumpStartPenalty}">
-                        <Label Content="Penalty for _jump start" />
+                        <Label Content="{x:Static g:AppStrings.Drive_JumpStartPenalty}" />
                     </CheckBox>
                 </StackPanel>
             </Grid>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
-                <TextBlock Style="{StaticResource LabelWithPadding}" Text="Grid type:" Margin="0 0 0 4" />
+                <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static g:AppStrings.Drive_GridType}" Margin="0 0 0 4" />
                 <ComboBox Margin="4 0 4 0" ItemsSource="{Binding GridTypes}" SelectedItem="{Binding SelectedGridType}" DisplayMemberPath="DisplayName" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
                 <StackPanel.ToolTip>
-                    <ToolTip Content="{Binding TrackPitsNumber}" ContentStringFormat="Limited by number of pits available ({0})" />
+                    <ToolTip Content="{Binding TrackPitsNumber}" ContentStringFormat="{x:Static g:AppStrings.Drive_OpponentsMaximumLimitation_Tooltip}" />
                 </StackPanel.ToolTip>
 
                 <mui:ValueLabel Value="{Binding OpponentsNumber}"
-                        Postfix="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter=' opponent'}" />
+                        Postfix="{Binding Path=OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}">
+                </mui:ValueLabel>
                 <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
                 <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4"
-                        Text="{Binding DisplayStartingPosition, StringFormat='{}Starting position: {0}'}" />
+                        Text="{Binding Path=DisplayStartingPosition, StringFormat={x:Static c:ControlsStrings.Drive_StartingPositionFormat}}">
+                </TextBlock>
                 <Slider Minimum="0" Maximum="{Binding StartingPositionLimit}" Value="{Binding StartingPosition}" />
             </StackPanel>
         </Grid>
@@ -110,8 +114,10 @@
                 Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <DockPanel Grid.Column="1"
                 Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-            <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8" Text="Possible opponents list:"
-                    ToolTip="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}App will take {0} {opponent} from this list'}" />
+            <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8"
+                    Text="{x:Static g:AppStrings.Drive_ListOfPossibleOpponentsLabel}"
+                    ToolTip="{Binding Path=OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_ListOfPossibleOpponents_Tooltip}}">
+            </TextBlock>
 
             <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Error}" Text="{Binding OpponentsCarsError}"
                     Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -123,20 +129,21 @@
 
                 <DockPanel Margin="0 0 0 8" HorizontalAlignment="Stretch"
                         Visibility="{Binding SelectedGridType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠same_car'}">
-                    <TextBlock Text="Filter:" Width="60" DockPanel.Dock="Left" />
+                    <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
                     <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" h:FocusAdvancement.AdvancesByEnterKey="True" h:WatermarkService.Watermark="*"
                             Text="{Binding OpponentsCarsFilter, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" IsTextSearchEnabled="True"
                             ItemsSource="{Binding OpponentsCarsFilterHistory}" LostFocus="OpponentsCarsFilterTextBox_OnLostFocus" />
                 </DockPanel>
 
-                <ListBox Name="ListBox" ItemsSource="{Binding OpponentsCarsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                <ListBox x:Name="ListBox" ItemsSource="{Binding OpponentsCarsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
                         VirtualizingPanel.ScrollUnit="Pixel" Grid.Row="1" SelectionMode="Extended" />
 
                 <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0 0 4 0">
-                    <mui:ModernButton IconData="{StaticResource AddIconData}" Command="{Binding AddOpponentCarCommand}" ToolTip="Add a new car to the list" />
+                    <mui:ModernButton IconData="{StaticResource AddIconData}" Command="{Binding AddOpponentCarCommand}"
+                            ToolTip="{x:Static g:AppStrings.Drive_GridAdd_Tooltip}" />
                     <mui:ModernButton IconData="{StaticResource RemoveIconData}" Command="{Binding RemoveOpponentCarCommand}"
-                            CommandParameter="{Binding ElementName=ListBox}" ToolTip="Remove selected cars from the list" />
+                            CommandParameter="{Binding ElementName=ListBox}" ToolTip="{x:Static g:AppStrings.Drive_GridRemove_Tooltip}" />
                 </StackPanel>
             </Grid>
         </DockPanel>

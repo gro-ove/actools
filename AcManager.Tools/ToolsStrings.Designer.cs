@@ -79,6 +79,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Car “{0}” is missing.
+        /// </summary>
+        public static string AcError_CarIsMissing {
+            get {
+                return ResourceManager.GetString("AcError_CarIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Car’s parent is missing.
         /// </summary>
         public static string AcError_CarParentIsMissing {
@@ -1155,15 +1164,6 @@ namespace AcManager.Tools {
         public static string Common_Exporting {
             get {
                 return ResourceManager.GetString("Common_Exporting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Start race (Ctrl+G).
-        /// </summary>
-        public static string Common_Go_RaceTooltip {
-            get {
-                return ResourceManager.GetString("Common_Go_RaceTooltip", resourceCulture);
             }
         }
         

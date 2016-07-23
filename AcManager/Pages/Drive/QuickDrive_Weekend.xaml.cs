@@ -6,7 +6,6 @@ using System.Windows.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Processes;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Pages.Drive {
@@ -54,7 +53,7 @@ namespace AcManager.Pages.Drive {
             public int QualificationDuration {
                 get { return _qualificationDuration; }
                 set {
-                    value = MathUtils.Clamp(value, 5, 90);
+                    value = value.Clamp(5, 90);
                     if (Equals(value, _qualificationDuration)) return;
                     _qualificationDuration = value;
                     OnPropertyChanged();
@@ -137,12 +136,12 @@ namespace AcManager.Pages.Drive {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null) return null;
                 var number = value.AsInt();
-                return number == 0 ? "Skip" : number.ToString();
+                return number == 0 ? AppStrings.Drive_SkipSession : number.ToString();
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
                 if (value == null) return null;
-                return value as string == "Skip" ? 0 : value.AsInt();
+                return value as string == AppStrings.Drive_SkipSession ? 0 : value.AsInt();
             }
         }
 

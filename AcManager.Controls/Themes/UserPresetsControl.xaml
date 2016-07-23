@@ -24,14 +24,14 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                                Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="PART_Menu">
+                                Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="PART_Menu">
                             <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}"
                                     ItemsSource="{TemplateBinding SavedPresetsGrouped}" Width="{Binding Path=ActualWidth, ElementName=PART_Menu}"
                                     Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
                                     FontSize="{TemplateBinding FontSize}" BorderBrush="{TemplateBinding BorderBrush}" Foreground="{TemplateBinding Foreground}"
                                     FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}">
                                 <MenuItem.Header>
-                                    <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
+                                    <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
                                             Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}}"/>
                                 </MenuItem.Header>
                                 <MenuItem.ItemContainerStyle>

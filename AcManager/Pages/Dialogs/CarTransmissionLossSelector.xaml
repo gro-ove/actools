@@ -4,7 +4,7 @@
                   xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
                   mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300">
-    <StackPanel Orientation="Vertical">
+    <StackPanel>
         <TextBlock Text="Select transmission loss (%):" />
         <TextBox Text="{Binding Value}" attached:TextBoxAdvancement.SpecialMode="Number" attached:FocusAdvancement.AdvancesByEnterKey="True"
                 attached:WatermarkService.Watermark="?" />

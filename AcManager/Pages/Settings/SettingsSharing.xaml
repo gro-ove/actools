@@ -103,7 +103,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="400"
                         PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
                     <DataGrid ItemsSource="{Binding History}" Style="{StaticResource DataGrid.ReadOnly}" MouseDoubleClick="History_OnMouseDoubleClick"
-                            Name="HistoryDataGrid">
+                            x:Name="HistoryDataGrid">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width="160" Header="{x:Static g:AppStrings.Settings_Sharing_HistoryTableType}" SortMemberPath="EntryType"
                                     CellTemplate="{StaticResource HistoryEntryType}" />

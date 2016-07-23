@@ -19,7 +19,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ButtonBase}">
-                                <Grid Background="{TemplateBinding Background}" Name="Grid">
+                                <Grid Background="{TemplateBinding Background}" x:Name="Grid">
                                     <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True"
                                             SnapsToDevicePixels="True" />

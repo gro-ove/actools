@@ -21,7 +21,7 @@
         <Setter Property="Validation.ErrorTemplate">
             <Setter.Value>
                 <ControlTemplate>
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel>
                         <Border BorderThickness="1" BorderBrush="#FFdc000c" VerticalAlignment="Top">
                             <Grid>
                                 <AdornedElementPlaceholder x:Name="adorner" Margin="-1" />

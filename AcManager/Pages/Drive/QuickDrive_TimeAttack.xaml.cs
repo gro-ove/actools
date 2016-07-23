@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Objects;
 using AcTools.Processes;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_TimeAttack : IQuickDriveModeControl {
-        public class QuickDrive_TimeAttackViewModel : QuickDriveModeViewModel {
+        public class ViewModel : QuickDriveModeViewModel {
             private bool _penalties;
 
             public bool Penalties {
@@ -22,7 +21,7 @@ namespace AcManager.Pages.Drive {
                 public bool Penalties;
             }
 
-            public QuickDrive_TimeAttackViewModel(bool initialize = true) {
+            public ViewModel(bool initialize = true) {
                 Saveable = new SaveHelper<SaveableData>("__QuickDrive_TimeAttack", () => new SaveableData {
                     Penalties = Penalties,
                 }, o => {
@@ -54,7 +53,6 @@ namespace AcManager.Pages.Drive {
 
         public QuickDrive_TimeAttack() {
             InitializeComponent();
-            // DataContext = new QuickDrive_TimeAttackViewModel();
         }
 
 

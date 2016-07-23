@@ -12,8 +12,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Calendar">
-                    <StackPanel Name="PART_Root" HorizontalAlignment="Center">
-                        <CalendarItem Name="PART_CalendarItem" Style="{TemplateBinding CalendarItemStyle}" Background="{TemplateBinding Background}"
+                    <StackPanel x:Name="PART_Root" HorizontalAlignment="Center">
+                        <CalendarItem x:Name="PART_CalendarItem" Style="{TemplateBinding CalendarItemStyle}" Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" />
                     </StackPanel>
                 </ControlTemplate>
@@ -31,7 +31,7 @@
                                     HorizontalAlignment="Center" Text="{Binding}" Margin="0 6 0 6" VerticalAlignment="Center" />
                         </DataTemplate>
                     </ControlTemplate.Resources>
-                    <Grid Name="PART_Root">
+                    <Grid x:Name="PART_Root">
                         <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Background}">
                             <Grid>

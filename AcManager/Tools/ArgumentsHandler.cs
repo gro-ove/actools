@@ -118,7 +118,7 @@ namespace AcManager.Tools {
                 case "quickdrive":
                     var preset = Convert.FromBase64String(param).ToUtf8String();
                     if (!QuickDrive.RunSerializedPreset(preset)) {
-                        NonfatalError.Notify(AppStrings.Arguments_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
+                        NonfatalError.Notify(AppStrings.Common_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
                         return ArgumentHandleResult.Failed;
                     }
                     break;
@@ -569,7 +569,7 @@ namespace AcManager.Tools {
                             return ArgumentHandleResult.SuccessfulShow;
                         case Choise.Extra: // just go
                             if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
-                                throw new InformativeException(AppStrings.Arguments_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
+                                throw new InformativeException(AppStrings.Common_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
                             }
 
                             return ArgumentHandleResult.SuccessfulShow;

@@ -4,8 +4,8 @@
         d:DesignWidth="300" Title="Crop Image" MouseLeave="Editor_OnMouseLeave" MouseMove="Editor_OnMouseMove" MouseUp="Editor_OnMouseUp"
         MouseWheel="Editor_OnMouseWheel">
 
-    <Grid Name="MainGrid" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="Editor_OnMouseDown" ClipToBounds="True">
-        <Image Name="OriginalImage" />
-        <Border Name="SelectedArea" BorderThickness="1" UseLayoutRounding="False" BorderBrush="LightBlue" Background="#220000FF" HorizontalAlignment="Left" VerticalAlignment="Top" SnapsToDevicePixels="True" />
+    <Grid x:Name="MainGrid" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="Editor_OnMouseDown" ClipToBounds="True">
+        <Image x:Name="OriginalImage" />
+        <Border x:Name="SelectedArea" BorderThickness="1" UseLayoutRounding="False" BorderBrush="LightBlue" Background="#220000FF" HorizontalAlignment="Left" VerticalAlignment="Top" SnapsToDevicePixels="True" />
     </Grid>
 </mui:ModernDialog>

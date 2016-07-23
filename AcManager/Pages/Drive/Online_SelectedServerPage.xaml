@@ -174,7 +174,7 @@
                         <TextBlock Text="{x:Static g:AppStrings.Online_LeftLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
                         <TextBlock Text="{Binding Time}" Grid.Column="1" Grid.Row="1" />
-                        <TextBlock Name="TimeLeftTextBlock" Text="{Binding DisplayTimeLeft}" Grid.Column="3" Grid.Row="1" />
+                        <TextBlock x:Name="TimeLeftTextBlock" Text="{Binding DisplayTimeLeft}" Grid.Column="3" Grid.Row="1" />
                     </Grid>
 
                     <!-- sessions list -->

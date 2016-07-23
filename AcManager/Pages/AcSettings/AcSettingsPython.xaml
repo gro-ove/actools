@@ -99,7 +99,7 @@
         </DataGrid>
 
         <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
-            <controls:UserPresetsControl Name="UserPresetsControl" UserPresetable="{Binding Presets}" />
+            <controls:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" />
         </StackPanel>
     </Grid>
 </UserControl>

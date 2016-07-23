@@ -22,7 +22,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:AcToolBar}">
-                    <ToolBarTray Name="PART_ToolBarTray" VerticalAlignment="Bottom" Margin="{TemplateBinding Padding}" />
+                    <ToolBarTray x:Name="PART_ToolBarTray" VerticalAlignment="Bottom" Margin="{TemplateBinding Padding}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

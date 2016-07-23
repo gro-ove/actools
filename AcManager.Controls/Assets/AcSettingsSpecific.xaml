@@ -42,7 +42,7 @@
             </Grid>
 
             <Grid DockPanel.Dock="Bottom" Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                <Rectangle Margin="2 0 10 0" Name="Helper" />
+                <Rectangle Margin="2 0 10 0" x:Name="Helper" />
                 <Rectangle Fill="{DynamicResource ButtonBackground}" />
                 <Rectangle Fill="{DynamicResource Accent}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left"
                         Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
@@ -69,7 +69,7 @@
                             <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
                                     TextTrimming="CharacterEllipsis" />
                             <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0"
-                                    Name="ProviderName" TextTrimming="CharacterEllipsis" />
+                                    x:Name="ProviderName" TextTrimming="CharacterEllipsis" />
                             <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
                                     HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Normal" TextTrimming="CharacterEllipsis"
                                     Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" />

@@ -22,11 +22,11 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="Calendar">
-                                <Grid Name="PART_Root" Margin="4" HorizontalAlignment="Center">
+                                <Grid x:Name="PART_Root" Margin="4" HorizontalAlignment="Center">
                                     <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                                     <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
 
-                                    <CalendarItem Name="PART_CalendarItem" Background="{DynamicResource PopupBackground}"
+                                    <CalendarItem x:Name="PART_CalendarItem" Background="{DynamicResource PopupBackground}"
                                             Style="{TemplateBinding CalendarItemStyle}" BorderThickness="0" Margin="1" />
 
                                     <Border BorderBrush="{DynamicResource Accent}" BorderThickness="1" />
@@ -102,12 +102,12 @@
                 <ControlTemplate TargetType="DatePickerTextBox">
                     <Grid>
                         <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup Name="WatermarkStates">
+                            <VisualStateGroup x:Name="WatermarkStates">
                                 <VisualStateGroup.Transitions>
                                     <VisualTransition GeneratedDuration="0" />
                                 </VisualStateGroup.Transitions>
-                                <VisualState Name="Unwatermarked" />
-                                <VisualState Name="Watermarked">
+                                <VisualState x:Name="Unwatermarked" />
+                                <VisualState x:Name="Watermarked">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Opacity" To="0" Duration="0" />
                                         <DoubleAnimation Storyboard.TargetName="PART_Watermark" Storyboard.TargetProperty="Opacity" To="1" Duration="0" />

@@ -1138,6 +1138,9 @@
   <data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
     <value>Font is used but disabled</value>
   </data>
+  <data name="AcError_CarIsMissing" xml:space="preserve">
+    <value>Car “{0}” is missing</value>
+  </data>
   <data name="AcError_TrackIsMissing" xml:space="preserve">
     <value>Track “{0}” is missing</value>
   </data>
@@ -1266,8 +1269,5 @@
   </data>
   <data name="Common_Weekend" xml:space="preserve">
     <value>Weekend</value>
-  </data>
-  <data name="Common_Go_RaceTooltip" xml:space="preserve">
-    <value>Start race (Ctrl+G)</value>
   </data>
 </root>

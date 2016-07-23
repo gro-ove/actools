@@ -68,7 +68,7 @@
                                 <StackPanel Margin="0 0 8 0" Width="120">
                                     <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0 0 0 4" Content="{x:Static t:ToolsStrings.Common_Time}" />
                                     <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}"
-                                            Value="{Binding Time}" Margin="0 0 0 4" Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight"
+                                            Value="{Binding Time}" Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight"
                                             IsSnapToTickEnabled="False" />
                                 </StackPanel>
                                 <StackPanel Width="120">
@@ -76,7 +76,7 @@
                                             Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}"
                                             Content="{x:Static g:AppStrings.WeatherEdit_TemperatureCoefficientAirTemperature}" />
                                     <Slider Minimum="{x:Static drive:QuickDrive.TemperatureMinimum}" Maximum="{x:Static drive:QuickDrive.TemperatureMaximum}"
-                                            Value="{Binding Temperature}" Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False"
+                                            Value="{Binding Temperature}" x:Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False"
                                             TickPlacement="BottomRight" />
                                 </StackPanel>
                             </StackPanel>

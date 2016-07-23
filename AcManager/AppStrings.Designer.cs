@@ -448,15 +448,6 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t start race.
-        /// </summary>
-        public static string Arguments_CannotStartRace {
-            get {
-                return ResourceManager.GetString("Arguments_CannotStartRace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Make sure required car &amp; track are installed and available..
         /// </summary>
         public static string Arguments_CannotStartRace_Commentary {
@@ -720,6 +711,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t start race.
+        /// </summary>
+        public static string Common_CannotStartRace {
+            get {
+                return ResourceManager.GetString("Common_CannotStartRace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change.
         /// </summary>
         public static string Common_Change {
@@ -752,6 +752,24 @@ namespace AcManager {
         public static string Common_Go {
             get {
                 return ResourceManager.GetString("Common_Go", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start race (Ctrl+G).
+        /// </summary>
+        public static string Common_Go_RaceTooltip {
+            get {
+                return ResourceManager.GetString("Common_Go_RaceTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Got It.
+        /// </summary>
+        public static string Common_GotId {
+            get {
+                return ResourceManager.GetString("Common_GotId", resourceCulture);
             }
         }
         
@@ -882,6 +900,42 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Arrange in reverse order.
+        /// </summary>
+        public static string Drive_ArrangeInReverseOrder {
+            get {
+                return ResourceManager.GetString("Drive_ArrangeInReverseOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The strongest opponent will be the last at the start line.
+        /// </summary>
+        public static string Drive_ArrangeInReverseOrder_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_ArrangeInReverseOrder_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrange randomly.
+        /// </summary>
+        public static string Drive_ArrangeRandomly {
+            get {
+                return ResourceManager.GetString("Drive_ArrangeRandomly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Fixed opponents strength.
+        /// </summary>
+        public static string Drive_FixedOpponentsStrength {
+            get {
+                return ResourceManager.GetString("Drive_FixedOpponentsStrength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Ghost car.
         /// </summary>
         public static string Drive_GhostCar {
@@ -900,6 +954,87 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add a new car to the list.
+        /// </summary>
+        public static string Drive_GridAdd_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_GridAdd_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove selected cars from the list.
+        /// </summary>
+        public static string Drive_GridRemove_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_GridRemove_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grid type:.
+        /// </summary>
+        public static string Drive_GridType {
+            get {
+                return ResourceManager.GetString("Drive_GridType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Penalty for _jump start.
+        /// </summary>
+        public static string Drive_JumpStartPenalty {
+            get {
+                return ResourceManager.GetString("Drive_JumpStartPenalty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App will take {0} {opponent} from this list.
+        /// </summary>
+        public static string Drive_ListOfPossibleOpponents_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_ListOfPossibleOpponents_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Possible opponents list:.
+        /// </summary>
+        public static string Drive_ListOfPossibleOpponentsLabel {
+            get {
+                return ResourceManager.GetString("Drive_ListOfPossibleOpponentsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limited by number of pits available ({0}).
+        /// </summary>
+        public static string Drive_OpponentsMaximumLimitation_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_OpponentsMaximumLimitation_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opponents strength.
+        /// </summary>
+        public static string Drive_OpponentsStrength {
+            get {
+                return ResourceManager.GetString("Drive_OpponentsStrength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opponents strength (min).
+        /// </summary>
+        public static string Drive_OpponentsStrengthMin {
+            get {
+                return ResourceManager.GetString("Drive_OpponentsStrengthMin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Penalties.
         /// </summary>
         public static string Drive_Penalties {
@@ -909,11 +1044,38 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Race duration.
+        /// </summary>
+        public static string Drive_RaceDuration {
+            get {
+                return ResourceManager.GetString("Drive_RaceDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        public static string Drive_SkipSession {
+            get {
+                return ResourceManager.GetString("Drive_SkipSession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start from:.
         /// </summary>
         public static string Drive_StartFrom {
             get {
                 return ResourceManager.GetString("Drive_StartFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Tyre blankets.
+        /// </summary>
+        public static string Drive_TyreBlankets {
+            get {
+                return ResourceManager.GetString("Drive_TyreBlankets", resourceCulture);
             }
         }
         
@@ -2198,15 +2360,6 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Tyre blankets.
-        /// </summary>
-        public static string QuickDrive_TyreBlankets {
-            get {
-                return ResourceManager.GetString("QuickDrive_TyreBlankets", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {}Actual weather ({0}) isn&apos;t supported.
         /// </summary>
         public static string QuickDrive_Weather_Warning {
@@ -2250,6 +2403,105 @@ namespace AcManager {
         public static string Replay_SharedReadMe {
             get {
                 return ResourceManager.GetString("Replay_SharedReadMe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RSR app is disabled.
+        /// </summary>
+        public static string Rsr_AppIsDisabled {
+            get {
+                return ResourceManager.GetString("Rsr_AppIsDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to enable it first..
+        /// </summary>
+        public static string Rsr_AppIsDisabled_Commentary {
+            get {
+                return ResourceManager.GetString("Rsr_AppIsDisabled_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RSR app is missing.
+        /// </summary>
+        public static string Rsr_AppIsMissing {
+            get {
+                return ResourceManager.GetString("Rsr_AppIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download it [url=&quot;http://www.radiators-champ.com/RSRLiveTiming/&quot;]here[/url]..
+        /// </summary>
+        public static string Rsr_AppIsMissing_Commentary {
+            get {
+                return ResourceManager.GetString("Rsr_AppIsMissing_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you’re using Chrome-like browser, [url=&quot;https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc&quot;]here[/url] is an extension for starting RSR events directly from browser!.
+        /// </summary>
+        public static string Rsr_Commentary {
+            get {
+                return ResourceManager.GetString("Rsr_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [url=&quot;https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit&quot;]Here[/url] is the list of mods used by RSR (download links included)..
+        /// </summary>
+        public static string Rsr_ContentIsMissing_Commentary {
+            get {
+                return ResourceManager.GetString("Rsr_ContentIsMissing_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid RSR parameters.
+        /// </summary>
+        public static string Rsr_InvalidParameters {
+            get {
+                return ResourceManager.GetString("Rsr_InvalidParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure RSR website is working properly..
+        /// </summary>
+        public static string Rsr_InvalidParameters_Commentary {
+            get {
+                return ResourceManager.GetString("Rsr_InvalidParameters_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quit.
+        /// </summary>
+        public static string Rsr_Quit {
+            get {
+                return ResourceManager.GetString("Rsr_Quit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quit registration.
+        /// </summary>
+        public static string Rsr_Quit_Tooltip {
+            get {
+                return ResourceManager.GetString("Rsr_Quit_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RSR Hotlap.
+        /// </summary>
+        public static string Rsr_SessionName {
+            get {
+                return ResourceManager.GetString("Rsr_SessionName", resourceCulture);
             }
         }
         
@@ -4291,6 +4543,69 @@ namespace AcManager {
         public static string Solution_SetupPreview_Details {
             get {
                 return ResourceManager.GetString("Solution_SetupPreview_Details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure all required mods are installed..
+        /// </summary>
+        public static string Srs_CarIsMissing_Commentary {
+            get {
+                return ResourceManager.GetString("Srs_CarIsMissing_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Just in case, if you can&apos;t join using this section (or missed joining time), use Online section instead..
+        /// </summary>
+        public static string Srs_Commentary {
+            get {
+                return ResourceManager.GetString("Srs_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IP:.
+        /// </summary>
+        public static string Srs_IpLabel {
+            get {
+                return ResourceManager.GetString("Srs_IpLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port:.
+        /// </summary>
+        public static string Srs_PortLabel {
+            get {
+                return ResourceManager.GetString("Srs_PortLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to join the race.
+        /// </summary>
+        public static string Srs_ReadyNotification {
+            get {
+                return ResourceManager.GetString("Srs_ReadyNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SRS Server Is Ready.
+        /// </summary>
+        public static string Srs_ReadyNotificationHeader {
+            get {
+                return ResourceManager.GetString("Srs_ReadyNotificationHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start at:.
+        /// </summary>
+        public static string Srs_StartAtLabel {
+            get {
+                return ResourceManager.GetString("Srs_StartAtLabel", resourceCulture);
             }
         }
         

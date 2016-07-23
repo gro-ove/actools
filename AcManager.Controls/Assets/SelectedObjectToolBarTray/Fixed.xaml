@@ -13,7 +13,7 @@
                     <Grid>
                         <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="1" Fill="{TemplateBinding BorderBrush}" Margin="-1 -1 0 0" />
                         <Rectangle HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="1" Fill="{TemplateBinding BorderBrush}" Margin="-1 -1 0 0" />
-                        <ToolBarTray Name="PART_ToolBarTray" />
+                        <ToolBarTray x:Name="PART_ToolBarTray" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

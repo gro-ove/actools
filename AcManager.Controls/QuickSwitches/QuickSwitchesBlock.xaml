@@ -13,7 +13,7 @@
     <StackPanel Margin="16 8 8 48" VerticalAlignment="Center">
         <TextBlock Text="{x:Static Controls:ControlsStrings.QuickSwitches_Header}" Style="{StaticResource Heading1}" />
 
-        <ItemsControl Name="List">
+        <ItemsControl x:Name="List">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="3" />

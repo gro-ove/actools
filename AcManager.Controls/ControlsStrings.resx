@@ -817,4 +817,22 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Showroom_DialogHeader" xml:space="preserve">
     <value>Showroom</value>
   </data>
+  <data name="Common_SecondsPostfix" xml:space="preserve">
+    <value> sec</value>
+  </data>
+  <data name="Common_LapsPostfix" xml:space="preserve">
+    <value> lap</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="Common_OpponentsPostfix" xml:space="preserve">
+    <value> opponent</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="Drive_StartingPositionFormat" xml:space="preserve">
+    <value>Starting position: {0}</value>
+  </data>
+  <data name="Common_MinutePostfix" xml:space="preserve">
+    <value> minute</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
 </root>

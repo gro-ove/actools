@@ -5,7 +5,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ac:AcToolBar}">
                     <Border BorderBrush="GreenYellow" BorderThickness="2">
-                        <ToolBarTray Name="PART_ToolBarTray" />
+                        <ToolBarTray x:Name="PART_ToolBarTray" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

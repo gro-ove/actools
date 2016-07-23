@@ -9,7 +9,7 @@
         xmlns:effects="clr-namespace:FirstFloor.ModernUI.Effects;assembly=FirstFloor.ModernUI"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" xmlns:AcManager="clr-namespace:AcManager"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="KunosCareer_OnLoaded" Unloaded="KunosCareer_OnUnloaded"
-        d:DataContext="{d:DesignInstance drive:KunosCareer+KunosCareerViewModel}" Name="ThisControl">
+        d:DataContext="{d:DesignInstance drive:KunosCareer+KunosCareerViewModel}" x:Name="ThisControl">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -48,9 +48,9 @@
                                     <Grid.RenderTransform>
                                         <TranslateTransform />
                                     </Grid.RenderTransform>
-                                    <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="4" Text="{Binding Code}" Name="CodeTextBlock"
+                                    <TextBlock Foreground="White" HorizontalAlignment="Center" Margin="4" Text="{Binding Code}" x:Name="CodeTextBlock"
                                             FontWeight="Bold" />
-                                    <TextBlock Foreground="White" HorizontalAlignment="Right" Margin="4" Name="ProgressTextBlock">
+                                    <TextBlock Foreground="White" HorizontalAlignment="Right" Margin="4" x:Name="ProgressTextBlock">
                                         <TextBlock.Text>
                                             <MultiBinding StringFormat="{}{0}/{1}">
                                                 <Binding Path="CompletedEvents" />
@@ -66,14 +66,14 @@
                                                 ToolTip="{Binding Type, Converter={StaticResource EnumToDescriptionConverter}}" />
                                         <Path Data="{StaticResource LockIconData}" Fill="White" SnapsToDevicePixels="True" MaxWidth="32" Stretch="Uniform"
                                                 ToolTip="{x:Static AcManager:AppStrings.KunosCareer_RequiredSeriesAreNotDoneYet}" HorizontalAlignment="Right"
-                                                Visibility="Collapsed" Name="LockIcon" />
+                                                Visibility="Collapsed" x:Name="LockIcon" />
                                         <Path Data="{StaticResource CheckIconData}" Fill="{StaticResource Completed}" SnapsToDevicePixels="True" MaxWidth="32"
                                                 Stretch="Uniform" ToolTip="{x:Static AcManager:AppStrings.KunosCareer_FullyCompleted}"
-                                                HorizontalAlignment="Right" Visibility="Collapsed" Name="CheckIcon" />
+                                                HorizontalAlignment="Right" Visibility="Collapsed" x:Name="CheckIcon" />
                                     </Grid>
                                 </Grid>
 
-                                <Border BorderBrush="{StaticResource Completed}" BorderThickness="1" Visibility="Collapsed" Name="FullyFinished" />
+                                <Border BorderBrush="{StaticResource Completed}" BorderThickness="1" Visibility="Collapsed" x:Name="FullyFinished" />
                                 <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" MaxHeight="50" Stretch="Uniform"
                                         HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{DynamicResource Error}" Visibility="Collapsed"
                                         x:Name="ErrorIcon" />
@@ -182,7 +182,7 @@
         <Grid x:Name="MainListWrapper" Grid.ColumnSpan="2" Margin="-8 0 -8 0">
             <ListBox ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True"
                     ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                    ItemTemplate="{StaticResource ItemTemplate}" Name="ListBox" ScrollViewer.ScrollChanged="ListBox_ScrollChanged"
+                    ItemTemplate="{StaticResource ItemTemplate}" x:Name="ListBox" ScrollViewer.ScrollChanged="ListBox_ScrollChanged"
                     PreviewMouseDoubleClick="ListBox_OnPreviewMouseDoubleClick">
                 <i:Interaction.Behaviors>
                     <helpers:HorizontalScrollBehavior />

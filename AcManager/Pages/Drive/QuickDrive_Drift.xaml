@@ -5,27 +5,25 @@
     <UserControl.Resources>
         <Thickness x:Key="ElementMargin">0 0 8 16</Thickness>
     </UserControl.Resources>
-    <ScrollViewer>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
-                <CheckBox Margin="8 0 0 0" IsChecked="{Binding Penalties}">
-                    <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
-                </CheckBox>
-            </StackPanel>
+        <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
+            <CheckBox Margin="8 0 0 0" IsChecked="{Binding Penalties}">
+                <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
+            </CheckBox>
+        </StackPanel>
 
-            <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
-                <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static g:AppStrings.Drive_StartFrom}" Margin="0 0 0 4" />
-                <ComboBox Margin="4 0 4 0" ItemsSource="{Binding StartTypes}" SelectedItem="{Binding SelectedStartType}" />
-            </StackPanel>
-        </Grid>
-    </ScrollViewer>
+        <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
+            <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static g:AppStrings.Drive_StartFrom}" Margin="0 0 0 4" />
+            <ComboBox Margin="4 0 4 0" ItemsSource="{Binding StartTypes}" SelectedItem="{Binding SelectedStartType}" />
+        </StackPanel>
+    </Grid>
 </UserControl>

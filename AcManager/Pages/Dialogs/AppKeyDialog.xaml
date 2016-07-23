@@ -19,7 +19,7 @@
 
         <TextBox Text="{Binding Value, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="480"
                 attached:WatermarkService.Watermark="?" ToolTip="Please, don't share key, otherwise it might get revoked!"
-                attached:FocusAdvancement.AdvancesByEnterKey="True" Margin="0 8 0 0" Name="TextBox" />
+                attached:FocusAdvancement.AdvancesByEnterKey="True" Margin="0 8 0 0" x:Name="TextBox" />
 
         <ProgressBar IsIndeterminate="True"
                 Visibility="{Binding CheckingInProgress, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" Margin="0 8 0 0" />

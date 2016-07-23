@@ -103,7 +103,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
-                    <Grid Name="Bg"
+                    <Grid x:Name="Bg"
                           Background="{TemplateBinding Background}"
                           SnapsToDevicePixels="True" >
                         <Grid.RowDefinitions>
@@ -118,7 +118,7 @@
                             <Path Width="7" Height="4" Stretch="Fill" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RepeatButton}}" Data="M 0 4 L 3.5 0 L 7 4 Z" />
                         </RepeatButton>
                         <Track Grid.Row="1"
-                               Name="PART_Track"
+                               x:Name="PART_Track"
                                IsEnabled="{TemplateBinding IsMouseOver}"
                                IsDirectionReversed="True">
                             <Track.DecreaseRepeatButton>
@@ -151,7 +151,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
-                            <Grid Name="Bg"
+                            <Grid x:Name="Bg"
                                   Background="{TemplateBinding Background}"
                                   SnapsToDevicePixels="True" >
                                 <Grid.ColumnDefinitions>
@@ -166,7 +166,7 @@
                                     <Path Width="4" Height="7" Stretch="Fill" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RepeatButton}}" Data="M 0 3.5 L 4 7 L 4 0 Z" />
                                 </RepeatButton>
                                 <Track Grid.Column="1"
-                                       Name="PART_Track"
+                                       x:Name="PART_Track"
                                        IsEnabled="{TemplateBinding IsMouseOver}"
                                        IsDirectionReversed="False">
                                     <Track.DecreaseRepeatButton>
@@ -273,7 +273,7 @@
                                             ColumnHeaderToolTip="{Binding Path=TemplatedParent.View.ColumnHeaderToolTip,RelativeSource={RelativeSource TemplatedParent}}"
                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                             </ScrollViewer>
-                            <ScrollContentPresenter Name="PART_ScrollContentPresenter"
+                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
                                       KeyboardNavigation.DirectionalNavigation="Local"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"

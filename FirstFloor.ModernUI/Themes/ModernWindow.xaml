@@ -199,7 +199,7 @@
 
                                 <!-- additional content -->
                                 <ContentPresenter Content="{TemplateBinding AdditionalContent}" />
-                                <Rectangle Name="DimmingThing" Fill="Black" Opacity="0" IsHitTestVisible="False" />
+                                <Rectangle x:Name="DimmingThing" Fill="Black" Opacity="0" IsHitTestVisible="False" />
                             </Grid>
                         </Border>
                     </Border>

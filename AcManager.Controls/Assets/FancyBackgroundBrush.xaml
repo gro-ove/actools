@@ -5,8 +5,8 @@
                 <Grid.Effect>
                     <BlurEffect Radius="20" KernelType="Box" RenderingBias="Quality" />
                 </Grid.Effect>
-                <Image Name="BackgroundImage0" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill" Margin="-20" />
-                <Image Name="BackgroundImage1" RenderOptions.BitmapScalingMode="LowQuality" Opacity="0" Stretch="UniformToFill" Margin="-20">
+                <Image x:Name="BackgroundImage0" RenderOptions.BitmapScalingMode="LowQuality" Stretch="UniformToFill" Margin="-20" />
+                <Image x:Name="BackgroundImage1" RenderOptions.BitmapScalingMode="LowQuality" Opacity="0" Stretch="UniformToFill" Margin="-20">
                     <VisualStateManager.VisualStateGroups>
                         <VisualStateGroup>
                             <VisualState x:Name="State0">

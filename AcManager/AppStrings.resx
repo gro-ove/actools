@@ -117,7 +117,7 @@
   <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
     <value>Can’t install additional content</value>
   </data>
-  <data name="Arguments_CannotStartRace" xml:space="preserve">
+  <data name="Common_CannotStartRace" xml:space="preserve">
     <value>Can’t start race</value>
   </data>
   <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
@@ -2006,7 +2006,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   <data name="QuickDrive_TimeMultiplerLabel" xml:space="preserve">
     <value>Time multipler</value>
   </data>
-  <data name="QuickDrive_TyreBlankets" xml:space="preserve">
+  <data name="Drive_TyreBlankets" xml:space="preserve">
     <value>_Tyre blankets</value>
   </data>
   <data name="Drive_Penalties" xml:space="preserve">
@@ -2017,5 +2017,114 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   </data>
   <data name="Drive_GhostCar" xml:space="preserve">
     <value>_Ghost car</value>
+  </data>
+  <data name="Drive_GhostCarAdvantage" xml:space="preserve">
+    <value>Ghost car advantage</value>
+  </data>
+  <data name="Drive_RaceDuration" xml:space="preserve">
+    <value>Race duration</value>
+  </data>
+  <data name="Drive_OpponentsStrength" xml:space="preserve">
+    <value>Opponents strength</value>
+  </data>
+  <data name="Drive_ArrangeRandomly" xml:space="preserve">
+    <value>Arrange randomly</value>
+  </data>
+  <data name="Drive_ArrangeInReverseOrder" xml:space="preserve">
+    <value>Arrange in reverse order</value>
+  </data>
+  <data name="Drive_OpponentsStrengthMin" xml:space="preserve">
+    <value>Opponents strength (min)</value>
+  </data>
+  <data name="Drive_ArrangeInReverseOrder_Tooltip" xml:space="preserve">
+    <value>The strongest opponent will be the last at the start line</value>
+  </data>
+  <data name="Drive_FixedOpponentsStrength" xml:space="preserve">
+    <value>_Fixed opponents strength</value>
+  </data>
+  <data name="Drive_JumpStartPenalty" xml:space="preserve">
+    <value>Penalty for _jump start</value>
+  </data>
+  <data name="Drive_GridType" xml:space="preserve">
+    <value>Grid type:</value>
+  </data>
+  <data name="Drive_OpponentsMaximumLimitation_Tooltip" xml:space="preserve">
+    <value>Limited by number of pits available ({0})</value>
+  </data>
+  <data name="Drive_SkipSession" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="Drive_ListOfPossibleOpponentsLabel" xml:space="preserve">
+    <value>Possible opponents list:</value>
+  </data>
+  <data name="Drive_ListOfPossibleOpponents_Tooltip" xml:space="preserve">
+    <value>App will take {0} {opponent} from this list</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>Add a new car to the list</value>
+  </data>
+  <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
+    <value>Remove selected cars from the list</value>
+  </data>
+  <data name="Common_GotId" xml:space="preserve">
+    <value>Got It</value>
+  </data>
+  <data name="Rsr_Commentary" xml:space="preserve">
+    <value>If you’re using Chrome-like browser, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]here[/url] is an extension for starting RSR events directly from browser!</value>
+  </data>
+  <data name="Common_Go_RaceTooltip" xml:space="preserve">
+    <value>Start race (Ctrl+G)</value>
+  </data>
+  <data name="Rsr_AppIsMissing" xml:space="preserve">
+    <value>RSR app is missing</value>
+  </data>
+  <data name="Rsr_AppIsDisabled" xml:space="preserve">
+    <value>RSR app is disabled</value>
+  </data>
+  <data name="Rsr_InvalidParameters" xml:space="preserve">
+    <value>Invalid RSR parameters</value>
+  </data>
+  <data name="Rsr_AppIsMissing_Commentary" xml:space="preserve">
+    <value>Download it [url="http://www.radiators-champ.com/RSRLiveTiming/"]here[/url].</value>
+  </data>
+  <data name="Rsr_AppIsDisabled_Commentary" xml:space="preserve">
+    <value>You need to enable it first.</value>
+  </data>
+  <data name="Rsr_InvalidParameters_Commentary" xml:space="preserve">
+    <value>Make sure RSR website is working properly.</value>
+  </data>
+  <data name="Rsr_ContentIsMissing_Commentary" xml:space="preserve">
+    <value>[url="https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]Here[/url] is the list of mods used by RSR (download links included).</value>
+  </data>
+  <data name="Rsr_SessionName" xml:space="preserve">
+    <value>RSR Hotlap</value>
+  </data>
+  <data name="Srs_Commentary" xml:space="preserve">
+    <value>Just in case, if you can't join using this section (or missed joining time), use Online section instead.</value>
+  </data>
+  <data name="Srs_IpLabel" xml:space="preserve">
+    <value>IP:</value>
+  </data>
+  <data name="Srs_PortLabel" xml:space="preserve">
+    <value>Port:</value>
+  </data>
+  <data name="Srs_StartAtLabel" xml:space="preserve">
+    <value>Start at:</value>
+  </data>
+  <data name="Rsr_Quit" xml:space="preserve">
+    <value>Quit</value>
+  </data>
+  <data name="Rsr_Quit_Tooltip" xml:space="preserve">
+    <value>Quit registration</value>
+  </data>
+  <data name="Srs_ReadyNotificationHeader" xml:space="preserve">
+    <value>SRS Server Is Ready</value>
+  </data>
+  <data name="Srs_ReadyNotification" xml:space="preserve">
+    <value>Click to join the race</value>
+  </data>
+  <data name="Srs_CarIsMissing_Commentary" xml:space="preserve">
+    <value>Make sure all required mods are installed.</value>
   </data>
 </root>

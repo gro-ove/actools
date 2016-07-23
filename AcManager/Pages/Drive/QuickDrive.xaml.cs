@@ -118,7 +118,7 @@ namespace AcManager.Pages.Drive {
                             break;
 
                         case "/Pages/Drive/QuickDrive_Practice.xaml":
-                            SelectedModeViewModel = new QuickDrive_Practice.QuickDrive_PracticeViewModel();
+                            SelectedModeViewModel = new QuickDrive_Practice.ViewModel();
                             break;
 
                         case "/Pages/Drive/QuickDrive_Race.xaml":
@@ -130,7 +130,7 @@ namespace AcManager.Pages.Drive {
                             break;
 
                         case "/Pages/Drive/QuickDrive_TimeAttack.xaml":
-                            SelectedModeViewModel = new QuickDrive_TimeAttack.QuickDrive_TimeAttackViewModel();
+                            SelectedModeViewModel = new QuickDrive_TimeAttack.ViewModel();
                             break;
 
                         default:
@@ -603,9 +603,7 @@ namespace AcManager.Pages.Drive {
                         RealWeather = weather;
                         TryToSetTemperature(weather.Temperature);
                         await TryToSetWeatherType(weather.Type);
-                        if (track != SelectedTrack) return;
                     }
-
                 } finally {
                     _realWeatherInProcess = false;
                 }

@@ -57,7 +57,7 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="1" Name="PART_Thumb" />
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="1" x:Name="PART_Thumb" />
                             </Track.Thumb>
                         </Track>
                         <RepeatButton x:Name="PART_LineDownButton" Height="0" Width="0" Command="{x:Static ScrollBar.LineDownCommand}"
@@ -114,7 +114,7 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Height="1" Name="PART_Thumb" />
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Height="1" x:Name="PART_Thumb" />
                             </Track.Thumb>
                         </Track>
                         <RepeatButton x:Name="PART_LineRightButton" Height="0" Width="0" Command="{x:Static ScrollBar.LineRightCommand}"

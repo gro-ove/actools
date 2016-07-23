@@ -553,7 +553,7 @@ todo:
             + settings
             + selected
             + miscellaneous & lists
-            - drive
+            + drive
             - dialogs
             - acsettings
             - about

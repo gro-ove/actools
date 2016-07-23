@@ -87,7 +87,7 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_Online_LanScanConnectionLabel}" />
-                <ListBox Name="IgnoredInterfacesListBox" ItemsSource="{Binding NetworkInterfaces}" SelectionMode="Multiple"
+                <ListBox x:Name="IgnoredInterfacesListBox" ItemsSource="{Binding NetworkInterfaces}" SelectionMode="Multiple"
                         SelectionChanged="IgnoredInterfacesListBox_OnSelectionChanged" ItemContainerStyle="{StaticResource CheckBoxListBoxItem}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="networkInformation:NetworkInterface">

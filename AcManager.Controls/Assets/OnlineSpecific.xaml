@@ -67,7 +67,7 @@
 
     <!--session block-->
     <DataTemplate x:Key="SessionItem" DataType="{x:Type o:ServerEntry+Session}">
-        <TextBlock Text="{Binding DisplayTypeShort}" Name="TextBlock" Foreground="{DynamicResource ButtonText}" Style="{StaticResource Label}"
+        <TextBlock Text="{Binding DisplayTypeShort}" x:Name="TextBlock" Foreground="{DynamicResource ButtonText}" Style="{StaticResource Label}"
                 Background="{DynamicResource ButtonBackground}" Height="20" Width="20" TextAlignment="Center" Padding="0 2 0 0">
             <TextBlock.ToolTip>
                 <ToolTip>
@@ -89,7 +89,7 @@
 
     <!--car block-->
     <DataTemplate x:Key="CarItem" DataType="{x:Type o:ServerEntry+CarOrOnlyCarIdEntry}">
-        <TextBlock Text="{Binding CarObjectWrapper.Value.DisplayName}" Name="TextBlock" HorizontalAlignment="Center"
+        <TextBlock Text="{Binding CarObjectWrapper.Value.DisplayName}" x:Name="TextBlock" HorizontalAlignment="Center"
                 ToolTip="{StaticResource CarPreviewTooltip}" Style="{StaticResource Small}" Margin="4 0" Height="20" Padding="2"
                 Background="{DynamicResource ButtonBackground}" />
         <DataTemplate.Triggers>
@@ -389,7 +389,7 @@
                     <Border Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                         <Grid>
-                            <Rectangle Name="Bd" Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
+                            <Rectangle x:Name="Bd" Fill="{TemplateBinding Background}" HorizontalAlignment="Left" Width="4" />
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Grid>

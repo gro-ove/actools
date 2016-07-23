@@ -7,7 +7,7 @@
         Title="{Binding Track.DisplayName, Mode=OneTime}" MaxWidth="1200" MaxHeight="900"
         d:DataContext="{d:DesignInstance dialogs:TrackGeoTagsDialog+TrackGeoTagsDialogViewModel}">
 
-    <StackPanel Orientation="Vertical">
+    <StackPanel>
         <Grid Margin="0 8 8 8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80" />
@@ -30,6 +30,6 @@
                     attached:TextBoxAdvancement.SpecialMode="Number" attached:TextBoxAdvancement.MinValue="-180" attached:TextBoxAdvancement.MaxValue="180" attached:FocusAdvancement.AdvancesByEnterKey="True" attached:WatermarkService.Watermark="?" />
         </Grid>
 
-        <WebBrowser Name="MapWebBrowser" Width="1080" Height="640" Navigated="MapWebBrowser_OnNavigated" />
+        <WebBrowser x:Name="MapWebBrowser" Width="1080" Height="640" Navigated="MapWebBrowser_OnNavigated" />
     </StackPanel>
 </mui:ModernDialog>

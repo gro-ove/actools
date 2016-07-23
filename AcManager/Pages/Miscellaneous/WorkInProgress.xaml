@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
     <Grid Style="{StaticResource ContentRootWithPadding}">
-        <StackPanel Orientation="Vertical">
+        <StackPanel>
             <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Page_Wip}" />
             <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.Page_Wip_Commentary}" />
         </StackPanel>

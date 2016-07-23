@@ -24,7 +24,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Vertical" Margin="0 0 20 0" Grid.Column="0" Background="Gray">
+            <StackPanel Margin="0 0 20 0" Grid.Column="0" Background="Gray">
                 <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeTrackCommand}" HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch">
                     <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding Track}">
@@ -36,7 +36,7 @@
                 </Button>
             </StackPanel>
 
-            <StackPanel Orientation="Vertical" Margin="0 0 20 0" Grid.Column="1" Background="Gray">
+            <StackPanel Margin="0 0 20 0" Grid.Column="1" Background="Gray">
                 <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeCarCommand}" HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch">
                     <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">

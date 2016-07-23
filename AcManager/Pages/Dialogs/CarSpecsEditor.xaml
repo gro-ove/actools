@@ -4,7 +4,7 @@
         xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:oxy="http://oxyplot.org/wpf" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Title="Car Specifications">
 
-    <StackPanel Orientation="Vertical">
+    <StackPanel>
         <Grid Margin="0 10 10 10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80" />
@@ -29,18 +29,18 @@
             <TextBlock Text="P/W Ratio:" Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}"
                     ToolTip="Power to weight ratio, recommended format: '…kg/cv'" />
 
-            <TextBox Text="{Binding Car.SpecsBhp, Mode=OneWay}" Name="BhpInput" Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
+            <TextBox Text="{Binding Car.SpecsBhp, Mode=OneWay}" x:Name="BhpInput" Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
                     TextChanged="Input_OnTextChanged" PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="… bhp" />
-            <TextBox Text="{Binding Car.SpecsTorque}" Name="TorqueInput" Grid.Column="1" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}"
+            <TextBox Text="{Binding Car.SpecsTorque}" x:Name="TorqueInput" Grid.Column="1" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}"
                     PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…Nm" />
-            <TextBox Text="{Binding Car.SpecsWeight, Mode=OneWay}" Name="WeightInput" Grid.Column="1" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
+            <TextBox Text="{Binding Car.SpecsWeight, Mode=OneWay}" x:Name="WeightInput" Grid.Column="1" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
                     TextChanged="Input_OnTextChanged" PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…kg" />
 
-            <TextBox Text="{Binding Car.SpecsTopSpeed, Mode=OneWay}" Name="TopSpeedInput" Grid.Column="3" Grid.Row="0"
+            <TextBox Text="{Binding Car.SpecsTopSpeed, Mode=OneWay}" x:Name="TopSpeedInput" Grid.Column="3" Grid.Row="0"
                     Style="{StaticResource TextBoxAsTextBlock}" PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…km/h" />
-            <TextBox Text="{Binding Car.SpecsAcceleration}" Name="AccelerationInput" Grid.Column="3" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}"
+            <TextBox Text="{Binding Car.SpecsAcceleration}" x:Name="AccelerationInput" Grid.Column="3" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}"
                     PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…s 0-100" />
-            <TextBox Text="{Binding Car.SpecsPwRatio, Mode=OneWay}" Name="PwRatioInput" Grid.Column="3" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
+            <TextBox Text="{Binding Car.SpecsPwRatio, Mode=OneWay}" x:Name="PwRatioInput" Grid.Column="3" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
                     PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…kg/cv" />
         </Grid>
 

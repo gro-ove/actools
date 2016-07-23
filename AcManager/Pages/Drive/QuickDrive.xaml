@@ -28,7 +28,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Vertical" Margin="0 0 20 0" Background="Gray">
+            <StackPanel Margin="0 0 20 0" Background="Gray">
                 <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeCarCommand}" HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch">
                     <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
@@ -39,7 +39,7 @@
                 </Button>
             </StackPanel>
 
-            <StackPanel Orientation="Vertical" Margin="0 0 20 0" Grid.Column="1" Background="Gray">
+            <StackPanel Margin="0 0 20 0" Grid.Column="1" Background="Gray">
                 <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeTrackCommand}" HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch">
                     <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding SelectedTrack}">
@@ -64,7 +64,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="0"
+                <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="0"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
                         <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0" Content="{x:Static g:AppStrings.QuickDrive_Time}" />
@@ -87,7 +87,7 @@
                     </CheckBox.ContextMenu>
                 </CheckBox>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="1"
+                <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
                         <TextBlock Text="{x:Static g:AppStrings.QuickDrive_WeatherLabel}" Style="{StaticResource LabelWithPadding}" />
@@ -102,7 +102,7 @@
                     <ComboBox Margin="4 0 4 0" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}" />
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
+                <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number"
                             Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.QuickDrive_Temperature}">
@@ -153,12 +153,12 @@
                     </Grid>
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
+                <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
                     <TextBlock Text="{x:Static g:AppStrings.QuickDrive_TrackStateLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
                     <ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2">
+                <StackPanel Grid.Row="1" Grid.Column="2">
                     <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="{x:Static g:AppStrings.QuickDrive_TimeMultiplerLabel}" />
                     <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
                             Margin="0 0 0 4" x:Name="TimeMultiplerSlider" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
@@ -181,13 +181,13 @@
                         </Button.ToolTip>
                     </Button>
                     <CheckBox IsChecked="{Binding TyreBlankets}">
-                        <Label Content="{x:Static g:AppStrings.QuickDrive_TyreBlankets}" />
+                        <Label Content="{x:Static g:AppStrings.Drive_TyreBlankets}" />
                     </CheckBox>
                 </DockPanel>
             </StackPanel>
 
             <mui:ModernTab Grid.Column="1" LinksMargin="0" FrameMargin="0 40 0 4" LinksHorizontalAlignment="Left"
-                    SelectedSource="{Binding SelectedMode, Mode=TwoWay}" Name="ModeTab" FrameNavigated="ModeTab_OnFrameNavigated" VerticalAlignment="Stretch"
+                    SelectedSource="{Binding SelectedMode, Mode=TwoWay}" x:Name="ModeTab" FrameNavigated="ModeTab_OnFrameNavigated" VerticalAlignment="Stretch"
                     ContentLoader="{x:Static drive:QuickDrive.ContentLoader}">
                 <mui:ModernTab.Links>
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Practice}" Source="/Pages/Drive/QuickDrive_Practice.xaml" />
@@ -205,7 +205,7 @@
             <c:UserPresetsControl x:Name="UserPresetsControl" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
             <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
                     Content="{x:Static g:AppStrings.Common_Share}" />
-            <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="{x:Static t:ToolsStrings.Common_Go_RaceTooltip}"
+            <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="{x:Static g:AppStrings.Common_Go_RaceTooltip}"
                     Content="{x:Static g:AppStrings.Common_Go}" />
         </StackPanel>
     </Grid>

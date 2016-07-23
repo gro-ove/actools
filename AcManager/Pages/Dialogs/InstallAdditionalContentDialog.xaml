@@ -5,9 +5,9 @@
         Width="540" MaxHeight="960" Loaded="InstallAdditionalContentDialog_OnLoaded" Unloaded="InstallAdditionalContentDialog_OnUnloaded"
         SizeToContent="Height" d:DataContext="{d:DesignInstance dialogs:InstallAdditionalContentDialog}">
     <Grid>
-        <mui:ModernProgressRing Name="Loading" Margin="8" IsActive="True" Width="80" Height="80" />
+        <mui:ModernProgressRing x:Name="Loading" Margin="8" IsActive="True" Width="80" Height="80" />
 
-        <Grid Name="MainContent" Visibility="Collapsed">
+        <Grid x:Name="MainContent" Visibility="Collapsed">
             <StackPanel Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="Nothing found" />
             </StackPanel>
@@ -26,15 +26,15 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
 
-                            <CheckBox Name="InstallEntry" IsChecked="{Binding InstallEntry}" VerticalAlignment="Top" Margin="0 4 0 0" />
+                            <CheckBox x:Name="InstallEntry" IsChecked="{Binding InstallEntry}" VerticalAlignment="Top" Margin="0 4 0 0" />
 
-                            <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1">
+                            <StackPanel Grid.Row="0" Grid.Column="1">
                                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
                                 <TextBlock Text="{Binding Entry.Id, StringFormat='ID: \{0\}'}" Style="{StaticResource Small}" />
                                 <TextBlock Text="{Binding Entry.Path, StringFormat='Path: \{0\}'}" Style="{StaticResource Small}" />
                             </StackPanel>
 
-                            <StackPanel Name="UpdateOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="0 8 0 0"
+                            <StackPanel x:Name="UpdateOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="0 8 0 0"
                                     IsEnabled="{Binding Path=IsChecked, ElementName=InstallEntry}">
                                 <TextBlock Text="What to update:" Style="{StaticResource LabelWithPadding}" />
                                 <ComboBox ItemsSource="{Binding UpdateOptionsList}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0" />

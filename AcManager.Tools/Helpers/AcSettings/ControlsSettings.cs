@@ -22,7 +22,6 @@ using Key = System.Windows.Input.Key;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class ControlsSettings : IniSettings, IDisposable {
-
         public const string SubBuiltInPresets = "presets";
         public const string SubUserPresets = "savedsetups";
         public const string PresetExtension = ".ini";
@@ -924,7 +923,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("MOUSE_SPEED", KeyboardMouseSteeringSpeed);
 
             section = Ini["__LAUNCHER_CM"];
-            section.Set("PRESET_NAME", CurrentPresetFilename.SubstringExt(PresetsDirectory.Length + 1));
+            section.Set("PRESET_NAME", CurrentPresetFilename?.SubstringExt(PresetsDirectory.Length + 1));
             section.Set("PRESET_CHANGED", CurrentPresetChanged);
 
             SaveControllers();

@@ -10,7 +10,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ac:AcObjectHeaderSection">
-                    <TextBox Name="DisplayName" Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
+                    <TextBox x:Name="DisplayName" Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
                             attached:FocusAdvancement.AdvancesByEnterKey="True" Style="{StaticResource TextBoxAsTextBlock.Heading2}"
                             FontStyle="{Binding AcObject.Changed, Converter={StaticResource BooleanToFontStyleConverter}, RelativeSource={RelativeSource TemplatedParent}}" />
                 </ControlTemplate>

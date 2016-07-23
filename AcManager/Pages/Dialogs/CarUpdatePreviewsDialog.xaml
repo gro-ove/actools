@@ -17,7 +17,7 @@
     </mui:ModernDialog.Resources>
 
     <Grid>
-        <DockPanel Name="OptionsPhase" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <DockPanel x:Name="OptionsPhase" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <!--first two rows-->
             <Grid HorizontalAlignment="Stretch" DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
@@ -30,7 +30,7 @@
                 </Grid.RowDefinitions>
 
                 <!--first column, showroom & filter-->
-                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
+                <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
                     <TextBlock Margin="0 0 0 4" Text="Showroom:" Style="{StaticResource LabelWithPadding}" />
                     <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
                         <ComboBox.ItemContainerStyle>
@@ -41,18 +41,18 @@
                     </ComboBox>
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
+                <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
                     <TextBlock Margin="0 0 0 4" Text="Filter:" Style="{StaticResource LabelWithPadding}" />
                     <ComboBox Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
                 </StackPanel>
 
                 <!--second column, camera position-->
-                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">
+                <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">
                     <TextBlock Margin="0 0 0 4" Text="Camera Position:" Style="{StaticResource LabelWithPadding}" />
                     <TextBox Margin="4 0 4 0" Text="{Binding CameraPosition}" />
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="1">
+                <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="1">
                     <TextBlock Margin="0 0 0 4" Text="Look At:" Style="{StaticResource LabelWithPadding}" />
                     <TextBox Margin="4 0 4 0" Text="{Binding CameraLookAt}" />
                 </StackPanel>
@@ -112,23 +112,23 @@
                     </CheckBox>
                 </Grid>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="2">
+                <StackPanel Margin="0 0 8 8" Grid.Row="0" Grid.Column="2">
                     <TextBlock Margin="0 0 0 4" Text="FOV:" Style="{StaticResource LabelWithPadding}" />
                     <TextBox Margin="5 0 5 0" Text="{Binding CameraFov}" attached:TextBoxAdvancement.SpecialMode="Number" />
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="2">
+                <StackPanel Margin="0 0 8 8" Grid.Row="1" Grid.Column="2">
                     <TextBlock Margin="0 0 0 4" Text="Exposure:" Style="{StaticResource LabelWithPadding}" />
                     <TextBox Margin="4 0 4 0" Text="{Binding CameraExposure}" attached:TextBoxAdvancement.SpecialMode="Number"
                             attached:WatermarkService.Watermark="?" />
                 </StackPanel>
             </Grid>
         </DockPanel>
-        <StackPanel Name="WaitingPhase" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+        <StackPanel x:Name="WaitingPhase" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
             <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" />
             <TextBlock Text="{Binding Status}" />
         </StackPanel>
-        <StackPanel Name="ResultPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
+        <StackPanel x:Name="ResultPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
             <ListBox ItemsSource="{Binding ResultPreviewComparisonsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="4"
                     IsSynchronizedWithCurrentItem="True" MaxHeight="76">
                 <ListBox.ItemsPanel>
@@ -156,14 +156,14 @@
 
             <TextBlock Text="{Binding TakenTime, StringFormat='Taken time: \{0:mm\\:ss\}'}" Margin="0 8 0 0" Style="{StaticResource Small}" />
         </StackPanel>
-        <StackPanel Name="ErrorPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
+        <StackPanel x:Name="ErrorPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
             <TextBlock Text="Error" Style="{StaticResource Heading1}" />
             <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="20" />
         </StackPanel>
     </Grid>
 
     <mui:ModernDialog.ButtonsRowContent>
-        <controls:UserPresetsControl Name="UserPresetsControl" UserPresetable="{Binding}"
+        <controls:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding}"
                 Visibility="{Binding CurrentPhase, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static dialogs:CarUpdatePreviewsDialog+Phase.Options}}" />
     </mui:ModernDialog.ButtonsRowContent>
 </mui:ModernDialog>

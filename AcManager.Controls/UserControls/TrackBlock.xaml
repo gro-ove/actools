@@ -4,7 +4,7 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:objects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
         xmlns:c="clr-namespace:AcManager.Controls"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:TrackBlock}" Name="ThisControl">
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance local:TrackBlock}" x:Name="ThisControl">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,7 +14,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <DockPanel Name="InnerTrackBlockPanel">
+    <DockPanel x:Name="InnerTrackBlockPanel">
         <!-- data section -->
         <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}" DataContext="{Binding Track}" Margin="0 10 0 0"
                 HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Bottom" MaxHeight="140">

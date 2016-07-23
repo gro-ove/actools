@@ -81,7 +81,7 @@
                                             </Grid>
                                         </Grid>
 
-                                        <Rectangle Name="DimmingThing" Fill="Black" Opacity="0" IsHitTestVisible="False" />
+                                        <Rectangle x:Name="DimmingThing" Fill="Black" Opacity="0" IsHitTestVisible="False" />
                                     </Grid>
                                 </AdornerDecorator>
                             </Border>

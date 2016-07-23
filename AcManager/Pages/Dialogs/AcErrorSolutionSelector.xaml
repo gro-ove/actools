@@ -23,7 +23,7 @@
                     VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical" ToolTip="{Binding Description}">
+                        <StackPanel ToolTip="{Binding Description}">
                             <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" FontWeight="Bold" />
                             <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Style="{StaticResource Small}" Margin="0 4 0 0"
                                     Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}" />

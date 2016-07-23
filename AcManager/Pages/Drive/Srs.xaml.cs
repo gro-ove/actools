@@ -13,6 +13,7 @@ using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Internal;
 using AcManager.Properties;
+using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
@@ -99,7 +100,7 @@ namespace AcManager.Pages.Drive {
                 ShowExtensionMessage = false;
             }));
 
-            public string StartPage => "http://www.simracingsystem.com";
+            public string StartPage => @"http://www.simracingsystem.com";
 
             public void Reset() {
                 Server = null;
@@ -158,7 +159,7 @@ namespace AcManager.Pages.Drive {
 
                 _available = available;
                 if (_available) {
-                    Toast.Show("SRS Server Is Ready", "Click to join the race", () => {
+                    Toast.Show(AppStrings.Srs_ReadyNotificationHeader, AppStrings.Srs_ReadyNotification, () => {
                         Go().Forget();
                     });
                 }
@@ -220,8 +221,7 @@ namespace AcManager.Pages.Drive {
 
                 try {
                     if (Car == null) {
-                        throw new InformativeException($"Car “{CarId}” is missing",
-                                @"Make sure all required mods are installed.");
+                        throw new InformativeException(string.Format(ToolsStrings.AcError_CarIsMissing, CarId), AppStrings.Srs_CarIsMissing_Commentary);
                     }
 
                     var anyTrack = TracksManager.Instance.GetDefault();
@@ -251,7 +251,7 @@ namespace AcManager.Pages.Drive {
 
                     return true;
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t start race", e);
+                    NonfatalError.Notify(AppStrings.Common_CannotStartRace, e);
                     return false;
                 }
             }
@@ -274,7 +274,7 @@ namespace AcManager.Pages.Drive {
         private RelayCommand _testCommand;
 
         public RelayCommand TestCommand => _testCommand ?? (_testCommand = new RelayCommand(o => {
-            WebBrowser.Execute("location.reload(true)");
+            WebBrowser.Execute(@"location.reload(true)");
         }));
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -384,13 +384,13 @@ for (var i = 0; i < l.length; i++){{
         private string GetCustomStyle() {
             var color = AppAppearanceManager.Instance.AccentColor;
             return BinaryResources.SrsStyle
-                                  .Replace("#E20035", color.ToHexString())
-                                  .Replace("#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
+                                  .Replace(@"#E20035", color.ToHexString())
+                                  .Replace(@"#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
         }
 
         private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
             var uri = e.Url;
-            if (uri.StartsWith("http://www.simracingsystem.com/select.php?", StringComparison.OrdinalIgnoreCase)) {
+            if (uri.StartsWith(@"http://www.simracingsystem.com/select.php?", StringComparison.OrdinalIgnoreCase)) {
                 WebBrowser.Execute(@"
 var s = document.createElement('style');
 s.innerHTML = '#content { display: none !important }';
@@ -413,7 +413,7 @@ var a = [];
 var b = document.querySelectorAll('[onclick*=""./regsrs.php?""]');
 for (var i = 0; i < b.length; i++){ var c = (b[i].getAttribute('onclick').match(/&h=(\w+)/)||{})[1]; if (c) a.push(c); }
 window.external.SetCars(JSON.stringify(a));", true);
-            } else if (uri.StartsWith("http://www.simracingsystem.com/race.php", StringComparison.OrdinalIgnoreCase)) {
+            } else if (uri.StartsWith(@"http://www.simracingsystem.com/race.php", StringComparison.OrdinalIgnoreCase)) {
                 Logging.Write("WebBrowser_OnPageLoaded(): " + uri);
                 WebBrowser.Execute(@"
 window.external.Log('Here');
@@ -444,7 +444,7 @@ b.addEventListener('click', function (){
 }, false)", true);
             }
 
-            WebBrowser.UserStyle = SettingsHolder.Live.SrsCustomStyle && uri.StartsWith("http://www.simracingsystem.com")
+            WebBrowser.UserStyle = SettingsHolder.Live.SrsCustomStyle && uri.StartsWith(@"http://www.simracingsystem.com")
                     ? GetCustomStyle() : null;
         }
 

@@ -6,7 +6,8 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class StringExtension {
-        public static int CompareAsVersionTo(this string a, string b) {
+        [Pure]
+        public static int CompareAsVersionTo([CanBeNull] this string a, [CanBeNull] string b) {
             if (a == null) return b == null ? 0 : -1;
             if (b == null) return 1;
 
@@ -21,27 +22,32 @@ namespace AcTools.Utils.Helpers {
             return ap.Length - bp.Length;
         }
 
-        public static bool IsVersionNewerThan(this string currentVersion, string checkableVersion) {
+        [Pure]
+        public static bool IsVersionNewerThan([CanBeNull] this string currentVersion, [CanBeNull] string checkableVersion) {
             return currentVersion.CompareAsVersionTo(checkableVersion) > 0;
         }
 
-        public static bool IsVersionOlderThan(this string currentVersion, string checkableVersion) {
+        [Pure]
+        public static bool IsVersionOlderThan([CanBeNull] this string currentVersion, [CanBeNull] string checkableVersion) {
             return currentVersion.CompareAsVersionTo(checkableVersion) < 0;
         }
 
-        public static string ForceReplace(this string s, string oldValue, string newValue) {
+        [Pure, NotNull]
+        public static string ForceReplace([NotNull] this string s, [NotNull] string oldValue, [NotNull] string newValue) {
             var index = s.IndexOf(oldValue, StringComparison.CurrentCulture);
             if (index == -1) throw new Exception("Old value not found");
             return s.Substring(0, index) + newValue + s.Substring(index + oldValue.Length);
         }
 
-        public static string ForceReplace(this string s, string oldValue, string newValue, StringComparison comparison) {
+        [Pure, NotNull]
+        public static string ForceReplace([NotNull] this string s, [NotNull] string oldValue, [NotNull] string newValue, StringComparison comparison) {
             var index = s.IndexOf(oldValue, comparison);
             if (index == -1) throw new Exception("Old value not found");
             return s.Substring(0, index) + newValue + s.Substring(index + oldValue.Length);
         }
-
-        public static string Replace(this string s, string oldValue, string newValue, StringComparison comparison) {
+        
+        [Pure, NotNull]
+        public static string Replace([NotNull] this string s, [NotNull] string oldValue, [NotNull] string newValue, StringComparison comparison) {
             var index = s.IndexOf(oldValue, comparison);
             return index != -1 ? s.Substring(0, index) + newValue + s.Substring(index + oldValue.Length) : s;
         }
@@ -50,7 +56,8 @@ namespace AcTools.Utils.Helpers {
             return s.IndexOf(sub, comparison) != -1;
         }
 
-        public static string SubstringExt(this string s, int from) {
+        [Pure, NotNull]
+        public static string SubstringExt([NotNull] this string s, int from) {
             if (from < 0) {
                 from = s.Length - from;
             }
@@ -62,7 +69,8 @@ namespace AcTools.Utils.Helpers {
             return from <= 0 ? s : s.Substring(from);
         }
 
-        public static string ApartFromLast(this string s, int apart) {
+        [Pure, NotNull]
+        public static string ApartFromLast([NotNull] this string s, int apart) {
             if (apart < 0) {
                 apart = s.Length - apart;
             }
@@ -74,29 +82,31 @@ namespace AcTools.Utils.Helpers {
             return apart <= 0 ? s : s.Substring(0, s.Length - apart);
         }
 
-        public static string ApartFromFirst(this string s, string apart) {
+        [Pure, NotNull]
+        public static string ApartFromFirst([NotNull] this string s, [CanBeNull] string apart) {
             if (apart == string.Empty) return s;
-            return s.StartsWith(apart) ? s.Substring(apart?.Length ?? 0) : s;
+            return apart == null ? s : s.StartsWith(apart) ? s.Substring(apart.Length) : s;
         }
 
-        public static string ApartFromFirst(this string s, string apart, StringComparison comparisonType) {
+        [Pure, NotNull]
+        public static string ApartFromFirst([NotNull] this string s, [CanBeNull] string apart, StringComparison comparisonType) {
             if (apart == string.Empty) return s;
-            return s.StartsWith(apart, comparisonType) ? s.Substring(apart?.Length ?? 0) : s;
+            return apart == null ? s : s.StartsWith(apart, comparisonType) ? s.Substring(apart.Length) : s;
         }
 
-        public static string ApartFromLast(this string s, string apart) {
+        [Pure, NotNull]
+        public static string ApartFromLast([NotNull] this string s, [CanBeNull] string apart) {
             if (apart == string.Empty) return s;
-            return s.EndsWith(apart) ? s.ApartFromLast(apart?.Length ?? 0) : s;
+            return apart == null ? s : s.EndsWith(apart) ? s.ApartFromLast(apart.Length) : s;
         }
 
-        public static string ApartFromLast(this string s, string apart, StringComparison comparisonType) {
+        public static string ApartFromLast([NotNull] this string s, [CanBeNull] string apart, StringComparison comparisonType) {
             if (apart == string.Empty) return s;
-            return s.EndsWith(apart, comparisonType) ? s.ApartFromLast(apart?.Length ?? 0) : s;
+            return apart == null ? s : s.EndsWith(apart, comparisonType) ? s.ApartFromLast(apart.Length) : s;
         }
 
-        [Pure]
-        [NotNull]
-        public static string ReplaceLastOccurrence([NotNull]this string s, string what, string replacement) {
+        [Pure, NotNull]
+        public static string ReplaceLastOccurrence([NotNull] this string s, [NotNull] string what, [NotNull] string replacement) {
             var place = s.LastIndexOf(what, StringComparison.Ordinal);
             return place == -1 ? s : s.Remove(place, what.Length).Insert(place, replacement);
         }
@@ -106,9 +116,8 @@ namespace AcTools.Utils.Helpers {
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        [Pure]
-        [NotNull]
-        public static string ToUtf8String([NotNull]this byte[] bytes) {
+        [Pure, NotNull]
+        public static string ToUtf8String([NotNull] this byte[] bytes) {
             return (UTF8Checker.IsUtf8(bytes, 200) ? Encoding.UTF8 : Encoding.Default).GetString(bytes);
         }
 
@@ -120,7 +129,8 @@ namespace AcTools.Utils.Helpers {
         /// <param name="max"></param>
         /// <returns></returns>
         [Pure]
-        public static IEnumerable<int> ToDiapason(this string s, int min, int max) {
+        public static IEnumerable<int> ToDiapason([NotNull] this string s, int min, int max) {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             if (min < 0) throw new ArgumentOutOfRangeException(nameof(min), @"Negative numbers aren’t supported");
             if (max < min) throw new ArgumentOutOfRangeException(nameof(max));
 

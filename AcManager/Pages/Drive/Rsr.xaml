@@ -1,10 +1,10 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.Rsr" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-        xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance drive:Rsr+ViewModel}">
+        xmlns:uc="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
+        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:se="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" d:DataContext="{d:DesignInstance drive:Rsr+ViewModel}">
 
     <Grid Style="{StaticResource ContentRootWithPadding}">
         <Grid.RowDefinitions>
@@ -14,11 +14,11 @@
         </Grid.RowDefinitions>
 
         <DockPanel Margin="0 0 0 20" Visibility="{Binding ShowExtensionMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}" Content="Got It" />
-            <mui:BbCodeBlock>If you're using Chrome-like browser, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]here[/url] is an extension for starting RSR events directly from browser!</mui:BbCodeBlock>
+            <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}" Content="{x:Static g:AppStrings.Common_GotId}" />
+            <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.Rsr_Commentary}" />
         </DockPanel>
 
-        <userControls:WebBlock Grid.Row="1" Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" />
+        <uc:WebBlock Grid.Row="1" x:Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" />
         <Grid Grid.Row="2" Margin="0 16 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -26,13 +26,13 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <ToggleButton Grid.Column="0" x:Name="Button" Content="Options"
+            <ToggleButton Grid.Column="0" x:Name="Button" Content="{x:Static c:ControlsStrings.Common_Options}"
                     IsHitTestVisible="{Binding ElementName=Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
-            <userControls:ModernPopup Grid.Column="0" x:Name="Popup" PlacementTarget="{Binding ElementName=Button}"
+            <uc:ModernPopup Grid.Column="0" x:Name="Popup" PlacementTarget="{Binding ElementName=Button}"
                     IsOpen="{Binding IsChecked, ElementName=Button, Mode=TwoWay}" Padding="8">
                 <StackPanel Width="200">
                     <CheckBox IsChecked="{Binding GhostCar}">
-                        <Label Content="Ghost car" />
+                        <Label Content="{x:Static g:AppStrings.Drive_GhostCar}" />
                     </CheckBox>
 
                     <Grid Margin="0 8 0 0" DataContext="{x:Static drive:Rsr.Assists}">
@@ -41,32 +41,31 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <controls:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 10" />
+                        <c:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 10" />
                         <DockPanel Grid.Row="1">
-                            <Button DockPanel.Dock="Right" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp">
-                                …
+                            <Button DockPanel.Dock="Right" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp" Content="…">
                                 <Button.ToolTip>
-                                    <controls:AssistsDescription />
+                                    <c:AssistsDescription />
                                 </Button.ToolTip>
                             </Button>
                             <CheckBox IsChecked="{Binding TyreBlankets}">
-                                <Label Content="_Tyre blankets" />
+                                <Label Content="{x:Static g:AppStrings.Drive_TyreBlankets}" />
                             </CheckBox>
                         </DockPanel>
                     </Grid>
                 </StackPanel>
-            </userControls:ModernPopup>
+            </uc:ModernPopup>
 
             <StackPanel Grid.Column="1" Margin="20 0" Orientation="Horizontal" VerticalAlignment="Center">
                 <DockPanel Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Background="Transparent">
                     <DockPanel.ToolTip>
                         <StackPanel Margin="4 8">
                             <TextBlock Style="{StaticResource Heading2}" Text="{Binding Car.DisplayName}" Margin="0 0 0 4" />
-                            <userControls:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
+                            <uc:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
                         </StackPanel>
                     </DockPanel.ToolTip>
                     <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0"
-                            PreviewMouseLeftButtonDown="UIElement_OnPreviewMouseLeftButtonDown" DockPanel.Dock="Left" />
+                            PreviewMouseLeftButtonDown="SkinLivery_OnPreviewMouseLeftButtonDown" DockPanel.Dock="Left" />
                     <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
                 </DockPanel>
 
@@ -75,16 +74,17 @@
                     <DockPanel.ToolTip>
                         <StackPanel Margin="4 8">
                             <TextBlock Style="{StaticResource Heading2}" Text="{Binding Track.DisplayName}" Margin="0 0 0 4" />
-                            <userControls:TrackBlock Track="{Binding Track}" Width="512" MaxHeight="320" />
+                            <uc:TrackBlock Track="{Binding Track}" Width="512" MaxHeight="320" />
                         </StackPanel>
                     </DockPanel.ToolTip>
                     <mui:BetterImage Filename="{Binding Track.OutlineImage}" Height="16" Margin="0 0 4 0"
-                            services:ImageViewerService.Image="{Binding Track.PreviewImage}" DockPanel.Dock="Left" />
+                            se:ImageViewerService.Image="{Binding Track.PreviewImage}" DockPanel.Dock="Left" />
                     <TextBlock Text="{Binding Track.Name}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
                 </DockPanel>
             </StackPanel>
 
-            <Button Grid.Column="2" Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)" VerticalAlignment="Bottom" Content="Go!" />
+            <Button Grid.Column="2" Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="{x:Static g:AppStrings.Common_Go_RaceTooltip}"
+                    VerticalAlignment="Bottom" Content="{x:Static g:AppStrings.Common_Go}" />
         </Grid>
     </Grid>
 </UserControl>

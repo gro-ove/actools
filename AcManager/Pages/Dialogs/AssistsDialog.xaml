@@ -47,14 +47,14 @@
         </CheckBox>
 
         <!-- third row -->
-        <StackPanel Orientation="Vertical" Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="0" ToolTip="Optimise grip during acceleration">
+        <StackPanel Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="0" ToolTip="Optimise grip during acceleration">
             <Grid Margin="0 0 0 5">
                 <TextBlock Text="Traction control:" Style="{StaticResource LabelWithPadding}" />
             </Grid>
             <ComboBox Margin="5 0 5 0" SelectedItem="{Binding TractionControl}" ItemsSource="{Binding AssistStates}" />
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="1" ToolTip="Anti-lock braking system">
+        <StackPanel Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="1" ToolTip="Anti-lock braking system">
             <Grid Margin="0 0 0 5">
                 <TextBlock Text="ABS:" Style="{StaticResource LabelWithPadding}" />
             </Grid>
@@ -62,13 +62,13 @@
         </StackPanel>
 
         <!-- forth row -->
-        <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="0" Margin="{StaticResource EntryMargin}"
+        <StackPanel Grid.Row="3" Grid.Column="0" Margin="{StaticResource EntryMargin}"
                 ToolTip="Unrealistic, but could be helpful if you’re learning how to drive or drift">
             <Grid Margin="0 0 0 5">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="_Stability control: " Target="{x:Reference StabilityControlTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
                             Padding="10 0 0 0" />
-                    <TextBox Name="StabilityControlTextBox" Text="{Binding StabilityControl, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox x:Name="StabilityControlTextBox" Text="{Binding StabilityControl, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource TextBoxAsTextBlock.Label}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:TextBoxAdvancement.SpecialMode="Integer" />
                     <Label Content="%" Target="{x:Reference StabilityControlTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
@@ -83,13 +83,13 @@
         </CheckBox>
 
         <!-- fifth row -->
-        <StackPanel Orientation="Vertical" Grid.Row="4" Grid.Column="0" Margin="{StaticResource EntryMargin}"
+        <StackPanel Grid.Row="4" Grid.Column="0" Margin="{StaticResource EntryMargin}"
                 ToolTip="Damageable engine, gearbox, suspension and stuff">
             <Grid Margin="0 0 0 5">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Mechanical _damage: " Target="{x:Reference MechanicalDamageTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
                             Padding="10 0 0 0" />
-                    <TextBox Name="MechanicalDamageTextBox" Text="{Binding Damage, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox x:Name="MechanicalDamageTextBox" Text="{Binding Damage, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource TextBoxAsTextBlock.Label}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:TextBoxAdvancement.SpecialMode="Integer" />
                     <Label Content="%" Target="{x:Reference MechanicalDamageTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
@@ -99,11 +99,11 @@
                     IsSnapToTickEnabled="True" />
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" Grid.Row="4" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="Multipler for tyre wear">
+        <StackPanel Grid.Row="4" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="Multipler for tyre wear">
             <Grid Margin="0 0 0 5">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Tyre Wear: " Target="{x:Reference TyreWearTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" Padding="10 0 0 0" />
-                    <TextBox Name="TyreWearTextBox" Text="{Binding TyreWearMultipler, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox x:Name="TyreWearTextBox" Text="{Binding TyreWearMultipler, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource TextBoxAsTextBlock.Label}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:TextBoxAdvancement.SpecialMode="Number" />
                     <Label Content="x" Target="{x:Reference TyreWearTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />
@@ -118,12 +118,12 @@
             <Label Content="_Tyre blankets" />
         </CheckBox>
 
-        <StackPanel Orientation="Vertical" Grid.Row="5" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="Multipler for slipstream effect">
+        <StackPanel Grid.Row="5" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="Multipler for slipstream effect">
             <Grid Margin="0 0 0 5">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Slipstream Effect: " Target="{x:Reference SlipSteamTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp"
                             Padding="10 0 0 0" />
-                    <TextBox Name="SlipSteamTextBox" Text="{Binding SlipSteamMultipler, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox x:Name="SlipSteamTextBox" Text="{Binding SlipSteamMultipler, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource TextBoxAsTextBlock.Label}" attached:FocusAdvancement.AdvancesByEnterKey="True"
                             attached:TextBoxAdvancement.SpecialMode="Integer" />
                     <Label Content="x" Target="{x:Reference SlipSteamTextBox}" MouseLeftButtonUp="Label_OnMouseLeftButtonUp" />

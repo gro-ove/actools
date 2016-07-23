@@ -13,7 +13,7 @@
         </ResourceDictionary>
     </mui:ModernDialog.Resources>
 
-    <StackPanel Orientation="Vertical">
+    <StackPanel>
         <StackPanel Margin="10" Orientation="Horizontal">
             <TextBlock Width="120" Text="Filter:" />
             <TextBox MinWidth="200" Style="{StaticResource TextBoxAsTextBlock}" Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}"

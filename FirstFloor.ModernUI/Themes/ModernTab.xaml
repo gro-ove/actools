@@ -135,7 +135,7 @@
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="ListBoxItem">
-                                                            <Border Name="Bd" Background="{TemplateBinding Background}"
+                                                            <Border x:Name="Bd" Background="{TemplateBinding Background}"
                                                                     BorderBrush="{TemplateBinding BorderBrush}"
                                                                     BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}"
                                                                     SnapsToDevicePixels="True">

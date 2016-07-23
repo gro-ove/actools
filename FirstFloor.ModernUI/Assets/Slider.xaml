@@ -80,7 +80,7 @@
                                             StrokeThickness="1.0" Stroke="{DynamicResource SliderSelectionBorder}" />
                                 </Canvas>
                             </Border>
-                            <Track Grid.Row="1" Name="PART_Track">
+                            <Track Grid.Row="1" x:Name="PART_Track">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Style="{StaticResource SliderRepeatButtonStyle}" Command="{x:Static Slider.DecreaseLarge}" />
                                 </Track.DecreaseRepeatButton>
@@ -134,7 +134,7 @@
                                             Width="4" />
                                     <TickBar x:Name="BottomTick" Grid.Column="2" Visibility="Collapsed" Placement="Right" Fill="{DynamicResource SliderTick}"
                                             Width="4" />
-                                    <Border Name="TrackBackground" Grid.Column="1" Margin="0,5" HorizontalAlignment="center"
+                                    <Border x:Name="TrackBackground" Grid.Column="1" Margin="0,5" HorizontalAlignment="center"
                                             BorderBrush="{DynamicResource SliderTrackBorder}" BorderThickness="1"
                                             Background="{DynamicResource SliderTrackBackground}" Width="4.0">
 
@@ -144,7 +144,7 @@
                                         </Canvas>
                                     </Border>
 
-                                    <Track Grid.Column="1" Name="PART_Track">
+                                    <Track Grid.Column="1" x:Name="PART_Track">
                                         <Track.DecreaseRepeatButton>
                                             <RepeatButton Style="{StaticResource SliderRepeatButtonStyle}" Command="{x:Static Slider.DecreaseLarge}" />
                                         </Track.DecreaseRepeatButton>

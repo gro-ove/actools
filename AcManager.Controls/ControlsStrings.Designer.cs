@@ -24,7 +24,7 @@ namespace AcManager.Controls {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ControlsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Controls {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -511,6 +511,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  lap.
+        /// </summary>
+        public static string Common_LapsPostfix {
+            get {
+                return ResourceManager.GetString("Common_LapsPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading….
         /// </summary>
         public static string Common_Loading {
@@ -538,6 +547,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  minute.
+        /// </summary>
+        public static string Common_MinutePostfix {
+            get {
+                return ResourceManager.GetString("Common_MinutePostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Oops!.
         /// </summary>
         public static string Common_Oops {
@@ -552,6 +570,15 @@ namespace AcManager.Controls {
         public static string Common_OpponentsFormat {
             get {
                 return ResourceManager.GetString("Common_OpponentsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  opponent.
+        /// </summary>
+        public static string Common_OpponentsPostfix {
+            get {
+                return ResourceManager.GetString("Common_OpponentsPostfix", resourceCulture);
             }
         }
         
@@ -1354,6 +1381,15 @@ namespace AcManager.Controls {
         public static string CustomShowroom_ViewMapping_Prompt {
             get {
                 return ResourceManager.GetString("CustomShowroom_ViewMapping_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting position: {0}.
+        /// </summary>
+        public static string Drive_StartingPositionFormat {
+            get {
+                return ResourceManager.GetString("Drive_StartingPositionFormat", resourceCulture);
             }
         }
         

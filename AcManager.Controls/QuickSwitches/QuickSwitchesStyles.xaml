@@ -132,8 +132,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type qs:QuickSwitchComboBox}">
                     <DockPanel>
-                        <Grid Name="MainGrid" SnapsToDevicePixels="True" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="0 0 0 4">
-                            <Popup Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" Placement="Bottom" Margin="1"
+                        <Grid x:Name="MainGrid" SnapsToDevicePixels="True" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="0 0 0 4">
+                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" Placement="Bottom" Margin="1"
                                     IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                     PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                                 <Grid Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
@@ -143,14 +143,14 @@
                                     <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}"
                                             BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" Margin="0 -1 0 0">
                                         <!-- popup border thickness not dependent on BorderThickness property-->
-                                        <ScrollViewer Name="DropDownScrollViewer">
+                                        <ScrollViewer x:Name="DropDownScrollViewer">
                                             <Grid RenderOptions.ClearTypeHint="Enabled">
                                                 <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                    <Rectangle Name="OpaqueRect" Height="{Binding ElementName=DropDownBorder,Path=ActualHeight}"
+                                                    <Rectangle x:Name="OpaqueRect" Height="{Binding ElementName=DropDownBorder,Path=ActualHeight}"
                                                             Width="{Binding ElementName=DropDownBorder,Path=ActualWidth}"
                                                             Fill="{Binding ElementName=DropDownBorder,Path=Background}" />
                                                 </Canvas>
-                                                <ItemsPresenter Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
+                                                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
                                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                             </Grid>
                                         </ScrollViewer>
@@ -161,7 +161,7 @@
                             <ToggleButton Background="Transparent" BorderThickness="0"
                                     IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" />
 
-                            <Path Name="Arrow" Margin="3 1 0 0" Fill="{TemplateBinding Foreground}"
+                            <Path x:Name="Arrow" Margin="3 1 0 0" Fill="{TemplateBinding Foreground}"
                                     Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
 
                             <TextBlock x:Name="PART_Text" IsHitTestVisible="False" DataContext="{TemplateBinding SelectionBoxItem}"
@@ -206,13 +206,13 @@
                 <ControlTemplate TargetType="qs:QuickSwitchPresetsControl">
                     <DockPanel Background="Transparent">
                         <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-                                Style="{StaticResource ButtonWithComboBoxWrapperMenu}" Name="PART_Menu" DockPanel.Dock="Bottom"
+                                Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="PART_Menu" DockPanel.Dock="Bottom"
                                 Margin="{StaticResource LabelMargin}">
                             <MenuItem HorizontalAlignment="Center" Style="{StaticResource UserPresetsControlMenuItem}"
                                     ItemsSource="{TemplateBinding SavedPresetsGrouped}" Background="Transparent" BorderThickness="0"
                                     HorizontalContentAlignment="Center" Margin="8 6 -2 0" Padding="1 0 3 0">
                                 <MenuItem.Header>
-                                    <TextBlock Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
+                                    <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
                                             Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ToUpperConverter}}"
                                             HorizontalAlignment="Center" FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource FontFamily}"
                                             FontSize="{StaticResource FontSize}" />

@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ListBox ItemsSource="{Binding Countries}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="CountriesListBox"
+    <ListBox ItemsSource="{Binding Countries}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" x:Name="CountriesListBox"
             PreviewKeyDown="CountriesListBox_OnPreviewKeyDown" ScrollViewer.CanContentScroll="True">
         <ListBox.ItemsPanel>
             <ItemsPanelTemplate>

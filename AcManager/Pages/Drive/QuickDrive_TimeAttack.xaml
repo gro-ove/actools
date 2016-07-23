@@ -1,31 +1,25 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.QuickDrive_TimeAttack" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:drive="clr-namespace:AcManager.Pages.Drive" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}">
-
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance drive:QuickDrive_TimeAttack+ViewModel}">
     <UserControl.Resources>
-        <Thickness x:Key="ElementMargin">0 0 10 20</Thickness>
+        <Thickness x:Key="ElementMargin">0 0 8 16</Thickness>
     </UserControl.Resources>
-
     <Grid>
-        <ScrollViewer>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Vertical" Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
-                    <CheckBox Margin="10 0 0 0" IsChecked="{Binding Penalties}">
-                        <Label Content="{x:Static t:ToolsStrings.Drive_Penalties}" />
-                    </CheckBox>
-                </StackPanel>
-            </Grid>
-        </ScrollViewer>
+        <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
+            <CheckBox Margin="8 0 0 0" IsChecked="{Binding Penalties}">
+                <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
+            </CheckBox>
+        </StackPanel>
     </Grid>
 </UserControl>

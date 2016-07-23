@@ -4,16 +4,16 @@
         d:DesignWidth="300" Title="Set Curve From File" MouseLeave="CurveEditor_OnMouseLeave" MouseMove="CurveEditor_OnMouseMove"
         MouseUp="CurveEditor_OnMouseUp">
 
-    <StackPanel Orientation="Vertical">
-        <Grid Name="MainGrid" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="CurveEditor_OnMouseDown" ClipToBounds="True">
-            <Image Name="OriginalImage" />
+    <StackPanel>
+        <Grid x:Name="MainGrid" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="CurveEditor_OnMouseDown" ClipToBounds="True">
+            <Image x:Name="OriginalImage" />
             <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Rectangle Name="TopBorder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="1" Fill="White" Margin="0 20 0 0" />
-                <Rectangle Name="BottomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="1" Fill="White" Margin="0 0 0 20" />
-                <Rectangle Name="LeftBorder" HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="1" Fill="White" Margin="20 0 0 0" />
-                <Rectangle Name="RightBorder" HorizontalAlignment="Right" VerticalAlignment="Stretch" Height="1" Fill="White" Margin="0 0 20 0" />
+                <Rectangle x:Name="TopBorder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="1" Fill="White" Margin="0 20 0 0" />
+                <Rectangle x:Name="BottomBorder" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="1" Fill="White" Margin="0 0 0 20" />
+                <Rectangle x:Name="LeftBorder" HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="1" Fill="White" Margin="20 0 0 0" />
+                <Rectangle x:Name="RightBorder" HorizontalAlignment="Right" VerticalAlignment="Stretch" Height="1" Fill="White" Margin="0 0 20 0" />
             </Canvas>
-            <!--<Border Name="SelectedArea" BorderThickness="1" UseLayoutRounding="False" BorderBrush="LightBlue" Background="#220000FF" HorizontalAlignment="Left"
+            <!--<Border x:Name="SelectedArea" BorderThickness="1" UseLayoutRounding="False" BorderBrush="LightBlue" Background="#220000FF" HorizontalAlignment="Left"
                 VerticalAlignment="Top" SnapsToDevicePixels="True" />-->
         </Grid>
 
@@ -34,10 +34,10 @@
             <TextBlock Text="Top:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" />
             <TextBlock Text="Bottom:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}" />
 
-            <TextBox Text="{Binding LeftValue, Mode=OneWay}" Name="LeftInput" Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" />
-            <TextBox Text="{Binding RightValue}" Name="RightInput" Grid.Column="1" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}" />
-            <TextBox Text="{Binding TopValue, Mode=OneWay}" Name="TopInput" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" />
-            <TextBox Text="{Binding BottomValue, Mode=OneWay}" Name="BottomInput" Grid.Column="3" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}" />
+            <TextBox Text="{Binding LeftValue, Mode=OneWay}" x:Name="LeftInput" Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" />
+            <TextBox Text="{Binding RightValue}" x:Name="RightInput" Grid.Column="1" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}" />
+            <TextBox Text="{Binding TopValue, Mode=OneWay}" x:Name="TopInput" Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}" />
+            <TextBox Text="{Binding BottomValue, Mode=OneWay}" x:Name="BottomInput" Grid.Column="3" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}" />
         </Grid>
     </StackPanel>
 

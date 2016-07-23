@@ -53,7 +53,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
                     <Grid SnapsToDevicePixels="True">
-                        <Border Name="HeaderBorder"
+                        <Border x:Name="HeaderBorder"
                                 BorderThickness="0"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 Background="{TemplateBinding Background}">
@@ -64,7 +64,7 @@
                                 </Grid.RowDefinitions>
                                 <Border Grid.RowSpan="2"
                                         Padding="{TemplateBinding Padding}">
-                                    <ContentPresenter Name="HeaderContent"
+                                    <ContentPresenter x:Name="HeaderContent"
                                                       Margin="0 0 0 1"
                                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -146,7 +146,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListView}">
-                    <Border Name="Bd"
+                    <Border x:Name="Bd"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             Background="{TemplateBinding Background}"
@@ -195,7 +195,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListViewItem}">
                     <Grid Background="{TemplateBinding Background}">
-                        <Border Name="Selection"
+                        <Border x:Name="Selection"
                                 Visibility="Collapsed" />
                         <!-- This is used when GridView is put inside the ListView -->
                         <GridViewRowPresenter Grid.RowSpan="2"

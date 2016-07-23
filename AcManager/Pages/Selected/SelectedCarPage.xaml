@@ -122,8 +122,8 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- preview of selected skin -->
-                <Grid Name="SelectedSkinPreview">
-                    <mui:BetterImage Name="SelectedSkinPreviewImage" DataContext="{Binding SelectedObject.SelectedSkin}" Filename="{Binding PreviewImage}"
+                <Grid x:Name="SelectedSkinPreview">
+                    <mui:BetterImage x:Name="SelectedSkinPreviewImage" DataContext="{Binding SelectedObject.SelectedSkin}" Filename="{Binding PreviewImage}"
                             PreviewMouseLeftButtonDown="SelectedSkinPreview_MouseDown" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" MinHeight="160"
                             MaxHeight="575" MaxWidth="1022"
                             Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />

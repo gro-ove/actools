@@ -16,7 +16,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ac:AcObjectBase">
-                            <Grid Name="PART_Main">
+                            <Grid x:Name="PART_Main">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
@@ -61,6 +61,6 @@
             </ToolBar>
         </ac:AcObjectBase.ToolBars>
 
-        <avalonedit:TextEditor Name="TextEditor" />
+        <avalonedit:TextEditor x:Name="TextEditor" />
     </ac:AcObjectBase>
 </selected:SelectedAcObjectPage>

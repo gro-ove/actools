@@ -25,14 +25,14 @@
 
                         <Border x:Name="ContextMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
                                 BorderThickness="1" Margin="0 -1 0 0">
-                            <ScrollViewer Name="ContextMenuScrollViewer">
+                            <ScrollViewer x:Name="ContextMenuScrollViewer">
                                 <Grid RenderOptions.ClearTypeHint="Enabled">
                                     <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                        <Rectangle Name="OpaqueRect" Height="{Binding ElementName=ContextMenuBorder,Path=ActualHeight}"
+                                        <Rectangle x:Name="OpaqueRect" Height="{Binding ElementName=ContextMenuBorder,Path=ActualHeight}"
                                                 Width="{Binding ElementName=ContextMenuBorder,Path=ActualWidth}"
                                                 Fill="{Binding ElementName=ContextMenuBorder,Path=Background}" />
                                     </Canvas>
-                                    <ItemsPresenter Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
+                                    <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                 </Grid>
                             </ScrollViewer>

@@ -65,7 +65,7 @@
             <!--experimental-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Experimental:" />
 
-            <CheckBox Name="Experimental">
+            <CheckBox x:Name="Experimental">
                 <Label Foreground="{DynamicResource Error}" Content="Unlock experimental options (be careful!)" />
             </CheckBox>
 
