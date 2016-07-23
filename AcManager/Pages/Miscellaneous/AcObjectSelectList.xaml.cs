@@ -17,9 +17,9 @@ namespace AcManager.Pages.Miscellaneous {
             Title = uri.GetQueryParam("Title");
 
             var type = uri.GetQueryParam("Type");
-            var mainList = type == "track" ? TracksManager.Instance.WrappersList
-                : type == "car" ? CarsManager.Instance.WrappersList
-                : type == "showroom" ? ShowroomsManager.Instance.WrappersList : null;
+            var mainList = type == @"track" ? TracksManager.Instance.WrappersList
+                : type == @"car" ? CarsManager.Instance.WrappersList
+                : type == @"showroom" ? ShowroomsManager.Instance.WrappersList : null;
             var filter = uri.GetQueryParam("Filter");
 
             DataContext = new AcObjectSelectListViewModel(mainList, filter);

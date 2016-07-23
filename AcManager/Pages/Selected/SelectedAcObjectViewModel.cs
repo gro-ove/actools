@@ -37,7 +37,7 @@ namespace AcManager.Pages.Selected {
         private ICommand _changeIdCommand;
 
         public ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new RelayCommand(o => {
-            var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.AcObject_ChangeIdTitle, SelectedObject.Id, @"?", AppStrings.AcObject_ChangeId_Tooltip);
+            var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.Toolbar_ChangeId, SelectedObject.Id, @"?", AppStrings.AcObject_ChangeId_Tooltip);
             if (string.IsNullOrWhiteSpace(newId)) return;
             SelectedObject.ChangeIdCommand.Execute(newId);
         }));
@@ -45,7 +45,7 @@ namespace AcManager.Pages.Selected {
         private ICommand _cloneCommand;
 
         public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand(async o => {
-            var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.AcObject_CloneTitle, SelectedObject.Id, @"?");
+            var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.Toolbar_Clone, SelectedObject.Id, @"?");
             if (string.IsNullOrWhiteSpace(newId)) return;
 
             using (var waiting = new WaitingDialog()) {

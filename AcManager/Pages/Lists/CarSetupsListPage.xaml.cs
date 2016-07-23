@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Annotations;
 using AcManager.Controls.ViewModels;
-using AcManager.Tools.AcManagersNew;
+using AcManager.Tools;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -18,7 +18,7 @@ namespace AcManager.Pages.Lists {
             _carId = uri.GetQueryParam("CarId");
             _filter = uri.GetQueryParam("Filter");
             if (_carId == null) {
-                throw new Exception("ID is missing");
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
         }
 
@@ -29,7 +29,7 @@ namespace AcManager.Pages.Lists {
         public async Task LoadAsync(CancellationToken cancellationToken) {
             if (_car == null) {
                 _car = await CarsManager.Instance.GetByIdAsync(_carId);
-                if (_car == null) throw new Exception($"Car with ID “{_carId}” is missing");
+                if (_car == null) throw new Exception(AppStrings.Common_CannotFindCarById);
             }
 
             await _car.SkinsManager.EnsureLoadedAsync();
@@ -38,7 +38,7 @@ namespace AcManager.Pages.Lists {
         public void Load() {
             if (_car == null) {
                 _car = CarsManager.Instance.GetById(_carId);
-                if (_car == null) throw new Exception($"Car with ID “{_carId}” is missing");
+                if (_car == null) throw new Exception(AppStrings.Common_CannotFindCarById);
             }
 
             _car.SkinsManager.EnsureLoaded();
@@ -49,7 +49,7 @@ namespace AcManager.Pages.Lists {
             InitializeComponent();
         }
 
-        private CarSetupsListPageViewModel Model => (CarSetupsListPageViewModel)DataContext;
+        public CarSetupsListPageViewModel Model => (CarSetupsListPageViewModel)DataContext;
 
         public class CarSetupsListPageViewModel : AcListPageViewModel<CarSetupObject> {
             public CarObject SelectedCar { get; private set; }
@@ -60,7 +60,7 @@ namespace AcManager.Pages.Lists {
             }
 
             protected override string GetStatus() {
-                return PluralizingConverter.PluralizeExt(MainList.Count, @"{0} setup");
+                return PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Setups);
             }
         }
     }

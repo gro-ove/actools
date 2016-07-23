@@ -161,7 +161,8 @@
                 <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset (Ctrl+S)"
                         Content="Save Preset" />
             </Grid>
-            <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0" ToolTip="Share current settings (Ctrl+Page Up)"
+            <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0"
+                    ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
                     Content="{x:Static g:AppStrings.Common_Share}">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="ShareContextMenu">

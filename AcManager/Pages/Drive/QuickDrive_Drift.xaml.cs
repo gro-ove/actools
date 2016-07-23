@@ -2,12 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Objects;
 using AcTools.Processes;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Drift : IQuickDriveModeControl {
-        public class QuickDrive_DriftViewModel : QuickDriveModeViewModel {
+        public class ViewModel : QuickDriveModeViewModel {
             private bool _penalties;
             private Game.StartType _selectedStartType;
 
@@ -38,7 +37,7 @@ namespace AcManager.Pages.Drive {
                 public string StartType;
             }
 
-            public QuickDrive_DriftViewModel(bool initialize = true) {
+            public ViewModel(bool initialize = true) {
                 Saveable = new SaveHelper<SaveableData>("__QuickDrive_Drift", () => new SaveableData {
                     Penalties = Penalties,
                     StartType = SelectedStartType.Value
@@ -75,7 +74,6 @@ namespace AcManager.Pages.Drive {
 
         public QuickDrive_Drift() {
             InitializeComponent();
-            //DataContext = new QuickDrive_DriftViewModel();
         }
         
         public QuickDriveModeViewModel Model {

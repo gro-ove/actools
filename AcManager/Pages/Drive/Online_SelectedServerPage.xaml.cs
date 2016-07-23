@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using FirstFloor.ModernUI.Helpers;
@@ -23,12 +24,12 @@ namespace AcManager.Pages.Drive {
 
             var id = uri.GetQueryParam("Id");
             if (id == null) {
-                throw new Exception("ID is missing");
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
 
             _entry = _manager.GetById(id);
             if (_entry == null) {
-                throw new Exception($"Server with provided ID '{id}' is missing");
+                throw new Exception(string.Format(AppStrings.Online_ServerWithIdIsMissing, id));
             }
         }
 

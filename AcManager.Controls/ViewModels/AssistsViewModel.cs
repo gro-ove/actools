@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using AcManager.Tools.Helpers;
 
 namespace AcManager.Controls.ViewModels {
@@ -9,11 +10,11 @@ namespace AcManager.Controls.ViewModels {
     public class AssistsViewModel : BaseAssistsViewModel, IUserPresetable, IPreviewProvider {
         private static AssistsViewModel _instance;
 
-        public static AssistsViewModel Instance => _instance ?? (_instance = new AssistsViewModel());
+        public static AssistsViewModel Instance => _instance ?? (_instance = new AssistsViewModel("qdassists"));
 
         private readonly string _customKey;
 
-        public AssistsViewModel(string customKey = null) : base(customKey, false) {
+        public AssistsViewModel([Localizable(false)] string customKey = null) : base(customKey, false) {
             _customKey = customKey ?? UserPresetableKeyValue;
             Saveable.Initialize();
         }

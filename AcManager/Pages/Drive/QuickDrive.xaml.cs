@@ -25,7 +25,6 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Navigation;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive {
@@ -111,7 +110,7 @@ namespace AcManager.Pages.Drive {
                     // if (_uiMode) return;
                     switch (value.ToString()) {
                         case "/Pages/Drive/QuickDrive_Drift.xaml":
-                            SelectedModeViewModel = new QuickDrive_Drift.QuickDrive_DriftViewModel();
+                            SelectedModeViewModel = new QuickDrive_Drift.ViewModel();
                             break;
 
                         case "/Pages/Drive/QuickDrive_Hotlap.xaml":
@@ -346,8 +345,7 @@ namespace AcManager.Pages.Drive {
             private GeoTagsEntry _selectedTrackGeoTags;
             private static readonly GeoTagsEntry InvalidGeoTagsEntry = new GeoTagsEntry("", "");
             private TimeZoneInfo _selectedTrackTimeZone;
-            private static readonly TimeZoneInfo InvalidTimeZoneInfo = TimeZoneInfo.CreateCustomTimeZone("_", TimeSpan.Zero,
-                                                                                                         "", "");
+            private static readonly TimeZoneInfo InvalidTimeZoneInfo = TimeZoneInfo.CreateCustomTimeZone(@"_", TimeSpan.Zero, "", "");
 
             private class SaveableData {
                 public Uri Mode;
@@ -356,7 +354,7 @@ namespace AcManager.Pages.Drive {
                 public double Temperature;
                 public int Time, TimeMultipler;
 
-                [JsonProperty("rcTimezones")]
+                [JsonProperty(@"rcTimezones")]
                 public bool? RealConditionsTimezones;
             }
 

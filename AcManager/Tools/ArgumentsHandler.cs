@@ -64,7 +64,7 @@ namespace AcManager.Tools {
         }
 
         private async Task<string> LoadRemoveFile(string argument, string name = null, string extension = null) {
-            using (var waiting = new WaitingDialog(Controls.ControlsStrings.Common_Loading)) {
+            using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
                 return await FlexibleLoader.LoadAsync(argument, name, extension, waiting, waiting.CancellationToken);
             }
         }
@@ -87,7 +87,7 @@ namespace AcManager.Tools {
             try {
                 new InstallAdditionalContentDialog(filename).ShowDialog();
             } catch (Exception e) {
-                NonfatalError.Notify(AcManager.AppStrings.Arguments_CannotInstallAdditionalContent, e);
+                NonfatalError.Notify(AppStrings.Arguments_CannotInstallAdditionalContent, e);
                 return ArgumentHandleResult.Failed;
             }
 
@@ -118,7 +118,7 @@ namespace AcManager.Tools {
                 case "quickdrive":
                     var preset = Convert.FromBase64String(param).ToUtf8String();
                     if (!QuickDrive.RunSerializedPreset(preset)) {
-                        NonfatalError.Notify(AcManager.AppStrings.Arguments_CannotStartRace, AcManager.AppStrings.Arguments_CannotStartRace_Commentary);
+                        NonfatalError.Notify(AppStrings.Arguments_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
                         return ArgumentHandleResult.Failed;
                     }
                     break;
@@ -157,7 +157,7 @@ namespace AcManager.Tools {
 
             public static ParsedUriRequest Parse(string s) {
                 var m = Regex.Match(s, @"^/((?:/[\w\.-]+)+)/?([?&][^#]*)?(?:#(.*))?");
-                if (!m.Success) throw new Exception(Controls.ControlsStrings.Common_InvalidFormat);
+                if (!m.Success) throw new Exception(ControlsStrings.Common_InvalidFormat);
 
                 return new ParsedUriRequest {
                     Path = m.Groups[1].Value.Substring(1),
@@ -181,7 +181,7 @@ namespace AcManager.Tools {
             try {
                 parsed = ParsedUriRequest.Parse(request);
             } catch (Exception) {
-                NonfatalError.Notify(AcManager.AppStrings.Arguments_CannotParseRequest, AcManager.AppStrings.Arguments_CannotParseRequest_Commentary);
+                NonfatalError.Notify(AppStrings.Arguments_CannotParseRequest, AppStrings.Main_CannotProcessArgument_Commentary);
                 return ArgumentHandleResult.Failed;
             }
 
@@ -200,11 +200,11 @@ namespace AcManager.Tools {
                         return await ProcessShared(parsed.Params.Get(@"id"));
 
                     default:
-                        NonfatalError.Notify($"Not supported request: “{parsed.Path}”", AcManager.AppStrings.Arguments_CannotParseRequest_Commentary);
+                        NonfatalError.Notify($"Not supported request: “{parsed.Path}”", AppStrings.Main_CannotProcessArgument_Commentary);
                         return ArgumentHandleResult.Failed;
                 }
             } catch (Exception e) {
-                NonfatalError.Notify(AcManager.AppStrings.Arguments_CannotProcessRequest, AcManager.AppStrings.Arguments_CannotProcessRequest_Commentary, e);
+                NonfatalError.Notify(AppStrings.Arguments_CannotProcessRequest, AppStrings.Arguments_CannotProcessRequest_Commentary, e);
                 return ArgumentHandleResult.Failed;
             }
         }
@@ -274,20 +274,20 @@ namespace AcManager.Tools {
             string data, header;
             using (var client = new WebClient {
                 Headers = {
-                        [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
-                    }
+                    [HttpRequestHeader.UserAgent] = CmApiProvider.UserAgent
+                }
             }) {
                 data = await client.DownloadStringTaskAsync($"http://www.radiators-champ.com/RSRLiveTiming/ajax.php?action=download_setup&id={id}");
                 header = client.ResponseHeaders[@"Content-Disposition"]?.Split(new[] { @"filename=" }, StringSplitOptions.None).ElementAtOrDefault(1)?.Trim();
             }
 
             if (data == null || header == null) {
-                throw new InformativeException(AcManager.AppStrings.Arguments_CannotInstallSetup, AcManager.AppStrings.Arguments_CannotInstallSetup_Commentary);
+                throw new InformativeException(AppStrings.Arguments_CannotInstallCarSetup, AppStrings.Arguments_CannotInstallSetup_Commentary);
             }
 
             var match = Regex.Match(header, @"^([^_]+_.+)_\d+_\d+_\d+_(.+)\.ini$");
             if (!match.Success) {
-                throw new InformativeException(AcManager.AppStrings.Arguments_CannotInstallSetup, AcManager.AppStrings.Arguments_CannotInstallSetup_CommentaryFormat);
+                throw new InformativeException(AppStrings.Arguments_CannotInstallCarSetup, AppStrings.Arguments_CannotInstallSetup_CommentaryFormat);
             }
 
             var ids = match.Groups[1].Value;
@@ -305,7 +305,7 @@ namespace AcManager.Tools {
             }
 
             if (car == null || track == null) {
-                throw new InformativeException(AcManager.AppStrings.Arguments_CannotInstallSetup, AcManager.AppStrings.Arguments_CannotInstallSetup_CommentaryFormat);
+                throw new InformativeException(AppStrings.Arguments_CannotInstallCarSetup, AppStrings.Arguments_CannotInstallSetup_CommentaryFormat);
             }
 
             var result = ShowDialog(new SharedEntry {
@@ -314,7 +314,7 @@ namespace AcManager.Tools {
                 EntryType = SharedEntryType.CarSetup,
                 Id = header,
                 Target = car.DisplayName
-            }, applyable: false, additionalButton: AcManager.AppStrings.Arguments_SaveAsGeneric);
+            }, applyable: false, additionalButton: AppStrings.Arguments_SaveAsGeneric);
 
             switch (result) {
                 case Choise.Save:
@@ -348,18 +348,18 @@ namespace AcManager.Tools {
         /// <returns>User choise.</returns>
         private Choise ShowDialog(SharedEntry shared, string additionalButton = null, bool saveable = true, bool applyable = true,
                 bool appliableWithoutSaving = true) {
-            var description = string.Format(AcManager.AppStrings.Arguments_SharedMessage, shared.Name ?? AcManager.AppStrings.Arguments_SharedMessage_EmptyValue,
+            var description = string.Format(AppStrings.Arguments_SharedMessage, shared.Name ?? AppStrings.Arguments_SharedMessage_EmptyValue,
                     shared.EntryType == SharedEntryType.Weather
-                            ? AcManager.AppStrings.Arguments_SharedMessage_Id : AcManager.AppStrings.Arguments_SharedMessage_For,
-                    shared.Target ?? AcManager.AppStrings.Arguments_SharedMessage_EmptyValue,
-                    shared.Author ?? AcManager.AppStrings.Arguments_SharedMessage_EmptyValue);
+                            ? AppStrings.Arguments_SharedMessage_Id : AppStrings.Arguments_SharedMessage_For,
+                    shared.Target ?? AppStrings.Arguments_SharedMessage_EmptyValue,
+                    shared.Author ?? AppStrings.Arguments_SharedMessage_EmptyValue);
 
             var dlg = new ModernDialog {
                 Title = shared.EntryType.GetDescription().ToTitle(),
                 Content = new ScrollViewer {
                     Content = new BbCodeBlock {
                         BbCode = description + '\n' + '\n' + (
-                                saveable ? AcManager.AppStrings.Arguments_Shared_ShouldApplyOrSave : AcManager.AppStrings.Arguments_Shared_ShouldApply),
+                                saveable ? AppStrings.Arguments_Shared_ShouldApplyOrSave : AppStrings.Arguments_Shared_ShouldApply),
                         Margin = new Thickness(0, 0, 0, 8)
                     },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -373,13 +373,13 @@ namespace AcManager.Tools {
 
             dlg.Buttons = new[] {
                 applyable && saveable ? dlg.CreateCloseDialogButton(
-                        appliableWithoutSaving ? AcManager.AppStrings.Arguments_Shared_ApplyAndSave : AcManager.AppStrings.Arguments_Shared_SaveAndApply,
+                        appliableWithoutSaving ? AppStrings.Arguments_Shared_ApplyAndSave : AppStrings.Arguments_Shared_SaveAndApply,
                         true, false, MessageBoxResult.Yes) : null,
                 appliableWithoutSaving && applyable
-                        ? dlg.CreateCloseDialogButton(saveable ? AcManager.AppStrings.Arguments_Shared_ApplyOnly : AcManager.AppStrings.Arguments_Shared_Apply,
+                        ? dlg.CreateCloseDialogButton(saveable ? AppStrings.Arguments_Shared_ApplyOnly : AppStrings.Arguments_Shared_Apply,
                                 true, false, MessageBoxResult.OK) : null,
                 saveable ? dlg.CreateCloseDialogButton(
-                        applyable && appliableWithoutSaving ? AcManager.AppStrings.Arguments_Shared_SaveOnly : AcManager.AppStrings.Arguments_Shared_Save,
+                        applyable && appliableWithoutSaving ? AppStrings.Arguments_Shared_SaveOnly : AppStrings.Toolbar_Save,
                         true, false, MessageBoxResult.No) : null,
                 additionalButton == null ? null : dlg.CreateCloseDialogButton(additionalButton, true, false, MessageBoxResult.None),
                 dlg.CancelButton
@@ -406,7 +406,7 @@ namespace AcManager.Tools {
             SharedEntry shared;
 
             using (var waiting = new WaitingDialog()) {
-                waiting.Report(Controls.ControlsStrings.Common_Loading);
+                waiting.Report(ControlsStrings.Common_Loading);
                 shared = await SharingHelper.GetSharedAsync(id, waiting.CancellationToken);
             }
 
@@ -471,10 +471,11 @@ namespace AcManager.Tools {
                     var carId = metadata.GetValueOrDefault("car");
                     var trackId = metadata.GetValueOrDefault("track") ?? CarSetupObject.GenericDirectory;
                     if (carId == null) {
-                        throw new InformativeException(AcManager.AppStrings.Arguments_CannotInstallCarSetup, AcManager.AppStrings.Arguments_MetadataIsMissing);
+                        throw new InformativeException(AppStrings.Arguments_CannotInstallCarSetup, AppStrings.Arguments_MetadataIsMissing);
                     }
 
-                    var result = ShowDialog(shared, applyable: false, additionalButton: trackId == CarSetupObject.GenericDirectory ? null : AcManager.AppStrings.Arguments_SaveAsGeneric);
+                    var result = ShowDialog(shared, applyable: false,
+                            additionalButton: trackId == CarSetupObject.GenericDirectory ? null : AppStrings.Arguments_SaveAsGeneric);
                     switch (result) {
                         case Choise.Save:
                         case Choise.Extra:
@@ -489,7 +490,7 @@ namespace AcManager.Tools {
                 }
 
                 case SharedEntryType.ControlsPreset: {
-                    var result = ShowDialog(shared, AcManager.AppStrings.Arguments_Shared_ApplyFfbOnly);
+                    var result = ShowDialog(shared, AppStrings.Arguments_Shared_ApplyFfbOnly);
                     switch (result) {
                         case Choise.Save:
                         case Choise.ApplyAndSave:
@@ -551,7 +552,7 @@ namespace AcManager.Tools {
                 }
 
                 case SharedEntryType.QuickDrivePreset: {
-                    var result = ShowDialog(shared, AcManager.AppStrings.Arguments_Shared_JustGo);
+                    var result = ShowDialog(shared, AppStrings.Arguments_Shared_JustGo);
                     switch (result) {
                         case Choise.Save:
                         case Choise.ApplyAndSave:
@@ -568,7 +569,7 @@ namespace AcManager.Tools {
                             return ArgumentHandleResult.SuccessfulShow;
                         case Choise.Extra: // just go
                             if (!QuickDrive.RunSerializedPreset(data.ToUtf8String())) {
-                                throw new InformativeException(AcManager.AppStrings.Arguments_CannotStartRace, AcManager.AppStrings.Arguments_CannotStartRace_Commentary);
+                                throw new InformativeException(AppStrings.Arguments_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
                             }
 
                             return ArgumentHandleResult.SuccessfulShow;
@@ -578,7 +579,7 @@ namespace AcManager.Tools {
                 }
 
                 default:
-                    throw new Exception(string.Format(AcManager.AppStrings.Arguments_SharedUnsupported, shared.EntryType));
+                    throw new Exception(string.Format(AppStrings.Arguments_SharedUnsupported, shared.EntryType));
             }
         }
     }

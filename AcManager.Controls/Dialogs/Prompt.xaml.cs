@@ -13,7 +13,7 @@ namespace AcManager.Controls.Dialogs {
     public partial class Prompt {
         private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline, bool passwordMode, int maxLength,
                 IEnumerable<string> suggestions) {
-            DataContext = new PromptViewModel(description, defaultValue, watermark, toolTip);
+            DataContext = new ViewModel(description, defaultValue, watermark, toolTip);
             InitializeComponent();
             Buttons = new[] { OkButton, CancelButton };
 
@@ -24,7 +24,7 @@ namespace AcManager.Controls.Dialogs {
                 var passwordBox = new ProperPasswordBox();
                 passwordBox.SetBinding(ProperPasswordBox.PasswordProperty, new Binding {
                     Source = DataContext,
-                    Path = new PropertyPath(nameof(PromptViewModel.Text)),
+                    Path = new PropertyPath(nameof(ViewModel.Text)),
                     Mode = BindingMode.TwoWay
                 });
                 
@@ -40,7 +40,7 @@ namespace AcManager.Controls.Dialogs {
                 };
                 comboBox.SetBinding(ComboBox.TextProperty, new Binding {
                     Source = DataContext,
-                    Path = new PropertyPath(nameof(PromptViewModel.Text)),
+                    Path = new PropertyPath(nameof(ViewModel.Text)),
                     Mode = BindingMode.TwoWay
                 });
 
@@ -57,7 +57,7 @@ namespace AcManager.Controls.Dialogs {
                 var textBox = new TextBox();
                 textBox.SetBinding(TextBox.TextProperty, new Binding {
                     Source = DataContext,
-                    Path = new PropertyPath(nameof(PromptViewModel.Text)),
+                    Path = new PropertyPath(nameof(ViewModel.Text)),
                     Mode = BindingMode.TwoWay
                 });
 
@@ -89,9 +89,9 @@ namespace AcManager.Controls.Dialogs {
             };
         }
 
-        private PromptViewModel Model => (PromptViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
-        public class PromptViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private string _text;
 
             public string Text {
@@ -109,7 +109,7 @@ namespace AcManager.Controls.Dialogs {
 
             public string ToolTip { get; }
 
-            public PromptViewModel(string description, string defaultValue, string watermark, string toolTip) {
+            public ViewModel(string description, string defaultValue, string watermark, string toolTip) {
                 Description = description;
                 Text = defaultValue;
                 Watermark = watermark;

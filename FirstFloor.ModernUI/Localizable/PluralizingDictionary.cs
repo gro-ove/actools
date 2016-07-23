@@ -30,18 +30,31 @@ namespace FirstFloor.ModernUI.Localizable {
         
         public static string Ru(string s, bool two) {
             switch (s) {
+                case "круг":
+                case "оппонент":
+                case "противник":
+                case "пит-стоп":
+                case "час":
+                case "фильтр":
+                case "сетап":
+                case "скин":
+                case "шрифт":
+                case "пресет":
+                case "шоурум":
+                case "сервер": return two ? s + "а" : s + "ов";
+
+                case "минута":
+                case "трасса":
+                case "машина":
+                case "погода":
+                case "секунда": return two ? s.Substring(0, s.Length - 1) + "ы" : s.Substring(0, s.Length - 1);
+
                 case "день": return two ? "дня" : "дней";
-                case "час": return two ? "часа" : "часов";
-                case "минута": return two ? "минуты" : "минут";
-                case "секунда": return two ? "секунды" : "секунд";
-                case "круг": return two ? "круга" : "кругов";
-                case "оппонент": return two ? "оппонента" : "оппонентов";
-                case "противник": return two ? "противника" : "противников";
-                case "пит-стоп": return two ? "пит-стопа" : "пит-стопов";
-                case "сервер": return two ? "сервера" : "серверов";
                 case "очко": return two ? "очка" : "очков";
                 case "ошибка": return two ? "ошибки" : "ошибок";
                 case "запись": return two ? "записи" : "записей";
+                case "реплей": return two ? "реплея" : "реплеев";
+                case "приложение": return two ? "приложения" : "приложений";
             }
 
             return null;

@@ -42,7 +42,7 @@ namespace AcManager.Pages.Drive {
             var startVideo = Path.Combine(FileUtils.GetKunosCareerDirectory(AcRootDirectory.Instance.Value), "start.ogv");
             if (!File.Exists(startVideo) || !VideoViewer.IsSupported()) return;
 
-            new VideoViewer(startVideo, @"Kunos Career").ShowDialog();
+            new VideoViewer(startVideo, AppStrings.KunosCareer_Title).ShowDialog();
             KunosCareerManager.Instance.ShowIntro = false;
         }
 
@@ -72,7 +72,7 @@ namespace AcManager.Pages.Drive {
 
         public static void NavigateToCareerPage(KunosCareerObject kunosCareer) {
             var mainWindow = Application.Current.MainWindow as MainWindow;
-            var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == "drive" && x.DisplayName == "single");
+            var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == AppStrings.Main_Drive && x.DisplayName == AppStrings.Main_Single);
             var links = group?.Links;
 
             if (group != null) {
@@ -143,7 +143,7 @@ namespace AcManager.Pages.Drive {
             }
 
             protected override void SaveCurrentKey(string id) {
-                if ((CurrentItem.Value as KunosCareerObject)?.IsAvailable == false) return;
+                if ((CurrentItem?.Value as KunosCareerObject)?.IsAvailable == false) return;
                 KunosCareerManager.Instance.CurrentId = id;
             }
 
@@ -159,7 +159,9 @@ namespace AcManager.Pages.Drive {
             private RelayCommand _selectSeriesCommand;
 
             public RelayCommand SelectSeriesCommand => _selectSeriesCommand ?? (_selectSeriesCommand = new RelayCommand(o => {
-                NavigateToCareerPage((KunosCareerObject)CurrentItem.Loaded());
+                var career = CurrentItem?.Loaded() as KunosCareerObject;
+                if (career == null) return;
+                NavigateToCareerPage(career);
             }, o => {
                 var career = CurrentItem?.Loaded() as KunosCareerObject;
                 if (career == null) return false;

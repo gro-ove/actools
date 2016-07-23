@@ -104,7 +104,7 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" attached:NewMarkService.New="True"
                     Text="{x:Static g:AppStrings.Settings_Online_ServerPresetsManagerHeader}" />
             <CheckBox IsChecked="{Binding Online.ServerPresetsManaging}" attached:LimitedService.Limited="True">
-                <Label Content="{x:Static g:AppStrings.Settings_Online_ServerPresetsManagerEnable}" />
+                <Label Content="{x:Static g:AppStrings.Toolbar_Enable}" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

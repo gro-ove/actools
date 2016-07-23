@@ -26,7 +26,7 @@ namespace AcManager.Pages.Lists {
                 : base(PythonAppsManager.Instance, listFilter) {
             }
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, "{0} app");
+            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Apps);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace AcManager.Pages.Lists {
 
         public void OnUri(Uri uri) {
             var filter = uri.GetQueryParam("Filter");
-            _filter = filter == null ? "*" : $"*{filter}*";
+            _filter = filter == null ? @"*" : $"*{filter}*";
         }
 
         public async Task LoadAsync(CancellationToken cancellationToken) {

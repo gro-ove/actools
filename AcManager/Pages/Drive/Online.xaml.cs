@@ -85,8 +85,6 @@ namespace AcManager.Pages.Drive {
         private int _timerTick;
 
         private void Timer_Tick(object sender, EventArgs e) {
-            return;
-
             if (++_timerTick > 5) {
                 _timerTick = 0;
 
@@ -124,7 +122,7 @@ namespace AcManager.Pages.Drive {
                 ServersListBox.ItemTemplate = FindResource(value.GetDescription()) as DataTemplate;
                 if (value == ListMode.Simple || _simpleListMode == ListMode.Simple) {
                     ServersListBox.ItemContainerStyle =
-                            FindResource(value == ListMode.Simple ? "SimpledListItemContainer" : "DetailedListItemContainer") as Style;
+                            FindResource(value == ListMode.Simple ? @"SimpledListItemContainer" : @"DetailedListItemContainer") as Style;
                 }
 
                 _simpleListMode = value;
@@ -223,11 +221,11 @@ namespace AcManager.Pages.Drive {
             private void LoadQuickFilter() {
                 var loaded = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, Key);
                 if (loaded == null) return;
-                FilterEmpty = loaded.Contains("drivers");
-                FilterFull = loaded.Contains("full");
-                FilterPassword = loaded.Contains("password");
-                FilterMissing = loaded.Contains("missing");
-                FilterBooking = loaded.Contains("booking");
+                FilterEmpty = loaded.Contains(@"drivers");
+                FilterFull = loaded.Contains(@"full");
+                FilterPassword = loaded.Contains(@"password");
+                FilterMissing = loaded.Contains(@"missing");
+                FilterBooking = loaded.Contains(@"booking");
             }
 
             private void SaveQuickFilter() {
@@ -236,11 +234,11 @@ namespace AcManager.Pages.Drive {
 
             private string GetQuickFilterString() {
                 return new[] {
-                    FilterEmpty ? "(drivers>0)" : null,
-                    FilterFull ? "(full-)" : null,
-                    FilterPassword ? "(password-)" : null,
-                    FilterMissing ? "(missing- & haserrors-)" : null,
-                    FilterBooking ? "(booking-)" : null
+                    FilterEmpty ? @"(drivers>0)" : null,
+                    FilterFull ? @"(full-)" : null,
+                    FilterPassword ? @"(password-)" : null,
+                    FilterMissing ? @"(missing- & haserrors-)" : null,
+                    FilterBooking ? @"(booking-)" : null
                 }.Where(x => x != null).JoinToString('&');
             }
 
@@ -288,7 +286,7 @@ namespace AcManager.Pages.Drive {
                     : base(manager, GetFilter(filter), type.ToString(), false) {
                 Type = type;
                 Manager = manager;
-                
+
                 LoadQuickFilter();
                 SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key)) ?? SortingModes[0];
                 ServerCombinedFilter.Second = CreateQuickFilter();
@@ -315,7 +313,7 @@ namespace AcManager.Pages.Drive {
 
                 base.Unload();
             }
-            
+
             private class SortingDriversCount : IComparer {
                 public int Compare(object x, object y) {
                     var xs = (x as AcItemWrapper)?.Value as ServerEntry;
@@ -402,11 +400,11 @@ namespace AcManager.Pages.Drive {
             }
 
             public SettingEntry[] SortingModes { get; } = {
-                new SettingEntry(null, "Name"),
-                new SettingEntry("drivers", "Drivers"),
-                new SettingEntry("capacity", "Capacity"),
-                new SettingEntry("cars", "Cars Number"),
-                new SettingEntry("ping", "Ping"),
+                new SettingEntry(null, AppStrings.Online_Sorting_Name),
+                new SettingEntry("drivers", AppStrings.Online_Sorting_Drivers),
+                new SettingEntry("capacity", AppStrings.Online_Sorting_Capacity),
+                new SettingEntry("cars", AppStrings.Online_Sorting_CarsNumber),
+                new SettingEntry("ping", AppStrings.Online_Sorting_Ping),
             };
 
             private RelayCommand _changeSortingCommand;
@@ -418,18 +416,18 @@ namespace AcManager.Pages.Drive {
             private AsyncCommand _addNewServerCommand;
 
             public AsyncCommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new AsyncCommand(async o => {
-                var address = Prompt.Show("Server address (IP & HTTP or TCP Port):", "Add a New Server", "85.114.129.100", // TODO
-                        "127.0.0.1:8081", "Port could be omitted, in this case app will scan all specific ports");
+                var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "", // TODO
+                        @"127.0.0.1:8081", AppStrings.Online_AddServer_Tooltip);
                 if (address == null) return;
 
                 foreach (var s in address.Split(',').Select(x => x.Trim())) {
                     try {
                         using (var waiting = new WaitingDialog()) {
-                            waiting.Report("Adding server…");
+                            waiting.Report(AppStrings.Online_AddingServer);
                             await RecentManager.Instance.AddServer(s, waiting, waiting.CancellationToken);
                         }
                     } catch (Exception e) {
-                        NonfatalError.Notify("Can’t add server", e);
+                        NonfatalError.Notify(AppStrings.Online_CannotAddServer, e);
                     }
                 }
             }, o => Manager is RecentManager));

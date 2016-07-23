@@ -852,6 +852,9 @@
   <data name="GameCommand_CannotExecute" xml:space="preserve">
     <value>Can’t execute command</value>
   </data>
+  <data name="Session_Drag" xml:space="preserve">
+    <value>Drag</value>
+  </data>
   <data name="Session_Drift" xml:space="preserve">
     <value>Drift</value>
   </data>
@@ -1260,5 +1263,11 @@
   </data>
   <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
     <value>Very Low</value>
+  </data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>Weekend</value>
+  </data>
+  <data name="Common_Go_RaceTooltip" xml:space="preserve">
+    <value>Start race (Ctrl+G)</value>
   </data>
 </root>

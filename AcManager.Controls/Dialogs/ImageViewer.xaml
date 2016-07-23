@@ -1,9 +1,9 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Controls.Dialogs.ImageViewer" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:dialogs="clr-namespace:AcManager.Controls.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{Binding CurrentImageName}"
+        xmlns:di="clr-namespace:AcManager.Controls.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{Binding CurrentImageName}"
         MouseDown="ImageViewer_OnMouseDown" KeyDown="ImageViewer_OnKeyDown" KeyUp="ImageViewer_OnKeyUp" Loaded="ImageViewer_OnLoaded"
-        d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}">
+        d:DataContext="{d:DesignInstance di:ImageViewer+ViewModel}">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,7 +19,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="mui:ModernDialog">
                         <Grid Background="{TemplateBinding Background}" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}"
-                                d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}">
+                                d:DataContext="{d:DesignInstance di:ImageViewer+ViewModel}">
                             <AdornerDecorator>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -66,7 +66,7 @@
             </Setter>
         </Style>
     </mui:ModernDialog.Style>
-    <Grid d:DataContext="{d:DesignInstance dialogs:ImageViewer+ImageViewerViewModel}" Name="Wrapper">
+    <Grid d:DataContext="{d:DesignInstance di:ImageViewer+ViewModel}" Name="Wrapper">
         <mui:BetterImage x:Name="Image" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" StretchDirection="DownOnly"
                 MaxWidth="{Binding MaxImageWidth}" MaxHeight="{Binding MaxImageHeight}" Source="{Binding CurrentImage}" />
     </Grid>

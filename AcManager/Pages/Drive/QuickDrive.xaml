@@ -2,9 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager"
+        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
+        d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -67,21 +67,22 @@
                 <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="0"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
-                        <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0" Content="Time" />
+                        <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0" Content="{x:Static g:AppStrings.QuickDrive_Time}" />
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="Actual time is out of range, closest value is used" HorizontalAlignment="Right" />
+                                ToolTip="{x:Static g:AppStrings.QuickDrive_Time_Warning}" HorizontalAlignment="Right" />
                     </Grid>
                     <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}" Value="{Binding Time}"
-                            Margin="0 0 0 4" Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                            Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
 
                 <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding RealConditions}" Margin="8 0 0 0" ToolTip="{Binding RealWeather.FullDescription}">
-                    <Label Content="_Real conditions" />
+                    <Label Content="{x:Static g:AppStrings.QuickDrive_RealConditions}" />
                     <CheckBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Consider Timezones" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True" />
-                            <MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />
+                            <MenuItem Header="{x:Static g:AppStrings.QuickDrive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}"
+                                    IsCheckable="True" />
+                            <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
                         </ContextMenu>
                     </CheckBox.ContextMenu>
                 </CheckBox>
@@ -89,12 +90,12 @@
                 <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
-                        <TextBlock Text="Weather:" Style="{StaticResource LabelWithPadding}" />
+                        <TextBlock Text="{x:Static g:AppStrings.QuickDrive_WeatherLabel}" Style="{StaticResource LabelWithPadding}" />
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 HorizontalAlignment="Right">
                             <Path.ToolTip>
-                                <ToolTip Content="{Binding RealWeather.Description}" ContentStringFormat="{}Actual weather ({0}) isn't supported" />
+                                <ToolTip Content="{Binding RealWeather.Description}" ContentStringFormat="{x:Static g:AppStrings.QuickDrive_Weather_Warning}" />
                             </Path.ToolTip>
                         </Path>
                     </Grid>
@@ -104,19 +105,15 @@
                 <StackPanel Orientation="Vertical" Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number"
-                            Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}">Temperature
+                            Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.QuickDrive_Temperature}">
                         <mui:ValueLabel.ToolTip>
-                            <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{}Road temperature: {0:F1} °C" />
+                            <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{x:Static g:AppStrings.Common_RoadTemperatureFormat}" />
                         </mui:ValueLabel.ToolTip>
                     </mui:ValueLabel>
                     <Grid Margin="0 0 0 4">
                         <Grid.ToolTip>
-                            <Grid>
-                                <StackPanel
-                                        Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                                    <TextBlock Text="Real conditions disabled" />
-                                </StackPanel>
-                                <Grid Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="4">
+                            <ToolTip Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid Margin="4">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
@@ -128,40 +125,43 @@
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Style="{StaticResource Small}" Text="Actual temperature:" Margin="0 0 0 12" />
+                                    <TextBlock Style="{StaticResource Small}" Text="{x:Static g:AppStrings.QuickDrive_ActualTemperature}" Margin="0 0 0 12" />
                                     <TextBlock Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" FontStyle="Italic" VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
-                                            Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}" Text="Loading failed" />
+                                            Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}"
+                                            Text="{x:Static g:AppStrings.QuickDrive_LoadingFailed}" />
                                     <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource Heading2}"
                                             Text="{Binding RealWeather.Description, Converter={StaticResource ToTitleConverter}, TargetNullValue='?'}" />
                                     <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Heading1}"
-                                            Text="{Binding RealWeather.Temperature, StringFormat='{}{0} °C', TargetNullValue='?'}" Margin="8" />
+                                            Text="{Binding RealWeather.Temperature, StringFormat={x:Static c:ControlsStrings.Common_CelsiusFormat}, TargetNullValue='?'}"
+                                            Margin="8" />
                                     <Image Grid.Column="1" Grid.RowSpan="2" Grid.Row="1" Source="{Binding RealWeather.Icon, IsAsync=True}" MaxWidth="36"
                                             Height="36" Stretch="Uniform" Margin="8 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center"
                                             RenderOptions.BitmapScalingMode="HighQuality" />
                                 </Grid>
-                            </Grid>
+                            </ToolTip>
                         </Grid.ToolTip>
 
                         <Slider Minimum="{x:Static drive:QuickDrive.TemperatureMinimum}" Maximum="{x:Static drive:QuickDrive.TemperatureMaximum}"
-                                Value="{Binding Temperature}" Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False" TickPlacement="BottomRight" />
+                                Value="{Binding Temperature}" x:Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False"
+                                TickPlacement="BottomRight" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 -8" Height="16">
                             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                     Visibility="{Binding IsTemperatureClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    ToolTip="Actual temperature is out of range, closest value is used" />
+                                    ToolTip="{x:Static g:AppStrings.QuickDrive_Temperature_Warning}" />
                         </StackPanel>
                     </Grid>
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
-                    <TextBlock Text="Track:" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+                    <TextBlock Text="{x:Static g:AppStrings.QuickDrive_TrackStateLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
                     <ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2">
-                    <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="Time multipler" />
+                    <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="{x:Static g:AppStrings.QuickDrive_TimeMultiplerLabel}" />
                     <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
-                            Margin="0 0 0 4" Name="TimeMultiplerSlider" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+                            Margin="0 0 0 4" x:Name="TimeMultiplerSlider" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
             </Grid>
         </Grid>
@@ -172,63 +172,41 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Vertical" Width="160" Margin="0 0 20 0">
-                <Grid Margin="0 0 0 20" DataContext="{Binding AssistsViewModel}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <c:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 10" />
-                    <DockPanel Grid.Row="1">
-                        <Button DockPanel.Dock="Right" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp">
-                            …
-                            <Button.ToolTip>
-                                <c:AssistsDescription />
-                            </Button.ToolTip>
-                        </Button>
-                        <CheckBox IsChecked="{Binding TyreBlankets}">
-                            <Label Content="_Tyre blankets" />
-                        </CheckBox>
-                    </DockPanel>
-                </Grid>
-
-                <!-- more -->
-                <StackPanel Visibility="Collapsed">
-                    <CheckBox Margin="0 0 0 10">
-                        <Label Content="_Hide steering wheel" />
+            <StackPanel Width="160" Margin="0 0 20 0" DataContext="{Binding AssistsViewModel}">
+                <c:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 10" />
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp" Content="…">
+                        <Button.ToolTip>
+                            <c:AssistsDescription />
+                        </Button.ToolTip>
+                    </Button>
+                    <CheckBox IsChecked="{Binding TyreBlankets}">
+                        <Label Content="{x:Static g:AppStrings.QuickDrive_TyreBlankets}" />
                     </CheckBox>
-
-                    <CheckBox Margin="0 0 0 10">
-                        <Label Content="_Sync steering wheels" />
-                    </CheckBox>
-
-                    <CheckBox Margin="0 0 0 10">
-                        <Label Content="_World aligned camera" />
-                    </CheckBox>
-                </StackPanel>
+                </DockPanel>
             </StackPanel>
 
             <mui:ModernTab Grid.Column="1" LinksMargin="0" FrameMargin="0 40 0 4" LinksHorizontalAlignment="Left"
                     SelectedSource="{Binding SelectedMode, Mode=TwoWay}" Name="ModeTab" FrameNavigated="ModeTab_OnFrameNavigated" VerticalAlignment="Stretch"
                     ContentLoader="{x:Static drive:QuickDrive.ContentLoader}">
                 <mui:ModernTab.Links>
-                    <mui:Link DisplayName="Practice" Source="/Pages/Drive/QuickDrive_Practice.xaml" />
-                    <mui:Link DisplayName="Hotlap" Source="/Pages/Drive/QuickDrive_Hotlap.xaml" />
-                    <mui:Link DisplayName="Time Attack" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
-                    <mui:Link DisplayName="Race" Source="/Pages/Drive/QuickDrive_Race.xaml" />
-                    <mui:Link DisplayName="Weekend" Source="/Pages/Drive/QuickDrive_Weekend.xaml" />
-                    <mui:Link DisplayName="Drag" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drag-race" />
-                    <mui:Link DisplayName="Drift" Source="/Pages/Drive/QuickDrive_Drift.xaml" />
+                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Practice}" Source="/Pages/Drive/QuickDrive_Practice.xaml" />
+                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Hotlap}" Source="/Pages/Drive/QuickDrive_Hotlap.xaml" />
+                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TimeAttack}" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
+                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Race}" Source="/Pages/Drive/QuickDrive_Race.xaml" />
+                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Common_Weekend}" Source="/Pages/Drive/QuickDrive_Weekend.xaml" />
+                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drag-race" />
+                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drift}" Source="/Pages/Drive/QuickDrive_Drift.xaml" />
                 </mui:ModernTab.Links>
             </mui:ModernTab>
         </Grid>
 
         <StackPanel Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
             <c:UserPresetsControl x:Name="UserPresetsControl" Margin="0 0 4 0" UserPresetable="{Binding}" MinWidth="300" />
-            <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="Share current settings (Ctrl+Page Up)"
+            <Button Command="{Binding ShareCommand}" Margin="0 0 4 0" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
                     Content="{x:Static g:AppStrings.Common_Share}" />
-            <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="Start race (Ctrl+G)" Content="{x:Static g:AppStrings.Common_Go}" />
+            <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" ToolTip="{x:Static t:ToolsStrings.Common_Go_RaceTooltip}"
+                    Content="{x:Static g:AppStrings.Common_Go}" />
         </StackPanel>
     </Grid>
 </UserControl>

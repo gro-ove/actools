@@ -23,7 +23,7 @@ namespace AcManager.Controls.Dialogs {
         public ImageViewer(string image, double maxWidth = double.MaxValue, double maxHeight = double.MaxValue) : this(new[] { image }, 0, maxWidth, maxHeight) { }
 
         public ImageViewer(IEnumerable<object> images, int position = 0, double maxWidth = double.MaxValue, double maxHeight = double.MaxValue) {
-            DataContext = new ImageViewerViewModel(images, position) {
+            DataContext = new ViewModel(images, position) {
                 MaxImageWidth = maxWidth,
                 MaxImageHeight = maxHeight
             };
@@ -91,13 +91,13 @@ namespace AcManager.Controls.Dialogs {
             }
         }
 
-        public ImageViewerViewModel Model => (ImageViewerViewModel)DataContext;
+        public ViewModel Model => (ViewModel)DataContext;
 
-        public class ImageViewerViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private readonly object[] _images;
             private readonly object[] _originalImages;
             
-            public ImageViewerViewModel(IEnumerable<object> images, int position) {
+            public ViewModel(IEnumerable<object> images, int position) {
                 _originalImages = images.ToArray();
                 _images = _originalImages.ToArray();
 

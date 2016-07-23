@@ -14,87 +14,88 @@
 
     <mui:ModernWindow.MenuLinkGroups>
         <!--drive-->
-        <mui:LinkGroup GroupKey="{x:Static g:AppStrings.Main_Drive}" DisplayName="{x:Static g:AppStrings.Main_Group_Single}">
+        <mui:LinkGroup GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Single}">
             <mui:LinkGroup.Links>
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_QuickDrive}" Source="/Pages/Drive/QuickDrive.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_Career}" Source="/Pages/Drive/KunosCareer.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_Challenges}" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drive-challenge" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_QuickDrive}" Source="/Pages/Drive/QuickDrive.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Career}" Source="/Pages/Drive/KunosCareer.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drive-challenge" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
-        <mui:LinkGroup x:Name="LiveGroup" GroupKey="{x:Static g:AppStrings.Main_Drive}" DisplayName="{x:Static g:AppStrings.Main_Group_Live}">
+        <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Live}">
             <mui:LinkGroup.Links>
-                <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Link_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
-                <mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Link_Srs}" Source="/Pages/Drive/Srs.xaml" />
+                <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
+                <mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
-        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="{x:Static g:AppStrings.Main_Drive}" DisplayName="{x:Static g:AppStrings.Main_Group_Online}"
+        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}"
                 Source="/Pages/Drive/Online.xaml">
             <!--<mui:LinkGroupFilterable.Links>
                 <mui:Link DisplayName="RECENT" Source="/Pages/Drive/Online.xaml?Filter=recent+" />
             </mui:LinkGroupFilterable.Links>-->
         </mui:LinkGroupFilterable>
-        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="{x:Static g:AppStrings.Main_Drive}" DisplayName="{x:Static g:AppStrings.Main_Group_Lan}"
+        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Lan}"
                 Source="/Pages/Drive/Online.xaml?Mode=Lan" />
         <!--TODO-->
-        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="{x:Static g:AppStrings.Main_Drive}" DisplayName="recent &amp; shortcuts"
+        <mui:LinkGroupFilterable IsEnabled="False" GroupKey="drive" DisplayName="recent &amp; shortcuts"
                 Source="/Pages/Drive/Online.xaml?Mode=Recent" />
 
         <!--media-->
-        <mui:LinkGroupFilterable GroupKey="{x:Static g:AppStrings.Main_Media}" DisplayName="{x:Static g:AppStrings.Main_Group_Screenshots}"
+        <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}"
                 Source="/Pages/Lists/ScreenshotsListPage.xaml" />
-        <mui:LinkGroupFilterable GroupKey="{x:Static g:AppStrings.Main_Media}" DisplayName="{x:Static g:AppStrings.Main_Group_Replays}"
+        <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Replays}"
                 Source="/Pages/Lists/ReplaysListPage.xaml" />
 
         <!--content-->
-        <mui:LinkGroupFilterable GroupKey="{x:Static g:AppStrings.Main_Content}" DisplayName="{x:Static g:AppStrings.Main_Group_Cars}"
+        <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Cars}"
                 Source="/Pages/Lists/CarsListPage.xaml" />
-        <mui:LinkGroupFilterable GroupKey="{x:Static g:AppStrings.Main_Content}" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Group_Tracks}"
+        <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Tracks}"
                 Source="/Pages/Lists/TracksListPage.xaml" />
-        <mui:LinkGroupFilterable GroupKey="{x:Static g:AppStrings.Main_Content}" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Group_Showrooms}"
+        <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Showrooms}"
                 Source="/Pages/Lists/ShowroomsListPage.xaml" />
-        <mui:LinkGroup GroupKey="{x:Static g:AppStrings.Main_Content}" DisplayName="{x:Static g:AppStrings.Main_Group_Miscellaneous}">
+        <mui:LinkGroup GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Miscellaneous}">
             <mui:LinkGroup.Links>
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_Apps}" Source="/Pages/Lists/PythonAppsListPage.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_Fonts}" Source="/Pages/Lists/FontsListPage.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_PpFilters}" Source="/Pages/Lists/PpFiltersListPage.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Apps}" Source="/Pages/Lists/PythonAppsListPage.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Fonts}" Source="/Pages/Lists/FontsListPage.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_PpFilters}" Source="/Pages/Lists/PpFiltersListPage.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
                 <!--<mui:Link DisplayName="Mods" Source="/Pages/Miscellaneous/WorkInProgress.xaml?mods" />-->
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
 
         <!--server-->
-        <mui:LinkGroupFilterable GroupKey="{x:Static g:AppStrings.Main_Server}" DisplayName="{x:Static g:AppStrings.Main_Group_ServerPresets}"
+        <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}"
                 Source="/Pages/Lists/ServerPresetsListPage.xaml" />
-        <mui:LinkGroupFilterable GroupKey="{x:Static g:AppStrings.Main_Server}" DisplayName="{x:Static g:AppStrings.Main_Group_ServerRunned}"
+        <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerRunned}"
                 Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-runned" />
 
         <!--settings-->
-        <mui:LinkGroup DisplayName="{x:Static g:AppStrings.Main_Settings}" GroupKey="{x:Static g:AppStrings.Main_Settings}">
+        <mui:LinkGroup DisplayName="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings">
             <mui:LinkGroup.Links>
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_ContentManager}" Source="/Pages/Settings/SettingsPage.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_AssettoCorsa}" Source="/Pages/AcSettings/AcSettingsPage.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_ContentManager}" Source="/Pages/Settings/SettingsPage.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_AssettoCorsa}" Source="/Pages/AcSettings/AcSettingsPage.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
 
         <!--about-->
-        <mui:LinkGroup DisplayName="{x:Static g:AppStrings.Main_About}" GroupKey="{x:Static g:AppStrings.Main_About}">
+        <mui:LinkGroup DisplayName="{x:Static g:AppStrings.Main_About}" GroupKey="about">
             <mui:LinkGroup.Links>
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_About}" Source="/Pages/About/AboutPage.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_ReleaseNotes}" Source="/Pages/About/ReleaseNotesPage.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Link_ImportantTips}" Source="/Pages/About/ImportantTipsPage.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_About}" Source="/Pages/About/AboutPage.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_ReleaseNotes}" Source="/Pages/About/ReleaseNotesPage.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_ImportantTips}" Source="/Pages/About/ImportantTipsPage.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
     </mui:ModernWindow.MenuLinkGroups>
 
     <mui:ModernWindow.TitleLinks>
-        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Drive}" GroupKey="{x:Static g:AppStrings.Main_Drive}" Source="/Pages/Drive/QuickDrive.xaml" />
-        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Media}" GroupKey="{x:Static g:AppStrings.Main_Media}" Source="/Pages/Lists/ReplaysListPage.xaml" />
-        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Content}" GroupKey="{x:Static g:AppStrings.Main_Content}" Source="/Pages/Lists/CarsListPage.xaml" />
-        <mui:TitleLink x:Name="ServerGroup" DisplayName="{x:Static g:AppStrings.Main_Server}" GroupKey="{x:Static g:AppStrings.Main_Server}" IsEnabled="False"
+        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Drive}" GroupKey="drive" Source="/Pages/Drive/QuickDrive.xaml" />
+        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Media}" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
+        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Content}" GroupKey="content"
+                Source="/Pages/Lists/CarsListPage.xaml" />
+        <mui:TitleLink x:Name="ServerGroup" DisplayName="{x:Static g:AppStrings.Main_Server}" GroupKey="server" IsEnabled="False"
                 Source="/Pages/Lists/ServerPresetsListPage.xaml" />
-        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Settings}" GroupKey="{x:Static g:AppStrings.Main_Settings}"
+        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings"
                 Source="/Pages/Settings/SettingsPage.xaml" />
-        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_About}" GroupKey="{x:Static g:AppStrings.Main_About}" Source="/Pages/About/AboutPage.xaml" />
+        <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_About}" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />
         <mui:TitleLink DisplayName="enter key" Source="cmd://enterkey" IsAccented="True" />
     </mui:ModernWindow.TitleLinks>
 
@@ -107,9 +108,11 @@
                 HorizontalOffset="{Binding ActualRight, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=-140}"
                 VerticalOffset="{Binding ActualBottom, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=-100}" Height="80"
                 Width="120" x:Name="QuickSwitchesNotification" StaysOpen="True" PopupAnimation="Fade" AllowsTransparency="True">
-            <Border Background="{DynamicResource WindowBackground}" Padding="12" CornerRadius="0" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1">
+            <Border Background="{DynamicResource WindowBackground}" Padding="12" CornerRadius="0" BorderBrush="{DynamicResource WindowBorderActive}"
+                    BorderThickness="1">
                 <DockPanel>
-                    <TextBlock x:Name="QuickSwitchesNotificationText" DockPanel.Dock="Bottom" Style="{StaticResource Label}" Margin="0 4 0 0" HorizontalAlignment="Center" />
+                    <TextBlock x:Name="QuickSwitchesNotificationText" DockPanel.Dock="Bottom" Style="{StaticResource Label}" Margin="0 4 0 0"
+                            HorizontalAlignment="Center" />
                     <Path x:Name="QuickSwitchesNotificationIcon" Width="24" Height="24" Fill="{DynamicResource ButtonText}" Stretch="Uniform"
                             HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
                 </DockPanel>

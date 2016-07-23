@@ -545,4 +545,43 @@
   <data name="Session_TimeAttack" xml:space="preserve">
     <value>На время</value>
   </data>
+  <data name="Common_Height" xml:space="preserve">
+    <value>Высота</value>
+  </data>
+  <data name="Common_IdIsMissing" xml:space="preserve">
+    <value>ID отсутствует</value>
+  </data>
+  <data name="Common_MakeSureInternetWorks" xml:space="preserve">
+    <value>Проверьте, работает ли Интернет.</value>
+  </data>
+  <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
+    <value>Проверьте, достаточно ли места.</value>
+  </data>
+  <data name="Common_Number" xml:space="preserve">
+    <value>Номер</value>
+  </data>
+  <data name="Common_Radius" xml:space="preserve">
+    <value>Радиус</value>
+  </data>
+  <data name="Common_Scanning" xml:space="preserve">
+    <value>Сканирование…</value>
+  </data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="Common_Warning" xml:space="preserve">
+    <value>Внимание</value>
+  </data>
+  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
+    <value>Идеально</value>
+  </data>
+  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
+    <value>С субпиксельным сглаживанием</value>
+  </data>
+  <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
+    <value>Очень низко</value>
+  </data>
+  <data name="Common_Speed" xml:space="preserve">
+    <value>Скорость</value>
+  </data>
 </root>

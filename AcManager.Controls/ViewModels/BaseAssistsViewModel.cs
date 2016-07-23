@@ -12,7 +12,7 @@ namespace AcManager.Controls.ViewModels {
     /// at Constructors region.
     /// </summary>
     public class BaseAssistsViewModel : NotifyPropertyChanged {
-        private const string DefaultKey = "AssistsDialogViewModel.SaveableData";
+        private const string DefaultKey = "AssistsViewModel.sd";
 
         public const string UserPresetableKeyValue = "Assists";
 

@@ -82,7 +82,7 @@
                             </StackPanel>
 
                             <TextBlock Style="{StaticResource Heading2}"
-                                    Text="{Binding RoadTemperature, StringFormat={x:Static g:AppStrings.WeatherEdit_TemperatureCoefficientRoadTemperatureFormat}}" />
+                                    Text="{Binding RoadTemperature, StringFormat={x:Static g:AppStrings.Common_RoadTemperatureFormat}}" />
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -155,7 +155,7 @@
                         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.WeatherEdit_FogHeader}" />
 
                         <DockPanel>
-                            <Label Content="{x:Static g:AppStrings.WeatherEdit_ColorLabel}" />
+                            <Label Content="{x:Static g:AppStrings.Settings_ColorLabel}" />
                             <mui:ColorPicker Color="{Binding SelectedObject.FogColor}" />
                         </DockPanel>
 
@@ -242,7 +242,7 @@
                 <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}"
                         ToolTip="{x:Static g:AppStrings.Common_Share_WeatherTooltip}" />
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Common_Test}" Command="{Binding TestCommand}"
-                        ButtonToolTip="{x:Static g:AppStrings.Common_Test_WeatherTooltip}">
+                        ButtonToolTip="{x:Static g:AppStrings.Toolbar_Test_WeatherTooltip}">
                     <MenuItem Header="9:00" InputGestureText="Ctrl+Alt+1" Command="{Binding TestCommand}" CommandParameter="9:00" />
                     <MenuItem Header="12:00" InputGestureText="Ctrl+Alt+2" Command="{Binding TestCommand}" CommandParameter="12:00" />
                     <MenuItem Header="15:00" InputGestureText="Ctrl+Alt+3" Command="{Binding TestCommand}" CommandParameter="15:00" />

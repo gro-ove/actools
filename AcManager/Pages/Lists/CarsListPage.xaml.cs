@@ -31,7 +31,7 @@ namespace AcManager.Pages.Lists {
             public CarsListPageViewModel(IFilter<CarObject> listFilter)
                     : base(CarsManager.Instance, listFilter) {}
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, "{0} car");
+            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Cars);
         }
     }
 }

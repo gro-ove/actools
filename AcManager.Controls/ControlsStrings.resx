@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,577 +59,577 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="Assists_IdealLineLabel" xml:space="preserve">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Assists_IdealLineLabel" xml:space="preserve">
     <value>Ideal line:</value>
   </data>
-	<data name="Assists_Header" xml:space="preserve">
+  <data name="Assists_Header" xml:space="preserve">
     <value>Assists:</value>
   </data>
-	<data name="Assists_AutoShifterLabel" xml:space="preserve">
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
     <value>Auto shifter:</value>
   </data>
-	<data name="Assists_AutoClutchLabel" xml:space="preserve">
+  <data name="Assists_AutoClutchLabel" xml:space="preserve">
     <value>Auto clutch:</value>
   </data>
-	<data name="Assists_AutoBlipLabel" xml:space="preserve">
+  <data name="Assists_AutoBlipLabel" xml:space="preserve">
     <value>Auto blip:</value>
   </data>
-	<data name="Assists_AbsLabel" xml:space="preserve">
+  <data name="Assists_AbsLabel" xml:space="preserve">
     <value>ABS:</value>
   </data>
-	<data name="Assists_TractionControlLabel" xml:space="preserve">
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
     <value>TC:</value>
   </data>
-	<data name="Assists_StabilityControlLabel" xml:space="preserve">
+  <data name="Assists_StabilityControlLabel" xml:space="preserve">
     <value>Stability control:</value>
   </data>
-	<data name="Assists_FuelLabel" xml:space="preserve">
+  <data name="Assists_FuelLabel" xml:space="preserve">
     <value>Fuel:</value>
   </data>
-	<data name="Assists_TyreWearLabel" xml:space="preserve">
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
     <value>Tyre wear:</value>
   </data>
-	<data name="WebBrowser_Prompt" xml:space="preserve">
+  <data name="WebBrowser_Prompt" xml:space="preserve">
     <value>Webpage says</value>
   </data>
-	<data name="AcObject_CarBrandLabel" xml:space="preserve">
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
     <value>Brand:</value>
   </data>
-	<data name="AcObject_ContryLabel" xml:space="preserve">
+  <data name="AcObject_ContryLabel" xml:space="preserve">
     <value>Country:</value>
   </data>
-	<data name="AcObject_CarClassLabel" xml:space="preserve">
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
     <value>Class:</value>
   </data>
-	<data name="AcObject_YearLabel" xml:space="preserve">
+  <data name="AcObject_YearLabel" xml:space="preserve">
     <value>Year:</value>
   </data>
-	<data name="AcObject_CarParentLabel" xml:space="preserve">
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
     <value>Parent:</value>
   </data>
-	<data name="AcObject_SpecsLabel" xml:space="preserve">
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
     <value>Specs:</value>
   </data>
-	<data name="AcObject_Author_Tooltip" xml:space="preserve">
+  <data name="AcObject_Author_Tooltip" xml:space="preserve">
     <value>Author, version &amp; URL</value>
   </data>
-	<data name="Car_OpenInShowroom" xml:space="preserve">
+  <data name="Car_OpenInShowroom" xml:space="preserve">
     <value>Open In Showroom</value>
   </data>
-	<data name="Common_Presets" xml:space="preserve">
+  <data name="Common_Presets" xml:space="preserve">
     <value>Presets</value>
   </data>
-	<data name="Common_Options" xml:space="preserve">
+  <data name="Common_Options" xml:space="preserve">
     <value>Options</value>
   </data>
-	<data name="Common_Settings" xml:space="preserve">
+  <data name="Common_Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
-	<data name="Car_OpenInCustomShowroom" xml:space="preserve">
+  <data name="Car_OpenInCustomShowroom" xml:space="preserve">
     <value>Open In Custom Showroom</value>
   </data>
-	<data name="KunosCareer_RequiredSeries" xml:space="preserve">
+  <data name="KunosCareer_RequiredSeries" xml:space="preserve">
     <value>Required series: {0}</value>
   </data>
-	<data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
+  <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
     <value>Required series aren’t finished yet</value>
   </data>
-	<data name="KunosCareer_CompletedLabel" xml:space="preserve">
+  <data name="KunosCareer_CompletedLabel" xml:space="preserve">
     <value>Completed: </value>
     <comment>Don’t forget about space at the end!</comment>
   </data>
-	<data name="KunosCareer_Point" xml:space="preserve">
+  <data name="KunosCareer_Point" xml:space="preserve">
     <value>point</value>
     <comment>Will be pluralized automatically</comment>
   </data>
-	<data name="KunosCareer_Error" xml:space="preserve">
+  <data name="KunosCareer_Error" xml:space="preserve">
     <value>{0} error</value>
     <comment>Will be pluralized automatically</comment>
   </data>
-	<data name="Video_CannotPlay" xml:space="preserve">
+  <data name="Video_CannotPlay" xml:space="preserve">
     <value>Can’t play video</value>
   </data>
-	<data name="Video_CannotPlay_Commentary" xml:space="preserve">
+  <data name="Video_CannotPlay_Commentary" xml:space="preserve">
     <value>Please, go to the Settings and enable VLC addon.</value>
   </data>
-	<data name="AcObject_CityLabel" xml:space="preserve">
+  <data name="AcObject_CityLabel" xml:space="preserve">
     <value>City:</value>
   </data>
-	<data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
+  <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
     <value>Geo Tags:</value>
   </data>
-	<data name="AcObject_ErrorsHeader" xml:space="preserve">
+  <data name="AcObject_ErrorsHeader" xml:space="preserve">
     <value>Errors:</value>
   </data>
-	<data name="Presets_Save" xml:space="preserve">
+  <data name="Presets_Save" xml:space="preserve">
     <value>Save Preset</value>
   </data>
-	<data name="Presets_Save_Tooltip" xml:space="preserve">
+  <data name="Presets_Save_Tooltip" xml:space="preserve">
     <value>Save current settings as preset (Ctrl+S)</value>
   </data>
-	<data name="Presets_Unsaved" xml:space="preserve">
+  <data name="Presets_Unsaved" xml:space="preserve">
     <value>Unsaved</value>
   </data>
-	<data name="QuickSwitches_Header" xml:space="preserve">
+  <data name="QuickSwitches_Header" xml:space="preserve">
     <value>Quick Switches</value>
   </data>
-	<data name="QuickSwitches_HideWheel" xml:space="preserve">
+  <data name="QuickSwitches_HideWheel" xml:space="preserve">
     <value>Hide wheel</value>
   </data>
-	<data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
     <value>Hide steering wheel</value>
   </data>
-	<data name="QuickSwitches_LockWheel" xml:space="preserve">
+  <data name="QuickSwitches_LockWheel" xml:space="preserve">
     <value>Lock wheel</value>
   </data>
-	<data name="QuickSwitches_LockCamera" xml:space="preserve">
+  <data name="QuickSwitches_LockCamera" xml:space="preserve">
     <value>Lock camera</value>
   </data>
-	<data name="QuickSwitches_Mirror" xml:space="preserve">
+  <data name="QuickSwitches_Mirror" xml:space="preserve">
     <value>Mirror</value>
   </data>
-	<data name="QuickSwitches_Names" xml:space="preserve">
+  <data name="QuickSwitches_Names" xml:space="preserve">
     <value>Names</value>
   </data>
-	<data name="QuickSwitches_Leaderboard" xml:space="preserve">
+  <data name="QuickSwitches_Leaderboard" xml:space="preserve">
     <value>Leaderboard</value>
   </data>
-	<data name="QuickSwitches_DamageUi" xml:space="preserve">
+  <data name="QuickSwitches_DamageUi" xml:space="preserve">
     <value>Damage (UI)</value>
   </data>
-	<data name="QuickSwitches_Nearest" xml:space="preserve">
+  <data name="QuickSwitches_Nearest" xml:space="preserve">
     <value>Nearest</value>
   </data>
-	<data name="QuickSwitches_Fullscreen" xml:space="preserve">
+  <data name="QuickSwitches_Fullscreen" xml:space="preserve">
     <value>Fullscreen</value>
   </data>
-	<data name="QuickSwitches_DevApps" xml:space="preserve">
+  <data name="QuickSwitches_DevApps" xml:space="preserve">
     <value>Dev apps</value>
   </data>
-	<data name="QuickSwitches_FreeCamera" xml:space="preserve">
+  <data name="QuickSwitches_FreeCamera" xml:space="preserve">
     <value>Free camera</value>
   </data>
-	<data name="QuickSwitches_OnlineName" xml:space="preserve">
+  <data name="QuickSwitches_OnlineName" xml:space="preserve">
     <value>Online name</value>
   </data>
-	<data name="QuickSwitches_Exposure" xml:space="preserve">
+  <data name="QuickSwitches_Exposure" xml:space="preserve">
     <value>Exposure</value>
   </data>
-	<data name="QuickSwitches_Fov" xml:space="preserve">
+  <data name="QuickSwitches_Fov" xml:space="preserve">
     <value>FOV</value>
   </data>
-	<data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
     <value>Lock steering wheel</value>
   </data>
-	<data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
     <value>Lock onboard camera to horizon</value>
   </data>
-	<data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
     <value>Display virtual mirror</value>
   </data>
-	<data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
     <value>Display drivers’ names</value>
   </data>
-	<data name="QuickSwitches_Leaderboard_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_Leaderboard_Tooltip" xml:space="preserve">
     <value>Display leaderboard</value>
   </data>
-	<data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
     <value>Display damage</value>
   </data>
-	<data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
     <value>Fullscreen mode (for example, Shadowplay won’t work without it)</value>
   </data>
-	<data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
     <value>Enable developer apps</value>
   </data>
-	<data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
     <value>Enable free camera (press F7 in-game)</value>
   </data>
-	<data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
     <value>Use different name online</value>
   </data>
-	<data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
     <value>Switch between UI presets</value>
   </data>
-	<data name="QuickSwitches_ControlsPresets_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_ControlsPresets_Tooltip" xml:space="preserve">
     <value>Switch between controls presets</value>
   </data>
-	<data name="QuickSwitches_VideoPresets_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_VideoPresets_Tooltip" xml:space="preserve">
     <value>Switch between video-settings presets</value>
   </data>
-	<data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
     <value>Switch between PP filters</value>
   </data>
-	<data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
     <value>Brightness level</value>
   </data>
-	<data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
     <value>Field of view (vertical angle)</value>
   </data>
-	<data name="QuickSwitches_HideArms" xml:space="preserve">
+  <data name="QuickSwitches_HideArms" xml:space="preserve">
     <value>Hide arms</value>
   </data>
-	<data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
+  <data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
     <value>Hide driver’s arms</value>
   </data>
-	<data name="Theme_Dark" xml:space="preserve">
+  <data name="Theme_Dark" xml:space="preserve">
     <value>Dark</value>
   </data>
-	<data name="Theme_Light" xml:space="preserve">
+  <data name="Theme_Light" xml:space="preserve">
     <value>Light</value>
   </data>
-	<data name="Theme_Nordschleife" xml:space="preserve">
+  <data name="Theme_Nordschleife" xml:space="preserve">
     <value>Nordschleife</value>
   <comment>@Invariant</comment></data>
-	<data name="Animation_Modern" xml:space="preserve">
+  <data name="Animation_Modern" xml:space="preserve">
     <value>Modern</value>
   </data>
-	<data name="Animation_Fade" xml:space="preserve">
+  <data name="Animation_Fade" xml:space="preserve">
     <value>Fade</value>
   </data>
-	<data name="Animation_Up" xml:space="preserve">
+  <data name="Animation_Up" xml:space="preserve">
     <value>Up</value>
   </data>
-	<data name="Animation_Down" xml:space="preserve">
+  <data name="Animation_Down" xml:space="preserve">
     <value>Down</value>
   </data>
-	<data name="Controls_LoadPresetWarning" xml:space="preserve">
+  <data name="Controls_LoadPresetWarning" xml:space="preserve">
     <value>Load “{0}”? Current values will be replaced (but later could be restored from Recycle Bin).</value>
   </data>
-	<data name="Common_AreYouSure" xml:space="preserve">
+  <data name="Common_AreYouSure" xml:space="preserve">
     <value>Are you sure?</value>
   </data>
-	<data name="Controls_BuiltInPresets" xml:space="preserve">
+  <data name="Controls_BuiltInPresets" xml:space="preserve">
     <value>Built-in Presets</value>
   </data>
-	<data name="Controls_UserPresets" xml:space="preserve">
+  <data name="Controls_UserPresets" xml:space="preserve">
     <value>User Presets</value>
   </data>
-	<data name="Controls_Preview_InputMethod" xml:space="preserve">
+  <data name="Controls_Preview_InputMethod" xml:space="preserve">
     <value>Input method: [b]{0}[/b]</value>
   </data>
-	<data name="Controls_Preview_Devices" xml:space="preserve">
+  <data name="Controls_Preview_Devices" xml:space="preserve">
     <value>Devices: [b]{0}[/b]</value>
   </data>
-	<data name="Controls_Preview_Device" xml:space="preserve">
+  <data name="Controls_Preview_Device" xml:space="preserve">
     <value>Device: [b]{0}[/b]</value>
   </data>
-	<data name="Common_Oops" xml:space="preserve">
+  <data name="Common_Oops" xml:space="preserve">
     <value>Oops!</value>
   </data>
-	<data name="Share_EnterName" xml:space="preserve">
+  <data name="Share_EnterName" xml:space="preserve">
     <value>Enter name or keep field empty:</value>
   </data>
-	<data name="Share_EnterNameHeader" xml:space="preserve">
+  <data name="Share_EnterNameHeader" xml:space="preserve">
     <value>Share As</value>
   </data>
-	<data name="Share_EnterCustomId" xml:space="preserve">
+  <data name="Share_EnterCustomId" xml:space="preserve">
     <value>Enter custom ID:</value>
   </data>
-	<data name="Share_EnterCustomIdHeader" xml:space="preserve">
+  <data name="Share_EnterCustomIdHeader" xml:space="preserve">
     <value>Custom ID</value>
   </data>
-	<data name="Share_VerifyMessage" xml:space="preserve">
+  <data name="Share_VerifyMessage" xml:space="preserve">
     <value>Author name: [b]{0}[/b]
 Entry name: [b]{1}[/b]
 Entry type: [b]{2}[/b]</value>
   </data>
-	<data name="Share_VerifyMessageHeader" xml:space="preserve">
+  <data name="Share_VerifyMessageHeader" xml:space="preserve">
     <value>Is Everything OK?</value>
   </data>
-	<data name="Share_InProgress" xml:space="preserve">
+  <data name="Share_InProgress" xml:space="preserve">
     <value>Sharing…</value>
   </data>
-	<data name="Share_CannotShare" xml:space="preserve">
+  <data name="Share_CannotShare" xml:space="preserve">
     <value>Can’t share {0}</value>
   </data>
-	<data name="Share_CannotShare_Commentary" xml:space="preserve">
+  <data name="Share_CannotShare_Commentary" xml:space="preserve">
     <value>Make sure Internet connection is available.</value>
   </data>
-	<data name="Share_Shared" xml:space="preserve">
+  <data name="Share_Shared" xml:space="preserve">
     <value>{0} Shared</value>
     <comment>Title</comment>
   </data>
-	<data name="Share_SharedMessage" xml:space="preserve">
+  <data name="Share_SharedMessage" xml:space="preserve">
     <value>Link copied to clipboard</value>
     <comment>Shown in Windows notifications</comment>
   </data>
-	<data name="Share_SharedMessageAlternative" xml:space="preserve">
+  <data name="Share_SharedMessageAlternative" xml:space="preserve">
     <value>Click to open link</value>
     <comment>Shown in Windows notifications</comment>
   </data>
-	<data name="Showroom_ShowroomLabel" xml:space="preserve">
+  <data name="Showroom_ShowroomLabel" xml:space="preserve">
     <value>Showroom:</value>
   </data>
-	<data name="Common_FilterLabel" xml:space="preserve">
+  <data name="Common_FilterLabel" xml:space="preserve">
     <value>Filter:</value>
   </data>
-	<data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
+  <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
     <value>Kunos watermark will be temporary hidden</value>
   </data>
-	<data name="Showroom_HideWatermark" xml:space="preserve">
+  <data name="Showroom_HideWatermark" xml:space="preserve">
     <value>Hide _watermark</value>
   </data>
-	<data name="Showroom_DisableSweetFx" xml:space="preserve">
+  <data name="Showroom_DisableSweetFx" xml:space="preserve">
     <value>Disable _SweetFX</value>
   </data>
-	<data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
+  <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
     <value>Apparantly SweetFX doesn’t affect the result, but could decrease loading time</value>
   </data>
-	<data name="Showroom_FovLabel" xml:space="preserve">
+  <data name="Showroom_FovLabel" xml:space="preserve">
     <value>FOV:</value>
   </data>
-	<data name="Showroom_CannotStart" xml:space="preserve">
+  <data name="Showroom_CannotStart" xml:space="preserve">
     <value>Can’t start showroom</value>
   </data>
-	<data name="ImageViewer_DefaultName" xml:space="preserve">
+  <data name="ImageViewer_DefaultName" xml:space="preserve">
     <value>Image</value>
   </data>
-	<data name="ImageViewer_SaveTitle" xml:space="preserve">
+  <data name="ImageViewer_SaveTitle" xml:space="preserve">
     <value>Save Image As</value>
   </data>
-	<data name="ImageViewer_CannotSave" xml:space="preserve">
+  <data name="ImageViewer_CannotSave" xml:space="preserve">
     <value>Can’t save image</value>
   </data>
-	<data name="VideoViewer_CannotPlay" xml:space="preserve">
+  <data name="VideoViewer_CannotPlay" xml:space="preserve">
     <value>Can’t play video</value>
   </data>
-	<data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
+  <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
     <value>Make sure VLC addon is installed properly.</value>
   </data>
-	<data name="Common_PleaseWait" xml:space="preserve">
+  <data name="Common_PleaseWait" xml:space="preserve">
     <value>Please, wait…</value>
   </data>
-	<data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
+  <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
     <value>Texture is missing!</value>
   </data>
-	<data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
+  <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
     <value>Type:</value>
   </data>
-	<data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
+  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
     <value>Format:</value>
   </data>
-	<data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
+  <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
     <value>Dimensions:</value>
   </data>
-	<data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
+  <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
     <value>Size:</value>
   </data>
-	<data name="CustomShowroom_Export" xml:space="preserve">
+  <data name="CustomShowroom_Export" xml:space="preserve">
     <value>Export</value>
   </data>
-	<data name="CustomShowroom_ViewMapping" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping" xml:space="preserve">
     <value>View Mapping</value>
   </data>
-	<data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
     <value>View in 2048×2048</value>
   </data>
-	<data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
     <value>View in 512×512</value>
   </data>
-	<data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
     <value>View in 1024×1024</value>
   </data>
-	<data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
     <value>View in 4096×4096</value>
   </data>
-	<data name="CustomShowroom_ViewMapping_Custom" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping_Custom" xml:space="preserve">
     <value>View in custom resolution</value>
   </data>
-	<data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
     <value>Dimensions ([Width]×[Height]):</value>
   </data>
-	<data name="CustomShowroom_ViewMapping_ParsingFailed" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping_ParsingFailed" xml:space="preserve">
     <value>Can’t figure out dimensions</value>
   </data>
-	<data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
     <value>Please, use valid format for them.</value>
   </data>
-	<data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
+  <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
     <value>Export Texture Mapping</value>
   </data>
-	<data name="CustomShowroom_CannotExport" xml:space="preserve">
+  <data name="CustomShowroom_CannotExport" xml:space="preserve">
     <value>Can’t export texture</value>
   </data>
-	<data name="CustomShowroom_Loading" xml:space="preserve">
+  <data name="CustomShowroom_Loading" xml:space="preserve">
     <value>Loading model…</value>
   </data>
-	<data name="CustomShowroom_CannotStart" xml:space="preserve">
+  <data name="CustomShowroom_CannotStart" xml:space="preserve">
     <value>Can’t start Custom Showroom</value>
   </data>
-	<data name="CustomShowroom_ToolsTitle" xml:space="preserve">
+  <data name="CustomShowroom_ToolsTitle" xml:space="preserve">
     <value>Tools</value>
   </data>
-	<data name="CustomShowroom_SelectedHeader" xml:space="preserve">
+  <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
     <value>Selected</value>
   </data>
-	<data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
+  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
     <value>Name:</value>
   </data>
-	<data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
     <value>Material:</value>
   </data>
-	<data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
+  <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
     <value>Textures:</value>
   </data>
-	<data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
+  <data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
     <value>Triangles:</value>
   </data>
-	<data name="CustomShowroom_StatsHeader" xml:space="preserve">
+  <data name="CustomShowroom_StatsHeader" xml:space="preserve">
     <value>Stats</value>
   </data>
-	<data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
+  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
     <value>FPS:</value>
   <comment>@Invariant</comment></data>
-	<data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
+  <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
     <value>Objects:</value>
   </data>
-	<data name="CustomShowroom_ControlHeader" xml:space="preserve">
+  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
     <value>Control</value>
   </data>
-	<data name="CustomShowroom_Control_Lights" xml:space="preserve">
+  <data name="CustomShowroom_Control_Lights" xml:space="preserve">
     <value>_Lights</value>
   </data>
-	<data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
+  <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
     <value>_Wireframe</value>
   </data>
-	<data name="CustomShowroom_SkinHeader" xml:space="preserve">
+  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
     <value>Skin</value>
   </data>
-	<data name="CustomShowroom_EditingMode" xml:space="preserve">
+  <data name="CustomShowroom_EditingMode" xml:space="preserve">
     <value>Skin editing mode</value>
   </data>
-	<data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
+  <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
     <value>Automatically update textures; use PSD, XCF, etc. instead if exists (Magick.NET addon is required)</value>
   </data>
-	<data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
     <value>Update Ambient Shadows</value>
   </data>
-	<data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
     <value>Reset To Recommended Values</value>
   </data>
-	<data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
     <value>Ambient Shadow</value>
   </data>
-	<data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
     <value>Diffusion</value>
   </data>
-	<data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
     <value>Brightness</value>
   </data>
-	<data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
     <value>Iterations</value>
   </data>
-	<data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
     <value>Hide wheels</value>
   </data>
-	<data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
     <value>Fade to edges</value>
   </data>
-	<data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
     <value>Reset</value>
   </data>
-	<data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
     <value>Fit</value>
   </data>
-	<data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
     <value>Save</value>
   </data>
-	<data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
     <value>Size</value>
   </data>
-	<data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
     <value>Highlight size</value>
   </data>
-	<data name="Common_MetersPostfix" xml:space="preserve">
+  <data name="Common_MetersPostfix" xml:space="preserve">
     <value> m</value>
   </data>
-	<data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
     <value>Updating shadows…</value>
   </data>
-	<data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
     <value>Reloading textures…</value>
   </data>
-	<data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
     <value>Data Is Encrypted</value>
   </data>
-	<data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
     <value>Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?</value>
   </data>
-	<data name="Common_DevTools" xml:space="preserve">
+  <data name="Common_DevTools" xml:space="preserve">
     <value>Developer Tools</value>
   </data>
-	<data name="Common_Unpack" xml:space="preserve">
+  <data name="Common_Unpack" xml:space="preserve">
     <value>Unpack {0}</value>
   </data>
-	<data name="AcObject_VersionLabel" xml:space="preserve">
+  <data name="AcObject_VersionLabel" xml:space="preserve">
     <value>Version:</value>
   </data>
-	<data name="AcObject_UrlLabel" xml:space="preserve">
+  <data name="AcObject_UrlLabel" xml:space="preserve">
     <value>URL:</value>
   </data>
-	<data name="Common_FolderExists" xml:space="preserve">
+  <data name="Common_FolderExists" xml:space="preserve">
     <value>Folder “{0}” already exists. Overwrite files?</value>
   </data>
-	<data name="CustomShowroom_ObjectInformation" xml:space="preserve">
+  <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
     <value>Object name: [b]{0}[/b]
 Class: [b]{1}[/b]
 
@@ -646,7 +646,7 @@ LOD In: [b]{9}[/b]
 
 Material: [b]{10}[/b]</value>
   </data>
-	<data name="CustomShowroom_MaterialInformation" xml:space="preserve">
+  <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
     <value>Material name: [b]{0}[/b]
 Shader: [b]{1}[/b]
 
@@ -654,94 +654,94 @@ Blend mode: [b]{2}[/b]
 Alpha test: [b]{3}[/b]
 Depth mode: [b]{4}[/b]</value>
   </data>
-	<data name="CustomShowroom_ShaderProperties" xml:space="preserve">
+  <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
     <value>Shader properties:</value>
   </data>
-	<data name="AcObject_AuthorLabel" xml:space="preserve">
+  <data name="AcObject_AuthorLabel" xml:space="preserve">
     <value>Author:</value>
   </data>
-	<data name="Common_Clear" xml:space="preserve">
+  <data name="Common_Clear" xml:space="preserve">
     <value>Clear</value>
   </data>
-	<data name="Controls_ClickToAssign" xml:space="preserve">
+  <data name="Controls_ClickToAssign" xml:space="preserve">
     <value>Click to assign</value>
   </data>
-	<data name="Controls_WaitingForInput" xml:space="preserve">
+  <data name="Controls_WaitingForInput" xml:space="preserve">
     <value>Waiting for input</value>
   </data>
-	<data name="Controls_InvertAxis" xml:space="preserve">
+  <data name="Controls_InvertAxis" xml:space="preserve">
     <value>Invert</value>
   </data>
-	<data name="Controls_DegressLabel" xml:space="preserve">
+  <data name="Controls_DegressLabel" xml:space="preserve">
     <value>Degress</value>
     <comment>For steering wheel</comment>
   </data>
-	<data name="Controls_RangeFromAxis" xml:space="preserve">
+  <data name="Controls_RangeFromAxis" xml:space="preserve">
     <value>From</value>
   </data>
-	<data name="Controls_RangeToAxis" xml:space="preserve">
+  <data name="Controls_RangeToAxis" xml:space="preserve">
     <value>To</value>
   </data>
-	<data name="Controls_GammaAxis" xml:space="preserve">
+  <data name="Controls_GammaAxis" xml:space="preserve">
     <value>Gamma</value>
   </data>
-	<data name="Controls_FilterAxis" xml:space="preserve">
+  <data name="Controls_FilterAxis" xml:space="preserve">
     <value>Filter</value>
   </data>
-	<data name="Controls_SpeedSensitivity" xml:space="preserve">
+  <data name="Controls_SpeedSensitivity" xml:space="preserve">
     <value>Speed sensitivity</value>
     <comment>For steering wheel</comment>
   </data>
-	<data name="Controls_ClearWheelBinding" xml:space="preserve">
+  <data name="Controls_ClearWheelBinding" xml:space="preserve">
     <value>Clear wheel binding</value>
   </data>
-	<data name="Controls_ClearKeyboardBinding" xml:space="preserve">
+  <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
     <value>Clear keyboard binding</value>
   </data>
-	<data name="Controls_SteeringWheelButton" xml:space="preserve">
+  <data name="Controls_SteeringWheelButton" xml:space="preserve">
     <value>Steering wheel button</value>
   </data>
-	<data name="Controls_KeyboardButton" xml:space="preserve">
+  <data name="Controls_KeyboardButton" xml:space="preserve">
     <value>Keyboard button</value>
   </data>
-	<data name="Online_CarIsMissingLabel" xml:space="preserve">
+  <data name="Online_CarIsMissingLabel" xml:space="preserve">
     <value>Car is missing:</value>
   </data>
-	<data name="Online_TrackIsMissingLabel" xml:space="preserve">
+  <data name="Online_TrackIsMissingLabel" xml:space="preserve">
     <value>Track is missing:</value>
   </data>
-	<data name="Online_DriversOnlineLabel" xml:space="preserve">
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
     <value>Drivers online:</value>
   </data>
-	<data name="Online_JoinUsing" xml:space="preserve">
+  <data name="Online_JoinUsing" xml:space="preserve">
     <value>Join Using {0}</value>
     <comment>Join using specific car</comment>
   </data>
-	<data name="Common_MillisecondsPostfix" xml:space="preserve">
+  <data name="Common_MillisecondsPostfix" xml:space="preserve">
     <value> ms</value>
   </data>
-	<data name="Online_PasswordRequired" xml:space="preserve">
+  <data name="Online_PasswordRequired" xml:space="preserve">
     <value>Password required</value>
   </data>
-	<data name="Common_Error" xml:space="preserve">
+  <data name="Common_Error" xml:space="preserve">
     <value>Error</value>
   </data>
-	<data name="AssistsPreset_Gamer" xml:space="preserve">
+  <data name="AssistsPreset_Gamer" xml:space="preserve">
     <value>Gamer</value>
   </data>
-	<data name="AssistsPreset_Intermediate" xml:space="preserve">
+  <data name="AssistsPreset_Intermediate" xml:space="preserve">
     <value>Intermediate</value>
   </data>
-	<data name="AssistsPreset_Pro" xml:space="preserve">
+  <data name="AssistsPreset_Pro" xml:space="preserve">
     <value>Pro</value>
   </data>
-	<data name="Common_Loading" xml:space="preserve">
+  <data name="Common_Loading" xml:space="preserve">
     <value>Loading…</value>
   </data>
-	<data name="Common_InvalidFormat" xml:space="preserve">
+  <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Invalid format</value>
   </data>
-	<data name="Common_GoodNews" xml:space="preserve">
+  <data name="Common_GoodNews" xml:space="preserve">
     <value>Good news!</value>
   </data>
   <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
@@ -761,7 +761,7 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Common_PsiPostfix" xml:space="preserve">
     <value> psi</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="AcObject_FuelLabel" xml:space="preserve">
     <value>Fuel:</value>
   </data>
@@ -791,5 +791,30 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Common_CelsiusPostfix" xml:space="preserve">
     <value> °C</value>
+  <comment>@Invariant</comment></data>
+  <data name="Common_CelsiusFormat" xml:space="preserve">
+    <value>{0:F0} °C</value>
+  <comment>@Invariant</comment>
+  </data>
+  <data name="Common_OpponentsFormat" xml:space="preserve">
+    <value>{0} opponent</value>
+  </data>
+  <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
+    <value>Recommended value: {0}%</value>
+  </data>
+  <data name="Common_ResetToRecommendedValue" xml:space="preserve">
+    <value>Reset to Recommended Value</value>
+  </data>
+  <data name="Common_ChangeSkin" xml:space="preserve">
+    <value>Change Skin</value>
+  </data>
+  <data name="Common_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Common_TryAgain" xml:space="preserve">
+    <value>Try Again</value>
+  </data>
+  <data name="Showroom_DialogHeader" xml:space="preserve">
+    <value>Showroom</value>
   </data>
 </root>

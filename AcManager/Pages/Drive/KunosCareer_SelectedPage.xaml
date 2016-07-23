@@ -5,8 +5,8 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:acObjects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools"
         xmlns:effects="clr-namespace:FirstFloor.ModernUI.Effects;assembly=FirstFloor.ModernUI"
         xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:achelpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:achelpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
+        xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         d:DataContext="{d:DesignInstance drive:KunosCareer_SelectedPage+KunosCareer_SelectedPageViewModel}" Loaded="KunosCareer_SelectedPage_OnLoaded"
         Unloaded="KunosCareer_SelectedPage_OnUnloaded">
     <UserControl.Resources>
@@ -116,7 +116,7 @@
 
     <Grid Style="{StaticResource ContentRootWithPadding}">
         <!--career errors-->
-        <controls:AcObjectErrorsSection AcObject="{Binding AcObject}" />
+        <c:AcObjectErrorsSection AcObject="{Binding AcObject}" />
 
         <Grid Visibility="{Binding AcObject.HasErrors, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" Name="ContentGrid">
             <Grid.RowDefinitions>
@@ -137,8 +137,8 @@
                         <DockPanel>
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="0 9 0 -9">
                                 <Button PreviewMouseLeftButtonUp="ResetButton_OnMouseLeftButtonUp" Margin="0 0 4 0"
-                                        Visibility="{Binding ChampionshipResetCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Reset" />
-
+                                        Visibility="{Binding ChampionshipResetCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Content="{x:Static c:ControlsStrings.Common_Reset}" />
                                 <Grid
                                         Visibility="{Binding NextCareerObject, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
                                     <Grid.ToolTip>
@@ -148,7 +148,7 @@
                                                 <StackPanel
                                                         Visibility="{Binding NextCareerObject.IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse'}"
                                                         Margin="0 4 0 0" Orientation="Horizontal">
-                                                    <TextBlock Text="Left to earn: " />
+                                                    <TextBlock Text="{x:Static g:AppStrings.KunosCareer_LeftToEarn}" />
 
                                                     <StackPanel Orientation="Horizontal"
                                                             Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.SingleEvents}}">
@@ -166,18 +166,19 @@
                                                             Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.Championship}}">
                                                         <Run Text="{Binding ChampionshipPointsNeeded}" FontWeight="Bold" />
                                                         <Run
-                                                                Text="{Binding ChampionshipPointsNeeded, Converter={StaticResource PluralizingConverter}, ConverterParameter='point'}" />
+                                                                Text="{Binding ChampionshipPointsNeeded, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.KunosCareer_Point}}" />
                                                     </TextBlock>
                                                 </StackPanel>
                                             </StackPanel>
                                         </ToolTip>
                                     </Grid.ToolTip>
-                                    <Button IsEnabled="{Binding NextCareerObject.IsAvailable}" PreviewMouseLeftButtonUp="NextButton_OnMouseLeftButtonUp" Content="Next" />
+                                    <Button IsEnabled="{Binding NextCareerObject.IsAvailable}" PreviewMouseLeftButtonUp="NextButton_OnMouseLeftButtonUp"
+                                            Content="{x:Static g:AppStrings.KunosCareer_Next}" />
                                 </Grid>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Margin="0 0 0 12">
-                                <TextBlock Text="Series goal: " />
+                                <TextBlock Text="{x:Static g:AppStrings.KunosCareer_SeriesGoal}" />
 
                                 <StackPanel Orientation="Horizontal"
                                         Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.SingleEvents}}">
@@ -194,7 +195,8 @@
                                 <TextBlock
                                         Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static acObjects:KunosCareerObjectType.Championship}}">
                                 <Run Text="{Binding ChampionshipPointsGoal}" FontWeight="Bold" />
-                                <Run Text="{Binding ChampionshipPointsGoal, Converter={StaticResource PluralizingConverter}, ConverterParameter='point'}" />
+                                <Run
+                                            Text="{Binding ChampionshipPointsGoal, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.KunosCareer_Point}}" />
                                 </TextBlock>
                             </StackPanel>
                         </DockPanel>
@@ -210,8 +212,10 @@
                     <DataGrid ItemsSource="{Binding AcObject.ChampionshipDriversView}" Style="{StaticResource DataGrid.ReadOnly}" HeadersVisibility="None">
                         <DataGrid.Columns>
                             <DataGridTextColumn Width="40" Header="" Binding="{Binding Points}" SortDirection="Ascending" SortMemberPath="Points" />
-                            <DataGridTemplateColumn Width="1.5*" Header="Name" SortMemberPath="Name" CellTemplate="{StaticResource DataGridCell.DriverName}" />
-                            <DataGridTemplateColumn Width="2*" Header="Car" SortMemberPath="Car.DisplayName" CellTemplate="{StaticResource DataGridCell.Car}"
+                            <DataGridTemplateColumn Width="1.5*" Header="{x:Static g:AppStrings.KunosCareer_TableHeader_Name}" SortMemberPath="Name"
+                                    CellTemplate="{StaticResource DataGridCell.DriverName}" />
+                            <DataGridTemplateColumn Width="2*" Header="{x:Static g:AppStrings.KunosCareer_TableHeader_Car}" SortMemberPath="Car.DisplayName"
+                                    CellTemplate="{StaticResource DataGridCell.Car}"
                                     Visibility="{Binding Data, Source={StaticResource TableSectionProxy}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='450'}" />
                         </DataGrid.Columns>
                     </DataGrid>
@@ -282,37 +286,37 @@
                 </Grid.RowDefinitions>
 
                 <!--event errors-->
-                <controls:AcObjectErrorsSection AcObject="{Binding}" Grid.ColumnSpan="2" />
+                <c:AcObjectErrorsSection AcObject="{Binding}" Grid.ColumnSpan="2" />
 
                 <!--event params-->
                 <DockPanel Grid.Column="0" Grid.Row="1">
-                    <Label Content="Time:" />
+                    <Label Content="{x:Static g:AppStrings.KunosCareer_TimeLabel}" />
                     <TextBlock Text="{Binding DisplayTime}" Style="{StaticResource Value}" />
                 </DockPanel>
                 <DockPanel Grid.Column="1" Grid.Row="1">
-                    <Label Content="Weather:" />
+                    <Label Content="{x:Static g:AppStrings.KunosCareer_WeatherLabel}" />
                     <TextBlock Text="{Binding WeatherObject.DisplayName}" Style="{StaticResource Value}" />
                 </DockPanel>
                 <DockPanel Grid.Column="0" Grid.Row="2">
-                    <Label Content="Temperature:" />
-                    <TextBlock Text="{Binding Temperature, StringFormat='{}{0:F0} °C'}" Style="{StaticResource Value}" />
+                    <Label Content="{x:Static g:AppStrings.KunosCareer_TemperatureLabel}" />
+                    <TextBlock Text="{Binding Temperature, StringFormat={x:Static c:ControlsStrings.Common_CelsiusFormat}}" Style="{StaticResource Value}" />
                     <DockPanel.ToolTip>
-                        <TextBlock Text="{Binding RoadTemperature, StringFormat='{}Road temperature: {0:F0} °C'}" />
+                        <TextBlock Text="{Binding RoadTemperature, StringFormat={x:Static g:AppStrings.Common_RoadTemperatureFormat}}" />
                     </DockPanel.ToolTip>
                 </DockPanel>
                 <DockPanel Grid.Column="1" Grid.Row="2">
-                    <Label Content="Track Surface:" />
+                    <Label Content="{x:Static g:AppStrings.KunosCareer_TrackState}" />
                     <TextBlock Text="{Binding TrackPreset.Name}" Style="{StaticResource Value}" />
                 </DockPanel>
 
                 <!--race params-->
                 <DockPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
                         Visibility="{Binding StartingPosition, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Label Content="Starting position:" />
+                    <Label Content="{x:Static g:AppStrings.KunosCareer_StartingPositionLabel}" />
                     <TextBlock Style="{StaticResource Value}">
                         <Run Text="{Binding StartingPosition, Converter={StaticResource OrdinalizingConverter}, Mode=OneWay}" />
-                        <Run Text="(" /><Run Text="{Binding OpponentsCount, Mode=OneWay}" />
-                        <Run Text="{Binding OpponentsCount, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='opponent'}" /><Run
+                        <Run Text="(" /><Run
+                                Text="{Binding OpponentsCount, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsFormat}}" /><Run
                                 Text=")" />
                     </TextBlock>
                 </DockPanel>
@@ -333,18 +337,18 @@
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Style>
-                    <Label Content="Opponents:" />
+                    <Label Content="{x:Static g:AppStrings.KunosCareer_OpponentsLabel}" />
                     <TextBlock Style="{StaticResource Value}" Text="{Binding OpponentsCount, Mode=OneWay}" />
                 </DockPanel>
 
                 <DockPanel Grid.Column="0" Grid.Row="3"
                         Visibility="{Binding Laps, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Label Content="Laps:" />
+                    <Label Content="{x:Static g:AppStrings.KunosCareer_LapsLabel}" />
                     <TextBlock Text="{Binding Laps}" Style="{StaticResource Value}" />
                 </DockPanel>
                 <DockPanel Grid.Column="1" Grid.Row="3" Grid.RowSpan="2"
                         Visibility="{Binding Laps, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Label Content="AI Level:" />
+                    <Label Content="{x:Static g:AppStrings.KunosCareer_AiLevelLabel}" />
                     <Grid>
                         <TextBlock Text="{Binding AiLevel, StringFormat='{}{0}%'}" Style="{StaticResource Value}"
                                 Visibility="{Binding Data.DriveSettings.KunosCareerUserAiLevel, Source={StaticResource DataContextProxy}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -355,17 +359,17 @@
                                     TickPlacement="TopLeft" />
                             <StackPanel.ToolTip>
                                 <ToolTip Margin="0" Padding="4">
-                                    <TextBlock Text="{Binding AiLevel, StringFormat='{}Recommended value: {0}%'}" />
+                                    <TextBlock Text="{Binding AiLevel, StringFormat={x:Static c:ControlsStrings.Common_RecommendedPercentageFormat}}" />
                                 </ToolTip>
                             </StackPanel.ToolTip>
                             <StackPanel.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem StaysOpenOnClick="True">
                                         <MenuItem.Header>
-                                            <TextBlock Text="{Binding AiLevel, StringFormat='{}Recommended value: {0}%'}" />
+                                            <TextBlock Text="{Binding AiLevel, StringFormat={x:Static c:ControlsStrings.Common_RecommendedPercentageFormat}}" />
                                         </MenuItem.Header>
                                     </MenuItem>
-                                    <MenuItem Header="Reset to Recommended Value" Command="{Binding ResetUserAiLevelCommand}" />
+                                    <MenuItem Header="{x:Static c:ControlsStrings.Common_ResetToRecommendedValue}" Command="{Binding ResetUserAiLevelCommand}" />
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                         </StackPanel>
@@ -382,7 +386,8 @@
                             PreviewMouseLeftButtonDown="CarPreview_OnPreviewMouseLeftButtonDown">
                         <mui:BetterImage.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Change Skin" IsEnabled="{Binding Source={x:Static achelpers:SettingsHolder.Drive}, Path=KunosCareerUserSkin}"
+                                <MenuItem Header="{x:Static c:ControlsStrings.Common_ChangeSkin}"
+                                        IsEnabled="{Binding Source={x:Static achelpers:SettingsHolder.Drive}, Path=KunosCareerUserSkin}"
                                         PreviewMouseLeftButtonUp="ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp" />
                             </ContextMenu>
                         </mui:BetterImage.ContextMenu>
@@ -479,18 +484,19 @@
                     </StackPanel>
 
                     <DockPanel Grid.Column="1" VerticalAlignment="Bottom">
-                        <controls:UserPresetsControl UserPresetable="{Binding Data.AssistsViewModel, Source={StaticResource DataContextProxy}}"
-                                ShowSaveButton="False" Margin="0 0 4 0" DockPanel.Dock="Left" />
+                        <c:UserPresetsControl UserPresetable="{Binding Data.AssistsViewModel, Source={StaticResource DataContextProxy}}" ShowSaveButton="False"
+                                Margin="0 0 4 0" DockPanel.Dock="Left" />
 
                         <Button DockPanel.Dock="Left" DataContext="{Binding Data.AssistsViewModel, Source={StaticResource DataContextProxy}}"
                                 PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp" Margin="0 0 4 0">
                             …
                             <Button.ToolTip>
-                                <controls:AssistsDescription />
+                                <c:AssistsDescription />
                             </Button.ToolTip>
                         </Button>
                         <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
-                                CommandParameter="{Binding Data.AssistsViewModel.GameProperties, Source={StaticResource DataContextProxy}}" Content="Go!" />
+                                CommandParameter="{Binding Data.AssistsViewModel.GameProperties, Source={StaticResource DataContextProxy}}"
+                                Content="{x:Static g:AppStrings.Common_Go}" />
                     </DockPanel>
                 </Grid>
             </Grid>

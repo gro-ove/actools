@@ -26,7 +26,7 @@ namespace AcManager.Pages.Lists {
                 : base(WeatherManager.Instance, listFilter) {
             }
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, "{0} weather");
+            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Weather);
         }
     }
 }

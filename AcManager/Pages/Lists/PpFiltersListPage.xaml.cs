@@ -26,7 +26,7 @@ namespace AcManager.Pages.Lists {
                 : base(PpFiltersManager.Instance, listFilter) {
             }
 
-            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, "{0} filter");
+            protected override string GetStatus() => PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_PpFilters);
         }
     }
 }

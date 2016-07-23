@@ -43,7 +43,6 @@ using QuickSwitchesBlock = AcManager.Controls.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener {
-        public static bool OptionEnableManagerTabs = true;
         public static bool OptionLiteModeSupported = false;
 
         private readonly bool _cancelled;
@@ -73,11 +72,11 @@ namespace AcManager.Pages.Windows {
 
             DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
-                new InputBinding(new NavigateCommand(this, AcManager.AppStrings.Main_About), new KeyGesture(Key.F1, ModifierKeys.Alt)),
-                new InputBinding(new NavigateCommand(this, AcManager.AppStrings.Main_Drive), new KeyGesture(Key.F1)),
-                new InputBinding(new NavigateCommand(this, AcManager.AppStrings.Main_Media), new KeyGesture(Key.F2)),
-                new InputBinding(new NavigateCommand(this, AcManager.AppStrings.Main_Content), new KeyGesture(Key.F3)),
-                new InputBinding(new NavigateCommand(this, AcManager.AppStrings.Main_Settings), new KeyGesture(Key.F4))
+                new InputBinding(new NavigateCommand(this, AppStrings.Main_About), new KeyGesture(Key.F1, ModifierKeys.Alt)),
+                new InputBinding(new NavigateCommand(this, AppStrings.Main_Drive), new KeyGesture(Key.F1)),
+                new InputBinding(new NavigateCommand(this, AppStrings.Main_Media), new KeyGesture(Key.F2)),
+                new InputBinding(new NavigateCommand(this, AppStrings.Main_Content), new KeyGesture(Key.F3)),
+                new InputBinding(new NavigateCommand(this, AppStrings.Main_Settings), new KeyGesture(Key.F4))
             });
             InitializeComponent();
 
@@ -90,7 +89,7 @@ namespace AcManager.Pages.Windows {
             }
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => string.Equals(x.GroupKey, AcManager.AppStrings.Main_Content, StringComparison.OrdinalIgnoreCase))) {
+                                                 .Where(x => string.Equals(x.GroupKey, AppStrings.Main_Content, StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += ContentLinkChanged;
             }
 
@@ -130,9 +129,9 @@ namespace AcManager.Pages.Windows {
                 return false;
             }
 
-            Toast.Show(AcManager.AppStrings.Main_OfficialSupportNotification, AcManager.AppStrings.Main_OfficialSupportNotification_Details, () => {
+            Toast.Show(AppStrings.Main_OfficialSupportNotification, AppStrings.Main_OfficialSupportNotification_Details, () => {
                 if (ModernDialog.ShowMessage(
-                        AcManager.AppStrings.Main_OfficialSupportNotification_Message,
+                        AppStrings.Main_OfficialSupportNotification_Message,
                         Controls.ControlsStrings.Common_GoodNews, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                     SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.OfficialStarterType;
                 }
@@ -224,7 +223,7 @@ namespace AcManager.Pages.Windows {
 
                 var result = await _argumentsHandler.ProcessArgument(arg);
                 if (result == ArgumentHandleResult.FailedShow) {
-                    NonfatalError.Notify(AcManager.AppStrings.Main_CannotProcessArgument, AcManager.AppStrings.Main_CannotProcessArgument_Commentary);
+                    NonfatalError.Notify(AppStrings.Main_CannotProcessArgument, AppStrings.Main_CannotProcessArgument_Commentary);
                 }
 
                 if (result == ArgumentHandleResult.SuccessfulShow || result == ArgumentHandleResult.FailedShow) {
@@ -288,13 +287,13 @@ namespace AcManager.Pages.Windows {
         }
 
         private void UpdateAboutIsNew() {
-            TitleLinks.FirstOrDefault(x => x.DisplayName == AcManager.AppStrings.Main_About)?
+            TitleLinks.FirstOrDefault(x => x.DisplayName == AppStrings.Main_About)?
                       .SetNew(AboutHelper.Instance.HasNewImportantTips || AboutHelper.Instance.HasNewReleaseNotes);
             MenuLinkGroups.SelectMany(x => x.Links)
-                          .FirstOrDefault(x => x.DisplayName == AcManager.AppStrings.Main_Link_ReleaseNotes)?
+                          .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ReleaseNotes)?
                           .SetNew(AboutHelper.Instance.HasNewReleaseNotes);
             MenuLinkGroups.SelectMany(x => x.Links)
-                          .FirstOrDefault(x => x.DisplayName == AcManager.AppStrings.Main_Link_ImportantTips)?
+                          .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ImportantTips)?
                           .SetNew(AboutHelper.Instance.HasNewImportantTips);
         }
 

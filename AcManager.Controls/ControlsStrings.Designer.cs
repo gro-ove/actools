@@ -24,7 +24,7 @@ namespace AcManager.Controls {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ControlsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Controls {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -394,6 +394,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0:F0} °C.
+        /// </summary>
+        public static string Common_CelsiusFormat {
+            get {
+                return ResourceManager.GetString("Common_CelsiusFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  °C.
         /// </summary>
         public static string Common_CelsiusPostfix {
@@ -408,6 +417,15 @@ namespace AcManager.Controls {
         public static string Common_Change {
             get {
                 return ResourceManager.GetString("Common_Change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Skin.
+        /// </summary>
+        public static string Common_ChangeSkin {
+            get {
+                return ResourceManager.GetString("Common_ChangeSkin", resourceCulture);
             }
         }
         
@@ -529,6 +547,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} opponent.
+        /// </summary>
+        public static string Common_OpponentsFormat {
+            get {
+                return ResourceManager.GetString("Common_OpponentsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
         public static string Common_Options {
@@ -574,11 +601,56 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recommended value: {0}%.
+        /// </summary>
+        public static string Common_RecommendedPercentageFormat {
+            get {
+                return ResourceManager.GetString("Common_RecommendedPercentageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string Common_Reset {
+            get {
+                return ResourceManager.GetString("Common_Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset to Recommended Value.
+        /// </summary>
+        public static string Common_ResetToRecommendedValue {
+            get {
+                return ResourceManager.GetString("Common_ResetToRecommendedValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  sec.
+        /// </summary>
+        public static string Common_SecondsPostfix {
+            get {
+                return ResourceManager.GetString("Common_SecondsPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string Common_Settings {
             get {
                 return ResourceManager.GetString("Common_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try Again.
+        /// </summary>
+        public static string Common_TryAgain {
+            get {
+                return ResourceManager.GetString("Common_TryAgain", resourceCulture);
             }
         }
         
@@ -1869,6 +1941,15 @@ namespace AcManager.Controls {
         public static string Showroom_CannotStart {
             get {
                 return ResourceManager.GetString("Showroom_CannotStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Showroom.
+        /// </summary>
+        public static string Showroom_DialogHeader {
+            get {
+                return ResourceManager.GetString("Showroom_DialogHeader", resourceCulture);
             }
         }
         

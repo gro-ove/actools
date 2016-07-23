@@ -26,7 +26,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Drive {
     public partial class Rsr {
-        public static AssistsViewModel Assists { get; } = new AssistsViewModel("rsrassists");
+        public static AssistsViewModel Assists { get; } = new AssistsViewModel("rsrassistsn");
 
         private ViewModel Model => (ViewModel)DataContext;
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using StringBasedFilter.Parsing;
@@ -33,7 +34,7 @@ namespace StringBasedFilter {
     /// Untyped version with variable ITester.
     /// </summary>
     public class Filter : IFilter {
-        public static IFilter<T> Create<T>(ITester<T> tester, string filter, bool strictMode = false) {
+        public static IFilter<T> Create<T>(ITester<T> tester, [Localizable(false)] string filter, bool strictMode = false) {
             return new Filter<T>(tester, filter, strictMode);
         }
 

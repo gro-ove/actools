@@ -522,6 +522,7 @@ fixme:
 todo:
     - include “dev apps” option to apps presets
         - promixity indicator as well?
+        - share python apps
 
     - use Escape, Ctrl+W and Ctrl+F4 to exit from some dialogs
     - add AC credits (and version?)
@@ -551,7 +552,7 @@ todo:
             + main window
             + settings
             + selected
-            - miscellaneous & lists
+            + miscellaneous & lists
             - drive
             - dialogs
             - acsettings

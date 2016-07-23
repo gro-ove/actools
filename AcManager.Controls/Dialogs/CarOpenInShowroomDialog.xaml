@@ -1,9 +1,10 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Controls.Dialogs.CarOpenInShowroomDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:controls="clr-namespace:AcManager.Controls" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:dialogs="clr-namespace:AcManager.Controls.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Showroom"
-        Closing="CarOpenInShowroomDialog_OnClosing" d:DataContext="{d:DesignInstance dialogs:CarOpenInShowroomDialog+ViewModel}">
+        xmlns:c="clr-namespace:AcManager.Controls" xmlns:h="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
+        xmlns:di="clr-namespace:AcManager.Controls.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="{x:Static c:ControlsStrings.Showroom_DialogHeader}" Closing="CarOpenInShowroomDialog_OnClosing"
+        d:DataContext="{d:DesignInstance di:CarOpenInShowroomDialog+ViewModel}">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,7 +26,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="0">
-            <TextBlock Text="{x:Static controls:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Showroom_ShowroomLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
             <ComboBox Margin="4 0 4 0" ItemsSource="{Binding Showrooms}" SelectedItem="{Binding SelectedShowroom}">
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
@@ -36,27 +37,27 @@
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="1" Grid.Column="0">
-            <TextBlock Text="{x:Static controls:ControlsStrings.Common_FilterLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
             <ComboBox Margin="4 0 4 0" SelectedItem="{Binding SelectedFilter}" ItemsSource="{Binding Filters}" />
         </StackPanel>
 
         <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding DisableWatermark}" Margin="8 0 0 0"
-                ToolTip="{x:Static controls:ControlsStrings.Showroom_HideWatermark_Tooltip}">
-            <Label Content="{x:Static controls:ControlsStrings.Showroom_HideWatermark}" />
+                ToolTip="{x:Static c:ControlsStrings.Showroom_HideWatermark_Tooltip}">
+            <Label Content="{x:Static c:ControlsStrings.Showroom_HideWatermark}" />
         </CheckBox>
 
         <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding DisableSweetFx}" Margin="8 0 0 0"
-                ToolTip="{x:Static controls:ControlsStrings.Showroom_DisableSweetFx_Tooltip}">
-            <Label Content="{x:Static controls:ControlsStrings.Showroom_DisableSweetFx}" />
+                ToolTip="{x:Static c:ControlsStrings.Showroom_DisableSweetFx_Tooltip}">
+            <Label Content="{x:Static c:ControlsStrings.Showroom_DisableSweetFx}" />
         </CheckBox>
 
         <StackPanel Orientation="Vertical" Margin="0 0 8 8" Grid.Row="0" Grid.Column="1">
-            <TextBlock Text="{x:Static controls:ControlsStrings.Showroom_FovLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
-            <TextBox Margin="4 0 4 0" Text="{Binding CameraFov}" attached:TextBoxAdvancement.SpecialMode="Number" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Showroom_FovLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+            <TextBox Margin="4 0 4 0" Text="{Binding CameraFov}" h:TextBoxAdvancement.SpecialMode="Number" />
         </StackPanel>
     </Grid>
 
     <mui:ModernDialog.ButtonsRowContent>
-        <controls:UserPresetsControl UserPresetable="{Binding}" />
+        <c:UserPresetsControl UserPresetable="{Binding}" />
     </mui:ModernDialog.ButtonsRowContent>
 </mui:ModernDialog>
