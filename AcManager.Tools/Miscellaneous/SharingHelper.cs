@@ -174,7 +174,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return null;
                 }
             } catch (Exception e) {
-                NonfatalError.Notify(ToolsStrings.SharingHelper_CannotGetShared, ToolsStrings.SharingHelper_CannotGetShared_Commentary, e);
+                NonfatalError.Notify(ToolsStrings.SharingHelper_CannotGetShared, ToolsStrings.Common_CannotDownloadFile_Commentary, e);
                 return null;
             }
 

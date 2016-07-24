@@ -384,7 +384,7 @@
   <data name="Online_Server_TrackIsMissing" xml:space="preserve">
     <value>Pista {0} è mancante.</value>
   </data>
-  <data name="Online_Server_CountryNA" xml:space="preserve">
+  <data name="Common_NA" xml:space="preserve">
     <value>N/D</value>
   </data>
   <data name="Online_Server_SessionEnded" xml:space="preserve">
@@ -430,7 +430,7 @@
   <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
     <value>Si prega di scegliere un file nella directory iniziale o qualche sottodirectory.</value>
   </data>
-  <data name="Common_CannotDo" xml:space="preserve">
+  <data name="Common_CannotDo_Title" xml:space="preserve">
     <value>Non è fattibile</value>
   </data>
   <data name="AcRootDirectory_Required" xml:space="preserve">
@@ -1011,7 +1011,7 @@
   <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
     <value>JSON-file è stato modificato. Ricarica? Tutte le modifiche effettuate in locale andranno perse.</value>
   </data>
-  <data name="AcObject_DisablingNotSupported" xml:space="preserve">
+  <data name="Common_CannotDo" xml:space="preserve">
     <value>Non è fattibile</value>
   </data>
   <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">

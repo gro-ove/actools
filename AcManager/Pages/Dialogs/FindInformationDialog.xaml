@@ -1,15 +1,14 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.FindInformationDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" xmlns:modernui="clr-namespace:FirstFloor.ModernUI;assembly=FirstFloor.ModernUI"
-        xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{Binding SelectedObject.DisplayName, Mode=OneTime}" MaxWidth="1200" MaxHeight="900"
-        d:DataContext="{d:DesignInstance dialogs:FindInformationDialog+FindInformationViewModel}">
+        d:DataContext="{d:DesignInstance di:FindInformationDialog+FindInformationViewModel}">
     <mui:ModernDialog.ButtonsRowContent>
         <Button Command="{Binding SaveCommand}" Content="{Binding SaveLabel}" />
     </mui:ModernDialog.ButtonsRowContent>
     <StackPanel Margin="0 0 0 -36">
-        <userControls:WebBlock x:Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" Width="1080" Height="640" />
-        <TextBlock FontStyle="Italic" Margin="8" Text="Select year or description and press OK; hold Ctrl to extend description instead of replacing it." />
+        <c:WebBlock x:Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" Width="1080" Height="640" />
+        <TextBlock FontStyle="Italic" Margin="8" Text="{x:Static c:ControlsStrings.FindInformation_Description}" />
     </StackPanel>
 </mui:ModernDialog>

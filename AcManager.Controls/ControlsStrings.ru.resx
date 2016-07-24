@@ -136,7 +136,7 @@
     <comment>Will be pluralized automatically</comment>
   </data>
   <data name="AcObject_ErrorsHeader" xml:space="preserve">
-    <value>Ошибки:</value>
+    <value>{!Ошибка}:</value>
   </data>
   <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
     <value>Координаты:</value>
@@ -155,12 +155,6 @@
   </data>
   <data name="Assists_AutoBlipLabel" xml:space="preserve">
     <value>Авто-блип:</value>
-  </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
-  </data>
-  <data name="Assists_TractionControlLabel" xml:space="preserve">
-    <value>TC:</value>
   </data>
   <data name="Assists_StabilityControlLabel" xml:space="preserve">
     <value>Стабилизация:</value>
@@ -396,7 +390,7 @@
   <data name="ImageViewer_DefaultName" xml:space="preserve">
     <value>Изображение</value>
   </data>
-  <data name="ImageViewer_SaveTitle" xml:space="preserve">
+  <data name="ImageViewer_Save_Title" xml:space="preserve">
     <value>Сохранить изображение как</value>
   </data>
   <data name="Showroom_FovLabel" xml:space="preserve">
@@ -461,5 +455,11 @@
   </data>
   <data name="Common_Compressing" xml:space="preserve">
     <value>Сжатие…</value>
+  </data>
+  <data name="Common_OpponentsFormat" xml:space="preserve">
+    <value>{0} оппонент</value>
+  </data>
+  <data name="Common_Reset" xml:space="preserve">
+    <value>Сбросить</value>
   </data>
 </root>

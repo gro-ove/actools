@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -97,7 +98,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
-        public Button CreateExtraStyledDialogButton(string styleKey, string content, Action<object> action, Func<object, bool> canExecute = null) {
+        public Button CreateExtraStyledDialogButton([Localizable(false)] string styleKey, string content, Action<object> action, Func<object, bool> canExecute = null) {
             return CreateExtraStyledDialogButton(styleKey, content, new RelayCommand(action, canExecute));
         }
 

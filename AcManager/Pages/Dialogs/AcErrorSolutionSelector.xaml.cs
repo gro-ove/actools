@@ -42,11 +42,11 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new[] { CancelButton };
 
             if (acError.BaseException != null) {
-                ErrorMessage = "Stack trace:\n[mono]" + acError.BaseException + "[/mono]";
+                ErrorMessage = string.Format(AppStrings.AcError_StackTrace, acError.BaseException);
             } else {
                 Solutions = acError.GetSolutions().ToList();
                 if (Solutions.Count == 0) {
-                    ErrorMessage = "None of solutions are available.";
+                    ErrorMessage = AppStrings.AcError_SolutionsNotFound;
                 } else {
                     SelectedSolution = Solutions.First();
                     SimilarErrors = Solutions.OfType<IMultiSolution>().Any()
@@ -148,11 +148,11 @@ namespace AcManager.Pages.Dialogs {
                 }
             } catch (SolvingException exception) {
                 if (!exception.IsCancelled) {
-                    NonfatalError.Notify("Can’t solve the problem", exception);
+                    NonfatalError.Notify(AppStrings.AcError_CannotSolveProblem, exception);
                 }
                 return;
             } catch (Exception exception) {
-                NonfatalError.Notify("Can’t solve the problem", exception);
+                NonfatalError.Notify(AppStrings.AcError_CannotSolveProblem, exception);
                 return;
             } finally {
                 _solvingInProgress = false;
@@ -184,11 +184,11 @@ namespace AcManager.Pages.Dialogs {
                 }
             } catch (SolvingException exception) {
                 if (!exception.IsCancelled) {
-                    NonfatalError.Notify("Can’t solve the problem", exception);
+                    NonfatalError.Notify(AppStrings.AcError_CannotSolveProblem, exception);
                 }
                 return;
             } catch (Exception exception) {
-                NonfatalError.Notify("Can’t solve the problem", exception);
+                NonfatalError.Notify(AppStrings.AcError_CannotSolveProblem, exception);
                 return;
             } finally {
                 _solvingInProgress = false;
@@ -203,7 +203,7 @@ namespace AcManager.Pages.Dialogs {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

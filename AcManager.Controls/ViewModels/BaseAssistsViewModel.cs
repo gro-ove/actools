@@ -104,22 +104,22 @@ namespace AcManager.Controls.ViewModels {
 
         public RealismLevel AutoShifterRealismLevel => AutoShifter ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
-        private double _slipSteamMultipler = 1d;
+        private double _slipsteamMultipler = 1d;
 
-        public double SlipSteamMultipler {
-            get { return _slipSteamMultipler; }
+        public double SlipsteamMultipler {
+            get { return _slipsteamMultipler; }
             set {
                 value = Math.Round(value.Clamp(0d, 10d), 1);
-                if (Equals(value, _slipSteamMultipler)) return;
-                _slipSteamMultipler = value;
+                if (Equals(value, _slipsteamMultipler)) return;
+                _slipsteamMultipler = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(SlipSteamMultiplerRealismLevel));
+                OnPropertyChanged(nameof(SlipsteamMultiplerRealismLevel));
                 SaveLater();
             }
         }
 
-        public RealismLevel SlipSteamMultiplerRealismLevel => SlipSteamMultipler > 5 ? RealismLevel.NonRealistic :
-                !Equals(SlipSteamMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
+        public RealismLevel SlipsteamMultiplerRealismLevel => SlipsteamMultipler > 5 ? RealismLevel.NonRealistic :
+                !Equals(SlipsteamMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
         private bool _autoClutch;
 
@@ -289,7 +289,7 @@ namespace AcManager.Controls.ViewModels {
                 StabilityControl = StabilityControl,
                 AutoBrake = AutoBrake,
                 AutoShifter = AutoShifter,
-                SlipSteam = SlipSteamMultipler,
+                SlipSteam = SlipsteamMultipler,
                 AutoClutch = AutoClutch,
                 Abs = Abs,
                 TractionControl = TractionControl,
@@ -304,7 +304,7 @@ namespace AcManager.Controls.ViewModels {
                 StabilityControl = o.StabilityControl;
                 AutoBrake = o.AutoBrake;
                 AutoShifter = o.AutoShifter;
-                SlipSteamMultipler = o.SlipSteam;
+                SlipsteamMultipler = o.SlipSteam;
                 AutoClutch = o.AutoClutch;
                 Abs = o.Abs;
                 TractionControl = o.TractionControl;
@@ -319,7 +319,7 @@ namespace AcManager.Controls.ViewModels {
                 StabilityControl = 0d;
                 AutoBrake = false;
                 AutoShifter = false;
-                SlipSteamMultipler = 1d;
+                SlipsteamMultipler = 1d;
                 AutoClutch = false;
                 Abs = AssistState.Factory;
                 TractionControl = AssistState.Factory;
@@ -361,7 +361,7 @@ namespace AcManager.Controls.ViewModels {
             StabilityControl = StabilityControl,
             AutoBrake = AutoBrake,
             AutoShifter = AutoShifter,
-            SlipSteamMultipler = SlipSteamMultipler,
+            SlipSteamMultipler = SlipsteamMultipler,
             AutoClutch = AutoClutch,
             Abs = Abs,
             TractionControl = TractionControl,

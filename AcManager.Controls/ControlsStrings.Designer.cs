@@ -24,7 +24,7 @@ namespace AcManager.Controls {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ControlsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Controls {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -75,6 +75,24 @@ namespace AcManager.Controls {
         public static string AcObject_AuthorLabel {
             get {
                 return ResourceManager.GetString("AcObject_AuthorLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t update preview.
+        /// </summary>
+        public static string AcObject_CannotUpdatePreview {
+            get {
+                return ResourceManager.GetString("AcObject_CannotUpdatePreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You were supposed to make at least one screenshot..
+        /// </summary>
+        public static string AcObject_CannotUpdatePreview_TrackCommentary {
+            get {
+                return ResourceManager.GetString("AcObject_CannotUpdatePreview_TrackCommentary", resourceCulture);
             }
         }
         
@@ -133,7 +151,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Errors:.
+        ///   Looks up a localized string similar to {Error}:.
         /// </summary>
         public static string AcObject_ErrorsHeader {
             get {
@@ -385,6 +403,24 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Children will be moved to the new parent!.
+        /// </summary>
+        public static string CarParent_ChildrenWillBeMoved {
+            get {
+                return ResourceManager.GetString("CarParent_ChildrenWillBeMoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make Independent.
+        /// </summary>
+        public static string CarParent_MakeIndependent {
+            get {
+                return ResourceManager.GetString("CarParent_MakeIndependent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure?.
         /// </summary>
         public static string Common_AreYouSure {
@@ -457,6 +493,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloading….
+        /// </summary>
+        public static string Common_Downloading {
+            get {
+                return ResourceManager.GetString("Common_Downloading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Common_Error {
@@ -498,6 +543,15 @@ namespace AcManager.Controls {
         public static string Common_GoodNews {
             get {
                 return ResourceManager.GetString("Common_GoodNews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installing….
+        /// </summary>
+        public static string Common_Installing {
+            get {
+                return ResourceManager.GetString("Common_Installing", resourceCulture);
             }
         }
         
@@ -556,6 +610,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Offline Mode.
+        /// </summary>
+        public static string Common_OfflineMode {
+            get {
+                return ResourceManager.GetString("Common_OfflineMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Oops!.
         /// </summary>
         public static string Common_Oops {
@@ -592,11 +655,20 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please, wait….
+        ///   Looks up a localized string similar to Please wait….
         /// </summary>
         public static string Common_PleaseWait {
             get {
                 return ResourceManager.GetString("Common_PleaseWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  point.
+        /// </summary>
+        public static string Common_PointsPostfix {
+            get {
+                return ResourceManager.GetString("Common_PointsPostfix", resourceCulture);
             }
         }
         
@@ -1288,9 +1360,9 @@ namespace AcManager.Controls {
         /// <summary>
         ///   Looks up a localized string similar to Tools.
         /// </summary>
-        public static string CustomShowroom_ToolsTitle {
+        public static string CustomShowroom_Tools_Title {
             get {
-                return ResourceManager.GetString("CustomShowroom_ToolsTitle", resourceCulture);
+                return ResourceManager.GetString("CustomShowroom_Tools_Title", resourceCulture);
             }
         }
         
@@ -1385,11 +1457,47 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starting position: {0}.
+        ///   Looks up a localized string similar to Select year or description and press OK; hold Ctrl to extend description instead of replacing it..
         /// </summary>
-        public static string Drive_StartingPositionFormat {
+        public static string FindInformation_Description {
             get {
-                return ResourceManager.GetString("Drive_StartingPositionFormat", resourceCulture);
+                return ResourceManager.GetString("FindInformation_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save &amp; Close.
+        /// </summary>
+        public static string FindInformation_SaveAndClose {
+            get {
+                return ResourceManager.GetString("FindInformation_SaveAndClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save as Country.
+        /// </summary>
+        public static string FindInformation_SaveAsCountry {
+            get {
+                return ResourceManager.GetString("FindInformation_SaveAsCountry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save as Description.
+        /// </summary>
+        public static string FindInformation_SaveAsDescription {
+            get {
+                return ResourceManager.GetString("FindInformation_SaveAsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save as Year.
+        /// </summary>
+        public static string FindInformation_SaveAsYear {
+            get {
+                return ResourceManager.GetString("FindInformation_SaveAsYear", resourceCulture);
             }
         }
         
@@ -1414,9 +1522,9 @@ namespace AcManager.Controls {
         /// <summary>
         ///   Looks up a localized string similar to Save Image As.
         /// </summary>
-        public static string ImageViewer_SaveTitle {
+        public static string ImageViewer_Save_Title {
             get {
-                return ResourceManager.GetString("ImageViewer_SaveTitle", resourceCulture);
+                return ResourceManager.GetString("ImageViewer_Save_Title", resourceCulture);
             }
         }
         
@@ -1867,15 +1975,6 @@ namespace AcManager.Controls {
         public static string Share_CannotShare {
             get {
                 return ResourceManager.GetString("Share_CannotShare", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Make sure Internet connection is available..
-        /// </summary>
-        public static string Share_CannotShare_Commentary {
-            get {
-                return ResourceManager.GetString("Share_CannotShare_Commentary", resourceCulture);
             }
         }
         

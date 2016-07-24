@@ -272,7 +272,7 @@
     <value>Can’t load the new version</value>
   </data>
   <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
-    <value>Make sure internet connection is working and app has write permissions to its folder.</value>
+    <value>Make sure Internet connection is available and app has write permissions to its folder.</value>
   </data>
   <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
     <value>Can’t update app due to lack of permissions.</value>
@@ -312,9 +312,6 @@
   </data>
   <data name="SharingHelper_CannotGetShared" xml:space="preserve">
     <value>Can’t get shared entry</value>
-  </data>
-  <data name="SharingHelper_CannotGetShared_Commentary" xml:space="preserve">
-    <value>Make sure Internet connection works.</value>
   </data>
   <data name="SharingHelper_NotSupported_Commentary" xml:space="preserve">
     <value>Make sure you have the latest version of CM.</value>
@@ -384,7 +381,7 @@
   <data name="Online_Server_TrackIsMissing" xml:space="preserve">
     <value>Track {0} is missing.</value>
   </data>
-  <data name="Online_Server_CountryNA" xml:space="preserve">
+  <data name="Common_NA" xml:space="preserve">
     <value>N/A</value>
   </data>
   <data name="Online_Server_SessionEnded" xml:space="preserve">
@@ -430,7 +427,7 @@
   <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
     <value>Please, choose a file in initial directory or some subdirectory.</value>
   </data>
-  <data name="Common_CannotDo" xml:space="preserve">
+  <data name="Common_CannotDo_Title" xml:space="preserve">
     <value>Can’t Do</value>
   </data>
   <data name="AcRootDirectory_Required" xml:space="preserve">
@@ -898,7 +895,7 @@
     <value>Can’t load content pack</value>
   </data>
   <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
-    <value>Make sure internet connection is working and nothing is going on in Content folder.</value>
+    <value>Make sure Internet connection is available and nothing is going on in Content folder.</value>
   </data>
   <data name="Weather_LightThunderstorm" xml:space="preserve">
     <value>Light thunderstorm</value>
@@ -1014,7 +1011,7 @@
   <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
     <value>JSON-file has been changed. Reload? All local changes will be lost.</value>
   </data>
-  <data name="AcObject_DisablingNotSupported" xml:space="preserve">
+  <data name="Common_CannotDo" xml:space="preserve">
     <value>Can’t do</value>
   </data>
   <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
@@ -1269,5 +1266,11 @@
   </data>
   <data name="Common_Weekend" xml:space="preserve">
     <value>Weekend</value>
+  </data>
+  <data name="RaceResult_Threoretical" xml:space="preserve">
+    <value>Theoretical: </value>
+  </data>
+  <data name="Common_UndefinedError" xml:space="preserve">
+    <value>Undefined error</value>
   </data>
 </root>

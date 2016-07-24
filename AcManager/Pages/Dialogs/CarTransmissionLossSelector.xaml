@@ -1,12 +1,11 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarTransmissionLossSelector" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-                  xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-                  mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300">
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        d:DataContext="{d:DesignInstance di:CarTransmissionLossSelector}"
+        Title="{Binding Path=Car.DisplayName, StringFormat={x:Static g:AppStrings.CarSpecs_TransmissionLossTitle}}">
     <StackPanel>
-        <TextBlock Text="Select transmission loss (%):" />
-        <TextBox Text="{Binding Value}" attached:TextBoxAdvancement.SpecialMode="Number" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                attached:WatermarkService.Watermark="?" />
+        <mui:ValueLabel Value="{Binding Value}" Content="{x:Static g:AppStrings.CarSpecs_TransmissionLoss}" Postfix="%" Margin="0 0 0 4" />
+        <Slider Value="{Binding Value}" Minimum="5" Maximum="45" TickFrequency="4" TickPlacement="BottomRight" />
     </StackPanel>
 </mui:ModernDialog>

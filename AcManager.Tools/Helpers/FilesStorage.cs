@@ -140,7 +140,7 @@ namespace AcManager.Tools.Helpers {
             File.Copy(filename, destinationFilename);
         }
 
-        public void OpenContentFolderInExplorer(string name) {
+        public void OpenContentDirectoryInExplorer(string name) {
             var contentUserDir = EnsureDirectory(ContentUserDirName, name);
             Process.Start(contentUserDir);
         }

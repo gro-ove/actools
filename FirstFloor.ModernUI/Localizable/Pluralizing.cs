@@ -11,6 +11,12 @@ namespace FirstFloor.ModernUI.Localizable {
         }
 
         private static string Ru(int v, string s) {
+            if (s == string.Empty) return string.Empty;
+
+            if (s[0] == '!') {
+                return v == 1 ? s.Substring(1) : PluralizingDictionary.RuAlt(s.Substring(1));
+            }
+
             var last = v % 10;
             if (last == 0 || last > 4 || v > 10 && v < 20) {
                 return PluralizingDictionary.Ru(s, false);

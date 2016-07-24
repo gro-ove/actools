@@ -421,15 +421,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t do.
-        /// </summary>
-        public static string AcObject_DisablingNotSupported {
-            get {
-                return ResourceManager.GetString("AcObject_DisablingNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sorry, you can’t disable this type of object..
         /// </summary>
         public static string AcObject_DisablingNotSupported_Commentary {
@@ -898,7 +889,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure internet connection is working and app has write permissions to its folder..
+        ///   Looks up a localized string similar to Make sure Internet connection is available and app has write permissions to its folder..
         /// </summary>
         public static string AppUpdater_CannotLoad_Commentary {
             get {
@@ -1087,11 +1078,20 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t Do.
+        ///   Looks up a localized string similar to Can’t do.
         /// </summary>
         public static string Common_CannotDo {
             get {
                 return ResourceManager.GetString("Common_CannotDo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t Do.
+        /// </summary>
+        public static string Common_CannotDo_Title {
+            get {
+                return ResourceManager.GetString("Common_CannotDo_Title", resourceCulture);
             }
         }
         
@@ -1222,6 +1222,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to N/A.
+        /// </summary>
+        public static string Common_NA {
+            get {
+                return ResourceManager.GetString("Common_NA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         public static string Common_None {
@@ -1312,6 +1321,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Undefined error.
+        /// </summary>
+        public static string Common_UndefinedError {
+            get {
+                return ResourceManager.GetString("Common_UndefinedError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
         public static string Common_Warning {
@@ -1357,7 +1375,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure internet connection is working and nothing is going on in Content folder..
+        ///   Looks up a localized string similar to Make sure Internet connection is available and nothing is going on in Content folder..
         /// </summary>
         public static string ContentSyncronizer_CannotLoadContent_Commentary {
             get {
@@ -2286,15 +2304,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to N/A.
-        /// </summary>
-        public static string Online_Server_CountryNA {
-            get {
-                return ResourceManager.GetString("Online_Server_CountryNA", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to “[url=&quot;http://assetto-db.com/car/{0}&quot;]{0}[/url]”.
         /// </summary>
         public static string Online_Server_MissingCarBbCode {
@@ -2508,6 +2517,15 @@ namespace AcManager.Tools {
         public static string Progress_Uploading_KnownTotal {
             get {
                 return ResourceManager.GetString("Progress_Uploading_KnownTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Theoretical: .
+        /// </summary>
+        public static string RaceResult_Threoretical {
+            get {
+                return ResourceManager.GetString("RaceResult_Threoretical", resourceCulture);
             }
         }
         
@@ -2859,15 +2877,6 @@ namespace AcManager.Tools {
         public static string SharingHelper_CannotGetShared {
             get {
                 return ResourceManager.GetString("SharingHelper_CannotGetShared", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Make sure Internet connection works..
-        /// </summary>
-        public static string SharingHelper_CannotGetShared_Commentary {
-            get {
-                return ResourceManager.GetString("SharingHelper_CannotGetShared_Commentary", resourceCulture);
             }
         }
         

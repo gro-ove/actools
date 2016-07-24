@@ -94,12 +94,9 @@ namespace AcTools.Utils {
             }
         }
 
-        private const int ApplyPreviewsWidth = 1022;
-        private const int ApplyPreviewsHeight = 575;
-
         public static void ApplyPreview(string source, string destination, bool resize) {
             if (resize) {
-                ApplyPreview(source, destination, ApplyPreviewsWidth, ApplyPreviewsHeight);
+                ApplyPreview(source, destination, CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight);
             } else {
                 ApplyPreview(source, destination);
             }
@@ -112,7 +109,7 @@ namespace AcTools.Utils {
                     image.Interpolate = PixelInterpolateMethod.Bicubic;
                     image.FilterType = FilterType.Mitchell;
                     image.Resize((int)(k * image.Width), (int)(k * image.Height));
-                    image.Crop(ApplyPreviewsWidth, ApplyPreviewsHeight, Gravity.Center);
+                    image.Crop(CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight, Gravity.Center);
                 }
 
                 image.Quality = 95;
@@ -142,7 +139,7 @@ namespace AcTools.Utils {
                 var parameters = new EncoderParameters(1) { Param = { [0] = new EncoderParameter(Encoder.Quality, 100L) } };
 
                 if (maxWidth > 0d || maxHeight > 0d) {
-                    using (var bitmap = new Bitmap(ApplyPreviewsWidth, ApplyPreviewsHeight))
+                    using (var bitmap = new Bitmap(CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight))
                     using (var graphics = Graphics.FromImage(bitmap)) {
                         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                         graphics.SmoothingMode = SmoothingMode.HighQuality;
@@ -150,8 +147,8 @@ namespace AcTools.Utils {
 
                         using (var image = Image.FromFile(source)) {
                             var k = Math.Max(maxHeight / image.Height, maxWidth / image.Width);
-                            graphics.DrawImage(image, (int)(0.5 * (ApplyPreviewsWidth - k * image.Width)),
-                                               (int)(0.5 * (ApplyPreviewsHeight - k * image.Height)),
+                            graphics.DrawImage(image, (int)(0.5 * (CommonAcConsts.PreviewWidth - k * image.Width)),
+                                               (int)(0.5 * (CommonAcConsts.PreviewHeight - k * image.Height)),
                                                (int)(k * image.Width), (int)(k * image.Height));
                         }
 

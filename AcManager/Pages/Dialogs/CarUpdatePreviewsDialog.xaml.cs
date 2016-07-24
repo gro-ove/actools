@@ -13,14 +13,16 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Annotations;
+using AcManager.Controls;
 using AcManager.Controls.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -90,7 +92,7 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged();
             }
         }
-        
+
         private bool _useSpecialResolution;
 
         public bool UseSpecialResolution {
@@ -189,8 +191,8 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public BuiltInPpFilter DefaultPpFilter { get; } = new BuiltInPpFilter {
-            Name = "AT-Previews Special",
-            Filename = "AT-Previews Special.ini",
+            Name = @"AT-Previews Special",
+            Filename = @"AT-Previews Special.ini",
             Content = Properties.BinaryResources.PpFilterAtPreviewsSpecial
         };
 
@@ -211,7 +213,7 @@ namespace AcManager.Pages.Dialogs {
                     _name = value;
                     OnPropertyChanged();
                 }
-            } 
+            }
 
             public override string ToString() {
                 return Name;
@@ -326,9 +328,9 @@ namespace AcManager.Pages.Dialogs {
 
         private readonly ISaveHelper _saveable;
 
-        private void ShowroomMessage(string showroomName, string showroomId, string informationUrl) {
-            if (ShowMessage($@"[url={informationUrl.Length}]{showroomName}[/url] isn’t installed. Install it?",
-                    @"Showroom is missing", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+        private void ShowroomMessage([Localizable(false)] string showroomName, [Localizable(false)] string showroomId, [Localizable(false)] string informationUrl) {
+            if (ShowMessage(String.Format(AppStrings.CarPreviews_ShowroomIsMissing, informationUrl, showroomName),
+                    AppStrings.CarPreviews_ShowroomIsMissing_Title, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
             InstallShowroom(showroomName, showroomId).Forget();
         }
 
@@ -337,18 +339,18 @@ namespace AcManager.Pages.Dialogs {
             await Task.Delay(100);
 
             using (var dialog = new WaitingDialog(showroomName)) {
-                dialog.Report("Downloading…");
+                dialog.Report(ControlsStrings.Common_Downloading);
 
                 var destination = FileUtils.GetShowroomsDirectory(AcRootDirectory.Instance.Value);
-                var data = await CmApiProvider.GetDataAsync($"static/get/{showroomId}");
+                var data = await CmApiProvider.GetDataAsync($"static/get/{showroomId}", dialog, dialog.CancellationToken);
 
                 if (data == null) {
                     dialog.Close();
-                    NonfatalError.Notify($@"Can’t download showroom “{showroomName}”", "Make sure internet connection is working properly.");
+                    NonfatalError.Notify(String.Format(AppStrings.CarPreviews_CannotDownloadShowroom, showroomName), ToolsStrings.Common_CannotDownloadFile_Commentary);
                     return;
                 }
 
-                dialog.Content = "Installing…";
+                dialog.Content = ControlsStrings.Common_Installing;
                 try {
                     await Task.Run(() => {
                         using (var stream = new MemoryStream(data, false))
@@ -358,7 +360,7 @@ namespace AcManager.Pages.Dialogs {
                     });
                 } catch (Exception e) {
                     dialog.Close();
-                    NonfatalError.Notify($@"Can’t install showroom “{showroomName}”", e);
+                    NonfatalError.Notify(String.Format(AppStrings.CarPreviews_CannotInstallShowroom, showroomName), e);
                     return;
                 }
 
@@ -431,8 +433,8 @@ namespace AcManager.Pages.Dialogs {
             }, () => {
                 SelectedShowroom = null;
                 SelectedFilter = (IWithId)PpFiltersManager.Instance.GetDefault() ?? DefaultPpFilter;
-                CameraPosition = "-3.867643, 1.423590, 4.70381";
-                CameraLookAt = "0.0, 0.7, 0.5";
+                CameraPosition = @"-3.867643, 1.423590, 4.70381";
+                CameraLookAt = @"0.0, 0.7, 0.5";
                 CameraFov = 30;
                 CameraExposure = 94.5;
                 DisableWatermark = true;
@@ -458,14 +460,14 @@ namespace AcManager.Pages.Dialogs {
             new CarUpdatePreviewsDialog(carObject, skinIds, DialogMode.Start, presetFilename).ShowDialog();
         }
 
-        private void CarUpdatePreviewsDialog_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loadPreset == null) {
                 if (_saveable.HasSavedData || UserPresetsControl.CurrentUserPreset != null) {
                     _saveable.Initialize();
                 } else {
                     _saveable.Reset();
                     UserPresetsControl.CurrentUserPreset =
-                            UserPresetsControl.SavedPresets.FirstOrDefault(x => x.ToString() == "Kunos");
+                            UserPresetsControl.SavedPresets.FirstOrDefault(x => x.ToString() == @"Kunos");
                 }
             } else {
                 _saveable.Reset();
@@ -508,7 +510,7 @@ namespace AcManager.Pages.Dialogs {
             _saveable.FromSerializedString(data);
         }
 
-        private void CarUpdatePreviewsDialog_OnClosing(object sender, CancelEventArgs args) {
+        private void OnClosing(object sender, CancelEventArgs args) {
             if (CurrentPhase == Phase.Waiting) {
                 _cancellationTokenSource.Cancel(false);
             } else if (CurrentPhase == Phase.Result && IsResultOk) {
@@ -522,11 +524,8 @@ namespace AcManager.Pages.Dialogs {
             }) {
                 try {
                     await ImageUtils.ApplyPreviewsAsync(AcRootDirectory.Instance.Value, SelectedCar.Id, _resultDirectory, ResizePreviews, waiting, waiting.CancellationToken);
-                } catch (OutOfMemoryException e) {
-                    NonfatalError.Notify("Can’t save previews", PluginsManager.Instance.IsPluginEnabled("Magick")
-                            ? "Please, report this bug to developers." : "I recommend to enable Magick.NET addon.", e);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t save previews", e);
+                    NonfatalError.Notify(AppStrings.CarPreviews_CannotSave, e);
                 }
             }
         }
@@ -545,7 +544,7 @@ namespace AcManager.Pages.Dialogs {
                 OnPropertyChanged();
             }
         }
-        
+
         private const string KeySize = "_CarUpdatePreviewsDialog.Size";
 
         private void Resize(double? width, double? height, bool resizeable) {
@@ -582,7 +581,9 @@ namespace AcManager.Pages.Dialogs {
             Top = Math.Max(area.Top, Top + (oldHeight - Height) / 2d);
         }
 
-        private void CarUpdatePreviewsDialog_OnSizeChanged(object sender, SizeChangedEventArgs e) {
+        protected override void OnSizeChanged(object sender, SizeChangedEventArgs e) {
+            base.OnSizeChanged(sender, e);
+
             if (ResizeMode == ResizeMode.CanResizeWithGrip) {
                 ValuesStorage.Set(KeySize, new Point(Width, Height));
             }
@@ -598,10 +599,10 @@ namespace AcManager.Pages.Dialogs {
                     ResultPhase.Visibility = Visibility.Collapsed;
                     ErrorPhase.Visibility = Visibility.Collapsed;
                     Resize(540d, 400d, false);
-                    var manual = CreateExtraDialogButton("Manual", o => RunShootingProcess(true), o => CanBeSaved);
-                    manual.ToolTip = "Set camera position manually and then press F8 to start shooting";
+                    var manual = CreateExtraDialogButton(AppStrings.CarPreviews_Manual, o => RunShootingProcess(true), o => CanBeSaved);
+                    manual.ToolTip = AppStrings.CarPreviews_Manual_Tooltip;
                     Buttons = new[] {
-                        CreateExtraStyledDialogButton("Go.Button", "Go", o => RunShootingProcess(), o => CanBeSaved),
+                        CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go, o => RunShootingProcess(), o => CanBeSaved),
                         manual,
                         CloseButton
                     };
@@ -652,7 +653,7 @@ namespace AcManager.Pages.Dialogs {
 
         private async void RunShootingProcess(bool manualMode = false) {
             if (SelectedShowroom == null) {
-                if (ShowMessage(@"Showroom is missing. Open options?", @"One more thing", MessageBoxButton.YesNo) ==
+                if (ShowMessage(AppStrings.CarPreviews_ShowroomIsMissingOptions, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) ==
                     MessageBoxResult.Yes) {
                     SelectPhase(Phase.Options);
                 } else {
@@ -665,7 +666,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             if (SelectedFilter == null) {
-                if (ShowMessage(@"Filter is missing. Open options?", @"One more thing", MessageBoxButton.YesNo) ==
+                if (ShowMessage(AppStrings.CarPreviews_FilterIsMissingOptions, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) ==
                     MessageBoxResult.Yes) {
                     SelectPhase(Phase.Options);
                 } else {
@@ -678,12 +679,12 @@ namespace AcManager.Pages.Dialogs {
             }
 
             if (SelectedCar.Enabled == false || _skinIds?.Any(x => SelectedCar.SkinsManager.GetWrapperById(x)?.Value.Enabled == false) == true) {
-                ErrorMessage = "Can’t update previews of disabled car or skin.";
+                ErrorMessage = AppStrings.CarPreviews_CannotUpdateForDisabled;
                 SelectPhase(Phase.Error);
                 return;
             }
 
-            Status = "Please wait…";
+            Status = ControlsStrings.Common_PleaseWait;
             SelectPhase(Phase.Waiting);
 
             _cancellationTokenSource = new CancellationTokenSource();
@@ -725,9 +726,10 @@ namespace AcManager.Pages.Dialogs {
                 TakenTime = DateTime.Now - begin;
 
                 if (_resultDirectory == null) {
-                    ErrorMessage = "Something went wrong.";
+                    // TODO: use LogHelper!
+                    ErrorMessage = AppStrings.CarPreviews_SomethingWentWrong;
                     SelectPhase(Phase.Error);
-                    Logging.Warning("cannot update previews, result is null");
+                    Logging.Warning("Cannot update previews, result is null");
                     return;
                 }
 
@@ -738,8 +740,8 @@ namespace AcManager.Pages.Dialogs {
                             Name = SkinDisplayName(id),
 
                             /* because theoretically skin could be non-existed at this point */
-                            LiveryImage = Path.Combine(SelectedCar.Location, "skins", id, "livery.png"),
-                            OriginalImage = Path.Combine(SelectedCar.Location, "skins", id, "preview.jpg"),
+                            LiveryImage = Path.Combine(SelectedCar.Location, @"skins", id, @"livery.png"),
+                            OriginalImage = Path.Combine(SelectedCar.Location, @"skins", id, @"preview.jpg"),
                             UpdatedImage = x
                         };
                     })
@@ -747,18 +749,20 @@ namespace AcManager.Pages.Dialogs {
 
                 SelectPhase(Phase.Result);
             } catch (ShotingCancelledException e) {
-                ErrorMessage = e.UserCancelled ? "Cancelled" : e.Message + ".";
+                ErrorMessage = e.UserCancelled ? AppStrings.CarPreviews_CancelledMessage : e.Message + @".";
                 SelectPhase(Phase.Error);
 
                 if (!e.UserCancelled) {
-                    Logging.Warning("cannot update previews: " + e);
+                    Logging.Warning("Cannot update previews: " + e);
                 }
             } catch (Exception e) {
-                ErrorMessage = e.Message + ".";
+                ErrorMessage = e.Message + @".";
                 SelectPhase(Phase.Error);
-                Logging.Warning("cannot update previews: " + e);
+                Logging.Warning("Cannot update previews: " + e);
             }
         }
+
+        public string DisplayTakenTime => TakenTime.ToReadableTime();
 
         private TimeSpan _takenTime;
 
@@ -768,6 +772,7 @@ namespace AcManager.Pages.Dialogs {
                 if (Equals(value, _takenTime)) return;
                 _takenTime = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayTakenTime));
             }
         }
 
@@ -777,12 +782,12 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public void Report(Showroom.ShootingProgress value) {
-            Status = $@"Now updating: {SkinDisplayName(value.SkinId)} ({value.SkinNumber + 1}/{value.TotalSkins})";
+            Status = String.Format(AppStrings.CarPreviews_Progress, SkinDisplayName(value.SkinId), value.SkinNumber + 1, value.TotalSkins);
         }
 
         private void ImageViewer(bool showUpdated) {
             var current = (ResultPreviewComparison)ResultPreviewComparisonsView.CurrentItem;
-            new ImageViewer(new[] { current.OriginalImage, current.UpdatedImage }, showUpdated ? 1 : 0, 1022).ShowDialog();
+            new ImageViewer(new[] { current.OriginalImage, current.UpdatedImage }, showUpdated ? 1 : 0, CommonAcConsts.PreviewWidth).ShowDialog();
         }
 
         private void OriginalPreview_OnMouseDown(object sender, MouseButtonEventArgs e) {

@@ -274,7 +274,7 @@ namespace AcManager.Tools.Managers.Online {
         public string Country {
             get { return _country; }
             set {
-                if (value == @"na") value = ToolsStrings.Online_Server_CountryNA;
+                if (value == @"na") value = ToolsStrings.Common_NA;
                 if (Equals(value, _country)) return;
                 _country = value;
                 OnPropertyChanged();

@@ -1,11 +1,11 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarSpecsEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:oxy="http://oxyplot.org/wpf" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" Title="Car Specifications">
-
+        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager"
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="{Binding Path=Car.DisplayName, StringFormat={x:Static g:AppStrings.CarSpecs_Title}}" d:DataContext="{d:DesignInstance di:CarSpecsEditor}">
     <StackPanel>
-        <Grid Margin="0 10 10 10">
+        <Grid Margin="0 8 8 8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="160" />
@@ -17,39 +17,67 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
+            <TextBlock Text="{x:Static g:AppStrings.CarSpecs_PowerLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}">
+                <TextBlock.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}" ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Power_Tooltip}" />
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Text="{x:Static g:AppStrings.CarSpecs_TorqueLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}">
+                <TextBlock.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}"
+                            ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Torque_Tooltip}" />
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Text="{x:Static g:AppStrings.CarSpecs_WeightLabel}" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}">
+                <TextBlock.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}"
+                            ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Weight_Tooltip}" />
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Text="{x:Static g:AppStrings.CarSpecs_MaxSpeedLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}">
+                <TextBlock.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}"
+                            ContentStringFormat="{x:Static g:AppStrings.CarSpecs_MaxSpeed_Tooltip}" />
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Text="{x:Static g:AppStrings.CarSpecs_AccelerationLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}">
+                <TextBlock.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}"
+                            ContentStringFormat="{x:Static g:AppStrings.CarSpecs_Acceleration_Tooltip}" />
+                </TextBlock.ToolTip>
+            </TextBlock>
+            <TextBlock Text="{x:Static g:AppStrings.CarSpecs_PwRatioLabel}" Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}">
+                <TextBlock.ToolTip>
+                    <ToolTip Content="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"
+                            ContentStringFormat="{x:Static g:AppStrings.CarSpecs_PwRatio_Tooltip}" />
+                </TextBlock.ToolTip>
+            </TextBlock>
 
-            <TextBlock Text="BHP:" Grid.Column="0" Grid.Row="0" Style="{StaticResource LabelWithPadding}"
-                    ToolTip="Max horsepower value, recommended format: '… bhp'" />
-            <TextBlock Text="Torque:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelWithPadding}" ToolTip="Max torque value, recommended format: '…Nm'" />
-            <TextBlock Text="Weight:" Grid.Column="0" Grid.Row="2" Style="{StaticResource LabelWithPadding}"
-                    ToolTip="Weight without driver, recommended format: '…kg'" />
-            <TextBlock Text="Max Speed:" Grid.Column="2" Grid.Row="0" Style="{StaticResource LabelWithPadding}" ToolTip="Top speed, recommended format: '…km/h'" />
-            <TextBlock Text="Acceleration:" Grid.Column="2" Grid.Row="1" Style="{StaticResource LabelWithPadding}"
-                    ToolTip="Time to accelerate from 0 to 100 km/h, recommended format: '…s 0-100'" />
-            <TextBlock Text="P/W Ratio:" Grid.Column="2" Grid.Row="2" Style="{StaticResource LabelWithPadding}"
-                    ToolTip="Power to weight ratio, recommended format: '…kg/cv'" />
-
-            <TextBox Text="{Binding Car.SpecsBhp, Mode=OneWay}" x:Name="BhpInput" Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
-                    TextChanged="Input_OnTextChanged" PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="… bhp" />
+            <TextBox Text="{Binding Car.SpecsBhp, Mode=OneWay}" x:Name="PowerInput" Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBoxAsTextBlock}"
+                    TextChanged="Pw_OnTextChanged" ToolTip="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}" mui:TextBoxAdvancement.SpecialMode="Positive"
+                    mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}" />
             <TextBox Text="{Binding Car.SpecsTorque}" x:Name="TorqueInput" Grid.Column="1" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}"
-                    PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…Nm" />
+                    ToolTip="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}" mui:TextBoxAdvancement.SpecialMode="Positive"
+                    mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="{x:Static g:AppStrings.CarSpecs_Torque_FormatTooltip}" />
             <TextBox Text="{Binding Car.SpecsWeight, Mode=OneWay}" x:Name="WeightInput" Grid.Column="1" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
-                    TextChanged="Input_OnTextChanged" PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…kg" />
+                    TextChanged="Pw_OnTextChanged" ToolTip="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}" mui:TextBoxAdvancement.SpecialMode="Positive"
+                    mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="{x:Static g:AppStrings.CarSpecs_Weight_FormatTooltip}" />
 
             <TextBox Text="{Binding Car.SpecsTopSpeed, Mode=OneWay}" x:Name="TopSpeedInput" Grid.Column="3" Grid.Row="0"
-                    Style="{StaticResource TextBoxAsTextBlock}" PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…km/h" />
+                    Style="{StaticResource TextBoxAsTextBlock}" ToolTip="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}"
+                    mui:TextBoxAdvancement.SpecialMode="Positive" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                    mui:WatermarkService.Watermark="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}" />
             <TextBox Text="{Binding Car.SpecsAcceleration}" x:Name="AccelerationInput" Grid.Column="3" Grid.Row="1" Style="{StaticResource TextBoxAsTextBlock}"
-                    PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…s 0-100" />
-            <TextBox Text="{Binding Car.SpecsPwRatio, Mode=OneWay}" x:Name="PwRatioInput" Grid.Column="3" Grid.Row="2" Style="{StaticResource TextBoxAsTextBlock}"
-                    PreviewKeyDown="Input_OnPreviewKeyDown" ToolTip="…kg/cv" />
+                    ToolTip="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}" mui:TextBoxAdvancement.SpecialMode="Number"
+                    mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}" />
+            <TextBox Text="{Binding Car.SpecsPwRatio, Mode=OneWay}" x:Name="PwRatioInput" Grid.Column="3" Grid.Row="2"
+                    Style="{StaticResource TextBoxAsTextBlock}" ToolTip="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"
+                    mui:TextBoxAdvancement.SpecialMode="Number" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                    mui:WatermarkService.Watermark="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}" />
         </Grid>
-
-        <CheckBox IsChecked="{Binding AutomaticallyRecalculate}" Margin="0 0 0 10">
-            <Label Content="_Automatically recalculate P/W ratio" />
+        <CheckBox IsChecked="{Binding AutomaticallyRecalculate}" Margin="0 0 0 8">
+            <Label Content="{x:Static g:AppStrings.CarSpecs_AutomaticallyRecalculatePwRatio}" />
         </CheckBox>
-
-        <controls:OxyPlotGraphViewer SourceTorque="{Binding TorqueGraph}" SourcePower="{Binding PowerGraph}" Height="200"
-                HorizontalAlignment="Stretch" />
+        <c:OxyPlotGraphViewer SourceTorque="{Binding TorqueGraph}" SourcePower="{Binding PowerGraph}" Height="200" HorizontalAlignment="Stretch" />
     </StackPanel>
-
 </mui:ModernDialog>

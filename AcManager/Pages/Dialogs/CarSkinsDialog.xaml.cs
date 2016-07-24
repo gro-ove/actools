@@ -7,39 +7,39 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarSkinsDialog {
-        private class CarSkinsDialogModel {
+        private class ViewModel {
             [NotNull]
             public CarObject SelectedCar { get; }
 
             public Uri ListUri => UriExtension.Create("/Pages/Lists/CarSkinsListPage.xaml?CarId={0}", SelectedCar.Id);
 
-            public CarSkinsDialogModel([NotNull] CarObject car) {
+            public ViewModel([NotNull] CarObject car) {
                 SelectedCar = car;
             }
         }
 
-        private CarSkinsDialogModel Model => (CarSkinsDialogModel) DataContext;
+        private ViewModel Model => (ViewModel) DataContext;
 
         public CarSkinsDialog([NotNull] CarObject car) {
             if (car == null) throw new ArgumentNullException(nameof(car));
 
-            DataContext = new CarSkinsDialogModel(car);
+            DataContext = new ViewModel(car);
 
             DefaultContentSource = Model.ListUri;
             MenuLinkGroups.Add(new LinkGroupFilterable {
-                DisplayName = "skins",
+                DisplayName = AppStrings.Main_Skins,
                 Source = Model.ListUri
             });
 
             InitializeComponent();
         }
 
-        private void CarSkinsDialog_OnInitialized(object sender, EventArgs e) {
+        private void OnInitialized(object sender, EventArgs e) {
             if (Model?.SelectedCar == null) return;
             Model.SelectedCar.AcObjectOutdated += SelectedCar_AcObjectOutdated;
         }
 
-        private void CarSkinsDialog_OnClosed(object sender, EventArgs e) {
+        private void OnClosed(object sender, EventArgs e) {
             if (Model?.SelectedCar == null) return;
             Model.SelectedCar.AcObjectOutdated -= SelectedCar_AcObjectOutdated;
         }

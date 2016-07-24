@@ -30,6 +30,9 @@ namespace FirstFloor.ModernUI.Localizable {
         
         public static string Ru(string s, bool two) {
             switch (s) {
+                case "доступное решение":
+                    return "доступные решения";
+
                 case "круг":
                 case "оппонент":
                 case "противник":
@@ -55,6 +58,17 @@ namespace FirstFloor.ModernUI.Localizable {
                 case "запись": return two ? "записи" : "записей";
                 case "реплей": return two ? "реплея" : "реплеев";
                 case "приложение": return two ? "приложения" : "приложений";
+            }
+
+            return null;
+        }
+
+        public static string RuAlt(string s) {
+            switch (s) {
+                case "доступное решение":
+                    return "доступные решения";
+                case "ошибка":
+                    return Ru(s, true);
             }
 
             return null;

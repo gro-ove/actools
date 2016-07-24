@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -39,8 +40,8 @@ namespace AcManager.Pages.Dialogs {
             DataContext = this;
             Buttons = new[] {
                 OkButton,
-                CreateExtraDialogButton("Select File", SelectFile), 
-                CreateExtraDialogButton("View User Folder", o => FilesStorage.Instance.OpenContentFolderInExplorer(ContentCategory.BrandBadges)), 
+                CreateExtraDialogButton(AppStrings.Common_SelectFile, SelectFile),
+                CreateExtraDialogButton(AppStrings.Common_ViewUserFolder, o => FilesStorage.Instance.OpenContentDirectoryInExplorer(ContentCategory.BrandBadges)),
                 CancelButton
             };
 
@@ -63,8 +64,10 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 File.Copy(Selected.Filename, Car.BrandBadge);
+            } catch (IOException ex) {
+                NonfatalError.Notify(AppStrings.BrandBadge_CannotChange, AppStrings.BrandBadge_CannotChange_Commentary, ex);
             } catch (Exception ex) {
-                NonfatalError.Notify(@"Can’t change brand’s badge.", "Make sure brand’s badge file is available to write.", ex);
+                NonfatalError.Notify(AppStrings.BrandBadge_CannotChange, ex);
             }
         }
 
@@ -75,15 +78,16 @@ namespace AcManager.Pages.Dialogs {
 
         private void UpdateSelected() {
             if (Icons.Contains(Selected)) return;
-            var brandLower = Car.Brand?.ToLower(); // TODO: Weird bug?
+            var brandLower = Car.Brand?.ToLower(CultureInfo.CurrentUICulture);
             Selected = Icons.FirstOrDefault(x => x.Name.ToLower() == brandLower) ?? (Icons.Count > 0 ? Icons[0] : null);
         }
 
         private void SelectFile() {
             var dialog = new OpenFileDialog {
                 Filter = FileDialogFilters.ImagesFilter,
-                Title = "Select New Brand’s Badge"
+                Title = AppStrings.BrandBadge_SelectNew
             };
+
             if (dialog.ShowDialog() == true) {
                 ApplyFile(dialog.FileName);
             }
@@ -101,18 +105,20 @@ namespace AcManager.Pages.Dialogs {
 
             try {
                 cropped.SaveAsPng(Car.BrandBadge);
-            } catch (Exception) {
-                ShowMessage(@"Can’t change brand badge.", @"Fail", MessageBoxButton.OK);
+            } catch (IOException ex) {
+                NonfatalError.Notify(AppStrings.BrandBadge_CannotChange, AppStrings.BrandBadge_CannotChange_Commentary, ex);
+            } catch (Exception ex) {
+                NonfatalError.Notify(AppStrings.BrandBadge_CannotChange, ex);
                 return;
             }
 
-            var saveAs = Prompt.Show(@"Add as:", @"Add this file to the library?", Path.GetFileNameWithoutExtension(filename));
+            var saveAs = Prompt.Show(AppStrings.BrandBadge_AddAs, AppStrings.BrandBadge_AddAs_Title, Path.GetFileNameWithoutExtension(filename));
             if (saveAs == null) return;
 
             try {
                 FilesStorage.Instance.AddUserContentToDirectory(ContentCategory.BrandBadges, Car.BrandBadge, saveAs);
-            } catch (Exception) {
-                ShowMessage(@"Can’t add new element into the library.", @"Fail", MessageBoxButton.OK);
+            } catch (Exception e) {
+                NonfatalError.Notify(AppStrings.BrandBadge_CannotAdd, e);
             }
 
             Close();
@@ -129,7 +135,7 @@ namespace AcManager.Pages.Dialogs {
 
                 var contextMenu = new ContextMenu();
 
-                var item = new MenuItem { Header = "Remove" };
+                var item = new MenuItem { Header = AppStrings.Toolbar_Delete };
                 item.Click += (o, args) => FilesStorage.Instance.Remove(entry);
                 contextMenu.Items.Add(item);
                 contextMenu.IsOpen = true;

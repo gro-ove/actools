@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Controls.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
@@ -94,7 +95,7 @@ namespace AcManager.Controls.Helpers {
                 }
 #endif
             } catch (Exception e) {
-                NonfatalError.Notify(string.Format(ControlsStrings.Share_CannotShare, type.GetDescription()), ControlsStrings.Share_CannotShare_Commentary, e);
+                NonfatalError.Notify(string.Format(ControlsStrings.Share_CannotShare, type.GetDescription()), ToolsStrings.Common_CannotDownloadFile_Commentary, e);
             } finally {
                 _sharingInProcess = false;
             }

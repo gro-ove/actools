@@ -11,11 +11,11 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
     public partial class AcRootDirectorySelector {
-        private AcRootDirectorySelectorViewModel Model => (AcRootDirectorySelectorViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         public AcRootDirectorySelector() {
             InitializeComponent();
-            DataContext = new AcRootDirectorySelectorViewModel();
+            DataContext = new ViewModel();
 
             Buttons = new[] {
                 CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new RelayCommand(o => {
@@ -28,7 +28,7 @@ namespace AcManager.Pages.Dialogs {
             };
         }
 
-        public class AcRootDirectorySelectorViewModel : NotifyPropertyChanged, INotifyDataErrorInfo {
+        public class ViewModel : NotifyPropertyChanged, INotifyDataErrorInfo {
             public bool FirstRun { get; private set; }
 
             private bool _isValueAcceptable;
@@ -67,7 +67,7 @@ namespace AcManager.Pages.Dialogs {
                 AcRootDirectory.Instance.Value = Value;
             }, o => IsValueAcceptable));
 
-            public AcRootDirectorySelectorViewModel() {
+            public ViewModel() {
                 FirstRun = ValuesStorage.GetBool("_second_run") == false;
                 if (FirstRun) {
                     ValuesStorage.Set("_second_run", true);
@@ -77,8 +77,8 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public IEnumerable GetErrors(string propertyName) {
-                return propertyName == nameof(Value) ? (string.IsNullOrWhiteSpace(Value) ? new[] { "Required value" } :
-                        IsValueAcceptable ? null : new[] { _previousInacceptanceReason ?? "Folder is unacceptable" }) : null;
+                return propertyName == nameof(Value) ? (string.IsNullOrWhiteSpace(Value) ? new[] { AppStrings.Common_RequiredValue } :
+                        IsValueAcceptable ? null : new[] { _previousInacceptanceReason ?? AppStrings.AcRoot_FolderIsUnacceptable }) : null;
             }
 
             public bool HasErrors => string.IsNullOrWhiteSpace(Value) || !IsValueAcceptable;

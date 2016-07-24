@@ -2,14 +2,18 @@
 using System.Runtime.CompilerServices;
 using AcManager.Annotations;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarTransmissionLossSelector : INotifyPropertyChanged {
+        public CarObject Car { get; }
+
         private int _value;
 
         public int Value {
             get { return _value; }
             private set {
+                value = value.Clamp(0, 100);
                 if (value == _value) return;
                 _value = value;
                 OnPropertyChanged();
@@ -17,13 +21,13 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public CarTransmissionLossSelector(CarObject car) {
+            Car = car;
+
             InitializeComponent();
             DataContext = this;
 
-            Title = "Transmission Loss for " + car.DisplayName;
-
             Value = 13;
-            Buttons = new [] { OkButton, CancelButton };
+            Buttons = new[] { OkButton, CancelButton };
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

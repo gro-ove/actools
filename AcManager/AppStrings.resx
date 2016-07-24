@@ -1807,10 +1807,10 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Series goal: </value>
     <comment>Don’t forget about space at the end</comment>
   </data>
-  <data name="KunosCareer_TableHeader_Name" xml:space="preserve">
+  <data name="TableHeader_Name" xml:space="preserve">
     <value>Name</value>
   </data>
-  <data name="KunosCareer_TableHeader_Car" xml:space="preserve">
+  <data name="TableHeader_Car" xml:space="preserve">
     <value>Car</value>
   </data>
   <data name="KunosCareer_TimeLabel" xml:space="preserve">
@@ -2126,5 +2126,477 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   </data>
   <data name="Srs_CarIsMissing_Commentary" xml:space="preserve">
     <value>Make sure all required mods are installed.</value>
+  </data>
+  <data name="AcError_SolveAllSimilarErrors" xml:space="preserve">
+    <value>Solve All Similar Errors</value>
+  </data>
+  <data name="AcError_AvailableSolutions" xml:space="preserve">
+    <value>Available {solution}:</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="AcError_StackTrace" xml:space="preserve">
+    <value>Stack trace:
+[mono]{0}[/mono]</value>
+  </data>
+  <data name="AcError_SolutionsNotFound" xml:space="preserve">
+    <value>None of solutions are available.</value>
+  </data>
+  <data name="AcError_CannotSolveProblem" xml:space="preserve">
+    <value>Can’t solve the problem</value>
+  </data>
+  <data name="AcRoot_Welcome" xml:space="preserve">
+    <value>Welcome to Content Manager and thanks for using it! You have only one thing left to do before launch:</value>
+  </data>
+  <data name="AcRoot_Prompt" xml:space="preserve">
+    <value>Specify Assetto Corsa root folder:</value>
+  </data>
+  <data name="Common_RequiredValue" xml:space="preserve">
+    <value>Required value</value>
+  </data>
+  <data name="AcRoot_FolderIsUnacceptable" xml:space="preserve">
+    <value>Folder is unacceptable</value>
+  </data>
+  <data name="AppKey_Prompt" xml:space="preserve">
+    <value>Enter app key (XXXX-XXXX-…):</value>
+  </data>
+  <data name="AppKey_Title" xml:space="preserve">
+    <value>App Key</value>
+  </data>
+  <data name="AppKey_Tooltip" xml:space="preserve">
+    <value>Please, don’t share key, otherwise it might get revoked!</value>
+  </data>
+  <data name="AppKey_KeyWasRevoked" xml:space="preserve">
+    <value>Key was revoked</value>
+  </data>
+  <data name="Drive_StartingPositionFormat" xml:space="preserve">
+    <value>Starting position: {0}</value>
+  </data>
+  <data name="AppKey_AppWillBeRestarted" xml:space="preserve">
+    <value>App will be restarted</value>
+  </data>
+  <data name="AppKey_GetNewKey" xml:space="preserve">
+    <value>Get a New Key</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Title" xml:space="preserve">
+    <value>Key Revoked</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
+    <value>Sorry, but your key was compromised and got revoked. Would you like to contact us to get another one?</value>
+  </data>
+  <data name="AppKey_PreRestart_Message" xml:space="preserve">
+    <value>Now app will be restarted, but it shouldn’t take long. Thanks again for your support!
+
+[i]Please, don’t share your key, otherwise it might get compromised.[/i]</value>
+  </data>
+  <data name="AppKey_PreRestart_Title" xml:space="preserve">
+    <value>Thank You!</value>
+  </data>
+  <data name="AppKey_CannotCheck" xml:space="preserve">
+    <value>Can’t check key</value>
+  </data>
+  <data name="AppKey_InvalidKey" xml:space="preserve">
+    <value>Key is invalid</value>
+  </data>
+  <data name="Assists_Title" xml:space="preserve">
+    <value>Assists</value>
+  </data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>_Automatic shifting</value>
+  </data>
+  <data name="Assists_AutoClutch" xml:space="preserve">
+    <value>Automatic _clutch</value>
+  </data>
+  <data name="Assists_AutoBlip" xml:space="preserve">
+    <value>Auto_blip</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Ideal _line</value>
+  </data>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>Traction control:</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
+  </data>
+  <data name="Assists_StabilityControl" xml:space="preserve">
+    <value>_Stability control</value>
+  </data>
+  <data name="Assists_FuelConsumption" xml:space="preserve">
+    <value>_Fuel consumption</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Tyre wear</value>
+  </data>
+  <data name="Assists_MechanicalDamage" xml:space="preserve">
+    <value>Mechanical _damage</value>
+  </data>
+  <data name="Assists_TyreBlankets" xml:space="preserve">
+    <value>_Tyre blankets</value>
+  </data>
+  <data name="Assists_SlipstreamEffect" xml:space="preserve">
+    <value>Slipstream effect</value>
+  </data>
+  <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
+    <value>Multipler for slipstream effect</value>
+  </data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Multipler for tyre wear</value>
+  </data>
+  <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
+    <value>Damageable engine, gearbox, suspension and stuff</value>
+  </data>
+  <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
+    <value>Unrealistic, but could be helpful if you’re just starting to learn how to drive or drift</value>
+  </data>
+  <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
+    <value>Anti-lock braking system</value>
+  </data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>Show ideal driving line</value>
+  </data>
+  <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
+    <value>Automatically syncronize RPM on downshifts</value>
+  </data>
+  <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
+    <value>Automatically press clutch on shifting</value>
+  </data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Don’t confuse it with automatic gearbox</value>
+  </data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Heat tires in pits</value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Optimise grip during acceleration</value>
+  </data>
+  <data name="BrandBadge_Title" xml:space="preserve">
+    <value>Brand Badge</value>
+  </data>
+  <data name="Common_SelectFile" xml:space="preserve">
+    <value>Select File</value>
+  </data>
+  <data name="Common_ViewUserFolder" xml:space="preserve">
+    <value>View User Folder</value>
+  </data>
+  <data name="BrandBadge_CannotChange" xml:space="preserve">
+    <value>Can’t change brand’s badge</value>
+  </data>
+  <data name="BrandBadge_CannotChange_Commentary" xml:space="preserve">
+    <value>Make sure brand’s badge file is available to write.</value>
+  </data>
+  <data name="BrandBadge_SelectNew" xml:space="preserve">
+    <value>Select New Brand’s Badge</value>
+  </data>
+  <data name="BrandBadge_AddAs" xml:space="preserve">
+    <value>Add as a new badge for (brand’s name):</value>
+  </data>
+  <data name="BrandBadge_AddAs_Title" xml:space="preserve">
+    <value>Add To The Library?</value>
+  </data>
+  <data name="BrandBadge_CannotAdd" xml:space="preserve">
+    <value>Can’t add a new brand’s badge to the library</value>
+  </data>
+  <data name="Dialog_CarSetupsFormat" xml:space="preserve">
+    <value>{0} Setups</value>
+  </data>
+  <data name="Main_Setups" xml:space="preserve">
+    <value>Setups</value>
+  </data>
+  <data name="Dialog_CarSkinsFormat" xml:space="preserve">
+    <value>{0} Skins</value>
+  </data>
+  <data name="Main_Skins" xml:space="preserve">
+    <value>Skins</value>
+  </data>
+  <data name="CarSpecs_Title" xml:space="preserve">
+    <value>{0} Specifications</value>
+  </data>
+  <data name="CarSpecs_PowerLabel" xml:space="preserve">
+    <value>BHP:</value>
+  </data>
+  <data name="CarSpecs_TorqueLabel" xml:space="preserve">
+    <value>Torque:</value>
+  </data>
+  <data name="CarSpecs_WeightLabel" xml:space="preserve">
+    <value>Weight:</value>
+  </data>
+  <data name="CarSpecs_MaxSpeedLabel" xml:space="preserve">
+    <value>Max Speed:</value>
+  </data>
+  <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
+    <value>Acceleration:</value>
+  </data>
+  <data name="CarSpecs_PwRatioLabel" xml:space="preserve">
+    <value>P/W Ratio:</value>
+  </data>
+  <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
+    <value>…bhp</value>
+    <comment>Don't forget to use “…” (in one symbol)!</comment>
+  </data>
+  <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
+    <value>…Nm</value>
+    <comment>Don't forget to use “…” (in one symbol)!</comment>
+  </data>
+  <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
+    <value>…kg</value>
+    <comment>Don't forget to use “…” (in one symbol)!</comment>
+  </data>
+  <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
+    <value>…km/h</value>
+    <comment>Don't forget to use “…” (in one symbol)!</comment>
+  </data>
+  <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
+    <value>…s 0-100</value>
+    <comment>Don't forget to use “…” (in one symbol)!</comment>
+  </data>
+  <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
+    <value>…kg/hp</value>
+    <comment>Don't forget to use “…” (in one symbol)!</comment>
+  </data>
+  <data name="CarSpecs_AutomaticallyRecalculatePwRatio" xml:space="preserve">
+    <value>_Automatically recalculate P/W ratio</value>
+  </data>
+  <data name="CarSpecs_Power_Tooltip" xml:space="preserve">
+    <value>Max horsepower value, recommended format: “{0}”</value>
+  </data>
+  <data name="CarSpecs_Torque_Tooltip" xml:space="preserve">
+    <value>Max torque value, recommended format: “{0}”</value>
+  </data>
+  <data name="CarSpecs_Weight_Tooltip" xml:space="preserve">
+    <value>Weight without driver, recommended format: “{0}”</value>
+  </data>
+  <data name="CarSpecs_MaxSpeed_Tooltip" xml:space="preserve">
+    <value>Top speed, recommended format: “{0}”</value>
+  </data>
+  <data name="CarSpecs_Acceleration_Tooltip" xml:space="preserve">
+    <value>Time to accelerate from 0 to 100 km/h, recommended format: “{0}”</value>
+  </data>
+  <data name="CarSpecs_PwRatio_Tooltip" xml:space="preserve">
+    <value>Power to weight ratio, recommended format: “{0}”</value>
+  </data>
+  <data name="CarSpecs_FixFormats" xml:space="preserve">
+    <value>Fix Formats</value>
+  </data>
+  <data name="CarSpecs_UpdateCurves" xml:space="preserve">
+    <value>Update Curves</value>
+  </data>
+  <data name="CarSpecs_FixFormat" xml:space="preserve">
+    <value>Fix Format</value>
+  </data>
+  <data name="CarSpecs_FixFormat_Tooltip" xml:space="preserve">
+    <value>Try to set proper format for value</value>
+  </data>
+  <data name="CarSpecs_Recalculate" xml:space="preserve">
+    <value>Recalculate</value>
+  </data>
+  <data name="CarSpecs_Recalculate_PwRatioTooltip" xml:space="preserve">
+    <value>Recalculate value using BHP and weight values</value>
+  </data>
+  <data name="CarSpecs_Recalculate_WeightTooltip" xml:space="preserve">
+    <value>Recalculate from data</value>
+  </data>
+  <data name="CarSpecs_SetPowerCurve" xml:space="preserve">
+    <value>Set Power Curve</value>
+  </data>
+  <data name="CarSpecs_CopyNewPowerAndTorque" xml:space="preserve">
+    <value>Copy new values to Torque and BHP?</value>
+  </data>
+  <data name="Common_OneMoreThing" xml:space="preserve">
+    <value>One More Thing</value>
+  </data>
+  <data name="CarSpecs_SpecifyPowerAndTorqueFirst" xml:space="preserve">
+    <value>You have to specify power and torque values first</value>
+  </data>
+  <data name="CarSpecs_ScaleCurvesToPowerTorqueHeader" xml:space="preserve">
+    <value>Scale Curves To Power/Torque Values</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader" xml:space="preserve">
+    <value>Recalculate Curves Using Data &amp; Power/Torque Values</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataOnlyHeader" xml:space="preserve">
+    <value>Recalculate Curves Using Data Only</value>
+  </data>
+  <data name="CarSpecs_ScaleCurvesToPowerTorque_Tooltip" xml:space="preserve">
+    <value>Curves will be scaled to fit power and torque values from ui_car.json (you can see them above)</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip" xml:space="preserve">
+    <value>Curves will be recalculated based on engine.ini, power.lut and power and torque values from ui_car.json</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip" xml:space="preserve">
+    <value>Curves will be recalculated based on engine.ini, but you’ll have to provide transmission loss</value>
+  </data>
+  <data name="CarSpecs_TransmissionLossTitle" xml:space="preserve">
+    <value>Transmission Loss For {0}</value>
+  </data>
+  <data name="CarSpecs_TransmissionLoss" xml:space="preserve">
+    <value>Transmission loss</value>
+  </data>
+  <data name="CarPreviews_Title" xml:space="preserve">
+    <value>Update Previews</value>
+  </data>
+  <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
+    <value>Camera Position:</value>
+  </data>
+  <data name="CarPreviews_LookAtLabel" xml:space="preserve">
+    <value>Look At:</value>
+  </data>
+  <data name="CarPreviews_ResizePreviews" xml:space="preserve">
+    <value>_Resize previews</value>
+  </data>
+  <data name="CarPreviews_AllEffects" xml:space="preserve">
+    <value>Enable all e_ffects</value>
+  </data>
+  <data name="CarPreviews_Fxaa" xml:space="preserve">
+    <value>Enable FX_AA</value>
+  </data>
+  <data name="CarPreviews_ShotIn4k" xml:space="preserve">
+    <value>Shot in 3840×2160</value>
+  </data>
+  <data name="CarPreviews_ExposureLabel" xml:space="preserve">
+    <value>Exposure:</value>
+  </data>
+  <data name="CarPreviews_TakenTime" xml:space="preserve">
+    <value>Taken {0}</value>
+  </data>
+  <data name="CarPreviews_ShotIn4k_Tooltip" xml:space="preserve">
+    <value>Enable for the best quality</value>
+  </data>
+  <data name="CarPreviews_Fxaa_Tooltip" xml:space="preserve">
+    <value>Use FXAA for previews</value>
+  </data>
+  <data name="CarPreviews_AllEffects_Tooltip" xml:space="preserve">
+    <value>Enable all video effets like reflections or glare (recommended)</value>
+  </data>
+  <data name="CarPreviews_ResizePreviews_Tooltip" xml:space="preserve">
+    <value>Resize previews to Kunos size 1022×575 (highly recommended)</value>
+  </data>
+  <data name="CarPreviews_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>Apparantly SweetFx doesn't affect the result, but could decrease loading time</value>
+  </data>
+  <data name="CarPreviews_HideWatermark_Tooltip" xml:space="preserve">
+    <value>Kunos watermark will be temporary hidden</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing" xml:space="preserve">
+    <value>[url="{0}"]{1}[/url] isn’t installed. Install it?</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
+    <value>Showroom Is Missing</value>
+  </data>
+  <data name="CarPreviews_CannotDownloadShowroom" xml:space="preserve">
+    <value>Can’t download showroom “{0}”</value>
+  </data>
+  <data name="CarPreviews_CannotInstallShowroom" xml:space="preserve">
+    <value>Can’t install showroom “{0}”</value>
+  </data>
+  <data name="CarPreviews_CannotSave" xml:space="preserve">
+    <value>Can’t save previews</value>
+  </data>
+  <data name="CarPreviews_Manual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="CarPreviews_Manual_Tooltip" xml:space="preserve">
+    <value>Set camera position manually and then press F8 to start shooting</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissingOptions" xml:space="preserve">
+    <value>Showroom is missing. Open options?</value>
+  </data>
+  <data name="CarPreviews_FilterIsMissingOptions" xml:space="preserve">
+    <value>Filter is missing. Open options?</value>
+  </data>
+  <data name="CarPreviews_CannotUpdateForDisabled" xml:space="preserve">
+    <value>Can’t update previews of disabled car or skin.</value>
+  </data>
+  <data name="CarPreviews_SomethingWentWrong" xml:space="preserve">
+    <value>Something went wrong.</value>
+  </data>
+  <data name="CarPreviews_CancelledMessage" xml:space="preserve">
+    <value>Cancelled.</value>
+  </data>
+  <data name="CarPreviews_Progress" xml:space="preserve">
+    <value>Now updating: {0} ({1}/{2})</value>
+  </data>
+  <data name="CarParent_Title" xml:space="preserve">
+    <value>Select Parent</value>
+  </data>
+  <data name="Common_HowTo_Title" xml:space="preserve">
+    <value>How-To</value>
+  </data>
+  <data name="Common_SelectImageForPreview" xml:space="preserve">
+    <value>Select Image For Preview</value>
+  </data>
+  <data name="Weather_CannotShare" xml:space="preserve">
+    <value>Can’t share weather</value>
+  </data>
+  <data name="Common_FileIsMissingDot" xml:space="preserve">
+    <value>File “{0}” is missing.</value>
+  </data>
+  <data name="Weather_CannotShare_Commentary" xml:space="preserve">
+    <value>Files are too big. Limit is {0}.</value>
+  </data>
+  <data name="Weather_KunosReadme" xml:space="preserve">
+    <value>We are using an equation to create a graph that determines the asphalt temperature relatively to ambient temperature, weather and day time.
+
+Check the graph in [url="http://fooplot.com/plot/3x7y44pfli"]this link[/url].
+
+The equation used is:
+[mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
+
+Change the 1 values in (((-10*1)*x)+10*1) to see the results in your graphs.
+Accepted values are from -1 to 1.</value>
+  </data>
+  <data name="RaceResult_CancelledHeader" xml:space="preserve">
+    <value>Race cancelled</value>
+  </data>
+  <data name="RaceResult_ErrorHeader" xml:space="preserve">
+    <value>Error:</value>
+  </data>
+  <data name="RaceResult_MaxLevel" xml:space="preserve">
+    <value>Max Level: </value>
+    <comment>Don’t forget about “: ” at the end!</comment>
+  </data>
+  <data name="RaceResult_BestCombo" xml:space="preserve">
+    <value>Best combo: </value>
+    <comment>Don’t forget about “: ” at the end!</comment>
+  </data>
+  <data name="RaceResult_Laps" xml:space="preserve">
+    <value>Laps: </value>
+    <comment>Don’t forget about “: ” at the end!</comment>
+  </data>
+  <data name="RaceResult_BestLap" xml:space="preserve">
+    <value>Best lap: </value>
+    <comment>Don’t forget about “: ” at the end!</comment>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Best Lap</value>
+  </data>
+  <data name="RaceResult_TryAgain" xml:space="preserve">
+    <value>Try again</value>
+  </data>
+  <data name="RaceResult_UnsaveReplay" xml:space="preserve">
+    <value>Unsave replay</value>
+  </data>
+  <data name="RaceResult_SaveReplay" xml:space="preserve">
+    <value>Save replay</value>
+  </data>
+  <data name="RaceResult_ResultProcessingError" xml:space="preserve">
+    <value>Result processing error</value>
+  </data>
+  <data name="Common_MoreInformationInMainLog" xml:space="preserve">
+    <value>More information in MainLog.txt.</value>
+  </data>
+  <data name="Race_Initializing" xml:space="preserve">
+    <value>Initializing…</value>
+  </data>
+  <data name="Race_Preparing" xml:space="preserve">
+    <value>Preparing…</value>
+  </data>
+  <data name="Race_LaunchingGame" xml:space="preserve">
+    <value>Launching game…</value>
+  </data>
+  <data name="Race_Waiting" xml:space="preserve">
+    <value>Waiting for the end of race…</value>
+  </data>
+  <data name="Race_CleaningUp" xml:space="preserve">
+    <value>Cleaning up some stuff…</value>
   </data>
 </root>

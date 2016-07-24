@@ -80,7 +80,7 @@ namespace AcManager.Pages.Dialogs {
 
                 File.Copy(Selected.Filename, Car.UpgradeIcon);
             }  catch (Exception) {
-                ModernDialog.ShowMessage("Can’t change upgrade icon.", ToolsStrings.Common_CannotDo, MessageBoxButton.OK);
+                ModernDialog.ShowMessage("Can’t change upgrade icon.", ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
             }
         }
 

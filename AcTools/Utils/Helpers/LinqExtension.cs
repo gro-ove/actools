@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -546,7 +547,7 @@ namespace AcTools.Utils.Helpers {
 
         [Pure]
         [CanBeNull]
-        public static T GetByIdOrDefault<T>([NotNull] this IEnumerable<T> source, string id) where T : IWithId {
+        public static T GetByIdOrDefault<T>([NotNull] this IEnumerable<T> source, [Localizable(false)] string id) where T : IWithId {
             if (source == null) throw new ArgumentNullException(nameof(source));
             return source.FirstOrDefault(x => x.Id == id);
         }

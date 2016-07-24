@@ -2,20 +2,24 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.About;
+using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
+using AcManager.Tools;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -97,7 +101,7 @@ namespace AcManager.Pages.Selected {
                 }
 
                 if (!ValuesStorage.GetBool(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
-                        ImportantTips.Entries.GetByIdOrDefault("trackPreviews")?.Content, "How-To", MessageBoxButton.OK) !=
+                        ImportantTips.Entries.GetByIdOrDefault(@"trackPreviews")?.Content, AppStrings.Common_HowTo_Title, MessageBoxButton.OK) !=
                         MessageBoxResult.OK) {
                     return;
                 }
@@ -110,13 +114,10 @@ namespace AcManager.Pages.Selected {
                     await ScreenshotsConverter.CurrentConversion;
                 }
 
-                var newShots = Directory.GetFiles(directory).Where(x => !shots.Contains(x) && (
-                        x.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                                x.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                                x.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))).ToList();
-
+                var newShots = Directory.GetFiles(directory)
+                                        .Where(x => !shots.Contains(x) && Regex.IsMatch(x, @"\.(jpe?g|png|bmp)$", RegexOptions.IgnoreCase)).ToList();
                 if (!newShots.Any()) {
-                    NonfatalError.Notify("Can’t update preview", "You were supposed to make at least one screenshot.");
+                    NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, ControlsStrings.AcObject_CannotUpdatePreview_TrackCommentary);
                     return;
                 }
 
@@ -124,16 +125,16 @@ namespace AcManager.Pages.Selected {
 
                 var shot = new ImageViewer(newShots) {
                     Model = {
-                        MaxImageHeight = 200d,
-                        MaxImageWidth = 355d
+                        MaxImageHeight = CommonAcConsts.TrackPreviewWidth,
+                        MaxImageWidth = CommonAcConsts.TrackPreviewHeight
                     }
                 }.ShowDialogInSelectFileMode();
                 if (shot == null) return;
 
                 try {
-                    ImageUtils.ApplyPreview(shot, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
+                    ImageUtils.ApplyPreview(shot, SelectedTrackConfiguration.PreviewImage, CommonAcConsts.TrackPreviewHeight, CommonAcConsts.TrackPreviewWidth);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t update preview", e);
+                    NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                 }
             }, o => SelectedObject.Enabled));
 
@@ -142,15 +143,15 @@ namespace AcManager.Pages.Selected {
             public RelayCommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new RelayCommand(o => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
-                    Title = "Select New Preview Image",
+                    Title = AppStrings.Common_SelectImageForPreview,
                     InitialDirectory = FileUtils.GetDocumentsScreensDirectory(),
                     RestoreDirectory = true
                 };
                 if (dialog.ShowDialog() == true) {
                     try {
-                        ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage, 355d, 200d);
+                        ImageUtils.ApplyPreview(dialog.FileName, SelectedTrackConfiguration.PreviewImage, CommonAcConsts.TrackPreviewHeight, CommonAcConsts.TrackPreviewWidth);
                     } catch (Exception e) {
-                        NonfatalError.Notify("Can’t update preview", e);
+                        NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                     }
                 }
             }));
@@ -159,26 +160,26 @@ namespace AcManager.Pages.Selected {
                 switch (type) {
                     case "author":
                         NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.Author)
-                                ? "author-" : $"author:{Filter.Encode(SelectedTrackConfiguration.Author)}");
+                                ? @"author-" : $"author:{Filter.Encode(SelectedTrackConfiguration.Author)}");
                         break;
 
                     case "country":
                         NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.Country)
-                                ? "country-" : $"country:{Filter.Encode(SelectedTrackConfiguration.Country)}");
+                                ? @"country-" : $"country:{Filter.Encode(SelectedTrackConfiguration.Country)}");
                         break;
 
                     case "city":
                         NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.City)
-                                ? "city-" : $"city:{Filter.Encode(SelectedTrackConfiguration.City)}");
+                                ? @"city-" : $"city:{Filter.Encode(SelectedTrackConfiguration.City)}");
                         break;
 
                     case "year":
-                        NewFilterTab(SelectedTrackConfiguration.Year.HasValue ? $"year:{SelectedTrackConfiguration.Year}" : "year-");
+                        NewFilterTab(SelectedTrackConfiguration.Year.HasValue ? $"year:{SelectedTrackConfiguration.Year}" : @"year-");
                         break;
 
                     case "decade":
                         if (!SelectedTrackConfiguration.Year.HasValue) {
-                            NewFilterTab("year-");
+                            NewFilterTab(@"year-");
                         }
 
                         var start = (int)Math.Floor((SelectedTrackConfiguration.Year ?? 0) / 10d) * 10;
@@ -214,7 +215,7 @@ namespace AcManager.Pages.Selected {
         void IParametrizedUriContent.OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
             if (_id == null) {
-                throw new Exception("ID is missing");
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
         }
 
@@ -229,13 +230,12 @@ namespace AcManager.Pages.Selected {
         }
 
         public void Initialize() {
-            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.UpdatePreviewCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
                 new InputBinding(_model.UpdatePreviewDirectCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
-
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift))
             });

@@ -5,7 +5,7 @@
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:c="clr-namespace:AcManager.Controls"
         xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Title="{x:Static c:ControlsStrings.CustomShowroom_ToolsTitle}" ShowInTaskbar="False"
+        Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False"
         d:DataContext="{d:DesignInstance customShowroom:LiteShowroomTools+LiteShowroomToolsViewModel}" Topmost="True" Loaded="LiteShowroomTools_OnLoaded"
         Unloaded="LiteShowroomTools_OnUnloaded" Width="250" SizeToContent="Height">
     <mui:ModernDialog.Resources>

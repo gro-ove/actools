@@ -61,6 +61,52 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Available {solution}:.
+        /// </summary>
+        public static string AcError_AvailableSolutions {
+            get {
+                return ResourceManager.GetString("AcError_AvailableSolutions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t solve the problem.
+        /// </summary>
+        public static string AcError_CannotSolveProblem {
+            get {
+                return ResourceManager.GetString("AcError_CannotSolveProblem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of solutions are available..
+        /// </summary>
+        public static string AcError_SolutionsNotFound {
+            get {
+                return ResourceManager.GetString("AcError_SolutionsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Solve All Similar Errors.
+        /// </summary>
+        public static string AcError_SolveAllSimilarErrors {
+            get {
+                return ResourceManager.GetString("AcError_SolveAllSimilarErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stack trace:
+        ///[mono]{0}[/mono].
+        /// </summary>
+        public static string AcError_StackTrace {
+            get {
+                return ResourceManager.GetString("AcError_StackTrace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Activated.
         /// </summary>
         public static string AcObject_AppActivated {
@@ -295,6 +341,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Folder is unacceptable.
+        /// </summary>
+        public static string AcRoot_FolderIsUnacceptable {
+            get {
+                return ResourceManager.GetString("AcRoot_FolderIsUnacceptable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify Assetto Corsa root folder:.
+        /// </summary>
+        public static string AcRoot_Prompt {
+            get {
+                return ResourceManager.GetString("AcRoot_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to Content Manager and thanks for using it! You have only one thing left to do before launch:.
+        /// </summary>
+        public static string AcRoot_Welcome {
+            get {
+                return ResourceManager.GetString("AcRoot_Welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maximum size (recommended): {0} MB.
         /// </summary>
         public static string AcSettings_RecommendedMaximumSize {
@@ -381,6 +454,116 @@ namespace AcManager {
         public static string App_NewVersion_Details {
             get {
                 return ResourceManager.GetString("App_NewVersion_Details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App will be restarted.
+        /// </summary>
+        public static string AppKey_AppWillBeRestarted {
+            get {
+                return ResourceManager.GetString("AppKey_AppWillBeRestarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t check key.
+        /// </summary>
+        public static string AppKey_CannotCheck {
+            get {
+                return ResourceManager.GetString("AppKey_CannotCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get a New Key.
+        /// </summary>
+        public static string AppKey_GetNewKey {
+            get {
+                return ResourceManager.GetString("AppKey_GetNewKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key is invalid.
+        /// </summary>
+        public static string AppKey_InvalidKey {
+            get {
+                return ResourceManager.GetString("AppKey_InvalidKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, but your key was compromised and got revoked. Would you like to contact us to get another one?.
+        /// </summary>
+        public static string AppKey_KeyRevoked_Message {
+            get {
+                return ResourceManager.GetString("AppKey_KeyRevoked_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Revoked.
+        /// </summary>
+        public static string AppKey_KeyRevoked_Title {
+            get {
+                return ResourceManager.GetString("AppKey_KeyRevoked_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key was revoked.
+        /// </summary>
+        public static string AppKey_KeyWasRevoked {
+            get {
+                return ResourceManager.GetString("AppKey_KeyWasRevoked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now app will be restarted, but it shouldn’t take long. Thanks again for your support!
+        ///
+        ///[i]Please, don’t share your key, otherwise it might get compromised.[/i].
+        /// </summary>
+        public static string AppKey_PreRestart_Message {
+            get {
+                return ResourceManager.GetString("AppKey_PreRestart_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thank You!.
+        /// </summary>
+        public static string AppKey_PreRestart_Title {
+            get {
+                return ResourceManager.GetString("AppKey_PreRestart_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter app key (XXXX-XXXX-…):.
+        /// </summary>
+        public static string AppKey_Prompt {
+            get {
+                return ResourceManager.GetString("AppKey_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App Key.
+        /// </summary>
+        public static string AppKey_Title {
+            get {
+                return ResourceManager.GetString("AppKey_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, don’t share key, otherwise it might get revoked!.
+        /// </summary>
+        public static string AppKey_Tooltip {
+            get {
+                return ResourceManager.GetString("AppKey_Tooltip", resourceCulture);
             }
         }
         
@@ -603,6 +786,285 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ABS:.
+        /// </summary>
+        public static string Assists_AbsLabel {
+            get {
+                return ResourceManager.GetString("Assists_AbsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anti-lock braking system.
+        /// </summary>
+        public static string Assists_AbsLabel_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_AbsLabel_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto_blip.
+        /// </summary>
+        public static string Assists_AutoBlip {
+            get {
+                return ResourceManager.GetString("Assists_AutoBlip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically syncronize RPM on downshifts.
+        /// </summary>
+        public static string Assists_AutoBlip_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_AutoBlip_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic _clutch.
+        /// </summary>
+        public static string Assists_AutoClutch {
+            get {
+                return ResourceManager.GetString("Assists_AutoClutch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically press clutch on shifting.
+        /// </summary>
+        public static string Assists_AutoClutch_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_AutoClutch_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Automatic shifting.
+        /// </summary>
+        public static string Assists_AutoShifting {
+            get {
+                return ResourceManager.GetString("Assists_AutoShifting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don’t confuse it with automatic gearbox.
+        /// </summary>
+        public static string Assists_AutoShifting_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_AutoShifting_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Fuel consumption.
+        /// </summary>
+        public static string Assists_FuelConsumption {
+            get {
+                return ResourceManager.GetString("Assists_FuelConsumption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ideal _line.
+        /// </summary>
+        public static string Assists_IdealLine {
+            get {
+                return ResourceManager.GetString("Assists_IdealLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show ideal driving line.
+        /// </summary>
+        public static string Assists_IdealLine_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_IdealLine_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mechanical _damage.
+        /// </summary>
+        public static string Assists_MechanicalDamage {
+            get {
+                return ResourceManager.GetString("Assists_MechanicalDamage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Damageable engine, gearbox, suspension and stuff.
+        /// </summary>
+        public static string Assists_MechanicalDamage_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_MechanicalDamage_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slipstream effect.
+        /// </summary>
+        public static string Assists_SlipstreamEffect {
+            get {
+                return ResourceManager.GetString("Assists_SlipstreamEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multipler for slipstream effect.
+        /// </summary>
+        public static string Assists_SlipstreamEffect_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_SlipstreamEffect_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Stability control.
+        /// </summary>
+        public static string Assists_StabilityControl {
+            get {
+                return ResourceManager.GetString("Assists_StabilityControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrealistic, but could be helpful if you’re just starting to learn how to drive or drift.
+        /// </summary>
+        public static string Assists_StabilityControl_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_StabilityControl_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assists.
+        /// </summary>
+        public static string Assists_Title {
+            get {
+                return ResourceManager.GetString("Assists_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Traction control:.
+        /// </summary>
+        public static string Assists_TractionControlLabel {
+            get {
+                return ResourceManager.GetString("Assists_TractionControlLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optimise grip during acceleration.
+        /// </summary>
+        public static string Assists_TractionControlLabel_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_TractionControlLabel_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Tyre blankets.
+        /// </summary>
+        public static string Assists_TyreBlankets {
+            get {
+                return ResourceManager.GetString("Assists_TyreBlankets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heat tires in pits.
+        /// </summary>
+        public static string Assists_TyreBlankets_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_TyreBlankets_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tyre wear.
+        /// </summary>
+        public static string Assists_TyreWear {
+            get {
+                return ResourceManager.GetString("Assists_TyreWear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multipler for tyre wear.
+        /// </summary>
+        public static string Assists_TyreWear_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_TyreWear_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add as a new badge for (brand’s name):.
+        /// </summary>
+        public static string BrandBadge_AddAs {
+            get {
+                return ResourceManager.GetString("BrandBadge_AddAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add To The Library?.
+        /// </summary>
+        public static string BrandBadge_AddAs_Title {
+            get {
+                return ResourceManager.GetString("BrandBadge_AddAs_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t add a new brand’s badge to the library.
+        /// </summary>
+        public static string BrandBadge_CannotAdd {
+            get {
+                return ResourceManager.GetString("BrandBadge_CannotAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t change brand’s badge.
+        /// </summary>
+        public static string BrandBadge_CannotChange {
+            get {
+                return ResourceManager.GetString("BrandBadge_CannotChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure brand’s badge file is available to write..
+        /// </summary>
+        public static string BrandBadge_CannotChange_Commentary {
+            get {
+                return ResourceManager.GetString("BrandBadge_CannotChange_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select New Brand’s Badge.
+        /// </summary>
+        public static string BrandBadge_SelectNew {
+            get {
+                return ResourceManager.GetString("BrandBadge_SelectNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brand Badge.
+        /// </summary>
+        public static string BrandBadge_Title {
+            get {
+                return ResourceManager.GetString("BrandBadge_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t pack data.
         /// </summary>
         public static string Car_CannotPackData {
@@ -693,6 +1155,609 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Parent.
+        /// </summary>
+        public static string CarParent_Title {
+            get {
+                return ResourceManager.GetString("CarParent_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable all e_ffects.
+        /// </summary>
+        public static string CarPreviews_AllEffects {
+            get {
+                return ResourceManager.GetString("CarPreviews_AllEffects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable all video effets like reflections or glare (recommended).
+        /// </summary>
+        public static string CarPreviews_AllEffects_Tooltip {
+            get {
+                return ResourceManager.GetString("CarPreviews_AllEffects_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera Position:.
+        /// </summary>
+        public static string CarPreviews_CameraPositionLabel {
+            get {
+                return ResourceManager.GetString("CarPreviews_CameraPositionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelled..
+        /// </summary>
+        public static string CarPreviews_CancelledMessage {
+            get {
+                return ResourceManager.GetString("CarPreviews_CancelledMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t download showroom “{0}”.
+        /// </summary>
+        public static string CarPreviews_CannotDownloadShowroom {
+            get {
+                return ResourceManager.GetString("CarPreviews_CannotDownloadShowroom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t install showroom “{0}”.
+        /// </summary>
+        public static string CarPreviews_CannotInstallShowroom {
+            get {
+                return ResourceManager.GetString("CarPreviews_CannotInstallShowroom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t save previews.
+        /// </summary>
+        public static string CarPreviews_CannotSave {
+            get {
+                return ResourceManager.GetString("CarPreviews_CannotSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t update previews of disabled car or skin..
+        /// </summary>
+        public static string CarPreviews_CannotUpdateForDisabled {
+            get {
+                return ResourceManager.GetString("CarPreviews_CannotUpdateForDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apparantly SweetFx doesn&apos;t affect the result, but could decrease loading time.
+        /// </summary>
+        public static string CarPreviews_DisableSweetFx_Tooltip {
+            get {
+                return ResourceManager.GetString("CarPreviews_DisableSweetFx_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exposure:.
+        /// </summary>
+        public static string CarPreviews_ExposureLabel {
+            get {
+                return ResourceManager.GetString("CarPreviews_ExposureLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter is missing. Open options?.
+        /// </summary>
+        public static string CarPreviews_FilterIsMissingOptions {
+            get {
+                return ResourceManager.GetString("CarPreviews_FilterIsMissingOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable FX_AA.
+        /// </summary>
+        public static string CarPreviews_Fxaa {
+            get {
+                return ResourceManager.GetString("CarPreviews_Fxaa", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use FXAA for previews.
+        /// </summary>
+        public static string CarPreviews_Fxaa_Tooltip {
+            get {
+                return ResourceManager.GetString("CarPreviews_Fxaa_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kunos watermark will be temporary hidden.
+        /// </summary>
+        public static string CarPreviews_HideWatermark_Tooltip {
+            get {
+                return ResourceManager.GetString("CarPreviews_HideWatermark_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Look At:.
+        /// </summary>
+        public static string CarPreviews_LookAtLabel {
+            get {
+                return ResourceManager.GetString("CarPreviews_LookAtLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manual.
+        /// </summary>
+        public static string CarPreviews_Manual {
+            get {
+                return ResourceManager.GetString("CarPreviews_Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set camera position manually and then press F8 to start shooting.
+        /// </summary>
+        public static string CarPreviews_Manual_Tooltip {
+            get {
+                return ResourceManager.GetString("CarPreviews_Manual_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now updating: {0} ({1}/{2}).
+        /// </summary>
+        public static string CarPreviews_Progress {
+            get {
+                return ResourceManager.GetString("CarPreviews_Progress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Resize previews.
+        /// </summary>
+        public static string CarPreviews_ResizePreviews {
+            get {
+                return ResourceManager.GetString("CarPreviews_ResizePreviews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resize previews to Kunos size 1022×575 (highly recommended).
+        /// </summary>
+        public static string CarPreviews_ResizePreviews_Tooltip {
+            get {
+                return ResourceManager.GetString("CarPreviews_ResizePreviews_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shot in 3840×2160.
+        /// </summary>
+        public static string CarPreviews_ShotIn4k {
+            get {
+                return ResourceManager.GetString("CarPreviews_ShotIn4k", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable for the best quality.
+        /// </summary>
+        public static string CarPreviews_ShotIn4k_Tooltip {
+            get {
+                return ResourceManager.GetString("CarPreviews_ShotIn4k_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [url=&quot;{0}&quot;]{1}[/url] isn’t installed. Install it?.
+        /// </summary>
+        public static string CarPreviews_ShowroomIsMissing {
+            get {
+                return ResourceManager.GetString("CarPreviews_ShowroomIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Showroom Is Missing.
+        /// </summary>
+        public static string CarPreviews_ShowroomIsMissing_Title {
+            get {
+                return ResourceManager.GetString("CarPreviews_ShowroomIsMissing_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Showroom is missing. Open options?.
+        /// </summary>
+        public static string CarPreviews_ShowroomIsMissingOptions {
+            get {
+                return ResourceManager.GetString("CarPreviews_ShowroomIsMissingOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong..
+        /// </summary>
+        public static string CarPreviews_SomethingWentWrong {
+            get {
+                return ResourceManager.GetString("CarPreviews_SomethingWentWrong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Taken {0}.
+        /// </summary>
+        public static string CarPreviews_TakenTime {
+            get {
+                return ResourceManager.GetString("CarPreviews_TakenTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Previews.
+        /// </summary>
+        public static string CarPreviews_Title {
+            get {
+                return ResourceManager.GetString("CarPreviews_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to …s 0-100.
+        /// </summary>
+        public static string CarSpecs_Acceleration_FormatTooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Acceleration_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time to accelerate from 0 to 100 km/h, recommended format: “{0}”.
+        /// </summary>
+        public static string CarSpecs_Acceleration_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Acceleration_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Acceleration:.
+        /// </summary>
+        public static string CarSpecs_AccelerationLabel {
+            get {
+                return ResourceManager.GetString("CarSpecs_AccelerationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Automatically recalculate P/W ratio.
+        /// </summary>
+        public static string CarSpecs_AutomaticallyRecalculatePwRatio {
+            get {
+                return ResourceManager.GetString("CarSpecs_AutomaticallyRecalculatePwRatio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy new values to Torque and BHP?.
+        /// </summary>
+        public static string CarSpecs_CopyNewPowerAndTorque {
+            get {
+                return ResourceManager.GetString("CarSpecs_CopyNewPowerAndTorque", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix Format.
+        /// </summary>
+        public static string CarSpecs_FixFormat {
+            get {
+                return ResourceManager.GetString("CarSpecs_FixFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try to set proper format for value.
+        /// </summary>
+        public static string CarSpecs_FixFormat_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_FixFormat_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix Formats.
+        /// </summary>
+        public static string CarSpecs_FixFormats {
+            get {
+                return ResourceManager.GetString("CarSpecs_FixFormats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to …km/h.
+        /// </summary>
+        public static string CarSpecs_MaxSpeed_FormatTooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_MaxSpeed_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top speed, recommended format: “{0}”.
+        /// </summary>
+        public static string CarSpecs_MaxSpeed_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_MaxSpeed_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max Speed:.
+        /// </summary>
+        public static string CarSpecs_MaxSpeedLabel {
+            get {
+                return ResourceManager.GetString("CarSpecs_MaxSpeedLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to …bhp.
+        /// </summary>
+        public static string CarSpecs_Power_FormatTooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Power_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max horsepower value, recommended format: “{0}”.
+        /// </summary>
+        public static string CarSpecs_Power_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Power_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BHP:.
+        /// </summary>
+        public static string CarSpecs_PowerLabel {
+            get {
+                return ResourceManager.GetString("CarSpecs_PowerLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to …kg/hp.
+        /// </summary>
+        public static string CarSpecs_PwRatio_FormatTooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_PwRatio_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power to weight ratio, recommended format: “{0}”.
+        /// </summary>
+        public static string CarSpecs_PwRatio_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_PwRatio_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to P/W Ratio:.
+        /// </summary>
+        public static string CarSpecs_PwRatioLabel {
+            get {
+                return ResourceManager.GetString("CarSpecs_PwRatioLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recalculate.
+        /// </summary>
+        public static string CarSpecs_Recalculate {
+            get {
+                return ResourceManager.GetString("CarSpecs_Recalculate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recalculate value using BHP and weight values.
+        /// </summary>
+        public static string CarSpecs_Recalculate_PwRatioTooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Recalculate_PwRatioTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recalculate from data.
+        /// </summary>
+        public static string CarSpecs_Recalculate_WeightTooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Recalculate_WeightTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curves will be recalculated based on engine.ini, power.lut and power and torque values from ui_car.json.
+        /// </summary>
+        public static string CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recalculate Curves Using Data &amp; Power/Torque Values.
+        /// </summary>
+        public static string CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader {
+            get {
+                return ResourceManager.GetString("CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curves will be recalculated based on engine.ini, but you’ll have to provide transmission loss.
+        /// </summary>
+        public static string CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recalculate Curves Using Data Only.
+        /// </summary>
+        public static string CarSpecs_RecalculateCurvesUsingDataOnlyHeader {
+            get {
+                return ResourceManager.GetString("CarSpecs_RecalculateCurvesUsingDataOnlyHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curves will be scaled to fit power and torque values from ui_car.json (you can see them above).
+        /// </summary>
+        public static string CarSpecs_ScaleCurvesToPowerTorque_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_ScaleCurvesToPowerTorque_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scale Curves To Power/Torque Values.
+        /// </summary>
+        public static string CarSpecs_ScaleCurvesToPowerTorqueHeader {
+            get {
+                return ResourceManager.GetString("CarSpecs_ScaleCurvesToPowerTorqueHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Power Curve.
+        /// </summary>
+        public static string CarSpecs_SetPowerCurve {
+            get {
+                return ResourceManager.GetString("CarSpecs_SetPowerCurve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have to specify power and torque values first.
+        /// </summary>
+        public static string CarSpecs_SpecifyPowerAndTorqueFirst {
+            get {
+                return ResourceManager.GetString("CarSpecs_SpecifyPowerAndTorqueFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Specifications.
+        /// </summary>
+        public static string CarSpecs_Title {
+            get {
+                return ResourceManager.GetString("CarSpecs_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to …Nm.
+        /// </summary>
+        public static string CarSpecs_Torque_FormatTooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Torque_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max torque value, recommended format: “{0}”.
+        /// </summary>
+        public static string CarSpecs_Torque_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Torque_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Torque:.
+        /// </summary>
+        public static string CarSpecs_TorqueLabel {
+            get {
+                return ResourceManager.GetString("CarSpecs_TorqueLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmission loss.
+        /// </summary>
+        public static string CarSpecs_TransmissionLoss {
+            get {
+                return ResourceManager.GetString("CarSpecs_TransmissionLoss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmission Loss For {0}.
+        /// </summary>
+        public static string CarSpecs_TransmissionLossTitle {
+            get {
+                return ResourceManager.GetString("CarSpecs_TransmissionLossTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Curves.
+        /// </summary>
+        public static string CarSpecs_UpdateCurves {
+            get {
+                return ResourceManager.GetString("CarSpecs_UpdateCurves", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to …kg.
+        /// </summary>
+        public static string CarSpecs_Weight_FormatTooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Weight_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weight without driver, recommended format: “{0}”.
+        /// </summary>
+        public static string CarSpecs_Weight_Tooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_Weight_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weight:.
+        /// </summary>
+        public static string CarSpecs_WeightLabel {
+            get {
+                return ResourceManager.GetString("CarSpecs_WeightLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t find car with provided ID.
         /// </summary>
         public static string Common_CannotFindCarById {
@@ -747,6 +1812,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File “{0}” is missing..
+        /// </summary>
+        public static string Common_FileIsMissingDot {
+            get {
+                return ResourceManager.GetString("Common_FileIsMissingDot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go!.
         /// </summary>
         public static string Common_Go {
@@ -774,6 +1848,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to How-To.
+        /// </summary>
+        public static string Common_HowTo_Title {
+            get {
+                return ResourceManager.GetString("Common_HowTo_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ID: {0}.
         /// </summary>
         public static string Common_IdFormat {
@@ -788,6 +1871,15 @@ namespace AcManager {
         public static string Common_MillisecondsFormat {
             get {
                 return ResourceManager.GetString("Common_MillisecondsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More information in MainLog.txt..
+        /// </summary>
+        public static string Common_MoreInformationInMainLog {
+            get {
+                return ResourceManager.GetString("Common_MoreInformationInMainLog", resourceCulture);
             }
         }
         
@@ -810,6 +1902,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to One More Thing.
+        /// </summary>
+        public static string Common_OneMoreThing {
+            get {
+                return ResourceManager.GetString("Common_OneMoreThing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required value.
+        /// </summary>
+        public static string Common_RequiredValue {
+            get {
+                return ResourceManager.GetString("Common_RequiredValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restart.
         /// </summary>
         public static string Common_Restart {
@@ -824,6 +1934,24 @@ namespace AcManager {
         public static string Common_RoadTemperatureFormat {
             get {
                 return ResourceManager.GetString("Common_RoadTemperatureFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select File.
+        /// </summary>
+        public static string Common_SelectFile {
+            get {
+                return ResourceManager.GetString("Common_SelectFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Image For Preview.
+        /// </summary>
+        public static string Common_SelectImageForPreview {
+            get {
+                return ResourceManager.GetString("Common_SelectImageForPreview", resourceCulture);
             }
         }
         
@@ -896,6 +2024,33 @@ namespace AcManager {
         public static string Common_Update {
             get {
                 return ResourceManager.GetString("Common_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View User Folder.
+        /// </summary>
+        public static string Common_ViewUserFolder {
+            get {
+                return ResourceManager.GetString("Common_ViewUserFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Setups.
+        /// </summary>
+        public static string Dialog_CarSetupsFormat {
+            get {
+                return ResourceManager.GetString("Dialog_CarSetupsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Skins.
+        /// </summary>
+        public static string Dialog_CarSkinsFormat {
+            get {
+                return ResourceManager.GetString("Dialog_CarSkinsFormat", resourceCulture);
             }
         }
         
@@ -1067,6 +2222,15 @@ namespace AcManager {
         public static string Drive_StartFrom {
             get {
                 return ResourceManager.GetString("Drive_StartFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting position: {0}.
+        /// </summary>
+        public static string Drive_StartingPositionFormat {
+            get {
+                return ResourceManager.GetString("Drive_StartingPositionFormat", resourceCulture);
             }
         }
         
@@ -1382,24 +2546,6 @@ namespace AcManager {
         public static string KunosCareer_StartingPositionLabel {
             get {
                 return ResourceManager.GetString("KunosCareer_StartingPositionLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Car.
-        /// </summary>
-        public static string KunosCareer_TableHeader_Car {
-            get {
-                return ResourceManager.GetString("KunosCareer_TableHeader_Car", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name.
-        /// </summary>
-        public static string KunosCareer_TableHeader_Name {
-            get {
-                return ResourceManager.GetString("KunosCareer_TableHeader_Name", resourceCulture);
             }
         }
         
@@ -1827,6 +2973,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Setups.
+        /// </summary>
+        public static string Main_Setups {
+            get {
+                return ResourceManager.GetString("Main_Setups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Showrooms.
         /// </summary>
         public static string Main_Showrooms {
@@ -1841,6 +2996,15 @@ namespace AcManager {
         public static string Main_Single {
             get {
                 return ResourceManager.GetString("Main_Single", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skins.
+        /// </summary>
+        public static string Main_Skins {
+            get {
+                return ResourceManager.GetString("Main_Skins", resourceCulture);
             }
         }
         
@@ -2374,6 +3538,141 @@ namespace AcManager {
         public static string QuickDrive_WeatherLabel {
             get {
                 return ResourceManager.GetString("QuickDrive_WeatherLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cleaning up some stuff….
+        /// </summary>
+        public static string Race_CleaningUp {
+            get {
+                return ResourceManager.GetString("Race_CleaningUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initializing….
+        /// </summary>
+        public static string Race_Initializing {
+            get {
+                return ResourceManager.GetString("Race_Initializing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launching game….
+        /// </summary>
+        public static string Race_LaunchingGame {
+            get {
+                return ResourceManager.GetString("Race_LaunchingGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preparing….
+        /// </summary>
+        public static string Race_Preparing {
+            get {
+                return ResourceManager.GetString("Race_Preparing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for the end of race….
+        /// </summary>
+        public static string Race_Waiting {
+            get {
+                return ResourceManager.GetString("Race_Waiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Best combo: .
+        /// </summary>
+        public static string RaceResult_BestCombo {
+            get {
+                return ResourceManager.GetString("RaceResult_BestCombo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Best lap: .
+        /// </summary>
+        public static string RaceResult_BestLap {
+            get {
+                return ResourceManager.GetString("RaceResult_BestLap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Race cancelled.
+        /// </summary>
+        public static string RaceResult_CancelledHeader {
+            get {
+                return ResourceManager.GetString("RaceResult_CancelledHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error:.
+        /// </summary>
+        public static string RaceResult_ErrorHeader {
+            get {
+                return ResourceManager.GetString("RaceResult_ErrorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Laps: .
+        /// </summary>
+        public static string RaceResult_Laps {
+            get {
+                return ResourceManager.GetString("RaceResult_Laps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max Level: .
+        /// </summary>
+        public static string RaceResult_MaxLevel {
+            get {
+                return ResourceManager.GetString("RaceResult_MaxLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Result processing error.
+        /// </summary>
+        public static string RaceResult_ResultProcessingError {
+            get {
+                return ResourceManager.GetString("RaceResult_ResultProcessingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save replay.
+        /// </summary>
+        public static string RaceResult_SaveReplay {
+            get {
+                return ResourceManager.GetString("RaceResult_SaveReplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try again.
+        /// </summary>
+        public static string RaceResult_TryAgain {
+            get {
+                return ResourceManager.GetString("RaceResult_TryAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsave replay.
+        /// </summary>
+        public static string RaceResult_UnsaveReplay {
+            get {
+                return ResourceManager.GetString("RaceResult_UnsaveReplay", resourceCulture);
             }
         }
         
@@ -4610,6 +5909,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Best Lap.
+        /// </summary>
+        public static string TableHeader_BestLap {
+            get {
+                return ResourceManager.GetString("TableHeader_BestLap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car.
+        /// </summary>
+        public static string TableHeader_Car {
+            get {
+                return ResourceManager.GetString("TableHeader_Car", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string TableHeader_Name {
+            get {
+                return ResourceManager.GetString("TableHeader_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clean Up Tags.
         /// </summary>
         public static string Tags_CleanUp {
@@ -5677,6 +7003,41 @@ namespace AcManager {
         public static string Toolbar_UploadAndShare_ReplayTooltip {
             get {
                 return ResourceManager.GetString("Toolbar_UploadAndShare_ReplayTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t share weather.
+        /// </summary>
+        public static string Weather_CannotShare {
+            get {
+                return ResourceManager.GetString("Weather_CannotShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files are too big. Limit is {0}..
+        /// </summary>
+        public static string Weather_CannotShare_Commentary {
+            get {
+                return ResourceManager.GetString("Weather_CannotShare_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We are using an equation to create a graph that determines the asphalt temperature relatively to ambient temperature, weather and day time.
+        ///
+        ///Check the graph in [url=&quot;http://fooplot.com/plot/3x7y44pfli&quot;]this link[/url].
+        ///
+        ///The equation used is:
+        ///[mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
+        ///
+        ///Change the 1 values in (((-10*1)*x)+10*1) to see the results in your graphs.
+        ///Accepted values are from -1 to 1..
+        /// </summary>
+        public static string Weather_KunosReadme {
+            get {
+                return ResourceManager.GetString("Weather_KunosReadme", resourceCulture);
             }
         }
         

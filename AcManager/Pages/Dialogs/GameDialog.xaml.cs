@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using AcManager.Controls;
+using AcManager.Tools;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -18,6 +20,7 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
     public partial class GameDialog : IGameUi {
+        [Localizable(false)]
         private static readonly GoodShuffle<string> ProgressStyles = GoodShuffle.Get(new[] {
             "RotatingPlaneProgressRingStyle",
             "DoubleBounceProgressRingStyle",
@@ -29,12 +32,12 @@ namespace AcManager.Pages.Dialogs {
             "CircleProgressRingStyle"
         });
 
-        private GameDialogViewModel Model => (GameDialogViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         private readonly CancellationTokenSource _cancellationSource;
 
         public GameDialog() {
-            DataContext = new GameDialogViewModel();
+            DataContext = new ViewModel();
             InitializeComponent();
 
             ProgressRing.Style = FindResource(ProgressStyles.Next) as Style;
@@ -42,7 +45,7 @@ namespace AcManager.Pages.Dialogs {
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            Buttons = new [] { CancelButton };
+            Buttons = new[] { CancelButton };
         }
 
         protected override void OnClosing(CancelEventArgs e) {
@@ -63,22 +66,22 @@ namespace AcManager.Pages.Dialogs {
             _properties = properties;
 
             ShowDialogWithoutBlocking();
-            Model.WaitingStatus = @"Initializing…";
+            Model.WaitingStatus = AppStrings.Race_Initializing;
         }
 
         void IGameUi.OnProgress(Game.ProgressState progress) {
             switch (progress) {
                 case Game.ProgressState.Preparing:
-                    Model.WaitingStatus = @"Preparing…";
+                    Model.WaitingStatus = AppStrings.Race_Preparing;
                     break;
                 case Game.ProgressState.Launching:
-                    Model.WaitingStatus = @"Launching game…";
+                    Model.WaitingStatus = AppStrings.Race_LaunchingGame;
                     break;
                 case Game.ProgressState.Waiting:
-                    Model.WaitingStatus = @"Waiting for the end of race…";
+                    Model.WaitingStatus = AppStrings.Race_Waiting;
                     break;
                 case Game.ProgressState.Finishing:
-                    Model.WaitingStatus = @"Cleaning up some stuff…";
+                    Model.WaitingStatus = AppStrings.Race_CleaningUp;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(progress), progress, null);
@@ -136,7 +139,7 @@ namespace AcManager.Pages.Dialogs {
 
             var sessionsData = (from session in result.Sessions
                                 let takenPlaces = session.GetTakenPlacesPerCar()
-                                select new SessionFinishedData(session.Name.ApartFromLast(" Session")) {
+                                select new SessionFinishedData(session.Name.ApartFromLast(@" Session")) {
                                     PlayerEntries = (
                                             from player in result.Players
                                             let car = CarsManager.Instance.GetById(player.CarId)
@@ -220,7 +223,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public class DriftFinishedData : BaseFinishedData {
-            public override string Title { get; } = "Drift";
+            public override string Title { get; } = ToolsStrings.Session_Drift;
 
             public int Points { get; set; }
 
@@ -230,7 +233,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public class TimeAttackFinishedData : BaseFinishedData {
-            public override string Title { get; } = "Time Attack";
+            public override string Title { get; } = ToolsStrings.Session_TimeAttack;
 
             public int Points { get; set; }
 
@@ -240,7 +243,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public class HotlapFinishedData : BaseFinishedData {
-            public override string Title { get; } = "Hotlap";
+            public override string Title { get; } = ToolsStrings.Session_Hotlap;
 
             public int Laps { get; set; }
 
@@ -257,7 +260,7 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            Func<string> buttonText = () => replayHelper?.IsReplayRenamed == true ? @"Unsave replay" : @"Save replay";
+            Func<string> buttonText = () => replayHelper?.IsReplayRenamed == true ? AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;
 
             var saveReplayButton = CreateExtraDialogButton(buttonText(), () => {
                 if (replayHelper == null) return;
@@ -273,7 +276,7 @@ namespace AcManager.Pages.Dialogs {
                 };
             }
 
-            var tryAgainButton = CreateExtraDialogButton(@"Try again", () => {
+            var tryAgainButton = CreateExtraDialogButton(AppStrings.RaceResult_TryAgain, () => {
                 CloseWithResult(MessageBoxResult.None);
                 GameWrapper.StartAsync(_properties).Forget();
             });
@@ -289,25 +292,25 @@ namespace AcManager.Pages.Dialogs {
             };
 
             if (result == null || !result.IsNotCancelled) {
-                Model.CurrentState = GameDialogViewModel.State.Cancelled;
+                Model.CurrentState = ViewModel.State.Cancelled;
                 Model.ErrorMessage = _properties?.GetAdditional<AcLogHelper.WhatsGoingOn?>()?.GetDescription();
             } else {
                 try {
-                    Model.CurrentState = GameDialogViewModel.State.Finished;
+                    Model.CurrentState = ViewModel.State.Finished;
                     Model.FinishedData = GetFinishedData(_properties, result);
                 } catch (Exception e) {
                     Logging.Warning("[GameDialog] IGameUi.OnResult(): " + e);
 
-                    Model.CurrentState = GameDialogViewModel.State.Error;
-                    Model.ErrorMessage = "Result processing error";
+                    Model.CurrentState = ViewModel.State.Error;
+                    Model.ErrorMessage = AppStrings.RaceResult_ResultProcessingError;
                     Buttons = new[] { CloseButton };
                 }
             }
         }
 
         void IGameUi.OnError(Exception exception) {
-            Model.CurrentState = GameDialogViewModel.State.Error;
-            Model.ErrorMessage = exception?.Message ?? "Undefined error";
+            Model.CurrentState = ViewModel.State.Error;
+            Model.ErrorMessage = exception?.Message ?? ToolsStrings.Common_UndefinedError;
             Buttons = new[] { CloseButton };
 
             var ie = exception as InformativeException;
@@ -318,22 +321,22 @@ namespace AcManager.Pages.Dialogs {
 
         public CancellationToken CancellationToken { get; }
 
-        public class GameDialogViewModel : NotifyPropertyChanged {
-            public GameDialogViewModel() {
+        public class ViewModel : NotifyPropertyChanged {
+            public ViewModel() {
                 CurrentState = State.Waiting;
             }
 
             public enum State {
-                [Description("Waiting…")]
+                [ControlsLocalizedDescription("Common_Waiting")]
                 Waiting,
 
-                [Description("Finished")]
+                [ControlsLocalizedDescription("Common_Finished")]
                 Finished,
 
-                [Description("Cancelled")]
+                [ControlsLocalizedDescription("Common_Cancelled")]
                 Cancelled,
 
-                [Description("Error")]
+                [ControlsLocalizedDescription("Common_Error")]
                 Error
             }
 
@@ -373,7 +376,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            private string _errorDescription = "More information in MainLog.txt.";
+            private string _errorDescription = AppStrings.Common_MoreInformationInMainLog;
 
             public string ErrorDescription {
                 get { return _errorDescription; }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,648 +59,651 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="Main_Title" xml:space="preserve">
-    <value>Content Manager (Lite-режим)</value>
-  </data>
-	<data name="App_NewVersion_Details" xml:space="preserve">
-    <value>Новая версия: {0}</value>
-  </data>
-	<data name="App_ContentUpdated_Details" xml:space="preserve">
-    <value>Текущая версия: {0}</value>
-  </data>
-	<data name="Main_UnhandledException" xml:space="preserve">
-    <value>Непойманная ошибка:
-
-{0}</value>
-  </data>
-	<data name="App_ContentUpdated" xml:space="preserve">
-    <value>Данные обновлены</value>
-  </data>
-	<data name="App_NewVersion" xml:space="preserve">
-    <value>Новая версия</value>
-  </data>
-	<data name="Main_Apps" xml:space="preserve">
-    <value>Приложения</value>
-  </data>
-	<data name="Main_Fonts" xml:space="preserve">
-    <value>Шрифты</value>
-  </data>
-	<data name="Main_PpFilters" xml:space="preserve">
-    <value>Фильтры</value>
-  </data>
-	<data name="Main_Weather" xml:space="preserve">
-    <value>Погода</value>
-  </data>
-	<data name="Main_QuickDrive" xml:space="preserve">
-    <value>Быстрый заезд</value>
-  </data>
-	<data name="Main_Career" xml:space="preserve">
-    <value>Карьера</value>
-  </data>
-	<data name="Main_Challenges" xml:space="preserve">
-    <value>Испытания</value>
-  </data>
-	<data name="Main_Single" xml:space="preserve">
-    <value>Одиночная</value>
-  </data>
-	<data name="Main_Live" xml:space="preserve">
-    <value>Лайв</value>
-  </data>
-	<data name="Main_Online" xml:space="preserve">
-    <value>Онлайн</value>
-  </data>
-	<data name="Main_Lan" xml:space="preserve">
-    <value>LAN</value>
-  </data>
-	<data name="Main_Screenshots" xml:space="preserve">
-    <value>Скриншоты</value>
-  </data>
-	<data name="Main_Replays" xml:space="preserve">
-    <value>Реплеи</value>
-  </data>
-	<data name="Main_Cars" xml:space="preserve">
-    <value>Mашины</value>
-  </data>
-	<data name="Main_Tracks" xml:space="preserve">
-    <value>Трассы</value>
-  </data>
-	<data name="Main_Showrooms" xml:space="preserve">
-    <value>Шоурумы</value>
-  </data>
-	<data name="Main_Miscellaneous" xml:space="preserve">
-    <value>Разное</value>
-  </data>
-	<data name="Main_ServerPresets" xml:space="preserve">
-    <value>Пресеты</value>
-  </data>
-	<data name="Main_ServerRunned" xml:space="preserve">
-    <value>Запущенное</value>
-  </data>
-	<data name="Main_About" xml:space="preserve">
-    <value>О программе</value>
-  </data>
-	<data name="Main_ReleaseNotes" xml:space="preserve">
-    <value>Релизные заметки</value>
-  </data>
-	<data name="Main_ImportantTips" xml:space="preserve">
-    <value>Советы</value>
-  </data>
-	<data name="Main_Settings" xml:space="preserve">
-    <value>Настройки</value>
-  </data>
-	<data name="Main_Server" xml:space="preserve">
-    <value>Сервер</value>
-  </data>
-	<data name="Main_Drive" xml:space="preserve">
-    <value>Вождение</value>
-  </data>
-	<data name="Main_Media" xml:space="preserve">
-    <value>Медиа</value>
-  </data>
-	<data name="Main_Content" xml:space="preserve">
-    <value>Контент</value>
-  </data>
-	<data name="Common_MillisecondsFormat" xml:space="preserve">
-    <value>{0:F2} мс</value>
-  </data>
-	<data name="Settings_General_ValuesNumber" xml:space="preserve">
-    <value>{0} запись</value>
-    <comment>Will be pluralized automatically</comment>
-  </data>
-	<data name="Settings_General" xml:space="preserve">
-    <value>общее</value>
-  </data>
-	<data name="Settings_Plugins" xml:space="preserve">
-    <value>Плагины</value>
-  </data>
-	<data name="Settings_QuickSwitches" xml:space="preserve">
-    <value>Переключатели</value>
-  </data>
-	<data name="Settings_Sharing" xml:space="preserve">
-    <value>Шаринг</value>
-  </data>
-	<data name="Settings_Appearance" xml:space="preserve">
-    <value>оформление</value>
-  </data>
-	<data name="Settings_Dev" xml:space="preserve">
-    <value>Системное</value>
-  </data>
-	<data name="Arguments_SharedMessage_For" xml:space="preserve">
-    <value>Для</value>
-  </data>
-	<data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
-    <value>Применить и сохранить</value>
-  </data>
-	<data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
-    <value>Сохранить и применить</value>
-  </data>
-	<data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
-    <value>Только применить</value>
-  </data>
-	<data name="Arguments_Shared_Apply" xml:space="preserve">
-    <value>Применить</value>
-  </data>
-	<data name="Arguments_Shared_SaveOnly" xml:space="preserve">
-    <value>Только сохранить</value>
-  </data>
-	<data name="Arguments_MetadataIsMissing" xml:space="preserve">
-    <value>Метаданные отсутствуют.</value>
-  </data>
-	<data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
-    <value>Применить лишь FFB</value>
-  </data>
-	<data name="Arguments_Shared_JustGo" xml:space="preserve">
-    <value>Поехали</value>
-  </data>
-	<data name="Common_NewName" xml:space="preserve">
-    <value>Новое имя</value>
-  </data>
-	<data name="Solution_SetName_Prompt" xml:space="preserve">
-    <value>Введите новое имя:</value>
-  </data>
-	<data name="Common_Change" xml:space="preserve">
-    <value>Изменить</value>
-  </data>
-	<data name="Common_DevMode" xml:space="preserve">
-    <value>Режим разработчика</value>
-  </data>
-	<data name="Common_NewBrandName" xml:space="preserve">
-    <value>Новое имя бренда</value>
-  </data>
-	<data name="Common_Restart" xml:space="preserve">
-    <value>Перезапустить</value>
-  </data>
-	<data name="Settings_AcSettingsHeader" xml:space="preserve">
-    <value>Настройки AC:</value>
-  </data>
-	<data name="Common_Update" xml:space="preserve">
-    <value>Обновить</value>
-  </data>
-	<data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
-    <value>Качество:</value>
-  </data>
-	<data name="AcSettings_RecommendedMaximumSize" xml:space="preserve">
-    <value>Максимальный размер (рекомендуемый): {0} МБ</value>
-  </data>
-	<data name="Common_SignIn" xml:space="preserve">
-    <value>Залогиниться</value>
-  </data>
-	<data name="Common_SignOut" xml:space="preserve">
-    <value>Разлогиниться</value>
-  </data>
-	<data name="Main_OfficialSupportNotification" xml:space="preserve">
-    <value>Теперь с официальной поддержкой!</value>
-  </data>
-	<data name="Main_OfficialSupportNotification_Details" xml:space="preserve">
-    <value>Новый стартер готов, теперь без всякого патчинга</value>
-  </data>
-	<data name="Settings_ColorLabel" xml:space="preserve">
-    <value>Цвет:</value>
-  </data>
-	<data name="Settings_Appearance_DynamicBackground" xml:space="preserve">
-    <value>Динамический фон</value>
-  </data>
-	<data name="Settings_Appearance_ImageScaling_Tooltip" xml:space="preserve">
-    <value>Перезапустите CM, чтобы увидеть изменения</value>
-  </data>
-	<data name="Settings_Appearance_ImageScalingLabel" xml:space="preserve">
-    <value>Отрисовка изображений:</value>
-  </data>
-	<data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
-    <value>Оформление:</value>
-  </data>
-	<data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
-    <value>Анимация переходов:</value>
-  </data>
-	<data name="Settings_Appearance_TextRenderingLabel" xml:space="preserve">
-    <value>Отрисовка шрифтов:</value>
-  </data>
-	<data name="Settings_Content_CarsHeader" xml:space="preserve">
-    <value>Машины:</value>
-  </data>
-	<data name="Solution_CreateEmptySkin" xml:space="preserve">
-		<value>Создать пустой скин</value>
-	</data>
-	<data name="Solution_Enable" xml:space="preserve">
-		<value>Включить</value>
-	</data>
-	<data name="Solution_FindTrack" xml:space="preserve">
-		<value>Найти трассу</value>
-	</data>
-	<data name="Solution_FixName" xml:space="preserve">
-		<value>Поправить имя</value>
-	</data>
-	<data name="Settings_Appearance_SmallFont" xml:space="preserve">
-		<value>Уменьшенный шрифт</value>
-	</data>
-	<data name="Settings_General_AppVersionLabel" xml:space="preserve">
-		<value>Версия:</value>
-	</data>
-	<data name="Settings_General_ContentVersionLabel" xml:space="preserve">
-		<value>Версия данных:</value>
-	</data>
-	<data name="Settings_Drive_CustomClouds" xml:space="preserve">
-		<value>Заменять облака погодными облаками</value>
-	</data>
-	<data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
-		<value>Автоматически конвертировать скриншоты из BMP в JPEG при выходе</value>
-	</data>
-	<data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
-		<value>Максимальный размер</value>
-	</data>
-	<data name="Common_Go" xml:space="preserve">
-    <value>Поехали!</value>
-  </data>
-	<data name="Common_Share" xml:space="preserve">
-    <value>Расшарить</value>
-  </data>
-	<data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
-    <value>Не удалось установить контент</value>
-  </data>
-	<data name="Common_CannotStartRace" xml:space="preserve">
-    <value>Не удалось начать заезд</value>
-  </data>
-	<data name="Settings_Content_SearchEngine" xml:space="preserve">
-    <value>Искать через:</value>
-  </data>
-	<data name="Toolbar_Folder" xml:space="preserve">
-    <value>Папка</value>
-  </data>
-	<data name="Toolbar_Reload" xml:space="preserve">
-    <value>Перезагрузить</value>
-  </data>
-	<data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Шоурум</value>
-  </data>
-	<data name="Toolbar_CarSkins" xml:space="preserve">
-    <value>Скины</value>
-  </data>
-	<data name="Toolbar_CarSetups" xml:space="preserve">
-    <value>Сетапы</value>
-  </data>
-	<data name="AcObject_WeatherLabel" xml:space="preserve">
-    <value>Погода:</value>
-  </data>
-	<data name="AcObject_TeamLabel" xml:space="preserve">
-    <value>Координаты:</value>
-  </data>
-	<data name="AcObject_NumberLabel" xml:space="preserve">
-    <value>Номер:</value>
-  </data>
-	<data name="AcObject_PriorityLabel" xml:space="preserve">
-    <value>Приоритет:</value>
-  </data>
-	<data name="AcObject_SizeLabel" xml:space="preserve">
-    <value>Размер:</value>
-  </data>
-	<data name="AcObject_TrackLabel" xml:space="preserve">
-    <value>Трасса:</value>
-  </data>
-	<data name="Car_DeleteSkin" xml:space="preserve">
-    <value>Удалить скин</value>
-  </data>
-	<data name="Common_DisablingFormat" xml:space="preserve">
-    <value>Отключение {0}…</value>
-  </data>
-	<data name="Common_Test" xml:space="preserve">
-    <value>Тест</value>
-  </data>
-	<data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
-    <value>Протестировать погоду на трассе (Ctrl+G)</value>
-  </data>
-	<data name="List_Setups" xml:space="preserve">
-    <value>{0} сетап</value>
-  </data>
-	<data name="List_Skins" xml:space="preserve">
-    <value>{0} скин</value>
-  </data>
-	<data name="List_Cars" xml:space="preserve">
-    <value>{0} машина</value>
-  </data>
-	<data name="List_Fonts" xml:space="preserve">
-		<value>{0} шрифт</value>
-	</data>
-	<data name="List_PpFilters" xml:space="preserve">
-		<value>{0} фильтр</value>
-	</data>
-	<data name="List_Replays" xml:space="preserve">
-		<value>{0} реплей</value>
-	</data>
-	<data name="List_ServerPresets" xml:space="preserve">
-		<value>{0} пресет</value>
-	</data>
-	<data name="List_Showrooms" xml:space="preserve">
-		<value>{0} шоурум</value>
-	</data>
-	<data name="List_Tracks" xml:space="preserve">
-		<value>{0} трасса</value>
-	</data>
-	<data name="List_Weather" xml:space="preserve">
-		<value>{0} погода</value>
-	</data>
-	<data name="List_Apps" xml:space="preserve">
-		<value>{0} приложение</value>
-	</data>
-	<data name="WeatherEdit_Color" xml:space="preserve">
-		<value>Цвет</value>
-	</data>
-	<data name="WeatherEdit_ColorCurvesHeader" xml:space="preserve">
-		<value>Цветовые кривые:</value>
-	</data>
-	<data name="Toolbar_CustomShowroom" xml:space="preserve">
-		<value>Кастомный Шоурум</value>
-	</data>
-	<data name="Toolbar_Drive" xml:space="preserve">
-		<value>Тест-драйв</value>
-	</data>
-	<data name="Toolbar_Enable" xml:space="preserve">
-		<value>Включить</value>
-	</data>
-	<data name="Toolbar_Save" xml:space="preserve">
-		<value>Сохранить</value>
-	</data>
-	<data name="Toolbar_UnpackData" xml:space="preserve">
-		<value>Распаковать данные</value>
-	</data>
-	<data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-		<value>Шоурумы:</value>
-	</data>
-	<data name="Car_SkinFormat" xml:space="preserve">
-		<value>Скин: {0}</value>
-	</data>
-	<data name="Solution_SetBrandBadge" xml:space="preserve">
-		<value>Поставить значок от {0}</value>
-	</data>
-	<data name="Solution_SetUpgradeIcon" xml:space="preserve">
-		<value>Поставить «{0}» иконку</value>
-	</data>
-	<data name="Settings_Online_ServerLabel" xml:space="preserve">
-		<value>Сервер:</value>
-	</data>
-	<data name="Arguments_SaveAsGeneric" xml:space="preserve">
-		<value>Сохранить без привязки к трассе</value>
-	</data>
-	<data name="Toolbar_ReplaceSound" xml:space="preserve">
-		<value>Заменить звук</value>
-	</data>
-	<data name="Toolbar_ReplaceSound_Tooltip" xml:space="preserve">
-		<value>Заменить звук на звук от другой машины</value>
-	</data>
-	<data name="Settings_Online_RememberPasswords" xml:space="preserve">
-		<value>Запоминать пароли</value>
-	</data>
-	<data name="Toolbar_Reload_Tooltip" xml:space="preserve">
-		<value>Перезагрузить (Ctrl+R)</value>
-	</data>
-	<data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
-		<value>Быстрый заезд:</value>
-	</data>
-	<data name="Toolbar_Play" xml:space="preserve">
-		<value>Воспроизвести</value>
-	</data>
-	<data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
-		<value>Имя для онлайна:</value>
-	</data>
-	<data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
-		<value>Число облаков</value>
-	</data>
-	<data name="Settings_Drive_NationalityLabel" xml:space="preserve">
-		<value>Национальность:</value>
-	</data>
-	<data name="Settings_Drive_NameLabel" xml:space="preserve">
-		<value>Имя:</value>
-	</data>
-	<data name="Settings_Sharing_HistoryTableName" xml:space="preserve">
-		<value>Имя</value>
-	</data>
-	<data name="WeatherEdit_Multipler" xml:space="preserve">
-		<value>Множитель</value>
-	</data>
-	<data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
-		<value>Лишь выбрать существующее изображение</value>
-	</data>
-	<data name="Solution_SetName_Details" xml:space="preserve">
-		<value>Просто указать новое имя</value>
-	</data>
-	<data name="Solution_SetBrandName_Details" xml:space="preserve">
-		<value>Просто указать новое имя бренда</value>
-	</data>
-	<data name="Settings_Sharing_HistoryHeader" xml:space="preserve">
-		<value>История:</value>
-	</data>
-	<data name="Settings_Content_FontsHeader" xml:space="preserve">
-		<value>Шрифты:</value>
-	</data>
-	<data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
-		<value>Папка:</value>
-	</data>
-	<data name="WeatherEdit_FogHeader" xml:space="preserve">
-		<value>Туман:</value>
-	</data>
-	<data name="Filter_ByAuthor" xml:space="preserve">
-		<value>Фильтровать по автору</value>
-	</data>
-	<data name="Filter_ByBrand" xml:space="preserve">
-		<value>Фильтровать по бренду</value>
-	</data>
-	<data name="Filter_ByCountry" xml:space="preserve">
-		<value>Фильтровать по стране</value>
-	</data>
-	<data name="Filter_ByClass" xml:space="preserve">
-		<value>Фильтровать по классу</value>
-	</data>
-	<data name="Filter_ByDecade" xml:space="preserve">
-		<value>Фильтровать по десятилетию</value>
-	</data>
-	<data name="Filter_ByPwRatio" xml:space="preserve">
-		<value>Фильтровать по схожему отношению мощности к массе</value>
-	</data>
-	<data name="Filter_ByAcceleration" xml:space="preserve">
-		<value>Фильтровать по схожему ускорению</value>
-	</data>
-	<data name="Filter_ByDriver" xml:space="preserve">
-		<value>Фильтровать по имени водителя</value>
-	</data>
-	<data name="Filter_ByNumber" xml:space="preserve">
-		<value>Фильтровать по номеру</value>
-	</data>
-	<data name="Filter_ByPriority" xml:space="preserve">
-		<value>Фильтровать по приоритету</value>
-	</data>
-	<data name="Filter_ByAge" xml:space="preserve">
-		<value>Фильтровать по времени</value>
-	</data>
-	<data name="Filter_ByCar" xml:space="preserve">
-		<value>Фильтровать по машине</value>
-	</data>
-	<data name="Filter_ByCity" xml:space="preserve">
-		<value>Фильтровать по городу</value>
-	</data>
-	<data name="Filter_ByTag" xml:space="preserve">
-		<value>Фильтровать по тегу</value>
-	</data>
-	<data name="Filter_ByYear" xml:space="preserve">
-		<value>Фильтровать по году</value>
-	</data>
-	<data name="Filter_ByPower" xml:space="preserve">
-		<value>Фильтровать по схожей мощности</value>
-	</data>
-	<data name="Filter_ByTorque" xml:space="preserve">
-		<value>Фильтровать по схожему крутящему моменту</value>
-	</data>
-	<data name="Filter_ByWeight" xml:space="preserve">
-		<value>Фильтровать по схожему весу</value>
-	</data>
-	<data name="Filter_ByTopSpeed" xml:space="preserve">
-		<value>Фильтровать по схожей скорости</value>
-	</data>
-	<data name="Filter_ByTeam" xml:space="preserve">
-		<value>Фильтровать по команде</value>
-	</data>
-	<data name="Filter_BySize" xml:space="preserve">
-		<value>Фильтровать по размеру</value>
-	</data>
-	<data name="Filter_ByWeather" xml:space="preserve">
-		<value>Фильтровать по погоде</value>
-	</data>
-	<data name="Filter_ByTrack" xml:space="preserve">
-		<value>Фильтровать по трассе</value>
-	</data>
-	<data name="AcObject_DriverLabel" xml:space="preserve">
-		<value>Водитель:</value>
-	</data>
-	<data name="AcObject_DriverNameLabel" xml:space="preserve">
-		<value>Имя водителя:</value>
-	</data>
-	<data name="Toolbar_EditMode" xml:space="preserve">
-		<value>Начать редактирование</value>
-	</data>
-	<data name="Toolbar_DisableEditMode" xml:space="preserve">
-		<value>Завершить редактирование</value>
-	</data>
-	<data name="Toolbar_Disable" xml:space="preserve">
-		<value>Отключить</value>
-	</data>
-	<data name="Settings_Sharing_BigFilesDestinationLabel" xml:space="preserve">
-		<value>Назначение:</value>
-	</data>
-	<data name="Toolbar_Delete" xml:space="preserve">
-		<value>Удалить</value>
-	</data>
-	<data name="Toolbar_DeleteJson" xml:space="preserve">
-		<value>Удалить JSON-файл</value>
-	</data>
-	<data name="Toolbar_DisableUnused" xml:space="preserve">
-		<value>Отключить неиспользуемые</value>
-	</data>
-	<data name="AcObject_DateLabel" xml:space="preserve">
-		<value>Дата:</value>
-	</data>
-	<data name="WeatherEdit_Distance" xml:space="preserve">
-		<value>Расстояние</value>
-	</data>
-	<data name="Toolbar_CreateJson" xml:space="preserve">
-		<value>Создать JSON-файл</value>
-	</data>
-	<data name="Toolbar_CreateNewFont" xml:space="preserve">
-		<value>Создать новый шрифт</value>
-	</data>
-	<data name="Toolbar_CreateNewShowroom" xml:space="preserve">
-		<value>Создать новый шоурум</value>
-	</data>
-	<data name="Settings_Online_CompactUi" xml:space="preserve">
-		<value>Компактный интерфейс</value>
-	</data>
-	<data name="Toolbar_Clone" xml:space="preserve">
-		<value>Копировать</value>
-	</data>
-	<data name="Toolbar_Clone_WeatherTooltip" xml:space="preserve">
-		<value>Копировать погоду (Ctrl+Shift+D)</value>
-	</data>
-	<data name="AcObject_CityLabel" xml:space="preserve">
-		<value>Город:</value>
-	</data>
-	<data name="Toolbar_ChangeId" xml:space="preserve">
-		<value>Сменить ID</value>
-	</data>
-	<data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
-		<value>Темп. воздуха</value>
-	</data>
-	<data name="AcObject_AppActivated" xml:space="preserve">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcError_AvailableSolutions" xml:space="preserve">
+    <value>{!Доступное решение}:</value>
+  </data>
+  <data name="AcObject_AppActivated" xml:space="preserve">
 		<value>_Включено</value>
 	</data>
-	<data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
-		<value>Время сохранения:</value>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+		<value>Город:</value>
+	</data>
+  <data name="AcObject_DateLabel" xml:space="preserve">
+		<value>Дата:</value>
+	</data>
+  <data name="AcObject_DriverLabel" xml:space="preserve">
+		<value>Водитель:</value>
+	</data>
+  <data name="AcObject_DriverNameLabel" xml:space="preserve">
+		<value>Имя водителя:</value>
+	</data>
+  <data name="AcObject_NumberLabel" xml:space="preserve">
+    <value>Номер:</value>
+  </data>
+  <data name="AcObject_PriorityLabel" xml:space="preserve">
+    <value>Приоритет:</value>
+  </data>
+  <data name="AcObject_SizeLabel" xml:space="preserve">
+    <value>Размер:</value>
+  </data>
+  <data name="AcObject_TeamLabel" xml:space="preserve">
+    <value>Координаты:</value>
+  </data>
+  <data name="AcObject_TrackLabel" xml:space="preserve">
+    <value>Трасса:</value>
+  </data>
+  <data name="AcObject_WeatherLabel" xml:space="preserve">
+    <value>Погода:</value>
+  </data>
+  <data name="AcSettings_RecommendedMaximumSize" xml:space="preserve">
+    <value>Максимальный размер (рекомендуемый): {0} МБ</value>
+  </data>
+  <data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
+		<value>Максимальный размер</value>
+	</data>
+  <data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
+    <value>Качество:</value>
+  </data>
+  <data name="App_ContentUpdated" xml:space="preserve">
+    <value>Данные обновлены</value>
+  </data>
+  <data name="App_ContentUpdated_Details" xml:space="preserve">
+    <value>Текущая версия: {0}</value>
+  </data>
+  <data name="App_NewVersion" xml:space="preserve">
+    <value>Новая версия</value>
+  </data>
+  <data name="App_NewVersion_Details" xml:space="preserve">
+    <value>Новая версия: {0}</value>
+  </data>
+  <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
+    <value>Не удалось установить контент</value>
+  </data>
+  <data name="Arguments_MetadataIsMissing" xml:space="preserve">
+    <value>Метаданные отсутствуют.</value>
+  </data>
+  <data name="Arguments_SaveAsGeneric" xml:space="preserve">
+		<value>Сохранить без привязки к трассе</value>
+	</data>
+  <data name="Arguments_Shared_Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
+    <value>Применить и сохранить</value>
+  </data>
+  <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
+    <value>Применить лишь FFB</value>
+  </data>
+  <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
+    <value>Только применить</value>
+  </data>
+  <data name="Arguments_Shared_JustGo" xml:space="preserve">
+    <value>Поехали</value>
+  </data>
+  <data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
+    <value>Сохранить и применить</value>
+  </data>
+  <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
+    <value>Только сохранить</value>
+  </data>
+  <data name="Arguments_SharedMessage_For" xml:space="preserve">
+    <value>Для</value>
+  </data>
+  <data name="Car_DeleteSkin" xml:space="preserve">
+    <value>Удалить скин</value>
+  </data>
+  <data name="Car_SkinFormat" xml:space="preserve">
+		<value>Скин: {0}</value>
+	</data>
+  <data name="CarPreviews_TakenTime" xml:space="preserve">
+    <value>Заняло {0}</value>
+  </data>
+  <data name="Common_CannotStartRace" xml:space="preserve">
+    <value>Не удалось начать заезд</value>
+  </data>
+  <data name="Common_Change" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="Common_DevMode" xml:space="preserve">
+    <value>Режим разработчика</value>
+  </data>
+  <data name="Common_DisablingFormat" xml:space="preserve">
+    <value>Отключение {0}…</value>
+  </data>
+  <data name="Common_Go" xml:space="preserve">
+    <value>Поехали!</value>
+  </data>
+  <data name="Common_MillisecondsFormat" xml:space="preserve">
+    <value>{0:F2} мс</value>
+  </data>
+  <data name="Common_NewBrandName" xml:space="preserve">
+    <value>Новое имя бренда</value>
+  </data>
+  <data name="Common_NewName" xml:space="preserve">
+    <value>Новое имя</value>
+  </data>
+  <data name="Common_Restart" xml:space="preserve">
+    <value>Перезапустить</value>
+  </data>
+  <data name="Common_RoadTemperatureFormat" xml:space="preserve">
+    <value>Дорога: {0:F1} °C</value>
+  </data>
+  <data name="Common_Share" xml:space="preserve">
+    <value>Расшарить</value>
+  </data>
+  <data name="Common_SignIn" xml:space="preserve">
+    <value>Залогиниться</value>
+  </data>
+  <data name="Common_SignOut" xml:space="preserve">
+    <value>Разлогиниться</value>
+  </data>
+  <data name="Common_Test" xml:space="preserve">
+    <value>Тест</value>
+  </data>
+  <data name="Common_Update" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="Filter_ByAcceleration" xml:space="preserve">
+		<value>Фильтровать по схожему ускорению</value>
+	</data>
+  <data name="Filter_ByAge" xml:space="preserve">
+		<value>Фильтровать по времени</value>
+	</data>
+  <data name="Filter_ByAuthor" xml:space="preserve">
+		<value>Фильтровать по автору</value>
+	</data>
+  <data name="Filter_ByBrand" xml:space="preserve">
+		<value>Фильтровать по бренду</value>
+	</data>
+  <data name="Filter_ByCar" xml:space="preserve">
+		<value>Фильтровать по машине</value>
+	</data>
+  <data name="Filter_ByCity" xml:space="preserve">
+		<value>Фильтровать по городу</value>
+	</data>
+  <data name="Filter_ByClass" xml:space="preserve">
+		<value>Фильтровать по классу</value>
+	</data>
+  <data name="Filter_ByCountry" xml:space="preserve">
+		<value>Фильтровать по стране</value>
+	</data>
+  <data name="Filter_ByDecade" xml:space="preserve">
+		<value>Фильтровать по десятилетию</value>
+	</data>
+  <data name="Filter_ByDriver" xml:space="preserve">
+		<value>Фильтровать по имени водителя</value>
+	</data>
+  <data name="Filter_ByNumber" xml:space="preserve">
+		<value>Фильтровать по номеру</value>
+	</data>
+  <data name="Filter_ByPower" xml:space="preserve">
+		<value>Фильтровать по схожей мощности</value>
+	</data>
+  <data name="Filter_ByPriority" xml:space="preserve">
+		<value>Фильтровать по приоритету</value>
+	</data>
+  <data name="Filter_ByPwRatio" xml:space="preserve">
+		<value>Фильтровать по схожему отношению мощности к массе</value>
+	</data>
+  <data name="Filter_BySize" xml:space="preserve">
+		<value>Фильтровать по размеру</value>
+	</data>
+  <data name="Filter_ByTag" xml:space="preserve">
+		<value>Фильтровать по тегу</value>
+	</data>
+  <data name="Filter_ByTeam" xml:space="preserve">
+		<value>Фильтровать по команде</value>
+	</data>
+  <data name="Filter_ByTopSpeed" xml:space="preserve">
+		<value>Фильтровать по схожей скорости</value>
+	</data>
+  <data name="Filter_ByTorque" xml:space="preserve">
+		<value>Фильтровать по схожему крутящему моменту</value>
+	</data>
+  <data name="Filter_ByTrack" xml:space="preserve">
+		<value>Фильтровать по трассе</value>
+	</data>
+  <data name="Filter_ByWeather" xml:space="preserve">
+		<value>Фильтровать по погоде</value>
+	</data>
+  <data name="Filter_ByWeight" xml:space="preserve">
+		<value>Фильтровать по схожему весу</value>
+	</data>
+  <data name="Filter_ByYear" xml:space="preserve">
+		<value>Фильтровать по году</value>
 	</data>
   <data name="KunosCareer_Next" xml:space="preserve">
     <value>Далее</value>
     <comment>Please, keep it short</comment>
   </data>
-  <data name="Common_RoadTemperatureFormat" xml:space="preserve">
-    <value>Дорога: {0:F1} °C</value>
+  <data name="List_Apps" xml:space="preserve">
+		<value>{0} приложение</value>
+	</data>
+  <data name="List_Cars" xml:space="preserve">
+    <value>{0} машина</value>
   </data>
-  <data name="Common_OpponentsFormat" xml:space="preserve">
-    <value>{0} оппонент</value>
+  <data name="List_Fonts" xml:space="preserve">
+		<value>{0} шрифт</value>
+	</data>
+  <data name="List_PpFilters" xml:space="preserve">
+		<value>{0} фильтр</value>
+	</data>
+  <data name="List_Replays" xml:space="preserve">
+		<value>{0} реплей</value>
+	</data>
+  <data name="List_ServerPresets" xml:space="preserve">
+		<value>{0} пресет</value>
+	</data>
+  <data name="List_Setups" xml:space="preserve">
+    <value>{0} сетап</value>
   </data>
-  <data name="Common_Reset" xml:space="preserve">
-    <value>Сбросить</value>
+  <data name="List_Showrooms" xml:space="preserve">
+		<value>{0} шоурум</value>
+	</data>
+  <data name="List_Skins" xml:space="preserve">
+    <value>{0} скин</value>
+  </data>
+  <data name="List_Tracks" xml:space="preserve">
+		<value>{0} трасса</value>
+	</data>
+  <data name="List_Weather" xml:space="preserve">
+		<value>{0} погода</value>
+	</data>
+  <data name="Main_About" xml:space="preserve">
+    <value>О программе</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Приложения</value>
+  </data>
+  <data name="Main_Career" xml:space="preserve">
+    <value>Карьера</value>
+  </data>
+  <data name="Main_Cars" xml:space="preserve">
+    <value>Машины</value>
+  </data>
+  <data name="Main_Challenges" xml:space="preserve">
+    <value>Испытания</value>
+  </data>
+  <data name="Main_Content" xml:space="preserve">
+    <value>Контент</value>
+  </data>
+  <data name="Main_Drive" xml:space="preserve">
+    <value>Вождение</value>
+  </data>
+  <data name="Main_Fonts" xml:space="preserve">
+    <value>Шрифты</value>
+  </data>
+  <data name="Main_ImportantTips" xml:space="preserve">
+    <value>Советы</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_Live" xml:space="preserve">
+    <value>Лайв</value>
+  </data>
+  <data name="Main_Media" xml:space="preserve">
+    <value>Медиа</value>
+  </data>
+  <data name="Main_Miscellaneous" xml:space="preserve">
+    <value>Разное</value>
+  </data>
+  <data name="Main_OfficialSupportNotification" xml:space="preserve">
+    <value>Теперь с официальной поддержкой!</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Details" xml:space="preserve">
+    <value>Новый стартер готов, теперь без всякого патчинга</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>Онлайн</value>
+  </data>
+  <data name="Main_PpFilters" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="Main_QuickDrive" xml:space="preserve">
+    <value>Быстрый заезд</value>
+  </data>
+  <data name="Main_ReleaseNotes" xml:space="preserve">
+    <value>Релизные заметки</value>
+  </data>
+  <data name="Main_Replays" xml:space="preserve">
+    <value>Реплеи</value>
+  </data>
+  <data name="Main_Screenshots" xml:space="preserve">
+    <value>Скриншоты</value>
+  </data>
+  <data name="Main_Server" xml:space="preserve">
+    <value>Сервер</value>
+  </data>
+  <data name="Main_ServerPresets" xml:space="preserve">
+    <value>Пресеты</value>
+  </data>
+  <data name="Main_ServerRunned" xml:space="preserve">
+    <value>Запущенное</value>
+  </data>
+  <data name="Main_Settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="Main_Showrooms" xml:space="preserve">
+    <value>Шоурумы</value>
+  </data>
+  <data name="Main_Single" xml:space="preserve">
+    <value>Одиночная</value>
+  </data>
+  <data name="Main_Title" xml:space="preserve">
+    <value>Content Manager (Lite-режим)</value>
+  </data>
+  <data name="Main_Tracks" xml:space="preserve">
+    <value>Трассы</value>
+  </data>
+  <data name="Main_UnhandledException" xml:space="preserve">
+    <value>Непойманная ошибка:
+
+{0}</value>
+  </data>
+  <data name="Main_Weather" xml:space="preserve">
+    <value>Погода</value>
+  </data>
+  <data name="Settings_AcSettingsHeader" xml:space="preserve">
+    <value>Настройки AC:</value>
+  </data>
+  <data name="Settings_Appearance" xml:space="preserve">
+    <value>оформление</value>
+  </data>
+  <data name="Settings_Appearance_DynamicBackground" xml:space="preserve">
+    <value>Динамический фон</value>
+  </data>
+  <data name="Settings_Appearance_ImageScaling_Tooltip" xml:space="preserve">
+    <value>Перезапустите CM, чтобы увидеть изменения</value>
+  </data>
+  <data name="Settings_Appearance_ImageScalingLabel" xml:space="preserve">
+    <value>Отрисовка изображений:</value>
+  </data>
+  <data name="Settings_Appearance_SmallFont" xml:space="preserve">
+		<value>Уменьшенный шрифт</value>
+	</data>
+  <data name="Settings_Appearance_TextRenderingLabel" xml:space="preserve">
+    <value>Отрисовка шрифтов:</value>
+  </data>
+  <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
+    <value>Оформление:</value>
+  </data>
+  <data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
+    <value>Анимация переходов:</value>
+  </data>
+  <data name="Settings_ColorLabel" xml:space="preserve">
+    <value>Цвет:</value>
+  </data>
+  <data name="Settings_Content_CarsHeader" xml:space="preserve">
+    <value>Машины:</value>
+  </data>
+  <data name="Settings_Content_FontsHeader" xml:space="preserve">
+		<value>Шрифты:</value>
+	</data>
+  <data name="Settings_Content_SearchEngine" xml:space="preserve">
+    <value>Искать через:</value>
+  </data>
+  <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
+		<value>Шоурумы:</value>
+	</data>
+  <data name="Settings_Dev" xml:space="preserve">
+    <value>Системное</value>
+  </data>
+  <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
+		<value>Автоматически конвертировать скриншоты из BMP в JPEG при выходе</value>
+	</data>
+  <data name="Settings_Drive_CustomClouds" xml:space="preserve">
+		<value>Заменять облака погодными облаками</value>
+	</data>
+  <data name="Settings_Drive_NameLabel" xml:space="preserve">
+		<value>Имя:</value>
+	</data>
+  <data name="Settings_Drive_NationalityLabel" xml:space="preserve">
+		<value>Национальность:</value>
+	</data>
+  <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
+		<value>Имя для онлайна:</value>
+	</data>
+  <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
+		<value>Быстрый заезд:</value>
+	</data>
+  <data name="Settings_General" xml:space="preserve">
+    <value>общее</value>
+  </data>
+  <data name="Settings_General_AppVersionLabel" xml:space="preserve">
+		<value>Версия:</value>
+	</data>
+  <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
+		<value>Версия данных:</value>
+	</data>
+  <data name="Settings_General_ValuesNumber" xml:space="preserve">
+    <value>{0} запись</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
+		<value>Время сохранения:</value>
+	</data>
+  <data name="Settings_Online_CompactUi" xml:space="preserve">
+		<value>Компактный интерфейс</value>
+	</data>
+  <data name="Settings_Online_RememberPasswords" xml:space="preserve">
+		<value>Запоминать пароли</value>
+	</data>
+  <data name="Settings_Online_ServerLabel" xml:space="preserve">
+		<value>Сервер:</value>
+	</data>
+  <data name="Settings_Plugins" xml:space="preserve">
+    <value>Плагины</value>
+  </data>
+  <data name="Settings_QuickSwitches" xml:space="preserve">
+    <value>Переключатели</value>
+  </data>
+  <data name="Settings_Sharing" xml:space="preserve">
+    <value>Шаринг</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesDestinationLabel" xml:space="preserve">
+		<value>Назначение:</value>
+	</data>
+  <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
+		<value>Папка:</value>
+	</data>
+  <data name="Settings_Sharing_HistoryHeader" xml:space="preserve">
+		<value>История:</value>
+	</data>
+  <data name="Settings_Sharing_HistoryTableName" xml:space="preserve">
+		<value>Имя</value>
+	</data>
+  <data name="Solution_CreateEmptySkin" xml:space="preserve">
+		<value>Создать пустой скин</value>
+	</data>
+  <data name="Solution_Enable" xml:space="preserve">
+		<value>Включить</value>
+	</data>
+  <data name="Solution_FindTrack" xml:space="preserve">
+		<value>Найти трассу</value>
+	</data>
+  <data name="Solution_FixName" xml:space="preserve">
+		<value>Поправить имя</value>
+	</data>
+  <data name="Solution_SetBrandBadge" xml:space="preserve">
+		<value>Поставить значок от {0}</value>
+	</data>
+  <data name="Solution_SetBrandName_Details" xml:space="preserve">
+		<value>Просто указать новое имя бренда</value>
+	</data>
+  <data name="Solution_SetName_Details" xml:space="preserve">
+		<value>Просто указать новое имя</value>
+	</data>
+  <data name="Solution_SetName_Prompt" xml:space="preserve">
+    <value>Введите новое имя:</value>
+  </data>
+  <data name="Solution_SetUpgradeIcon" xml:space="preserve">
+		<value>Поставить «{0}» иконку</value>
+	</data>
+  <data name="Toolbar_CarSetups" xml:space="preserve">
+    <value>Сетапы</value>
+  </data>
+  <data name="Toolbar_CarSkins" xml:space="preserve">
+    <value>Скины</value>
+  </data>
+  <data name="Toolbar_ChangeId" xml:space="preserve">
+		<value>Сменить ID</value>
+	</data>
+  <data name="Toolbar_Clone" xml:space="preserve">
+		<value>Копировать</value>
+	</data>
+  <data name="Toolbar_Clone_WeatherTooltip" xml:space="preserve">
+		<value>Копировать погоду (Ctrl+Shift+D)</value>
+	</data>
+  <data name="Toolbar_CreateJson" xml:space="preserve">
+		<value>Создать JSON-файл</value>
+	</data>
+  <data name="Toolbar_CreateNewFont" xml:space="preserve">
+		<value>Создать новый шрифт</value>
+	</data>
+  <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
+		<value>Создать новый шоурум</value>
+	</data>
+  <data name="Toolbar_CustomShowroom" xml:space="preserve">
+		<value>Кастомный Шоурум</value>
+	</data>
+  <data name="Toolbar_Delete" xml:space="preserve">
+		<value>Удалить</value>
+	</data>
+  <data name="Toolbar_DeleteJson" xml:space="preserve">
+		<value>Удалить JSON-файл</value>
+	</data>
+  <data name="Toolbar_Disable" xml:space="preserve">
+		<value>Отключить</value>
+	</data>
+  <data name="Toolbar_DisableEditMode" xml:space="preserve">
+		<value>Завершить редактирование</value>
+	</data>
+  <data name="Toolbar_DisableUnused" xml:space="preserve">
+		<value>Отключить неиспользуемые</value>
+	</data>
+  <data name="Toolbar_Drive" xml:space="preserve">
+		<value>Тест-драйв</value>
+	</data>
+  <data name="Toolbar_EditMode" xml:space="preserve">
+		<value>Начать редактирование</value>
+	</data>
+  <data name="Toolbar_Enable" xml:space="preserve">
+		<value>Включить</value>
+	</data>
+  <data name="Toolbar_Folder" xml:space="preserve">
+    <value>Папка</value>
+  </data>
+  <data name="Toolbar_Play" xml:space="preserve">
+		<value>Воспроизвести</value>
+	</data>
+  <data name="Toolbar_Reload" xml:space="preserve">
+    <value>Перезагрузить</value>
+  </data>
+  <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
+		<value>Перезагрузить (Ctrl+R)</value>
+	</data>
+  <data name="Toolbar_ReplaceSound" xml:space="preserve">
+		<value>Заменить звук</value>
+	</data>
+  <data name="Toolbar_ReplaceSound_Tooltip" xml:space="preserve">
+		<value>Заменить звук на звук от другой машины</value>
+	</data>
+  <data name="Toolbar_Save" xml:space="preserve">
+		<value>Сохранить</value>
+	</data>
+  <data name="Toolbar_Showroom" xml:space="preserve">
+    <value>Шоурум</value>
+  </data>
+  <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
+    <value>Протестировать погоду на трассе (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_UnpackData" xml:space="preserve">
+		<value>Распаковать данные</value>
+	</data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
+		<value>Лишь выбрать существующее изображение</value>
+	</data>
+  <data name="WeatherEdit_Color" xml:space="preserve">
+		<value>Цвет</value>
+	</data>
+  <data name="WeatherEdit_ColorCurvesHeader" xml:space="preserve">
+		<value>Цветовые кривые:</value>
+	</data>
+  <data name="WeatherEdit_Distance" xml:space="preserve">
+		<value>Расстояние</value>
+	</data>
+  <data name="WeatherEdit_FogHeader" xml:space="preserve">
+		<value>Туман:</value>
+	</data>
+  <data name="WeatherEdit_Multipler" xml:space="preserve">
+		<value>Множитель</value>
+	</data>
+  <data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
+		<value>Число облаков</value>
+	</data>
+  <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
+		<value>Темп. воздуха</value>
+	</data>
+  <data name="RaceResult_TryAgain" xml:space="preserve">
+    <value>Ещё раз</value>
   </data>
 </root>

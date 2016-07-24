@@ -48,7 +48,7 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new[] {
                 OkButton, 
                 CreateExtraDialogButton("Select File", SelectFile), 
-                CreateExtraDialogButton("View User Folder", () => FilesStorage.Instance.OpenContentFolderInExplorer(ContentCategory.UpgradeIcons)),
+                CreateExtraDialogButton("View User Folder", () => FilesStorage.Instance.OpenContentDirectoryInExplorer(ContentCategory.UpgradeIcons)),
                 CancelButton
             };
 

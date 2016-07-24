@@ -145,9 +145,6 @@
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>Заданное вручную</value>
   </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (без сжатия)</value>
   </data>
@@ -428,7 +425,7 @@
   <data name="AcObject_CannotDelete" xml:space="preserve">
     <value>Не удалось удалить</value>
   </data>
-  <data name="AcObject_DisablingNotSupported" xml:space="preserve">
+  <data name="Common_CannotDo" xml:space="preserve">
     <value>Не удалось</value>
   </data>
   <data name="Controls_Clutch" xml:space="preserve">
@@ -518,7 +515,7 @@
   <data name="Input_Button" xml:space="preserve">
     <value>Кнопка {0}</value>
   </data>
-  <data name="Common_CannotDo" xml:space="preserve">
+  <data name="Common_CannotDo_Title" xml:space="preserve">
     <value>Не удалось</value>
   </data>
   <data name="Presets_FileFilter" xml:space="preserve">
@@ -531,7 +528,7 @@
     <value>Дрифт</value>
   </data>
   <data name="Session_Hotlap" xml:space="preserve">
-    <value>Хотлаппинг</value>
+    <value>Хотлап</value>
   </data>
   <data name="Session_Practice" xml:space="preserve">
     <value>Практика</value>

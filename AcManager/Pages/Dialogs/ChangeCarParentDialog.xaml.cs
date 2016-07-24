@@ -1,15 +1,19 @@
 ﻿using System.Collections;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
+using AcManager.Controls;
+using AcManager.Tools;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class ChangeCarParentDialog : IComparer {
+    public partial class ChangeCarParentDialog : IComparer, INotifyPropertyChanged {
         public CarObject Car { get; }
 
         public ListCollectionView CarsListView { get; }
@@ -31,7 +35,7 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 OkButton, 
-                CreateExtraDialogButton("Make Independent", () => {
+                CreateExtraDialogButton(ControlsStrings.CarParent_MakeIndependent, () => {
                     Car.ParentId = null;
                     Close();
                 }),
@@ -39,7 +43,7 @@ namespace AcManager.Pages.Dialogs {
             };
 
             Car = car;
-            Filter = car.Brand == null ? "" : "brand:" + car.Brand;
+            Filter = car.Brand == null ? "" : @"brand:" + car.Brand;
 
             CarsListView = new ListCollectionView(CarsManager.Instance.LoadedOnly.Where(x => x.ParentId == null && x.Id != Car.Id).ToList()) {
                 CustomSort = this
@@ -61,10 +65,8 @@ namespace AcManager.Pages.Dialogs {
             var current = CarsListView.CurrentItem as CarObject;
             if (current != null) {
                 if (Car.Children.Any()) {
-                    if (ModernDialog.ShowMessage(@"Children will be moved to the new parent!", @"Warning", MessageBoxButton.OKCancel) !=
-                        MessageBoxResult.OK) {
-                        return;
-                    }
+                    if (ShowMessage(ControlsStrings.CarParent_ChildrenWillBeMoved, ToolsStrings.Common_Warning, MessageBoxButton.OKCancel) !=
+                            MessageBoxResult.OK) return;
                 }
 
                 if (!File.Exists(Car.UpgradeIcon)) {
@@ -101,6 +103,13 @@ namespace AcManager.Pages.Dialogs {
 
         public int Compare(object x, object y) {
             return ((CarObject)x).CompareTo((CarObject)y);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

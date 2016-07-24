@@ -24,17 +24,17 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, Model.ApplyCommand),
-                CreateExtraDialogButton(@"Get a New Key", Model.GetNewKeyCommand),
+                CreateExtraDialogButton(AppStrings.AppKey_GetNewKey, Model.GetNewKeyCommand),
                 CancelButton
             };
-            OkButton.ToolTip = "App will be restarted";
+            OkButton.ToolTip = AppStrings.AppKey_AppWillBeRestarted;
 
             TextBox.Focus();
             TextBox.SelectAll();
         }
 
         public static void ShowRevokedMessage() {
-            if (ShowMessage("Sorry, but your key was compromised and got revoked. Would you like to contact us to get another one?", "Key Revoked",
+            if (ShowMessage(AppStrings.AppKey_KeyRevoked_Message, AppStrings.AppKey_KeyRevoked_Title,
                     MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes) {
                 RequestNewKeyUsingEmail();
                 WindowsHelper.RestartCurrentApplication();
@@ -45,7 +45,7 @@ namespace AcManager.Pages.Dialogs {
             var key = ValuesStorage.GetEncryptedString(AppKeyRevokedKey);
             if (key == null) return;
 
-            Process.Start($"mailto:smpcsht@yahoo.com?subject={Uri.EscapeDataString("My Key Is Got Revoked")}&body={Uri.EscapeDataString("Key: " + key)}");
+            Process.Start($"mailto:smpcsht@yahoo.com?subject={Uri.EscapeDataString(@"My Key Is Got Revoked")}&body={Uri.EscapeDataString(@"Key: " + key)}");
         }
 
         private AppKeyDialogViewModel Model => (AppKeyDialogViewModel)DataContext;
@@ -204,7 +204,7 @@ namespace AcManager.Pages.Dialogs {
                 ValuesStorage.Remove(AppKeyRevokedKey);
                 AppKeyHolder.Instance.SetKey(Value);
 
-                ShowMessage("Now app will be restarted, but it shouldn’t take long. Thanks again for your support!\n\n[i]Please, don’t share your key, otherwise it might get compromised.[/i]", "Thank You!", MessageBoxButton.OK);
+                ShowMessage(AppStrings.AppKey_PreRestart_Message, AppStrings.AppKey_PreRestart_Title, MessageBoxButton.OK);
                 WindowsHelper.RestartCurrentApplication();
             }, o => IsValueAcceptable && !CheckingInProgress && !InternetConnectionRequired && !string.IsNullOrWhiteSpace(Value)));
 
@@ -215,8 +215,8 @@ namespace AcManager.Pages.Dialogs {
             }, o => !IsValueAcceptable || string.IsNullOrWhiteSpace(Value)));
 
             public IEnumerable GetErrors(string propertyName) {
-                return propertyName == nameof(Value) ? (string.IsNullOrWhiteSpace(Value) ? new[] { "Required value" } :
-                    IsValueAcceptable ? null : new[] { InternetConnectionRequired ? "Can’t check key" : "Key is invalid" }) : null;
+                return propertyName == nameof(Value) ? (string.IsNullOrWhiteSpace(Value) ? new[] { AppStrings.Common_RequiredValue } :
+                    IsValueAcceptable ? null : new[] { InternetConnectionRequired ? AppStrings.AppKey_CannotCheck : AppStrings.AppKey_InvalidKey }) : null;
             }
 
             public bool HasErrors => string.IsNullOrWhiteSpace(Value) || !IsValueAcceptable;

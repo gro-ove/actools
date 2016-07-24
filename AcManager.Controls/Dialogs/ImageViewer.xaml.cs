@@ -176,7 +176,7 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            private string _saveableTitle = Controls.ControlsStrings.ImageViewer_SaveTitle;
+            private string _saveableTitle = Controls.ControlsStrings.ImageViewer_Save_Title;
 
             public string SaveableTitle {
                 get { return _saveableTitle; }

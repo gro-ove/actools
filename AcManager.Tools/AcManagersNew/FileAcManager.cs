@@ -67,7 +67,7 @@ namespace AcManager.Tools.AcManagersNew {
 
             var currentLocation = ((AcCommonObject)wrapper.Value).Location;
             var path = newEnabled ? Directories.EnabledDirectory : Directories.DisabledDirectory;
-            if (path == null) throw new InformativeException(ToolsStrings.AcObject_DisablingNotSupported, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
+            if (path == null) throw new InformativeException(ToolsStrings.Common_CannotDo, ToolsStrings.AcObject_DisablingNotSupported_Commentary);
 
             var newLocation = Path.Combine(path, newId);
             if (FileUtils.Exists(newLocation)) throw new ToggleException(ToolsStrings.AcObject_PlaceIsTaken);

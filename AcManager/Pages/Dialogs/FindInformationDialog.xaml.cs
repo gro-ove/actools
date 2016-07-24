@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Controls.UserControls;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
@@ -10,6 +11,7 @@ using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using OxyPlot.Reporting;
 
 namespace AcManager.Pages.Dialogs {
     public partial class FindInformationDialog {
@@ -20,7 +22,7 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
 
             Buttons = new[] {
-                CreateExtraDialogButton("Save & Close", new CombinedCommand(Model.SaveCommand, CloseCommand)),
+                CreateExtraDialogButton(ControlsStrings.FindInformation_SaveAndClose, new CombinedCommand(Model.SaveCommand, CloseCommand)),
                 CloseButton
             };
 
@@ -78,22 +80,22 @@ namespace AcManager.Pages.Dialogs {
 
             private void UpdateSaveLabel() {
                 if (string.IsNullOrEmpty(SelectedText)) {
-                    SaveLabel = "Save";
+                    SaveLabel = AppStrings.Toolbar_Save;
                     return;
                 }
 
                 if (Regex.IsMatch(SelectedText, @"^(1[89]\d\d|20[012]\d)$")) {
-                    SaveLabel = "Save as Year";
+                    SaveLabel = ControlsStrings.FindInformation_SaveAsYear;
                     return;
                 }
 
                 var key = SelectedText.ToLower();
                 if (DataProvider.Instance.TagCountries.GetValueOrDefault(key) != null || DataProvider.Instance.Countries.GetValueOrDefault(key) != null) {
-                    SaveLabel = "Save as Country";
+                    SaveLabel = ControlsStrings.FindInformation_SaveAsCountry;
                     return;
                 }
 
-                SaveLabel = "Save as Description";
+                SaveLabel = ControlsStrings.FindInformation_SaveAsDescription;
             }
 
             private void Save() {
@@ -112,8 +114,8 @@ namespace AcManager.Pages.Dialogs {
 
                 SelectedObject.Description = Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ? (
                         Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ?
-                                SelectedText + "\n\n" + SelectedObject.Description :
-                                SelectedObject.Description + "\n\n" + SelectedText
+                                SelectedText + Environment.NewLine.Repeat(2) + SelectedObject.Description :
+                                SelectedObject.Description + Environment.NewLine.Repeat(2) + SelectedText
                         ).Trim() : SelectedText;
             }
 

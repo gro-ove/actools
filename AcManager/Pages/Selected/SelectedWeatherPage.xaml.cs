@@ -3,20 +3,24 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.About;
+using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Drive;
+using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -52,7 +56,7 @@ namespace AcManager.Pages.Selected {
             private const string KeyTemperature = "swp.temp";
 
             private double _temperature = ValuesStorage.GetDouble(KeyTemperature, 20d);
-            
+
             public double Temperature {
                 get { return _temperature; }
                 set {
@@ -143,23 +147,25 @@ namespace AcManager.Pages.Selected {
 
                 try {
                     if (!File.Exists(SelectedObject.IniFilename)) {
-                        NonfatalError.Notify("Can’t share weather", $"File “{Path.GetFileName(SelectedObject.IniFilename)}” is missing.");
+                        NonfatalError.Notify(AppStrings.Weather_CannotShare,
+                                String.Format(AppStrings.Common_FileIsMissingDot, Path.GetFileName(SelectedObject.IniFilename)));
                         return;
                     }
 
                     if (!File.Exists(SelectedObject.ColorCurvesIniFilename)) {
-                        NonfatalError.Notify("Can’t share weather", $"File “{Path.GetFileName(SelectedObject.ColorCurvesIniFilename)}” is missing.");
+                        NonfatalError.Notify(AppStrings.Weather_CannotShare,
+                                String.Format(AppStrings.Common_FileIsMissingDot, Path.GetFileName(SelectedObject.ColorCurvesIniFilename)));
                         return;
                     }
-                    
+
                     await Task.Run(() => {
                         using (var memory = new MemoryStream()) {
                             using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
-                                writer.Write("weather.ini", SelectedObject.IniFilename);
-                                writer.Write("colorCurves.ini", SelectedObject.ColorCurvesIniFilename);
+                                writer.Write(@"weather.ini", SelectedObject.IniFilename);
+                                writer.Write(@"colorCurves.ini", SelectedObject.ColorCurvesIniFilename);
 
                                 if (File.Exists(SelectedObject.PreviewImage)) {
-                                    writer.Write("preview.jpg", SelectedObject.PreviewImage);
+                                    writer.Write(@"preview.jpg", SelectedObject.PreviewImage);
                                 }
 
                                 var clouds = Path.Combine(SelectedObject.Location, "clouds");
@@ -175,11 +181,12 @@ namespace AcManager.Pages.Selected {
                     });
 
                     if (data.Length > SharingSizeLimit) {
-                        NonfatalError.Notify("Can’t share weather", $"Files are too big. Limit is {SharingSizeLimit.ToReadableSize()}.");
+                        NonfatalError.Notify(AppStrings.Weather_CannotShare,
+                                String.Format(AppStrings.Weather_CannotShare_Commentary, SharingSizeLimit.ToReadableSize()));
                         return;
                     }
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t share weather", "Make sure files are readable.", e);
+                    NonfatalError.Notify(AppStrings.Weather_CannotShare, e);
                     return;
                 }
 
@@ -199,16 +206,7 @@ namespace AcManager.Pages.Selected {
             private ICommand _viewTemperatureReadmeCommand;
 
             public ICommand ViewTemperatureReadmeCommand => _viewTemperatureReadmeCommand ?? (_viewTemperatureReadmeCommand = new RelayCommand(o => {
-                ModernDialog.ShowMessage(
-                        @"We are using an equation to create a graph that determines the asphalt temperature relatively to ambient temperature, weather and day time.
-
-Check the graph in [url=""http://fooplot.com/plot/3x7y44pfli""]this link[/url].
-
-The equation used is:
-[mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
-
-Change the 1 values in (((-10*1)*x)+10*1) to see the results in your graphs.
-Accepted values are from -1 to 1.");
+                ModernDialog.ShowMessage(AppStrings.Weather_KunosReadme);
             }));
 
             private const string KeyUpdatePreviewMessageShown = "swp.upms";
@@ -222,7 +220,7 @@ Accepted values are from -1 to 1.");
                 }
 
                 if (!ValuesStorage.GetBool(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
-                        ImportantTips.Entries.GetByIdOrDefault("trackPreviews")?.Content, "How-To", MessageBoxButton.OK) !=
+                        ImportantTips.Entries.GetByIdOrDefault("trackPreviews")?.Content, AppStrings.Common_HowTo_Title, MessageBoxButton.OK) !=
                         MessageBoxResult.OK) {
                     return;
                 }
@@ -235,13 +233,10 @@ Accepted values are from -1 to 1.");
                     await ScreenshotsConverter.CurrentConversion;
                 }
 
-                var newShots = Directory.GetFiles(directory).Where(x => !shots.Contains(x) && (
-                        x.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                                x.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                                x.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))).ToList();
-
+                var newShots = Directory.GetFiles(directory)
+                                        .Where(x => !shots.Contains(x) && Regex.IsMatch(x, @"\.(jpe?g|png|bmp)$", RegexOptions.IgnoreCase)).ToList();
                 if (!newShots.Any()) {
-                    NonfatalError.Notify("Can’t update preview", "You were supposed to make at least one screenshot.");
+                    NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, ControlsStrings.AcObject_CannotUpdatePreview_TrackCommentary);
                     return;
                 }
 
@@ -249,16 +244,16 @@ Accepted values are from -1 to 1.");
 
                 var shot = new ImageViewer(newShots) {
                     Model = {
-                        MaxImageHeight = 575d,
-                        MaxImageWidth = 1022d
+                        MaxImageHeight = CommonAcConsts.PreviewHeight,
+                        MaxImageWidth = CommonAcConsts.PreviewWidth
                     }
                 }.ShowDialogInSelectFileMode();
                 if (shot == null) return;
 
                 try {
-                    ImageUtils.ApplyPreview(shot, SelectedObject.PreviewImage, 1022d, 575d);
+                    ImageUtils.ApplyPreview(shot, SelectedObject.PreviewImage, CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t update preview", e);
+                    NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                 }
             }, o => SelectedObject.Enabled));
 
@@ -267,16 +262,16 @@ Accepted values are from -1 to 1.");
             public RelayCommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new RelayCommand(o => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
-                    Title = "Select New Preview Image",
+                    Title = AppStrings.Common_SelectImageForPreview,
                     InitialDirectory = FileUtils.GetDocumentsScreensDirectory(),
                     RestoreDirectory = true
                 };
 
                 if (dialog.ShowDialog() == true) {
                     try {
-                        ImageUtils.ApplyPreview(dialog.FileName, SelectedObject.PreviewImage, 1022d, 575d);
+                        ImageUtils.ApplyPreview(dialog.FileName, SelectedObject.PreviewImage, CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight);
                     } catch (Exception e) {
-                        NonfatalError.Notify("Can’t update preview", e);
+                        NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                     }
                 }
             }));
@@ -287,7 +282,7 @@ Accepted values are from -1 to 1.");
         void IParametrizedUriContent.OnUri(Uri uri) {
             _id = uri.GetQueryParam("Id");
             if (_id == null) {
-                throw new Exception("ID is missing");
+                throw new Exception(ToolsStrings.Common_IdIsMissing);
             }
         }
 
@@ -322,24 +317,24 @@ Accepted values are from -1 to 1.");
 
         private void ToEditMode() {
             _model.SelectedObject.EnsureLoadedExtended();
-            _editMode = (FrameworkElement)FindResource("EditMode");
+            _editMode = (FrameworkElement)FindResource(@"EditMode");
             Wrapper.Children.Add(_editMode);
         }
 
         private ViewModel _model;
 
         void ILoadableContent.Initialize() {
-            if (_object == null) throw new ArgumentException("Can’t find object with provided ID");
+            if (_object == null) throw new ArgumentException(AppStrings.Common_CannotFindObjectById);
 
             InitializeAcObjectPage(_model = new ViewModel(_object));
             InputBindings.AddRange(new[] {
                 new InputBinding(ToggleEditModeCommand, new KeyGesture(Key.E, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(_model.TestCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(_model.TestCommand, new KeyGesture(Key.D1, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = "9:00" },
-                new InputBinding(_model.TestCommand, new KeyGesture(Key.D2, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = "12:00" },
-                new InputBinding(_model.TestCommand, new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = "15:00" },
-                new InputBinding(_model.TestCommand, new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = "18:00" }
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.D1, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = @"9:00" },
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.D2, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = @"12:00" },
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = @"15:00" },
+                new InputBinding(_model.TestCommand, new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Alt)) { CommandParameter = @"18:00" }
             });
             InitializeComponent();
 

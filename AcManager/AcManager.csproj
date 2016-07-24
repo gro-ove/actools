@@ -902,10 +902,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Dialogs\CarSpecsEditor_CurveFromFile.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\Dialogs\CarSpecsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -954,9 +950,6 @@
     </Compile>
     <Compile Include="Pages\Dialogs\ChangeCarParentDialog.xaml.cs">
       <DependentUpon>ChangeCarParentDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Dialogs\CarSpecsEditor_CurveFromFile.xaml.cs">
-      <DependentUpon>CarSpecsEditor_CurveFromFile.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\CarSpecsEditor.xaml.cs">
       <DependentUpon>CarSpecsEditor.xaml</DependentUpon>

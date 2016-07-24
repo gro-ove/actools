@@ -38,11 +38,22 @@ using System.Windows.Media;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.7.394.9241")]
-[assembly: AssemblyFileVersion("0.7.394.9241")]
+[assembly: AssemblyVersion("0.7.394.9246")]
+[assembly: AssemblyFileVersion("0.7.394.9246")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.About")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.About")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.AcSettings")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.Dialogs")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.Drive")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.Lists")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.Miscellaneous")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.Selected")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.ServerPreset")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.Settings")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.Pages.Windows")]
 [assembly: XmlnsPrefix("http://acstuff.ru/app", "g")]
 
 [assembly: NeutralResourcesLanguage("en-US")]

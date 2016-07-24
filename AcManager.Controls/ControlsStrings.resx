@@ -217,7 +217,8 @@
     <value>Geo Tags:</value>
   </data>
   <data name="AcObject_ErrorsHeader" xml:space="preserve">
-    <value>Errors:</value>
+    <value>{Error}:</value>
+    <comment>Will be pluralized automatically</comment>
   </data>
   <data name="Presets_Save" xml:space="preserve">
     <value>Save Preset</value>
@@ -401,9 +402,6 @@ Entry type: [b]{2}[/b]</value>
   <data name="Share_CannotShare" xml:space="preserve">
     <value>Can’t share {0}</value>
   </data>
-  <data name="Share_CannotShare_Commentary" xml:space="preserve">
-    <value>Make sure Internet connection is available.</value>
-  </data>
   <data name="Share_Shared" xml:space="preserve">
     <value>{0} Shared</value>
     <comment>Title</comment>
@@ -443,7 +441,7 @@ Entry type: [b]{2}[/b]</value>
   <data name="ImageViewer_DefaultName" xml:space="preserve">
     <value>Image</value>
   </data>
-  <data name="ImageViewer_SaveTitle" xml:space="preserve">
+  <data name="ImageViewer_Save_Title" xml:space="preserve">
     <value>Save Image As</value>
   </data>
   <data name="ImageViewer_CannotSave" xml:space="preserve">
@@ -456,7 +454,7 @@ Entry type: [b]{2}[/b]</value>
     <value>Make sure VLC addon is installed properly.</value>
   </data>
   <data name="Common_PleaseWait" xml:space="preserve">
-    <value>Please, wait…</value>
+    <value>Please wait…</value>
   </data>
   <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
     <value>Texture is missing!</value>
@@ -515,7 +513,7 @@ Entry type: [b]{2}[/b]</value>
   <data name="CustomShowroom_CannotStart" xml:space="preserve">
     <value>Can’t start Custom Showroom</value>
   </data>
-  <data name="CustomShowroom_ToolsTitle" xml:space="preserve">
+  <data name="CustomShowroom_Tools_Title" xml:space="preserve">
     <value>Tools</value>
   </data>
   <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
@@ -723,6 +721,15 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Online_PasswordRequired" xml:space="preserve">
     <value>Password required</value>
   </data>
+  <data name="Common_Waiting" xml:space="preserve">
+    <value>Waiting…</value>
+  </data>
+  <data name="Common_Finished" xml:space="preserve">
+    <value>Finished</value>
+  </data>
+  <data name="Common_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
   <data name="Common_Error" xml:space="preserve">
     <value>Error</value>
   </data>
@@ -814,6 +821,9 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_TryAgain" xml:space="preserve">
     <value>Try Again</value>
   </data>
+  <data name="Common_OfflineMode" xml:space="preserve">
+    <value>Offline Mode</value>
+  </data>
   <data name="Showroom_DialogHeader" xml:space="preserve">
     <value>Showroom</value>
   </data>
@@ -828,11 +838,45 @@ Depth mode: [b]{4}[/b]</value>
     <value> opponent</value>
     <comment>Will be pluralized automatically</comment>
   </data>
-  <data name="Drive_StartingPositionFormat" xml:space="preserve">
-    <value>Starting position: {0}</value>
-  </data>
   <data name="Common_MinutePostfix" xml:space="preserve">
     <value> minute</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="Common_Downloading" xml:space="preserve">
+    <value>Downloading…</value>
+  </data>
+  <data name="Common_Installing" xml:space="preserve">
+    <value>Installing…</value>
+  </data>
+  <data name="CarParent_MakeIndependent" xml:space="preserve">
+    <value>Make Independent</value>
+  </data>
+  <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
+    <value>Children will be moved to the new parent!</value>
+  </data>
+  <data name="FindInformation_Description" xml:space="preserve">
+    <value>Select year or description and press OK; hold Ctrl to extend description instead of replacing it.</value>
+  </data>
+  <data name="FindInformation_SaveAndClose" xml:space="preserve">
+    <value>Save &amp; Close</value>
+  </data>
+  <data name="FindInformation_SaveAsYear" xml:space="preserve">
+    <value>Save as Year</value>
+  </data>
+  <data name="FindInformation_SaveAsCountry" xml:space="preserve">
+    <value>Save as Country</value>
+  </data>
+  <data name="FindInformation_SaveAsDescription" xml:space="preserve">
+    <value>Save as Description</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
+    <value>Can’t update preview</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
+    <value>You were supposed to make at least one screenshot.</value>
+  </data>
+  <data name="Common_PointsPostfix" xml:space="preserve">
+    <value> point</value>
     <comment>Will be pluralized automatically</comment>
   </data>
 </root>
