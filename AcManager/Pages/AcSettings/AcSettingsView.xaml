@@ -2,9 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:acSettings="clr-namespace:AcManager.Pages.AcSettings"
-             xmlns:helpers1="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance acSettings:AcSettingsView+ViewModel}">
+        xmlns:helpers1="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:AcManager="clr-namespace:AcManager" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acSettings:AcSettingsView+ViewModel}">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
@@ -32,7 +31,7 @@
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Gameplay.DisplayDriverNames}">
-                <Label Content="Show drivers’ names" />
+                <Label Content="Show drivers' names" />
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Gameplay.AllowOverlapping}">
@@ -43,7 +42,9 @@
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Camera:" />
 
             <DockPanel>
-                <mui:ValueLabel Value="{Binding CameraOnboard.FieldOfView}" Mode="Positive" Postfix="°" ToolTip="Vertical angle" Content="Field of view" />
+                <mui:ValueLabel Value="{Binding CameraOnboard.FieldOfView}" Mode="Positive" Postfix="°"
+                        ToolTip="{x:Static AcManager:AppStrings.AcSettings_FieldOfView_Tooltip}"
+                        Content="{x:Static AcManager:AppStrings.AcSettings_FieldOfView}" />
                 <Slider Minimum="10" Maximum="120" Value="{Binding CameraOnboard.FieldOfView}" TickFrequency="11" TickPlacement="BottomRight" />
             </DockPanel>
 

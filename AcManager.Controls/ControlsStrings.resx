@@ -600,6 +600,9 @@ Entry type: [b]{2}[/b]</value>
   <data name="Common_MetersPostfix" xml:space="preserve">
     <value> m</value>
   </data>
+  <data name="Common_MinutesPostfix" xml:space="preserve">
+    <value> min</value>
+  </data>
   <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
     <value>Updating shadows…</value>
   </data>
@@ -878,5 +881,62 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_PointsPostfix" xml:space="preserve">
     <value> point</value>
     <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
+    <value>Year of production start</value>
+  </data>
+  <data name="Controls_MinimumForce" xml:space="preserve">
+    <value>Minimum force</value>
+  </data>
+  <data name="Controls_Gain" xml:space="preserve">
+    <value>Gain</value>
+  </data>
+  <data name="Controls_EffectsHeader" xml:space="preserve">
+    <value>Effects:</value>
+  </data>
+  <data name="Controls_KerbEffect" xml:space="preserve">
+    <value>Kerb effect</value>
+  </data>
+  <data name="Controls_RoadEffect" xml:space="preserve">
+    <value>Road effect</value>
+  </data>
+  <data name="Controls_SlipEffect" xml:space="preserve">
+    <value>Slip effect</value>
+  </data>
+  <data name="Controls_MiscellaneousHeader" xml:space="preserve">
+    <value>Miscellaneous:</value>
+  </data>
+  <data name="Controls_EnhancedUndersteer" xml:space="preserve">
+    <value>Enhanced understeer effect</value>
+  </data>
+  <data name="Controls_SoftLock" xml:space="preserve">
+    <value>Soft lock</value>
+  </data>
+  <data name="Controls_SkipFfbSteps" xml:space="preserve">
+    <value>Skip FFB steps</value>
+  </data>
+  <data name="Controls_ExperimentalHeader" xml:space="preserve">
+    <value>Experimental:</value>
+  </data>
+  <data name="Controls_UnlockExperimental" xml:space="preserve">
+    <value>Unlock experimental options (be careful!)</value>
+  </data>
+  <data name="Controls_GyroscopicEffect" xml:space="preserve">
+    <value>_Gyroscopic effect</value>
+  </data>
+  <data name="Controls_DamperGain" xml:space="preserve">
+    <value>Damper gain</value>
+  </data>
+  <data name="Controls_MinumumDamperLevel" xml:space="preserve">
+    <value>Minimum damper level</value>
+  </data>
+  <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
+    <value>Set to 0 for Logitech G920, keep 1 for everything else</value>
+  </data>
+  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
+    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
+  </data>
+  <data name="Common_ExposureLabel" xml:space="preserve">
+    <value>Exposure:</value>
   </data>
 </root>

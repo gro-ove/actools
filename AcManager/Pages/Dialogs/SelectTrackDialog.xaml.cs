@@ -34,7 +34,7 @@ namespace AcManager.Pages.Dialogs {
         public SelectTrackDialog(TrackBaseObject selectedTrackConfiguration) {
             _instance = new WeakReference<SelectTrackDialog>(this);
 
-            DataContext = new SelectTrackDialogViewModel(selectedTrackConfiguration);
+            DataContext = new ViewModel(selectedTrackConfiguration);
             InitializeComponent();
 
             Tabs.SelectedSource = ValuesStorage.GetUri(UriKey) ?? Tabs.Links.FirstOrDefault()?.Source;
@@ -53,9 +53,9 @@ namespace AcManager.Pages.Dialogs {
         private int _state;
 
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName != "CurrentPreviewImage") return;
+            if (e.PropertyName != nameof(Model.CurrentPreviewImage)) return;
             (_state == 0 ? BackgroundImage1 : BackgroundImage0).Source = UriToCachedImageConverter.Convert(Model.CurrentPreviewImage);
-            VisualStateManager.GoToElementState(BackgroundImage1, "State" + _state, true);
+            VisualStateManager.GoToElementState(BackgroundImage1, @"State" + _state, true);
             _state = 1 - _state;
         }
 
@@ -83,9 +83,9 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public SelectTrackDialogViewModel Model => (SelectTrackDialogViewModel)DataContext;
+        public ViewModel Model => (ViewModel)DataContext;
 
-        public class SelectTrackDialogViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private readonly DelayedPropertyWrapper<TrackBaseObject> _selectedTrackConfiguration;
 
             [CanBeNull]
@@ -94,7 +94,7 @@ namespace AcManager.Pages.Dialogs {
                 set {
                     if (value == null) {
                         /* BUG: TODO: Figure out how it happens */
-                        Debug.WriteLine("NULL HERE");
+                        Debug.WriteLine(@"NULL HERE");
                     } else {
                         _selectedTrackConfiguration.Value = value;
                     }
@@ -114,7 +114,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            public SelectTrackDialogViewModel(TrackBaseObject selectedTrackConfiguration) {
+            public ViewModel(TrackBaseObject selectedTrackConfiguration) {
                 _selectedTrackConfiguration = new DelayedPropertyWrapper<TrackBaseObject>(v => {
                     v.MainTrackObject.SelectedLayout = v;
                     CurrentPreviewImage = v.PreviewImage;

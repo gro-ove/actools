@@ -520,9 +520,11 @@ fixme:
     - fix brands list (removed brands)
 
 todo:
+    - don't let to replace sound from itself
     - include “dev apps” option to apps presets
         - promixity indicator as well?
         - share python apps
+    - calculate fuel consumption
 
     - use Escape, Ctrl+W and Ctrl+F4 to exit from some dialogs
     - add AC credits (and version?)
@@ -554,7 +556,7 @@ todo:
             + selected
             + miscellaneous & lists
             + drive
-            - dialogs
+            + dialogs
             - acsettings
             - about
     - changeable locale
@@ -626,6 +628,7 @@ todo:
 
     - showroom from Online
     - car setups: warn about "last"
+    - move livery shapes and styles to Content directory
 
     - content installation
         - automatically switch to freshly installed content in some cases (optional)?
@@ -644,6 +647,7 @@ todo:
             - optional list mode for brands, countries, etc?
             - fully customizable grids
             - drag racing
+            - copy settings from race to weekend and backwards
         + online
             + custom sorting
             + flag fitting

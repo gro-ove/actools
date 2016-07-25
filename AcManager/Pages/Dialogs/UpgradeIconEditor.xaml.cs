@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -6,13 +7,14 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 
 namespace AcManager.Pages.Dialogs {
     public partial class UpgradeIconEditor {
-        [CanBeNull]
+        [Localizable(false), CanBeNull]
         public static string TryToGuessLabel(string carName) {
             if (carName == null) return null;
             if (Regex.IsMatch(carName, @"\b(?:drift|d(?:\s*|-)spec)\b", RegexOptions.IgnoreCase)) return "D";
@@ -47,15 +49,15 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 OkButton, 
-                CreateExtraDialogButton("Select File", SelectFile), 
-                CreateExtraDialogButton("View User Folder", () => FilesStorage.Instance.OpenContentDirectoryInExplorer(ContentCategory.UpgradeIcons)),
+                CreateExtraDialogButton(AppStrings.Common_SelectFile, SelectFile), 
+                CreateExtraDialogButton(AppStrings.Common_ViewUserFolder, () => FilesStorage.Instance.OpenContentDirectoryInExplorer(ContentCategory.UpgradeIcons)),
                 CancelButton
             };
 
             Closing += UpgradeIconEditor_Closing;
         }
 
-        private void UpgradeIconEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+        private void UpgradeIconEditor_Closing(object sender, CancelEventArgs e) {
             var currentPage = Tabs.Frame.Content as IFinishableControl;
             currentPage?.Finish(MessageBoxResult == MessageBoxResult.OK);
         }
@@ -63,14 +65,14 @@ namespace AcManager.Pages.Dialogs {
         private void SelectFile() {
             var dialog = new OpenFileDialog {
                 Filter = FileDialogFilters.ImagesFilter,
-                Title = "Select New Upgrade Icon"
+                Title = AppStrings.UpgradeIcon_SelectNew
             };
             if (dialog.ShowDialog() == true) {
                 ApplyFile(dialog.FileName);
             }
         }
 
-        private void UpgradeIconEditor_OnDrop(object sender, DragEventArgs e) {
+        private void OnDrop(object sender, DragEventArgs e) {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -83,20 +85,21 @@ namespace AcManager.Pages.Dialogs {
 
             try {
                 cropped.SaveAsPng(Car.UpgradeIcon);
-            } catch (Exception) {
-                ShowMessage(@"Can’t change upgrade icon.", @"Fail", MessageBoxButton.OK);
+            } catch (IOException ex) {
+                NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, AppStrings.UpgradeIcon_CannotChange_Commentary, ex);
+                return;
+            } catch (Exception ex) {
+                NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, ex);
                 return;
             }
 
-            // Car.RefreshUpgradeIcon();
-
-            var saveAs = Prompt.Show(@"Add as:", @"Add into the library?", Path.GetFileNameWithoutExtension(filename));
+            var saveAs = Prompt.Show(AppStrings.UpgradeIcon_AddAs, AppStrings.Common_AddToLibrary, Path.GetFileNameWithoutExtension(filename));
             if (saveAs == null) return;
 
             try {
                 FilesStorage.Instance.AddUserContentToDirectory(ContentCategory.UpgradeIcons, Car.UpgradeIcon, saveAs);
-            } catch (Exception) {
-                ShowMessage(@"Can’t add new element into the library.", @"Fail", MessageBoxButton.OK);
+            } catch (Exception e) {
+                NonfatalError.Notify(AppStrings.Common_CannotAddToLibrary, e);
             }
 
             Close();

@@ -153,7 +153,7 @@
   <data name="AcObject_WeatherLabel" xml:space="preserve">
     <value>Погода:</value>
   </data>
-  <data name="AcSettings_RecommendedMaximumSize" xml:space="preserve">
+  <data name="AcSettings_Replays_RecommendedMaximumSizeFormat" xml:space="preserve">
     <value>Максимальный размер (рекомендуемый): {0} МБ</value>
   </data>
   <data name="AcSettings_Replays_MaximumSize" xml:space="preserve">

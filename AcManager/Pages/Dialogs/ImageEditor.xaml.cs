@@ -1,5 +1,4 @@
-﻿using FirstFloor.ModernUI.Windows.Controls;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,7 +6,7 @@ using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class ImageEditor : ModernDialog {
+    public partial class ImageEditor {
         public class CropModel {
             public double TotalWidth,
                           TotalHeight,
@@ -73,10 +72,17 @@ namespace AcManager.Pages.Dialogs {
                 TargetHeight = size.Height
             };
 
-            InitializeComponent();
             DataContext = this;
+            InitializeComponent();
 
-            Buttons = new[] { OkButton, CancelButton };
+            Buttons = new[] {
+                CreateExtraDialogButton(AppStrings.CropImage_Skip, () => {
+                    Result = _image;
+                    Close();
+                }),
+                OkButton,
+                CancelButton
+            };
 
             _image = new BitmapImage();
             _image.BeginInit();
@@ -133,7 +139,7 @@ namespace AcManager.Pages.Dialogs {
             _previousPoint = e.GetPosition(this);
         }
 
-        private void Editor_OnMouseMove(object sender, MouseEventArgs e) {
+        private void OnMouseMove(object sender, MouseEventArgs e) {
             var pos = e.GetPosition(this);
             var dx = pos.X - _previousPoint.X;
             var dy = pos.Y - _previousPoint.Y;
@@ -148,15 +154,15 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private void Editor_OnMouseUp(object sender, MouseButtonEventArgs e) {
+        private void OnMouseUp(object sender, MouseButtonEventArgs e) {
             _state = EditorState.Idle;
         }
 
-        private void Editor_OnMouseLeave(object sender, MouseEventArgs e) {
+        private void OnMouseLeave(object sender, MouseEventArgs e) {
             _state = EditorState.Idle;
         }
 
-        private void Editor_OnMouseWheel(object sender, MouseWheelEventArgs e) {
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
             _model.Scale(e.Delta > 0 ? 1.1 : 0.9090909);
             UpdateView();
         }

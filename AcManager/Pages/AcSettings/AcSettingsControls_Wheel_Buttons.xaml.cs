@@ -8,7 +8,7 @@ namespace AcManager.Pages.AcSettings {
             InitializeComponent();
         }
 
-        private void AcSettingsControls_Wheel_Buttons_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             AcSettingsHolder.Controls.ClearWaiting();
         }
     }

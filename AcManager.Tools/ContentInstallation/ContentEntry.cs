@@ -1,8 +1,9 @@
 ﻿using System;
+using AcManager.Tools.ContentInstallation.Types;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
-    public class AdditionalContentEntry {
+namespace AcManager.Tools.ContentInstallation {
+    public class ContentEntry {
         [NotNull]
         public string Id { get; }
 
@@ -12,7 +13,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
         [NotNull]
         public string Path { get; }
 
-        public AdditionalContentType Type { get; }
+        public ContentType Type { get; }
 
         [NotNull]
         public string Name { get; }
@@ -20,7 +21,7 @@ namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
         [CanBeNull]
         public string Version { get; }
 
-        public AdditionalContentEntry(AdditionalContentType type, [NotNull] string path, [NotNull] string id, string name = null, string version = null) {
+        public ContentEntry(ContentType type, [NotNull] string path, [NotNull] string id, string name = null, string version = null) {
             if (path == null) throw new ArgumentNullException(nameof(path));
             if (id == null) throw new ArgumentNullException(nameof(id));
 

@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 
-namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
-    public static class AdditionalContentInstallation {
+namespace AcManager.Tools.ContentInstallation {
+    public static class ContentInstallation {
         public static Task<IAdditionalContentInstallator> FromFile(string filename) {
             return FileUtils.IsDirectory(filename) ? DirectoryContentInstallator.Create(filename) :
                     IsZipArchive(filename) ? ZipContentInstallator.Create(filename) :

@@ -48,7 +48,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private static string GetBrandIcon(string brand, out bool builtInIcon) {
-            var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, brand + ".png");
+            var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, brand + @".png");
             builtInIcon = entry != null && File.Exists(entry.Filename);
             return builtInIcon ? entry.Filename : CarsManager.Instance.LoadedOnly.FirstOrDefault(x => x.Brand == brand)?.BrandBadge;
         }
@@ -140,7 +140,7 @@ namespace AcManager.Pages.Dialogs {
             BrandsListBox.ScrollIntoView(item);
         }
 
-        private void SelectAndSetupCarDialog_Brands_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             BrandsListBox.Focus();
         }
 

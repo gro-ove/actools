@@ -107,18 +107,19 @@ namespace AcManager.Pages.Dialogs {
                 cropped.SaveAsPng(Car.BrandBadge);
             } catch (IOException ex) {
                 NonfatalError.Notify(AppStrings.BrandBadge_CannotChange, AppStrings.BrandBadge_CannotChange_Commentary, ex);
+                return;
             } catch (Exception ex) {
                 NonfatalError.Notify(AppStrings.BrandBadge_CannotChange, ex);
                 return;
             }
 
-            var saveAs = Prompt.Show(AppStrings.BrandBadge_AddAs, AppStrings.BrandBadge_AddAs_Title, Path.GetFileNameWithoutExtension(filename));
+            var saveAs = Prompt.Show(AppStrings.BrandBadge_AddAs, AppStrings.Common_AddToLibrary, Path.GetFileNameWithoutExtension(filename));
             if (saveAs == null) return;
 
             try {
                 FilesStorage.Instance.AddUserContentToDirectory(ContentCategory.BrandBadges, Car.BrandBadge, saveAs);
             } catch (Exception e) {
-                NonfatalError.Notify(AppStrings.BrandBadge_CannotAdd, e);
+                NonfatalError.Notify(AppStrings.Common_CannotAddToLibrary, e);
             }
 
             Close();

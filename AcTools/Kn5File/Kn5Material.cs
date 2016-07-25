@@ -25,7 +25,7 @@ namespace AcTools.Kn5File {
             public float[] ValueD;
         }
 
-        public ShaderProperty GetPropertyByName(string name) {
+        public ShaderProperty GetPropertyByName([Localizable(false)] string name) {
             return ShaderProperties.FirstOrDefault(t => t.Name == name);
         }
 

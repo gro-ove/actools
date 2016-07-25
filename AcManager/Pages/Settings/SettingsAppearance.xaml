@@ -29,7 +29,7 @@
             </ListBox>
 
             <DockPanel>
-                <Label Content="{x:Static AcManager:AppStrings.Settings_ColorLabel}" />
+                <Label Content="{x:Static AcManager:AppStrings.Common_ColorLabel}" />
                 <mui:ColorPicker Color="{Binding AppAppearanceManager.AccentColor}" DisplayColor="{Binding AppAppearanceManager.AccentDisplayColor}" />
             </DockPanel>
 

@@ -232,6 +232,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Year of production start.
+        /// </summary>
+        public static string AcObject_YearLabel_CarTooltip {
+            get {
+                return ResourceManager.GetString("AcObject_YearLabel_CarTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Down.
         /// </summary>
         public static string Animation_Down {
@@ -430,6 +439,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancelled.
+        /// </summary>
+        public static string Common_Cancelled {
+            get {
+                return ResourceManager.GetString("Common_Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0:F0} °C.
         /// </summary>
         public static string Common_CelsiusFormat {
@@ -511,11 +529,29 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exposure:.
+        /// </summary>
+        public static string Common_ExposureLabel {
+            get {
+                return ResourceManager.GetString("Common_ExposureLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter:.
         /// </summary>
         public static string Common_FilterLabel {
             get {
                 return ResourceManager.GetString("Common_FilterLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished.
+        /// </summary>
+        public static string Common_Finished {
+            get {
+                return ResourceManager.GetString("Common_Finished", resourceCulture);
             }
         }
         
@@ -606,6 +642,15 @@ namespace AcManager.Controls {
         public static string Common_MinutePostfix {
             get {
                 return ResourceManager.GetString("Common_MinutePostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  min.
+        /// </summary>
+        public static string Common_MinutesPostfix {
+            get {
+                return ResourceManager.GetString("Common_MinutesPostfix", resourceCulture);
             }
         }
         
@@ -772,6 +817,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Waiting….
+        /// </summary>
+        public static string Common_Waiting {
+            get {
+                return ResourceManager.GetString("Common_Waiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Built-in Presets.
         /// </summary>
         public static string Controls_BuiltInPresets {
@@ -808,11 +862,56 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Damper gain.
+        /// </summary>
+        public static string Controls_DamperGain {
+            get {
+                return ResourceManager.GetString("Controls_DamperGain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set to 0 for Logitech G920, keep 1 for everything else.
+        /// </summary>
+        public static string Controls_DamperGain_Tooltip {
+            get {
+                return ResourceManager.GetString("Controls_DamperGain_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Degress.
         /// </summary>
         public static string Controls_DegressLabel {
             get {
                 return ResourceManager.GetString("Controls_DegressLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Effects:.
+        /// </summary>
+        public static string Controls_EffectsHeader {
+            get {
+                return ResourceManager.GetString("Controls_EffectsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enhanced understeer effect.
+        /// </summary>
+        public static string Controls_EnhancedUndersteer {
+            get {
+                return ResourceManager.GetString("Controls_EnhancedUndersteer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experimental:.
+        /// </summary>
+        public static string Controls_ExperimentalHeader {
+            get {
+                return ResourceManager.GetString("Controls_ExperimentalHeader", resourceCulture);
             }
         }
         
@@ -826,6 +925,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gain.
+        /// </summary>
+        public static string Controls_Gain {
+            get {
+                return ResourceManager.GetString("Controls_Gain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gamma.
         /// </summary>
         public static string Controls_GammaAxis {
@@ -835,11 +943,29 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Gyroscopic effect.
+        /// </summary>
+        public static string Controls_GyroscopicEffect {
+            get {
+                return ResourceManager.GetString("Controls_GyroscopicEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invert.
         /// </summary>
         public static string Controls_InvertAxis {
             get {
                 return ResourceManager.GetString("Controls_InvertAxis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kerb effect.
+        /// </summary>
+        public static string Controls_KerbEffect {
+            get {
+                return ResourceManager.GetString("Controls_KerbEffect", resourceCulture);
             }
         }
         
@@ -858,6 +984,33 @@ namespace AcManager.Controls {
         public static string Controls_LoadPresetWarning {
             get {
                 return ResourceManager.GetString("Controls_LoadPresetWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum force.
+        /// </summary>
+        public static string Controls_MinimumForce {
+            get {
+                return ResourceManager.GetString("Controls_MinimumForce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum damper level.
+        /// </summary>
+        public static string Controls_MinumumDamperLevel {
+            get {
+                return ResourceManager.GetString("Controls_MinumumDamperLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Miscellaneous:.
+        /// </summary>
+        public static string Controls_MiscellaneousHeader {
+            get {
+                return ResourceManager.GetString("Controls_MiscellaneousHeader", resourceCulture);
             }
         }
         
@@ -907,6 +1060,51 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Road effect.
+        /// </summary>
+        public static string Controls_RoadEffect {
+            get {
+                return ResourceManager.GetString("Controls_RoadEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip FFB steps.
+        /// </summary>
+        public static string Controls_SkipFfbSteps {
+            get {
+                return ResourceManager.GetString("Controls_SkipFfbSteps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help.
+        /// </summary>
+        public static string Controls_SkipFfbSteps_Tooltip {
+            get {
+                return ResourceManager.GetString("Controls_SkipFfbSteps_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slip effect.
+        /// </summary>
+        public static string Controls_SlipEffect {
+            get {
+                return ResourceManager.GetString("Controls_SlipEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soft lock.
+        /// </summary>
+        public static string Controls_SoftLock {
+            get {
+                return ResourceManager.GetString("Controls_SoftLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Speed sensitivity.
         /// </summary>
         public static string Controls_SpeedSensitivity {
@@ -921,6 +1119,15 @@ namespace AcManager.Controls {
         public static string Controls_SteeringWheelButton {
             get {
                 return ResourceManager.GetString("Controls_SteeringWheelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlock experimental options (be careful!).
+        /// </summary>
+        public static string Controls_UnlockExperimental {
+            get {
+                return ResourceManager.GetString("Controls_UnlockExperimental", resourceCulture);
             }
         }
         

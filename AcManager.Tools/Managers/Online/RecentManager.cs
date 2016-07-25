@@ -93,7 +93,7 @@ namespace AcManager.Tools.Managers.Online {
                             try {
                                 CreateAndAddEntry(information);
                             } catch (Exception e) {
-                                if (e.Message != ToolsStrings.OnlineManage_IdIsTaken) {
+                                if (e.Message != ToolsStrings.Common_IdIsTaken) {
                                     Logging.Warning("[RecentManager] Scan add error: " + e);
                                 }
                             }

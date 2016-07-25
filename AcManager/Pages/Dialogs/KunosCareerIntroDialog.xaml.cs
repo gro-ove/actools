@@ -1,12 +1,6 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
-using Path = System.IO.Path;
 
 namespace AcManager.Pages.Dialogs {
     public partial class KunosCareerIntroDialog {
@@ -20,13 +14,13 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new Button[] { };
         }
 
-        private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e) {
+        private void OnMouseDown(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1) {
                 Close();
             }
         }
 
-        private void ImageViewer_OnKeyUp(object sender, KeyEventArgs e) {
+        private void OnKeyUp(object sender, KeyEventArgs e) {
             if (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack ||
                     e.Key == Key.Q || e.Key == Key.W && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 Close();

@@ -4,11 +4,12 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
-    internal class ZipContentInstallator : BaseAdditionalContentInstallator {
+namespace AcManager.Tools.ContentInstallation {
+    internal class ZipContentInstallator : BaseContentInstallator {
         public static async Task<IAdditionalContentInstallator> Create(string filename) {
             var result = new ZipContentInstallator(filename);
             await result.CreateExtractorAsync();

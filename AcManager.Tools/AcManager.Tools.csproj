@@ -112,6 +112,13 @@
     <Compile Include="AcManagersNew\AcManagerNew.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject_Errors.cs" />
     <Compile Include="AcObjectsNew\AcObjectNew.cs" />
+    <Compile Include="ContentInstallation\FileInfoEnumerableExtension.cs" />
+    <Compile Include="ContentInstallation\Types\TypeCar.cs" />
+    <Compile Include="ContentInstallation\Types\TypeCarSkin.cs" />
+    <Compile Include="ContentInstallation\Types\TypeFont.cs" />
+    <Compile Include="ContentInstallation\Types\TypeShowroom.cs" />
+    <Compile Include="ContentInstallation\Types\TypeTrack.cs" />
+    <Compile Include="ContentInstallation\Types\TypeWeather.cs" />
     <Compile Include="Data\ContentSyncronizer.cs" />
     <Compile Include="Data\DataProvider.cs" />
     <Compile Include="Data\GameSpecific\CommonSessionResult.cs" />
@@ -172,12 +179,12 @@
     <Compile Include="Helpers\AcSettings\IniSettings.cs" />
     <Compile Include="Helpers\AcSettings\OculusSettings.cs" />
     <Compile Include="Helpers\AcSettings\PythonSettings.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentType.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\BaseAdditionalContentInstallator.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\DirectoryContentInstallator.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\SharpCompressExtension.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\UpdateOption.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\ZipContentInstallator.cs" />
+    <Compile Include="ContentInstallation\Types\ContentType.cs" />
+    <Compile Include="ContentInstallation\BaseContentInstallator.cs" />
+    <Compile Include="ContentInstallation\DirectoryContentInstallator.cs" />
+    <Compile Include="ContentInstallation\SharpCompressExtension.cs" />
+    <Compile Include="ContentInstallation\UpdateOption.cs" />
+    <Compile Include="ContentInstallation\ZipContentInstallator.cs" />
     <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
@@ -268,11 +275,11 @@
     <Compile Include="Helpers\TaskExtension.cs" />
     <Compile Include="Helpers\IPAddressExtension.cs" />
     <Compile Include="Helpers\TimeSpanExtension.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentEntry.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\AdditionalContentInstallation.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\SharpCompressContentInstallator.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\IAdditionalContentInstallator.cs" />
-    <Compile Include="Helpers\AdditionalContentInstallation\PasswordException.cs" />
+    <Compile Include="ContentInstallation\ContentEntry.cs" />
+    <Compile Include="ContentInstallation\ContentInstallation.cs" />
+    <Compile Include="ContentInstallation\SharpCompressContentInstallator.cs" />
+    <Compile Include="ContentInstallation\IAdditionalContentInstallator.cs" />
+    <Compile Include="ContentInstallation\PasswordException.cs" />
     <Compile Include="Helpers\Api\OpenWeatherApiProvider.cs" />
     <Compile Include="Helpers\FilesStorage.cs" />
     <Compile Include="Helpers\SaveHelper.cs" />
@@ -386,6 +393,7 @@
     <None Include="Packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ToolsStrings.fr.resx" />
     <EmbeddedResource Include="ToolsStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>

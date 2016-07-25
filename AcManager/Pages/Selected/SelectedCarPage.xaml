@@ -236,7 +236,7 @@
                                         CommandParameter="decade" />
                             </ContextMenu>
                         </DockPanel.ContextMenu>
-                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" ToolTip="Year of production start" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_YearLabel_CarTooltip}" />
                         <TextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer"
                                 attached:WatermarkService.Watermark="?" />
                     </DockPanel>

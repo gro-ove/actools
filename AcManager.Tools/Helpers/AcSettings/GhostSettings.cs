@@ -16,6 +16,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        public int MaxMinutesRecordingDefault => 20;
+
         private int _maxMinutesRecording;
 
         public int MaxMinutesRecording {
@@ -27,6 +29,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 OnPropertyChanged();
             }
         }
+
+        public int MinDistanceDefault => 10;
 
         private int _minDistance;
 
@@ -44,6 +48,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        public int MaxDistanceDefault => 50;
+
         private int _maxDistance;
 
         public int MaxDistance {
@@ -59,6 +65,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 }
             }
         }
+
+        public int MaxOpacityDefault => 25;
 
         private int _maxOpacity;
 
@@ -97,10 +105,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         protected override void LoadFromIni() {
             var section = Ini["GHOST_CAR"];
             Color = section.GetColor("COLOR", Color.FromRgb(150, 150, 255));
-            MaxMinutesRecording = section.GetInt("MAX_MINUTES_RECORDING", 20);
-            MinDistance = section.GetInt("MIN_DISTANCE", 10);
-            MaxDistance = section.GetInt("MAX_DISTANCE", 50);
-            MaxOpacity = section.GetDouble("MAX_OPACITY", 0.25).ToIntPercentage();
+            MaxMinutesRecording = section.GetInt("MAX_MINUTES_RECORDING", MaxMinutesRecordingDefault);
+            MinDistance = section.GetInt("MIN_DISTANCE", MinDistanceDefault);
+            MaxDistance = section.GetInt("MAX_DISTANCE", MaxDistanceDefault);
+            MaxOpacity = section.GetDouble("MAX_OPACITY", MaxOpacityDefault.ToDoublePercentage()).ToIntPercentage();
             TimeDifferenceEnabled = section.GetBool("TIME_DIFF_ENABLED", true);
             PlayerNameEnabled = section.GetBool("PLAYER_NAME_ENABLED", true);
         }

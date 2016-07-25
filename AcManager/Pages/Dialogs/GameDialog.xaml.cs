@@ -52,12 +52,16 @@ namespace AcManager.Pages.Dialogs {
             base.OnClosing(e);
 
             if (IsResultCancel) {
-                _cancellationSource.Cancel();
+                try {
+                    _cancellationSource.Cancel();
+                } catch (ObjectDisposedException) {}
             }
         }
 
         public void Dispose() {
-            _cancellationSource.Dispose();
+            try {
+                _cancellationSource.Dispose();
+            } catch (ObjectDisposedException) { }
         }
 
         private Game.StartProperties _properties;

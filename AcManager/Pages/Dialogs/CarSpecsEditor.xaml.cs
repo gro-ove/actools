@@ -12,6 +12,7 @@ using AcManager.Annotations;
 using AcManager.Tools;
 using AcManager.Tools.Objects;
 using AcTools;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
 using FirstFloor.ModernUI.Helpers;
@@ -256,13 +257,13 @@ namespace AcManager.Pages.Dialogs {
                     !FlexibleParser.TryParseDouble(WeightInput.Text, out weight)) return;
 
             var ratio = weight / power;
-            PwRatioInput.Text = Format(AppStrings.CarSpecs_PwRatio_FormatTooltip, ratio.ToString(@"F2", CultureInfo.InvariantCulture));
+            PwRatioInput.Text = Format(AppStrings.CarSpecs_PwRatio_FormatTooltip, ratio.Round(0.01));
         }
 
         private void RecalculateWeight() {
             var car = Car.AcdData.GetIniFile("car.ini");
             WeightInput.Text = Format(AppStrings.CarSpecs_Weight_FormatTooltip,
-                    (car["BASIC"].GetInt("TOTALMASS", CommonAcConsts.DriverWeight) - CommonAcConsts.DriverWeight).ToString(@"F2", CultureInfo.InvariantCulture));
+                    (car["BASIC"].GetInt("TOTALMASS", CommonAcConsts.DriverWeight) - CommonAcConsts.DriverWeight).ToString(@"F0", CultureInfo.InvariantCulture));
         }
 
         private void PwRatioRecalculate_OnClick(object sender, RoutedEventArgs e) {

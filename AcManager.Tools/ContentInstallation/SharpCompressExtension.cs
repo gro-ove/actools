@@ -7,7 +7,7 @@ using SharpCompress.Archive.Rar;
 using SharpCompress.Archive.Zip;
 using SharpCompress.Common;
 
-namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
+namespace AcManager.Tools.ContentInstallation {
     public static class SharpCompressExtension {
         public static IArchive Open(string filename, string password) {
             var archive = ArchiveFactory.Open(filename);

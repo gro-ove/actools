@@ -223,6 +223,8 @@
     <Compile Include="Pages\Dialogs\LiveryIconEditor.xaml.cs">
       <DependentUpon>LiveryIconEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\SelectCategory.cs" />
+    <Compile Include="Pages\Dialogs\SelectCountry.cs" />
     <Compile Include="Pages\Dialogs\SelectTrackDialog_Countries.xaml.cs">
       <DependentUpon>SelectTrackDialog_Countries.xaml</DependentUpon>
     </Compile>

@@ -166,14 +166,14 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private bool _loaded;
-        private void SelectAndSetupCarDialog_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;
             CarsManager.Instance.WrappersList.ItemPropertyChanged += List_ItemPropertyChanged;
             CarsManager.Instance.WrappersList.WrappedValueChanged += List_WrappedValueChanged;
         }
 
-        private void SelectAndSetupCarDialog_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
             CarsManager.Instance.WrappersList.ItemPropertyChanged -= List_ItemPropertyChanged;
@@ -220,7 +220,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == "SelectedItem") {
+            if (e.PropertyName == nameof(_list.SelectedItem)) {
                 SelectedCar = _list.SelectedItem as CarObject;
             }
         }

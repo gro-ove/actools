@@ -131,6 +131,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        public int MirrorsFieldOfViewDefault => 10;
+
         private int _mirrorsFieldOfView;
 
         public int MirrorsFieldOfView {
@@ -142,6 +144,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 OnPropertyChanged();
             }
         }
+
+        public int MirrorsFarPlaneDefault => 400;
 
         private int _mirrorsFarPlane;
 
@@ -184,8 +188,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             AllowFreeCamera = Ini["CAMERA"].GetBool("ALLOW_FREE_CAMERA", false);
             Logging = !Ini["LOG"].GetBool("SUPPRESS", false);
             ScreenshotFormat = Ini["SCREENSHOT"].GetEntry("FORMAT", ScreenshotFormats);
-            MirrorsFieldOfView = Ini["MIRRORS"].GetInt("FOV", 10);
-            MirrorsFarPlane = Ini["MIRRORS"].GetInt("FAR_PLANE", 400);
+            MirrorsFieldOfView = Ini["MIRRORS"].GetInt("FOV", MirrorsFieldOfViewDefault);
+            MirrorsFarPlane = Ini["MIRRORS"].GetInt("FAR_PLANE", MirrorsFarPlaneDefault);
         }
 
         protected override void SetToIni() {

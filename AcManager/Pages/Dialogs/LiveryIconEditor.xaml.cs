@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -30,36 +32,36 @@ namespace AcManager.Pages.Dialogs {
         public const string KeyNumbers = "__LiveryIconEditor.numbers";
 
         public SettingEntry[] Numbers { get; } = {
-            new SettingEntry("", "None"),
-            new SettingEntry("Condensed", "Condensed"),
-            new SettingEntry("Light", "Light"),
-            new SettingEntry("LightOutlined", "Light (with contour)"),
+            new SettingEntry("", ToolsStrings.Common_None),
+            new SettingEntry("Condensed", AppStrings.LiveryIcon_Number_Condensed),
+            new SettingEntry("Light", AppStrings.LiveryIcon_Number_Light),
+            new SettingEntry("LightOutlined", AppStrings.LiveryIcon_Number_LightOutlined),
         };
 
         public SettingEntry[] Shapes { get; } = {
-            new SettingEntry("Flat", "Flat"),
-            new SettingEntry("Diagonal", "Diagonal"),
-            new SettingEntry("Stripes", "Stripes"),
-            new SettingEntry("StripesSide", "Side Stripes"),
-            new SettingEntry("DoubleStripes", "Double Stripes"),
-            new SettingEntry("HorizontalStripes", "Horizontal Stripes"),
-            new SettingEntry("Circle", "Circle"),
-            new SettingEntry("DiagonalWithCircle", "Diagonal with Circle"),
-            new SettingEntry("DiagonalLineWithCircle", "Diagonal line with Circle"),
-            new SettingEntry("Carbon", "Carbon"),
-            new SettingEntry("HorizontalSplit", "Horizontal Split"),
-            new SettingEntry("VerticalSplit", "Vertical Split"),
-            new SettingEntry("TripleHorizontalSplit", "Triple Horizontal Split"),
-            new SettingEntry("TripleVerticalSplit", "Triple Vertical Split"),
+            new SettingEntry("Flat", AppStrings.LiveryIcon_Shape_Flat),
+            new SettingEntry("Diagonal", AppStrings.LiveryIcon_Shape_Diagonal),
+            new SettingEntry("Stripes", AppStrings.LiveryIcon_Shape_Stripes),
+            new SettingEntry("StripesSide", AppStrings.LiveryIcon_Shape_SideStripes),
+            new SettingEntry("DoubleStripes", AppStrings.LiveryIcon_Shape_DoubleStripes),
+            new SettingEntry("HorizontalStripes", AppStrings.LiveryIcon_Shape_HorizontalStripes),
+            new SettingEntry("Circle", AppStrings.LiveryIcon_Shape_Circle),
+            new SettingEntry("DiagonalWithCircle", AppStrings.LiveryIcon_Shape_DiagonalWithCircle),
+            new SettingEntry("DiagonalLineWithCircle", AppStrings.LiveryIcon_Shape_DiagonalLineWithCircle),
+            new SettingEntry("Carbon", AppStrings.LiveryIcon_Shape_Carbon),
+            new SettingEntry("HorizontalSplit", AppStrings.LiveryIcon_Shape_HorizontalSplit),
+            new SettingEntry("VerticalSplit", AppStrings.LiveryIcon_Shape_VerticalSplit),
+            new SettingEntry("TripleHorizontalSplit", AppStrings.LiveryIcon_Shape_TripleHorizontalSplit),
+            new SettingEntry("TripleVerticalSplit", AppStrings.LiveryIcon_Shape_TripleVerticalSplit),
         };
 
         public SettingEntry[] Styles { get; } = {
-            new SettingEntry("Solid", "Solid"),
-            new SettingEntry("Gradient", "Gradient"),
-            new SettingEntry("Gloss", "Gloss"),
-            new SettingEntry("Bright", "Bright"),
-            new SettingEntry("Miura", "Miura"),
-            new SettingEntry("Tesla", "Tesla"),
+            new SettingEntry("Solid", AppStrings.LiveryIcon_Style_Solid),
+            new SettingEntry("Gradient", AppStrings.LiveryIcon_Style_Gradient),
+            new SettingEntry("Gloss", AppStrings.LiveryIcon_Style_Gloss),
+            new SettingEntry("Bright", AppStrings.LiveryIcon_Style_Bright),
+            new SettingEntry("Miura", AppStrings.LiveryIcon_Style_Miura),
+            new SettingEntry("Tesla", AppStrings.LiveryIcon_Style_Tesla),
         };
 
         public CarSkinObject Skin { get; set; }
@@ -120,18 +122,18 @@ namespace AcManager.Pages.Dialogs {
             if (properties == null) return;
 
             foreach (var s in properties.Split(';')) {
-                var pair = s.Split(new [] { '=', ':' }, 2);
+                var pair = s.Split(new[] { '=', ':' }, 2);
                 if (pair.Length != 2) continue;
 
                 var key = pair[0].ToLowerInvariant();
                 if (styleMode) {
                     switch (key) {
                         case "customshape":
-                            CustomShape = string.Equals(pair[1], "true", StringComparison.OrdinalIgnoreCase);
+                            CustomShape = string.Equals(pair[1], @"true", StringComparison.OrdinalIgnoreCase);
                             break;
                     }
                 }
-                
+
                 switch (key) {
                     case "colors":
                         if (styleMode) {
@@ -212,7 +214,7 @@ namespace AcManager.Pages.Dialogs {
 
         public FrameworkElement StyleObject { get; private set; }
 
-        public LiveryIconEditor(CarSkinObject skin) : this (skin, false, false){ }
+        public LiveryIconEditor(CarSkinObject skin) : this(skin, false, false) { }
 
         private readonly bool _quickMode;
 
@@ -229,11 +231,11 @@ namespace AcManager.Pages.Dialogs {
                 SelectedShape = Shapes.GetByIdOrDefault(ValuesStorage.GetString(KeyShape)) ?? Shapes.FirstOrDefault();
             }
             SelectedStyle = Styles.GetByIdOrDefault(ValuesStorage.GetString(KeyStyle)) ?? Styles.FirstOrDefault();
-            SelectedNumbers = string.IsNullOrWhiteSpace(skin.SkinNumber) || skin.SkinNumber == "0"
+            SelectedNumbers = string.IsNullOrWhiteSpace(skin.SkinNumber) || skin.SkinNumber == @"0"
                     ? Numbers.FirstOrDefault() : Numbers.GetByIdOrDefault(ValuesStorage.GetString(KeyNumbers)) ?? Numbers.FirstOrDefault();
 
             Buttons = new[] { OkButton, CancelButton };
-            Model.Value = string.IsNullOrWhiteSpace(skin.SkinNumber) ? "0" : skin.SkinNumber;
+            Model.Value = string.IsNullOrWhiteSpace(skin.SkinNumber) ? @"0" : skin.SkinNumber;
             Model.TextColorValue = Colors.White;
 
             try {
@@ -425,22 +427,23 @@ namespace AcManager.Pages.Dialogs {
 
             await Task.Delay(100);
             if (Skin == null) return;
-            
-            // TODO: Save style?
 
+            // TODO: save style?
             var bmp = new RenderTargetBitmap(64, 64, 96, 96, PixelFormats.Pbgra32);
             bmp.Render(Result);
 
-            if (Model.Value != "0" && Model.Value != Skin.SkinNumber &&
-                    ShowMessage($"Change skin’s number to “{Model.Value}”?", "Skin number is changed", MessageBoxButton.YesNo) ==
-                            MessageBoxResult.Yes) {
+            if (Model.Value != @"0" && Model.Value != Skin.SkinNumber &&
+                    ShowMessage(string.Format(AppStrings.LiveryIcon_ChangeNumber_Message, Model.Value), AppStrings.LiveryIcon_ChangeNumber_Title,
+                            MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                 Skin.SkinNumber = Model.Value;
             }
 
             try {
                 bmp.SaveAsPng(Skin.LiveryImage);
+            } catch (IOException e) {
+                NonfatalError.Notify(AppStrings.LiveryIcon_CannotChange, AppStrings.LiveryIcon_CannotChange_Commentary, e);
             } catch (Exception e) {
-                NonfatalError.Notify(@"Can’t change livery image", "Make sure the original file isn’t busy", e);
+                NonfatalError.Notify(AppStrings.LiveryIcon_CannotChange, e);
             }
         }
 

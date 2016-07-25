@@ -1,15 +1,14 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.InstallAdditionalContentDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Install Additional Content"
-        Width="540" MaxHeight="960" Loaded="InstallAdditionalContentDialog_OnLoaded" Unloaded="InstallAdditionalContentDialog_OnUnloaded"
-        SizeToContent="Height" d:DataContext="{d:DesignInstance dialogs:InstallAdditionalContentDialog}">
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="{x:Static g:AppStrings.AdditionalContent_Title}" Width="540" MaxHeight="960" Loaded="OnLoaded" Unloaded="OnUnloaded" SizeToContent="Height"
+        d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}">
     <Grid>
         <mui:ModernProgressRing x:Name="Loading" Margin="8" IsActive="True" Width="80" Height="80" />
-
         <Grid x:Name="MainContent" Visibility="Collapsed">
             <StackPanel Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Text="Nothing found" />
+                <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_NothingFound}" />
             </StackPanel>
             <ItemsControl ItemsSource="{Binding Entries}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
                     VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel">
@@ -20,27 +19,24 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-
                             <Grid.RowDefinitions>
                                 <RowDefinition />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-
                             <CheckBox x:Name="InstallEntry" IsChecked="{Binding InstallEntry}" VerticalAlignment="Top" Margin="0 4 0 0" />
-
                             <StackPanel Grid.Row="0" Grid.Column="1">
                                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
-                                <TextBlock Text="{Binding Entry.Id, StringFormat='ID: \{0\}'}" Style="{StaticResource Small}" />
-                                <TextBlock Text="{Binding Entry.Path, StringFormat='Path: \{0\}'}" Style="{StaticResource Small}" />
+                                <TextBlock Style="{StaticResource Small}"
+                                        Text="{Binding Path=Entry.Id, StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}}" />
+                                <TextBlock Style="{StaticResource Small}"
+                                        Text="{Binding Path=Entry.Path, StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}}" />
                             </StackPanel>
-
                             <StackPanel x:Name="UpdateOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="0 8 0 0"
                                     IsEnabled="{Binding Path=IsChecked, ElementName=InstallEntry}">
-                                <TextBlock Text="What to update:" Style="{StaticResource LabelWithPadding}" />
+                                <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_WhatToUpdateLabel}" Style="{StaticResource LabelWithPadding}" />
                                 <ComboBox ItemsSource="{Binding UpdateOptionsList}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0" />
                             </StackPanel>
                         </Grid>
-
                         <DataTemplate.Triggers>
                             <DataTrigger Binding="{Binding IsNew}" Value="True">
                                 <DataTrigger.Setters>
@@ -54,3 +50,4 @@
         </Grid>
     </Grid>
 </mui:ModernDialog>
+

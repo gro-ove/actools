@@ -119,11 +119,10 @@
                                     <TextBlock Text="{Binding Laps}" Style="{StaticResource Heading1}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{x:Static t:ToolsStrings.RaceResult_Threoretical}" Style="{StaticResource Label}"
+                                    <TextBlock Text="{x:Static g:AppStrings.RaceResult_Threoretical}" Style="{StaticResource Label}"
                                             VerticalAlignment="Bottom" Margin="0 0 0 6" Width="80" TextOptions.TextFormattingMode="Ideal" />
                                     <TextBlock Style="{StaticResource Heading1}"
-                                            Text="{Binding TheoreticallLapTime, StringFormat='{}{0:mm}:{0:ss}:{0:ff}', TargetNullValue={x:Static t:ToolsStrings.Common_NA}}">
-                                    </TextBlock>
+                                            Text="{Binding TheoreticallLapTime, StringFormat='{}{0:mm}:{0:ss}:{0:ff}', TargetNullValue={x:Static t:ToolsStrings.Common_NA}}" />
                                 </StackPanel>
                             </StackPanel>
                         </Viewbox>

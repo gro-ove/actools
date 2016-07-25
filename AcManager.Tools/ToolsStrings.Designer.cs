@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1186,6 +1186,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ID is taken.
+        /// </summary>
+        public static string Common_IdIsTaken {
+            get {
+                return ResourceManager.GetString("Common_IdIsTaken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select another ID..
+        /// </summary>
+        public static string Common_IdIsTaken_Commentary {
+            get {
+                return ResourceManager.GetString("Common_IdIsTaken_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to KN5.
         /// </summary>
         public static string Common_KN5 {
@@ -1353,6 +1371,141 @@ namespace AcManager.Tools {
         public static string Common_Width {
             get {
                 return ResourceManager.GetString("Common_Width", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New version for car {0}.
+        /// </summary>
+        public static string ContentInstallation_CarExisting {
+            get {
+                return ResourceManager.GetString("ContentInstallation_CarExisting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New car {0}.
+        /// </summary>
+        public static string ContentInstallation_CarNew {
+            get {
+                return ResourceManager.GetString("ContentInstallation_CarNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New version for car skin {0}.
+        /// </summary>
+        public static string ContentInstallation_CarSkinExisting {
+            get {
+                return ResourceManager.GetString("ContentInstallation_CarSkinExisting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New car skin {0}.
+        /// </summary>
+        public static string ContentInstallation_CarSkinNew {
+            get {
+                return ResourceManager.GetString("ContentInstallation_CarSkinNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New version for font {0}.
+        /// </summary>
+        public static string ContentInstallation_FontExisting {
+            get {
+                return ResourceManager.GetString("ContentInstallation_FontExisting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New font {0}.
+        /// </summary>
+        public static string ContentInstallation_FontNew {
+            get {
+                return ResourceManager.GetString("ContentInstallation_FontNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep Skins Previews.
+        /// </summary>
+        public static string ContentInstallation_KeepSkinsPreviews {
+            get {
+                return ResourceManager.GetString("ContentInstallation_KeepSkinsPreviews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep UI Information.
+        /// </summary>
+        public static string ContentInstallation_KeepUiInformation {
+            get {
+                return ResourceManager.GetString("ContentInstallation_KeepUiInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep UI Information &amp; Skins Previews.
+        /// </summary>
+        public static string ContentInstallation_KeepUiInformationAndSkinsPreviews {
+            get {
+                return ResourceManager.GetString("ContentInstallation_KeepUiInformationAndSkinsPreviews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New version for showroom {0}.
+        /// </summary>
+        public static string ContentInstallation_ShowroomExisting {
+            get {
+                return ResourceManager.GetString("ContentInstallation_ShowroomExisting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New showroom {0}.
+        /// </summary>
+        public static string ContentInstallation_ShowroomNew {
+            get {
+                return ResourceManager.GetString("ContentInstallation_ShowroomNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New version for track {0}.
+        /// </summary>
+        public static string ContentInstallation_TrackExisting {
+            get {
+                return ResourceManager.GetString("ContentInstallation_TrackExisting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New track {0}.
+        /// </summary>
+        public static string ContentInstallation_TrackNew {
+            get {
+                return ResourceManager.GetString("ContentInstallation_TrackNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New version for weather {0}.
+        /// </summary>
+        public static string ContentInstallation_WeatherExisting {
+            get {
+                return ResourceManager.GetString("ContentInstallation_WeatherExisting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New weather {0}.
+        /// </summary>
+        public static string ContentInstallation_WeatherNew {
+            get {
+                return ResourceManager.GetString("ContentInstallation_WeatherNew", resourceCulture);
             }
         }
         
@@ -1951,38 +2104,11 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep Skins Previews.
-        /// </summary>
-        public static string Installator_KeepSkinsPreviews {
-            get {
-                return ResourceManager.GetString("Installator_KeepSkinsPreviews", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Keep UI Information.
-        /// </summary>
-        public static string Installator_KeepUiInformation {
-            get {
-                return ResourceManager.GetString("Installator_KeepUiInformation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Keep UI Information &amp; Skin Preview.
         /// </summary>
         public static string Installator_KeepUiInformationAndSkinPreview {
             get {
                 return ResourceManager.GetString("Installator_KeepUiInformationAndSkinPreview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Keep UI Information &amp; Skins Previews.
-        /// </summary>
-        public static string Installator_KeepUiInformationAndSkinsPreviews {
-            get {
-                return ResourceManager.GetString("Installator_KeepUiInformationAndSkinsPreviews", resourceCulture);
             }
         }
         
@@ -2386,15 +2512,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ID is taken.
-        /// </summary>
-        public static string OnlineManage_IdIsTaken {
-            get {
-                return ResourceManager.GetString("OnlineManage_IdIsTaken", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Month.
         /// </summary>
         public static string Period_Month {
@@ -2517,15 +2634,6 @@ namespace AcManager.Tools {
         public static string Progress_Uploading_KnownTotal {
             get {
                 return ResourceManager.GetString("Progress_Uploading_KnownTotal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Theoretical: .
-        /// </summary>
-        public static string RaceResult_Threoretical {
-            get {
-                return ResourceManager.GetString("RaceResult_Threoretical", resourceCulture);
             }
         }
         

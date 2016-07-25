@@ -2,10 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AcManager.Tools.Helpers;
 using AcTools.Utils;
 
-namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
-    internal class DirectoryContentInstallator : BaseAdditionalContentInstallator {
+namespace AcManager.Tools.ContentInstallation {
+    internal class DirectoryContentInstallator : BaseContentInstallator {
         public string Directory { get; }
 
         private DirectoryContentInstallator(string directory) {

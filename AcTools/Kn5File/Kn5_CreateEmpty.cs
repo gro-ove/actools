@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 
 namespace AcTools.Kn5File {
@@ -9,7 +10,7 @@ namespace AcTools.Kn5File {
             };
         }
 
-        public void SetTexture(string textureName, string filename) {
+        public void SetTexture([Localizable(false)] string textureName, string filename) {
             var bytes = File.ReadAllBytes(filename);
             Textures[textureName] = new Kn5Texture {
                 Active = true,

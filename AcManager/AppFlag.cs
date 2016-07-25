@@ -175,6 +175,12 @@ namespace AcManager {
         EnableRaceIniRestoration,
 
         /// <summary>
+        /// Only change race.ini, without running the game.
+        /// Example: --enable-race-ini-test-mode.
+        /// </summary>
+        EnableRaceIniTestMode,
+
+        /// <summary>
         /// Ignore skipped events (when first event is called “event5” or something like this,
         /// in other words — broken). I don’t think it’ll work, but anyway.
         /// Example: --kunos-career-ignore-skipped-events.

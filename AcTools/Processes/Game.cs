@@ -12,7 +12,8 @@ using Newtonsoft.Json;
 
 namespace AcTools.Processes {
     public partial class Game {
-        public static bool OptionEnableRaceIniRestoration = true;
+        public static bool OptionEnableRaceIniRestoration = false;
+        public static bool OptionRaceIniTestMode = false;
 
         private static void ClearUpIniFile(IniFile file) {
             file["BENCHMARK"].Set("ACTIVE", false);
@@ -63,6 +64,8 @@ namespace AcTools.Processes {
 
             try {
                 properties.Set();
+                if (OptionRaceIniTestMode) return null;
+
                 starter.Run();
                 starter.WaitUntilGame();
                 starter.WaitGame();
@@ -101,7 +104,7 @@ namespace AcTools.Processes {
             try {
                 progress?.Report(ProgressState.Preparing);
                 await Task.Run(() => properties.Set(), cancellation);
-                if (cancellation.IsCancellationRequested) return null;
+                if (cancellation.IsCancellationRequested || OptionRaceIniTestMode) return null;
 
                 progress?.Report(ProgressState.Launching);
                 await starter.RunAsync(cancellation);

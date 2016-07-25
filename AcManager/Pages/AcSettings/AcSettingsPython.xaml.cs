@@ -14,8 +14,8 @@ using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsPython : ILoadableContent {
-        public class AcPythonViewModel : NotifyPropertyChanged {
-            internal AcPythonViewModel() { }
+        public class ViewModel : NotifyPropertyChanged {
+            internal ViewModel() { }
 
             public PythonSettings Python => AcSettingsHolder.Python;
 
@@ -34,11 +34,11 @@ namespace AcManager.Pages.AcSettings {
             PythonAppsManager.Instance.EnsureLoaded();
         }
 
-        private AcPythonViewModel Model => (AcPythonViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
         private bool _ignore;
 
         public void Initialize() {
-            DataContext = new AcPythonViewModel();
+            DataContext = new ViewModel();
             InitializeComponent();
             InputBindings.AddRange(new[] {
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))

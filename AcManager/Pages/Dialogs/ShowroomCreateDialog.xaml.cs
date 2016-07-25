@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Properties;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
@@ -17,17 +18,9 @@ using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Pages.Dialogs {
-    /// <summary>
-    /// Interaction logic for ShowroomCreateDialog.xaml
-    /// </summary>
     public partial class ShowroomCreateDialog {
-        internal class CreatingException : Exception {
-            public CreatingException(string msg) : base(msg) {
-            }
-        }
-
-        public class ShowroomCreateDialogViewModel : NotifyPropertyChanged {
-            public ShowroomCreateDialogViewModel() {
+        public class ViewModel : NotifyPropertyChanged {
+            public ViewModel() {
                 ResultId = ResultName = string.Empty;
             }
 
@@ -89,7 +82,7 @@ namespace AcManager.Pages.Dialogs {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.TexturesFilter,
                     FileName = PanoramaFilename,
-                    Title = "Select a Panorama File"
+                    Title = AppStrings.CreateShowroom_SelectPanorama_Title
                 };
 
                 if (dialog.ShowDialog() == true) {
@@ -100,7 +93,7 @@ namespace AcManager.Pages.Dialogs {
             private ICommand _createCommand;
 
             public ICommand CreateCommand => _createCommand ?? (_createCommand = new RelayCommand(o => {
-                // TODO: async? somehow?
+                // TODO: async
                 Create();
             }, o => PanoramaFilename != null && File.Exists(PanoramaFilename)));
 
@@ -110,9 +103,7 @@ namespace AcManager.Pages.Dialogs {
 
                     if (ResultId == string.Empty) {
                         for (var i = 1; ; i++) {
-                            if (i > 10000) {
-                                throw new CreatingException("Error 10000");
-                            }
+                            if (i > 10000) throw new Exception();
 
                             var candidate = $"generated_showroom_{i}";
                             if (ShowroomsManager.Instance.GetById(candidate) != null) continue;
@@ -124,7 +115,7 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 if (ShowroomsManager.Instance.GetById(ResultId) != null) {
-                    throw new CreatingException("ID is taken");
+                    throw new InformativeException(ToolsStrings.Common_IdIsTaken, ToolsStrings.Common_IdIsTaken_Commentary);
                 }
 
                 if (ResultName == string.Empty) {
@@ -136,24 +127,24 @@ namespace AcManager.Pages.Dialogs {
 
                 new IniFile {
                     ["LIGHT"] = {
-                        ["LOCK_SUN"] = "1",
-                        ["SUN_DIRECTION"] = "1,1,0.8"
+                        ["LOCK_SUN"] = @"1",
+                        ["SUN_DIRECTION"] = @"1,1,0.8"
                     }
                 }.Save(Path.Combine(location, "settings.ini"));
 
-                File.WriteAllText(Path.Combine(location, "ui", "ui_showroom.json"), new JObject {
-                    // TODO: add user name to settings and automatically add him here as an author?
-                    ["name"] = ResultName,
-                    ["tags"] = new JArray {
-                        InShadow ? "in shadow" : "lighted",
-                        "panorama based"
+                File.WriteAllText(Path.Combine(location, @"ui", @"ui_showroom.json"), new JObject {
+                    [@"author"] = SettingsHolder.Sharing.SharingName,
+                    [@"name"] = ResultName,
+                    [@"tags"] = new JArray {
+                        InShadow ? @"in shadow" : @"lighted",
+                        @"panorama based"
                     }
                 }.ToString());
 
                 using (var unpackedKn5 = new MemoryStream()) {
                     using (var stream = new MemoryStream(BinaryResources.ShowroomPanoramaTemplate))
                     using (var archive = new ZipArchive(stream))
-                    using (var entry = archive.GetEntry("0").Open()) {
+                    using (var entry = archive.GetEntry(@"0").Open()) {
                         entry.CopyTo(unpackedKn5);
                     }
 
@@ -161,9 +152,9 @@ namespace AcManager.Pages.Dialogs {
 
                     var kn5 = Kn5.FromStream(unpackedKn5);
                     kn5.SetTexture("0", PanoramaFilename);
-                    kn5.Nodes.First(x => x.Name == "0" && x.NodeClass == Kn5NodeClass.Mesh).CastShadows = InShadow;
+                    kn5.Nodes.First(x => x.Name == @"0" && x.NodeClass == Kn5NodeClass.Mesh).CastShadows = InShadow;
 
-                    var material = kn5.Materials.Values.First(x => x.Name == "0");
+                    var material = kn5.Materials.Values.First(x => x.Name == @"0");
                     material.GetPropertyByName("ksAmbient").ValueA = InShadow ? 3f : 1f;
                     material.GetPropertyByName("ksDiffuse").ValueA = InShadow ? 0f : 2f;
 
@@ -172,18 +163,18 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private readonly ShowroomCreateDialogViewModel _model;
+        private readonly ViewModel _model;
 
         public ShowroomCreateDialog() {
             InitializeComponent();
-            DataContext = _model = new ShowroomCreateDialogViewModel();
+            DataContext = _model = new ViewModel();
             Buttons = new[] { OkButton, CancelButton };
 
             OkButton.Command = new RelayCommand(o => {
                 try {
                     _model.CreateCommand.Execute(null);
-                } catch (CreatingException ex) {
-                    NonfatalError.Notify(ex.Message);
+                } catch (Exception e) {
+                    NonfatalError.Notify(AppStrings.CreateShowroom_CannotCreate, e);
                     return;
                 }
 

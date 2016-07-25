@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SharpCompress.Archive;
 using SharpCompress.Common;
 
-namespace AcManager.Tools.Helpers.AdditionalContentInstallation {
-    internal class SharpCompressContentInstallator : BaseAdditionalContentInstallator {
+namespace AcManager.Tools.ContentInstallation {
+    internal class SharpCompressContentInstallator : BaseContentInstallator {
         public static async Task<IAdditionalContentInstallator> Create(string filename) {
             var result = new SharpCompressContentInstallator(filename);
             await result.CreateExtractorAsync();

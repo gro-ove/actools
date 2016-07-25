@@ -7,10 +7,7 @@ using System.Threading;
 using System.Windows;
 using AcManager.Annotations;
 using AcManager.Controls.Dialogs;
-using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.AdditionalContentInstallation;
-using AcManager.Tools.Managers;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -20,7 +17,7 @@ namespace AcManager.Pages.Dialogs {
         public string Filename { get; set; }
 
         public class EntryWrapper : NotifyPropertyChanged {
-            public AdditionalContentEntry Entry { get; }
+            public ContentEntry Entry { get; }
 
             private bool _installEntry;
 
@@ -48,19 +45,19 @@ namespace AcManager.Pages.Dialogs {
 
             public IReadOnlyList<UpdateOption> UpdateOptionsList => _updateOptionsList;
 
-            public EntryWrapper(AdditionalContentEntry entry, bool isNew) {
+            public EntryWrapper(ContentEntry entry, bool isNew) {
                 Entry = entry;
                 InstallEntry = true;
                 IsNew = isNew;
 
                 if (isNew) return;
-                _updateOptionsList = UpdateOption.GetByType(entry.Type).ToArray();
+                _updateOptionsList = entry.Type.GetUpdateOptions().ToArray();
                 SelectedOption = _updateOptionsList[0];
             }
 
             public bool IsNew { get; set; }
 
-            public string DisplayName => (IsNew ? @"New " : @"Existed ") + Entry.Type.GetDescription() + ": " + Entry.Name;
+            public string DisplayName => IsNew ? Entry.Type.GetNew(Entry.Name) : Entry.Type.GetExisting(Entry.Name);
         }
 
         public IReadOnlyList<EntryWrapper> Entries {
@@ -103,7 +100,7 @@ namespace AcManager.Pages.Dialogs {
 
         private bool _loaded;
 
-        private void InstallAdditionalContentDialog_OnLoaded(object sender, RoutedEventArgs args) {
+        private void OnLoaded(object sender, RoutedEventArgs args) {
             if (_loaded) return;
             _loaded = true;
 
@@ -112,16 +109,16 @@ namespace AcManager.Pages.Dialogs {
 
         private async void CreateInstallator() {
             try {
-                _installator = await AdditionalContentInstallation.FromFile(Filename);
+                _installator = await ContentInstallation.FromFile(Filename);
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t install content from file", e);
+                NonfatalError.Notify(AppStrings.AdditionalContent_CannotInstall, e);
                 Close();
                 return;
             }
 
-            var msg = @"Archive is encrypted. Input password:";
+            var msg = AppStrings.AdditionalContent_InputPassword_Prompt;
             while (_installator.IsPasswordRequired && !_installator.IsPasswordCorrect) {
-                var password = Prompt.Show(msg, @"Password required", passwordMode: true);
+                var password = Prompt.Show(msg, AppStrings.AdditionalContent_InputPassword_Title, passwordMode: true);
                 if (password == null) {
                     Close();
                     return;
@@ -131,41 +128,19 @@ namespace AcManager.Pages.Dialogs {
                     await _installator.TrySetPasswordAsync(password);
                     break;
                 } catch (PasswordException) {
-                    msg = @"Password is invalid, try again:";
+                    msg = AppStrings.AdditionalContent_InputPassword_InvalidPrompt;
                 }
             }
 
             UpdateEntries();
         }
 
-        private void InstallAdditionalContentDialog_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
 
             _cancellationTokenSource?.Cancel();
             DisposeHelper.Dispose(ref _installator);
-        }
-
-        private IAcManagerNew GetManagerByType(AdditionalContentType type) {
-            switch (type) {
-                case AdditionalContentType.Car:
-                    return CarsManager.Instance;
-
-                case AdditionalContentType.Track:
-                    return TracksManager.Instance;
-
-                case AdditionalContentType.Showroom:
-                    return ShowroomsManager.Instance;
-
-                case AdditionalContentType.Font:
-                    return FontsManager.Instance;
-
-                case AdditionalContentType.CarSkin:
-                    throw new NotImplementedException();
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
         }
 
         private async void UpdateEntries() {
@@ -175,17 +150,17 @@ namespace AcManager.Pages.Dialogs {
             try {
                 using (_cancellationTokenSource = new CancellationTokenSource()) {
                     Entries = (await _installator.GetEntriesAsync(null, _cancellationTokenSource.Token)).Select(x => {
-                        var manager = GetManagerByType(x.Type);
+                        var manager = x.Type.GetManager();
                         if (manager == null) return null;
                         var existed = manager.GetObjectById(x.Id);
                         return new EntryWrapper(x, existed == null);
                     }).Where(x => x != null).ToArray();
                 }
             } catch (PasswordException e) {
-                NonfatalError.Notify(@"Password is incorrect", e);
+                NonfatalError.Notify(AppStrings.AdditionalContent_PasswordIsInvalid, e);
                 Close();
             } catch (Exception e) {
-                NonfatalError.Notify(@"Can’t unpack", @"Maybe archive is damaged or password is incorrect.", e);
+                NonfatalError.Notify(AppStrings.AdditionalContent_CannotUnpack, AppStrings.AdditionalContent_CannotUnpack_Commentary, e);
                 Close();
             } finally {
                 _cancellationTokenSource = null;
@@ -200,18 +175,18 @@ namespace AcManager.Pages.Dialogs {
         public AsyncCommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(async o => {
             using (var waiting = new WaitingDialog()) {
                 foreach (var wrapper in Entries.Where(entry => entry.InstallEntry)) {
-                    waiting.Title = $@"Installing {wrapper.Entry.Name}…";
+                    waiting.Title = String.Format(AppStrings.AdditionalContent_Installing, wrapper.Entry.Name);
                     if (waiting.CancellationToken.IsCancellationRequested) return;
 
                     try {
-                        var manager = GetManagerByType(wrapper.Entry.Type) as IFileAcManager;
+                        var manager = wrapper.Entry.Type.GetManager();
                         if (manager == null) continue;
 
                         var directory = manager.PrepareForAdditionalContent(wrapper.Entry.Id,
                                 wrapper.SelectedOption != null && wrapper.SelectedOption.RemoveExisting);
                         await _installator.InstallEntryToAsync(wrapper.Entry, wrapper.SelectedOption?.Filter, directory, waiting, waiting.CancellationToken);
                     } catch (Exception e) {
-                        NonfatalError.Notify(@"Can’t install " + wrapper.Entry.Name, e);
+                        NonfatalError.Notify(string.Format(AppStrings.AdditionalContent_CannotInstallFormat, wrapper.Entry.Name), e);
                     }
                 }
             }

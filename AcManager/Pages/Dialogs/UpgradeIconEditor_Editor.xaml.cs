@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,13 +22,13 @@ namespace AcManager.Pages.Dialogs {
             var mainDialog = UpgradeIconEditor.Instance;
             if (mainDialog != null) {
                 Car = mainDialog.Car;
-                _key = "__upgradeiconeditor_" + Car.Id;
+                _key = @"__upgradeiconeditor_" + Car.Id;
             }
 
             DataContext = this;
             InitializeComponent();
 
-            NewIconLabel.Text = _key != null ? ValuesStorage.GetString(_key, UpgradeIconEditor.TryToGuessLabel(Car?.DisplayName) ?? "S1") : "?";
+            NewIconLabel.Text = _key != null ? ValuesStorage.GetString(_key, UpgradeIconEditor.TryToGuessLabel(Car?.DisplayName) ?? @"S1") : @"?";
             NewIconLabel_UpdateFontSize();
 
             FocusLabel();
@@ -63,8 +64,12 @@ namespace AcManager.Pages.Dialogs {
 
             try {
                 bmp.SaveAsPng(Car.UpgradeIcon);
-            } catch (Exception e) {
-                NonfatalError.Notify(@"Can’t change upgrade icon", "Make sure the original file isn’t busy", e);
+            } catch (IOException ex) {
+                NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, AppStrings.UpgradeIcon_CannotChange_Commentary, ex);
+                return;
+            } catch (Exception ex) {
+                NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, ex);
+                return;
             }
         }
 

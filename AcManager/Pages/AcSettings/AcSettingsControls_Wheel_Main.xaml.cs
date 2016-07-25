@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 
 namespace AcManager.Pages.AcSettings {
@@ -8,7 +7,7 @@ namespace AcManager.Pages.AcSettings {
             InitializeComponent();
         }
 
-        private void AcSettingsControls_Wheel_Main_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             AcSettingsHolder.Controls.ClearWaiting();
         }
     }

@@ -58,7 +58,7 @@
                 <DockPanel.ToolTip>
                     <ToolTip>
                         <TextBlock
-                                Text="{Binding Replay.RecommendedSize, StringFormat={x:Static g:AppStrings.AcSettings_RecommendedMaximumSize}, TargetNullValue='?', FallbackValue='?'}" />
+                                Text="{Binding Replay.RecommendedSize, StringFormat={x:Static g:AppStrings.AcSettings_Replays_RecommendedMaximumSizeFormat}, TargetNullValue='?', FallbackValue='?'}" />
                     </ToolTip>
                 </DockPanel.ToolTip>
                 <mui:ValueLabel Value="{Binding Replay.MaxSize}" Mode="Positive" Postfix=" MB" Content="{x:Static g:AppStrings.AcSettings_Replays_MaximumSize}" />

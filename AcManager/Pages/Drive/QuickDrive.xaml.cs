@@ -99,6 +99,8 @@ namespace AcManager.Pages.Drive {
             private double _temperature;
             private int _time;
 
+            private bool _skipLoading;
+
             public Uri SelectedMode {
                 get { return _selectedMode; }
                 set {
@@ -110,27 +112,27 @@ namespace AcManager.Pages.Drive {
                     // if (_uiMode) return;
                     switch (value.ToString()) {
                         case "/Pages/Drive/QuickDrive_Drift.xaml":
-                            SelectedModeViewModel = new QuickDrive_Drift.ViewModel();
+                            SelectedModeViewModel = new QuickDrive_Drift.ViewModel(!_skipLoading);
                             break;
 
                         case "/Pages/Drive/QuickDrive_Hotlap.xaml":
-                            SelectedModeViewModel = new QuickDrive_Hotlap.ViewModel();
+                            SelectedModeViewModel = new QuickDrive_Hotlap.ViewModel(!_skipLoading);
                             break;
 
                         case "/Pages/Drive/QuickDrive_Practice.xaml":
-                            SelectedModeViewModel = new QuickDrive_Practice.ViewModel();
+                            SelectedModeViewModel = new QuickDrive_Practice.ViewModel(!_skipLoading);
                             break;
 
                         case "/Pages/Drive/QuickDrive_Race.xaml":
-                            SelectedModeViewModel = new QuickDrive_Race.ViewModel();
+                            SelectedModeViewModel = new QuickDrive_Race.ViewModel(!_skipLoading);
                             break;
 
                         case "/Pages/Drive/QuickDrive_Weekend.xaml":
-                            SelectedModeViewModel = new QuickDrive_Weekend.ViewModel();
+                            SelectedModeViewModel = new QuickDrive_Weekend.ViewModel(!_skipLoading);
                             break;
 
                         case "/Pages/Drive/QuickDrive_TimeAttack.xaml":
-                            SelectedModeViewModel = new QuickDrive_TimeAttack.ViewModel();
+                            SelectedModeViewModel = new QuickDrive_TimeAttack.ViewModel(!_skipLoading);
                             break;
 
                         default:
@@ -398,8 +400,13 @@ namespace AcManager.Pages.Drive {
                     RealConditionsTimezones = o.RealConditionsTimezones ?? true;
                     RealConditionsLighting = o.RealConditionsLighting;
 
-                    if (o.Mode != null) SelectedMode = o.Mode != null && o.Mode.OriginalString.Contains('_') ? o.Mode : SelectedMode;
-                    if (o.ModeData != null) SelectedModeViewModel?.FromSerializedString(o.ModeData);
+                    try {
+                        _skipLoading = o.ModeData != null;
+                        if (o.Mode != null) SelectedMode = o.Mode != null && o.Mode.OriginalString.Contains('_') ? o.Mode : SelectedMode;
+                        if (o.ModeData != null) SelectedModeViewModel?.FromSerializedString(o.ModeData);
+                    } finally {
+                        _skipLoading = false;
+                    }
 
                     if (o.CarId != null) SelectedCar = CarsManager.Instance.GetById(o.CarId) ?? SelectedCar;
                     if (o.TrackId != null) SelectedTrack = TracksManager.Instance.GetLayoutById(o.TrackId) ?? SelectedTrack;
@@ -731,7 +738,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void SelectedModeViewModel_Changed(object sender, EventArgs e) {
-                Changed?.Invoke(this, EventArgs.Empty);
+                SaveLater();
             }
 
             internal bool Run() {

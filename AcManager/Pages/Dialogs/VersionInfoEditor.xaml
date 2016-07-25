@@ -3,8 +3,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:m="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
         xmlns:h="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Version Info">
-    <Grid Margin="0 10 10 10">
+        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:di="clr-namespace:AcManager.Pages.Dialogs"
+        xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Title="{x:Static g:AppStrings.VersionInfo_Title}" d:DataContext="{d:DesignInstance di:VersionInfoEditor}">
+    <Grid Margin="0 8 8 8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60" />
             <ColumnDefinition Width="240" />

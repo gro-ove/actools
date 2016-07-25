@@ -116,16 +116,20 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public IEnumerable<ContentEntry> GetContentDirectory(params string[] name) {
+        public IEnumerable<ContentEntry> GetContentDirectoryFiltered(string searchPattern, params string[] name) {
             var nameJoined = Path.Combine(name);
             var contentDir = EnsureDirectory(ContentDirName, nameJoined);
             var contentUserDir = EnsureDirectory(ContentUserDirName, nameJoined);
 
-            var contentUserFiles = Directory.GetFiles(contentUserDir).Select(x => new ContentEntry(x, true)).ToList();
+            var contentUserFiles = Directory.GetFiles(contentUserDir, searchPattern).Select(x => new ContentEntry(x, true)).ToList();
             var temp = contentUserFiles.Select(x => x.Name);
 
-            return Directory.GetFiles(contentDir).Select(x => new ContentEntry(x, false))
+            return Directory.GetFiles(contentDir, searchPattern).Select(x => new ContentEntry(x, false))
                 .Where(x => !temp.Contains(x.Name)).Concat(contentUserFiles).OrderBy(x => x.Name);
+        }
+
+        public IEnumerable<ContentEntry> GetContentDirectory(params string[] name) {
+            return GetContentDirectoryFiltered(@"*", name);
         }
 
         public void AddUserContentToDirectory(string name, string filename, string saveAs) {

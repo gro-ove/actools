@@ -3,10 +3,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:directInput="clr-namespace:AcManager.Tools.Helpers.DirectInput;assembly=AcManager.Tools"
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager"
-        xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance acset:AcSettingsControls+ViewModel}" SizeChanged="AcSettingsControls_OnSizeChanged"
-        Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded" PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        xmlns:c="http://acstuff.ru/app/controls" xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsControls+ViewModel}"
+        SizeChanged="AcSettingsControls_OnSizeChanged" Loaded="AcSettingsControls_OnLoaded" Unloaded="AcSettingsControls_OnUnloaded"
+        PreviewKeyDown="AcSettingsControls_OnPreviewKeyDown" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -29,16 +29,15 @@
         <DockPanel>
             <StackPanel Style="{StaticResource SettingsPanel}" DockPanel.Dock="Top">
                 <DockPanel>
-                    <Label Content="Input method:" />
+                    <Label Content="{x:Static g:AppStrings.Controls_InputMethodLabel}" />
                     <ComboBox ItemsSource="{Binding Controls.InputMethods}" SelectedItem="{Binding Controls.InputMethod}" DisplayMemberPath="DisplayName" />
                 </DockPanel>
             </StackPanel>
-
             <mui:ModernFrame Margin="0 4 1 0" Source="{Binding Controls.InputMethod.Id, Converter={x:Static acset:AcSettingsControls.ModeToUriConverter}}" />
         </DockPanel>
 
         <StackPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" x:Name="DetectedControllers">
-            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8" Text="Detected controllers:" />
+            <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Controls_DetectedControllersHeader}" />
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                 <ItemsControl ItemsSource="{Binding Controls.Devices}">
                     <ItemsControl.ItemsPanel>
@@ -51,19 +50,22 @@
                         <DataTemplate DataType="{x:Type directInput:DirectInputDevice}">
                             <StackPanel Width="164" Margin="0 0 0 8" Background="Transparent">
                                 <StackPanel.ToolTip>
-                                    <StackPanel Margin="4">
-                                        <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
-                                        <TextBlock Text="{Binding Id, StringFormat='{}AC ID: {0}'}" FontWeight="Bold" />
-                                        <TextBlock Text="{Binding Device.ProductName, StringFormat='{}Product name: {0}'}" />
-                                        <TextBlock Text="{Binding Device.ProductGuid, StringFormat='{}Product GUID: {0}'}" />
-                                        <TextBlock Text="{Binding Device.ForceFeedbackDriverGuid, StringFormat='{}FFB GUID: {0}'}" />
-                                        <TextBlock Text="{Binding Device.InstanceGuid, StringFormat='{}Instance GUID: {0}'}" />
-                                        <TextBlock Text="{Binding Device.HumanInterfaceDevice, StringFormat='{}HID: {0}'}" />
-                                        <TextBlock Text="{Binding Device.UsageId, StringFormat='{}Usage ID: {0}'}" />
-                                        <TextBlock Text="{Binding Device.UsagePage, StringFormat='{}Usage page: {0}'}" />
-                                        <TextBlock Text="{Binding Device.Type, StringFormat='{}Type: {0}'}" />
-                                        <TextBlock Text="{Binding Device.Subtype, StringFormat='{}Subtype: {0}'}" />
-                                    </StackPanel>
+                                    <ToolTip
+                                            Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <StackPanel Margin="4">
+                                            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
+                                            <TextBlock Text="{Binding Id, StringFormat='{}AC ID: {0}'}" FontWeight="Bold" />
+                                            <TextBlock Text="{Binding Device.ProductName, StringFormat='{}Product name: {0}'}" />
+                                            <TextBlock Text="{Binding Device.ProductGuid, StringFormat='{}Product GUID: {0}'}" />
+                                            <TextBlock Text="{Binding Device.ForceFeedbackDriverGuid, StringFormat='{}FFB GUID: {0}'}" />
+                                            <TextBlock Text="{Binding Device.InstanceGuid, StringFormat='{}Instance GUID: {0}'}" />
+                                            <TextBlock Text="{Binding Device.HumanInterfaceDevice, StringFormat='{}HID: {0}'}" />
+                                            <TextBlock Text="{Binding Device.UsageId, StringFormat='{}Usage ID: {0}'}" />
+                                            <TextBlock Text="{Binding Device.UsagePage, StringFormat='{}Usage page: {0}'}" />
+                                            <TextBlock Text="{Binding Device.Type, StringFormat='{}Type: {0}'}" />
+                                            <TextBlock Text="{Binding Device.Subtype, StringFormat='{}Subtype: {0}'}" />
+                                        </StackPanel>
+                                    </ToolTip>
                                 </StackPanel.ToolTip>
 
                                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
@@ -121,8 +123,8 @@
             <Grid MinWidth="300">
                 <Grid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Warn About Unsaved Changes" IsCheckable="True"
-                                ToolTip="Otherwise, app will move previous changed versions to the Recycle Bin silently"
+                        <MenuItem Header="{x:Static g:AppStrings.Controls_WarnAboutUnsaved}" IsCheckable="True"
+                                ToolTip="{x:Static g:AppStrings.Controls_WarnAboutUnsaved_Tooltip}"
                                 IsChecked="{Binding WarnIfChanged, Source={x:Static c:ControlsPresets.Instance}}" />
                     </ContextMenu>
                 </Grid.ContextMenu>
@@ -158,22 +160,21 @@
                     </MenuItem>
                 </Menu>
 
-                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="Save current settings as preset (Ctrl+S)"
-                        Content="Save Preset" />
+                <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0"
+                        ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static c:ControlsStrings.Presets_Save}" />
             </Grid>
             <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0"
-                    ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
-                    Content="{x:Static g:AppStrings.Common_Share}">
+                    ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}" Content="{x:Static g:AppStrings.Common_Share}">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="ShareContextMenu">
-                        <MenuItem Header="Share Preset" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="Basic"
-                                ToolTip="Only basic properties, without experimental ones" />
-                        <MenuItem Header="Share FFB Settings Only" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="FFBOnly"
-                                ToolTip="Including experimental FFB properties" />
+                        <MenuItem Header="{x:Static g:AppStrings.Controls_SharePreset}" Command="{Binding ShareCommand, Mode=OneTime}"
+                                CommandParameter="Basic" ToolTip="{x:Static g:AppStrings.Controls_SharePreset_Tooltip}" />
+                        <MenuItem Header="{x:Static g:AppStrings.Controls_ShareFfbOnly}" Command="{Binding ShareCommand, Mode=OneTime}"
+                                CommandParameter="FFBOnly" ToolTip="{x:Static g:AppStrings.Controls_ShareFfbOnly_Tooltip}" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-            <Button Command="{Binding TestCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="Test current preset with Quick Drive"
+            <Button Command="{Binding TestCommand, Mode=OneTime}" Margin="4 0 0 0" ToolTip="{x:Static g:AppStrings.Controls_Test_Tooltip}"
                     Style="{StaticResource Go.Button}" Content="{x:Static g:AppStrings.Common_Test}" />
         </StackPanel>
     </Grid>

@@ -33,7 +33,7 @@ namespace AcManager {
                 SetUnhandledExceptionHandler();
             }
             
-            AppArguments.Initialize(a.Skip(1));
+            AppArguments.Initialize(a);
             AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
             LocalesHelper.Initialize();
 

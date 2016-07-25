@@ -4,15 +4,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using AcManager.Annotations;
 using AcManager.Controls.Helpers;
-using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Dialogs {
     public partial class UpgradeIconEditor_Library : IFinishableControl, INotifyPropertyChanged {
@@ -68,7 +66,6 @@ namespace AcManager.Pages.Dialogs {
 
         public void Finish(bool result) {
             FilesStorage.Instance.Watcher(ContentCategory.UpgradeIcons).Update -= UpgradeIconEditor_Library_Update;
-
             if (Selected == null) return;
 
             ValuesStorage.Set(_key, Selected.Name);
@@ -79,8 +76,12 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 File.Copy(Selected.Filename, Car.UpgradeIcon);
-            }  catch (Exception) {
-                ModernDialog.ShowMessage("Can’t change upgrade icon.", ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
+            } catch (IOException ex) {
+                NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, AppStrings.UpgradeIcon_CannotChange_Commentary, ex);
+                return;
+            } catch (Exception ex) {
+                NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, ex);
+                return;
             }
         }
 

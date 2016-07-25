@@ -10,12 +10,14 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Drive;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
@@ -50,8 +52,8 @@ namespace AcManager.Pages.AcSettings {
                 var dialog = new SaveFileDialog {
                     InitialDirectory = Controls.UserPresetsDirectory,
                     FileName = Path.GetFileNameWithoutExtension(Controls.CurrentPresetFilename),
-                    Filter = string.Format("Presets (*{0})|*{0}", ".ini"),
-                    DefaultExt = ".ini",
+                    Filter = string.Format(ToolsStrings.Presets_FileFilter, @".ini"),
+                    DefaultExt = @".ini",
                     OverwritePrompt = true
                 };
 
@@ -71,8 +73,8 @@ namespace AcManager.Pages.AcSettings {
 
                 filename = dialog.FileName;
                 if (!FileUtils.IsAffected(Controls.UserPresetsDirectory, filename)) {
-                    if (ModernDialog.ShowMessage("Please, choose a file in initial directory (“cfg\\controllers\\savedsetups”) or some subdirectory.",
-                                                 "Can’t Do", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                    if (ModernDialog.ShowMessage(AppStrings.Controls_InvalidDirectory_Commentary,
+                                                 ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                         SaveCommand?.Execute(Path.GetFileName(filename));
                     }
 
@@ -99,10 +101,10 @@ namespace AcManager.Pages.AcSettings {
                     AcSettingsHolder.System.SaveFfbToIni(iniFile);
 
                     await SharingUiHelper.ShareAsync(SharedEntryType.ForceFeedbackPreset,
-                            string.Format("{0} (FFB Only)", Path.GetFileName(Controls.CurrentPresetName)), null, iniFile.Stringify());
+                            string.Format(AppStrings.Controls_SharedFfbOnly, Path.GetFileName(Controls.CurrentPresetName)), null, iniFile.Stringify());
                 } else if (o as string == @"Basic") {
-                    var target = Controls.InputMethod.Id == "KEYBOARD" ? "keyboard" :
-                            Controls.InputMethod.Id == "X360" ? "Xbox 360 controller" :
+                    var target = Controls.InputMethod.Id == "KEYBOARD" ? AppStrings.Controls_SharedFor_Keyboard :
+                            Controls.InputMethod.Id == "X360" ? AppStrings.Controls_SharedFor_XboxController :
                                     Controls.WheelAxleEntries.FirstOrDefault()?.Input?.Device?.DisplayName;
 
                     await SharingUiHelper.ShareAsync(SharedEntryType.ControlsPreset, Path.GetFileName(Controls.CurrentPresetName), target,
@@ -187,11 +189,12 @@ namespace AcManager.Pages.AcSettings {
         public AcControlsConflictSolution Resolve(string inputDisplayName, IEnumerable<string> existingAssignments) {
             var list = existingAssignments.Select(x => $"“{x}”").ToList();
             var message = list.Count > 1
-                    ? $"“{inputDisplayName}” is already used for {list.SkipLast(1).JoinToString(", ")} and {list.Last()}. Do you want to remove old usings first?"
-                    : $"“{inputDisplayName}” is already used for {list.First()}. Do you want to remove old using first?";
+                    ? string.Format(AppStrings.Controls_AlreadyUsed_MultipleMessage, inputDisplayName,
+                            list.SkipLast(1).JoinToString(@", "), list.Last())
+                    : string.Format(AppStrings.Controls_AlreadyUsed_Message, inputDisplayName, list.First());
 
             var dlg = new ModernDialog {
-                Title = "Already used",
+                Title = AppStrings.Controls_AlreadyUsed,
                 Content = new ScrollViewer {
                     Content = new BbCodeBlock { BbCode = message, Margin = new Thickness(0, 0, 0, 8) },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -204,10 +207,10 @@ namespace AcManager.Pages.AcSettings {
             };
 
             dlg.Buttons = new[] {
-                dlg.CreateCloseDialogButton("Yes, Remove Old", true, false, MessageBoxResult.Yes),
-                dlg.CreateCloseDialogButton("No, Apply to All", false, false, MessageBoxResult.No),
-                dlg.CreateCloseDialogButton("Flip Usings", false, false, MessageBoxResult.OK),
-                dlg.CreateCloseDialogButton("Cancel", false, true, MessageBoxResult.Cancel),
+                dlg.CreateCloseDialogButton(AppStrings.Controls_RemoveOld, true, false, MessageBoxResult.Yes),
+                dlg.CreateCloseDialogButton(AppStrings.Controls_ApplyToAll, false, false, MessageBoxResult.No),
+                dlg.CreateCloseDialogButton(AppStrings.Controls_SwapUsings, false, false, MessageBoxResult.OK),
+                dlg.CreateCloseDialogButton(UiStrings.Cancel, false, true, MessageBoxResult.Cancel),
             };
             dlg.ShowDialog();
 
