@@ -78,7 +78,6 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_ValuesSavingTimeLabel}" />
-                <Label Content="{x:Static g:AppStrings.Common_MillisecondsFormat}" />
                 <TextBlock attached:WatermarkService.Watermark="?"
                         Text="{Binding ValuesStorage.PreviosSaveTime.TotalMilliseconds, StringFormat={x:Static g:AppStrings.Common_MillisecondsFormat}, Mode=OneWay}" />
             </DockPanel>

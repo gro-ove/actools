@@ -489,7 +489,7 @@
   <data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
     <value>Анимация переходов:</value>
   </data>
-  <data name="Settings_ColorLabel" xml:space="preserve">
+  <data name="Common_ColorLabel" xml:space="preserve">
     <value>Цвет:</value>
   </data>
   <data name="Settings_Content_CarsHeader" xml:space="preserve">

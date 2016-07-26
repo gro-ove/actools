@@ -8,19 +8,14 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.About {
-    /// <summary>
-    /// Interaction logic for ReleaseNotesPage.xaml
-    /// </summary>
     public partial class ReleaseNotesPage {
-        private ReleaseNotesPageViewModel Model => (ReleaseNotesPageViewModel)DataContext;
-
         public ReleaseNotesPage() {
-            DataContext = new ReleaseNotesPageViewModel();
+            DataContext = new ViewModel();
             InitializeComponent();
         }
 
-        public class ReleaseNotesPageViewModel : NotifyPropertyChanged, IComparer {
-            public ReleaseNotesPageViewModel() {
+        public class ViewModel : NotifyPropertyChanged, IComparer {
+            public ViewModel() {
                 NotesList = new ListCollectionView(ReleaseNotes.Entries.Where(x => !x.IsLimited || AppKeyHolder.IsAllRight).ToList()) { CustomSort = this };
                 NotesList.MoveCurrentToFirst();
             }

@@ -1,5 +1,4 @@
-﻿using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.AcSettings;
+﻿using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.AcSettings {

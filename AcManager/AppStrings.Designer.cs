@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,160 @@ namespace AcManager {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please contact us using [url=&quot;https://trello.com/b/MwqpL8Bw/content-manager&quot;]Trello[/url] or [url=&quot;https://trello.com/c/w5xT6ssZ/49-contacts&quot;]something else[/url]..
+        /// </summary>
+        public static string About_ContactInformation {
+            get {
+                return ResourceManager.GetString("About_ContactInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contact us:.
+        /// </summary>
+        public static string About_ContactUsHeader {
+            get {
+                return ResourceManager.GetString("About_ContactUsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copyright © 2016 AcClub. All rights reserved..
+        /// </summary>
+        public static string About_Copyright {
+            get {
+                return ResourceManager.GetString("About_Copyright", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A custom launcher and content management app for [url=&quot;http://www.assettocorsa.net/&quot;]Assetto Corsa[/url].
+        /// </summary>
+        public static string About_Description {
+            get {
+                return ResourceManager.GetString("About_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable developer mode?.
+        /// </summary>
+        public static string About_DeveloperMode {
+            get {
+                return ResourceManager.GetString("About_DeveloperMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Developer Mode.
+        /// </summary>
+        public static string About_DeveloperMode_Title {
+            get {
+                return ResourceManager.GetString("About_DeveloperMode_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content Manager is made possible by some [url=&quot;/Pages/About/Credits.xaml|_top&quot;]open source software[/url].
+        ///Content Manager [url=&quot;/Pages/About/License.xaml|_top&quot;]License[/url]..
+        /// </summary>
+        public static string About_Footer {
+            get {
+                return ResourceManager.GetString("About_Footer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark All As Read.
+        /// </summary>
+        public static string About_MarkAllAsRead {
+            get {
+                return ResourceManager.GetString("About_MarkAllAsRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More information.
+        /// </summary>
+        public static string About_MoreInformation {
+            get {
+                return ResourceManager.GetString("About_MoreInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New!.
+        /// </summary>
+        public static string About_NewTooltip {
+            get {
+                return ResourceManager.GetString("About_NewTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report an issue.
+        /// </summary>
+        public static string About_ReportAnIssue {
+            get {
+                return ResourceManager.GetString("About_ReportAnIssue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t send logs.
+        /// </summary>
+        public static string About_ReportAnIssue_CannotSend {
+            get {
+                return ResourceManager.GetString("About_ReportAnIssue_CannotSend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Describe the issue. And, please, leave some contacts if you want to get a response (also, it could help to resolve the issue)..
+        /// </summary>
+        public static string About_ReportAnIssue_Prompt {
+            get {
+                return ResourceManager.GetString("About_ReportAnIssue_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logs Sent.
+        /// </summary>
+        public static string About_ReportAnIssue_Sent {
+            get {
+                return ResourceManager.GetString("About_ReportAnIssue_Sent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thank you for the help!.
+        /// </summary>
+        public static string About_ReportAnIssue_Sent_Message {
+            get {
+                return ResourceManager.GetString("About_ReportAnIssue_Sent_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What’s The Issue?.
+        /// </summary>
+        public static string About_ReportAnIssue_Title {
+            get {
+                return ResourceManager.GetString("About_ReportAnIssue_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version: {0}.
+        /// </summary>
+        public static string About_VersionFormat {
+            get {
+                return ResourceManager.GetString("About_VersionFormat", resourceCulture);
             }
         }
         
@@ -814,6 +968,384 @@ namespace AcManager {
         public static string AcSettings_Video {
             get {
                 return ResourceManager.GetString("AcSettings_Video", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow unsupported DirectX 10 (use on your own risk; doesn&apos;t work?).
+        /// </summary>
+        public static string AcSettings_Video_AllowDirectX10 {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_AllowDirectX10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anisotropic filtering:.
+        /// </summary>
+        public static string AcSettings_Video_AnitrosopicFilteringLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_AnitrosopicFilteringLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anti-aliasing:.
+        /// </summary>
+        public static string AcSettings_Video_AntiAliasingLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_AntiAliasingLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Crepuscular rays.
+        /// </summary>
+        public static string AcSettings_Video_CrepuscularRays {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_CrepuscularRays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom resolution:.
+        /// </summary>
+        public static string AcSettings_Video_CustomResolutionLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_CustomResolutionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Depth of field:.
+        /// </summary>
+        public static string AcSettings_Video_DepthOfFieldLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_DepthOfFieldLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable _post-processing effects.
+        /// </summary>
+        public static string AcSettings_Video_EnablePostProcessing {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_EnablePostProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix resolution automatically.
+        /// </summary>
+        public static string AcSettings_Video_FixResolutionAutomatically {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_FixResolutionAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Framerate.
+        /// </summary>
+        public static string AcSettings_Video_Framerate {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_Framerate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Fullscreen.
+        /// </summary>
+        public static string AcSettings_Video_Fullscreen {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_Fullscreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _FXAA.
+        /// </summary>
+        public static string AcSettings_Video_Fxaa {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_Fxaa", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Glare quality:.
+        /// </summary>
+        public static string AcSettings_Video_GlareQualityLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_GlareQualityLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heat shimmering.
+        /// </summary>
+        public static string AcSettings_Video_HeatShimmering {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_HeatShimmering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High quality.
+        /// </summary>
+        public static string AcSettings_Video_HighQuality {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_HighQuality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Limit framerate.
+        /// </summary>
+        public static string AcSettings_Video_LimitFramerate {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_LimitFramerate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max. frame latency.
+        /// </summary>
+        public static string AcSettings_Video_MaximumFrameLatency {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_MaximumFrameLatency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum frame latency; auto — defined by videocard settings.
+        /// </summary>
+        public static string AcSettings_Video_MaximumFrameLatency_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_MaximumFrameLatency_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mip LOD bias.
+        /// </summary>
+        public static string AcSettings_Video_MipLodBias {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_MipLodBias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set negative value (like −1) to sharp the image.
+        /// </summary>
+        public static string AcSettings_Video_MipLodBias_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_MipLodBias_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mirror resolution:.
+        /// </summary>
+        public static string AcSettings_Video_MirrorResolutionLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_MirrorResolutionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mirrors:.
+        /// </summary>
+        public static string AcSettings_Video_MirrorsHeader {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_MirrorsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Motion blur.
+        /// </summary>
+        public static string AcSettings_Video_MotionBlur {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_MotionBlur", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oculus:.
+        /// </summary>
+        public static string AcSettings_Video_OculusHeader {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_OculusHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overall quality:.
+        /// </summary>
+        public static string AcSettings_Video_OverallQualityLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_OverallQualityLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pixels per display.
+        /// </summary>
+        public static string AcSettings_Video_PixelsPerDisplay {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_PixelsPerDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post-Processing:.
+        /// </summary>
+        public static string AcSettings_Video_PostProcessingHeader {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_PostProcessingHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quality:.
+        /// </summary>
+        public static string AcSettings_Video_QualityHeader {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_QualityHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reflections:.
+        /// </summary>
+        public static string AcSettings_Video_ReflectionsHeader {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_ReflectionsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reflections resolution:.
+        /// </summary>
+        public static string AcSettings_Video_ReflectionsResolutionLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_ReflectionsResolutionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rendering distance.
+        /// </summary>
+        public static string AcSettings_Video_RenderingDistance {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_RenderingDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rendering frequency:.
+        /// </summary>
+        public static string AcSettings_Video_RenderingFrequencyLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_RenderingFrequencyLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rendering mode:.
+        /// </summary>
+        public static string AcSettings_Video_RenderingModeLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_RenderingModeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolution:.
+        /// </summary>
+        public static string AcSettings_Video_ResolutionLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_ResolutionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saturation.
+        /// </summary>
+        public static string AcSettings_Video_Saturation {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_Saturation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shadows resolution:.
+        /// </summary>
+        public static string AcSettings_Video_ShadowResolutionLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_ShadowResolutionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skybox reflection.
+        /// </summary>
+        public static string AcSettings_Video_SkyboxReflection {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_SkyboxReflection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skybox reflection gain.
+        /// </summary>
+        public static string AcSettings_Video_SkyboxReflection_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_SkyboxReflection_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smoke generation:.
+        /// </summary>
+        public static string AcSettings_Video_SmokeGenerationLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_SmokeGenerationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show smoke in mirrors.
+        /// </summary>
+        public static string AcSettings_Video_SmokeInMirrors {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_SmokeInMirrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System:.
+        /// </summary>
+        public static string AcSettings_Video_SystemHeader {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_SystemHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Vertical syncronization.
+        /// </summary>
+        public static string AcSettings_Video_VerticalSyncronization {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_VerticalSyncronization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to World detail:.
+        /// </summary>
+        public static string AcSettings_Video_WorldDetalLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_WorldDetalLabel", resourceCulture);
             }
         }
         
@@ -2402,6 +2934,15 @@ namespace AcManager {
         public static string Common_IdFormat {
             get {
                 return ResourceManager.GetString("Common_IdFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage.
+        /// </summary>
+        public static string Common_Manage {
+            get {
+                return ResourceManager.GetString("Common_Manage", resourceCulture);
             }
         }
         

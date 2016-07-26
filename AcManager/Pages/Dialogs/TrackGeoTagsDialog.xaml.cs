@@ -2,25 +2,26 @@
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows.Navigation;
+using AcManager.Controls;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
     public partial class TrackGeoTagsDialog {
-        private TrackGeoTagsDialogViewModel Model => (TrackGeoTagsDialogViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         public TrackGeoTagsDialog(TrackBaseObject track) {
-            DataContext = new TrackGeoTagsDialogViewModel(track);
+            DataContext = new ViewModel(track);
             InitializeComponent();
 
             Buttons = new[] {
-                CreateExtraDialogButton("Find It", new RelayCommand(o => {
-                    MapWebBrowser.InvokeScript("moveTo", GetQuery(Model.Track));
+                CreateExtraDialogButton(ToolsStrings.TrackGeoTags_FindIt, new RelayCommand(o => {
+                    MapWebBrowser.InvokeScript(@"moveTo", GetQuery(Model.Track));
                 })),
                 CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, new CombinedCommand(Model.SaveCommand, CloseCommand)),
                 CancelButton
@@ -41,7 +42,7 @@ namespace AcManager.Pages.Dialogs {
                 case nameof(Model.Longitude):
                     var pair = new GeoTagsEntry(Model.Latitude, Model.Longitude);
                     if (!pair.IsEmptyOrInvalid) {
-                        MapWebBrowser.InvokeScript("moveTo", pair.LatitudeValue + ";" + pair.LongitudeValue);
+                        MapWebBrowser.InvokeScript(@"moveTo", pair.LatitudeValue + @";" + pair.LongitudeValue);
                     }
                     break;
             }
@@ -50,9 +51,9 @@ namespace AcManager.Pages.Dialogs {
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         [ComVisible(true)]
         public class ScriptProvider {
-            private readonly TrackGeoTagsDialogViewModel _model;
+            private readonly ViewModel _model;
 
-            public ScriptProvider(TrackGeoTagsDialogViewModel model) {
+            public ScriptProvider(ViewModel model) {
                 _model = model;
             }
 
@@ -65,7 +66,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public string Prompt(string message, string defaultValue) {
-                return Controls.Dialogs.Prompt.Show(message, "Webpage says", defaultValue);
+                return Controls.Dialogs.Prompt.Show(message, ControlsStrings.WebBrowser_Prompt, defaultValue);
             }
 
             public void Update(double lat, double lng) {
@@ -80,7 +81,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public class TrackGeoTagsDialogViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private string _latitude;
 
             public string Latitude {
@@ -104,7 +105,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            public TrackGeoTagsDialogViewModel(TrackBaseObject track) {
+            public ViewModel(TrackBaseObject track) {
                 Track = track;
 
                 if (track.GeoTags != null) {
@@ -127,12 +128,12 @@ namespace AcManager.Pages.Dialogs {
 
         private static string GetQuery(TrackBaseObject track) {
             return string.IsNullOrEmpty(track.City) && string.IsNullOrEmpty(track.Country) ? track.Name :
-                    new[] { track.City, track.Country }.Where(x => x != null).JoinToString(", ");
+                    new[] { track.City, track.Country }.Where(x => x != null).JoinToString(@", ");
         }
 
         private static string GetMapAddress(TrackBaseObject track) {
             var tags = track.GeoTags;
-            return CmHelpersProvider.GetAddress("map") + "?t#" +
+            return CmHelpersProvider.GetAddress("map") + @"?t#" +
                     (tags?.IsEmptyOrInvalid == false ? $"{tags.LatitudeValue};{tags.LongitudeValue}" : GetQuery(track));
         }
 

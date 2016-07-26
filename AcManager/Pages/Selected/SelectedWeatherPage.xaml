@@ -155,7 +155,7 @@
                         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.WeatherEdit_FogHeader}" />
 
                         <DockPanel>
-                            <Label Content="{x:Static g:AppStrings.Settings_ColorLabel}" />
+                            <Label Content="{x:Static g:AppStrings.Common_ColorLabel}" />
                             <mui:ColorPicker Color="{Binding SelectedObject.FogColor}" />
                         </DockPanel>
 

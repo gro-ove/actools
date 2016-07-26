@@ -544,23 +544,25 @@ todo:
     - more informative online errors
         - try to guess if steam id is wrong
 
-    + move culture initialization to EntryPoint
-    - make project localizable
-        + .mui
-        + .tools
-        + .LargeFilesSharing
-        + .controls
-        - main project
-            + main window
-            + settings
-            + selected
-            + miscellaneous & lists
-            + drive
-            + dialogs
-            - acsettings
-            - about
-    - changeable locale
-    - custom locale
+    - locales
+        + move culture initialization to EntryPoint
+        - make project localizable
+            + .mui
+            + .tools
+            + .LargeFilesSharing
+            + .controls
+            + main project
+                + main window
+                + settings
+                + selected
+                + miscellaneous & lists
+                + drive
+                + dialogs
+                + acsettings
+                + about
+        - changeable locale
+        - custom locale
+        - some tool/manual for localization
 
     - notification for plugins
     - upload Content to Trello for those who doesn't have Internet connection
@@ -629,6 +631,7 @@ todo:
     - showroom from Online
     - car setups: warn about "last"
     - move livery shapes and styles to Content directory
+    - quick switches: saturation
 
     - content installation
         - automatically switch to freshly installed content in some cases (optional)?

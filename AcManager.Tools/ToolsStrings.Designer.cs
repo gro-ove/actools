@@ -790,6 +790,213 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow in-game apps overlapping.
+        /// </summary>
+        public static string AcSettings_View_AllowAppsOverlapping {
+            get {
+                return ResourceManager.GetString("AcSettings_View_AllowAppsOverlapping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera:.
+        /// </summary>
+        public static string AcSettings_View_CameraHeader {
+            get {
+                return ResourceManager.GetString("AcSettings_View_CameraHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show damage (GUI).
+        /// </summary>
+        public static string AcSettings_View_Damage {
+            get {
+                return ResourceManager.GetString("AcSettings_View_Damage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show drivers’ names.
+        /// </summary>
+        public static string AcSettings_View_DriversNames {
+            get {
+                return ResourceManager.GetString("AcSettings_View_DriversNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to G-Forces:.
+        /// </summary>
+        public static string AcSettings_View_GForcesHeader {
+            get {
+                return ResourceManager.GetString("AcSettings_View_GForcesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Glancing angle.
+        /// </summary>
+        public static string AcSettings_View_GlancingAngle {
+            get {
+                return ResourceManager.GetString("AcSettings_View_GlancingAngle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Glancing speed.
+        /// </summary>
+        public static string AcSettings_View_GlancingSpeed {
+            get {
+                return ResourceManager.GetString("AcSettings_View_GlancingSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide driver _arms.
+        /// </summary>
+        public static string AcSettings_View_HideDriverArms {
+            get {
+                return ResourceManager.GetString("AcSettings_View_HideDriverArms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide steering _wheel.
+        /// </summary>
+        public static string AcSettings_View_HideSteeringWheel {
+            get {
+                return ResourceManager.GetString("AcSettings_View_HideSteeringWheel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highspeed shaking.
+        /// </summary>
+        public static string AcSettings_View_HighspeedShaking {
+            get {
+                return ResourceManager.GetString("AcSettings_View_HighspeedShaking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lateral.
+        /// </summary>
+        public static string AcSettings_View_Lateral {
+            get {
+                return ResourceManager.GetString("AcSettings_View_Lateral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show leaderboard.
+        /// </summary>
+        public static string AcSettings_View_Leaderboard {
+            get {
+                return ResourceManager.GetString("AcSettings_View_Leaderboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Lock onboard camera to horizon.
+        /// </summary>
+        public static string AcSettings_View_LockCamera {
+            get {
+                return ResourceManager.GetString("AcSettings_View_LockCamera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locked.
+        /// </summary>
+        public static string AcSettings_View_Locked {
+            get {
+                return ResourceManager.GetString("AcSettings_View_Locked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lock steering wheel.
+        /// </summary>
+        public static string AcSettings_View_LockSteeringWheel {
+            get {
+                return ResourceManager.GetString("AcSettings_View_LockSteeringWheel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longitudinal.
+        /// </summary>
+        public static string AcSettings_View_Longtudinal {
+            get {
+                return ResourceManager.GetString("AcSettings_View_Longtudinal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steering wheel limit.
+        /// </summary>
+        public static string AcSettings_View_SteeringWheelLimit {
+            get {
+                return ResourceManager.GetString("AcSettings_View_SteeringWheelLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual steering wheel rotation limit.
+        /// </summary>
+        public static string AcSettings_View_SteeringWheelLimit_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_View_SteeringWheelLimit_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show time gap to opponents.
+        /// </summary>
+        public static string AcSettings_View_TimeGap {
+            get {
+                return ResourceManager.GetString("AcSettings_View_TimeGap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Units:.
+        /// </summary>
+        public static string AcSettings_View_UnitsLabel {
+            get {
+                return ResourceManager.GetString("AcSettings_View_UnitsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical.
+        /// </summary>
+        public static string AcSettings_View_Vertical {
+            get {
+                return ResourceManager.GetString("AcSettings_View_Vertical", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View:.
+        /// </summary>
+        public static string AcSettings_View_ViewHeader {
+            get {
+                return ResourceManager.GetString("AcSettings_View_ViewHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show virtual mirror.
+        /// </summary>
+        public static string AcSettings_View_VirtualMirror {
+            get {
+                return ResourceManager.GetString("AcSettings_View_VirtualMirror", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to car.
         /// </summary>
         public static string AdditionalContent_Car {
@@ -3084,6 +3291,51 @@ namespace AcManager.Tools {
         public static string TrackBaseObject_Specs_PitsNumber {
             get {
                 return ResourceManager.GetString("TrackBaseObject_Specs_PitsNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find It.
+        /// </summary>
+        public static string TrackGeoTags_FindIt {
+            get {
+                return ResourceManager.GetString("TrackGeoTags_FindIt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Latitude:.
+        /// </summary>
+        public static string TrackGeoTags_LatitudeLabel {
+            get {
+                return ResourceManager.GetString("TrackGeoTags_LatitudeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommended format: “…° N” or “…° S”.
+        /// </summary>
+        public static string TrackGeoTags_LatitudeLabel_Tooltip {
+            get {
+                return ResourceManager.GetString("TrackGeoTags_LatitudeLabel_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longitude:.
+        /// </summary>
+        public static string TrackGeoTags_LongitudeLabel {
+            get {
+                return ResourceManager.GetString("TrackGeoTags_LongitudeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recommended format: “…° W” or “…° E”.
+        /// </summary>
+        public static string TrackGeoTags_LongitudeLabel_Tooltip {
+            get {
+                return ResourceManager.GetString("TrackGeoTags_LongitudeLabel_Tooltip", resourceCulture);
             }
         }
         

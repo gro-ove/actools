@@ -23,7 +23,7 @@ namespace AcManager.Pages.About {
 
         private void Version_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             if (!SettingsHolder.Common.DeveloperMode && ++_clicks == 10 &&
-                    ModernDialog.ShowMessage("Enable developer mode?", "Developer Mode", MessageBoxButton.YesNo) ==
+                    ModernDialog.ShowMessage(AppStrings.About_DeveloperMode, AppStrings.About_DeveloperMode_Title, MessageBoxButton.YesNo) ==
                             MessageBoxResult.Yes) {
                 SettingsHolder.Common.DeveloperMode = true;
             }
@@ -32,7 +32,7 @@ namespace AcManager.Pages.About {
         private void ContentElement_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             if (Keyboard.Modifiers != (ModifierKeys.Alt | ModifierKeys.Control)) _clicks += 11;
             if (!SettingsHolder.Common.MsMode && (_clicks += 99) == 990 &&
-                    ModernDialog.ShowMessage("Enable most secret mode? Using it might cause data corruption.", "Most Secret Mode", MessageBoxButton.YesNo) ==
+                    ModernDialog.ShowMessage(@"Enable most secret mode? Using it might cause data corruption.", @"Most Secret Mode", MessageBoxButton.YesNo) ==
                             MessageBoxResult.Yes) {
                 SettingsHolder.Common.MsMode = true;
             }
@@ -52,14 +52,14 @@ namespace AcManager.Pages.About {
             public AsyncCommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new AsyncCommand(async o => {
                 try {
                     var message = Prompt.Show(
-                            "Describe the issue. And, please, leave some contacts if you want to get a response (also, it could help to resolve the issue).",
-                            "What’s The Issue?", watermark: "?", multiline: true);
+                            AppStrings.About_ReportAnIssue_Prompt,
+                            AppStrings.About_ReportAnIssue_Title, watermark: @"?", multiline: true);
                     if (message == null) return;
                     await Task.Run(() => AppReporter.SendLogs(message));
                     ValuesStorage.Set(KeyLogsSentTime, DateTime.Now);
-                    Toast.Show("Logs Sent", "Thank you for the help!");
+                    Toast.Show(AppStrings.About_ReportAnIssue_Sent, AppStrings.About_ReportAnIssue_Sent_Message);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can’t send logs", e);
+                    NonfatalError.Notify(AppStrings.About_ReportAnIssue_CannotSend, e);
                 }
             }, o => DateTime.Now - ValuesStorage.GetDateTimeOrEpochTime(KeyLogsSentTime) > TimeSpan.FromHours(0.0001), 3000));
         }

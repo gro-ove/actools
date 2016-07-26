@@ -9,15 +9,15 @@ using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.About {
     public partial class ImportantTipsPage : IParametrizedUriContent {
-        private ImportantTipsPageViewModel Model => (ImportantTipsPageViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         public void OnUri(Uri uri) {
-            DataContext = new ImportantTipsPageViewModel(uri.GetQueryParam("Key"));
+            DataContext = new ViewModel(uri.GetQueryParam("Key"));
             InitializeComponent();
         }
 
-        public class ImportantTipsPageViewModel : NotifyPropertyChanged {
-            public ImportantTipsPageViewModel(string key) {
+        public class ViewModel : NotifyPropertyChanged {
+            public ViewModel(string key) {
                 NotesList = new ListCollectionView(ImportantTips.Entries.Where(x => !x.IsLimited || AppKeyHolder.IsAllRight).Reverse().ToList());
                 if (key != null) {
                     NotesList.MoveCurrentTo(ImportantTips.Entries.FirstOrDefault(x => x.Id?.Contains(key) == true));
