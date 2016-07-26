@@ -21,7 +21,7 @@
                 <Label Content="{x:Static g:AppStrings.Common_DevMode}" />
             </CheckBox>
 
-            <!--versions-->
+            <!--app key and shortcut-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_AppHeader}" />
 
             <DockPanel>

@@ -24,7 +24,7 @@ namespace AcManager.Pages.Settings {
             private RelayCommand _changeAcRootCommand;
 
             public RelayCommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new RelayCommand(o => {
-                if (ModernDialog.ShowMessage(AcManager.AppStrings.Settings_General_ChangeAcRoot_Message, AcManager.AppStrings.Settings_General_ChangeAcRoot,
+                if (ModernDialog.ShowMessage(AppStrings.Settings_General_ChangeAcRoot_Message, AppStrings.Settings_General_ChangeAcRoot,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
                 AcRootDirectory.Instance.Reset();
                 WindowsHelper.RestartCurrentApplication();
@@ -48,7 +48,9 @@ namespace AcManager.Pages.Settings {
 
             [Localizable(false)]
             public RelayCommand CleanUpStorageCommand => _cleanUpStorageCommand ?? (_cleanUpStorageCommand = new RelayCommand(o => {
-                ValuesStorage.CleanUp(x => x.StartsWith("KunosCareerObject.SelectedEvent__") ||
+                ValuesStorage.CleanUp(x =>
+                        x.StartsWith(".") || 
+                        x.StartsWith("KunosCareerObject.SelectedEvent__") ||
                         x.StartsWith("__aclistpageviewmodel_selected_") ||
                         x.StartsWith("__carobject_selectedskin_") ||
                         x.StartsWith("__trackslocator_") ||
@@ -56,10 +58,11 @@ namespace AcManager.Pages.Settings {
                         x.StartsWith("__upgradeiconeditor_") ||
                         x.StartsWith("LinkGroupFilterable.Selected_") ||
                         x.StartsWith("LinkGroupFilterable.RecentlyClosed_") ||
-                        x.StartsWith(".") ||
                         x.StartsWith("__qf___online_") ||
                         x.StartsWith("__Online.Sorting__online_") ||
-                        x.StartsWith("__online_"));
+                        x.StartsWith("__online_") ||
+                        x.StartsWith("MainWindow__") ||
+                        x.StartsWith("__tmp_FontObject.UsingsCarsIds_"));
             }));
         }
     }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -15,10 +14,10 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager {
+    [Localizable(false)]
     public class EntryPoint {
         private static string _applicationDataDirectory;
 
@@ -27,18 +26,17 @@ namespace AcManager {
 
         [STAThread]
         private static void Main(string[] a) {
-            var logging = Assembly.GetEntryAssembly().Location.Contains(@"_log");
-
+            var logging = Assembly.GetEntryAssembly().Location.Contains("_log");
             if (!Debugger.IsAttached && !logging) {
                 SetUnhandledExceptionHandler();
             }
             
             AppArguments.Initialize(a);
             AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
-            LocalesHelper.Initialize();
 
             AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References",
-                    logging || AppArguments.GetBool(AppFlag.LogPacked)).Handler;
+                    logging || AppArguments.GetBool(AppFlag.LogPacked) ? Path.Combine(ApplicationDataDirectory, "Logs", "PackedLog.txt") : null).Handler;
+
             MainInner(a);
         }
 
@@ -46,13 +44,6 @@ namespace AcManager {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void MainInner(string[] args) {
-            if (AppArguments.GetBool(AppFlag.UseCustomLocales, true)) {
-                var customLocale = Path.Combine(ApplicationDataDirectory, @"Locales", CultureInfo.CurrentUICulture.Name);
-                if (Directory.Exists(customLocale)) {
-                    CustomResourceManager.SetCustomSource(customLocale);
-                }
-            }
-
             if (AppUpdater.OnStartup(args)) return;
 
             var appGuid = ((GuidAttribute)Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), true).GetValue(0)).Value;
@@ -77,8 +68,7 @@ namespace AcManager {
                 SecondInstanceMessage = User32.RegisterWindowMessage(mutexId);
 
                 if (mutex.WaitOne(0, false)) {
-                    var app = new App();
-                    app.Run();
+                    new App().Run();
                 } else {
                     PassArgsToRunningInstance(args);
                 }

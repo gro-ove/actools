@@ -33,13 +33,15 @@ namespace FirstFloor.ModernUI {
                 Logging.Warning("[CustomResourceManager] GetString(): " + e);
                 return null;
             }
-        } 
+        }
 
         public new string GetString(string name, CultureInfo culture) {
             if (_customSource != null) {
                 if (_custom == null) {
-                    var location = Path.Combine(_customSource, BaseName.Replace(".Resources", "") + ".resx");
+                    var location = Path.Combine(_customSource, BaseName.Split('.').Last() + ".resx");
                     _custom = LoadCustomResource(location) ?? new Dictionary<string, string>();
+
+                    Logging.Write("Custom: " + location);
                 }
 
                 string result;

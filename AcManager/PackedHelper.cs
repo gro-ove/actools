@@ -1,4 +1,4 @@
-﻿#define LOCALIZABLE
+﻿// #define LOCALIZABLE
 
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ using System.Security.Permissions;
 namespace AcManager {
     [Localizable(false)]
     internal class PackedHelper {
-        private readonly bool _logging;
+        private readonly string _logFilename;
         private readonly string _temporaryDirectory;
         private readonly ResourceManager _references;
 
@@ -25,13 +25,13 @@ namespace AcManager {
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void Log(string s) {
-            if (!_logging) return;
-
-            const string filename = "packed_log.txt";
+            if (_logFilename == null) return;
+            
             if (s == null) {
-                File.WriteAllBytes(filename, new byte[0]);
+                Directory.CreateDirectory(Path.GetDirectoryName(_logFilename) ?? "");
+                File.WriteAllBytes(_logFilename, new byte[0]);
             } else {
-                using (var writer = new StreamWriter(filename, true)) {
+                using (var writer = new StreamWriter(_logFilename, true)) {
                     writer.WriteLine(s);
                 }
             }
@@ -49,8 +49,8 @@ namespace AcManager {
 
         internal ResolveEventHandler Handler { get; }
 
-        internal PackedHelper(string appId, string referencesId, bool logging) {
-            _logging = logging;
+        internal PackedHelper(string appId, string referencesId, string logFilename) {
+            _logFilename = logFilename;
             _temporaryDirectory = Path.Combine(Path.GetTempPath(), appId + "_libs");
             Directory.CreateDirectory(_temporaryDirectory);
 
@@ -59,7 +59,7 @@ namespace AcManager {
 
             _references = new ResourceManager(referencesId, Assembly.GetExecutingAssembly());
 
-            if (logging) {
+            if (logFilename != null) {
                 SetUnhandledExceptionHandler();
             }
         }
@@ -71,7 +71,9 @@ namespace AcManager {
                 return null;
             }
 
+#if LOCALIZABLE
             _first = false;
+#endif
 
             var prefix = id + "_";
             var name = prefix + hash + ".dll";
@@ -123,11 +125,15 @@ namespace AcManager {
             return filename;
         }
 
+        private bool _ignore;
+
 #if LOCALIZABLE
         private bool _first = true;
 #endif
 
         private Assembly HandlerImpl(object sender, ResolveEventArgs args) {
+            if (_ignore) return null;
+
             var splitted = args.Name.Split(',');
             var name = splitted[0];
 
@@ -139,7 +145,6 @@ namespace AcManager {
 
             if (name.EndsWith(".resources")) {
                 var culture = splitted.ElementAtOrDefault(2)?.Split(new[] { "Culture=" }, StringSplitOptions.None).ElementAtOrDefault(1);
-                Log("splitted: " + splitted.ElementAtOrDefault(2));
                 Log("culture: " + culture);
                 if (culture == "neutral") return null;
 
@@ -159,11 +164,14 @@ namespace AcManager {
             Log("resolve: " + args.Name + " as " + name);
 
             try {
+                _ignore = true;
                 var filename = ExtractResource(name);
                 return filename == null ? null : Assembly.LoadFrom(filename);
             } catch (Exception e) {
                 Log("error: " + e);
                 return null;
+            } finally {
+                _ignore = false;
             }
         }
     }

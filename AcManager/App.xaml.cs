@@ -41,11 +41,27 @@ namespace AcManager {
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
         public App() {
+            FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
+            if (!AppArguments.GetBool(AppFlag.DisableSaving)) {
+                ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
+            }
+
+            if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
+                var logFilename = FilesStorage.Instance.GetFilename("Logs", "Main Log.txt");
+                if (File.Exists(logFilename)) {
+                    File.Move(logFilename, $"{logFilename.ApartFromLast(@".txt", StringComparison.OrdinalIgnoreCase)}_{DateTime.Now.ToUnixTimestamp()}.txt");
+                    DeleteOldLogs();
+                }
+
+                Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename));
+                Logging.Write("App version: " + BuildInformation.AppVersion);
+            }
+
+            LocalesHelper.Initialize();
+
             if (AppArguments.GetBool(AppFlag.IgnoreSystemProxy, true)) {
                 WebRequest.DefaultWebProxy = null;
             }
-
-            FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
 
             AppArguments.Set(AppFlag.SyncNavigation, ref ModernFrame.OptionUseSyncNavigation);
             AppArguments.Set(AppFlag.DisableTransitionAnimation, ref ModernFrame.OptionDisableTransitionAnimation);
@@ -74,21 +90,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
 
             NonfatalError.Register(new NonfatalErrorNotifier());
-
-            if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
-                var logFilename = FilesStorage.Instance.GetFilename("Logs", "Main Log.txt");
-                if (File.Exists(logFilename)) {
-                    File.Move(logFilename, $"{logFilename.ApartFromLast(@".txt", StringComparison.OrdinalIgnoreCase)}_{DateTime.Now.ToUnixTimestamp()}.txt");
-                    DeleteOldLogs();
-                }
-
-                Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename));
-                Logging.Write("App version: " + BuildInformation.AppVersion);
-            }
-
-            if (!AppArguments.GetBool(AppFlag.DisableSaving)) {
-                ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
-            }
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();
@@ -225,14 +226,14 @@ namespace AcManager {
 
         private void ContentSyncronizer_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(ContentSyncronizer.InstalledVersion)) {
-                Toast.Show(AcManager.AppStrings.App_ContentUpdated, string.Format(AcManager.AppStrings.App_ContentUpdated_Details, ContentSyncronizer.Instance.InstalledVersion));
+                Toast.Show(AppStrings.App_ContentUpdated, string.Format(AppStrings.App_ContentUpdated_Details, ContentSyncronizer.Instance.InstalledVersion));
             }
         }
 
         private void AppUpdater_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(AppUpdater.UpdateIsReady)) {
-                Toast.Show(AcManager.AppStrings.App_NewVersion,
-                        string.Format(AcManager.AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
+                Toast.Show(AppStrings.App_NewVersion,
+                        string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
                             AppUpdater.Instance.FinishUpdateCommand.Execute(null);
                         });
             }
@@ -241,9 +242,9 @@ namespace AcManager {
         private static void InitializePresets() {
             PresetsManager.Initialize(FilesStorage.Instance.GetDirectory("Presets"));
             PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.PresetPreviewsKunos, @"Previews", @"Kunos");
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, @"Assists", Controls.ControlsStrings.AssistsPreset_Gamer);
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, @"Assists", Controls.ControlsStrings.AssistsPreset_Intermediate);
-            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, @"Assists", Controls.ControlsStrings.AssistsPreset_Pro);
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsGamer, @"Assists", ControlsStrings.AssistsPreset_Gamer);
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsIntermediate, @"Assists", ControlsStrings.AssistsPreset_Intermediate);
+            PresetsManager.Instance.RegisterBuiltInPreset(BinaryResources.AssistsPro, @"Assists", ControlsStrings.AssistsPreset_Pro);
         }
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {
