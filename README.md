@@ -1,6 +1,6 @@
 # AcTools (and Content Manager)
 
-Set of utils and apps designed for Assetto Corsa. If you have any interest in them, please, let me know. If you want to rebuild some projects, you can take some missing DLLs [here](https://trello.com/c/JoXMYzwx/47-about-avs). Some obsolete projects are moved [here](https://github.com/gro-ove/actools-utils).
+Set of utils and apps designed for Assetto Corsa. If you have any interest in them, please, [let me know](https://trello.com/c/w5xT6ssZ/49-contacts). Some obsolete projects are moved [here](https://github.com/gro-ove/actools-utils).
 
 ## Common libraries
 
@@ -40,3 +40,11 @@ Set of utils and apps designed for Assetto Corsa. If you have any interest in th
 
     [![Content Manager](http://i.imgur.com/WsovqYV.png)](http://i.imgur.com/WsovqYV.png)
     [![Content Manager](http://i.imgur.com/wvM1SMY.png)](http://i.imgur.com/wvM1SMY.png)
+
+# Build notes
+
+If you want to rebuild this project, please:
+
+ - Take some missing DLLs [here](https://trello.com/c/JoXMYzwx/47-about-avs) (not all of them will be loaded from Nuget package manager);
+
+ - You might need to install DirectX SDK to rebuild *AcTools.Render/Base/Shaders/ShadersTemplate.tt*.
