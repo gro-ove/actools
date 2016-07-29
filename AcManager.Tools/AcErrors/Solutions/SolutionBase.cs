@@ -11,7 +11,7 @@ namespace AcManager.Tools.AcErrors.Solutions {
 
         /// <summary>
         /// Basically, it shows that solution has its own dialog window from which user can cancel
-        /// its execution. Forget to set it — and it will be overlapped by Waiting Dialog.
+        /// its execution. Forget to set it â€” and it will be overlapped by Waiting Dialog.
         /// </summary>
         public bool IsUiSolution { get; set; }
 

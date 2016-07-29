@@ -197,7 +197,7 @@ namespace AcTools.DataFile {
         }
 
         /// <summary>
-        /// Remove all sections by prefix like SECTION_0, SECTION_1, Ö
+        /// Remove all sections by prefix like SECTION_0, SECTION_1, ‚Ä¶
         /// </summary>
         /// <param name="prefixName">Prefix</param>
         /// <param name="startFrom">ID of first section</param>
@@ -208,9 +208,9 @@ namespace AcTools.DataFile {
         }
 
         /// <summary>
-        /// Get all sections by prefix like SECTION_0, SECTION_1, Ö
+        /// Get all sections by prefix like SECTION_0, SECTION_1, ‚Ä¶
         /// </summary>
-        /// <param name="prefixName">Prefix (e.g. ìSECTIONî)</param>
+        /// <param name="prefixName">Prefix (e.g. ‚ÄúSECTION‚Äù)</param>
         /// <param name="startFrom">ID of first section (use -1 if first section is SECTION and second is SECTION_1)</param>
         public IEnumerable<IniFileSection> GetSections([Localizable(false)] string prefixName, int startFrom = 0) {
             return GetSectionNames(prefixName, startFrom).Select(key => this[key]);

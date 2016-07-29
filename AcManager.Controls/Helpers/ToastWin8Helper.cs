@@ -42,7 +42,7 @@ namespace AcManager.Controls.Helpers {
                     shortcut.Save(ShortcutLocation);
                 }
             } catch (Exception e) {
-                Logging.Write("[TOAST] Can’t create shortcut: " + e);
+                Logging.Write("[TOAST] Canâ€™t create shortcut: " + e);
             }
         }
 
