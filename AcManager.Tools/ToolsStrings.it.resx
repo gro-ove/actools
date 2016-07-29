@@ -253,9 +253,6 @@
 	<data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>La versione scompattata non supporta l'aggiornamento automatico.</value>
   </data>
-	<data name="AppUpdater_UnhandledError" xml:space="preserve">
-    <value>Occorso qualche errore imprevisto.</value>
-  </data>
 	<data name="AppUpdater_CannotDownloadInformation" xml:space="preserve">
     <value>Impossibile scaricare informazioni sull'ultima versione.</value>
   </data>
@@ -882,10 +879,10 @@
 	<data name="Progress_Uploading_KnownTotal" xml:space="preserve">
     <value>Uploaded {0} di {1}</value>
   </data>
-	<data name="ContentSyncronizer_UnhandledError" xml:space="preserve">
+	<data name="Common_UnhandledError_Commentary" xml:space="preserve">
     <value>Qualche errore non gestito occorso.</value>
   </data>
-	<data name="ContentSyncronizer_CannotDownloadInformation" xml:space="preserve">
+	<data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
     <value>Impossibile scaricare informazioni circa la versione più recente.</value>
   </data>
 	<data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">

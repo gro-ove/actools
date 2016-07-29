@@ -1,14 +1,24 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using SharpCompress.Archive;
 using SharpCompress.Archive.Rar;
 using SharpCompress.Archive.Zip;
 using SharpCompress.Common;
+using SharpCompress.Writer;
 
 namespace AcManager.Tools.ContentInstallation {
     public static class SharpCompressExtension {
+        // TODO: writer, string as a file
+        public static void WriteString(this IWriter writer, string entryPath, string content) {
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(content))) {
+                writer.Write(entryPath, stream);
+            }
+        }
+
         public static IArchive Open(string filename, string password) {
             var archive = ArchiveFactory.Open(filename);
             if (password == null) return archive;

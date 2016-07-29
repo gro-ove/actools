@@ -47,8 +47,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SharpCompress, Version=0.11.6.0, Culture=neutral, PublicKeyToken=beaf6f427e128133, processorArchitecture=MSIL">
-      <HintPath>..\packages\sharpcompress.0.11.6\lib\net40\SharpCompress.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.12.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.12.3\lib\net45\SharpCompress.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
@@ -119,7 +119,8 @@
     <Compile Include="ContentInstallation\Types\TypeShowroom.cs" />
     <Compile Include="ContentInstallation\Types\TypeTrack.cs" />
     <Compile Include="ContentInstallation\Types\TypeWeather.cs" />
-    <Compile Include="Data\ContentSyncronizer.cs" />
+    <Compile Include="Data\BaseUpdater.cs" />
+    <Compile Include="Data\DataUpdater.cs" />
     <Compile Include="Data\DataProvider.cs" />
     <Compile Include="Data\GameSpecific\CommonSessionResult.cs" />
     <Compile Include="Data\GameSpecific\DriftSessionResult.cs" />
@@ -238,6 +239,8 @@
     <Compile Include="GameProperties\ReplaysExtensionSetter.cs" />
     <Compile Include="Miscellaneous\ActionAsDisposable.cs" />
     <Compile Include="Miscellaneous\AcLogHelper.cs" />
+    <Compile Include="Miscellaneous\LocalePackageManifest.cs" />
+    <Compile Include="Miscellaneous\LocaleUpdater.cs" />
     <Compile Include="Miscellaneous\SharingHelper.cs" />
     <Compile Include="Objects\CarObject_Setups.cs" />
     <Compile Include="Objects\CarSetupObject.cs" />
@@ -297,7 +300,6 @@
     <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Lists\AcLoadedOnlyCollection.cs" />
     <Compile Include="Lists\AcWrapperCollectionView.cs" />
-    <Compile Include="Lists\AsyncObservableCollection.cs" />
     <Compile Include="Lists\AutocompleteValuesList.cs" />
     <Compile Include="Lists\BetterListCollectionView.cs" />
     <Compile Include="Lists\BetterObservableCollection.cs" />
@@ -393,7 +395,9 @@
     <None Include="Packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ToolsStrings.fr.resx" />
+    <EmbeddedResource Include="ToolsStrings.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="ToolsStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>

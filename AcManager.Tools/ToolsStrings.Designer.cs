@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1078,15 +1078,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t download information about latest version..
-        /// </summary>
-        public static string AppUpdater_CannotDownloadInformation {
-            get {
-                return ResourceManager.GetString("AppUpdater_CannotDownloadInformation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Can’t load the new version.
         /// </summary>
         public static string AppUpdater_CannotLoad {
@@ -1141,15 +1132,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some unhandled error happened..
-        /// </summary>
-        public static string AppUpdater_UnhandledError {
-            get {
-                return ResourceManager.GetString("AppUpdater_UnhandledError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unpacked version doesn’t support auto-updating..
         /// </summary>
         public static string AppUpdater_UnpackedVersionMessage {
@@ -1200,6 +1182,15 @@ namespace AcManager.Tools {
         public static string ArchiveInstallator_UnsupportedEncryption {
             get {
                 return ResourceManager.GetString("ArchiveInstallator_UnsupportedEncryption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t download information about latest version..
+        /// </summary>
+        public static string BaseUpdater_CannotDownloadInformation {
+            get {
+                return ResourceManager.GetString("BaseUpdater_CannotDownloadInformation", resourceCulture);
             }
         }
         
@@ -1555,6 +1546,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Some unhandled error happened..
+        /// </summary>
+        public static string Common_UnhandledError_Commentary {
+            get {
+                return ResourceManager.GetString("Common_UnhandledError_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
         public static string Common_Warning {
@@ -1717,15 +1717,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t download information about latest version..
-        /// </summary>
-        public static string ContentSyncronizer_CannotDownloadInformation {
-            get {
-                return ResourceManager.GetString("ContentSyncronizer_CannotDownloadInformation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Can’t load content pack.
         /// </summary>
         public static string ContentSyncronizer_CannotLoadContent {
@@ -1740,15 +1731,6 @@ namespace AcManager.Tools {
         public static string ContentSyncronizer_CannotLoadContent_Commentary {
             get {
                 return ResourceManager.GetString("ContentSyncronizer_CannotLoadContent_Commentary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Some unhandled error happened..
-        /// </summary>
-        public static string ContentSyncronizer_UnhandledError {
-            get {
-                return ResourceManager.GetString("ContentSyncronizer_UnhandledError", resourceCulture);
             }
         }
         

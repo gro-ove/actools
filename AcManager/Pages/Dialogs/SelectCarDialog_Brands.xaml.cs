@@ -26,9 +26,6 @@ namespace AcManager.Pages.Dialogs {
 
             internal bool BuiltInIcon;
 
-            public Uri PageAddress => UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
-                    $"enabled+&brand:{Filter.Encode(Name)}", Name);
-
             public CarBrandInformation(string name) {
                 Name = name;
                 Icon = GetBrandIcon(name, out BuiltInIcon);
@@ -58,12 +55,14 @@ namespace AcManager.Pages.Dialogs {
         private static ListCollectionView _brands;
         private static BetterObservableCollection<CarBrandInformation> _carBrandsInformationList;
         private const string KeyBrandsCache = "__SelectAndSetupCarDialog_Brands__cache";
-        private static bool _savedToCache;
+
+        public static void ClearBrandsCache() {
+            ValuesStorage.Set(KeyBrandsCache, new string[0]);
+        }
 
         private static void UpdateCache() {
-            if (!_savedToCache && CarsManager.Instance.IsLoaded) {
+            if (CarsManager.Instance.IsLoaded && SettingsHolder.Drive.QuickDriveCacheBrands) {
                 ValuesStorage.Set(KeyBrandsCache, _carBrandsInformationList.Where(x => x.BuiltInIcon).Select(x => x.Name));
-                _savedToCache = true;
             }
         }
 
@@ -74,16 +73,49 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private static void InitializeOnce() {
-            _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>(
-                SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x)).Union(from name in ValuesStorage.GetStringList(KeyBrandsCache)
-                                                                                            select new CarBrandInformation(name)).Distinct(new DistinctHelper())
-            );
+            if (CarsManager.Instance.IsLoaded) {
+                _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>(SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x)));
+                UpdateCache();
+            } else if (SettingsHolder.Drive.QuickDriveCacheBrands) {
+                _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>(
+                        SuggestionLists.CarBrandsList
+                                       .Select(x => new CarBrandInformation(x)).Union(from name in ValuesStorage.GetStringList(KeyBrandsCache)
+                                                                                      select new CarBrandInformation(name))
+                                       .Distinct(new DistinctHelper()));
+            } else {
+                _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>();
+            }
 
             SuggestionLists.CarBrandsList.CollectionChanged += CarBrandsList_CollectionChanged;
             _brands = (ListCollectionView)CollectionViewSource.GetDefaultView(_carBrandsInformationList);
             _brands.SortDescriptions.Add(new SortDescription());
 
+            CarsManager.Instance.WrappersList.CollectionReady += WrappersList_CollectionReady;
+        }
+
+        private static WeakReference<SelectAndSetupCarDialog_Brands> _instance;
+
+        private static void ReplaceBrands(IEnumerable<CarBrandInformation> brands) {
+            SelectAndSetupCarDialog_Brands instance;
+            _instance.TryGetTarget(out instance);
+
+            var selected = (instance?.BrandsListBox.SelectedItem as CarBrandInformation)?.Name;
+            _carBrandsInformationList.ReplaceEverythingBy(brands);
+
+            if (selected != null) {
+                instance.BrandsListBox.SelectedItem = _carBrandsInformationList.FirstOrDefault(x => x.Name == selected);
+            }
+        }
+
+        private static void ReplaceBrands() {
+            if (_carBrandsInformationList.Count == SuggestionLists.CarBrandsList.Count &&
+                    _carBrandsInformationList.All(x => SuggestionLists.CarBrandsList.Contains(x.Name))) return;
+            ReplaceBrands(SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x)));
             UpdateCache();
+        }
+
+        private static void WrappersList_CollectionReady(object sender, EventArgs e) {
+            ReplaceBrands();
         }
 
         private static void CarBrandsList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
@@ -94,15 +126,15 @@ namespace AcManager.Pages.Dialogs {
                                                                 StringComparison.OrdinalIgnoreCase)))
                                                         .Select(x => new CarBrandInformation(x)));
                     break;
-
                 default:
-                    _carBrandsInformationList.ReplaceEverythingBy(
-                            SuggestionLists.CarBrandsList.Select(x => new CarBrandInformation(x)));
+                    ReplaceBrands();
                     break;
             }
         }
 
         public SelectAndSetupCarDialog_Brands() {
+            _instance = new WeakReference<SelectAndSetupCarDialog_Brands>(this);
+
             MainDialog = SelectCarDialog.Instance;
             MainDialog.PropertyChanged += MainDialog_PropertyChanged;
 
@@ -114,16 +146,10 @@ namespace AcManager.Pages.Dialogs {
             }
 
             if (!CarsManager.Instance.IsLoaded) {
-                EnsureLoaded();
+                CarsManager.Instance.EnsureLoadedAsync().Forget();
             }
 
             UpdateSelected();
-        }
-
-
-        private async void EnsureLoaded() {
-            await CarsManager.Instance.EnsureLoadedAsync();
-            UpdateCache();
         }
 
         void MainDialog_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -150,7 +176,7 @@ namespace AcManager.Pages.Dialogs {
 
                 var selected = BrandsListBox.SelectedItem as CarBrandInformation;
                 if (selected == null) return;
-                NavigationCommands.GoToPage.Execute(selected.PageAddress, (IInputElement)sender);
+                NavigationCommands.GoToPage.Execute(SelectCarDialog.BrandUri(selected.Name), (IInputElement)sender);
             }
         }
 
@@ -159,7 +185,7 @@ namespace AcManager.Pages.Dialogs {
 
             var selected = ((FrameworkElement)sender).DataContext as CarBrandInformation;
             if (selected == null) return;
-            NavigationCommands.GoToPage.Execute(selected.PageAddress, (IInputElement)sender);
+            NavigationCommands.GoToPage.Execute(SelectCarDialog.BrandUri(selected.Name), (IInputElement)sender);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

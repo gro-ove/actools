@@ -16,8 +16,8 @@ namespace FirstFloor.ModernUI.Localizable {
         }
 
         #region English
-        private static readonly Regex EnTitleCaseRegex = new Regex(@"\b(?!a|an|and|as|at|but|by|en|for|if|in|of|on|or|the|to|v[.]?|via|vs)[a-z]",
-                RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        private static readonly Regex EnTitleCaseRegex = new Regex(@"^.|\b(?!a|an|and|as|at|but|by|en|for|if|in|of|on|or|the|to|v[.]?|via|vs)\w",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static string En(string s, CultureInfo culture) {
             return EnTitleCaseRegex.Replace(s, m => m.Value.ToUpper(culture));
@@ -87,9 +87,7 @@ namespace FirstFloor.ModernUI.Localizable {
                 }
 
                 // could be jusqu'au
-                if (p[1].Length == 1) {
-                    return FrCapitalizeFirstIfNeeded(p[0], culture) + '\'' + FrCapitalizeFirstIfNeeded(p[1], culture);
-                }
+                return FrCapitalizeFirstIfNeeded(p[0], culture) + '\'' + FrCapitalizeFirstIfNeeded(p[1], culture);
             }
 
             return s;

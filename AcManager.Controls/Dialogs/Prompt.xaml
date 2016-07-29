@@ -4,6 +4,6 @@
         xmlns:di="clr-namespace:AcManager.Controls.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         d:DataContext="{d:DesignInstance di:Prompt+ViewModel}" SizeToContent="Height" Width="720" MinHeight="160">
     <StackPanel x:Name="Panel" VerticalAlignment="Center">
-        <TextBlock Text="{Binding Description, Mode=OneTime}" Margin="0 0 0 8" />
+        <mui:BbCodeBlock BbCode="{Binding Description, Mode=OneTime}" Margin="0 0 0 8" TextWrapping="Wrap" />
     </StackPanel>
 </mui:ModernDialog>

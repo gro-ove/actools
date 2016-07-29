@@ -30,6 +30,8 @@ namespace AcManager.Controls.Helpers {
         /// <param name="click">Click action</param>
         public static void Show(string title, string message, Action click = null) {
             if (_defaultIcon == null) return;
+
+            Logging.Write($"Toast: “{title}”, “{message}”");
             Show(title, message, _defaultIcon, click ?? _defaultAction);
         }
 

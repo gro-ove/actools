@@ -18,8 +18,7 @@ namespace AcTools.Utils {
 
         private static bool CheckIfMagickSupported() {
             try {
-                TestImageMagick();
-                return true;
+                return TestImageMagick() != null;
             } catch (Exception) {
                 return false;
             }

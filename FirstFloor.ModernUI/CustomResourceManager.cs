@@ -38,9 +38,8 @@ namespace FirstFloor.ModernUI {
         public new string GetString(string name, CultureInfo culture) {
             if (_customSource != null) {
                 if (_custom == null) {
-                    var location = Path.Combine(_customSource, BaseName.Split('.').Last() + ".resx");
+                    var location = Path.Combine(_customSource, BaseName.Split('.').Last() + "." + CultureInfo.CurrentUICulture + ".resx");
                     _custom = LoadCustomResource(location) ?? new Dictionary<string, string>();
-
                     Logging.Write("Custom: " + location);
                 }
 

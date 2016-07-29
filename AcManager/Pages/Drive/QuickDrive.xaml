@@ -67,20 +67,20 @@
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="0"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
-                        <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0" Content="{x:Static g:AppStrings.QuickDrive_Time}" />
+                        <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0" Content="{x:Static g:AppStrings.Drive_Time}" />
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="{x:Static g:AppStrings.QuickDrive_Time_Warning}" HorizontalAlignment="Right" />
+                                ToolTip="{x:Static g:AppStrings.Drive_Time_Warning}" HorizontalAlignment="Right" />
                     </Grid>
                     <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}" Value="{Binding Time}"
                             Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
 
                 <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding RealConditions}" Margin="8 0 0 0" ToolTip="{Binding RealWeather.FullDescription}">
-                    <Label Content="{x:Static g:AppStrings.QuickDrive_RealConditions}" />
+                    <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
                     <CheckBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.QuickDrive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}"
+                            <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}"
                                     IsCheckable="True" />
                             <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
                         </ContextMenu>
@@ -90,12 +90,12 @@
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
-                        <TextBlock Text="{x:Static g:AppStrings.QuickDrive_WeatherLabel}" Style="{StaticResource LabelWithPadding}" />
+                        <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource LabelWithPadding}" />
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
                                 Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 HorizontalAlignment="Right">
                             <Path.ToolTip>
-                                <ToolTip Content="{Binding RealWeather.Description}" ContentStringFormat="{x:Static g:AppStrings.QuickDrive_Weather_Warning}" />
+                                <ToolTip Content="{Binding RealWeather.Description}" ContentStringFormat="{x:Static g:AppStrings.Drive_Weather_Warning}" />
                             </Path.ToolTip>
                         </Path>
                     </Grid>
@@ -105,7 +105,7 @@
                 <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number"
-                            Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.QuickDrive_Temperature}">
+                            Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.Drive_Temperature}">
                         <mui:ValueLabel.ToolTip>
                             <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{x:Static g:AppStrings.Common_RoadTemperatureFormat}" />
                         </mui:ValueLabel.ToolTip>
@@ -125,11 +125,11 @@
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Style="{StaticResource Small}" Text="{x:Static g:AppStrings.QuickDrive_ActualTemperature}" Margin="0 0 0 12" />
+                                    <TextBlock Style="{StaticResource Small}" Text="{x:Static g:AppStrings.Drive_ActualTemperature}" Margin="0 0 0 12" />
                                     <TextBlock Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" FontStyle="Italic" VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}"
-                                            Text="{x:Static g:AppStrings.QuickDrive_LoadingFailed}" />
+                                            Text="{x:Static g:AppStrings.Drive_LoadingFailed}" />
                                     <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource Heading2}"
                                             Text="{Binding RealWeather.Description, Converter={StaticResource ToTitleConverter}, TargetNullValue='?'}" />
                                     <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource Heading1}"
@@ -148,18 +148,18 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 -8" Height="16">
                             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                     Visibility="{Binding IsTemperatureClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    ToolTip="{x:Static g:AppStrings.QuickDrive_Temperature_Warning}" />
+                                    ToolTip="{x:Static g:AppStrings.Drive_Temperature_Warning}" />
                         </StackPanel>
                     </Grid>
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
-                    <TextBlock Text="{x:Static g:AppStrings.QuickDrive_TrackStateLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+                    <TextBlock Text="{x:Static g:AppStrings.Drive_TrackStateLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
                     <ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.Column="2">
-                    <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="{x:Static g:AppStrings.QuickDrive_TimeMultiplerLabel}" />
+                    <mui:ValueLabel Value="{Binding TimeMultipler}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
                     <Slider Minimum="{Binding TimeMultiplerMinimum}" Maximum="{Binding TimeMultiplerMaximumLimited}" Value="{Binding TimeMultipler}"
                             Margin="0 0 0 4" x:Name="TimeMultiplerSlider" TickFrequency="6" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>

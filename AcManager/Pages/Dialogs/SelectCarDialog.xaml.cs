@@ -17,11 +17,10 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
+using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
     public partial class SelectCarDialog : INotifyPropertyChanged {
-        public const string UriKey = "SelectAndSetupCarDialog.UriKey";
-
         private static WeakReference<SelectCarDialog> _instance;
 
         public static SelectCarDialog Instance {
@@ -145,16 +144,50 @@ namespace AcManager.Pages.Dialogs {
             }.ShowDialogWithoutBlocking();
         }));
 
+        public static Uri BrandUri(string brand) {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
+                    $"enabled+&brand:{Filter.Encode(brand)}", brand);
+        }
+
+        public static Uri ClassUri(string carClass) {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
+                    $"enabled+&class:{Filter.Encode(carClass)}", carClass.ToTitle());
+        }
+
+        public static Uri YearUri(int? year) {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
+                    $"enabled+&year:{Filter.Encode((year ?? 0).ToString())}", year != null ? year.ToString() : @"?");
+        }
+
+        public static Uri CountryUri(string country) {
+            return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
+                    $"enabled+&country:{Filter.Encode(country)}", country);
+        }
+
         public SelectCarDialog(CarObject car) {
             _selectedCar = new DelayedPropertyWrapper<CarObject>(SelectedCarChanged);
 
             SelectedCar = car;
             _instance = new WeakReference<SelectCarDialog>(this);
 
-            InitializeComponent();
             DataContext = this;
+            InitializeComponent();
 
-            Tabs.SelectedSource = ValuesStorage.GetUri(UriKey) ?? Tabs.Links.FirstOrDefault()?.Source;
+            CarBlock.BrandArea.PreviewMouseLeftButtonDown += (sender, args) => {
+                Tabs.SelectedSource = BrandUri(SelectedCar.Brand);
+            };
+
+            CarBlock.ClassArea.PreviewMouseLeftButtonDown += (sender, args) => {
+                Tabs.SelectedSource = ClassUri(SelectedCar.CarClass);
+            };
+
+            CarBlock.YearArea.PreviewMouseLeftButtonDown += (sender, args) => {
+                Tabs.SelectedSource = YearUri(SelectedCar.Year);
+            };
+
+            CarBlock.CountryArea.PreviewMouseLeftButtonDown += (sender, args) => {
+                Tabs.SelectedSource = CountryUri(SelectedCar.Country);
+            };
 
             Buttons = new [] { OkButton, CancelButton };
         }
@@ -214,9 +247,6 @@ namespace AcManager.Pages.Dialogs {
             
             _list.SelectedItem = SelectedCar;
             _list.PropertyChanged += List_PropertyChanged;
-
-            /* save uri */
-            ValuesStorage.Set(UriKey, e.Source);
         }
 
         private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {

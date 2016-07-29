@@ -108,8 +108,8 @@
       <HintPath>..\packages\OxyPlot.Wpf.2014.1.546\lib\net45\OxyPlot.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SharpCompress, Version=0.11.6.0, Culture=neutral, PublicKeyToken=beaf6f427e128133, processorArchitecture=MSIL">
-      <HintPath>..\packages\sharpcompress.0.11.6\lib\net40\SharpCompress.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.12.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.12.3\lib\net45\SharpCompress.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -155,7 +155,7 @@
     <Compile Include="AppArguments.cs" />
     <Compile Include="AppFlag.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="LocalesHelper.cs" />
+    <Compile Include="LocaleHelper.cs" />
     <Compile Include="PackedHelper.cs" />
     <Compile Include="Pages\About\License.xaml.cs">
       <DependentUpon>License.xaml</DependentUpon>
@@ -277,6 +277,9 @@
     </Compile>
     <Compile Include="Pages\ServerPreset\SelectedPage.xaml.cs">
       <DependentUpon>SelectedPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\SettingsLocale.xaml.cs">
+      <DependentUpon>SettingsLocale.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SettingsReplays.xaml.cs">
       <DependentUpon>SettingsReplays.xaml</DependentUpon>
@@ -789,6 +792,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedWeatherPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\SettingsLocale.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

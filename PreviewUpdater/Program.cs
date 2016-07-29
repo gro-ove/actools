@@ -55,9 +55,7 @@ namespace PreviewUpdater {
 
             if (options.Verbose) {
                 Console.WriteLine("ImageMagick: " + (ImageUtils.IsMagickSupported ? "Available" : "Not available"));
-            }
 
-            if (options.Verbose) {
                 Console.WriteLine("AC root: " + options.AcRoot);
                 Console.WriteLine("Showroom: " + options.Showroom);
                 Console.WriteLine("Filter: " + options.Filter);
@@ -68,9 +66,7 @@ namespace PreviewUpdater {
                 Console.WriteLine("FXAA: " + options.Fxaa);
                 Console.WriteLine("4K Resolution: " + options.SpecialResolution);
                 Console.WriteLine("Maximize video: " + options.MaximizeVideo);
-            }
 
-            if (options.Verbose) {
                 Console.WriteLine("Starting shoting...");
             }
 

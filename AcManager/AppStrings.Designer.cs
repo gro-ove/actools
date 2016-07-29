@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1487,18 +1487,36 @@ namespace AcManager {
         /// <summary>
         ///   Looks up a localized string similar to Data Updated.
         /// </summary>
-        public static string App_ContentUpdated {
+        public static string App_DataUpdated {
             get {
-                return ResourceManager.GetString("App_ContentUpdated", resourceCulture);
+                return ResourceManager.GetString("App_DataUpdated", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Current version: {0}.
         /// </summary>
-        public static string App_ContentUpdated_Details {
+        public static string App_DataUpdated_Details {
             get {
-                return ResourceManager.GetString("App_ContentUpdated_Details", resourceCulture);
+                return ResourceManager.GetString("App_DataUpdated_Details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locale Updated.
+        /// </summary>
+        public static string App_LocaleUpdated {
+            get {
+                return ResourceManager.GetString("App_LocaleUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart app to see changes.
+        /// </summary>
+        public static string App_LocaleUpdated_Details {
+            get {
+                return ResourceManager.GetString("App_LocaleUpdated_Details", resourceCulture);
             }
         }
         
@@ -3641,6 +3659,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Actual temperature:.
+        /// </summary>
+        public static string Drive_ActualTemperature {
+            get {
+                return ResourceManager.GetString("Drive_ActualTemperature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AI cars loading….
+        /// </summary>
+        public static string Drive_AiCarsLoading {
+            get {
+                return ResourceManager.GetString("Drive_AiCarsLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AI cars filtering….
+        /// </summary>
+        public static string Drive_AiFiltering {
+            get {
+                return ResourceManager.GetString("Drive_AiFiltering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Arrange in reverse order.
         /// </summary>
         public static string Drive_ArrangeInReverseOrder {
@@ -3664,6 +3709,87 @@ namespace AcManager {
         public static string Drive_ArrangeRandomly {
             get {
                 return ResourceManager.GetString("Drive_ArrangeRandomly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t filter appropriate cars for starting grid.
+        /// </summary>
+        public static string Drive_CannotFilter {
+            get {
+                return ResourceManager.GetString("Drive_CannotFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you made any changes to GridTypes.json, make sure they’re correct..
+        /// </summary>
+        public static string Drive_CannotFilter_Commentary {
+            get {
+                return ResourceManager.GetString("Drive_CannotFilter_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t initialize Lua.
+        /// </summary>
+        public static string Drive_CannotInitializeLua {
+            get {
+                return ResourceManager.GetString("Drive_CannotInitializeLua", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempt to find any car fitting selected grid type is failed..
+        /// </summary>
+        public static string Drive_CannotStart_CannotFindAnyCar {
+            get {
+                return ResourceManager.GetString("Drive_CannotStart_CannotFindAnyCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, select some non-disabled car..
+        /// </summary>
+        public static string Drive_CannotStart_SelectNonDisabled {
+            get {
+                return ResourceManager.GetString("Drive_CannotStart_SelectNonDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, select a track..
+        /// </summary>
+        public static string Drive_CannotStart_SelectTrack {
+            get {
+                return ResourceManager.GetString("Drive_CannotStart_SelectTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please, set at least one opponent..
+        /// </summary>
+        public static string Drive_CannotStart_SetOpponent {
+            get {
+                return ResourceManager.GetString("Drive_CannotStart_SetOpponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t Start Race.
+        /// </summary>
+        public static string Drive_CannotStart_Title {
+            get {
+                return ResourceManager.GetString("Drive_CannotStart_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Consider Timezones.
+        /// </summary>
+        public static string Drive_ConsiderTimezones {
+            get {
+                return ResourceManager.GetString("Drive_ConsiderTimezones", resourceCulture);
             }
         }
         
@@ -3695,11 +3821,56 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filtered by….
+        /// </summary>
+        public static string Drive_Grid_FilteredBy {
+            get {
+                return ResourceManager.GetString("Drive_Grid_FilteredBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manual.
+        /// </summary>
+        public static string Drive_Grid_Manual {
+            get {
+                return ResourceManager.GetString("Drive_Grid_Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same car.
+        /// </summary>
+        public static string Drive_Grid_SameCar {
+            get {
+                return ResourceManager.GetString("Drive_Grid_SameCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same group.
+        /// </summary>
+        public static string Drive_Grid_SameGroup {
+            get {
+                return ResourceManager.GetString("Drive_Grid_SameGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add a new car to the list.
         /// </summary>
         public static string Drive_GridAdd_Tooltip {
             get {
                 return ResourceManager.GetString("Drive_GridAdd_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grid building….
+        /// </summary>
+        public static string Drive_GridBuilding {
+            get {
+                return ResourceManager.GetString("Drive_GridBuilding", resourceCulture);
             }
         }
         
@@ -3718,6 +3889,15 @@ namespace AcManager {
         public static string Drive_GridType {
             get {
                 return ResourceManager.GetString("Drive_GridType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid script.
+        /// </summary>
+        public static string Drive_InvalidScript {
+            get {
+                return ResourceManager.GetString("Drive_InvalidScript", resourceCulture);
             }
         }
         
@@ -3749,6 +3929,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading failed.
+        /// </summary>
+        public static string Drive_LoadingFailed {
+            get {
+                return ResourceManager.GetString("Drive_LoadingFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Limited by number of pits available ({0}).
         /// </summary>
         public static string Drive_OpponentsMaximumLimitation_Tooltip {
@@ -3776,6 +3965,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last.
+        /// </summary>
+        public static string Drive_Ordinal_Last {
+            get {
+                return ResourceManager.GetString("Drive_Ordinal_Last", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to driver.
+        /// </summary>
+        public static string Drive_Ordinal_Parameter {
+            get {
+                return ResourceManager.GetString("Drive_Ordinal_Parameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random.
+        /// </summary>
+        public static string Drive_Ordinal_Random {
+            get {
+                return ResourceManager.GetString("Drive_Ordinal_Random", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Penalties.
         /// </summary>
         public static string Drive_Penalties {
@@ -3790,6 +4006,15 @@ namespace AcManager {
         public static string Drive_RaceDuration {
             get {
                 return ResourceManager.GetString("Drive_RaceDuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Real conditions.
+        /// </summary>
+        public static string Drive_RealConditions {
+            get {
+                return ResourceManager.GetString("Drive_RealConditions", resourceCulture);
             }
         }
         
@@ -3821,11 +4046,83 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Temperature.
+        /// </summary>
+        public static string Drive_Temperature {
+            get {
+                return ResourceManager.GetString("Drive_Temperature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Actual temperature is out of range, closest value is used.
+        /// </summary>
+        public static string Drive_Temperature_Warning {
+            get {
+                return ResourceManager.GetString("Drive_Temperature_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string Drive_Time {
+            get {
+                return ResourceManager.GetString("Drive_Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Actual time is out of range, closest value is used.
+        /// </summary>
+        public static string Drive_Time_Warning {
+            get {
+                return ResourceManager.GetString("Drive_Time_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time multipler.
+        /// </summary>
+        public static string Drive_TimeMultiplerLabel {
+            get {
+                return ResourceManager.GetString("Drive_TimeMultiplerLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track:.
+        /// </summary>
+        public static string Drive_TrackStateLabel {
+            get {
+                return ResourceManager.GetString("Drive_TrackStateLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Tyre blankets.
         /// </summary>
         public static string Drive_TyreBlankets {
             get {
                 return ResourceManager.GetString("Drive_TyreBlankets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {}Actual weather ({0}) isn&apos;t supported.
+        /// </summary>
+        public static string Drive_Weather_Warning {
+            get {
+                return ResourceManager.GetString("Drive_Weather_Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather:.
+        /// </summary>
+        public static string Drive_WeatherLabel {
+            get {
+                return ResourceManager.GetString("Drive_WeatherLabel", resourceCulture);
             }
         }
         
@@ -4739,6 +5036,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Main_Language {
+            get {
+                return ResourceManager.GetString("Main_Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Live.
         /// </summary>
         public static string Main_Live {
@@ -5349,114 +5655,6 @@ namespace AcManager {
         public static string Page_Wip_Commentary {
             get {
                 return ResourceManager.GetString("Page_Wip_Commentary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Actual temperature:.
-        /// </summary>
-        public static string QuickDrive_ActualTemperature {
-            get {
-                return ResourceManager.GetString("QuickDrive_ActualTemperature", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Consider Timezones.
-        /// </summary>
-        public static string QuickDrive_ConsiderTimezones {
-            get {
-                return ResourceManager.GetString("QuickDrive_ConsiderTimezones", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading failed.
-        /// </summary>
-        public static string QuickDrive_LoadingFailed {
-            get {
-                return ResourceManager.GetString("QuickDrive_LoadingFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Real conditions.
-        /// </summary>
-        public static string QuickDrive_RealConditions {
-            get {
-                return ResourceManager.GetString("QuickDrive_RealConditions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Temperature.
-        /// </summary>
-        public static string QuickDrive_Temperature {
-            get {
-                return ResourceManager.GetString("QuickDrive_Temperature", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Actual temperature is out of range, closest value is used.
-        /// </summary>
-        public static string QuickDrive_Temperature_Warning {
-            get {
-                return ResourceManager.GetString("QuickDrive_Temperature_Warning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Time.
-        /// </summary>
-        public static string QuickDrive_Time {
-            get {
-                return ResourceManager.GetString("QuickDrive_Time", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Actual time is out of range, closest value is used.
-        /// </summary>
-        public static string QuickDrive_Time_Warning {
-            get {
-                return ResourceManager.GetString("QuickDrive_Time_Warning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Time multipler.
-        /// </summary>
-        public static string QuickDrive_TimeMultiplerLabel {
-            get {
-                return ResourceManager.GetString("QuickDrive_TimeMultiplerLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Track:.
-        /// </summary>
-        public static string QuickDrive_TrackStateLabel {
-            get {
-                return ResourceManager.GetString("QuickDrive_TrackStateLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {}Actual weather ({0}) isn&apos;t supported.
-        /// </summary>
-        public static string QuickDrive_Weather_Warning {
-            get {
-                return ResourceManager.GetString("QuickDrive_Weather_Warning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Weather:.
-        /// </summary>
-        public static string QuickDrive_WeatherLabel {
-            get {
-                return ResourceManager.GetString("QuickDrive_WeatherLabel", resourceCulture);
             }
         }
         
@@ -6741,6 +6939,42 @@ namespace AcManager {
         public static string Settings_Live_SrsOnlineMaskLabel {
             get {
                 return ResourceManager.GetString("Settings_Live_SrsOnlineMaskLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flag “--force-locale” is set!.
+        /// </summary>
+        public static string Settings_Locale_ForceLocaleWarning {
+            get {
+                return ResourceManager.GetString("Settings_Locale_ForceLocaleWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overwrite strings with unpacked locale if exists.
+        /// </summary>
+        public static string Settings_Locale_LoadCustom {
+            get {
+                return ResourceManager.GetString("Settings_Locale_LoadCustom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unpacked locale will be loaded from “AppData\Local\AcTools Content Manager\Locales\(ID)”, where ID is your selected locale.
+        /// </summary>
+        public static string Settings_Locale_LoadCustom_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Locale_LoadCustom_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don’t forget to restart app after any changes.
+        /// </summary>
+        public static string Settings_Locale_RestartMessage {
+            get {
+                return ResourceManager.GetString("Settings_Locale_RestartMessage", resourceCulture);
             }
         }
         

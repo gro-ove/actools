@@ -11,7 +11,7 @@ namespace AcManager.Tools.Managers {
         public static CarsManager Instance { get; private set; }
 
         public static CarsManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
+            if (Instance != null) throw new Exception(@"Already initialized");
             return Instance = new CarsManager();
         }
 
@@ -19,6 +19,12 @@ namespace AcManager.Tools.Managers {
 
         public override CarObject GetDefault() {
             return GetById(@"abarth500") ?? base.GetDefault();
+        }
+
+        protected override void OnListUpdate() {
+            SuggestionLists.RebuildCarBrandsList();
+            SuggestionLists.RebuildCarClassesList();
+            SuggestionLists.RebuildCarTagsList();
         }
 
         private static readonly string[] WatchedFiles = {

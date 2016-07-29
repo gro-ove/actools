@@ -24,5 +24,13 @@ namespace AcTools.Utils {
                 await stream.WriteAsync(bytes, 0, bytes.Length, cancellation);
             }
         }
+
+        public static async Task WriteAllBytesAsync([NotNull] string filename, [NotNull] Stream source,
+                CancellationToken cancellation = default(CancellationToken)) {
+            if (filename == null) throw new ArgumentNullException(nameof(filename));
+            using (var stream = File.Open(filename, FileMode.Create)) {
+                await source.CopyToAsync(stream, 81920, cancellation);
+            }
+        }
     }
 }

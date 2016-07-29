@@ -63,6 +63,10 @@
             <!--quick drive-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_QuickDriveHeader}" />
 
+            <CheckBox IsChecked="{Binding Drive.QuickDriveCacheBrands}" ToolTip="In car selection dialog">
+                <Label Content="Cache brands" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ExpandBounds_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_ExpandBounds}" />
             </CheckBox>

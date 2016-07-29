@@ -68,7 +68,7 @@ namespace AcManager {
                 SecondInstanceMessage = User32.RegisterWindowMessage(mutexId);
 
                 if (mutex.WaitOne(0, false)) {
-                    new App().Run();
+                    App.CreateAndRun();
                 } else {
                     PassArgsToRunningInstance(args);
                 }

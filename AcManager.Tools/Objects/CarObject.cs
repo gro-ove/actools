@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,10 +36,10 @@ namespace AcManager.Tools.Objects {
             base.InitializeLocations();
 
             LogoIcon = Path.Combine(Location, "logo.png");
-            BrandBadge = Path.Combine(Location, "ui", "badge.png");
-            UpgradeIcon = Path.Combine(Location, "ui", "upgrade.png");
+            BrandBadge = Path.Combine(Location, @"ui", @"badge.png");
+            UpgradeIcon = Path.Combine(Location, @"ui", @"upgrade.png");
             SkinsDirectory = Path.Combine(Location, "skins");
-            JsonFilename = Path.Combine(Location, "ui", "ui_car.json");
+            JsonFilename = Path.Combine(Location, @"ui", @"ui_car.json");
         }
 
         private void Skins_CollectionReady(object sender, EventArgs e) {
@@ -363,7 +364,7 @@ namespace AcManager.Tools.Objects {
                     SpecsAcceleration
                 }.Where(val => !string.IsNullOrWhiteSpace(val))) {
                     if (result.Length > 0) {
-                        result.Append(", ");
+                        result.Append(@", ");
                     }
 
                     result.Append(val);
@@ -417,6 +418,7 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         #region Loading
+        [Localizable(false)]
         protected override void LoadData(JObject json) {
             base.LoadData(json);
 
@@ -455,6 +457,7 @@ namespace AcManager.Tools.Objects {
             return base.TestIfKunos() || TestIfKunosUsingGuids(Id);
         }
 
+        [Localizable(false)]
         public override void SaveData(JObject json) {
             base.SaveData(json);
 

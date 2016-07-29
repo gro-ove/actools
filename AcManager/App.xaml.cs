@@ -1,5 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -34,13 +34,14 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager {
     public partial class App {
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
-        public App() {
+        public static void CreateAndRun() {
             FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
             if (!AppArguments.GetBool(AppFlag.DisableSaving)) {
                 ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
@@ -55,14 +56,18 @@ namespace AcManager {
 
                 Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename));
                 Logging.Write("App version: " + BuildInformation.AppVersion);
+                Logging.Write("Windows version: " + WindowsVersionHelper.GetVersion());
             }
-
-            LocalesHelper.Initialize();
 
             if (AppArguments.GetBool(AppFlag.IgnoreSystemProxy, true)) {
                 WebRequest.DefaultWebProxy = null;
             }
 
+            LocaleHelper.InitializeAsync().Wait();
+            new App().Run();
+        }
+
+        private App() {
             AppArguments.Set(AppFlag.SyncNavigation, ref ModernFrame.OptionUseSyncNavigation);
             AppArguments.Set(AppFlag.DisableTransitionAnimation, ref ModernFrame.OptionDisableTransitionAnimation);
             AppArguments.Set(AppFlag.RecentlyClosedQueueSize, ref LinkGroupFilterable.OptionRecentlyClosedQueueSize);
@@ -122,7 +127,6 @@ namespace AcManager {
             AcError.RegisterFixer(new AcErrorFixer());
             AcError.RegisterSolutionsFactory(new SolutionsFactory());
 
-            InitializeUpdatableStuff();
             InitializePresets();
 
             SharingHelper.Initialize();
@@ -156,12 +160,12 @@ namespace AcManager {
             CustomShowroomWrapper.SetDefaultIcon(iconUri);
             Toast.SetDefaultIcon(iconUri);
             Toast.SetDefaultAction(() => (Current.MainWindow as ModernWindow)?.BringToFront());
-
             BbCodeBlock.ImageClicked += BbCodeBlock_ImageClicked;
-
+            
             StartupUri = new Uri(Superintendent.Instance.IsReady ?
                     @"Pages/Windows/MainWindow.xaml" : @"Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
 
+            InitializeUpdatableStuff();
             BackgroundInitialization();
         }
 
@@ -198,7 +202,7 @@ namespace AcManager {
             WeatherSpecificCloudsHelper.RestoreIfReplaced();
         }
 
-        private async void DeleteOldLogs() {
+        private static async void DeleteOldLogs() {
             await Task.Delay(5000);
             await Task.Run(() => {
                 var directory = FilesStorage.Instance.GetDirectory("Logs");
@@ -217,25 +221,34 @@ namespace AcManager {
         }
 
         private void InitializeUpdatableStuff() {
-            ContentSyncronizer.Initialize();
-            ContentSyncronizer.Instance.PropertyChanged += ContentSyncronizer_PropertyChanged;
+            DataUpdater.Initialize();
+            DataUpdater.Instance.Updated += ContentSyncronizer_Updated;
 
             AppUpdater.Initialize();
-            AppUpdater.Instance.PropertyChanged += AppUpdater_PropertyChanged;
-        }
-
-        private void ContentSyncronizer_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(ContentSyncronizer.InstalledVersion)) {
-                Toast.Show(AppStrings.App_ContentUpdated, string.Format(AppStrings.App_ContentUpdated_Details, ContentSyncronizer.Instance.InstalledVersion));
+            AppUpdater.Instance.Updated += AppUpdater_Updated;
+            
+            if (LocaleHelper.JustUpdated) {
+                Toast.Show(AppStrings.App_LocaleUpdated, string.Format(AppStrings.App_DataUpdated_Details, LocaleHelper.LoadedVersion));
             }
+
+            LocaleUpdater.Initialize(LocaleHelper.LoadedVersion);
+            LocaleUpdater.Instance.Updated += LocaleUpdater_Updated;
         }
 
-        private void AppUpdater_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(AppUpdater.UpdateIsReady)) {
-                Toast.Show(AppStrings.App_NewVersion,
-                        string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
-                            AppUpdater.Instance.FinishUpdateCommand.Execute(null);
-                        });
+        private void ContentSyncronizer_Updated(object sender, EventArgs e) {
+            Toast.Show(AppStrings.App_DataUpdated, string.Format(AppStrings.App_DataUpdated_Details, DataUpdater.Instance.InstalledVersion));
+        }
+
+        private void AppUpdater_Updated(object sender, EventArgs e) {
+            Toast.Show(AppStrings.App_NewVersion,
+                    string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady), () => {
+                        AppUpdater.Instance.FinishUpdateCommand.Execute(null);
+                    });
+        }
+
+        private void LocaleUpdater_Updated(object sender, EventArgs e) {
+            if (string.Equals(CultureInfo.CurrentUICulture.Name, SettingsHolder.Locale.LocaleName, StringComparison.OrdinalIgnoreCase)) {
+                Toast.Show(AppStrings.App_LocaleUpdated, AppStrings.App_LocaleUpdated_Details, WindowsHelper.RestartCurrentApplication);
             }
         }
 

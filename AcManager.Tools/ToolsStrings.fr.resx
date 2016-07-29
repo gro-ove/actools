@@ -250,9 +250,6 @@
 	<data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>La version decompressée ne supporte pas la mise à jour automatique.</value>
   </data>
-	<data name="AppUpdater_UnhandledError" xml:space="preserve">
-    <value>Une erreur non gérée est survenue.</value>
-  </data>
 	<data name="AppUpdater_CannotDownloadInformation" xml:space="preserve">
     <value>Impossible de telecharger l'information sur la derniere version.</value>
   </data>
@@ -867,10 +864,10 @@
 	<data name="Progress_Uploading_KnownTotal" xml:space="preserve">
     <value>{0} of {1} uploadé</value>
   </data>
-	<data name="ContentSyncronizer_UnhandledError" xml:space="preserve">
+	<data name="Common_UnhandledError_Commentary" xml:space="preserve">
     <value>Des erreurs non gérées sont survenues.</value>
   </data>
-	<data name="ContentSyncronizer_CannotDownloadInformation" xml:space="preserve">
+	<data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
     <value>Impossible de télécharger l'information de derniere version.</value>
   </data>
 	<data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">

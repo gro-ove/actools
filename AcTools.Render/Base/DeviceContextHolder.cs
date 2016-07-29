@@ -138,7 +138,7 @@ namespace AcTools.Render.Base {
         private BlendState _transparentBlendState, _addBlendState;
         private RasterizerState _doubleSidedState;
 
-        public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState = _normalDepthState =
+        public DepthStencilState NormalDepthState => _normalDepthState ?? (_normalDepthState =
                 DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
                     IsDepthEnabled = true,
                     IsStencilEnabled = false,
@@ -146,7 +146,7 @@ namespace AcTools.Render.Base {
                     DepthComparison = Comparison.Less,
                 }));
 
-        public DepthStencilState DisabledDepthState => _disabledDepthState ?? (_disabledDepthState = _disabledDepthState =
+        public DepthStencilState DisabledDepthState => _disabledDepthState ?? (_disabledDepthState = 
                 DepthStencilState.FromDescription(Device, new DepthStencilStateDescription {
                     IsDepthEnabled = false,
                     IsStencilEnabled = false,

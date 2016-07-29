@@ -253,12 +253,6 @@
 	<data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>Unpacked version doesn’t support auto-updating.</value>
   </data>
-	<data name="AppUpdater_UnhandledError" xml:space="preserve">
-    <value>Some unhandled error happened.</value>
-  </data>
-	<data name="AppUpdater_CannotDownloadInformation" xml:space="preserve">
-    <value>Can’t download information about latest version.</value>
-  </data>
 	<data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
     <value>Can’t update app</value>
   </data>
@@ -885,10 +879,10 @@
 	<data name="Progress_Uploading_KnownTotal" xml:space="preserve">
     <value>Uploaded {0} of {1}</value>
   </data>
-	<data name="ContentSyncronizer_UnhandledError" xml:space="preserve">
+	<data name="Common_UnhandledError_Commentary" xml:space="preserve">
     <value>Some unhandled error happened.</value>
   </data>
-	<data name="ContentSyncronizer_CannotDownloadInformation" xml:space="preserve">
+	<data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
     <value>Can’t download information about latest version.</value>
   </data>
 	<data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">

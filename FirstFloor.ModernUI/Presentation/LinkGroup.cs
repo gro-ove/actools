@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class LinkGroup : Displayable {
@@ -7,9 +8,9 @@ namespace FirstFloor.ModernUI.Presentation {
 
         public string Id => $"{GroupKey}__{DisplayName}";
 
-        private string KeySelected => "LinkGroup.Selected_" + Id;
+        private string KeySelected => @"LinkGroup.Selected_" + Id;
 
-        private string KeyTemporary => "LinkGroup.Temporary_" + Id;
+        private string KeyTemporary => @"LinkGroup.Temporary_" + Id;
 
         public string GroupKey {
             get { return _groupKey ?? string.Empty; }
@@ -55,7 +56,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private void Links_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             ValuesStorage.Set(KeyTemporary, Links.Select((x, i) =>
-                    x is CustomLink ? ((i > 0 ? Links[i - 1] : null)?.Source.ToString() ?? "") + "\n" + ((CustomLink)x).Serialize() : null).Where(x => x != null));
+                    x is CustomLink ? ((i > 0 ? Links[i - 1] : null)?.Source.ToString() ?? "") + '\n' + ((CustomLink)x).Serialize() : null).Where(x => x != null));
         }
 
         private Link _selectedLink;
@@ -77,6 +78,7 @@ namespace FirstFloor.ModernUI.Presentation {
             }
         }
 
+        [NotNull]
         public LinkCollection Links { get; } = new LinkCollection();
 
         private bool _isShown = true;

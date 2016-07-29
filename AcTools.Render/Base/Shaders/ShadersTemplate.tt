@@ -56,8 +56,14 @@ namespace AcTools.Render.Base.Shaders {
 			return File.ReadAllBytes(h);
 		}
 
+        var fxc = @"C:\Program Files (x86)\Windows Kits\8.1\bin\x64\fxc.exe";
+        if (!File.Exists(fxc)){
+            #> /* ! fxc.exe is missing ! */ }<#
+            return null;
+        }
+
 		var p = Process.Start(new ProcessStartInfo {
-			FileName = @"C:\Windows\SysNative\fxc.exe",
+			FileName = fxc,
 			Arguments = "/nologo /T fx_5_0 /O3 /I../Includes /E Render /Fo\"" + Path.GetFileName(c) + "\" \"" + n + "\"",
 			WorkingDirectory = Path.GetDirectoryName(f),
 			RedirectStandardError = true,

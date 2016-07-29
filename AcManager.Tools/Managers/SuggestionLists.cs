@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Data;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers {
     public static class SuggestionLists {
@@ -30,7 +31,7 @@ namespace AcManager.Tools.Managers {
         public static AutocompleteValuesList ShowroomTagsList { get; } = new AutocompleteValuesList();
         public static ListCollectionView ShowroomTagsListView => ShowroomTagsList.View;
 
-        public static AutocompleteValuesList AuthorsList { get; } = new AutocompleteValuesList { "Kunos" };
+        public static AutocompleteValuesList AuthorsList { get; } = new AutocompleteValuesList { @"Kunos" };
         public static ListCollectionView AuthorsListView => AuthorsList.View;
 
         public static AutocompleteValuesList CountriesList { get; } = new AutocompleteValuesList();
@@ -42,15 +43,16 @@ namespace AcManager.Tools.Managers {
         static SuggestionLists (){}
 
         public static void RebuildCarBrandsList() {
+            Logging.Write("[SuggestionList] RebuildCarBrandsList()");
             CarBrandsList.ReplaceEverythingBy(from c in CarsManager.Instance where c.Enabled select c.Brand);
         }
 
         public static void RebuildCarClassesList() {
-            CarBrandsList.ReplaceEverythingBy(from c in CarsManager.Instance where c.Enabled select c.CarClass);
+            CarClassesList.ReplaceEverythingBy(from c in CarsManager.Instance where c.Enabled select c.CarClass);
         }
 
         public static void RebuildCarTagsList() {
-            CarBrandsList.ReplaceEverythingBy(CarsManager.Instance.Where(x => x.Enabled).SelectMany(x => x.Tags));
+            CarTagsList.ReplaceEverythingBy(CarsManager.Instance.Where(x => x.Enabled).SelectMany(x => x.Tags));
         }
 
         public static void RebuildCarSkinDriverNamesList() {

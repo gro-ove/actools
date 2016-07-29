@@ -72,8 +72,8 @@ namespace AcManager.Controls {
         public static readonly DependencyProperty InnerItemsSourceProperty = DependencyProperty.Register(nameof(InnerItemsSource), typeof(AcWrapperCollectionView),
             typeof(AcObjectListBox), new PropertyMetadata());
 
-        public IAcWrapperObservableCollection ItemsSource {
-            get { return (IAcWrapperObservableCollection)GetValue(ItemsSourceProperty); }
+        public IAcObjectList ItemsSource {
+            get { return (IAcObjectList)GetValue(ItemsSourceProperty); }
             set { SetValue(ItemsSourceProperty, value); }
         }
 

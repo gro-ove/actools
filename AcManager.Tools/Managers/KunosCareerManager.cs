@@ -239,13 +239,7 @@ namespace AcManager.Tools.Managers {
             return careerObject;
         }
 
-        protected override void ListReady() {
-            base.ListReady();
-            RebuildTree();
-        }
-
-        public override void UpdateList() {
-            base.UpdateList();
+        protected override void OnListUpdate() {
             RebuildTree();
         }
 

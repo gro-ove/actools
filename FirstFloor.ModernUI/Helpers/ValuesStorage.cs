@@ -471,7 +471,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        [Pure]
+        [Pure, CanBeNull]
         public static Uri GetUri([NotNull, LocalizationRequired(false)] string key, Uri defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Contains(key)) return defaultValue;

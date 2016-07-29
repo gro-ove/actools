@@ -6,7 +6,7 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Margin" Value="1 2 1 2" />
         <Setter Property="TextWrapping" Value="NoWrap" />
-        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
         <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />

@@ -16,7 +16,7 @@
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding CommonSettings.DeveloperMode}"
+            <CheckBox IsChecked="{Binding Common.DeveloperMode}"
                     Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}">
                 <Label Content="{x:Static g:AppStrings.Common_DevMode}" />
             </CheckBox>
@@ -30,7 +30,7 @@
                 <TextBlock Text="{Binding Source={x:Static internal:AppKeyHolder.KeySafe}, Mode=OneTime}" attached:WatermarkService.Watermark="?" />
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding CommonSettings.CreateStartMenuShortcutIfMissing}"
+            <CheckBox IsChecked="{Binding Common.CreateStartMenuShortcutIfMissing}"
                     ToolTip="{x:Static g:AppStrings.Settings_General_WindowsShortcut_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_General_WindowsShortcut}" />
             </CheckBox>
@@ -40,30 +40,30 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_CheckForUpdatesLabel}" />
-                <ComboBox ItemsSource="{Binding CommonSettings.Periods}" SelectedItem="{Binding CommonSettings.UpdatePeriod}" DisplayMemberPath="DisplayName" />
+                <ComboBox ItemsSource="{Binding Common.Periods}" SelectedItem="{Binding Common.UpdatePeriod}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <!--app version-->
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_AppVersionLabel}" />
-                <Button Command="{Binding AppUpdater.CheckAndPrepareIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}"
+                <Button Command="{Binding AppUpdater.CheckAndUpdateIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}"
                         Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}"
                         Text="{Binding Source={x:Static helpers:BuildInformation.AppVersion}, Mode=OneTime}" attached:WatermarkService.Watermark="?" />
             </DockPanel>
 
-            <TextBlock Text="{Binding AppUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
+            <TextBlock Text="{Binding AppUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"
                     Visibility="{Binding AppUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
             <!--content version-->
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_ContentVersionLabel}" />
-                <Button Command="{Binding ContentSyncronizer.CheckAndUpdateIfNeededCommand}" Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
-                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding ContentSyncronizer.InstalledVersion, Mode=OneWay}"
+                <Button Command="{Binding DataUpdater.CheckAndUpdateIfNeededCommand}" Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
+                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding DataUpdater.InstalledVersion, Mode=OneWay}"
                         attached:WatermarkService.Watermark="?" />
             </DockPanel>
-            <TextBlock Text="{Binding ContentSyncronizer.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
-                    Visibility="{Binding ContentSyncronizer.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+            <TextBlock Text="{Binding DataUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
+                    Visibility="{Binding DataUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
             <!--values storage-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_ValuesHeader}" />
@@ -84,7 +84,7 @@
 
             <!--beta access-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_TestingAccessHeader}" />
-            <CheckBox IsChecked="{Binding CommonSettings.UpdateToNontestedVersions}" attached:LimitedService.Limited="True" HorizontalAlignment="Left"
+            <CheckBox IsChecked="{Binding Common.UpdateToNontestedVersions}" attached:LimitedService.Limited="True" HorizontalAlignment="Left"
                     ClipToBounds="False" Padding="0 0 24 0">
                 <Label Content="{x:Static g:AppStrings.Settings_General_TestingAccess}" />
             </CheckBox>

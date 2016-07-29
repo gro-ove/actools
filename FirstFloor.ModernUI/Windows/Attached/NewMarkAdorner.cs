@@ -12,12 +12,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             IsHitTestVisible = true;
 
             _contentPresenter = new TextBlock {
-                Style = FindResource("NewMarkStyle") as Style
+                Style = FindResource(@"NewMarkStyle") as Style
             };
 
-            if (_contentPresenter == null) return;
-
-            SetBinding(VisibilityProperty, new Binding("IsVisible") {
+            SetBinding(VisibilityProperty, new Binding(@"IsVisible") {
                 Source = adornedElement,
                 Converter = new BooleanToVisibilityConverter()
             });

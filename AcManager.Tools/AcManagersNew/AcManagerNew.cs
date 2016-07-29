@@ -183,7 +183,7 @@ namespace AcManager.Tools.AcManagersNew {
             // ignore all directories changes — we’ll receive events on sublevel anyway
             try {
                 if (FileUtils.IsDirectory(fullPath)) return;
-            } catch (FileNotFoundException) {
+            } catch (Exception) {
                 return;
             }
 

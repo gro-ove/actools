@@ -48,8 +48,8 @@ namespace AcManager.Tools {
                 return await ProcessUriRequest(argument);
             }
 
-            if (argument.StartsWith(@"http", StringComparison.OrdinalIgnoreCase) || argument.StartsWith(@"https", StringComparison.OrdinalIgnoreCase) ||
-                    argument.StartsWith(@"ftp", StringComparison.OrdinalIgnoreCase)) {
+            if (argument.StartsWith(@"http:", StringComparison.OrdinalIgnoreCase) || argument.StartsWith(@"https:", StringComparison.OrdinalIgnoreCase) ||
+                    argument.StartsWith(@"ftp:", StringComparison.OrdinalIgnoreCase)) {
                 argument = await LoadRemoveFile(argument);
                 if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
             }

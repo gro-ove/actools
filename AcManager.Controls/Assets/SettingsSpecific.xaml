@@ -116,5 +116,18 @@
 
     <Style x:Key="SettingsPanel.Small" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Small}">
         <Setter Property="Margin" Value="0 8 0 8" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="SettingsPanel.Warning" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource Small}">
+        <Setter Property="Margin" Value="160 0 0 8" />
+        <Setter Property="Foreground" Value="{DynamicResource Error}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style x:Key="SettingsPanel.Warning.BbCodeBlock" TargetType="{x:Type mui:BbCodeBlock}" BasedOn="{StaticResource BbCodeBlock.Small}">
+        <Setter Property="Margin" Value="160 0 0 8" />
+        <Setter Property="Foreground" Value="{DynamicResource Error}" />
+        <Setter Property="FontWeight" Value="Bold" />
     </Style>
 </ResourceDictionary>

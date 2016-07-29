@@ -71,7 +71,7 @@ namespace AcTools.Render.Wrapper {
                 if (FormMoving) {
                     Form.Left += e.X - _lastMousePos.X;
                     Form.Top += e.Y - _lastMousePos.Y;
-                    _lastMousePos = new Point(e.X - e.X + _lastMousePos.X, e.Y - e.Y + _lastMousePos.Y);
+                    _lastMousePos = e.Location;
                     return;
                 }
 

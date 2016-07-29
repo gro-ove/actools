@@ -7,6 +7,7 @@ using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI;
 
 namespace AcManager.Controls.UserControls {
     [ContentProperty(nameof(PreviewContent))]
@@ -15,6 +16,11 @@ namespace AcManager.Controls.UserControls {
             InitializeComponent();
             InnerCarBlockPanel.DataContext = this;
         }
+
+        public FrameworkElement BrandArea => InnerBrandArea;
+        public FrameworkElement ClassArea => InnerClassArea;
+        public FrameworkElement YearArea => InnerYearArea;
+        public FrameworkElement CountryArea => InnerCountryArea;
 
         public static readonly DependencyProperty ShowSkinsAndPreviewProperty = DependencyProperty.Register(nameof(ShowSkinsAndPreview), typeof(bool),
                 typeof(CarBlock), new PropertyMetadata(true));
@@ -88,11 +94,11 @@ namespace AcManager.Controls.UserControls {
                 e.Handled = true;
                 var contextMenu = new ContextMenu();
 
-                var item = new MenuItem { Header = Controls.ControlsStrings.Car_OpenInShowroom };
+                var item = new MenuItem { Header = ControlsStrings.Car_OpenInShowroom };
                 item.Click += (s, args) => CarOpenInShowroomDialog.Run(Car, SelectedSkin?.Id);
                 contextMenu.Items.Add(item);
 
-                item = new MenuItem { Header = Controls.ControlsStrings.Common_Presets };
+                item = new MenuItem { Header = ControlsStrings.Common_Presets };
                 foreach (var menuItem in PresetsMenuHelper.GroupPresets(CarOpenInShowroomDialog.PresetableKeyValue, p => {
                     CarOpenInShowroomDialog.RunPreset(p, Car, SelectedSkin?.Id);
                 })) {
@@ -100,13 +106,13 @@ namespace AcManager.Controls.UserControls {
                 }
                 contextMenu.Items.Add(item);
 
-                item = new MenuItem { Header = Controls.ControlsStrings.Common_Settings, InputGestureText = @"Shift" };
+                item = new MenuItem { Header = ControlsStrings.Common_Settings, InputGestureText = UiStrings.KeyShift };
                 item.Click += (s, args) => new CarOpenInShowroomDialog(Car, SelectedSkin?.Id).ShowDialog();
                 contextMenu.Items.Add(item);
 
                 // TODO: Presets!
 
-                item = new MenuItem { Header = Controls.ControlsStrings.Car_OpenInCustomShowroom, InputGestureText = @"Alt" };
+                item = new MenuItem { Header = ControlsStrings.Car_OpenInCustomShowroom, InputGestureText = UiStrings.KeyAlt };
                 item.Click += (s, args) => CustomShowroomWrapper.StartAsync(Car, SelectedSkin);
                 contextMenu.Items.Add(item);
 

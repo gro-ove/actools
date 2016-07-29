@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Api {
+    [Localizable(false)]
     public class CmApiProvider {
         #region Initialization
         public static readonly string UserAgent;
@@ -20,7 +21,7 @@ namespace AcManager.Tools.Helpers.Api {
         #endregion
 
         [CanBeNull]
-        public static string GetString([LocalizationRequired(false)] string url) {
+        public static string GetString(string url) {
             try {
                 var result = InternalUtils.CmGetData(url, UserAgent);
                 return result == null ? null : Encoding.UTF8.GetString(result);
@@ -31,7 +32,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemCanBeNull]
-        public static async Task<string> GetStringAsync([LocalizationRequired(false)] string url, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> GetStringAsync(string url, CancellationToken cancellation = default(CancellationToken)) {
             try {
                 var result = await InternalUtils.CmGetDataAsync(url, UserAgent, null, cancellation);
                 if (cancellation.IsCancellationRequested) return null;
@@ -42,6 +43,7 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        [CanBeNull]
         public static T Get<T>(string url) {
             try {
                 var json = GetString(url);
@@ -52,6 +54,7 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        [ItemCanBeNull]
         public static async Task<T> GetAsync<T>(string url, CancellationToken cancellation = default(CancellationToken)) {
             try {
                 var json = await GetStringAsync(url, cancellation);
@@ -63,7 +66,14 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
-        public static Task<byte[]> GetDataAsync([Localizable(false)] string url, IProgress<double?> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        [CanBeNull]
+        public static byte[] GetData(string url) {
+            return InternalUtils.CmGetData(url, UserAgent);
+        }
+
+        [ItemCanBeNull]
+        public static Task<byte[]> GetDataAsync(string url, IProgress<double?> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
             return InternalUtils.CmGetDataAsync(url, UserAgent, progress, cancellation);
         }
     }

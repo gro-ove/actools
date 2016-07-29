@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -7,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Internal;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.SemiGui;
@@ -16,7 +18,8 @@ using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Miscellaneous {
-    public class AppUpdater : NotifyPropertyChanged {
+    public class AppUpdater : BaseUpdater {
+        [Localizable(false)]
         private static string Branch => AppKeyHolder.IsAllRight && SettingsHolder.Common.UpdateToNontestedVersions ? "latest" : "tested";
 
         public static AppUpdater Instance { get; private set; }
@@ -26,74 +29,23 @@ namespace AcManager.Tools.Miscellaneous {
             Instance = new AppUpdater();
         }
 
-        private TimeSpan _updatePeriod;
+        private AppUpdater() : base(BuildInformation.AppVersion) {}
 
-        private AppUpdater() {
-            _updatePeriod = SettingsHolder.Common.UpdatePeriod.TimeSpan;
-            SettingsHolder.Common.PropertyChanged += Common_PropertyChanged;
-
-            if (_updatePeriod != TimeSpan.Zero) {
-                CheckAndUpdateIfNeeded().Forget();
-            }
-        }
-
-        private CancellationTokenSource _periodicCheckCancellation;
-
-        private void Common_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        protected override void OnCommonSettingsChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case nameof(SettingsHolder.Common.UpdatePeriod):
-                    if (_periodicCheckCancellation != null) {
-                        _periodicCheckCancellation.Cancel();
-                        _periodicCheckCancellation = null;
-                    }
-
-                    var oldValue = _updatePeriod;
-                    _updatePeriod = SettingsHolder.Common.UpdatePeriod.TimeSpan;
-                    if (oldValue == TimeSpan.Zero) {
-                        CheckAndUpdateIfNeeded().Forget();
-                    }
-
-                    if (_updatePeriod == TimeSpan.Zero) return;
-                    _periodicCheckCancellation = new CancellationTokenSource();
-                    PeriodicCheckAsync(_periodicCheckCancellation.Token).Forget();
+                    RestartPeriodicCheck();
                     break;
 
                 case nameof(SettingsHolder.Common.UpdateToNontestedVersions):
-                    if (!SettingsHolder.Common.UpdateToNontestedVersions || _updatePeriod == TimeSpan.Zero) return;
-                    CheckAndUpdateIfNeeded().Forget();
-
-                    if (_periodicCheckCancellation != null) {
-                        _periodicCheckCancellation.Cancel();
-                        _periodicCheckCancellation = null;
-                    }
-
-                    _periodicCheckCancellation = new CancellationTokenSource();
-                    PeriodicCheckAsync(_periodicCheckCancellation.Token).Forget();
+                    if (!SettingsHolder.Common.UpdateToNontestedVersions || UpdatePeriod == TimeSpan.Zero) return;
+                    RestartPeriodicCheck();
                     break;
-            }
-        }
-
-        private async Task PeriodicCheckAsync(CancellationToken token) {
-            while (!token.IsCancellationRequested) {
-                await Task.Delay(_updatePeriod, token);
-                await CheckAndUpdateIfNeeded();
             }
         }
 
         private static string VersionFromData(string data) {
             return JsonConvert.DeserializeObject<AppManifest>(data).Version;
-        }
-
-        private bool _checkingInProcess;
-
-        public bool CheckingInProcess {
-            get { return _checkingInProcess; }
-            set {
-                if (Equals(value, _checkingInProcess)) return;
-                _checkingInProcess = value;
-                OnPropertyChanged();
-                _contentCheckForUpdatesCommand?.OnCanExecuteChanged();
-            }
         }
 
         private bool _isSupported = true;
@@ -107,63 +59,16 @@ namespace AcManager.Tools.Miscellaneous {
             }
         }
 
-        public async Task CheckAndUpdateIfNeeded() {
-            if (!MainExecutingFile.IsPacked) {
-                LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
-                IsSupported = false;
-                return;
-            }
+        public override Task CheckAndUpdateIfNeeded() {
+            if (MainExecutingFile.IsPacked) return base.CheckAndUpdateIfNeeded();
 
-            if (CheckingInProcess) return;
-
-            CheckingInProcess = true;
-            CheckAndPrepareIfNeededCommand.OnCanExecuteChanged();
-
-            LatestError = null;
-
-            await Task.Delay(500);
-
-            try {
-                var latest = await GetLatestVersion();
-                if (latest == null) {
-                    return;
-                }
-
-                Logging.Write($"[AppUpdater] Latest version: {latest} (current: {BuildInformation.AppVersion})");
-
-                if (latest.IsVersionNewerThan(BuildInformation.AppVersion)) {
-                    await LoadAndPrepare();
-                }
-            } catch (Exception e) {
-                LatestError = ToolsStrings.AppUpdater_UnhandledError;
-                Logging.Warning("[AppUpdater] Cannot check and update app: " + e);
-            } finally {
-                CheckingInProcess = false;
-                CheckAndPrepareIfNeededCommand.OnCanExecuteChanged();
-            }
+            LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
+            IsSupported = false;
+            return Task.Delay(0);
         }
 
-        private string _latestError;
-
-        public string LatestError {
-            get { return _latestError; }
-            set {
-                if (Equals(value, _latestError)) return;
-                _latestError = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _isGetting;
-
-        public bool IsGetting {
-            get { return _isGetting; }
-            set {
-                if (Equals(value, _isGetting)) return;
-                _isGetting = value;
-                OnPropertyChanged();
-                _contentCheckForUpdatesCommand?.OnCanExecuteChanged();
-            }
+        protected override async Task<bool> CheckAndUpdateIfNeededInner() {
+            return (await GetLatestVersion())?.IsVersionNewerThan(BuildInformation.AppVersion) == true && await LoadAndPrepare();
         }
 
         private async Task<string> GetLatestVersion() {
@@ -172,9 +77,14 @@ namespace AcManager.Tools.Miscellaneous {
 
             try {
                 var data = await CmApiProvider.GetStringAsync($"app/manifest/{Branch}");
-                return data == null ? null : VersionFromData(data);
+                if (data == null) {
+                    LatestError = ToolsStrings.BaseUpdater_CannotDownloadInformation;
+                    return null;
+                }
+
+                return VersionFromData(data);
             } catch (Exception e) {
-                LatestError = ToolsStrings.AppUpdater_CannotDownloadInformation;
+                LatestError = ToolsStrings.BaseUpdater_CannotDownloadInformation;
                 Logging.Warning("[AppUpdater] Cannot get app/manifest.json: " + e);
                 return null;
             } finally {
@@ -182,13 +92,8 @@ namespace AcManager.Tools.Miscellaneous {
             }
         }
 
-        private RelayCommand _contentCheckForUpdatesCommand;
-        public RelayCommand CheckAndPrepareIfNeededCommand => _contentCheckForUpdatesCommand ?? (_contentCheckForUpdatesCommand = new RelayCommand(async o => {
-            await Instance.CheckAndUpdateIfNeeded();
-        }, o => !CheckingInProcess && !IsGetting));
-
         public class AppManifest {
-            [JsonProperty(PropertyName = "version")]
+            [JsonProperty(PropertyName = @"version")]
             public string Version;
         }
 
@@ -206,19 +111,20 @@ namespace AcManager.Tools.Miscellaneous {
 
         private bool _isPreparing;
 
-        private async Task LoadAndPrepare() {
+        private async Task<bool> LoadAndPrepare() {
             if (!MainExecutingFile.IsPacked) {
                 NonfatalError.Notify(ToolsStrings.AppUpdater_CannotUpdateApp, ToolsStrings.AppUpdater_UnpackedVersionMessage);
                 LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
-                return;
+                return false;
             }
 
-            if (_isPreparing) return;
+            if (_isPreparing) return false;
             _isPreparing = true;
             UpdateIsReady = null;
 
             try {
                 var data = await CmApiProvider.GetDataAsync($"app/get/{Branch}");
+                if (data == null) throw new InformativeException(ToolsStrings.AppUpdater_CannotLoad, ToolsStrings.Common_MakeSureInternetWorks);
 
                 string preparedVersion = null;
                 await Task.Run(() => {
@@ -228,14 +134,15 @@ namespace AcManager.Tools.Miscellaneous {
 
                     using (var stream = new MemoryStream(data, false))
                     using (var archive = new ZipArchive(stream)) {
-                        preparedVersion = VersionFromData(archive.GetEntry("Manifest.json").Open().ReadAsStringAndDispose());
+                        preparedVersion = VersionFromData(archive.GetEntry(@"Manifest.json").Open().ReadAsStringAndDispose());
 
-                        archive.GetEntry("Content Manager.exe").ExtractToFile(UpdateLocation);
+                        archive.GetEntry(@"Content Manager.exe").ExtractToFile(UpdateLocation);
                         Logging.Write($"[AppUpdater] New version {preparedVersion} was extracted to “{UpdateLocation}”");
                     }
                 });
 
                 UpdateIsReady = preparedVersion;
+                return true;
             } catch (UnauthorizedAccessException) {
                 NonfatalError.Notify(ToolsStrings.AppUpdater_AccessIsDenied,
                         ToolsStrings.AppUpdater_AccessIsDenied_Commentary);
@@ -247,6 +154,8 @@ namespace AcManager.Tools.Miscellaneous {
             } finally {
                 _isPreparing = false;
             }
+
+            return false;
         }
 
         private RelayCommand _loadAndInstallCommand;

@@ -243,7 +243,8 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public string DisplayStartingPosition => StartingPosition == 0 ? @"Random" : _last ? @"Last" : StartingPosition.ToOrdinal("driver");
+            public string DisplayStartingPosition => StartingPosition == 0 ? AppStrings.Drive_Ordinal_Random
+                    : _last ? AppStrings.Drive_Ordinal_Last : StartingPosition.ToOrdinal(AppStrings.Drive_Ordinal_Parameter);
 
             public int StartingPositionLimit => OpponentsNumber + 1;
 
@@ -350,10 +351,10 @@ namespace AcManager.Pages.Drive {
             }
 
             public class GridType : IWithId {
-                public static readonly GridType SameCar = new GridType("Same car");
-                public static readonly GridType SameGroup = new GridType("Same group");
-                public static readonly GridType FilteredBy = new GridType("Filtered by…");
-                public static readonly GridType Manual = new GridType("Manual");
+                public static readonly GridType SameCar = new GridType(AppStrings.Drive_Grid_SameCar);
+                public static readonly GridType SameGroup = new GridType(AppStrings.Drive_Grid_SameGroup);
+                public static readonly GridType FilteredBy = new GridType(AppStrings.Drive_Grid_FilteredBy);
+                public static readonly GridType Manual = new GridType(AppStrings.Drive_Grid_Manual);
 
                 [JsonProperty(PropertyName = @"id")]
                 private string _id;
@@ -592,8 +593,8 @@ namespace AcManager.Pages.Drive {
                         OpponentsCarsError = null;
                     } catch (Exception e) {
                         OpponentsCars.Clear();
-                        OpponentsCarsError = "Can’t filter cars for starting grid";
-                        Logging.Warning("UpdateOpponentsCars failed: " + e);
+                        OpponentsCarsError = AppStrings.Drive_CannotFilter;
+                        Logging.Warning("[QuickDrive_Race] UpdateOpponentsCars(): " + e);
                     }
 
                     OpponentsCarsLoading = false;
@@ -609,17 +610,17 @@ namespace AcManager.Pages.Drive {
 
                 using (var waiting = new WaitingDialog()) {
                     if (selectedCar == null || !selectedCar.Enabled) {
-                        ModernDialog.ShowMessage("Please, select some non-disabled car.", "Can’t start race", MessageBoxButton.OK);
+                        ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SelectNonDisabled, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
                         return;
                     }
 
                     if (selectedTrack == null) {
-                        ModernDialog.ShowMessage("Please, select a track.", "Can’t start race", MessageBoxButton.OK);
+                        ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SelectTrack, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
                         return;
                     }
 
                     if (OpponentsNumber < 1) {
-                        ModernDialog.ShowMessage("Please, set at least one opponent.", "Can’t start race", MessageBoxButton.OK);
+                        ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SetOpponent, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
                         return;
                     }
 
@@ -630,31 +631,30 @@ namespace AcManager.Pages.Drive {
                         cars = new[] { selectedCar };
                     } else {
                         if (!CarsManager.Instance.IsLoaded) {
-                            waiting.Report("Grid building…");
+                            waiting.Report(AppStrings.Drive_GridBuilding);
                             await CarsManager.Instance.EnsureLoadedAsync();
                             if (cancellation.IsCancellationRequested) return;
                         }
 
                         try {
-                            waiting.Report("AI cars filtering…");
+                            waiting.Report(AppStrings.Drive_AiFiltering);
                             cars = await FindAppropriateCars(selectedCar, selectedTrack, SelectedGridType, true, cancellation);
                             if (cancellation.IsCancellationRequested) return;
 
-                            Logging.Write("Appropriate cars: " + cars.JoinToString(", "));
+                            Logging.Write("Appropriate cars: " + cars.JoinToString(@", "));
                             if (SelectedGridType.Test) return;
                         } catch (Exception e) {
-                            NonfatalError.Notify("Can’t filter appropriate cars for starting grid",
-                                    "If you made any changes to GridTypes.json, make sure they’re all right.", e);
+                            NonfatalError.Notify(AppStrings.Drive_CannotFilter, AppStrings.Drive_CannotFilter_Commentary, e);
                             return;
                         }
 
                         if (cars.Length == 0) {
-                            ModernDialog.ShowMessage("Attempt to find any car fitting selected grid type is failed.", "Can’t start race", MessageBoxButton.OK);
+                            ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_CannotFindAnyCar, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
                             return;
                         }
                     }
 
-                    waiting.Report("AI cars loading…");
+                    waiting.Report(AppStrings.Drive_AiCarsLoading);
                     botCars = await GenerateAiCars(selectedCar, selectedTrack, OpponentsNumber, cars);
                     if (cancellation.IsCancellationRequested) return;
                 }
@@ -727,16 +727,16 @@ namespace AcManager.Pages.Drive {
 
                     if (!string.IsNullOrWhiteSpace(type.Script)) {
                         var state = LuaHelper.GetExtended();
-                        if (state == null) throw new Exception("Can’t initialize Lua");
+                        if (state == null) throw new Exception(AppStrings.Drive_CannotInitializeLua);
 
-                        state.Globals["selected"] = car;
-                        state.Globals["track"] = track;
+                        state.Globals[@"selected"] = car;
+                        state.Globals[@"track"] = track;
 
                         var result = state.DoString(PrepareScript(type.Script));
                         if (result.Type == DataType.Boolean && !result.Boolean) return new CarObject[0];
 
                         var fn = result.Function;
-                        if (fn == null) throw new Exception("Invalid script");
+                        if (fn == null) throw new Exception(AppStrings.Drive_InvalidScript);
 
                         carsEnumerable = carsEnumerable.Where(x => fn.Call(x).Boolean);
                     }
@@ -753,17 +753,17 @@ namespace AcManager.Pages.Drive {
             private async Task<IEnumerable<Game.AiCar>> GenerateAiCars(CarObject selectedCar, AcJsonObjectNew selectedTrack, int opponentsNumber, params CarObject[] opponentsCars) {
                 NameNationality[] nameNationalities = null;
                 var trackCountry = selectedTrack.Country == null
-                        ? null : DataProvider.Instance.Countries.GetValueOrDefault(selectedTrack.Country.Trim().ToLower()) ?? "Italy";
+                        ? null : DataProvider.Instance.Countries.GetValueOrDefault(selectedTrack.Country.Trim().ToLower()) ?? @"Italy";
 
                 if (opponentsNumber == 7 && AppArguments.GetBool(AppFlag.NfsPorscheTribute)) {
                     nameNationalities = new[] {
-                        new NameNationality { Name = "Dylan", Nationality = "Wales" },
-                        new NameNationality { Name = "Parise", Nationality = "Italy" },
-                        new NameNationality { Name = "Steele", Nationality = "United States" },
-                        new NameNationality { Name = "Wingnut", Nationality = "England" },
-                        new NameNationality { Name = "Leadfoot", Nationality = trackCountry },
-                        new NameNationality { Name = "Amazon", Nationality = trackCountry },
-                        new NameNationality { Name = "Backlash", Nationality = "United States" }
+                        new NameNationality { Name = @"Dylan", Nationality = @"Wales" },
+                        new NameNationality { Name = @"Parise", Nationality = @"Italy" },
+                        new NameNationality { Name = @"Steele", Nationality = @"United States" },
+                        new NameNationality { Name = @"Wingnut", Nationality = @"England" },
+                        new NameNationality { Name = @"Leadfoot", Nationality = trackCountry },
+                        new NameNationality { Name = @"Amazon", Nationality = trackCountry },
+                        new NameNationality { Name = @"Backlash", Nationality = @"United States" }
                     };
                 } else if (DataProvider.Instance.NationalitiesAndNames.Any()) {
                     nameNationalities = GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList).Take(opponentsNumber).ToArray();
@@ -800,7 +800,7 @@ namespace AcManager.Pages.Drive {
                        select new Game.AiCar {
                            AiLevel = AiLevelFixed ? 100 : list[i],
                            CarId = entry.Car.Id,
-                           DriverName = nameNationalities?[i].Name ?? "AI #" + i,
+                           DriverName = nameNationalities?[i].Name ?? @"AI #" + i,
                            Nationality = nameNationalities?[i].Nationality ?? trackCountry,
                            Setup = "",
                            SkinId = entry.Skins.Next?.Id

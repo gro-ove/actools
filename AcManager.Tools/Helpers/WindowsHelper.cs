@@ -20,5 +20,11 @@ namespace AcManager.Tools.Helpers {
         public static void ViewFile(string filename) {
             Process.Start("explorer", "/select," + filename);
         }
+
+        // TODO
+        public static void ViewInBrowser(string url) {
+            if (url == null) return;
+            Process.Start(url);
+        }
     }
 }

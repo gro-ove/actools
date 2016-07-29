@@ -12,7 +12,7 @@ namespace AcTools.Windows.Input {
 
         public KeyboardSimulator(IInputSimulator inputSimulator) {
             if (inputSimulator == null) {
-                throw new ArgumentNullException("inputSimulator");
+                throw new ArgumentNullException(nameof(inputSimulator));
             }
 
             _inputSimulator = inputSimulator;
@@ -20,7 +20,7 @@ namespace AcTools.Windows.Input {
         }
 
         internal KeyboardSimulator(IInputSimulator inputSimulator, IInputMessageDispatcher messageDispatcher) {
-            if (inputSimulator == null) throw new ArgumentNullException("inputSimulator");
+            if (inputSimulator == null) throw new ArgumentNullException(nameof(inputSimulator));
 
             if (messageDispatcher == null) {
                 throw new InvalidOperationException(
@@ -34,7 +34,7 @@ namespace AcTools.Windows.Input {
             _messageDispatcher = messageDispatcher;
         }
 
-        public IMouseSimulator Mouse { get { return _inputSimulator.Mouse; } }
+        public IMouseSimulator Mouse => _inputSimulator.Mouse;
 
         private static void ModifiersDown(InputBuilder builder, IEnumerable<VirtualKeyCode> modifierKeyCodes) {
             if (modifierKeyCodes == null) return;
@@ -120,7 +120,6 @@ namespace AcTools.Windows.Input {
         }
 
         public IKeyboardSimulator TextEntry(string text) {
-            if (text.Length > uint.MaxValue / 2) throw new ArgumentException(string.Format("The text parameter is too long. It must be less than {0} characters.", UInt32.MaxValue / 2), "text");
             var inputList = new InputBuilder().AddCharacters(text).ToArray();
             SendSimulatedInput(inputList);
             return this;

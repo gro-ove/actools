@@ -17,6 +17,7 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class GameDialog : IGameUi {
@@ -64,6 +65,7 @@ namespace AcManager.Pages.Dialogs {
             } catch (ObjectDisposedException) { }
         }
 
+        [CanBeNull]
         private Game.StartProperties _properties;
 
         void IGameUi.Show(Game.StartProperties properties) {
@@ -259,7 +261,7 @@ namespace AcManager.Pages.Dialogs {
         void IGameUi.OnResult(Game.Result result, ReplayHelper replayHelper) {
             if (result != null && result.NumberOfSessions == 1 && result.Sessions.Length == 1
                     && result.Sessions[0].Type == Game.SessionType.Practice && SettingsHolder.Drive.SkipPracticeResults ||
-                    _properties.BasicProperties == null) {
+                    _properties?.BasicProperties == null) {
                 Close();
                 return;
             }
@@ -285,10 +287,6 @@ namespace AcManager.Pages.Dialogs {
                 GameWrapper.StartAsync(_properties).Forget();
             });
 
-            if (_properties == null) {
-                tryAgainButton.IsEnabled = false;
-            }
-
             Buttons = new[] {
                 saveReplayButton,
                 tryAgainButton,
@@ -297,7 +295,7 @@ namespace AcManager.Pages.Dialogs {
 
             if (result == null || !result.IsNotCancelled) {
                 Model.CurrentState = ViewModel.State.Cancelled;
-                Model.ErrorMessage = _properties?.GetAdditional<AcLogHelper.WhatsGoingOn?>()?.GetDescription();
+                Model.ErrorMessage = _properties.GetAdditional<AcLogHelper.WhatsGoingOn?>()?.GetDescription();
             } else {
                 try {
                     Model.CurrentState = ViewModel.State.Finished;

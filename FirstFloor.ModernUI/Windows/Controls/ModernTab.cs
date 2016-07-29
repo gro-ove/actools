@@ -12,8 +12,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         string Title { get; }
     }
 
-    public class ModernTab
-        : Control {
+    public enum SavePolicy {
+        /// <summary>
+        /// Save or load only when URI is in one of original links.
+        /// </summary>
+        Strict,
+
+        /// <summary>
+        /// Save or load even if there is no link with that URI.
+        /// </summary>
+        Flexible
+    }
+
+    public class ModernTab : Control {
         public static readonly DependencyProperty LinksHorizontalAlignmentProperty = DependencyProperty.Register("LinksHorizontalAlignment", 
             typeof(HorizontalAlignment), typeof(ModernTab), new PropertyMetadata());
 
@@ -36,6 +47,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public Thickness FrameMargin {
             get { return (Thickness)GetValue(FrameMarginProperty); }
             set { SetValue(FrameMarginProperty, value); }
+        }
+
+        public static readonly DependencyProperty SavePolicyProperty = DependencyProperty.Register(nameof(SavePolicy), typeof(SavePolicy),
+                typeof(ModernTab));
+
+        public SavePolicy SavePolicy {
+            get { return (SavePolicy)GetValue(SavePolicyProperty); }
+            set { SetValue(SavePolicyProperty, value); }
         }
 
         public static readonly DependencyProperty ContentLoaderProperty = DependencyProperty.Register("ContentLoader", typeof(IContentLoader), 
@@ -83,9 +102,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return;
             }
 
-            var saved = skipLoading || SaveKey == null ? null : ValuesStorage.GetString(SaveKey);
-            _linkList.SelectedItem = (saved == null ? null : Links.FirstOrDefault(l => l.Source.OriginalString == saved))
-                    ?? Links.FirstOrDefault(l => l.Source == SelectedSource);
+            if (!skipLoading && SavePolicy == SavePolicy.Flexible && SaveKey != null) {
+                Frame.Source = ValuesStorage.GetUri(SaveKey) ?? Links.FirstOrDefault()?.Source;
+            } else {
+                var saved = skipLoading || SaveKey == null ? null : ValuesStorage.GetString(SaveKey);
+                _linkList.SelectedItem = (saved == null ? null : Links.FirstOrDefault(l => l.Source.OriginalString == saved))
+                        ?? Links.FirstOrDefault(l => l.Source == SelectedSource) ?? (skipLoading ? null : Links.FirstOrDefault());
+            }
         }
 
         public override void OnApplyTemplate() {
@@ -99,8 +122,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Frame.Navigated -= Frame_Navigated;
             }
 
-            _linkList = GetTemplateChild("PART_LinkList") as ListBox;
-            Frame = GetTemplateChild("PART_Frame") as ModernFrame;
+            _linkList = GetTemplateChild(@"PART_LinkList") as ListBox;
+            Frame = GetTemplateChild(@"PART_Frame") as ModernFrame;
 
             if (_linkList != null) {
                 _linkList.SelectionChanged += OnLinkListSelectionChanged;
@@ -117,10 +140,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var link = _linkList.SelectedItem as Link;
             if (link != null && link.Source != SelectedSource) {
                 SetCurrentValue(SelectedSourceProperty, link.Source);
-
-                if (SaveKey != null) {
-                    ValuesStorage.Set(SaveKey, link.Source.OriginalString);
-                }
             }
         }
 
@@ -130,6 +149,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             FrameNavigated?.Invoke(this, navigationEventArgs);
+
+            if (SaveKey != null && (_linkList.SelectedItem != null || SavePolicy == SavePolicy.Flexible)) {
+                ValuesStorage.Set(SaveKey, Frame.Source.OriginalString);
+            }
         }
 
         public IContentLoader ContentLoader {
@@ -179,11 +202,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnSaveKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((ModernTab)o).OnSaveKeyChanged((string)e.OldValue, (string)e.NewValue);
-        }
-
-        private void OnSaveKeyChanged(string oldValue, string newValue) {
-            UpdateSelection(false);
+            ((ModernTab)o).UpdateSelection(false);
         }
     }
 }

@@ -74,10 +74,7 @@ namespace AcManager.Pages.Drive {
             var mainWindow = Application.Current.MainWindow as MainWindow;
             var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == AppStrings.Main_Drive && x.DisplayName == AppStrings.Main_Single);
             var links = group?.Links;
-
-            if (group != null) {
-                links.Remove(links.OfType<CustomLink>().FirstOrDefault());
-            }
+            links?.Remove(links.OfType<CustomLink>().FirstOrDefault());
 
             if (kunosCareer == null) {
                 mainWindow?.NavigateTo(new Uri("/Pages/Drive/KunosCareer.xaml", UriKind.RelativeOrAbsolute));
@@ -85,7 +82,7 @@ namespace AcManager.Pages.Drive {
             }
 
             var uri = UriExtension.Create("/Pages/Drive/KunosCareer_SelectedPage.xaml?Id={0}", kunosCareer.Id);
-            if (group == null) {
+            if (links == null) {
                 LinkCommands.NavigateLink.Execute(uri, null);
                 return;
             }

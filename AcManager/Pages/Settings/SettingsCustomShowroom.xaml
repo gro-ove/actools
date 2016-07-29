@@ -18,7 +18,8 @@
                         ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_DefaultType_Tooltip}" />
             </DockPanel>
 
-            <TextBlock Style="{StaticResource SettingsPanel.Small}" Margin="0 0 0 20" Text="{x:Static g:AppStrings.Settings_CustomShowroom_TypeComment}" />
+            <TextBlock Style="{StaticResource SettingsPanel.Small}" Margin="0 0 0 20" Text="{x:Static g:AppStrings.Settings_CustomShowroom_TypeComment}"
+                    TextWrapping="Wrap" />
 
             <CheckBox IsChecked="{Binding Holder.SmartCameraPivot}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_AutoAdjustPivot_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_AutoAdjustPivot}" />

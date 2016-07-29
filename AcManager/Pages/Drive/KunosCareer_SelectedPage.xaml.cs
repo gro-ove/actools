@@ -202,9 +202,7 @@ namespace AcManager.Pages.Drive {
 
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
                 var selected = viewer.ShowDialogInSelectMode();
-                if (SettingsHolder.Drive.KunosCareerUserSkin) {
-                    ev.CarSkin = ev.Car.Skins.ElementAtOrDefault(selected ?? -1) ?? ev.CarSkin;
-                }
+                ev.CarSkin = ev.Car.Skins.ElementAtOrDefault(selected ?? -1) ?? ev.CarSkin;
             } else {
                 viewer.ShowDialog();
             }

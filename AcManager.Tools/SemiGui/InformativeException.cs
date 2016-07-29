@@ -8,5 +8,9 @@ namespace AcManager.Tools.SemiGui {
         public InformativeException([LocalizationRequired] string message, [LocalizationRequired] string solutionCommentary) : base(message) {
             SolutionCommentary = solutionCommentary;
         }
+
+        public string ToSingleString() {
+            return $"{Message}. {SolutionCommentary}";
+        }
     }
 }

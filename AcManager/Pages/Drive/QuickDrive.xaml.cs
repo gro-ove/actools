@@ -402,7 +402,7 @@ namespace AcManager.Pages.Drive {
 
                     try {
                         _skipLoading = o.ModeData != null;
-                        if (o.Mode != null) SelectedMode = o.Mode != null && o.Mode.OriginalString.Contains('_') ? o.Mode : SelectedMode;
+                        if (o.Mode != null && o.Mode.OriginalString.Contains('_')) SelectedMode = o.Mode;
                         if (o.ModeData != null) SelectedModeViewModel?.FromSerializedString(o.ModeData);
                     } finally {
                         _skipLoading = false;

@@ -242,7 +242,7 @@ namespace AcManager.Tools.Helpers {
             public PeriodEntry UpdatePeriod {
                 get {
                     return _updatePeriod ?? (_updatePeriod = Periods.FirstOrDefault(x =>
-                            x.TimeSpan == ValuesStorage.GetTimeSpan("Settings.CommonSettings.UpdatePeriod", Periods.ElementAt(2).TimeSpan)) ??
+                            x.TimeSpan == ValuesStorage.GetTimeSpan("Settings.CommonSettings.UpdatePeriod", Periods.ElementAt(3).TimeSpan)) ??
                             Periods.First());
                 }
                 set {
@@ -586,6 +586,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _playerNameOnline)) return;
                     _playerNameOnline = value;
                     ValuesStorage.Set("Settings.DriveSettings.PlayerNameOnline", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _quickDriveCacheBrands;
+
+            public bool QuickDriveCacheBrands {
+                get { return _quickDriveCacheBrands ?? (_quickDriveCacheBrands = ValuesStorage.GetBool("Settings.DriveSettings.QuickDriveCacheBrands", true)).Value; }
+                set {
+                    if (Equals(value, _quickDriveCacheBrands)) return;
+                    _quickDriveCacheBrands = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveCacheBrands", value);
                     OnPropertyChanged();
                 }
             }
@@ -1163,5 +1175,67 @@ namespace AcManager.Tools.Helpers {
         private static LiveSettings _live;
 
         public static LiveSettings Live => _live ?? (_live = new LiveSettings());
+
+        public class LocaleSettings : NotifyPropertyChanged {
+            internal LocaleSettings() {}
+
+            private string _localeName;
+
+            public string LocaleName {
+                get { return _localeName ?? (_localeName = ValuesStorage.GetString("Settings.LocaleSettings.LocaleName", "en")); }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _localeName)) return;
+                    _localeName = value;
+                    ValuesStorage.Set("Settings.LocaleSettings.LocaleName", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _loadUnpacked;
+
+            public bool LoadUnpacked {
+                get { return _loadUnpacked ?? (_loadUnpacked = ValuesStorage.GetBool("Settings.LocaleSettings.LoadUnpacked", false)).Value; }
+                set {
+                    if (Equals(value, _loadUnpacked)) return;
+                    _loadUnpacked = value;
+                    ValuesStorage.Set("Settings.LocaleSettings.LoadUnpacked", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private PeriodEntry _updatePeriod;
+
+            [NotNull]
+            public PeriodEntry UpdatePeriod {
+                get {
+                    return _updatePeriod ?? (_updatePeriod = Common.Periods.FirstOrDefault(x =>
+                            x.TimeSpan == ValuesStorage.GetTimeSpan("Settings.LocaleSettings.UpdatePeriod", Common.Periods.ElementAt(4).TimeSpan)) ??
+                            Common.Periods.First());
+                }
+                set {
+                    if (Equals(value, _updatePeriod)) return;
+                    _updatePeriod = value;
+                    ValuesStorage.Set("Settings.LocaleSettings.UpdatePeriod", value.TimeSpan);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _updateOnStart;
+
+            public bool UpdateOnStart {
+                get { return _updateOnStart ?? (_updateOnStart = ValuesStorage.GetBool("Settings.LocaleSettings.UpdateOnStart", true)).Value; }
+                set {
+                    if (Equals(value, _updateOnStart)) return;
+                    _updateOnStart = value;
+                    ValuesStorage.Set("Settings.LocaleSettings.UpdateOnStart", value);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private static LocaleSettings _locale;
+
+        public static LocaleSettings Locale => _locale ?? (_locale = new LocaleSettings());
     }
 }

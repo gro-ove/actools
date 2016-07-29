@@ -36,11 +36,11 @@ namespace AcManager.Pages.Settings {
                 new AppKeyDialog().ShowDialog();
             }));
 
-            public SettingsHolder.CommonSettings CommonSettings => SettingsHolder.Common;
+            public SettingsHolder.CommonSettings Common => SettingsHolder.Common;
 
             public AppUpdater AppUpdater => AppUpdater.Instance;
 
-            public ContentSyncronizer ContentSyncronizer => ContentSyncronizer.Instance;
+            public DataUpdater DataUpdater => DataUpdater.Instance;
 
             public ValuesStorage ValuesStorage => ValuesStorage.Instance;
 
@@ -55,6 +55,7 @@ namespace AcManager.Pages.Settings {
                         x.StartsWith("__carobject_selectedskin_") ||
                         x.StartsWith("__trackslocator_") ||
                         x.StartsWith("__TimezoneDeterminer_") ||
+                        x.StartsWith("LinkGroup.Selected_") ||
                         x.StartsWith("__upgradeiconeditor_") ||
                         x.StartsWith("LinkGroupFilterable.Selected_") ||
                         x.StartsWith("LinkGroupFilterable.RecentlyClosed_") ||

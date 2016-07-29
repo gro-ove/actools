@@ -151,7 +151,7 @@
     <Compile Include="CustomResourceManager.cs" />
     <Compile Include="Win32\MonitorDpiType.cs" />
     <Compile Include="Win32\NativeMethods.cs" />
-    <Compile Include="Win32\OSVersionHelper.cs" />
+    <Compile Include="Win32\WindowsVersionHelper.cs" />
     <Compile Include="Win32\Win32Rect.cs" />
     <Compile Include="Windows\Attached\ContextMenuAdvancement.cs" />
     <Compile Include="Windows\Attached\NewMarkAdorner.cs" />

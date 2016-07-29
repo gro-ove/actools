@@ -116,7 +116,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public virtual void ActualScan() {
-            if (IsScanning) throw new Exception("Scanning already in process");
+            if (IsScanning) throw new Exception(@"Scanning already in process");
 
             IsLoaded = false;
             IsScanning = true;
@@ -208,13 +208,13 @@ namespace AcManager.Tools.AcManagersNew {
             var start = Stopwatch.StartNew();
 
             LoadingReset = false;
-            await TaskExtension.WhenAll(WrappersList.Where(x => !x.IsLoaded).Select(async x => {
+            await WrappersList.Where(x => !x.IsLoaded).Select(async x => {
                 var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
                 if (x.IsLoaded) return;
 
                 x.Value = loaded;
                 loaded.PastLoad();
-            }), SettingsHolder.Content.LoadingConcurrency);
+            }).WhenAll(SettingsHolder.Content.LoadingConcurrency);
 
             IsLoaded = true;
             ListReady();
@@ -229,17 +229,23 @@ namespace AcManager.Tools.AcManagersNew {
         public void Reload([NotNull]string id) {
             if (id == null) throw new ArgumentNullException(nameof(id));
             var wrapper = GetWrapperById(id);
-            if (wrapper == null) throw new ArgumentException("ID is wrong", nameof(id));
+            if (wrapper == null) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(id));
             wrapper.Value = CreateAndLoadAcObject(wrapper.Value.Id, wrapper.Value.Enabled);
         }
         
-        protected virtual void ListReady() {
+        protected void ListReady() {
             InnerWrappersList.Ready();
+            OnListUpdate();
         }
 
-        public virtual void UpdateList() {
+        public void UpdateList() {
             InnerWrappersList.Update();
+            if (InnerWrappersList.IsReady) {
+                OnListUpdate();
+            }
         }
+
+        protected virtual void OnListUpdate() {}
 
         protected void RemoveFromList([NotNull]string id) {
             if (id == null) throw new ArgumentNullException(nameof(id));

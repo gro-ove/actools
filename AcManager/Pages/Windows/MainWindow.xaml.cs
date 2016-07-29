@@ -367,7 +367,11 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnClosed(object sender, EventArgs e) {
-            Application.Current.Shutdown();
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
+                WindowsHelper.RestartCurrentApplication();
+            } else {
+                Application.Current.Shutdown();
+            }
         }
 
         private void InitializePopup() {

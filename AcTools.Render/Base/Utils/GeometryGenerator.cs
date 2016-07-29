@@ -330,6 +330,8 @@ namespace AcTools.Render.Base.Utils {
         }
 
         public static MeshData CreateCylinder(float bottomRadius, float topRadius, float height, int sliceCount, int stackCount) {
+            if (sliceCount <= 0) throw new ArgumentOutOfRangeException(nameof(sliceCount));
+
             var ret = new MeshData();
 
             var stackHeight = height / stackCount;

@@ -530,9 +530,6 @@
 	<data name="Session_Hotlap" xml:space="preserve">
     <value>Хотлап</value>
   </data>
-	<data name="Session_Practice" xml:space="preserve">
-    <value>Практика</value>
-  </data>
 	<data name="Session_Qualification" xml:space="preserve">
     <value>Квалификация</value>
   </data>
@@ -590,7 +587,19 @@
 	<data name="Common_NA" xml:space="preserve">
 		<value>Н/Д</value>
 	</data>
+  <data name="TrackGeoTags_LongitudeLabel" xml:space="preserve">
+    <value>Longitude:</value>
+  </data>
 	<data name="Common_CarIdIsMissing" xml:space="preserve">
 		<value>ID машины отсутствует</value>
 	</data>
+  <data name="Session_Practice" xml:space="preserve">
+    <value>Практика</value>
+  </data>
+  <data name="Session_Practice" xml:space="preserve">
+    <value>Практика2</value>
+  </data>
+  <data name="Session_Practice" xml:space="preserve">
+    <value>Практика3</value>
+  </data>
 </root>
