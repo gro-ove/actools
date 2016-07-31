@@ -199,7 +199,8 @@ namespace AcManager {
         private async void BackgroundInitialization() {
             await Task.Delay(1500);
             CustomUriSchemeHelper.EnsureRegistered();
-            WeatherSpecificCloudsHelper.RestoreIfReplaced();
+            WeatherSpecificCloudsHelper.Revert();
+            CopyFilterToSystemForOculusHelper.Revert();
         }
 
         private static async void DeleteOldLogs() {

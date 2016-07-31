@@ -1,4 +1,5 @@
-﻿using AcTools.DataFile;
+﻿using System.ComponentModel;
+using AcTools.DataFile;
 using AcTools.Utils;
 
 namespace AcManager.Tools.Helpers.AcSettings {
@@ -60,12 +61,41 @@ namespace AcManager.Tools.Helpers.AcSettings {
             MaximumFrameLatency = section.GetInt("MAXIMUM_FRAME_LATENCY", 0);
         }
 
+        [Localizable(false)]
+        private bool FixShadowMapBias(IniFileSection section) {
+            var result = false;
+            if (!section.ContainsKey("SHADOW_MAP_BIAS_0")) {
+                result = true;
+                section.Set("SHADOW_MAP_BIAS_0", "0.000002");
+            }
+
+            if (!section.ContainsKey("SHADOW_MAP_BIAS_1")) {
+                result = true;
+                section.Set("SHADOW_MAP_BIAS_1", "0.000015");
+            }
+
+            if (!section.ContainsKey("SHADOW_MAP_BIAS_2")) {
+                result = true;
+                section.Set("SHADOW_MAP_BIAS_2", "0.0003");
+            }
+
+            return result;
+        }
+
+        public void FixShadowMapBias() {
+            if (FixShadowMapBias(Ini["DX11"])) {
+                SaveImmediately();
+            }
+        }
+
         protected override void SetToIni(IniFile ini) {
             var section = ini["DX11"];
             section.Set("ALLOW_UNSUPPORTED_DX10", AllowUnsupportedDx10);
             section.Set("MIP_LOD_BIAS", MipLodBias.ToDoublePercentage());
             section.Set("SKYBOX_REFLECTION_GAIN", SkyboxReflectionGain.ToDoublePercentage());
             section.Set("MAXIMUM_FRAME_LATENCY", MaximumFrameLatency);
+
+            FixShadowMapBias(section);
         }
 
         protected override void InvokeChanged() {

@@ -243,8 +243,13 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public string DisplayStartingPosition => StartingPosition == 0 ? AppStrings.Drive_Ordinal_Random
-                    : _last ? AppStrings.Drive_Ordinal_Last : StartingPosition.ToOrdinal(AppStrings.Drive_Ordinal_Parameter);
+            public string DisplayStartingPosition {
+                get {
+                    return StartingPosition == 0 ? AppStrings.Drive_Ordinal_Random
+                            : _last ? AppStrings.Drive_Ordinal_Last : StartingPosition.ToOrdinalShort(AppStrings.Drive_Ordinal_Parameter);
+                }
+                set { StartingPosition = FlexibleParser.TryParseInt(value) ?? StartingPosition; }
+            }
 
             public int StartingPositionLimit => OpponentsNumber + 1;
 

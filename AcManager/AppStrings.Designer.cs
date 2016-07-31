@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -4037,11 +4037,11 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starting position: {0}.
+        ///   Looks up a localized string similar to Starting position.
         /// </summary>
-        public static string Drive_StartingPositionFormat {
+        public static string Drive_StartingPosition {
             get {
-                return ResourceManager.GetString("Drive_StartingPositionFormat", resourceCulture);
+                return ResourceManager.GetString("Drive_StartingPosition", resourceCulture);
             }
         }
         
@@ -4411,6 +4411,24 @@ namespace AcManager {
         public static string KunosCareer_RequiredSeriesAreNotDoneYet {
             get {
                 return ResourceManager.GetString("KunosCareer_RequiredSeriesAreNotDoneYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All progress in this championship will be lost. Are you sure?.
+        /// </summary>
+        public static string KunosCareer_ResetProgress_Message {
+            get {
+                return ResourceManager.GetString("KunosCareer_ResetProgress_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Championship Progress.
+        /// </summary>
+        public static string KunosCareer_ResetProgress_Title {
+            get {
+                return ResourceManager.GetString("KunosCareer_ResetProgress_Title", resourceCulture);
             }
         }
         

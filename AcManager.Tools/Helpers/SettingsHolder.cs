@@ -393,6 +393,21 @@ namespace AcManager.Tools.Helpers {
                 OfficialStarterType, TrickyStarterType, StarterPlusType, SseStarterType, NaiveStarterType
             });
 
+            private bool? _copyFilterToSystemForOculus;
+
+            public bool CopyFilterToSystemForOculus {
+                get {
+                    return _copyFilterToSystemForOculus ??
+                            (_copyFilterToSystemForOculus = ValuesStorage.GetBool("Settings.DriveSettings.CopyFilterToSystemForOculus", true)).Value;
+                }
+                set {
+                    if (Equals(value, _copyFilterToSystemForOculus)) return;
+                    _copyFilterToSystemForOculus = value;
+                    ValuesStorage.Set("Settings.DriveSettings.CopyFilterToSystemForOculus", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private string _preCommand;
 
             public string PreCommand {
@@ -778,6 +793,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _skinsSkipPriority;
+
+            public bool SkinsSkipPriority {
+                get { return _skinsSkipPriority ?? (_skinsSkipPriority = ValuesStorage.GetBool("Settings.ContentSettings.SkinsSkipPriority", false)).Value; }
+                set {
+                    if (Equals(value, _skinsSkipPriority)) return;
+                    _skinsSkipPriority = value;
+                    ValuesStorage.Set("Settings.ContentSettings.SkinsSkipPriority", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private PeriodEntry[] _periodEntries;
 
             public PeriodEntry[] NewContentPeriods => _periodEntries ?? (_periodEntries = new[] {
@@ -1050,8 +1077,7 @@ namespace AcManager.Tools.Helpers {
         private static SharingSettings _sharing;
 
         public static SharingSettings Sharing => _sharing ?? (_sharing = new SharingSettings());
-
-
+        
         public class LiveSettings : NotifyPropertyChanged {
             internal LiveSettings() {}
 

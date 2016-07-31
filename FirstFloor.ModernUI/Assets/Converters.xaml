@@ -20,6 +20,7 @@
     <converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     <converters:OrdinalizingConverter x:Key="OrdinalizingConverter" />
+    <converters:OrdinalizingPostfixConverter x:Key="OrdinalizingPostfixConverter" />
     <converters:FileSizeConverter x:Key="FileSizeConverter" />
     <converters:PercentageConverter x:Key="PercentageConverter" />
     <converters:PluralizingConverter x:Key="PluralizingConverter" />

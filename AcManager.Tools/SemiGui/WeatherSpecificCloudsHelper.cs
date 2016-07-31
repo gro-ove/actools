@@ -12,7 +12,7 @@ namespace AcManager.Tools.SemiGui {
 
         private static string Backup => Path.Combine(AcRootDirectory.Instance.RequireValue, @"content", @"texture", @"clouds_backup_cm");
 
-        public static void RestoreIfReplaced() {
+        public static void Revert() {
             if (AcRootDirectory.Instance.Value == null) return;
 
             try {
@@ -27,7 +27,7 @@ namespace AcManager.Tools.SemiGui {
                     Directory.Move(backup, destination);
                 }
             } catch (Exception e) {
-                Logging.Warning("[WeatherSpecificCloudsHelper] Dispose(): " + e);
+                Logging.Warning("[WeatherSpecificCloudsHelper] Revert(): " + e);
             }
         }
 

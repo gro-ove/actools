@@ -5,12 +5,13 @@
         xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager"
         xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
         d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
-
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <mui:BindingProxy x:Key="Model" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -64,53 +65,70 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="0"
-                        IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
+                <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="0" IsEnabled="{Binding ManualTime}">
                     <Grid Margin="0 0 0 4">
                         <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0" Content="{x:Static g:AppStrings.Drive_Time}" />
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
+                        <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="{x:Static g:AppStrings.Drive_Time_Warning}" HorizontalAlignment="Right" />
+                                ToolTip="{x:Static g:AppStrings.Drive_Time_Warning}">
+                            <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
+                        </Border>
                     </Grid>
                     <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}" Value="{Binding Time}"
                             Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
 
-                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding RealConditions}" Margin="8 0 0 0" ToolTip="{Binding RealWeather.FullDescription}">
-                    <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
-                    <CheckBox.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}"
-                                    IsCheckable="True" />
+                <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent">
+                    <DockPanel.ContextMenu>
+                        <ContextMenu x:Name="ConditionsOptions" IsEnabled="{Binding RealConditions}" DataContext="{Binding Data, Source={StaticResource Model}}">
+                            <!--TODO-->
+                            <MenuItem Header="Local weather" IsChecked="{Binding RealConditionsLocalWeather}" IsCheckable="True"
+                                    ToolTip="Use local weather instead of weather on the track" IsEnabled="False" />
+                            <MenuItem Header="Set Time Manually" IsChecked="{Binding RealConditionsManualTime}" IsCheckable="True" />
+                            <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True"
+                                    IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
                             <!--<MenuItem Header="Real Lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
                         </ContextMenu>
-                    </CheckBox.ContextMenu>
-                </CheckBox>
+                    </DockPanel.ContextMenu>
+                    <CheckBox DockPanel.Dock="Left" IsChecked="{Binding RealConditions}" ToolTip="{Binding RealWeather.FullDescription}">
+                        <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
+                    </CheckBox>
+                    <Button PreviewMouseLeftButtonUp="MoreConditionsOptions_OnPreviewMouseLeftButtonUp">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="Transparent" Padding="0 8 4 8">
+                                    <Path Fill="{TemplateBinding Foreground}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2 3"
+                                            Data="M -0.5 3 L 5.5 3 L 2.5 6 Z" />
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </DockPanel>
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
                     <Grid Margin="0 0 0 4">
                         <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource LabelWithPadding}" />
-                        <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Margin="0 0 0 -4" Fill="{DynamicResource Error}" Stretch="Uniform"
-                                Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                HorizontalAlignment="Right">
-                            <Path.ToolTip>
+                        <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
+                                Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Border.ToolTip>
                                 <ToolTip Content="{Binding RealWeather.Description}" ContentStringFormat="{x:Static g:AppStrings.Drive_Weather_Warning}" />
-                            </Path.ToolTip>
-                        </Path>
+                            </Border.ToolTip>
+                            <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
+                        </Border>
                     </Grid>
                     <ComboBox Margin="4 0 4 0" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}" />
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
-                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number"
+                    <mui:ValueLabel Value="{Binding Temperature, StringFormat='\{0:F1\}'}" Mode="Number" Background="Transparent"
                             Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}" Content="{x:Static g:AppStrings.Drive_Temperature}">
                         <mui:ValueLabel.ToolTip>
                             <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{x:Static g:AppStrings.Common_RoadTemperatureFormat}" />
                         </mui:ValueLabel.ToolTip>
                     </mui:ValueLabel>
-                    <Grid Margin="0 0 0 4">
+                    <Grid Margin="0 0 0 4" Background="Transparent">
                         <Grid.ToolTip>
                             <ToolTip Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Grid Margin="4">

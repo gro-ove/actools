@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Data;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -195,6 +196,10 @@ namespace AcManager.Controls.Dialogs {
                     SetProgress(value);
                 });
             }
+        }
+
+        public void Report(int n, int total) {
+            Report(((double)n / total + 0.000001).Saturate());
         }
 
         public void Report(AsyncProgressEntry value) {

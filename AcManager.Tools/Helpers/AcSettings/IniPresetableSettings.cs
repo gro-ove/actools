@@ -11,7 +11,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         public string Export() {
-            var ini = new IniFile();
+            var ini = Ini.Clone();
             SetToIni(ini);
             return ini.Stringify();
         }

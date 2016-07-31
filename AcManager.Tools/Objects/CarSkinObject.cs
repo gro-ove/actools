@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Data;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -20,10 +21,20 @@ namespace AcManager.Tools.Objects {
             CarId = carId;
         }
 
+        /// <summary>
+        /// So app will get names like “Black” instead of “09 Black” from “09_black”
+        /// </summary>
+        private static readonly Regex IdFix = new Regex(@"^\d\d?_", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+        [NotNull]
+        public static string NameFromId([NotNull] string id) {
+            return AcStringValues.NameFromId(IdFix.Replace(id, ""));
+        }
+
         protected override bool LoadJsonOrThrow() {
             if (!File.Exists(JsonFilename)) {
                 ClearData();
-                Name = AcStringValues.NameFromId(Id);
+                Name = NameFromId(Id);
                 Changed = true;
                 return true;
             }
@@ -181,7 +192,7 @@ namespace AcManager.Tools.Objects {
             json["team"] = Team ?? string.Empty;
             json["number"] = SkinNumber ?? string.Empty;
 
-            if (Priority.HasValue) {
+            if (Priority.HasValue && !SettingsHolder.Content.SkinsSkipPriority) {
                 json["priority"] = Priority.Value;
             } else {
                 json.Remove("priority");

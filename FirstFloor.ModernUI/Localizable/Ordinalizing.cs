@@ -1,13 +1,60 @@
+﻿using System.ComponentModel;
 using System.Globalization;
 
 namespace FirstFloor.ModernUI.Localizable {
     /// <summary>
     /// Returns ordinal string for each number. Usually works from resources, but if you want
-    /// some specific form (for example, for Russian: “первый” — “первая”), use this file.
+    /// some specific form (for example, for Russian: вЂњРїРµСЂРІС‹Р№вЂќ вЂ” вЂњРїРµСЂРІР°СЏвЂќ), use this file.
     /// </summary>
+    [Localizable(false)]
     internal static class Ordinalizing {
+        private static string EnPostfix(int v, string s) {
+            switch (v % 10) {
+                case 1:
+                    return "st";
+                case 2:
+                    return "nd";
+                case 3:
+                    return "rd";
+                default:
+                    return "th";
+            }
+        }
+
+        private static string RuPostfix(int v, string s) {
+            // http://ilyabirman.ru/meanwhile/all/o-naraschenii-okonchaniy-chislitelnyh/
+            return "-й";
+        }
+
         /// <summary>
-        /// Base version, takes strings from resources. Doesn’t consider different genders, 
+        /// Postfix version: “1” → “st”, “2” → “nd”, …
+        /// </summary>
+        /// <param name="v">Integer.</param>
+        /// <param name="s">Subject string (for languages in which result might depend on a gender or something like that).</param>
+        /// <returns>Localized string</returns>
+        public static string ConvertPostfix(int v, string s) {
+            if (v < 0) v = -v;
+            switch (CultureInfo.CurrentUICulture.Name.ToLowerInvariant()) {
+                case "ru":
+                case "ru-ru":
+                    return RuPostfix(v, s);
+                default:
+                    return EnPostfix(v, s);
+            }
+        }
+
+        /// <summary>
+        /// Short version: “1” → “1st”, “2” → “2nd”, …
+        /// </summary>
+        /// <param name="v">Integer.</param>
+        /// <param name="s">Subject string (for languages in which result might depend on a gender or something like that).</param>
+        /// <returns>Localized string</returns>
+        public static string ConvertShort(int v, string s) {
+            return v < 0 ? $"-{v}{ConvertPostfix(-v, s)}" : $"{v}{ConvertPostfix(v, s)}";
+        }
+
+        /// <summary>
+        /// Base version, takes strings from resources. DoesnвЂ™t consider different genders, 
         /// forms and everything.
         /// </summary>
         /// <param name="v">Value</param>
@@ -87,7 +134,13 @@ namespace FirstFloor.ModernUI.Localizable {
             }
         }
 
-        public static string Convert(int v, string s) {
+        /// <summary>
+        /// Long version: “1” → “First”, “2” → “Second”, …
+        /// </summary>
+        /// <param name="v">Integer.</param>
+        /// <param name="s">Subject string (for languages in which result might depend on a gender or something like that).</param>
+        /// <returns>Localized string</returns>
+        public static string ConvertLong(int v, string s) {
             string result;
             switch (CultureInfo.CurrentUICulture.Name.ToLowerInvariant()) {
                 case "ru":
@@ -99,7 +152,7 @@ namespace FirstFloor.ModernUI.Localizable {
                     break;
             }
 
-            return result == @"-" ? string.Format(UiStrings.Ordinalizing_Nth, v) : result;
+            return result == @"-" ? ConvertShort(v, s) : result;
         }
     }
 }

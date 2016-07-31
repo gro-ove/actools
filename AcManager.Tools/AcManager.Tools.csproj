@@ -250,6 +250,7 @@
     <Compile Include="GameProperties\GameCommandExecutorBase.cs" />
     <Compile Include="Objects\ServerPresetObject.cs" />
     <Compile Include="Objects\WeatherColorEntry.cs" />
+    <Compile Include="SemiGui\CopyFilterToSystemForOculusHelper.cs" />
     <Compile Include="ToolsStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

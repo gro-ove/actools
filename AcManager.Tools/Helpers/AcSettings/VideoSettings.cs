@@ -19,6 +19,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             private int _height;
             private int _framerate;
 
+            public int Volume => Width * Height * Framerate;
+
             public int Width {
                 get { return _width; }
                 set {
@@ -62,8 +64,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 DisplayName = string.Format(ToolsStrings.AcSettings_ResolutionFormat, Width, Height, Framerate);
             }
 
+            public bool Same(ResolutionEntry other) {
+                return other != null && Width == other.Width && Height == other.Height && Framerate == other.Framerate;
+            }
+
             public bool Equals(ResolutionEntry other) {
-                return other != null && _custom == other._custom && Width == other.Width && Height == other.Height && Framerate == other.Framerate;
+                return Same(other) && _custom == other._custom;
             }
 
             public override bool Equals(object obj) {
@@ -202,21 +208,33 @@ namespace AcManager.Tools.Helpers.AcSettings {
                                  .Append(Fullscreen ? null : CustomResolution)
                                  .NonNull().ToArray();
             Resolutions = l;
-            Resolution = Resolutions.FirstOrDefault(x => x.Equals(r));
+            Resolution = Resolutions.FirstOrDefault(x => x.Equals(r)) ?? GetPreferredResolution();
         }
 
         public ResolutionEntry CustomResolution { get; } = new ResolutionEntry();
 
+        [NotNull]
+        private ResolutionEntry GetPreferredResolution() {
+            return Resolutions.ApartFrom(CustomResolution).MaxEntry(x => x.Volume);
+        }
+
         private ResolutionEntry _resolution;
 
+        [NotNull]
         public ResolutionEntry Resolution {
             get { return _resolution; }
             set {
-                if (!Resolutions.Contains(value)) value = Resolutions.ApartFrom(CustomResolution).MaxEntry(x => x.Width);
+                if (!Resolutions.Contains(value)) value = GetPreferredResolution();
                 if (ReferenceEquals(value, _resolution)) return;
                 _resolution = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(UseCustomResolution));
+
+                if (!ReferenceEquals(value, CustomResolution)) {
+                    CustomResolution.Width = value.Width;
+                    CustomResolution.Height = value.Height;
+                    CustomResolution.Framerate = value.Framerate;
+                }
             }
         }
 
@@ -266,7 +284,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 OnPropertyChanged();
 
                 if (ReferenceEquals(Resolution, CustomResolution) && value) {
-                    Resolution = null;
+                    Resolution = GetClosestToCustom();
                 }
 
                 UpdateResolutionsList();
@@ -601,6 +619,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Reload();
         }
 
+        [NotNull]
+        private ResolutionEntry GetClosestToCustom() {
+            return Resolutions.FirstOrDefault(
+                    x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height && x.Framerate == CustomResolution.Framerate) ??
+                    Resolutions.FirstOrDefault(x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height) ?? GetPreferredResolution();
+        } 
+
         protected override void LoadFromIni() {
             // VIDEO
             var section = Ini["VIDEO"];
@@ -611,11 +636,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
             CustomResolution.Height = section.GetInt("HEIGHT", 0);
             CustomResolution.Framerate = section.GetInt("REFRESH", 0);
 
-            var resolution = Resolutions.FirstOrDefault(x => x.Equals(CustomResolution));
+            var resolution = Resolutions.FirstOrDefault(x => x.Same(CustomResolution));
             if (resolution != null) {
                 Resolution = resolution;
             } else if (Fullscreen && !UseCustomResolution) {
-                Resolution = Resolutions.FirstOrDefault(x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height);
+                Resolution = GetClosestToCustom();
                 ForceSave();
                 Logging.Warning($"RESOLUTION ({CustomResolution.DisplayName}) IS INVALID, CHANGED TO ({Resolution?.DisplayName})");
             }

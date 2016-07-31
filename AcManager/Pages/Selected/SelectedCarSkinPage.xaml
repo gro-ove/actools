@@ -1,12 +1,10 @@
-﻿<selected:SelectedAcJsonObjectPage x:Class="AcManager.Pages.Selected.SelectedCarSkinPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<sel:SelectedAcJsonObjectPage x:Class="AcManager.Pages.Selected.SelectedCarSkinPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance selected:SelectedCarSkinPage+ViewModel}">
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager"
+        xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance sel:SelectedCarSkinPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -66,7 +64,7 @@
 
         <StackPanel>
             <mui:BetterImage Margin="0 0 0 12" Filename="{Binding SelectedObject.PreviewImage}"
-                    services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" services:ImageViewerService.MaxWidth="1022" MaxWidth="1022"
+                    c:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" c:ImageViewerService.MaxWidth="1022" MaxWidth="1022"
                     Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
 
             <!-- data section -->
@@ -83,7 +81,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- first row -->
-                <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                <DockPanel Grid.Row="0" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
@@ -92,11 +90,11 @@
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static ac:ControlsStrings.AcObject_ContryLabel}" />
                     <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
-                            ItemsSource="{x:Static managers:SuggestionLists.CountriesListView}" />
+                            ItemsSource="{x:Static t:SuggestionLists.CountriesListView}" />
                 </DockPanel>
 
                 <!-- second row -->
-                <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                <DockPanel Grid.Row="1" Grid.Column="0" mui:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{x:Static g:AppStrings.Filter_ByTeam}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
@@ -105,10 +103,10 @@
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_TeamLabel}" />
                     <ComboBox Text="{Binding SelectedObject.Team, UpdateSourceTrigger=LostFocus}"
-                            ItemsSource="{x:Static managers:SuggestionLists.CarSkinTeamsListView}" />
+                            ItemsSource="{x:Static t:SuggestionLists.CarSkinTeamsListView}" />
                 </DockPanel>
 
-                <DockPanel Grid.Row="1" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                <DockPanel Grid.Row="1" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
                     <DockPanel.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
@@ -117,7 +115,7 @@
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_DriverLabel}" />
                     <ComboBox Text="{Binding SelectedObject.DriverName, UpdateSourceTrigger=LostFocus}"
-                            ItemsSource="{x:Static managers:SuggestionLists.CarSkinDriverNamesListView}" />
+                            ItemsSource="{x:Static t:SuggestionLists.CarSkinDriverNamesListView}" />
                 </DockPanel>
 
                 <!-- third row -->
@@ -129,7 +127,7 @@
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_NumberLabel}" />
-                    <TextBox Text="{Binding SelectedObject.SkinNumber}" attached:TextBoxAdvancement.SpecialMode="Integer" />
+                    <TextBox Text="{Binding SelectedObject.SkinNumber}" mui:TextBoxAdvancement.SpecialMode="Integer" />
                 </DockPanel>
 
                 <DockPanel Grid.Row="2" Grid.Column="1">
@@ -140,9 +138,10 @@
                         </ContextMenu>
                     </DockPanel.ContextMenu>
                     <TextBlock Text="{x:Static g:AppStrings.AcObject_PriorityLabel}" />
-                    <TextBox Text="{Binding SelectedObject.Priority, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer" />
+                    <TextBox Text="{Binding SelectedObject.Priority, TargetNullValue=''}" mui:TextBoxAdvancement.SpecialMode="Integer" />
                 </DockPanel>
             </Grid>
         </StackPanel>
     </ac:AcObjectBase>
-</selected:SelectedAcJsonObjectPage>
+</sel:SelectedAcJsonObjectPage>
+

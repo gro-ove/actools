@@ -224,6 +224,11 @@ namespace AcTools.DataFile {
                 }
             }
         }
+
+        public IniFile Clone() {
+            // TODO: optimization
+            return Parse(Stringify());
+        }
     }
     
     public class IniCommentariesScheme : Dictionary<string, Dictionary<string, string>> {

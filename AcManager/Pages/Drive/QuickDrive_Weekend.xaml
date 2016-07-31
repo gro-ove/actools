@@ -101,15 +101,15 @@
                 <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
             </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
+            <!--<StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
                 <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4"
                         Text="{Binding Path=DisplayStartingPosition, StringFormat={x:Static g:AppStrings.Drive_StartingPositionFormat}}">
                 </TextBlock>
                 <Slider Minimum="0" Maximum="{Binding StartingPositionLimit}" Value="{Binding StartingPosition}" />
-            </StackPanel>
+            </StackPanel>-->
 
             <!--weekends stuff-->
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="1">
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
                 <mui:ValueLabel Value="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialSessionConverter}}"
                         Mode="IntegerOrZeroLabel" Content="{x:Static tools:ToolsStrings.Session_Practice}"
                         Postfix="{Binding Path=PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialPluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_MinutePostfix}}">
@@ -117,7 +117,7 @@
                 <Slider Minimum="0" Maximum="90" Value="{Binding PracticeDuration}" />
             </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="4" Grid.Column="1">
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="1">
                 <mui:ValueLabel Value="{Binding QualificationDuration}" Mode="Positive" Content="{x:Static tools:ToolsStrings.Session_Qualification}"
                         Postfix="{Binding QualificationDuration, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_MinutePostfix}}" />
                 <Slider Minimum="5" Maximum="90" Value="{Binding QualificationDuration}" />

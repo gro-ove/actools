@@ -84,13 +84,16 @@ namespace AcManager.Tools.AcErrors {
                     ToolsStrings.Solving_CreateNewFile_Commentary,
                     e => {
                         var jObject = new JObject {
-                            [@"skinname"] = AcStringValues.NameFromId(e.Target.Id),
+                            [@"skinname"] = CarSkinObject.NameFromId(e.Target.Id),
                             [@"drivername"] = "",
                             [@"country"] = "",
                             [@"team"] = "",
-                            [@"number"] = @"0",
-                            [@"priority"] = 1
+                            [@"number"] = @"0"
                         };
+
+                        if (!SettingsHolder.Content.SkinsSkipPriority) {
+                            jObject[@"priority"] = 1;
+                        }
 
                         FileUtils.EnsureFileDirectoryExists(((AcJsonObjectNew)e.Target).JsonFilename);
                         File.WriteAllText(((AcJsonObjectNew)e.Target).JsonFilename, jObject.ToString());

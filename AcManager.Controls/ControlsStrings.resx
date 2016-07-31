@@ -424,10 +424,10 @@ Entry type: [b]{2}[/b]</value>
     <value>Kunos watermark will be temporary hidden</value>
   </data>
   <data name="Showroom_HideWatermark" xml:space="preserve">
-    <value>Hide _watermark</value>
+    <value>Hide watermark</value>
   </data>
   <data name="Showroom_DisableSweetFx" xml:space="preserve">
-    <value>Disable _SweetFX</value>
+    <value>Disable SweetFX</value>
   </data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
     <value>Apparantly SweetFX doesn’t affect the result, but could decrease loading time</value>
@@ -544,10 +544,10 @@ Entry type: [b]{2}[/b]</value>
     <value>Control</value>
   </data>
   <data name="CustomShowroom_Control_Lights" xml:space="preserve">
-    <value>_Lights</value>
+    <value>Lights</value>
   </data>
   <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
-    <value>_Wireframe</value>
+    <value>Wireframe</value>
   </data>
   <data name="CustomShowroom_SkinHeader" xml:space="preserve">
     <value>Skin</value>
@@ -922,7 +922,7 @@ Depth mode: [b]{4}[/b]</value>
     <value>Unlock experimental options (be careful!)</value>
   </data>
   <data name="Controls_GyroscopicEffect" xml:space="preserve">
-    <value>_Gyroscopic effect</value>
+    <value>Gyroscopic effect</value>
   </data>
   <data name="Controls_DamperGain" xml:space="preserve">
     <value>Damper gain</value>

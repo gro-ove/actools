@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Annotations;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
 using StringBasedFilter;
@@ -46,7 +51,7 @@ namespace AcManager.Pages.Lists {
         }
 
         public void Initialize() {
-            DataContext = new CarSkinsListPageViewModel(_car, string.IsNullOrEmpty(_filter) ? null : Filter.Create(CarSkinObjectTester.Instance, _filter));
+            DataContext = new ViewModel(_car, string.IsNullOrEmpty(_filter) ? null : Filter.Create(CarSkinObjectTester.Instance, _filter));
             InitializeComponent();
         }
 
@@ -57,14 +62,14 @@ namespace AcManager.Pages.Lists {
 
         public CarSkinsListPage() { }
 
-        private void CarsListPage_OnUnloaded(object sender, RoutedEventArgs e) {
-            ((CarSkinsListPageViewModel)DataContext).Unload();
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            ((ViewModel)DataContext).Unload();
         }
 
-        public class CarSkinsListPageViewModel : AcListPageViewModel<CarSkinObject> {
+        public class ViewModel : AcListPageViewModel<CarSkinObject> {
             public CarObject SelectedCar { get; private set; }
 
-            public CarSkinsListPageViewModel([NotNull] CarObject car, IFilter<CarSkinObject> listFilter)
+            public ViewModel([NotNull] CarObject car, IFilter<CarSkinObject> listFilter)
                     : base(car.SkinsManager, listFilter) {
                 SelectedCar = car;
             }
@@ -72,6 +77,26 @@ namespace AcManager.Pages.Lists {
             protected override string GetStatus() {
                 return PluralizingConverter.PluralizeExt(MainList.Count, AppStrings.List_Skins);
             }
+
+            private ICommand _resetPriorityCommand;
+
+            public ICommand ResetPriorityCommand => _resetPriorityCommand ?? (_resetPriorityCommand = new AsyncCommand(async o => {
+                var list = MainList.OfType<AcItemWrapper>().Select(x => x.Value as CarSkinObject).Where(x => x.Priority.HasValue).ToList();
+                var i = 0;
+                using (var waiting = new WaitingDialog()) {
+                    waiting.Report((double?)null);
+                    await Task.Delay(500, waiting.CancellationToken);
+                    if (waiting.CancellationToken.IsCancellationRequested) return;
+
+                    foreach (var skin in list) {
+                        waiting.Report(++i, list.Count);
+                        skin.Priority = 0;
+                        skin.Save();
+                        await Task.Delay(50, waiting.CancellationToken);
+                        if (waiting.CancellationToken.IsCancellationRequested) return;
+                    }
+                }
+            }));
         }
     }
 }

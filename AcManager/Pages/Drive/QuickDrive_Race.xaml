@@ -36,8 +36,7 @@
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
                 <mui:ValueLabel Value="{Binding LapsNumber}" Content="{x:Static g:AppStrings.Drive_RaceDuration}"
-                        Postfix="{Binding Path=LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}">
-                </mui:ValueLabel>
+                        Postfix="{Binding Path=LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}" />
                 <Slider Minimum="1" Maximum="{Binding LapsNumberMaximumLimited}" Value="{Binding LapsNumber}" />
             </StackPanel>
 
@@ -97,15 +96,15 @@
                 </StackPanel.ToolTip>
 
                 <mui:ValueLabel Value="{Binding OpponentsNumber}"
-                        Postfix="{Binding Path=OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}">
-                </mui:ValueLabel>
+                        Postfix="{Binding Path=OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}" />
                 <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
-                <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4"
-                        Text="{Binding Path=DisplayStartingPosition, StringFormat={x:Static g:AppStrings.Drive_StartingPositionFormat}}">
-                </TextBlock>
+                <StackPanel.ToolTip>
+                    <TextBlock Margin="0 0 0 4" Text="{Binding Path=DisplayStartingPosition}" />
+                </StackPanel.ToolTip>
+                <mui:ValueLabel Value="{Binding DisplayStartingPosition}" Content="{x:Static g:AppStrings.Drive_StartingPosition}" Mode="IntegerOrZeroLabel" />
                 <Slider Minimum="0" Maximum="{Binding StartingPositionLimit}" Value="{Binding StartingPosition}" />
             </StackPanel>
         </Grid>

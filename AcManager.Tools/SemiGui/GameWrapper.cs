@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
-using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
@@ -91,6 +90,12 @@ namespace AcManager.Tools.SemiGui {
         }
 
         private static async Task<Game.Result> StartAsync(Game.StartProperties properties, bool raceMode) {
+            AcSettingsHolder.Graphics.FixShadowMapBias();
+
+            if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {
+                properties.SetAdditional(new CopyFilterToSystemForOculusHelper());
+            }
+
             if (SettingsHolder.Common.FixResolutionAutomatically) {
                 AcSettingsHolder.Video.EnsureResolutionIsCorrect();
             }

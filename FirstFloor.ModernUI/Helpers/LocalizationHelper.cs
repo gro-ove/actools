@@ -15,7 +15,15 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ToOrdinal(this int value, string subject, CultureInfo culture = null) {
-            return Ordinalizing.Convert(value, subject);
+            return Ordinalizing.ConvertLong(value, subject);
+        }
+
+        public static string ToOrdinalShort(this int value, string subject, CultureInfo culture = null) {
+            return Ordinalizing.ConvertShort(value, subject);
+        }
+
+        public static string ToOrdinalPostfix(this int value, string subject, CultureInfo culture = null) {
+            return Ordinalizing.ConvertPostfix(value, subject);
         }
 
         public static string ToReadableTime(this long seconds) {

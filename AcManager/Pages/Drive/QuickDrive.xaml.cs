@@ -38,7 +38,7 @@ namespace AcManager.Pages.Drive {
 
         public const string PresetableKeyValue = "Quick Drive";
         private const string KeySaveable = "__QuickDrive_Main";
-        
+
         private ViewModel Model => (ViewModel)DataContext;
 
         public QuickDrive() {
@@ -95,7 +95,7 @@ namespace AcManager.Pages.Drive {
             private WeatherObject _selectedWeather;
             private bool _realConditions,
                 _isTimeClamped, _isTemperatureClamped, _isWeatherNotSupported,
-                _realConditionsTimezones, _realConditionsLighting;
+                _realConditionsManualTime, _realConditionsTimezones, _realConditionsLighting;
             private double _temperature;
             private int _time;
 
@@ -210,6 +210,9 @@ namespace AcManager.Pages.Drive {
                 set {
                     if (value == _realConditions) return;
                     _realConditions = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ManualTime));
+                    SaveLater();
 
                     if (value) {
                         TryToSetRealConditions();
@@ -218,9 +221,6 @@ namespace AcManager.Pages.Drive {
                             IsWeatherNotSupported = false;
                         RealWeather = null;
                     }
-
-                    OnPropertyChanged();
-                    SaveLater();
                 }
             }
 
@@ -251,6 +251,25 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            public bool RealConditionsManualTime {
+                get { return _realConditionsManualTime; }
+                set {
+                    if (value == _realConditionsManualTime) return;
+                    _realConditionsManualTime = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ManualTime));
+                    SaveLater();
+
+                    if (value) {
+                        TryToSetRealTime();
+                    } else {
+                        IsTimeClamped = false;
+                    }
+                }
+            }
+
+            public bool ManualTime => !RealConditions || RealConditionsManualTime;
+
             public bool RealConditionsTimezones {
                 get { return _realConditionsTimezones; }
                 set {
@@ -279,7 +298,7 @@ namespace AcManager.Pages.Drive {
                 set {
                     value = value.Round(0.5);
                     if (Equals(value, _temperature)) return;
-                    _temperature = value.Clamp(TemperatureMinimum, TemperatureMaximum);
+                    _temperature = value.Clamp(TemperatureMinimum, SettingsHolder.Drive.QuickDriveExpandBounds ? TemperatureMaximum * 2 : TemperatureMaximum);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
 
@@ -358,6 +377,9 @@ namespace AcManager.Pages.Drive {
 
                 [JsonProperty(@"rcTimezones")]
                 public bool? RealConditionsTimezones;
+
+                [JsonProperty(@"rcManTime")]
+                public bool? RealConditionsManualTime;
             }
 
             private readonly ISaveHelper _saveable;
@@ -382,6 +404,7 @@ namespace AcManager.Pages.Drive {
                 _saveable = new SaveHelper<SaveableData>(KeySaveable, () => new SaveableData {
                     RealConditions = RealConditions,
                     RealConditionsTimezones = RealConditionsTimezones,
+                    RealConditionsManualTime = RealConditionsManualTime,
                     RealConditionsLighting = RealConditionsLighting,
 
                     Mode = SelectedMode,
@@ -398,6 +421,7 @@ namespace AcManager.Pages.Drive {
                 }, o => {
                     RealConditions = _weatherId == null && o.RealConditions;
                     RealConditionsTimezones = o.RealConditionsTimezones ?? true;
+                    RealConditionsManualTime = o.RealConditionsManualTime ?? false;
                     RealConditionsLighting = o.RealConditionsLighting;
 
                     try {
@@ -425,9 +449,10 @@ namespace AcManager.Pages.Drive {
                     Time = o.Time;
                     TimeMultipler = o.TimeMultipler;
                 }, () => {
-                    RealConditionsTimezones = true;
-                    RealConditionsLighting = false;
                     RealConditions = false;
+                    RealConditionsTimezones = true;
+                    RealConditionsManualTime = false;
+                    RealConditionsLighting = false;
 
                     SelectedMode = new Uri("/Pages/Drive/QuickDrive_Race.xaml", UriKind.Relative);
                     SelectedCar = CarsManager.Instance.GetDefault();
@@ -533,7 +558,7 @@ namespace AcManager.Pages.Drive {
             private Game.TrackPropertiesPreset _selectedTrackPropertiesPreset;
 
             private async void TryToSetRealTime() {
-                if (_realTimeInProcess || !RealConditions) return;
+                if (_realTimeInProcess || !RealConditions || RealConditionsManualTime) return;
                 _realTimeInProcess = true;
 
                 try {
@@ -806,5 +831,9 @@ namespace AcManager.Pages.Drive {
         }
 
         public static IContentLoader ContentLoader { get; } = new ImmediateContentLoader();
+
+        private void MoreConditionsOptions_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            ConditionsOptions.IsOpen = true;
+        }
     }
 }

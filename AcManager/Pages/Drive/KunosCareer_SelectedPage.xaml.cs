@@ -37,24 +37,24 @@ namespace AcManager.Pages.Drive {
             }
 
             await acObject.EnsureEventsLoadedAsync();
-            DataContext = new KunosCareer_SelectedPageViewModel(acObject);
+            DataContext = new ViewModel(acObject);
         }
 
         public void Load() {
             KunosCareerManager.Instance.EnsureLoaded();
-            
+
             var acObject = KunosCareerManager.Instance.GetById(_id);
             if (acObject == null || acObject.HasErrors || !acObject.IsAvailable) {
                 KunosCareer.NavigateToCareerPage(null);
                 return;
             }
-            
+
             acObject.EnsureEventsLoaded();
-            DataContext = new KunosCareer_SelectedPageViewModel(acObject);
+            DataContext = new ViewModel(acObject);
         }
 
         public void Initialize() {
-            if (!(DataContext is KunosCareer_SelectedPageViewModel)) return;
+            if (!(DataContext is ViewModel)) return;
             InitializeComponent();
 
             var acObject = Model.AcObject;
@@ -75,7 +75,7 @@ namespace AcManager.Pages.Drive {
         private ScrollViewer _scrollViewer;
         private bool _loaded;
 
-        private void KunosCareer_SelectedPage_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             _scrollViewer = ListBox.FindVisualChild<ScrollViewer>();
             _scrollViewer?.ScrollToHorizontalOffset(ValuesStorage.GetDoubleNullable(KeyScrollValue) ?? 0d);
 
@@ -97,23 +97,23 @@ namespace AcManager.Pages.Drive {
             acObject.AcObjectOutdated += AcObject_AcObjectOutdated;
         }
 
-        private void KunosCareer_SelectedPage_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
 
             Model.AcObject.AcObjectOutdated -= AcObject_AcObjectOutdated;
         }
 
-        private string KeyScrollValue => "KunosCareer_SelectedPage.ListBox.Scroll__" + _id;
+        private string KeyScrollValue => @"KunosCareer_SelectedPage.ListBox.Scroll__" + _id;
 
         private void ListBox_ScrollChanged(object sender, ScrollChangedEventArgs e) {
             if (_scrollViewer == null) return;
             ValuesStorage.Set(KeyScrollValue, _scrollViewer.HorizontalOffset);
         }
 
-        private KunosCareer_SelectedPageViewModel Model => (KunosCareer_SelectedPageViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
-        public class KunosCareer_SelectedPageViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private KunosCareerObject _acObject;
 
             public KunosCareerObject AcObject {
@@ -125,7 +125,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public KunosCareer_SelectedPageViewModel(KunosCareerObject careerObject) {
+            public ViewModel(KunosCareerObject careerObject) {
                 _acObject = careerObject;
             }
 
@@ -155,7 +155,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void ResetButton_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            if (ModernDialog.ShowMessage("All progress in this championship will be lost. Are you sure?", "Reset championship progress",
+            if (ModernDialog.ShowMessage(AppStrings.KunosCareer_ResetProgress_Message, AppStrings.KunosCareer_ResetProgress_Title,
                     MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
             Model.AcObject.ChampionshipResetCommand.Execute(null);
         }

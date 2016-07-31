@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Lists.CarSkinsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-             xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        Unloaded="CarsListPage_OnUnloaded">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
+        xmlns:li="clr-namespace:AcManager.Pages.Lists" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance li:CarSkinsListPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,9 +12,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Style="{StaticResource ContentRoot}">
-        <ac:AcListPage ItemsSource="{Binding MainList}" Visibility="{Binding SelectedCar}">
-            <ac:AcListPage.Template>
-                <ControlTemplate TargetType="ac:AcListPage">
+        <c:AcListPage ItemsSource="{Binding MainList}" Visibility="{Binding SelectedCar}">
+            <c:AcListPage.Template>
+                <ControlTemplate TargetType="c:AcListPage">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200" />
@@ -26,7 +26,8 @@
                                 Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="3"
                                 HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 100" />
 
-                        <Grid Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                        <Grid Grid.Column="0"
+                                Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                             <Grid.RowDefinitions>
                                 <RowDefinition />
                                 <RowDefinition Height="Auto" />
@@ -47,11 +48,11 @@
                             <Border Grid.Row="1" Background="Transparent">
                                 <Border.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Reset priorities" />
+                                        <MenuItem Header="Reset priorities" Command="{Binding ResetPriorityCommand}"
+                                                ToolTip="Priority for all skins in the list will be reset to 0 (or removed if that option is enabled)" />
                                     </ContextMenu>
                                 </Border.ContextMenu>
-                                <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}"
-                                        Foreground="{DynamicResource WindowTextReadOnly}" />
+                                <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
                             </Border>
                         </Grid>
 
@@ -62,7 +63,7 @@
                                 TransitionName="Normal" />
                     </Grid>
                 </ControlTemplate>
-            </ac:AcListPage.Template>
-        </ac:AcListPage>
+            </c:AcListPage.Template>
+        </c:AcListPage>
     </Grid>
 </UserControl>

@@ -138,14 +138,16 @@ namespace AcTools.Processes {
             /// Set properties.
             /// </summary>
             /// <returns>Something disposable what will revert back all changes (optionally)</returns>
+            [CanBeNull]
             public abstract IDisposable Set();
         }
 
         public abstract class GameHandler {
             /// <summary>
-            /// Do something with runned game.
+            /// Do something with runned game (but first, wait for game to run).
             /// </summary>
             /// <returns>Something disposable what will revert back all changes (optionally)</returns>
+            [CanBeNull]
             public abstract IDisposable Set();
         }
 
@@ -263,13 +265,13 @@ namespace AcTools.Processes {
                 iniFile.Save(iniFilename);
 
                 _disposeLater.Add(AssistsProperties?.Set());
-                _disposeLater.AddRange(AdditionalPropertieses.OfType<AdditionalProperties>().Select(x => x.Set()));
+                _disposeLater.AddRange(AdditionalPropertieses.OfType<AdditionalProperties>().Select(x => x.Set()).NonNull());
 
                 StartTime = DateTime.Now;
             }
 
             internal void SetGame() {
-                _disposeLater.AddRange(AdditionalPropertieses.OfType<GameHandler>().Select(x => x.Set()));
+                _disposeLater.AddRange(AdditionalPropertieses.OfType<GameHandler>().Select(x => x.Set()).NonNull());
             }
 
             internal void RevertChanges() {

@@ -1328,7 +1328,7 @@
     <value>Camera:</value>
   </data>
   <data name="AcSettings_View_LockCamera" xml:space="preserve">
-    <value>_Lock onboard camera to horizon</value>
+    <value>Lock onboard camera to horizon</value>
   </data>
   <data name="AcSettings_View_GlancingSpeed" xml:space="preserve">
     <value>Glancing speed</value>
@@ -1358,10 +1358,10 @@
     <value>View:</value>
   </data>
   <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
-    <value>Hide driver _arms</value>
+    <value>Hide driver arms</value>
   </data>
   <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
-    <value>Hide steering _wheel</value>
+    <value>Hide steering wheel</value>
   </data>
   <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
     <value>Lock steering wheel</value>
