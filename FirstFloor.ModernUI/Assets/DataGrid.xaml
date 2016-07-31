@@ -51,8 +51,8 @@
     </Style>
 
     <Style x:Key="ColumnFloatingHeaderStyle" TargetType="{x:Type Control}">
-        <Setter Property="Opacity" Value="0.6"></Setter>
-        <Setter Property="BorderThickness" Value="0"></Setter>
+        <Setter Property="Opacity" Value="0.6" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Control}">
@@ -73,8 +73,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Separator}">
                     <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                    </Border>
+                            BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -339,7 +338,7 @@
                                             </Grid.ColumnDefinitions>
                                             <ScrollBar Grid.Column="1" x:Name="PART_HorizontalScrollBar" Orientation="Horizontal"
                                                     Maximum="{TemplateBinding ScrollableWidth}" ViewportSize="{TemplateBinding ViewportWidth}"
-                                                    Value="{Binding Path=HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
+                                                    Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
                                                     Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" />
 
                                         </Grid>

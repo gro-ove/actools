@@ -41,7 +41,7 @@
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
 
                             <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" Grid.Column="0" Placement="Bottom" Margin="1"
-                                    IsOpen="{Binding Path=IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                    IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                     PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -110,7 +110,7 @@
                         Data="{StaticResource RightArrow}" />
             </Grid>
             <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Right" VerticalOffset="-3" HorizontalOffset="-2"
-                    IsOpen="{Binding Path=IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
+                    IsOpen="{Binding IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
                     PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
                 <Grid Margin="4" Background="{DynamicResource PopupBackground}">
                     <Grid x:Name="Shdw">
@@ -170,10 +170,10 @@
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
             </Trigger>
-            <DataTrigger Binding="{Binding Path=Tag.HasToolTips, RelativeSource={RelativeSource Self}}" Value="True">
+            <DataTrigger Binding="{Binding Tag.HasToolTips, RelativeSource={RelativeSource Self}}" Value="True">
                 <Setter TargetName="Grid" Property="ToolTip">
                     <Setter.Value>
-                        <ToolTip DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                        <ToolTip DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                             <ContentPresenter IsHitTestVisible="False" Margin="4" Content="{Binding ToolTip}" />
                         </ToolTip>
                     </Setter.Value>

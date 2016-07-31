@@ -36,7 +36,7 @@
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
                 <mui:ValueLabel Value="{Binding LapsNumber}" Content="{x:Static g:AppStrings.Drive_RaceDuration}"
-                        Postfix="{Binding Path=LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}" />
+                        Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}" />
                 <Slider Minimum="1" Maximum="{Binding LapsNumberMaximumLimited}" Value="{Binding LapsNumber}" />
             </StackPanel>
 
@@ -96,13 +96,13 @@
                 </StackPanel.ToolTip>
 
                 <mui:ValueLabel Value="{Binding OpponentsNumber}"
-                        Postfix="{Binding Path=OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}" />
+                        Postfix="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}" />
                 <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
                 <StackPanel.ToolTip>
-                    <TextBlock Margin="0 0 0 4" Text="{Binding Path=DisplayStartingPosition}" />
+                    <TextBlock Margin="0 0 0 4" Text="{Binding DisplayStartingPosition}" />
                 </StackPanel.ToolTip>
                 <mui:ValueLabel Value="{Binding DisplayStartingPosition}" Content="{x:Static g:AppStrings.Drive_StartingPosition}" Mode="IntegerOrZeroLabel" />
                 <Slider Minimum="0" Maximum="{Binding StartingPositionLimit}" Value="{Binding StartingPosition}" />
@@ -115,8 +115,7 @@
                 Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
             <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8"
                     Text="{x:Static g:AppStrings.Drive_ListOfPossibleOpponentsLabel}"
-                    ToolTip="{Binding Path=OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_ListOfPossibleOpponents_Tooltip}}">
-            </TextBlock>
+                    ToolTip="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_ListOfPossibleOpponents_Tooltip}}" />
 
             <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Error}" Text="{Binding OpponentsCarsError}"
                     Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />

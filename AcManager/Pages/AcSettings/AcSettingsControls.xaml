@@ -136,7 +136,7 @@
                         Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="Menu"
                         IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}">
                     <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}"
-                            ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}" Width="{Binding Path=ActualWidth, ElementName=Menu}">
+                            ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}" Width="{Binding ActualWidth, ElementName=Menu}">
                         <MenuItem.Header>
                             <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" DataContext="{Binding Controls}"
                                     Text="{Binding CurrentPresetName, TargetNullValue='Unsaved'}">

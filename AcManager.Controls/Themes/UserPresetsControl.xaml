@@ -26,7 +26,7 @@
                         <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                                 Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="PART_Menu">
                             <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}"
-                                    ItemsSource="{TemplateBinding SavedPresetsGrouped}" Width="{Binding Path=ActualWidth, ElementName=PART_Menu}"
+                                    ItemsSource="{TemplateBinding SavedPresetsGrouped}" Width="{Binding ActualWidth, ElementName=PART_Menu}"
                                     Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
                                     FontSize="{TemplateBinding FontSize}" BorderBrush="{TemplateBinding BorderBrush}" Foreground="{TemplateBinding Foreground}"
                                     FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}">

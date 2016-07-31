@@ -2,7 +2,7 @@
     <Rectangle Fill="{Binding Color}" />
     <Ellipse Fill="{Binding SecondaryColor}" Width="27" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Ellipse.Effect>
-            <DropShadowEffect ShadowDepth="0" Direction="0" Color="Black" Opacity="0.3" BlurRadius="3"></DropShadowEffect>
+            <DropShadowEffect ShadowDepth="0" Direction="0" Color="Black" Opacity="0.3" BlurRadius="3" />
         </Ellipse.Effect>
     </Ellipse>
 </Grid>

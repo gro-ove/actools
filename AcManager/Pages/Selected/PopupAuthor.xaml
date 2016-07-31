@@ -27,14 +27,12 @@
                             CommandParameter="author" />
                 </ContextMenu>
             </DockPanel.ContextMenu>
-            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Author_TooltipExt}">
-            </TextBlock>
+            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Author_TooltipExt}" />
             <ComboBox Text="{Binding SelectedObject.Author, UpdateSourceTrigger=LostFocus}" ItemsSource="{x:Static managers:SuggestionLists.AuthorsListView}" />
         </DockPanel>
 
         <DockPanel Grid.Row="1">
-            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_UrlLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Url_TooltipExt}">
-            </TextBlock>
+            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_UrlLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Url_TooltipExt}" />
             <TextBox Text="{Binding SelectedObject.Url, UpdateSourceTrigger=LostFocus}" />
         </DockPanel>
 

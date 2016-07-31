@@ -54,7 +54,7 @@
 
                                     <TextBlock Text="{Binding Points}" Style="{StaticResource Heading1}" FontSize="40" />
                                     <TextBlock Style="{StaticResource Label}" VerticalAlignment="Bottom" Margin="0 0 0 6" TextOptions.TextFormattingMode="Ideal"
-                                            Text="{Binding Path=Points, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_PointsPostfix}}" />
+                                            Text="{Binding Points, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_PointsPostfix}}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0 0 0 4">
                                     <TextBlock Text="{x:Static g:AppStrings.RaceResult_MaxLevel}" Style="{StaticResource Label}" VerticalAlignment="Bottom"
@@ -145,7 +145,7 @@
 
                                 <!--<DataGrid.RowDetailsTemplate>
                                     <DataTemplate DataType="{x:Type dialogs:GameDialog+SessionFinishedData+PlayerEntry}">
-                                        <DataGrid ItemsSource="{Binding Laps}"></DataGrid>
+                                        <DataGrid ItemsSource="{Binding Laps}" />
                                     </DataTemplate>
                                 </DataGrid.RowDetailsTemplate>-->
                             </DataGrid>

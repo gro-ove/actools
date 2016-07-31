@@ -47,8 +47,7 @@
                                 ToolTip="{x:Static g:AppStrings.WeatherEdit_TemperatureCoefficient_Tooltip}">
                             <DockPanel.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Command="{Binding ViewTemperatureReadmeCommand}" Header="{x:Static g:AppStrings.WeatherEdit_ViewReadmeHeader}">
-                                    </MenuItem>
+                                    <MenuItem Command="{Binding ViewTemperatureReadmeCommand}" Header="{x:Static g:AppStrings.WeatherEdit_ViewReadmeHeader}" />
                                 </ContextMenu>
                             </DockPanel.ContextMenu>
                             <mui:ValueLabel Value="{Binding SelectedObject.TemperatureCoefficient, StringFormat='{}{0:F2}'}"
@@ -257,16 +256,14 @@
                         ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_ChangeId}" Command="{Binding ChangeIdCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_ChangeId_WeatherTooltip}">
-                </Button>
+                        ToolTip="{x:Static g:AppStrings.Toolbar_ChangeId_WeatherTooltip}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Save_IniTooltip}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Delete_WeatherTooltip}" />
                 <Separator />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Clone_WeatherTooltip}">
-                </Button>
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Clone_WeatherTooltip}" />
                 <Separator />
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewCommand}"
                         ButtonToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_WeatherTooltip}">
@@ -282,7 +279,7 @@
             <StackPanel Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                 <mui:BetterImage Margin="0 0 0 12" Filename="{Binding SelectedObject.PreviewImage}" HideBroken="True"
                         services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1022"
-                        Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
+                        Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
 
                 <DockPanel>
                     <Label Content="{x:Static g:AppStrings.AcObject_IdLabel}" />

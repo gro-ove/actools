@@ -301,8 +301,15 @@ namespace AcManager.Pages.Selected {
                 var donor = SelectCarDialog.Show();
                 if (donor == null) return;
 
+                if (string.Equals(donor.Id, SelectedObject.Id, StringComparison.OrdinalIgnoreCase)) {
+                    NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, "Source and destination are the same.");
+                    return;
+                }
+
                 try {
-                    using (new WaitingDialog()) {
+                    using (var waiting = new WaitingDialog()) {
+                        waiting.Report();
+
                         var guids = Path.Combine(donor.Location, @"sfx", @"GUIDs.txt");
                         var soundbank = Path.Combine(donor.Location, @"sfx", $"{donor.Id}.bank");
 
@@ -349,7 +356,7 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify(AppStrings.Car_ReplaceSound_CannotReplace, AppStrings.Car_ReplaceSound_CannotReplace_Commentary, e);
                 }
-            }, o => SettingsHolder.Common.MsMode));
+            }));
         }
 
         private string _id;

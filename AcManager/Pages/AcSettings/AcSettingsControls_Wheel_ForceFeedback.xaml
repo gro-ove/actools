@@ -70,16 +70,16 @@
                 <Label Foreground="{DynamicResource Error}" Content="{x:Static controls:ControlsStrings.Controls_UnlockExperimental}" />
             </CheckBox>
 
-            <CheckBox IsEnabled="{Binding Path=IsChecked, ElementName=Experimental}" IsChecked="{Binding System.FfbGyro}">
+            <CheckBox IsEnabled="{Binding IsChecked, ElementName=Experimental}" IsChecked="{Binding System.FfbGyro}">
                 <Label Content="{x:Static controls:ControlsStrings.Controls_GyroscopicEffect}" />
             </CheckBox>
 
-            <DockPanel IsEnabled="{Binding Path=IsChecked, ElementName=Experimental}" ToolTip="{x:Static controls:ControlsStrings.Controls_DamperGain_Tooltip}">
+            <DockPanel IsEnabled="{Binding IsChecked, ElementName=Experimental}" ToolTip="{x:Static controls:ControlsStrings.Controls_DamperGain_Tooltip}">
                 <mui:ValueLabel Value="{Binding System.FfbDamperGain}" Postfix="%" Content="{x:Static controls:ControlsStrings.Controls_DamperGain}" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding System.FfbDamperGain}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>
 
-            <DockPanel IsEnabled="{Binding Path=IsChecked, ElementName=Experimental}">
+            <DockPanel IsEnabled="{Binding IsChecked, ElementName=Experimental}">
                 <mui:ValueLabel Value="{Binding System.FfbDamperMinLevel}" Postfix="%" Content="{x:Static controls:ControlsStrings.Controls_MinumumDamperLevel}" />
                 <Slider Minimum="0" Maximum="100" Value="{Binding System.FfbDamperMinLevel}" TickFrequency="10" TickPlacement="BottomRight" />
             </DockPanel>

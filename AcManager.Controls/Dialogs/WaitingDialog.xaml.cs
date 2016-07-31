@@ -188,6 +188,10 @@ namespace AcManager.Controls.Dialogs {
             }
         }
 
+        public void Report() {
+            Report(0d);
+        }
+
         public void Report(double value) {
             lock (_lock) {
                 if (Progress.HasValue && Math.Abs(Progress.Value - value) < 0.0001) return;

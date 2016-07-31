@@ -210,6 +210,17 @@ done:
                 + install setups
             + option for disable RSR plugin if started without RSR event ID
             + special RSR name?
+        + SRS
+            + built-in browser
+            + view even properties
+            + custom style
+            + time counter
+            + quit
+            + start the race
+            + notifications about coming race
+            × update status in background?
+            × some widget?
+            × set to limited only for now
         + auto saving replays
     + find Kunos content
         + cars
@@ -435,6 +446,8 @@ done:
             + quick drive
             + car setups
             + ppfilters
+            + weather
+            + replays
     + car setups management
         + basic properties
         + rename & change track
@@ -500,53 +513,9 @@ done:
     + remember track's layout
     + weather: test button
     + optional auto-change brand badge
-
-fixme:
-    - notifypropertychanged for commands
-    - MUI thing with Loaded/Unloaded!
-    - pastload problem!
-    - iconintaskbar for dialogs
-    - potential error here:
-        http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
-    - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
-    - race: last position isn't fixed enough
-    - race: something's wrong with the laps number
-    - are all async requests killed by timeout?
-    - practice: gold medals
-    - SRS: three minutes instead of five
-    - find information dialog
-    - smart textbox with version
-    - 1ff opponent?!
-    - fix brands list (removed brands)
-
-todo:
-    - don't let to replace sound from itself
-    - include “dev apps” option to apps presets
-        - promixity indicator as well?
-        - share python apps
-    - calculate fuel consumption
-
-    - use Escape, Ctrl+W and Ctrl+F4 to exit from some dialogs
-    - add AC credits (and version?)
-    - shape with triangle at right bottom (audi r8)
-    - change "Author:" to "Version:" or "URL:" if author is missing
-
-    - convert BMP to JPG automatically
-        + for races and replays
-        - for showroom as well
-        - don't forget about some places where BMP is needed!
-            + track & weather previews
-            - showroom previews
-            - car previews
-
-    - open new links in find information dialog in same tab
-    - managers: loading progress
-    - more informative online errors
-        - try to guess if steam id is wrong
-
-    - locales
+    + locales
         + move culture initialization to EntryPoint
-        - make project localizable
+        + make project localizable
             + .mui
             + .tools
             + .LargeFilesSharing
@@ -560,9 +529,53 @@ todo:
                 + dialogs
                 + acsettings
                 + about
-        - changeable locale
-        - custom locale
-        - some tool/manual for localization
+        + changeable locale
+        + custom locale
+        + some tool/manual for localization
+    + don't let to replace sound from itself
+
+fixme:
+    - notifypropertychanged for commands
+    - MUI thing with Loaded/Unloaded!
+    - pastload problem!
+    - iconintaskbar for dialogs
+    - potential error here:
+        http://stackoverflow.com/questions/28461251/wpf-code-tried-to-reactivate-a-bindingexpression-that-was-already-marked-as-deta
+    - mui:InputBindingBehavior.PropagateInputBindingsToWindow="True"?
+    - race: last position isn't fixed enough
+    - are all async requests killed by timeout?
+    - practice: gold medals
+    - SRS: three minutes instead of five
+    - find information dialog
+    - smart textbox with version
+    - 1ff opponent?!
+
+todo:
+    - include “dev apps” option to apps presets
+        - promixity indicator as well?
+        - share python apps
+    - calculate fuel consumption
+
+    - use Escape, Ctrl+W and Ctrl+F4 to exit from some dialogs
+    - add AC credits (and version?)
+    - shape with triangle at right bottom (audi r8)
+    - change "Author:" to "Version:" or "URL:" if author is missing
+
+    - local weather instead of track's one
+        - http://ipinfo.io/geo
+
+    - convert BMP to JPG automatically
+        + for races and replays
+        - for showroom as well
+        - don't forget about some places where BMP is needed!
+            + track & weather previews
+            - showroom previews
+            - car previews
+
+    - open new links in find information dialog in same tab
+    - managers: loading progress
+    - more informative online errors
+        - try to guess if steam id is wrong
 
     - notification for plugins
     - upload Content to Trello for those who doesn't have Internet connection
@@ -611,9 +624,8 @@ todo:
         - packing (for VDS and stuff)?
 
     > proper sharing
-        > special types:
-            + weather
-            - replays?
+        > special types
+            - skins
         - deleting shared
 
     > ac options
@@ -629,9 +641,10 @@ todo:
             - animated skinned meshes
 
     - showroom from Online
-    - car setups: warn about "last"
+    > car setups
+        - warn about "last"
+        - edition mode
     - move livery shapes and styles to Content directory
-    - quick switches: saturation
 
     - content installation
         - automatically switch to freshly installed content in some cases (optional)?
@@ -673,17 +686,6 @@ todo:
             + quickly switchable controls configs?
             - specially syncronized steering wheel
         - race results: total time
-        + SRS
-            + built-in browser
-            + view even properties
-            + custom style
-            + time counter
-            + quit
-            + start the race
-            + notifications about coming race
-            - update status in background?
-            - some widget?
-            × set to limited only for now
 
     + go buttons keyboard shortcut
         + quick drive
@@ -728,7 +730,6 @@ todo:
     - checkboxes
         - custom lists?
     - progress in taskbar
-    - simple presets mode?
     - context menu for lists in aclistpages
         - reload list
     - context menu for adding new filters
@@ -822,9 +823,7 @@ later:
         - best laptime
 
     - show flags for nationalities
-
-    - download addons automatically?
-        - or show some message about them?
+    - simple presets mode?
 
     - update fonts on-fly
 

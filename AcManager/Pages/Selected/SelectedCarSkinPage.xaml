@@ -19,8 +19,7 @@
         <ac:AcObjectBase.ToolBars>
             <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
                 <Button Content="{x:Static g:AppStrings.Toolbar_Folder}" Command="{Binding SelectedObject.ViewInExplorerCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Folder_SkinTooltip}">
-                </Button>
+                        ToolTip="{x:Static g:AppStrings.Toolbar_Folder_SkinTooltip}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Reload}" ToolTip="{x:Static g:AppStrings.Toolbar_Reload_Tooltip}"
                         Command="{Binding SelectedObject.ReloadCommand}" CommandParameter="full" />
                 <Separator />
@@ -34,8 +33,7 @@
                         ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
                         Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_ChangeId}" Command="{Binding ChangeIdCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_ChangeId_SkinTooltip}">
-                </Button>
+                        ToolTip="{x:Static g:AppStrings.Toolbar_ChangeId_SkinTooltip}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"
@@ -49,8 +47,7 @@
                         Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                 <Separator />
                 <Button Content="{x:Static g:AppStrings.Toolbar_UpdatePreview}" Command="{Binding UpdatePreviewCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_SkinTooltip}">
-                </Button>
+                        ToolTip="{x:Static g:AppStrings.Toolbar_UpdatePreview_SkinTooltip}" />
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_ChangeLivery}" Command="{Binding ChangeLiveryCommand}"
                         ButtonToolTip="{x:Static g:AppStrings.Toolbar_ChangeLivery_Tooltip}">
                     <MenuItem Header="{x:Static g:AppStrings.Toolbar_GenerateLivery}" ToolTip="{x:Static g:AppStrings.Toolbar_GenerateLivery_Tooltip}"
@@ -65,7 +62,7 @@
         <StackPanel>
             <mui:BetterImage Margin="0 0 0 12" Filename="{Binding SelectedObject.PreviewImage}"
                     c:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" c:ImageViewerService.MaxWidth="1022" MaxWidth="1022"
-                    Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
+                    Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
 
             <!-- data section -->
             <Grid Style="{StaticResource ObjectDataGrid}" Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">

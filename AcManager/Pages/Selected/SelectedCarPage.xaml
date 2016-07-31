@@ -126,7 +126,7 @@
                     <mui:BetterImage x:Name="SelectedSkinPreviewImage" DataContext="{Binding SelectedObject.SelectedSkin}" Filename="{Binding PreviewImage}"
                             PreviewMouseLeftButtonDown="SelectedSkinPreview_MouseDown" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" MinHeight="160"
                             MaxHeight="575" MaxWidth="1022"
-                            Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
+                            Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
                     <mui:BetterImage Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Width="64" Height="64" MouseDown="UpgradeIcon_MouseDown"
                             Filename="{Binding SelectedObject.UpgradeIcon}"
                             Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}" />

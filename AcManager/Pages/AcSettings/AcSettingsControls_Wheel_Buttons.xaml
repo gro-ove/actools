@@ -28,8 +28,7 @@
 
             <StackPanel Background="{DynamicResource WindowBackground}" Margin="20 0 20 20" IsEnabled="{Binding WheelUseHShifter}">
                 <TextBlock Style="{StaticResource Small}" HorizontalAlignment="Left" Margin="4"
-                        Text="{Binding Path=WheelHShifterDevice.DisplayName, StringFormat={x:Static g:AppStrings.Controls_DeviceFormat}, FallbackValue=?}">
-                </TextBlock>
+                        Text="{Binding WheelHShifterDevice.DisplayName, StringFormat={x:Static g:AppStrings.Controls_DeviceFormat}, FallbackValue=?}" />
                 <ItemsControl ItemsSource="{Binding WheelHShifterButtonEntries}" Margin="4 0 4 4" ItemTemplate="{StaticResource HShifterButtonEntryTemplate}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

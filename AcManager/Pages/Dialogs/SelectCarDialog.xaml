@@ -25,7 +25,7 @@
                                     <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0" />
                                 </Grid.ColumnDefinitions>
                                 <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" Placement="Bottom" Margin="1"
-                                        IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                        IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                         PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                                     <Grid Margin="4" MinWidth="{Binding ElementName=InnerMainGrid, Path=ActualWidth}"
                                             MaxHeight="{TemplateBinding MaxDropDownHeight}">
@@ -51,7 +51,7 @@
                                 </Popup>
                                 <ToggleButton Grid.Column="0" Grid.ColumnSpan="2" Background="{TemplateBinding Background}"
                                         BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
-                                        IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Padding="0 0 0 10" />
+                                        IsChecked="{Binding IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Padding="0 0 0 10" />
                                 <Path x:Name="Arrow" Grid.Column="0" Grid.ColumnSpan="2" Margin="3 1 8 0" Fill="{TemplateBinding Foreground}"
                                         Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                         IsHitTestVisible="False" Visibility="Collapsed" />

@@ -19,7 +19,7 @@
                                 <Rectangle x:Name="Indeterminate" Width="8" Height="8" Margin="4" Fill="{TemplateBinding Foreground}" Visibility="Hidden" />
                             </Grid>
                         </Border>
-                        <ContentPresenter VerticalAlignment="Center"></ContentPresenter>
+                        <ContentPresenter VerticalAlignment="Center" />
                         <!--<TextBlock Text="{TemplateBinding Content}" VerticalAlignment="Center" />-->
                     </StackPanel>
                     <ControlTemplate.Triggers>

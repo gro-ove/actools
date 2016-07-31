@@ -35,7 +35,7 @@
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
                 <mui:ValueLabel Value="{Binding LapsNumber}" Content="{x:Static g:AppStrings.Drive_RaceDuration}"
-                        Postfix="{Binding Path=LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}">
+                        Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}">
                 </mui:ValueLabel>
                 <Slider Minimum="1" Maximum="{Binding LapsNumberMaximumLimited}" Value="{Binding LapsNumber}" />
             </StackPanel>
@@ -96,15 +96,14 @@
                 </StackPanel.ToolTip>
 
                 <mui:ValueLabel Value="{Binding OpponentsNumber}"
-                        Postfix="{Binding Path=OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}">
+                        Postfix="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}">
                 </mui:ValueLabel>
                 <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
             </StackPanel>
 
             <!--<StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
                 <TextBlock Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4"
-                        Text="{Binding Path=DisplayStartingPosition, StringFormat={x:Static g:AppStrings.Drive_StartingPositionFormat}}">
-                </TextBlock>
+                        Text="{Binding DisplayStartingPosition, StringFormat={x:Static g:AppStrings.Drive_StartingPositionFormat}}" />
                 <Slider Minimum="0" Maximum="{Binding StartingPositionLimit}" Value="{Binding StartingPosition}" />
             </StackPanel>-->
 
@@ -112,7 +111,7 @@
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
                 <mui:ValueLabel Value="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialSessionConverter}}"
                         Mode="IntegerOrZeroLabel" Content="{x:Static tools:ToolsStrings.Session_Practice}"
-                        Postfix="{Binding Path=PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialPluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_MinutePostfix}}">
+                        Postfix="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialPluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_MinutePostfix}}">
                 </mui:ValueLabel>
                 <Slider Minimum="0" Maximum="90" Value="{Binding PracticeDuration}" />
             </StackPanel>
@@ -130,8 +129,7 @@
                 Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
             <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8"
                     Text="{x:Static g:AppStrings.Drive_ListOfPossibleOpponentsLabel}"
-                    ToolTip="{Binding Path=OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_ListOfPossibleOpponents_Tooltip}}">
-            </TextBlock>
+                    ToolTip="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_ListOfPossibleOpponents_Tooltip}}" />
 
             <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Error}" Text="{Binding OpponentsCarsError}"
                     Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />

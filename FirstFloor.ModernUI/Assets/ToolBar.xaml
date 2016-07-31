@@ -168,7 +168,7 @@
                                     </Grid>
 
                                     <!-- The Popup is the body of the menu which expands down or across depending on the level of the item -->
-                                    <Popup IsOpen="{Binding Path=IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Right"
+                                    <Popup IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Right"
                                             x:Name="SubMenuPopup" Focusable="False"
                                             PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
                                         <Border x:Name="SubMenuBorder" BorderBrush="{TemplateBinding BorderBrush}"

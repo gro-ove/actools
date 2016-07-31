@@ -156,8 +156,7 @@
             </Grid>
 
             <TextBlock Margin="0 8 0 0" Style="{StaticResource Small}"
-                    Text="{Binding Path=DisplayTakenTime, StringFormat={x:Static g:AppStrings.CarPreviews_TakenTime}}">
-            </TextBlock>
+                    Text="{Binding DisplayTakenTime, StringFormat={x:Static g:AppStrings.CarPreviews_TakenTime}}" />
         </StackPanel>
         <StackPanel x:Name="ErrorPhase" Orientation="Vertical" VerticalAlignment="Center" Visibility="Collapsed">
             <TextBlock Text="{x:Static c:ControlsStrings.Common_Error}" Style="{StaticResource Heading1}" />

@@ -84,7 +84,7 @@ namespace AcManager.Pages.Lists {
                 var list = MainList.OfType<AcItemWrapper>().Select(x => x.Value as CarSkinObject).Where(x => x.Priority.HasValue).ToList();
                 var i = 0;
                 using (var waiting = new WaitingDialog()) {
-                    waiting.Report((double?)null);
+                    waiting.Report();
                     await Task.Delay(500, waiting.CancellationToken);
                     if (waiting.CancellationToken.IsCancellationRequested) return;
 

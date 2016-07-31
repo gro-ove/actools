@@ -17,7 +17,7 @@
         <Grid DockPanel.Dock="Top" x:Name="Grid" MaxWidth="1022"
                 Visibility="{Binding ShowSkinsAndPreview, Converter={StaticResource BooleanToVisibilityConverter}}">
             <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" MouseDown="PreviewImage_OnMouseDown" MaxWidth="1022"
-                    Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
+                    Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
             <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
                     Margin="4" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding SelectedSkin}" VerticalAlignment="Top" MaxHeight="76"
                     BorderThickness="0" Visibility="{Binding SelectSkin, Converter={StaticResource BooleanToVisibilityConverter}}"

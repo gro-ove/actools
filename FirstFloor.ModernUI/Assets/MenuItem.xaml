@@ -81,7 +81,7 @@
                         Data="{StaticResource RightArrow}" />
             </Grid>
             <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Right" VerticalOffset="-3" HorizontalOffset="-2"
-                    IsOpen="{Binding Path=IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
+                    IsOpen="{Binding IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
                     PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
                 <Grid Margin="4" Background="{DynamicResource PopupBackground}">
                     <Grid x:Name="Shdw">
@@ -155,8 +155,7 @@
                 <Setter Property="Template"
                         Value="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type MenuItem}, ResourceId=SubmenuHeaderTemplateKey}}" />
             </Trigger>
-            <Trigger Property="Role" Value="SubmenuItem">
-            </Trigger>
+            <Trigger Property="Role" Value="SubmenuItem" />
         </Style.Triggers>
     </Style>
 </ResourceDictionary>

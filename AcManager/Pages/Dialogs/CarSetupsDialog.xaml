@@ -4,4 +4,4 @@
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Width="800" Height="720" MaxWidth="960"
         MaxHeight="960" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" IsTitleVisible="True" Initialized="OnInitialized" Closed="OnClosed"
         LocationAndSizeKey="CarSetupsDialog.LS" d:DataContext="{d:DesignInstance di:CarSetupsDialog+ViewModel}"
-        Title="{Binding Path=SelectedCar.DisplayName, StringFormat={x:Static g:AppStrings.Dialog_CarSetupsFormat}}" />
+        Title="{Binding SelectedCar.DisplayName, StringFormat={x:Static g:AppStrings.Dialog_CarSetupsFormat}}" />

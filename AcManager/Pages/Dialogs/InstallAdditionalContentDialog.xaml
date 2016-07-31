@@ -27,12 +27,12 @@
                             <StackPanel Grid.Row="0" Grid.Column="1">
                                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
                                 <TextBlock Style="{StaticResource Small}"
-                                        Text="{Binding Path=Entry.Id, StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}}" />
+                                        Text="{Binding Entry.Id, StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}}" />
                                 <TextBlock Style="{StaticResource Small}"
-                                        Text="{Binding Path=Entry.Path, StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}}" />
+                                        Text="{Binding Entry.Path, StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}}" />
                             </StackPanel>
                             <StackPanel x:Name="UpdateOptions" Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="0 8 0 0"
-                                    IsEnabled="{Binding Path=IsChecked, ElementName=InstallEntry}">
+                                    IsEnabled="{Binding IsChecked, ElementName=InstallEntry}">
                                 <TextBlock Text="{x:Static g:AppStrings.AdditionalContent_WhatToUpdateLabel}" Style="{StaticResource LabelWithPadding}" />
                                 <ComboBox ItemsSource="{Binding UpdateOptionsList}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0" />
                             </StackPanel>

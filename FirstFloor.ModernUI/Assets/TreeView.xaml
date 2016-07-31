@@ -85,7 +85,7 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
                         <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}"
-                                IsChecked="{Binding Path=IsExpanded,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" />
+                                IsChecked="{Binding IsExpanded,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" />
                         <Border x:Name="Bd" Grid.Row="0" Grid.Column="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                             <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
