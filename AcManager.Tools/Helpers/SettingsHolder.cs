@@ -39,7 +39,7 @@ namespace AcManager.Tools.Helpers {
         public class OnlineServerEntry {
             private string _displayName;
 
-            public string DisplayName => _displayName ?? (_displayName = (Id + 1).ToOrdinal("server"));
+            public string DisplayName => _displayName ?? (_displayName = (Id + 1).ToOrdinal(ToolsStrings.OrdinalizingSubject_Server));
 
             public int Id { get; internal set; }
         }
@@ -700,6 +700,20 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private string _localAddress;
+
+            [CanBeNull]
+            public string LocalAddress {
+                get { return _localAddress ?? (_localAddress = ValuesStorage.GetString("Settings.DriveSettings.LocalAddress", null)); }
+                set {
+                    value = value?.Trim();
+                    if (Equals(value, _localAddress)) return;
+                    _localAddress = value;
+                    ValuesStorage.Set("Settings.DriveSettings.LocalAddress", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _weatherSpecificClouds;
 
             public bool WeatherSpecificClouds {
@@ -815,6 +829,18 @@ namespace AcManager.Tools.Helpers {
                 new PeriodEntry { DisplayName = ToolsStrings.Period_TwoWeeks, TimeSpan = TimeSpan.FromDays(14) },
                 new PeriodEntry { DisplayName = ToolsStrings.Period_Month, TimeSpan = TimeSpan.FromDays(30) }
             });
+
+            private bool? _deleteConfirmation;
+
+            public bool DeleteConfirmation {
+                get { return _deleteConfirmation ?? (_deleteConfirmation = ValuesStorage.GetBool("Settings.ContentSettings.DeleteConfirmation", true)).Value; }
+                set {
+                    if (Equals(value, _deleteConfirmation)) return;
+                    _deleteConfirmation = value;
+                    ValuesStorage.Set("Settings.ContentSettings.DeleteConfirmation", value);
+                    OnPropertyChanged();
+                }
+            }
 
             private PeriodEntry _newContentPeriod;
 
@@ -1208,12 +1234,12 @@ namespace AcManager.Tools.Helpers {
             private string _localeName;
 
             public string LocaleName {
-                get { return _localeName ?? (_localeName = ValuesStorage.GetString("Settings.LocaleSettings.LocaleName", "en")); }
+                get { return _localeName ?? (_localeName = ValuesStorage.GetString("Settings.LocaleSettings.LocaleName_", "en")); }
                 set {
                     value = value.Trim();
                     if (Equals(value, _localeName)) return;
                     _localeName = value;
-                    ValuesStorage.Set("Settings.LocaleSettings.LocaleName", value);
+                    ValuesStorage.Set("Settings.LocaleSettings.LocaleName_", value);
                     OnPropertyChanged();
                 }
             }

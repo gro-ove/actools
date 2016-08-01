@@ -82,8 +82,8 @@
                     <DockPanel.ContextMenu>
                         <ContextMenu x:Name="ConditionsOptions" IsEnabled="{Binding RealConditions}" DataContext="{Binding Data, Source={StaticResource Model}}">
                             <!--TODO-->
-                            <MenuItem Header="Local weather" IsChecked="{Binding RealConditionsLocalWeather}" IsCheckable="True"
-                                    ToolTip="Use local weather instead of weather on the track" IsEnabled="False" />
+                            <MenuItem Header="Local weather" IsChecked="{Binding RealConditionsLocalWeather, Mode=OneWay}" IsCheckable="True"
+                                    ToolTip="Use local weather instead of weather on the track" Command="{Binding SwitchLocalWeatherCommand}" />
                             <MenuItem Header="Set Time Manually" IsChecked="{Binding RealConditionsManualTime}" IsCheckable="True" />
                             <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True"
                                     IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />

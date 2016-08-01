@@ -188,23 +188,26 @@ namespace AcManager.Tools.Objects {
         }
 
         private void SaveSkinRelated(JObject json) {
-            json["drivername"] = DriverName ?? string.Empty;
-            json["team"] = Team ?? string.Empty;
-            json["number"] = SkinNumber ?? string.Empty;
+            json[@"drivername"] = DriverName ?? string.Empty;
+            json[@"team"] = Team ?? string.Empty;
+            json[@"number"] = SkinNumber ?? string.Empty;
 
             if (Priority.HasValue && !SettingsHolder.Content.SkinsSkipPriority) {
-                json["priority"] = Priority.Value;
+                json[@"priority"] = Priority.Value;
             } else {
-                json.Remove("priority");
+                json.Remove(@"priority");
             }
         }
 
         protected override void SaveCountry(JObject json) {
-            json["country"] = Country ?? string.Empty;
+            json[@"country"] = Country ?? string.Empty;
         }
 
         public override void PastLoad() {
-            base.PastLoad();
+            // base.PastLoad();
+            /* we don't need to add country and author to suggestion lists: one
+               might be very invalid and other is missing here anyway */
+
             if (!Enabled) return;
 
             SuggestionLists.CarSkinTeamsList.AddUnique(Team);
@@ -228,15 +231,15 @@ namespace AcManager.Tools.Objects {
         }
 
         public override void SaveData(JObject json) {
-            json["skinname"] = Name ?? string.Empty;
+            json[@"skinname"] = Name ?? string.Empty;
             SaveCountry(json);
             SaveSkinRelated(json);
 
-            json.Remove("tags");
-            json.Remove("description");
-            json.Remove("author");
-            json.Remove("version");
-            json.Remove("url");
+            json.Remove(@"tags");
+            json.Remove(@"description");
+            json.Remove(@"author");
+            json.Remove(@"version");
+            json.Remove(@"url");
 
             // SaveTags(json);
             // SaveDescription(json);

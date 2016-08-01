@@ -12,6 +12,8 @@ using FirstFloor.ModernUI.Helpers;
 namespace FirstFloor.ModernUI {
     [Localizable(false)]
     public class CustomResourceManager : ResourceManager {
+        public static bool BasicMode;
+
         private static string _customSource;
 
         public static void SetCustomSource(string directory) {
@@ -36,18 +38,29 @@ namespace FirstFloor.ModernUI {
         }
 
         public new string GetString(string name, CultureInfo culture) {
-            if (_customSource != null) {
-                if (_custom == null) {
-                    var location = Path.Combine(_customSource, BaseName.Split('.').Last() + "." + CultureInfo.CurrentUICulture + ".resx");
-                    _custom = LoadCustomResource(location) ?? new Dictionary<string, string>();
-                    Logging.Write("Custom: " + location);
-                }
-
-                string result;
-                if (_custom.TryGetValue(name, out result)) return result;
+            if (BasicMode) {
+                return base.GetString(name, CultureInfo.InvariantCulture);
             }
 
-            return base.GetString(name, culture);
+            try {
+                if (_customSource != null) {
+                    if (_custom == null) {
+                        var location = Path.Combine(_customSource, BaseName.Split('.').Last() + "." + CultureInfo.CurrentUICulture + ".resx");
+                        _custom = LoadCustomResource(location) ?? new Dictionary<string, string>();
+                        Logging.Write("Custom: " + location);
+                    }
+
+                    string result;
+                    if (_custom.TryGetValue(name, out result)) return result;
+                }
+
+                return base.GetString(name, culture);
+            } catch (Exception e) {
+                Logging.Warning("[CustomResourceManager] GetString(): " + e);
+
+                BasicMode = true;
+                return GetString(name, culture);
+            }
         }
     }
 }

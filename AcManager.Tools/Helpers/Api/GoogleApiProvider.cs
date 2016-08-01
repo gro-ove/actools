@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Net;
-using System.Web;
 using System.Xml;
+using System.Xml.Linq;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
@@ -40,7 +41,7 @@ namespace AcManager.Tools.Helpers.Api {
                     }
                 }
             } catch (Exception e) {
-                Logging.Warning("Cannot determine timezone using google: {0}\n{1}", requestUri, e);
+                Logging.Warning($"Cannot determine timezone using google: {requestUri}\n{e}");
                 return null;
             }
         }

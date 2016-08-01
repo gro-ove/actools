@@ -658,6 +658,7 @@ todo:
         - add brand/car class/etc to suggestion lists on editing
         - Car_ParentIsMissing + Watching (add/remove automatically)
 
+    - practice with bots
     + drive feature
         + quick drive
             - optional list mode for brands, countries, etc?
@@ -674,6 +675,7 @@ todo:
             - keyboard shortcuts
             - login as admin?
             - list all cars?
+            - disabled content handling
         - test and fix for AcManager content autoupdating feature
             - handle obsolete!
         - challenges

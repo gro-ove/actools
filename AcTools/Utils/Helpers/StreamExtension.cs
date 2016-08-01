@@ -1,35 +1,42 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class StreamExtension {
-        public static byte[] ReadAsBytes(this Stream s) {
+        [NotNull]
+        public static byte[] ReadAsBytes([NotNull] this Stream s) {
+            if (s == null) throw new ArgumentNullException(nameof(s));
             using (var m = new MemoryStream()) {
                 s.CopyTo(m);
                 return m.ToArray();
             }
         }
 
-        public static byte[] ReadAsBytesAndDispose(this Stream s) {
+        [NotNull]
+        public static byte[] ReadAsBytesAndDispose([NotNull] this Stream s) {
             using (s) {
                 return ReadAsBytes(s);
             }
         }
 
-        public static MemoryStream ReadAsMemoryStream(this Stream s) {
+        [NotNull]
+        public static MemoryStream ReadAsMemoryStream([NotNull] this Stream s) {
             var m = new MemoryStream();
             s.CopyTo(m);
             return m;
         }
 
-        public static MemoryStream ReadAsMemoryStreamAndDispose(this Stream s) {
+        [NotNull]
+        public static MemoryStream ReadAsMemoryStreamAndDispose([NotNull] this Stream s) {
             using (s) {
                 return ReadAsMemoryStream(s);
             }
         }
 
-        public static string ReadAsString(this Stream s) {
+        [NotNull]
+        public static string ReadAsString([NotNull] this Stream s) {
             return ReadAsBytes(s).ToUtf8String();
         }
 
@@ -37,7 +44,8 @@ namespace AcTools.Utils.Helpers {
         /// Using UTF8 (only if it’s a correct one) or Default encoding
         /// </summary>
         /// <returns></returns>
-        public static string ReadAsStringAndDispose(this Stream s) {
+        [NotNull]
+        public static string ReadAsStringAndDispose([NotNull] this Stream s) {
             return ReadAsBytesAndDispose(s).ToUtf8String();
         }
     }

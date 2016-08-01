@@ -198,9 +198,9 @@ namespace AcManager.Tools.Helpers.Api {
                     Logging.Write($"[KunosApiProvider] List (loading/parsing): {loadTime.TotalMilliseconds:F1} ms/{parsingTime.TotalMilliseconds:F1} ms");
                     return parsed;
                 } catch (WebException e) {
-                    Logging.Warning("Cannot get servers list: {0}, {1}", requestUri, e.Message);
+                    Logging.Warning($"Cannot get servers list: {requestUri}, {e.Message}");
                 } catch (Exception e) {
-                    Logging.Warning("Cannot get servers list: {0}\n{1}", requestUri, e);
+                    Logging.Warning($"Cannot get servers list: {requestUri}\n{e}");
                 }
 
                 NextServer();
@@ -222,9 +222,9 @@ namespace AcManager.Tools.Helpers.Api {
                     }
                     return result;
                 } catch (WebException e) {
-                    Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
+                    Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 } catch (Exception e) {
-                    Logging.Warning("Cannot get server information: {0}\n{1}", requestUri, e);
+                    Logging.Warning($"Cannot get server information: {requestUri}\n{e}");
                 }
 
                 NextServer();
@@ -272,10 +272,10 @@ namespace AcManager.Tools.Helpers.Api {
                 }
                 return result;
             } catch (WebException e) {
-                Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
+                Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
             } catch (Exception e) {
-                Logging.Warning("Cannot get server information: {0}\n{1}", requestUri, e);
+                Logging.Warning($"Cannot get server information: {requestUri}\n{e}");
                 return null;
             }
         }
@@ -291,10 +291,10 @@ namespace AcManager.Tools.Helpers.Api {
                 }
                 return result;
             } catch (WebException e) {
-                Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
+                Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
             } catch (Exception e) {
-                Logging.Warning("Cannot get server information: {0}\n{1}", requestUri, e);
+                Logging.Warning($"Cannot get server information: {requestUri}\n{e}");
                 return null;
             }
         }
@@ -307,10 +307,10 @@ namespace AcManager.Tools.Helpers.Api {
             try {
                 return JsonConvert.DeserializeObject<ServerActualInformation>(await LoadAsync(requestUri));
             } catch (WebException e) {
-                Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
+                Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
             } catch (Exception e) {
-                Logging.Warning("Cannot get actual server information: {0}\n{1}", requestUri, e);
+                Logging.Warning($"Cannot get actual server information: {requestUri}\n{e}");
                 return null;
             }
         }
@@ -323,10 +323,10 @@ namespace AcManager.Tools.Helpers.Api {
             try {
                 return JsonConvert.DeserializeObject<ServerActualInformation>(Load(requestUri));
             } catch (WebException e) {
-                Logging.Warning("Cannot get server information: {0}, {1}", requestUri, e.Message);
+                Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
             } catch (Exception e) {
-                Logging.Warning("Cannot get actual server information: {0}\n{1}", requestUri, e);
+                Logging.Warning($"Cannot get actual server information: {requestUri}\n{e}");
                 return null;
             }
         }

@@ -7,22 +7,27 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls;
+using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using Newtonsoft.Json;
 
@@ -95,7 +100,7 @@ namespace AcManager.Pages.Drive {
             private WeatherObject _selectedWeather;
             private bool _realConditions,
                 _isTimeClamped, _isTemperatureClamped, _isWeatherNotSupported,
-                _realConditionsManualTime, _realConditionsTimezones, _realConditionsLighting;
+                _realConditionsLocalWeather, _realConditionsManualTime, _realConditionsTimezones, _realConditionsLighting;
             private double _temperature;
             private int _time;
 
@@ -260,13 +265,57 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged(nameof(ManualTime));
                     SaveLater();
 
+                    if (!RealConditions) return;
                     if (value) {
-                        TryToSetRealTime();
-                    } else {
                         IsTimeClamped = false;
+                    } else {
+                        TryToSetRealTime();
                     }
                 }
             }
+
+            public bool RealConditionsLocalWeather {
+                get { return _realConditionsLocalWeather; }
+                set {
+                    if (value == _realConditionsLocalWeather) return;
+                    _realConditionsLocalWeather = value;
+                    OnPropertyChanged();
+                    SaveLater();
+
+                    if (!RealConditions) return;
+                    TryToSetRealConditions();
+                }
+            }
+
+            private static GeoTagsEntry _localGeoTags;
+            private static string _localAddress;
+
+            private ICommand _switchLocalWeatherCommand;
+
+            public ICommand SwitchLocalWeatherCommand => _switchLocalWeatherCommand ?? (_switchLocalWeatherCommand = new AsyncCommand(async o => {
+                if (string.IsNullOrWhiteSpace(SettingsHolder.Drive.LocalAddress)) {
+                    var entry = await Task.Run(() => IpGeoProvider.Get());
+                    _localAddress = entry == null ? "" : $"{entry.City}, {entry.Country}";
+
+                    var address = Prompt.Show("Where are you?", "Local Address", _localAddress);
+                    if (string.IsNullOrWhiteSpace(address)) {
+                        if (address != null) {
+                            ModernDialog.ShowMessage("Value is required");
+                        }
+
+                        return;
+                    }
+                    
+                    var tags = entry?.Location.Split(',').Select(x => x.AsDouble()).ToArray();
+                    if (tags?.Length == 2) {
+                        _localGeoTags = new GeoTagsEntry(tags[0], tags[1]);
+                    }
+
+                    SettingsHolder.Drive.LocalAddress = address;
+                }
+
+                RealConditionsLocalWeather = !RealConditionsLocalWeather;
+            }));
 
             public bool ManualTime => !RealConditions || RealConditionsManualTime;
 
@@ -320,7 +369,7 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged(nameof(DisplayTime));
                     OnPropertyChanged(nameof(RoadTemperature));
 
-                    if (!RealConditions) {
+                    if (!RealConditions || RealConditionsManualTime) {
                         SaveLater();
                     }
                 }
@@ -364,7 +413,6 @@ namespace AcManager.Pages.Drive {
             #endregion
 
             private GeoTagsEntry _selectedTrackGeoTags;
-            private static readonly GeoTagsEntry InvalidGeoTagsEntry = new GeoTagsEntry("", "");
             private TimeZoneInfo _selectedTrackTimeZone;
             private static readonly TimeZoneInfo InvalidTimeZoneInfo = TimeZoneInfo.CreateCustomTimeZone(@"_", TimeSpan.Zero, "", "");
 
@@ -380,6 +428,9 @@ namespace AcManager.Pages.Drive {
 
                 [JsonProperty(@"rcManTime")]
                 public bool? RealConditionsManualTime;
+
+                [JsonProperty(@"rcLw")]
+                public bool? RealConditionsLocalWeather;
             }
 
             private readonly ISaveHelper _saveable;
@@ -403,6 +454,7 @@ namespace AcManager.Pages.Drive {
 
                 _saveable = new SaveHelper<SaveableData>(KeySaveable, () => new SaveableData {
                     RealConditions = RealConditions,
+                    RealConditionsLocalWeather = RealConditionsLocalWeather,
                     RealConditionsTimezones = RealConditionsTimezones,
                     RealConditionsManualTime = RealConditionsManualTime,
                     RealConditionsLighting = RealConditionsLighting,
@@ -419,10 +471,11 @@ namespace AcManager.Pages.Drive {
                     Time = Time,
                     TimeMultipler = TimeMultipler,
                 }, o => {
-                    RealConditions = _weatherId == null && o.RealConditions;
-                    RealConditionsTimezones = o.RealConditionsTimezones ?? true;
-                    RealConditionsManualTime = o.RealConditionsManualTime ?? false;
+                    RealConditionsLocalWeather = o.RealConditionsLocalWeather ?? RealConditionsLocalWeather;
+                    RealConditionsTimezones = o.RealConditionsTimezones ?? RealConditionsTimezones;
+                    RealConditionsManualTime = o.RealConditionsManualTime ?? RealConditionsManualTime;
                     RealConditionsLighting = o.RealConditionsLighting;
+                    RealConditions = _weatherId == null && o.RealConditions;
 
                     try {
                         _skipLoading = o.ModeData != null;
@@ -449,10 +502,11 @@ namespace AcManager.Pages.Drive {
                     Time = o.Time;
                     TimeMultipler = o.TimeMultipler;
                 }, () => {
-                    RealConditions = false;
                     RealConditionsTimezones = true;
                     RealConditionsManualTime = false;
+                    RealConditionsLocalWeather = false;
                     RealConditionsLighting = false;
+                    RealConditions = false;
 
                     SelectedMode = new Uri("/Pages/Drive/QuickDrive_Race.xaml", UriKind.Relative);
                     SelectedCar = CarsManager.Instance.GetDefault();
@@ -523,7 +577,7 @@ namespace AcManager.Pages.Drive {
                 _realConditionsInProcess = true;
 
                 try {
-                    if (_selectedTrackGeoTags == null) {
+                    if (_selectedTrackGeoTags == null && (!RealConditionsLocalWeather || RealConditionsTimezones)) {
                         var track = SelectedTrack;
                         var geoTags = track.GeoTags;
                         if (geoTags == null || geoTags.IsEmptyOrInvalid) {
@@ -538,11 +592,21 @@ namespace AcManager.Pages.Drive {
 
                             if (geoTags == null) {
                                 // TODO: Informing
-                                geoTags = InvalidGeoTagsEntry;
+                                geoTags = GeoTagsEntry.Invalid;
                             }
                         }
 
                         _selectedTrackGeoTags = geoTags;
+                    }
+
+                    if (RealConditionsLocalWeather && _localGeoTags == null && !string.IsNullOrWhiteSpace(SettingsHolder.Drive.LocalAddress)) {
+                        var geoTags = await Task.Run(() => TracksLocator.TryToLocate(SettingsHolder.Drive.LocalAddress));
+                        if (geoTags == null) {
+                            // TODO: Informing
+                            geoTags = GeoTagsEntry.Invalid;
+                        }
+
+                        _localGeoTags = geoTags;
                     }
 
                     TryToSetRealTime();
@@ -566,7 +630,7 @@ namespace AcManager.Pages.Drive {
                     var now = DateTime.Now;
                     var time = now.Hour * 60 * 60 + now.Minute * 60 + now.Second;
 
-                    if (_selectedTrackGeoTags == null || _selectedTrackGeoTags == InvalidGeoTagsEntry || !RealConditionsTimezones) {
+                    if (_selectedTrackGeoTags == null || _selectedTrackGeoTags == GeoTagsEntry.Invalid || !RealConditionsTimezones) {
                         TryToSetTime(time);
                         return;
                     }
@@ -616,14 +680,16 @@ namespace AcManager.Pages.Drive {
 
             private async void TryToSetRealWeather() {
                 if (_realWeatherInProcess || !RealConditions) return;
-                if (_selectedTrackGeoTags == null || _selectedTrackGeoTags == InvalidGeoTagsEntry) return;
+
+                var tags = RealConditionsLocalWeather ? _localGeoTags : _selectedTrackGeoTags;
+                if (tags == null || tags == GeoTagsEntry.Invalid) return;
 
                 _realWeatherInProcess = true;
 
                 try {
                     var track = SelectedTrack;
 
-                    var weather = await Task.Run(() => WeatherProvider.TryToGetWeather(_selectedTrackGeoTags));
+                    var weather = await Task.Run(() => WeatherProvider.TryToGetWeather(tags));
                     if (track != SelectedTrack) return;
 
                     if (!RealConditions) {

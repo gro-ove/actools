@@ -95,19 +95,12 @@ namespace AcManager.Tools.Objects {
             }
         }));
 
-        private ICommand _deleteCommand;
-
-        public override ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
+        public override void Delete() {
             if (Enabled && UsingsCarsIds.Length > 0 &&
                 ModernDialog.ShowMessage(ToolsStrings.FontObject_Deleting_SomeCarsNeedThisFont, ToolsStrings.FontObject_DeleteFont,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
-
-            try {
-                Delete();
-            } catch (Exception ex) {
-                NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
-            }
-        }));
+            base.Delete();
+        }
 
         private void UpdateFontBitmap() {
             _fontBitmapLoaded = false;

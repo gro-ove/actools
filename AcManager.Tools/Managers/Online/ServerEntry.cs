@@ -196,13 +196,13 @@ namespace AcManager.Tools.Managers.Online {
             Status = ServerStatus.Error;
             ErrorMessage += (list.Count == 1
                     ? string.Format(ToolsStrings.Online_Server_CarIsMissing, IdToBb(list[0]))
-                    : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToString(", "))) + "\n";
+                    : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToString(@", "))) + Environment.NewLine;
         }
 
         private void SetMissingTrackErrorIfNeeded() {
             if (Track != null) return;
             Status = ServerStatus.Error;
-            ErrorMessage += string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false)) + "\n";
+            ErrorMessage += string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false)) + Environment.NewLine;
         }
 
         /// <summary>
@@ -514,7 +514,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private static TrackBaseObject GetTrack(string informationId) {
             return TracksManager.Instance.GetById(informationId) ??
-                    (informationId.Contains("-") ? TracksManager.Instance.GetLayoutById(informationId.ReplaceLastOccurrence("-", "/")) : null);
+                    (informationId.Contains(@"-") ? TracksManager.Instance.GetLayoutById(informationId.ReplaceLastOccurrence(@"-", @"/")) : null);
         }
 
         public int Compare(object x, object y) {
@@ -525,7 +525,7 @@ namespace AcManager.Tools.Managers.Online {
             if (car) return string.Format(ToolsStrings.Online_Server_MissingCarBbCode, id);
 
             id = Regex.Replace(id, @"-([^-]+)$", "/$1");
-            if (!id.Contains("/")) id = $"{id}/{id}";
+            if (!id.Contains(@"/")) id = $"{id}/{id}";
             return string.Format(ToolsStrings.Online_Server_MissingTrackBbCode, id);
         }
 

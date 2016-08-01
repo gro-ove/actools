@@ -3,10 +3,12 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcCommonObject {
@@ -77,7 +79,11 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public virtual ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
             try {
-                Delete();
+                if (!SettingsHolder.Content.DeleteConfirmation ||
+                        ModernDialog.ShowMessage(string.Format("Are you sure you want to move {0} to the Recycle Bin?", DisplayName), "Are You Sure?",
+                                MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                    Delete();
+                }
             } catch (Exception ex) {
                 NonfatalError.Notify(ToolsStrings.AcObject_CannotDelete, ToolsStrings.AcObject_CannotToggle_Commentary, ex);
             }

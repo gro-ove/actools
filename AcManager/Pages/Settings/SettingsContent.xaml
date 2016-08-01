@@ -19,6 +19,10 @@
                         mui:WatermarkService.Watermark="?" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:TextBoxAdvancement.SpecialMode="Positive" />
             </DockPanel>
 
+            <CheckBox IsChecked="{Binding Holder.DeleteConfirmation}" ToolTip="Keep in mind that all removed content always can be restored from Recycle Bin">
+                <Label Content="Confirm before removal" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Holder.ScrollAutomatically}" ToolTip="{x:Static g:AppStrings.Settings_Content_ScrollAutomatically_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Content_ScrollAutomatically}" />
             </CheckBox>

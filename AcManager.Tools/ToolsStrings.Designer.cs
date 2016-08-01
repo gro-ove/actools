@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -853,7 +853,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide driver _arms.
+        ///   Looks up a localized string similar to Hide driver arms.
         /// </summary>
         public static string AcSettings_View_HideDriverArms {
             get {
@@ -862,7 +862,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide steering _wheel.
+        ///   Looks up a localized string similar to Hide steering wheel.
         /// </summary>
         public static string AcSettings_View_HideSteeringWheel {
             get {
@@ -898,7 +898,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Lock onboard camera to horizon.
+        ///   Looks up a localized string similar to Lock onboard camera to horizon.
         /// </summary>
         public static string AcSettings_View_LockCamera {
             get {
@@ -2697,6 +2697,15 @@ namespace AcManager.Tools {
         public static string Online_TryingToFindOutHttpPort {
             get {
                 return ResourceManager.GetString("Online_TryingToFindOutHttpPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to server.
+        /// </summary>
+        public static string OrdinalizingSubject_Server {
+            get {
+                return ResourceManager.GetString("OrdinalizingSubject_Server", resourceCulture);
             }
         }
         

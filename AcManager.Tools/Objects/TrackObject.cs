@@ -97,7 +97,7 @@ namespace AcManager.Tools.Objects {
             return Directory.GetDirectories(uiDirectory).Where(x => File.Exists(Path.Combine(x, "ui_track.json"))).ToList();
         }
 
-        private bool IsInMultiLayoutsMode(IEnumerable<string> list) => !File.Exists(Path.Combine(Location, "ui", "ui_track.json")) && list.Any();
+        private bool IsInMultiLayoutsMode(IEnumerable<string> list) => !File.Exists(Path.Combine(Location, @"ui", @"ui_track.json")) && list.Any();
 
         private bool IsMultiLayoutsChanged() {
             var previous = MultiLayouts != null;
@@ -199,7 +199,7 @@ namespace AcManager.Tools.Objects {
                 if (obj.Skip(1).Any(x => x.Name?.Substring(0, i) != result)) continue;
 
                 result = result.Trim();
-                if (result.Length > 2 && result.EndsWith("-") || result.EndsWith("—")) {
+                if (result.Length > 2 && result.EndsWith(@"-") || result.EndsWith(@"—")) {
                     result = result.Substring(0, result.Length - 1).Trim();
                 }
                 return result;
@@ -256,7 +256,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public override string DisplayName => MultiLayouts?.Count > 1 ?
-                _commonName + " (" + MultiLayouts.Count + ")" : base.DisplayName;
+                $"{_commonName} ({MultiLayouts.Count})" : base.DisplayName;
 
         public override TrackObject MainTrackObject => this;
     }

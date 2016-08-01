@@ -187,6 +187,7 @@
     <Compile Include="ContentInstallation\UpdateOption.cs" />
     <Compile Include="ContentInstallation\ZipContentInstallator.cs" />
     <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
+    <Compile Include="Helpers\Api\IpGeoProvider.cs" />
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>

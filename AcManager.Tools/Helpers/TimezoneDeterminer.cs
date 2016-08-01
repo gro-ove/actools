@@ -6,7 +6,7 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers {
     public static class TimeZoneDeterminer {
-        private const string Key = "__TimezoneDeterminer_";
+        private const string Key = ".TimeZoneDeterminer:";
 
         public static TimeZoneInfo TryToDetermine(GeoTagsEntry geoTags) {
             var key = Key + geoTags;
@@ -18,7 +18,6 @@ namespace AcManager.Tools.Helpers {
             }
 
             var result = GoogleApiProvider.TryToDetermineTimeZone(geoTags);
-            Debug.WriteLine("DETERMINED TIMEZONE: " + result);
             if (result == null) return null;
 
             ValuesStorage.Set(key, result);
