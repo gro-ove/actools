@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace FirstFloor.ModernUI.Localizable {
     /// <summary>
-    /// Don’t forget to add all strings which should be automatically pluralized here!
+    /// DonвЂ™t forget to add all strings which should be automatically pluralized here!
     /// </summary>
     [Localizable(false)]
     internal static class PluralizingDictionary {
@@ -26,34 +26,34 @@ namespace FirstFloor.ModernUI.Localizable {
         
         public static string Ru(string s, bool two) {
             switch (s) {
-                case "доступное решение":
-                    return "доступные решения";
+                case "РґРѕСЃС‚СѓРїРЅРѕРµ СЂРµС€РµРЅРёРµ":
+                    return "РґРѕСЃС‚СѓРїРЅС‹Рµ СЂРµС€РµРЅРёСЏ";
 
-                case "круг":
-                case "оппонент":
-                case "противник":
-                case "пит-стоп":
-                case "час":
-                case "фильтр":
-                case "сетап":
-                case "скин":
-                case "шрифт":
-                case "пресет":
-                case "шоурум":
-                case "сервер": return two ? s + "а" : s + "ов";
+                case "РєСЂСѓРі":
+                case "РѕРїРїРѕРЅРµРЅС‚":
+                case "РїСЂРѕС‚РёРІРЅРёРє":
+                case "РїРёС‚-СЃС‚РѕРї":
+                case "С‡Р°СЃ":
+                case "С„РёР»СЊС‚СЂ":
+                case "СЃРµС‚Р°Рї":
+                case "СЃРєРёРЅ":
+                case "С€СЂРёС„С‚":
+                case "РїСЂРµСЃРµС‚":
+                case "С€РѕСѓСЂСѓРј":
+                case "СЃРµСЂРІРµСЂ": return two ? s + "Р°" : s + "РѕРІ";
 
-                case "минута":
-                case "трасса":
-                case "машина":
-                case "погода":
-                case "секунда": return two ? s.Substring(0, s.Length - 1) + "ы" : s.Substring(0, s.Length - 1);
+                case "РјРёРЅСѓС‚Р°":
+                case "С‚СЂР°СЃСЃР°":
+                case "РјР°С€РёРЅР°":
+                case "РїРѕРіРѕРґР°":
+                case "СЃРµРєСѓРЅРґР°": return two ? s.Substring(0, s.Length - 1) + "С‹" : s.Substring(0, s.Length - 1);
 
-                case "день": return two ? "дня" : "дней";
-                case "очко": return two ? "очка" : "очков";
-                case "ошибка": return two ? "ошибки" : "ошибок";
-                case "запись": return two ? "записи" : "записей";
-                case "реплей": return two ? "реплея" : "реплеев";
-                case "приложение": return two ? "приложения" : "приложений";
+                case "РґРµРЅСЊ": return two ? "РґРЅСЏ" : "РґРЅРµР№";
+                case "РѕС‡РєРѕ": return two ? "РѕС‡РєР°" : "РѕС‡РєРѕРІ";
+                case "РѕС€РёР±РєР°": return two ? "РѕС€РёР±РєРё" : "РѕС€РёР±РѕРє";
+                case "Р·Р°РїРёСЃСЊ": return two ? "Р·Р°РїРёСЃРё" : "Р·Р°РїРёСЃРµР№";
+                case "СЂРµРїР»РµР№": return two ? "СЂРµРїР»РµСЏ" : "СЂРµРїР»РµРµРІ";
+                case "РїСЂРёР»РѕР¶РµРЅРёРµ": return two ? "РїСЂРёР»РѕР¶РµРЅРёСЏ" : "РїСЂРёР»РѕР¶РµРЅРёР№";
             }
 
             return null;
@@ -61,9 +61,9 @@ namespace FirstFloor.ModernUI.Localizable {
 
         public static string RuAlt(string s) {
             switch (s) {
-                case "доступное решение":
-                    return "доступные решения";
-                case "ошибка":
+                case "РґРѕСЃС‚СѓРїРЅРѕРµ СЂРµС€РµРЅРёРµ":
+                    return "РґРѕСЃС‚СѓРїРЅС‹Рµ СЂРµС€РµРЅРёСЏ";
+                case "РѕС€РёР±РєР°":
                     return Ru(s, true);
             }
 
