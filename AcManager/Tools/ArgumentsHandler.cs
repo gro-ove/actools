@@ -200,7 +200,7 @@ namespace AcManager.Tools {
                         return await ProcessShared(parsed.Params.Get(@"id"));
 
                     default:
-                        NonfatalError.Notify($"Not supported request: ‚Äú{parsed.Path}‚Äù", AppStrings.Main_CannotProcessArgument_Commentary);
+                        NonfatalError.Notify($"Not supported request: ì{parsed.Path}î", AppStrings.Main_CannotProcessArgument_Commentary);
                         return ArgumentHandleResult.Failed;
                 }
             } catch (Exception e) {

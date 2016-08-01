@@ -7,7 +7,7 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Controls.ViewModels {
     /// <summary>
-    /// Base view model â€” usually only to load stuff to display from serialized data.
+    /// Base view model — usually only to load stuff to display from serialized data.
     /// Could save data too, it depends on creation way. For more information look 
     /// at Constructors region.
     /// </summary>
@@ -342,7 +342,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         /// <summary>
-        /// Create a new AssistsViewModel which will load data from serialized string, but wonâ€™t
+        /// Create a new AssistsViewModel which will load data from serialized string, but won’t
         /// save any changes if they will occur.
         /// </summary>
         /// <param name="serializedData"></param>

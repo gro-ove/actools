@@ -191,7 +191,7 @@ namespace AcTools.DataFile {
         }
 
         private static void Set([NotNull, LocalizationRequired(false)] string key, object value) {
-            throw new Exception($"Type is not supported: {value?.GetType().ToString() ?? "null"} (key: ‚Äú{key}‚Äù)");
+            throw new Exception($"Type is not supported: {value?.GetType().ToString() ?? "null"} (key: ì{key}î)");
         }
 
         public void Set([NotNull, LocalizationRequired(false)] string key, [LocalizationRequired(false)] string value) {

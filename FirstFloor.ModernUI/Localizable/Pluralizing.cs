@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace FirstFloor.ModernUI.Localizable {
     /// <summary>
-    /// Defines rules: which form of what should be selected depending on number. Wordsâ€™ forms
+    /// Defines rules: which form of what should be selected depending on number. Words’ forms
     /// themself are defined in PluralizingDictionary.
     /// </summary>
     internal static class Pluralizing {

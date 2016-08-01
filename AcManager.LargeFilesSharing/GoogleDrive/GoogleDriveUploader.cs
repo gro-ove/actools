@@ -119,7 +119,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
             try {
                 _authToken = JsonConvert.DeserializeObject<AuthResponse>(enc);
             } catch (Exception) {
-                Logging.Warning("Canâ€™t load auth token");
+                Logging.Warning("Can’t load auth token");
                 return;
             }
 

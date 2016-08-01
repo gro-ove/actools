@@ -88,7 +88,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                     _joystick.SetCooperativeLevel(new WindowInteropHelper(Application.Current.MainWindow).Handle,
                             CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
                 } catch (Exception e) {
-                    Logging.Warning("[DirectInputDevice] Canâ€™t set cooperative level: " + e);
+                    Logging.Warning("[DirectInputDevice] Can’t set cooperative level: " + e);
                 }
             }
 

@@ -3,11 +3,11 @@ using System.Globalization;
 namespace FirstFloor.ModernUI.Localizable {
     /// <summary>
     /// Returns ordinal string for each number. Usually works from resources, but if you want
-    /// some specific form (for example, for Russian: â€œĞ¿ĞµÑ€Ğ²Ñ‹Ğ¹â€ â€” â€œĞ¿ĞµÑ€Ğ²Ğ°Ñâ€), use this file.
+    /// some specific form (for example, for Russian: “ïåğâûé” — “ïåğâàÿ”), use this file.
     /// </summary>
     internal static class Ordinalizing {
         /// <summary>
-        /// Base version, takes strings from resources. Doesnâ€™t consider different genders, 
+        /// Base version, takes strings from resources. Doesn’t consider different genders, 
         /// forms and everything.
         /// </summary>
         /// <param name="v">Value</param>

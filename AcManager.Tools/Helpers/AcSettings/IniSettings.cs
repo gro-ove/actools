@@ -111,7 +111,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 }
 
                 if (i == 5) {
-                    Logging.Warning("Canâ€™t load config file: " + Path.GetFileName(Filename));
+                    Logging.Warning("Can’t load config file: " + Path.GetFileName(Filename));
                     return;
                 }
 
