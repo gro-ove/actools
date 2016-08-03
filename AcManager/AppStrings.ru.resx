@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -720,5 +720,17 @@
   </data>
   <data name="Arguments_CannotInstallSetup_Commentary" xml:space="preserve">
     <value>RSR изменился.</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
+    <value>Адрес</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableTarget" xml:space="preserve">
+    <value>Для</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableType" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="Common_Manage" xml:space="preserve">
+    <value>Изменить</value>
   </data>
 </root>

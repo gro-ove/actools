@@ -462,4 +462,22 @@
   <data name="Common_Reset" xml:space="preserve">
     <value>Сбросить</value>
   </data>
+  <data name="Common_MinutesPostfix" xml:space="preserve">
+    <value> мин</value>
+  </data>
+  <data name="Controls_WaitingForInput" xml:space="preserve">
+    <value>Ожидание</value>
+  </data>
+  <data name="Common_MinutePostfix" xml:space="preserve">
+    <value> минута</value>
+  </data>
+  <data name="Common_LapsPostfix" xml:space="preserve">
+    <value> круг</value>
+  </data>
+  <data name="Common_Installing" xml:space="preserve">
+    <value>Установка…</value>
+  </data>
+  <data name="Common_SecondsPostfix" xml:space="preserve">
+    <value> с</value>
+  </data>
 </root>

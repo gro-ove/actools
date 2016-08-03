@@ -284,7 +284,7 @@
   <comment>@Invariant</comment></data>
   <data name="KeyScrollLock" xml:space="preserve">
     <value>Scroll Lock</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="KeyPrintScreen" xml:space="preserve">
     <value>Print Screen</value>
   <comment>@Invariant</comment></data>

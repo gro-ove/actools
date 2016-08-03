@@ -49,6 +49,8 @@ namespace FirstFloor.ModernUI.Localizable {
                 case "секунда": return two ? s.Substring(0, s.Length - 1) + "ы" : s.Substring(0, s.Length - 1);
 
                 case "день": return two ? "дня" : "дней";
+                case "месяц": return two ? "месяца" : "месяцев";
+                case "неделя": return two ? "недели" : "недель";
                 case "очко": return two ? "очка" : "очков";
                 case "ошибка": return two ? "ошибки" : "ошибок";
                 case "запись": return two ? "записи" : "записей";

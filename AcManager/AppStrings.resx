@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -178,7 +178,7 @@ Author: [b]{3}[/b]</value>
   </data>
   <data name="Arguments_SharedMessage_Id" xml:space="preserve">
     <value>ID</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>For</value>
   </data>
@@ -692,17 +692,17 @@ Author: [b]{3}[/b]</value>
   </data>
   <data name="Settings_Drive_PreCommand_Tooltip" xml:space="preserve">
     <value>This command will be executed before starting acs.exe, but after setting all ini-files.
-[br]
-[br]Values for replacement:
-[br] [b][mono]{type}[/mono][/b] — type of race;
-[br] [b][mono]{car}[/mono][/b] — car's name;
-[br] [b][mono]{car.id}[/mono][/b] — car's id;
-[br] [b][mono]{track}[/mono][/b] — track's name;
-[br] [b][mono]{track.id}[/mono][/b] — track's id.
-[br]
-[br]If you need some other values, please, contact us and we'll add them.
-[br]
-[br]Working directory will be set to Assetto Corsa folder in Documents.</value>
+
+Values for replacement:
+ [b][mono]{type}[/mono][/b] — type of race;
+ [b][mono]{car}[/mono][/b] — car's name;
+ [b][mono]{car.id}[/mono][/b] — car's id;
+ [b][mono]{track}[/mono][/b] — track's name;
+ [b][mono]{track.id}[/mono][/b] — track's id.
+
+If you need some other values, please, contact us and we'll add them.
+
+Working directory will be set to Assetto Corsa folder in Documents.</value>
   </data>
   <data name="Settings_Drive_PreCommandLabel" xml:space="preserve">
     <value>Pre-race event command:</value>
@@ -712,17 +712,17 @@ Author: [b]{3}[/b]</value>
   </data>
   <data name="Settings_Drive_PostCommand_Tooltip" xml:space="preserve">
     <value>This command will be executed after acs.exe finished, but before reading all result json-files.
-[br]
-[br]Values for replacement:
-[br] [b][mono]{type}[/mono][/b] — type of race;
-[br] [b][mono]{car}[/mono][/b] — car's name;
-[br] [b][mono]{car.id}[/mono][/b] — car's id;
-[br] [b][mono]{track}[/mono][/b] — track's name;
-[br] [b][mono]{track.id}[/mono][/b] — track's id.
-[br]
-[br]If you need some other values, please, contact us and we'll add them.
-[br]
-[br]Working directory will be set to Assetto Corsa folder in Documents.</value>
+
+Values for replacement:
+ [b][mono]{type}[/mono][/b] — type of race;
+ [b][mono]{car}[/mono][/b] — car's name;
+ [b][mono]{car.id}[/mono][/b] — car's id;
+ [b][mono]{track}[/mono][/b] — track's name;
+ [b][mono]{track.id}[/mono][/b] — track's id.
+
+If you need some other values, please, contact us and we'll add them.
+
+Working directory will be set to Assetto Corsa folder in Documents.</value>
   </data>
   <data name="Settings_Drive_CustomClouds" xml:space="preserve">
     <value>Replace clouds by weather’s clouds if exist</value>
@@ -984,29 +984,29 @@ Author: [b]{3}[/b]</value>
   </data>
   <data name="Settings_Replays_NameFormat_Tooltip" xml:space="preserve">
     <value>Used for saving or autosaving replays after the race.
-[br]
-[br]Values for replacement:
-[br] [b][mono]{type}[/mono][/b] — type of race;
-[br] [b][mono]{car}[/mono][/b] — car's name;
-[br] [b][mono]{car.id}[/mono][/b] — car's id;
-[br] [b][mono]{track}[/mono][/b] — track's name;
-[br] [b][mono]{track.id}[/mono][/b] — track's id;
-[br] [b][mono]{date}[/mono][/b] — date and time in proper format;
-[br] [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
-[br]
-[br]Modifiers:
-[br] [b][mono]{…:l}[/mono][/b] — lowercase;
-[br] [b][mono]{…:u}[/mono][/b] — uppercase;
-[br] [b][mono]{…:0}[/mono][/b] — only first symbol.                                
-[br]
-[br]Examples:
-[br] [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
-[br] [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like “[w] bmw m3 e30 on brands hatch.acreplay”.
-[br]
-[br]If you need some other values, please, contact us and we’ll add them.
-[br]
-[br][b]Warning[/b]:
-[br] Don't use symbols like “[” or “]”!</value>
+
+Values for replacement:
+ [b][mono]{type}[/mono][/b] — type of race;
+ [b][mono]{car}[/mono][/b] — car's name;
+ [b][mono]{car.id}[/mono][/b] — car's id;
+ [b][mono]{track}[/mono][/b] — track's name;
+ [b][mono]{track.id}[/mono][/b] — track's id;
+ [b][mono]{date}[/mono][/b] — date and time in proper format;
+ [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
+
+Modifiers:
+ [b][mono]{…:l}[/mono][/b] — lowercase;
+ [b][mono]{…:u}[/mono][/b] — uppercase;
+ [b][mono]{…:0}[/mono][/b] — only first symbol.                                
+
+Examples:
+ [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — default Kunos format;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — something like “[w] bmw m3 e30 on brands hatch.acreplay”.
+
+If you need some other values, please, contact us and we’ll add them.
+
+[b]Warning[/b]:
+ Don't use symbols like “[” or “]”!</value>
   </data>
   <data name="Settings_AcSettingsHeader" xml:space="preserve">
     <value>AC settings:</value>

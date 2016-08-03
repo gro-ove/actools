@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,547 +59,559 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="metadata">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" />
-							</xsd:sequence>
-							<xsd:attribute name="name" use="required" type="xsd:string" />
-							<xsd:attribute name="type" type="xsd:string" />
-							<xsd:attribute name="mimetype" type="xsd:string" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="assembly">
-						<xsd:complexType>
-							<xsd:attribute name="alias" type="xsd:string" />
-							<xsd:attribute name="name" type="xsd:string" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-							<xsd:attribute ref="xml:space" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>2.0</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<data name="Championship" xml:space="preserve">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Championship" xml:space="preserve">
     <value>Чемпионат</value>
   </data>
-	<data name="Online_ScanningProgress" xml:space="preserve">
+  <data name="Online_ScanningProgress" xml:space="preserve">
     <value>Сканирование ({0}/{1}), найдено {2}…</value>
   </data>
-	<data name="Online_ScanningProgress_Found" xml:space="preserve">
+  <data name="Online_ScanningProgress_Found" xml:space="preserve">
     <value>{0} сервер</value>
   </data>
-	<data name="Online_Server_MissingCarBbCode" xml:space="preserve">
+  <data name="Online_Server_MissingCarBbCode" xml:space="preserve">
     <value>«[url="http://assetto-db.com/car/{0}"]{0}[/url]»</value>
   </data>
-	<data name="Online_Server_MissingTrackBbCode" xml:space="preserve">
+  <data name="Online_Server_MissingTrackBbCode" xml:space="preserve">
     <value>«[url="http://assetto-db.com/track/{0}"]{0}[/url]»</value>
   </data>
-	<data name="SingleEvents" xml:space="preserve">
+  <data name="SingleEvents" xml:space="preserve">
     <value>События</value>
   </data>
-	<data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
+  <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
     <value>{0} пит-стоп</value>
   </data>
-	<data name="AcSettings_ResolutionFormat" xml:space="preserve">
+  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
     <value>{0}×{1}, {2} ГГц</value>
     <comment>Parameters: width, height, refresh rate</comment>
   </data>
-	<data name="AcSettings_CustomResolution" xml:space="preserve">
+  <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>Заданное вручную</value>
   </data>
-	<data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
+  <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (без сжатия)</value>
   </data>
-	<data name="AcSettings_Off" xml:space="preserve">
+  <data name="AcSettings_Off" xml:space="preserve">
     <value>Выкл.</value>
     <comment>For example, for video settings, displayed instead of 0</comment>
   </data>
-	<data name="Windows_Kn5Commentary" xml:space="preserve">
+  <data name="Windows_Kn5Commentary" xml:space="preserve">
     <value>KN5 модель</value>
   </data>
-	<data name="Common_AcReplay" xml:space="preserve">
+  <data name="Common_AcReplay" xml:space="preserve">
     <value>AC реплей</value>
   </data>
-	<data name="SearchEngine_Yandex" xml:space="preserve">
+  <data name="SearchEngine_Yandex" xml:space="preserve">
     <value>Яндекс</value>
   </data>
-	<data name="Period_Month" xml:space="preserve">
+  <data name="Period_Month" xml:space="preserve">
     <value>Месяц</value>
   </data>
-	<data name="CustomShowroom_Fancy" xml:space="preserve">
+  <data name="CustomShowroom_Fancy" xml:space="preserve">
     <value>Графонистый</value>
   </data>
-	<data name="CustomShowroom_Lite" xml:space="preserve">
+  <data name="CustomShowroom_Lite" xml:space="preserve">
     <value>Простой</value>
   </data>
-	<data name="CarParentIsMissing" xml:space="preserve">
+  <data name="CarParentIsMissing" xml:space="preserve">
     <value>Нет базовой версии</value>
   </data>
-	<data name="OfficialStarter_CannotRunGame" xml:space="preserve">
+  <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
     <value>Не получится запустить игру</value>
   </data>
-	<data name="NotSupported" xml:space="preserve">
+  <data name="NotSupported" xml:space="preserve">
     <value>Не поддерживается</value>
   </data>
-	<data name="Units_BHP" xml:space="preserve">
+  <data name="Units_BHP" xml:space="preserve">
     <value>л. с.</value>
   </data>
-	<data name="Units_Nm" xml:space="preserve">
+  <data name="Units_Nm" xml:space="preserve">
     <value>Н·м</value>
   </data>
-	<data name="Common_Power" xml:space="preserve">
+  <data name="Common_Power" xml:space="preserve">
     <value>Мощность</value>
   </data>
-	<data name="Common_Torque" xml:space="preserve">
+  <data name="Common_Torque" xml:space="preserve">
     <value>Крутящий момент</value>
   </data>
-	<data name="Period_Week" xml:space="preserve">
+  <data name="Period_Week" xml:space="preserve">
     <value>Неделя</value>
   </data>
-	<data name="Period_TwoWeeks" xml:space="preserve">
+  <data name="Period_TwoWeeks" xml:space="preserve">
     <value>Две недели</value>
   </data>
-	<data name="Period_OneDay" xml:space="preserve">
+  <data name="Period_OneDay" xml:space="preserve">
     <value>Один день</value>
   </data>
-	<data name="Period_ThreeDays" xml:space="preserve">
+  <data name="Period_ThreeDays" xml:space="preserve">
     <value>Три дня</value>
   </data>
-	<data name="Common_Recommended" xml:space="preserve">
+  <data name="Common_Recommended" xml:space="preserve">
     <value>{0} (рекомендуется)</value>
   </data>
-	<data name="Settings_Starter_Official" xml:space="preserve">
+  <data name="Settings_Starter_Official" xml:space="preserve">
     <value>Официальный</value>
   </data>
-	<data name="Settings_Starter_Naive" xml:space="preserve">
+  <data name="Settings_Starter_Naive" xml:space="preserve">
     <value>Наивный</value>
   </data>
-	<data name="Settings_Starter_StarterPlus" xml:space="preserve">
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
     <value>Стартер+</value>
   </data>
-	<data name="Common_Disabled" xml:space="preserve">
+  <data name="Common_Disabled" xml:space="preserve">
     <value>Выкл.</value>
   </data>
-	<data name="Settings_Autoupdate_Startup" xml:space="preserve">
-    <value>При запуске</value>
-  </data>
-	<data name="Settings_Autoupdate_ThirtyMinutes" xml:space="preserve">
-    <value>Каждые 30 минут</value>
-  </data>
-	<data name="Settings_Autoupdate_ThreeHours" xml:space="preserve">
-    <value>Каждые три часа</value>
-  </data>
-	<data name="Settings_Autoupdate_TenHours" xml:space="preserve">
-    <value>Каждые десять часов</value>
-  </data>
-	<data name="Settings_Autoupdate_Day" xml:space="preserve">
-    <value>Каждый день</value>
-  </data>
-	<data name="AcSettings_Quality_Minimum" xml:space="preserve">
+  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
     <value>Минимум</value>
   </data>
-	<data name="AcSettings_Quality_Low" xml:space="preserve">
+  <data name="AcSettings_Quality_Low" xml:space="preserve">
     <value>Низко</value>
   </data>
-	<data name="AcSettings_Quality_Medium" xml:space="preserve">
+  <data name="AcSettings_Quality_Medium" xml:space="preserve">
     <value>Средне</value>
   </data>
-	<data name="AcSettings_Quality_High" xml:space="preserve">
+  <data name="AcSettings_Quality_High" xml:space="preserve">
     <value>Высоко</value>
   </data>
-	<data name="AcSettings_Quality_Ultra" xml:space="preserve">
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
     <value>Ультра</value>
   </data>
-	<data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
+  <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>Очень высоко</value>
   </data>
-	<data name="AcSettings_Quality_Maximum" xml:space="preserve">
+  <data name="AcSettings_Quality_Maximum" xml:space="preserve">
     <value>Максимум</value>
   </data>
-	<data name="AcSettings_Cubemap_Static" xml:space="preserve">
+  <data name="AcSettings_Cubemap_Static" xml:space="preserve">
     <value>Статичные</value>
   </data>
-	<data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
+  <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
     <value>Одна сторона за кадр</value>
   </data>
-	<data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
+  <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
     <value>Две стороны за кадр</value>
   </data>
-	<data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
+  <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
     <value>Три стороны за кадр</value>
   </data>
-	<data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
+  <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
     <value>Четыре стороны за кадр</value>
   </data>
-	<data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
+  <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
     <value>Пять сторон за кадр</value>
   </data>
-	<data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
+  <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
     <value>Шесть сторон за кадр</value>
   </data>
-	<data name="AcSettings_ExperimentalValue" xml:space="preserve">
+  <data name="AcSettings_ExperimentalValue" xml:space="preserve">
     <value>{0} (экспериментально)</value>
   </data>
-	<data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
+  <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>Один монитор</value>
   </data>
-	<data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
+  <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
     <value>Три монитора</value>
   </data>
-	<data name="Gameplay_Units_Metrical" xml:space="preserve">
+  <data name="Gameplay_Units_Metrical" xml:space="preserve">
     <value>Метрические (км/ч)</value>
   </data>
-	<data name="Gameplay_Units_Imperial" xml:space="preserve">
+  <data name="Gameplay_Units_Imperial" xml:space="preserve">
     <value>Империальные (м/ч)</value>
   </data>
-	<data name="AdditionalContent_Car" xml:space="preserve">
+  <data name="AdditionalContent_Car" xml:space="preserve">
     <value>машина</value>
   </data>
-	<data name="AdditionalContent_CarSkin" xml:space="preserve">
+  <data name="AdditionalContent_CarSkin" xml:space="preserve">
     <value>скин</value>
   </data>
-	<data name="AdditionalContent_Font" xml:space="preserve">
+  <data name="AdditionalContent_Font" xml:space="preserve">
     <value>шрифт</value>
   </data>
-	<data name="AdditionalContent_Showroom" xml:space="preserve">
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
     <value>шоурум</value>
   </data>
-	<data name="AdditionalContent_Track" xml:space="preserve">
+  <data name="AdditionalContent_Track" xml:space="preserve">
     <value>трасса</value>
   </data>
-	<data name="AdditionalContent_Weather" xml:space="preserve">
+  <data name="AdditionalContent_Weather" xml:space="preserve">
     <value>погода</value>
   </data>
-	<data name="AcObject_PlaceIsTaken" xml:space="preserve">
+  <data name="AcObject_PlaceIsTaken" xml:space="preserve">
     <value>Место занято</value>
   </data>
-	<data name="CannotFindSteamId" xml:space="preserve">
+  <data name="CannotFindSteamId" xml:space="preserve">
     <value>Не удаётся найти Steam ID</value>
   </data>
-	<data name="TryAgainDot" xml:space="preserve">
+  <data name="TryAgainDot" xml:space="preserve">
     <value>Попробуйте ещё раз.</value>
   </data>
-	<data name="ReplayHelper_CannotSaveReplay" xml:space="preserve">
+  <data name="ReplayHelper_CannotSaveReplay" xml:space="preserve">
     <value>Не удаётся сохранить реплей</value>
   </data>
-	<data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
+  <data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
     <value>Не удаётся удалить реплей</value>
   </data>
-	<data name="FontObject_DisableFont" xml:space="preserve">
+  <data name="FontObject_DisableFont" xml:space="preserve">
     <value>Отключить шрифт</value>
   </data>
-	<data name="Uploader_RootDirectory" xml:space="preserve">
+  <data name="Uploader_RootDirectory" xml:space="preserve">
     <value>Корень</value>
   </data>
-	<data name="AcError_NameIsMissing" xml:space="preserve">
+  <data name="AcError_NameIsMissing" xml:space="preserve">
     <value>Имя отсутствует</value>
   </data>
-	<data name="AcError_BrandNameIsMissing" xml:space="preserve">
+  <data name="AcError_BrandNameIsMissing" xml:space="preserve">
     <value>Имя бренда отстутствует</value>
   </data>
-	<data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
+  <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
     <value>Папка «ui» отсутствует</value>
   </data>
-	<data name="AcError_CarParentIsMissing" xml:space="preserve">
+  <data name="AcError_CarParentIsMissing" xml:space="preserve">
     <value>Базовая версия отсутствует</value>
   </data>
-	<data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
+  <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
     <value>Иконка бренда отсутствует</value>
   </data>
-	<data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
+  <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
     <value>Иконка апгрейда отсутствует</value>
   </data>
-	<data name="AcError_SkinsAreMissing" xml:space="preserve">
+  <data name="AcError_SkinsAreMissing" xml:space="preserve">
     <value>Скины отсутствуют</value>
   </data>
-	<data name="Common_None" xml:space="preserve">
+  <data name="Common_None" xml:space="preserve">
     <value>Нет</value>
   </data>
-	<data name="Common_Width" xml:space="preserve">
+  <data name="Common_Width" xml:space="preserve">
     <value>Ширина</value>
   </data>
-	<data name="Common_Length" xml:space="preserve">
+  <data name="Common_Length" xml:space="preserve">
     <value>Длина</value>
   </data>
-	<data name="Common_Exporting" xml:space="preserve">
+  <data name="Common_Exporting" xml:space="preserve">
     <value>Экспорт…</value>
   </data>
-	<data name="Common_CannotUnpack" xml:space="preserve">
+  <data name="Common_CannotUnpack" xml:space="preserve">
     <value>Не удаётся распаковать {0}</value>
   </data>
-	<data name="AcSettings_Quality_Normal" xml:space="preserve">
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
     <value>Нормально</value>
   </data>
-	<data name="Common_CannotDownloadFile" xml:space="preserve">
+  <data name="Common_CannotDownloadFile" xml:space="preserve">
     <value>Не удаётся загрузить файл</value>
   </data>
-	<data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
+  <data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
     <value>Проверьте, имеется ли интернет-соединение</value>
   </data>
-	<data name="Common_Destination" xml:space="preserve">
+  <data name="Common_Destination" xml:space="preserve">
     <value>Назначение</value>
   </data>
-	<data name="Common_SteamIdIsMissing" xml:space="preserve">
+  <data name="Common_SteamIdIsMissing" xml:space="preserve">
     <value>Steam ID отсутствует</value>
   </data>
-	<data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
+  <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
     <value>Файл «colorCurves.ini» отсутствует</value>
   </data>
-	<data name="AcError_FileIsMissing" xml:space="preserve">
+  <data name="AcError_FileIsMissing" xml:space="preserve">
     <value>Файл «{0}» отсутствует</value>
   </data>
-	<data name="AcError_FileIsDamaged" xml:space="preserve">
+  <data name="AcError_FileIsDamaged" xml:space="preserve">
     <value>Файл «{0}» повреждён</value>
   </data>
-	<data name="AcError_FontBitmapIsMissing" xml:space="preserve">
+  <data name="AcError_FontBitmapIsMissing" xml:space="preserve">
     <value>Текстура шрифта отсутствует</value>
   </data>
-	<data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
+  <data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
     <value>Шрифт используется, но отключён</value>
   </data>
-	<data name="AcError_LoadingUnhandledError" xml:space="preserve">
+  <data name="AcError_LoadingUnhandledError" xml:space="preserve">
     <value>Ошибка при загрузке: {0}</value>
   </data>
-	<data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
+  <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
     <value>Модель (KN5-файл) отсутствует</value>
   </data>
-	<data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
+  <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
     <value>Имя не должно содержать символов вроде «[» или «]»</value>
   </data>
-	<data name="AcError_RequiredCarIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
     <value>Машина «{0}» отсутствует</value>
   </data>
-	<data name="AcError_RequiredContentIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
     <value>Нужный контент отсутствует</value>
   </data>
-	<data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
     <value>Скин «{1}» для «{0}» отсутствует</value>
   </data>
-	<data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
     <value>Трасса «{0}» отсутствует</value>
   </data>
-	<data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
+  <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
     <value>Погода «{0}» отсутствует</value>
   </data>
-	<data name="AcError_SetupTrackIsMissing" xml:space="preserve">
+  <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
     <value>Трасса «{0}» отсутствует</value>
   </data>
-	<data name="AcObject_CannotDelete" xml:space="preserve">
+  <data name="AcObject_CannotDelete" xml:space="preserve">
     <value>Не удалось удалить</value>
   </data>
-	<data name="Common_CannotDo" xml:space="preserve">
+  <data name="Common_CannotDo" xml:space="preserve">
     <value>Не удалось</value>
   </data>
-	<data name="Controls_Clutch" xml:space="preserve">
+  <data name="Controls_Clutch" xml:space="preserve">
     <value>Сцепление</value>
   </data>
-	<data name="Controls_ChangeCamera" xml:space="preserve">
+  <data name="Controls_ChangeCamera" xml:space="preserve">
     <value>Сменить камеру</value>
   </data>
-	<data name="Controls_Decrease" xml:space="preserve">
+  <data name="Controls_Decrease" xml:space="preserve">
     <value>Уменьшить</value>
   </data>
-	<data name="Controls_Gear_Fifth" xml:space="preserve">
+  <data name="Controls_Gear_Fifth" xml:space="preserve">
     <value>Пятая</value>
   </data>
-	<data name="Controls_Gear_First" xml:space="preserve">
+  <data name="Controls_Gear_First" xml:space="preserve">
     <value>Первая</value>
   </data>
-	<data name="Controls_Gear_Fourth" xml:space="preserve">
+  <data name="Controls_Gear_Fourth" xml:space="preserve">
     <value>Четвёртая</value>
   </data>
-	<data name="Controls_Gear_Rear" xml:space="preserve">
+  <data name="Controls_Gear_Rear" xml:space="preserve">
     <value>Задняя</value>
   </data>
-	<data name="Controls_Gear_Second" xml:space="preserve">
+  <data name="Controls_Gear_Second" xml:space="preserve">
     <value>Вторая</value>
   </data>
-	<data name="Controls_Gear_Seventh" xml:space="preserve">
+  <data name="Controls_Gear_Seventh" xml:space="preserve">
     <value>Седьмая</value>
   </data>
-	<data name="Controls_Gear_Sixth" xml:space="preserve">
+  <data name="Controls_Gear_Sixth" xml:space="preserve">
     <value>Шестая</value>
   </data>
-	<data name="Controls_Gear_Third" xml:space="preserve">
+  <data name="Controls_Gear_Third" xml:space="preserve">
     <value>Третья</value>
   </data>
-	<data name="Controls_GlanceBack" xml:space="preserve">
+  <data name="Controls_GlanceBack" xml:space="preserve">
     <value>Взгляд назад</value>
   </data>
-	<data name="Controls_GlanceLeft" xml:space="preserve">
+  <data name="Controls_GlanceLeft" xml:space="preserve">
     <value>Взгляд влево</value>
   </data>
-	<data name="Controls_GlanceRight" xml:space="preserve">
+  <data name="Controls_GlanceRight" xml:space="preserve">
     <value>Взгляд вправо</value>
   </data>
-	<data name="Controls_Handbrake" xml:space="preserve">
+  <data name="Controls_Handbrake" xml:space="preserve">
     <value>Ручной тормоз</value>
   </data>
-	<data name="Controls_Headlights" xml:space="preserve">
+  <data name="Controls_Headlights" xml:space="preserve">
     <value>Фары</value>
   </data>
-	<data name="Controls_Horn" xml:space="preserve">
+  <data name="Controls_Horn" xml:space="preserve">
     <value>Гудок</value>
   </data>
-	<data name="Controls_Increase" xml:space="preserve">
+  <data name="Controls_Increase" xml:space="preserve">
     <value>Увеличить</value>
   </data>
-	<data name="Controls_Kers" xml:space="preserve">
+  <data name="Controls_Kers" xml:space="preserve">
     <value>Включить KERS</value>
   </data>
-	<data name="Controls_KeyboardAndMouse" xml:space="preserve">
+  <data name="Controls_KeyboardAndMouse" xml:space="preserve">
     <value>Клавиатура и мышь</value>
   </data>
-	<data name="Controls_NextGear" xml:space="preserve">
+  <data name="Controls_NextGear" xml:space="preserve">
     <value>Следующая передача</value>
   </data>
-	<data name="Controls_PreviousGear" xml:space="preserve">
+  <data name="Controls_PreviousGear" xml:space="preserve">
     <value>Предыдущая передача</value>
   </data>
-	<data name="Controls_SteeringWheel" xml:space="preserve">
+  <data name="Controls_SteeringWheel" xml:space="preserve">
     <value>Руль</value>
   </data>
-	<data name="Controls_SteerLeft" xml:space="preserve">
+  <data name="Controls_SteerLeft" xml:space="preserve">
     <value>Влево</value>
   </data>
-	<data name="Controls_SteerRight" xml:space="preserve">
+  <data name="Controls_SteerRight" xml:space="preserve">
     <value>Вправо</value>
   </data>
-	<data name="Controls_Throttle" xml:space="preserve">
+  <data name="Controls_Throttle" xml:space="preserve">
     <value>Газ</value>
   </data>
-	<data name="Controls_Xbox360Gamepad" xml:space="preserve">
+  <data name="Controls_Xbox360Gamepad" xml:space="preserve">
     <value>Геймпад</value>
   </data>
-	<data name="Input_Axle" xml:space="preserve">
+  <data name="Input_Axle" xml:space="preserve">
     <value>Ось {0}</value>
   </data>
-	<data name="Input_Button" xml:space="preserve">
+  <data name="Input_Button" xml:space="preserve">
     <value>Кнопка {0}</value>
   </data>
-	<data name="Common_CannotDo_Title" xml:space="preserve">
+  <data name="Common_CannotDo_Title" xml:space="preserve">
     <value>Не удалось</value>
   </data>
-	<data name="Presets_FileFilter" xml:space="preserve">
+  <data name="Presets_FileFilter" xml:space="preserve">
     <value>Пресеты (*{0})|*{0}</value>
   </data>
-	<data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
+  <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
     <value>Пожалуйста, выберите файл в изначальной папке или любой подпапке.</value>
   </data>
-	<data name="Session_Drift" xml:space="preserve">
+  <data name="Session_Drift" xml:space="preserve">
     <value>Дрифт</value>
   </data>
-	<data name="Session_Hotlap" xml:space="preserve">
+  <data name="Session_Hotlap" xml:space="preserve">
     <value>Хотлап</value>
   </data>
-	<data name="Session_Qualification" xml:space="preserve">
+  <data name="Session_Qualification" xml:space="preserve">
     <value>Квалификация</value>
   </data>
-	<data name="Session_Race" xml:space="preserve">
+  <data name="Session_Race" xml:space="preserve">
     <value>Гонка</value>
   </data>
-	<data name="Session_TimeAttack" xml:space="preserve">
+  <data name="Session_TimeAttack" xml:space="preserve">
     <value>На время</value>
   </data>
-	<data name="Common_Height" xml:space="preserve">
+  <data name="Common_Height" xml:space="preserve">
     <value>Высота</value>
   </data>
-	<data name="Common_IdIsMissing" xml:space="preserve">
+  <data name="Common_IdIsMissing" xml:space="preserve">
     <value>ID отсутствует</value>
   </data>
-	<data name="Common_MakeSureInternetWorks" xml:space="preserve">
+  <data name="Common_MakeSureInternetWorks" xml:space="preserve">
     <value>Проверьте, работает ли Интернет.</value>
   </data>
-	<data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
+  <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
     <value>Проверьте, достаточно ли места.</value>
   </data>
-	<data name="Common_Number" xml:space="preserve">
+  <data name="Common_Number" xml:space="preserve">
     <value>Номер</value>
   </data>
-	<data name="Common_Radius" xml:space="preserve">
+  <data name="Common_Radius" xml:space="preserve">
     <value>Радиус</value>
   </data>
-	<data name="Common_Scanning" xml:space="preserve">
+  <data name="Common_Scanning" xml:space="preserve">
     <value>Сканирование…</value>
   </data>
-	<data name="Common_Time" xml:space="preserve">
+  <data name="Common_Time" xml:space="preserve">
     <value>Время</value>
   </data>
-	<data name="Common_Warning" xml:space="preserve">
+  <data name="Common_Warning" xml:space="preserve">
     <value>Внимание</value>
   </data>
-	<data name="AcSettings_Quality_Ideal" xml:space="preserve">
+  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
     <value>Идеально</value>
   </data>
-	<data name="AcSettings_Quality_Subpixel" xml:space="preserve">
+  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
     <value>С субпиксельным сглаживанием</value>
   </data>
-	<data name="AcSettings_Quality_VeryLow" xml:space="preserve">
+  <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
     <value>Очень низко</value>
   </data>
-	<data name="Common_Speed" xml:space="preserve">
+  <data name="Common_Speed" xml:space="preserve">
     <value>Скорость</value>
   </data>
-	<data name="Common_Weekend" xml:space="preserve">
+  <data name="Common_Weekend" xml:space="preserve">
 		<value>Уик-энд</value>
 	</data>
-	<data name="Common_UndefinedError" xml:space="preserve">
+  <data name="Common_UndefinedError" xml:space="preserve">
 		<value>Неопределённая ошибка</value>
 	</data>
-	<data name="Common_NA" xml:space="preserve">
+  <data name="Common_NA" xml:space="preserve">
 		<value>Н/Д</value>
 	</data>
-  <data name="TrackGeoTags_LongitudeLabel" xml:space="preserve">
-    <value>Longitude:</value>
-  </data>
-	<data name="Common_CarIdIsMissing" xml:space="preserve">
+  <data name="Common_CarIdIsMissing" xml:space="preserve">
 		<value>ID машины отсутствует</value>
 	</data>
   <data name="Session_Practice" xml:space="preserve">
     <value>Практика</value>
   </data>
-  <data name="Session_Practice" xml:space="preserve">
-    <value>Практика2</value>
+  <data name="Session_Booking" xml:space="preserve">
+    <value>Регистрация</value>
   </data>
-  <data name="Session_Practice" xml:space="preserve">
-    <value>Практика3</value>
+  <data name="Settings_Period_Startup" xml:space="preserve">
+    <value>При запуске</value>
+  </data>
+  <data name="Settings_Period_OnOpening" xml:space="preserve">
+    <value>При открытии</value>
+  </data>
+  <data name="TrackGeoTags_FindIt" xml:space="preserve">
+    <value>Найти трассу</value>
+  </data>
+  <data name="Shared_PpFilter" xml:space="preserve">
+    <value>Фильтр</value>
+  </data>
+  <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
+    <value>FFB-пресет</value>
+  </data>
+  <data name="Shared_Weather" xml:space="preserve">
+    <value>Погода</value>
+  </data>
+  <data name="Online_Server_SessionEnded" xml:space="preserve">
+    <value>завершена</value>
+  </data>
+  <data name="Session_Drag" xml:space="preserve">
+    <value>Драг</value>
+  </data>
+  <data name="OrdinalizingSubject_Server" xml:space="preserve">
+    <value>сервер</value>
+  </data>
+  <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
+    <value>Выберите другой ID.</value>
+  </data>
+  <data name="Common_IdIsTaken" xml:space="preserve">
+    <value>ID занят</value>
   </data>
 </root>

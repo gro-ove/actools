@@ -160,7 +160,7 @@
     <value>Не удалось перейти</value>
   </data>
   <data name="NavigationFailedFrameNotFound" xml:space="preserve">
-    <value>Нельзя перейти к {0}</value>
+    <value>Нельзя перейти к {0}, цель «{1}» отсутствует</value>
   </data>
   <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
     <value>Нельзя перейти к {0}</value>
@@ -397,5 +397,11 @@
   </data>
   <data name="KeyShiftRight" xml:space="preserve">
     <value>Shift (правый)</value>
+  </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0} месяц</value>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0} неделя</value>
   </data>
 </root>
