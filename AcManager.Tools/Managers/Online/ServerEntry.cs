@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
@@ -43,7 +44,9 @@ namespace AcManager.Tools.Managers.Online {
                     Duration.ToReadableTime();
         }
 
-        public class CarEntry {
+        public class CarEntry : Displayable {
+            private CarSkinObject _availableSkin;
+
             [NotNull]
             public CarObject CarObject { get; }
 
@@ -51,20 +54,52 @@ namespace AcManager.Tools.Managers.Online {
                 CarObject = carObject;
             }
 
-            public CarSkinObject AvailableSkin { get; set; }
+            [CanBeNull]
+            public CarSkinObject AvailableSkin {
+                get { return _availableSkin; }
+                set {
+                    if (Equals(value, _availableSkin)) return;
+                    _availableSkin = value;
+                    OnPropertyChanged();
+
+                    if (Total == 0 && value != null) {
+                        CarObject.SelectedSkin = value;
+                    }
+                }
+            }
 
             public int Total { get; set; }
 
             public int Available { get; set; }
 
-            public bool IsAvailable => Available > 0;
+            public bool IsAvailable => Total == 0 || Available > 0;
 
-            public override string ToString() {
-                return $"{CarObject.DisplayName} ({Available}/{Total})";
+            public override string DisplayName {
+                get { return Total == 0 ? CarObject.DisplayName : $"{CarObject.DisplayName} ({Available}/{Total})"; }
+                set {}
+            }
+
+            protected bool Equals(CarEntry other) {
+                return Equals(_availableSkin, other._availableSkin) && CarObject.Equals(other.CarObject) && Total == other.Total && Available == other.Available;
+            }
+
+            public override bool Equals(object obj) {
+                return !ReferenceEquals(null, obj) && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((CarEntry)obj));
+            }
+
+            public override int GetHashCode() {
+                unchecked {
+                    var hashCode = _availableSkin?.GetHashCode() ?? 0;
+                    hashCode = (hashCode * 397) ^ CarObject.GetHashCode();
+                    hashCode = (hashCode * 397) ^ Total;
+                    hashCode = (hashCode * 397) ^ Available;
+                    return hashCode;
+                }
             }
         }
 
         public class CarOrOnlyCarIdEntry {
+            [CanBeNull]
             public CarObject CarObject => (CarObject)CarObjectWrapper?.Loaded();
 
             [CanBeNull]
@@ -102,6 +137,24 @@ namespace AcManager.Tools.Managers.Online {
 
             public CarSkinObject CarSkin => _carSkin ??
                     (_carSkin = CarSkinId != null ? Car?.GetSkinById(CarSkinId) : Car?.GetFirstSkinOrNull());
+
+            protected bool Equals(CurrentDriver other) {
+                return string.Equals(Name, other.Name) && string.Equals(Team, other.Team) && string.Equals(CarId, other.CarId) && string.Equals(CarSkinId, other.CarSkinId);
+            }
+
+            public override bool Equals(object obj) {
+                return !ReferenceEquals(null, obj) && (ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((CurrentDriver)obj));
+            }
+
+            public override int GetHashCode() {
+                unchecked {
+                    var hashCode = Name?.GetHashCode() ?? 0;
+                    hashCode = (hashCode * 397) ^ (Team?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (CarId?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (CarSkinId?.GetHashCode() ?? 0);
+                    return hashCode;
+                }
+            }
         }
 
         public string Ip { get; }
@@ -151,6 +204,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private void SetSomeProperties(ServerInformation information) {
+            PreviousUpdateTime = DateTime.Now;
             Name = Regex.Replace(information.Name.Trim(), @"\s+", " ");
 
             {
@@ -175,9 +229,14 @@ namespace AcManager.Tools.Managers.Online {
             CarsOrTheirIds = CarIds.Select(x => new CarOrOnlyCarIdEntry(x, GetCarWrapper(x))).ToList();
             TrackId = information.TrackId;
             Track = GetTrack(TrackId);
-            
-            SetMissingCarErrorIfNeeded();
-            SetMissingTrackErrorIfNeeded();
+
+            var errorMessage = "";
+            var error = SetMissingCarErrorIfNeeded(ref errorMessage);
+            error = SetMissingTrackErrorIfNeeded(ref errorMessage) || error;
+            if (error) {
+                Status = ServerStatus.Error;
+                ErrorMessage = errorMessage;
+            }
 
             var seconds = (int)Game.ConditionProperties.GetSeconds(information.Time);
             Time = $"{seconds / 60 / 60:D2}:{seconds / 60 % 60:D2}";
@@ -188,21 +247,34 @@ namespace AcManager.Tools.Managers.Online {
                 Duration = information.Durations[i],
                 Type = (Game.SessionType)x
             }).ToList();
+
+            BookingMode = !information.PickUp;
         }
 
-        private void SetMissingCarErrorIfNeeded() {
+        private bool SetMissingCarErrorIfNeeded(ref string errorMessage) {
             var list = CarsOrTheirIds.Where(x => !x.CarExists).Select(x => x.CarId).ToList();
-            if (!list.Any()) return;
-            Status = ServerStatus.Error;
-            ErrorMessage += (list.Count == 1
+            if (!list.Any()) return false;
+            errorMessage += (list.Count == 1
                     ? string.Format(ToolsStrings.Online_Server_CarIsMissing, IdToBb(list[0]))
                     : string.Format(ToolsStrings.Online_Server_CarsAreMissing, list.Select(x => IdToBb(x)).JoinToString(@", "))) + Environment.NewLine;
+            return true;
         }
 
-        private void SetMissingTrackErrorIfNeeded() {
-            if (Track != null) return;
-            Status = ServerStatus.Error;
-            ErrorMessage += string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false)) + Environment.NewLine;
+        private bool SetMissingTrackErrorIfNeeded(ref string errorMessage) {
+            if (Track != null) return false;
+            errorMessage += string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false)) + Environment.NewLine;
+            return true;
+        }
+
+        private DateTime _previousUpdateTime;
+
+        public DateTime PreviousUpdateTime {
+            get { return _previousUpdateTime; }
+            set {
+                if (Equals(value, _previousUpdateTime)) return;
+                _previousUpdateTime = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -232,7 +304,7 @@ namespace AcManager.Tools.Managers.Online {
                 _wrongPassword = false;
                 OnPropertyChanged(nameof(WrongPassword));
 
-                JoinCommand.OnCanExecuteChanged();
+                _joinCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -253,7 +325,7 @@ namespace AcManager.Tools.Managers.Online {
                 _wrongPassword = false;
                 OnPropertyChanged(nameof(WrongPassword));
 
-                JoinCommand.OnCanExecuteChanged();
+                _joinCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -265,7 +337,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _wrongPassword)) return;
                 _wrongPassword = value;
                 OnPropertyChanged();
-                JoinCommand.OnCanExecuteChanged();
+                _joinCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -290,6 +362,21 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _countryId)) return;
                 _countryId = value;
                 OnPropertyChanged();
+            }
+        }
+
+        private bool _bookingMode;
+
+        public bool BookingMode {
+            get { return _bookingMode; }
+            set {
+                if (Equals(value, _bookingMode)) return;
+                _bookingMode = value;
+                OnPropertyChanged();
+
+                if (!value) {
+                    DisposeHelper.Dispose(ref _ui);
+                }
             }
         }
 
@@ -346,15 +433,30 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private Game.SessionType? _currentSessionType;
+
+        public Game.SessionType? CurrentSessionType {
+            get { return _currentSessionType; }
+            set {
+                if (Equals(value, _currentSessionType)) return;
+                _currentSessionType = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string DisplayTimeLeft {
             get {
                 var now = DateTime.Now;
-                return SessionEnd <= now ? ToolsStrings.Online_Server_SessionEnded : (SessionEnd - now).ToProperString();
+                return CurrentSessionType == Game.SessionType.Race ? ToolsStrings.Online_Server_SessionInProcess
+                        : SessionEnd <= now ? ToolsStrings.Online_Server_SessionEnded : (SessionEnd - now).ToProperString();
             }
         }
 
         public void OnTick() {
             OnPropertyChanged(nameof(DisplayTimeLeft));
+            if (IsBooked && BookingErrorMessage == null) {
+                OnPropertyChanged(nameof(BookingTimeLeft));
+            }
         }
 
         public void OnSessionEndTick() {
@@ -369,8 +471,9 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _status)) return;
                 _status = value;
                 OnPropertyChanged();
-                JoinCommand.OnCanExecuteChanged();
-                AddToRecentCommand.OnCanExecuteChanged();
+
+                _joinCommand?.OnCanExecuteChanged();
+                _addToRecentCommand?.OnCanExecuteChanged();
 
                 if (value != ServerStatus.Loading) {
                     HasErrors = value == ServerStatus.Error;
@@ -432,7 +535,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _isAvailable)) return;
                 _isAvailable = value;
                 OnPropertyChanged();
-                JoinCommand.OnCanExecuteChanged();
+                _joinCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -529,67 +632,67 @@ namespace AcManager.Tools.Managers.Online {
             return string.Format(ToolsStrings.Online_Server_MissingTrackBbCode, id);
         }
 
-        private BetterObservableCollection<CurrentDriver> _currentDrivers;
-
-        [CanBeNull]
-        public BetterObservableCollection<CurrentDriver> CurrentDrivers {
-            get { return _currentDrivers; }
-            set {
-                if (Equals(value, _currentDrivers)) return;
-                _currentDrivers = value;
-                OnPropertyChanged();
-            }
-        }
+        [NotNull]
+        public BetterObservableCollection<CurrentDriver> CurrentDrivers { get; } = new BetterObservableCollection<CurrentDriver>();
 
         private List<Session> _sessions;
 
+        [NotNull]
         public List<Session> Sessions {
-            get { return _sessions; }
+            get { return _sessions ?? (_sessions = new List<Session>(0)); }
             set {
                 if (Equals(value, _sessions)) return;
                 _sessions = value;
                 OnPropertyChanged();
+                CurrentSessionType = Sessions.FirstOrDefault(x => x.IsActive)?.Type;
             }
         }
 
         public enum UpdateMode {
-            Lite, Normal, Full
+            Lite,
+            Normal,
+            Full
         }
 
-        public async Task Update(UpdateMode mode) {
+        private Task _updateTask;
+
+        public Task Update(UpdateMode mode, bool background = false) {
+            if (!background) {
+                Status = ServerStatus.Loading;
+                IsAvailable = false;
+            }
+
+            return _updateTask ?? (_updateTask = UpdateInner(mode, background));
+        }
+
+        private async Task UpdateInner(UpdateMode mode, bool background = false) {
+            var errorMessage = "";
+
             try {
-                if (CurrentDrivers == null) {
-                    CurrentDrivers = new BetterObservableCollection<CurrentDriver>();
+                if (!background) {
+                    CurrentDrivers.Clear();
+                    OnPropertyChanged(nameof(CurrentDrivers));
+
+                    Status = ServerStatus.Loading;
+                    IsAvailable = false;
                 }
 
-                Status = ServerStatus.Loading;
-                ErrorMessage = "";
-                IsAvailable = false;
-
-                CurrentDrivers.Clear();
-                OnPropertyChanged(nameof(CurrentDrivers));
+                SetMissingTrackErrorIfNeeded(ref errorMessage);
+                SetMissingCarErrorIfNeeded(ref errorMessage);
+                if (!string.IsNullOrWhiteSpace(errorMessage)) return;
 
                 if (mode == UpdateMode.Full) {
                     var newInformation = await Task.Run(() => IsLan || SettingsHolder.Online.LoadServerInformationDirectly ?
                             KunosApiProvider.TryToGetInformationDirect(Ip, PortC) :
                             KunosApiProvider.TryToGetInformation(Ip, Port));
                     if (newInformation == null) {
-                        Status = ServerStatus.Error;
-                        ErrorMessage += ToolsStrings.Online_Server_CannotRefresh;
-                    } else {
-                        // TODO
-                        if (!UpdateValuesFrom(newInformation)) {
-                            Status = ServerStatus.Error;
-                            ErrorMessage += ToolsStrings.Online_Server_NotImplemented;
-                        }
+                        errorMessage = ToolsStrings.Online_Server_CannotRefresh;
+                        return;
+                    } else if (!UpdateValuesFrom(newInformation)) {
+                        // TODO: what if ports were changed?
+                        errorMessage = ToolsStrings.Online_Server_NotImplemented;
+                        return;
                     }
-                } else {
-                    SetMissingTrackErrorIfNeeded();
-                    SetMissingCarErrorIfNeeded();
-                }
-
-                if (Status == ServerStatus.Error) {
-                    return;
                 }
 
                 var pair = SettingsHolder.Online.ThreadsPing
@@ -599,30 +702,28 @@ namespace AcManager.Tools.Managers.Online {
                     Ping = (long)pair.Item2.TotalMilliseconds;
                 } else {
                     Ping = null;
-                    Status = ServerStatus.Error;
-                    ErrorMessage += ToolsStrings.Online_Server_CannotPing;
+                    errorMessage = ToolsStrings.Online_Server_CannotPing;
                     return;
                 }
 
                 var information = await KunosApiProvider.TryToGetCurrentInformationAsync(Ip, PortC);
                 if (information == null) {
-                    Status = ServerStatus.Error;
-                    ErrorMessage = ToolsStrings.Online_Server_Unavailable;
+                    errorMessage = ToolsStrings.Online_Server_Unavailable;
                     return;
                 }
 
                 ActualInformation = information;
-                CurrentDrivers.ReplaceEverythingBy(from x in information.Cars
-                                                   where x.IsConnected
-                                                   select new CurrentDriver {
-                                                       Name = x.DriverName,
-                                                       Team = x.DriverTeam,
-                                                       CarId = x.CarId,
-                                                       CarSkinId = x.CarSkinId
-                                                   });
-                OnPropertyChanged(nameof(CurrentDrivers));
-
-                CurrentDriversCount = CurrentDrivers.Count;
+                if (CurrentDrivers.ReplaceIfDifferBy(from x in information.Cars
+                                                     where x.IsConnected
+                                                     select new CurrentDriver {
+                                                         Name = x.DriverName,
+                                                         Team = x.DriverTeam,
+                                                         CarId = x.CarId,
+                                                         CarSkinId = x.CarSkinId
+                                                     })) {
+                    OnPropertyChanged(nameof(CurrentDrivers));
+                    CurrentDriversCount = CurrentDrivers.Count;
+                }
 
                 List<CarObject> carObjects;
                 if (CarsOrTheirIds.Select(x => x.CarObjectWrapper).Any(x => x?.IsLoaded == false)) {
@@ -643,8 +744,15 @@ namespace AcManager.Tools.Managers.Online {
                     await carObject.SkinsManager.EnsureLoadedAsync();
                 }
 
-                var cars = (from x in information.Cars
-                            where x.IsEntryList // if IsEntryList means that car could be selected
+                List<CarEntry> cars;
+                if (BookingMode) {
+                    cars = CarsOrTheirIds.Select(x => x.CarObject == null ? null : new CarEntry(x.CarObject) {
+                        AvailableSkin = x.CarObject.SelectedSkin
+                    }).ToList();
+                } else {
+                    cars = (from x in information.Cars
+                            where x.IsEntryList
+                            // if IsEntryList means that car could be selected
                             group x by x.CarId
                             into g
                             let list = g.ToList()
@@ -656,51 +764,201 @@ namespace AcManager.Tools.Managers.Online {
                                 AvailableSkin = availableSkinId == null ? null :
                                         availableSkinId == string.Empty ? carObject.GetFirstSkinOrNull() : carObject.GetSkinById(availableSkinId)
                             }).ToList();
+                }
 
                 if (cars.Contains(null)) {
-                    Status = ServerStatus.Error;
-                    ErrorMessage = ToolsStrings.Online_Server_CarsDoNotMatch;
+                    errorMessage = ToolsStrings.Online_Server_CarsDoNotMatch;
                     return;
                 }
 
+                var changed = true;
                 if (Cars == null || CarsView == null) {
                     Cars = new BetterObservableCollection<CarEntry>(cars);
                     CarsView = new ListCollectionView(Cars) { CustomSort = this };
-                } else {
-                    Cars.ReplaceEverythingBy(cars);
+                } else if (Cars.ReplaceIfDifferBy(cars)) {
                     OnPropertyChanged(nameof(Cars));
+                } else {
+                    changed = false;
                 }
 
-                var firstAvailable = Cars.FirstOrDefault(x => x.IsAvailable);
-                CarsView.MoveCurrentTo(firstAvailable);
-                IsAvailable = firstAvailable != null;
+                if (changed) {
+                    var firstAvailable = Cars.FirstOrDefault(x => x.IsAvailable);
+                    CarsView.MoveCurrentTo(firstAvailable);
+                }
 
-                Status = ServerStatus.Ready;
+                IsAvailable = CarsView.CurrentItem != null;
+                if (!background) {
+                    Status = ServerStatus.Ready;
+                }
             } catch (Exception e) {
-                Status = ServerStatus.Error;
-                ErrorMessage = ToolsStrings.Online_Server_UnhandledError;
+                errorMessage = ToolsStrings.Online_Server_UnhandledError;
                 Logging.Warning("ServerEntry error:" + e);
+            } finally {
+                ErrorMessage = errorMessage;
+                if (!string.IsNullOrWhiteSpace(errorMessage)) {
+                    Status = ServerStatus.Error;
+                }
+
+                _updateTask = null;
             }
         }
 
         private RelayCommand _addToRecentCommand;
 
-        public RelayCommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new RelayCommand(o => {
+        public ICommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new RelayCommand(o => {
             RecentManager.Instance.AddRecentServer(OriginalInformation);
         }, o => Status == ServerStatus.Ready && RecentManager.Instance.GetWrapperById(Id) == null));
 
         private AsyncCommand _joinCommand;
 
-        public AsyncCommand JoinCommand => _joinCommand ?? (_joinCommand = new AsyncCommand(Join, JoinAvailable));
+        public ICommand JoinCommand => _joinCommand ?? (_joinCommand = new AsyncCommand(Join, JoinAvailable));
+
+        private AsyncCommand _cancelBookingCommand;
+
+        public ICommand CancelBookingCommand => _cancelBookingCommand ?? (_cancelBookingCommand = new AsyncCommand(CancelBooking, o => IsBooked));
+
+        [CanBeNull]
+        private IBookingUi _ui;
+
+        public static readonly object ForceRun = new object();
+
+        [CanBeNull]
+        public CarObject GetSelectedCar() {
+            return (CarsView?.CurrentItem as CarEntry)?.CarObject;
+        }
+
+        [CanBeNull]
+        public CarSkinObject GetSelectedCarSkin() {
+            return (CarsView?.CurrentItem as CarEntry)?.AvailableSkin;
+        }
+
+        private bool _isBooked;
+
+        public bool IsBooked {
+            get { return _isBooked; }
+            set {
+                if (Equals(value, _isBooked)) return;
+                _isBooked = value;
+                OnPropertyChanged();
+                _cancelBookingCommand?.OnCanExecuteChanged();
+            }
+        }
+
+        private DateTime _startTime;
+
+        public DateTime StartTime {
+            get { return _startTime; }
+            set {
+                if (Equals(value, _startTime)) return;
+                _startTime = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(BookingTimeLeft));
+            }
+        }
+
+        private string _bookingErrorMessage;
+
+        public string BookingErrorMessage {
+            get { return _bookingErrorMessage; }
+            set {
+                if (Equals(value, _bookingErrorMessage)) return;
+                _bookingErrorMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public TimeSpan BookingTimeLeft {
+            get {
+                var result = StartTime - DateTime.Now;
+                return result <= TimeSpan.Zero ? TimeSpan.Zero : result;
+            }
+        }
+
+        private async Task CancelBooking(object o) {
+            DisposeHelper.Dispose(ref _ui);
+
+            if (!IsBooked) return;
+            IsBooked = false;
+            await Task.Run(() => KunosApiProvider.TryToUnbook(Ip, PortC));
+        }
+
+        private void PrepareBookingUi() {
+            if (_ui == null) {
+                _ui = _factory.Create();
+                _ui.Show(this);
+            }
+        }
+
+        private void ProcessBookingResponse(BookingResult response) {
+            if (_ui?.CancellationToken.IsCancellationRequested == true) {
+                CancelBooking(null).Forget();
+                return;
+            }
+
+            if (response == null) {
+                BookingErrorMessage = "Cannot get any response";
+                return;
+            }
+
+            if (response.IsSuccessful) {
+                StartTime = DateTime.Now + response.Left;
+                BookingErrorMessage = null;
+                IsBooked = response.IsSuccessful;
+            } else {
+                BookingErrorMessage = response.ErrorMessage;
+                IsBooked = false;
+            }
+
+            _ui?.OnUpdate(response);
+        }
+
+        public async Task<bool> RebookSkin() {
+            if (!IsBooked || !BookingMode || BookingTimeLeft < TimeSpan.FromSeconds(2)) {
+                return false;
+            }
+            
+            var carEntry = CarsView?.CurrentItem as CarEntry;
+            if (carEntry == null) return false;
+
+            var carId = carEntry.CarObject.Id;
+            var correctId = CarIds.FirstOrDefault(x => string.Equals(x, carId, StringComparison.OrdinalIgnoreCase));
+
+            PrepareBookingUi();
+
+            var result = await Task.Run(() => KunosApiProvider.TryToBook(Ip, PortC, Password, correctId, carEntry.AvailableSkin?.Id,
+                    DriverName.GetOnline(), ""));
+            if (result?.IsSuccessful != true) return false;
+
+            ProcessBookingResponse(result);
+            return true;
+        }
 
         private async Task Join(object o) {
-            if (CarsView == null) return;
+            var carEntry = CarsView?.CurrentItem as CarEntry;
+            if (carEntry == null) return;
 
-            var carId = (CarsView.CurrentItem as CarEntry)?.CarObject.Id;
+            var carId = carEntry.CarObject.Id;
             var correctId = CarIds.FirstOrDefault(x => string.Equals(x, carId, StringComparison.OrdinalIgnoreCase));
+
+            if (BookingMode && !ReferenceEquals(o, ForceRun)) {
+                if (_factory == null) {
+                    Logging.Error("Booking: UI factory is missing");
+                    return;
+                }
+
+                PrepareBookingUi();
+                ProcessBookingResponse(await Task.Run(() => KunosApiProvider.TryToBook(Ip, PortC, Password, correctId, carEntry.AvailableSkin?.Id,
+                        DriverName.GetOnline(), "")));
+                return;
+            }
+
+            DisposeHelper.Dispose(ref _ui);
+            IsBooked = false;
+            BookingErrorMessage = null;
+
             var properties = new Game.StartProperties(new Game.BasicProperties {
                 CarId = carId,
-                CarSkinId = null,
+                CarSkinId = carEntry.AvailableSkin?.Id,
                 TrackId = Track?.Id,
                 TrackConfigurationId = Track?.LayoutId
             }, null, null, null, new Game.OnlineProperties {
@@ -712,6 +970,7 @@ namespace AcManager.Tools.Managers.Online {
                 Guid = SteamIdHelper.Instance.Value,
                 Password = Password
             });
+
             await GameWrapper.StartAsync(properties);
             var whatsGoingOn = properties.GetAdditional<AcLogHelper.WhatsGoingOn?>();
             WrongPassword = whatsGoingOn == AcLogHelper.WhatsGoingOn.OnlineWrongPassword;
@@ -719,7 +978,8 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private bool JoinAvailable(object o) {
-            return IsAvailable && (!PasswordRequired || !WrongPassword && !string.IsNullOrEmpty(Password)) && Status == ServerStatus.Ready;
+            return IsAvailable && (!PasswordRequired || !WrongPassword && !string.IsNullOrEmpty(Password)) && Status == ServerStatus.Ready
+                    && (!BookingMode || Sessions.FirstOrDefault(x => x.IsActive)?.Type == Game.SessionType.Booking);
         }
 
         private ICommand _refreshCommand;
@@ -733,6 +993,12 @@ namespace AcManager.Tools.Managers.Online {
             if (address == null) throw new ArgumentNullException(nameof(address));
             var information = KunosApiProvider.TryToGetInformationDirect(address);
             return information == null ? null : new ServerEntry(manager, information);
+        }
+
+        private static IUiFactory<IBookingUi> _factory;
+
+        public static void RegisterFactory(IUiFactory<IBookingUi> factory) {
+            _factory = factory;
         }
     }
 }

@@ -94,21 +94,26 @@
                             ToolTip="{x:Static g:AppStrings.Online_FilterMissing}" />
                 </StackPanel>
 
+                <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="{StaticResource StatusMargin}"
+                        Visibility="{Binding CompactUi, Source={x:Static he:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                    <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource RefreshIconData}" Command="{Binding Manager.RefreshListCommand}" />
+                </StackPanel>
+
                 <DockPanel Grid.Row="0" x:Name="BigButtons"
                         Visibility="{Binding CompactUi, Source={x:Static he:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                     <StackPanel Orientation="Horizontal" Margin="16 0 0 16" DockPanel.Dock="Left">
-                        <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource ListCheckIconData}"
+                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}"
                                 IsChecked="{Binding FilterBooking}" ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}"
                                 Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
-                        <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource EmptyGlassIconData}"
+                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}"
                                 IsChecked="{Binding FilterEmpty}" ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}"
                                 Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
-                        <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource FullGlassIconData}"
+                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}"
                                 IsChecked="{Binding FilterFull}" ToolTip="{x:Static g:AppStrings.Online_FilterFull}"
                                 Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
-                        <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
+                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
                                 ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
-                        <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource QuestionMarkIconData}"
+                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
                                 IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
                                 Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
                     </StackPanel>
@@ -122,7 +127,7 @@
 
                 <ListBox Grid.Row="1" x:Name="ServersListBox" ItemsSource="{Binding MainList}" VirtualizingPanel.IsVirtualizing="True"
                         VirtualizingPanel.VirtualizationMode="Recycling" IsSynchronizedWithCurrentItem="True" ItemTemplate="{StaticResource SimpleListItem}"
-                        VirtualizingStackPanel.CacheLength="25,25" VirtualizingStackPanel.CacheLengthUnit="Item" VirtualizingStackPanel.ScrollUnit="Pixel"
+                        VirtualizingStackPanel.CacheLength="1,1" VirtualizingStackPanel.CacheLengthUnit="Page" VirtualizingStackPanel.ScrollUnit="Pixel"
                         Style="{StaticResource VirtualizingListBox}" />
             </Grid>
 
@@ -139,17 +144,20 @@
                     Grid.Column="0" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" TextAlignment="Center" />
                 <StackPanel Orientation="Horizontal" Margin="8 16 0 0">
-                    <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}"
+                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}"
                             ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}" Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}"
+                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}"
                             ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}" Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}"
+                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}"
                             ToolTip="{x:Static g:AppStrings.Online_FilterFull}" Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
+                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
                             ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigButton}" IconData="{StaticResource QuestionMarkIconData}"
+                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
                             IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
                             Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
+                    <Separator />
+                    <mui:ModernButton Style="{StaticResource BigButton}" IconData="{StaticResource RefreshIconData}"
+                            Command="{Binding Manager.RefreshListCommand}" Content="Refresh" />
                 </StackPanel>
                 <Button Margin="0 8 0 0" Command="{Binding AddNewServerCommand}"
                         Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static on:OnlineManagerType.Recent}}">

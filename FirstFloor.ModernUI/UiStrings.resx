@@ -546,6 +546,14 @@
   <data name="Ordinalizing_Nth" xml:space="preserve">
     <value>{0}th</value>
   </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0} month</value>
+    <comment>For stuff like “5 days 12 hours”, will be pluralized automatically</comment>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0} week</value>
+    <comment>For stuff like “5 days 12 hours”, will be pluralized automatically</comment>
+  </data>
   <data name="Time_Day" xml:space="preserve">
     <value>{0} day</value>
     <comment>For stuff like “5 days 12 hours”, will be pluralized automatically</comment>

@@ -759,21 +759,6 @@
 	<data name="Common_Disabled" xml:space="preserve">
     <value>Disabled</value>
   </data>
-	<data name="Settings_Autoupdate_Startup" xml:space="preserve">
-    <value>On startup only</value>
-  </data>
-	<data name="Settings_Autoupdate_ThirtyMinutes" xml:space="preserve">
-    <value>Every 30 minutes</value>
-  </data>
-	<data name="Settings_Autoupdate_ThreeHours" xml:space="preserve">
-    <value>Every three hours</value>
-  </data>
-	<data name="Settings_Autoupdate_TenHours" xml:space="preserve">
-    <value>Every ten hours</value>
-  </data>
-	<data name="Settings_Autoupdate_Day" xml:space="preserve">
-    <value>Every day</value>
-  </data>
 	<data name="Settings_DefaultPlayerName" xml:space="preserve">
     <value>Player</value>
   <comment>@Invariant</comment></data>
@@ -1389,5 +1374,17 @@
   </data>
   <data name="OrdinalizingSubject_Server" xml:space="preserve">
     <value>server</value>
+  </data>
+  <data name="Online_Server_SessionInProcess" xml:space="preserve">
+    <value>in process</value>
+  </data>
+  <data name="Settings_PeriodFormat" xml:space="preserve">
+    <value>Every {0}</value>
+  </data>
+  <data name="Settings_Period_Startup" xml:space="preserve">
+    <value>On startup only</value>
+  </data>
+  <data name="Settings_Period_OnOpening" xml:space="preserve">
+    <value>On opening only</value>
   </data>
 </root>

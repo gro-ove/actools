@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="controls:ModernDialog">
+    <Style TargetType="c:ModernDialog">
         <Setter Property="BackgroundContent" Value="{DynamicResource DialogBackgroundContent}" />
         <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}" />
         <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
@@ -20,10 +20,11 @@
         <Setter Property="SizeToContent" Value="WidthAndHeight" />
         <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
+        <Setter Property="Padding" Value="24 20" />
 
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="controls:ModernDialog">
+                <ControlTemplate TargetType="c:ModernDialog">
                     <Border Background="{DynamicResource WindowBackground}" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
                         <Grid>
                             <Border BorderBrush="{DynamicResource WindowBorder}" BorderThickness="1">
@@ -31,8 +32,7 @@
                                     <Grid>
                                         <Grid.LayoutTransform>
                                             <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"
-                                                    ScaleX="{x:Static controls:DpiAwareWindow.OptionScale}"
-                                                    ScaleY="{x:Static controls:DpiAwareWindow.OptionScale}" />
+                                                    ScaleX="{x:Static c:DpiAwareWindow.OptionScale}" ScaleY="{x:Static c:DpiAwareWindow.OptionScale}" />
                                         </Grid.LayoutTransform>
 
                                         <!-- window background content -->
@@ -43,7 +43,7 @@
                                             <Rectangle Fill="{DynamicResource Accent}" Canvas.Top="18" Canvas.Left="24" Width="100" Height="6" />
                                         </Canvas>
 
-                                        <Grid Margin="24">
+                                        <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
@@ -51,8 +51,8 @@
                                             </Grid.RowDefinitions>
 
                                             <!-- title -->
-                                            <StackPanel Orientation="Horizontal">
-                                                <controls:BetterImage Margin="4 4 8 0" Width="28" Height="28" StretchDirection="DownOnly"
+                                            <StackPanel Orientation="Horizontal" Margin="24 24 24 0">
+                                                <c:BetterImage Margin="4 4 8 0" Width="28" Height="28" StretchDirection="DownOnly"
                                                         Filename="{TemplateBinding IconSource}"
                                                         Visibility="{TemplateBinding IconSource, Converter={StaticResource ExistToVisibilityConverter}}" />
                                                 <TextBlock DataContext="{TemplateBinding Title}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
@@ -61,10 +61,10 @@
                                             </StackPanel>
 
                                             <!-- content -->
-                                            <controls:TransitioningContentControl Grid.Row="1" Margin="0,20" Content="{TemplateBinding Content}" />
+                                            <c:TransitioningContentControl Grid.Row="1" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" />
 
                                             <!-- buttons -->
-                                            <Grid Grid.Row="2">
+                                            <Grid Grid.Row="2" Margin="24 0 24 24">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition />
                                                     <ColumnDefinition Width="Auto" />

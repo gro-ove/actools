@@ -2,12 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
+using AcTools.Processes;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -51,7 +53,8 @@ namespace AcManager.Pages.Drive {
             if (Model.Entry == null) return;
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.Entry.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
-                new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control))
+                new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(Model.Entry.CancelBookingCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
             });
         }
 
@@ -59,8 +62,30 @@ namespace AcManager.Pages.Drive {
 
         public ViewModel Model => (ViewModel)DataContext;
 
-        private void Timer_Tick(object sender, EventArgs e) {
+        private DateTime _sessionEndedUpdate;
+
+        private bool RequiresUpdate() {
+            var entry = Model.Entry;
+            var now = DateTime.Now;
+
+            if (now - entry.PreviousUpdateTime > TimeSpan.FromSeconds(5)) {
+                return true;
+            }
+
+            if (now - _sessionEndedUpdate > TimeSpan.FromMinutes(0.5) && entry.SessionEnd < now &&
+                    entry.CurrentSessionType.HasValue && entry.CurrentSessionType.Value != Game.SessionType.Race) {
+                _sessionEndedUpdate = now;
+                return true;
+            }
+
+            return false;
+        }
+
+        private void OnTick(object sender, EventArgs e) {
             Model.Entry.OnTick();
+            if (RequiresUpdate()) {
+                Model.Entry.Update(ServerEntry.UpdateMode.Full, true).Forget();
+            }
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
@@ -70,7 +95,7 @@ namespace AcManager.Pages.Drive {
                 Interval = TimeSpan.FromSeconds(1),
                 IsEnabled = true
             };
-            _timer.Tick += Timer_Tick;
+            _timer.Tick += OnTick;
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -99,6 +124,13 @@ namespace AcManager.Pages.Drive {
             public ViewModel(ServerEntry entry) {
                 Entry = entry;
                 FancyBackgroundManager.Instance.ChangeBackground(Entry.Track?.PreviewImage);
+            }
+        }
+
+        private void SkinsList_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            var entry = Model.Entry;
+            if (entry.IsBooked && entry.BookingTimeLeft > TimeSpan.FromSeconds(3)) {
+                entry.RebookSkin().Forget();
             }
         }
     }

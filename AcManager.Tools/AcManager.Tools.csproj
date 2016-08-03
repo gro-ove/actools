@@ -188,6 +188,7 @@
     <Compile Include="ContentInstallation\ZipContentInstallator.cs" />
     <Compile Include="Helpers\Api\CmHelpersProvider.cs" />
     <Compile Include="Helpers\Api\IpGeoProvider.cs" />
+    <Compile Include="Helpers\Api\Kunos\BookingResult.cs" />
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>
@@ -252,6 +253,7 @@
     <Compile Include="Objects\ServerPresetObject.cs" />
     <Compile Include="Objects\WeatherColorEntry.cs" />
     <Compile Include="SemiGui\CopyFilterToSystemForOculusHelper.cs" />
+    <Compile Include="SemiGui\IBookingUi.cs" />
     <Compile Include="ToolsStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -262,7 +264,7 @@
     <Compile Include="SemiGui\InformativeException.cs" />
     <Compile Include="SemiGui\ReplayHelper.cs" />
     <Compile Include="SemiGui\IGameUi.cs" />
-    <Compile Include="SemiGui\IGameUiFactory.cs" />
+    <Compile Include="SemiGui\IUiFactory.cs" />
     <Compile Include="SemiGui\UserCancelledException.cs" />
     <Compile Include="SemiGui\VariablesReplacement.cs" />
     <Compile Include="SemiGui\WeatherSpecificCloudsHelper.cs" />
@@ -397,19 +399,10 @@
     <None Include="Packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ToolsStrings.fr.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="ToolsStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>ToolsStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolsStrings.it.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ToolsStrings.ru.resx">
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -447,7 +447,40 @@
     </Style>
 
     <!--quick filter buttons (big)-->
-    <Style x:Key="BigButton" TargetType="{x:Type mui:ModernToggleButton}" BasedOn="{StaticResource {x:Type mui:ModernButton}}">
+    <Style x:Key="BigButton" TargetType="{x:Type mui:ModernButton}" BasedOn="{StaticResource {x:Type mui:ModernButton}}">
+        <Setter Property="Width" Value="48" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="EllipseDiameter" Value="24" />
+        <Setter Property="Margin" Value="0 0 8 0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type mui:ModernButton}">
+                    <DockPanel Background="Transparent">
+                        <TextBlock TextAlignment="Center" Margin="0 4 0 0" Text="{TemplateBinding Content}" Style="{StaticResource Label}"
+                                DockPanel.Dock="Bottom" />
+                        <Grid Margin="{TemplateBinding Padding}" Width="{TemplateBinding EllipseDiameter}" Height="{TemplateBinding EllipseDiameter}">
+                            <Path x:Name="IconPath" Data="{TemplateBinding IconData}" Fill="{TemplateBinding Foreground}" Stretch="Uniform"
+                                    SnapsToDevicePixels="True" />
+                        </Grid>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextHover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextPressed}" />
+                            <Setter TargetName="IconPath" Property="Fill" Value="{DynamicResource ModernButtonIconForegroundPressed}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource ModernButtonTextDisabled}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="BigToggleButton" TargetType="{x:Type mui:ModernToggleButton}" BasedOn="{StaticResource {x:Type mui:ModernButton}}">
         <Setter Property="Width" Value="48" />
         <Setter Property="Height" Value="48" />
         <Setter Property="EllipseDiameter" Value="24" />

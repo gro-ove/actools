@@ -9,8 +9,11 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using AcManager.Internal;
 using AcManager.Tools.Helpers.Api.Kunos;
+using AcTools.Processes;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -33,15 +36,17 @@ namespace AcManager.Tools.Helpers.Api {
 
         private static void NextServer() {
             InternalUtils.MoveToNextKunosServer();
-            Logging.Warning("[KunosApiProvider] Fallback to: " + (ServerUri ?? "NULL"));
+            Logging.Warning("[KunosApiProvider] Fallback to: " + (ServerUri ?? @"NULL"));
         }
 
         private static HttpRequestCachePolicy _cachePolicy;
 
+        [ItemNotNull]
         private static Task<string> LoadAsync(string uri) {
             return OptionUseWebClient ? LoadUsingClientAsync(uri) : LoadUsingRequestAsync(uri);
         }
 
+        [NotNull]
         private static string Load(string uri) {
             return OptionUseWebClient ? LoadUsingClient(uri) : LoadUsingRequest(uri);
         }
@@ -55,17 +60,18 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        [ItemNotNull]
         private static async Task<string> LoadUsingClientAsync(string uri) {
             using (var order = KillerOrder.Create(new WebClient {
                 Headers = {
                     [HttpRequestHeader.UserAgent] = InternalUtils.GetKunosUserAgent()
                 }
             }, OptionWebRequestTimeout)) {
-                var result = await order.Victim.DownloadStringTaskAsync(uri);
-                return result;
+                return await order.Victim.DownloadStringTaskAsync(uri);
             }
         }
 
+        [NotNull]
         private static string LoadUsingClient(string uri) {
             using (var client = new TimeoutyWebClient {
                 Headers = {
@@ -76,6 +82,7 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        [ItemNotNull]
         private static async Task<string> LoadUsingRequestAsync(string uri) {
             using (var order = KillerOrder.Create((HttpWebRequest)WebRequest.Create(uri), OptionWebRequestTimeout)) {
                 var request = order.Victim;
@@ -126,7 +133,8 @@ namespace AcManager.Tools.Helpers.Api {
                 return result;
             }
         }
-        
+
+        [NotNull]
         private static string LoadUsingRequest(string uri) {
             var request = (HttpWebRequest)WebRequest.Create(uri);
             request.Method = "GET";
@@ -252,6 +260,23 @@ namespace AcManager.Tools.Helpers.Api {
             return true;
         }
 
+        private static ServerInformation PrepareLan(ServerInformation result, string ip) {
+            if (result.Ip == string.Empty) {
+                result.Ip = ip;
+            }
+
+            result.L = true;
+
+            for (var i = 0; i < result.Durations.Length; i++) {
+                if ((Game.SessionType?)result.SessionTypes.ElementAtOrDefault(i) != Game.SessionType.Race &&
+                        result.Durations[i] < 60) {
+                    result.Durations[i] *= 60;
+                }
+            }
+
+            return result;
+        }
+
         [CanBeNull]
         public static ServerInformation TryToGetInformationDirect([NotNull] string address) {
             if (address == null) throw new ArgumentNullException(nameof(address));
@@ -266,11 +291,7 @@ namespace AcManager.Tools.Helpers.Api {
             var requestUri = $"http://{ip}:{portC}/INFO";
 
             try {
-                var result = JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri));
-                if (result.Ip == string.Empty) {
-                    result.Ip = ip;
-                }
-                return result;
+                return PrepareLan(JsonConvert.DeserializeObject<ServerInformation>(await LoadAsync(requestUri)), ip);
             } catch (WebException e) {
                 Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
@@ -285,11 +306,7 @@ namespace AcManager.Tools.Helpers.Api {
             var requestUri = $"http://{ip}:{portC}/INFO";
 
             try {
-                var result = JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri));
-                if (result.Ip == string.Empty) {
-                    result.Ip = ip;
-                }
-                return result;
+                return PrepareLan(JsonConvert.DeserializeObject<ServerInformation>(Load(requestUri)), ip);
             } catch (WebException e) {
                 Logging.Warning($"Cannot get server information: {requestUri}, {e.Message}");
                 return null;
@@ -328,6 +345,60 @@ namespace AcManager.Tools.Helpers.Api {
             } catch (Exception e) {
                 Logging.Warning($"Cannot get actual server information: {requestUri}\n{e}");
                 return null;
+            }
+        }
+
+        [CanBeNull]
+        public static BookingResult TryToBook(string ip, int portC, string password, string carId, string skinId, string driverName, string teamName) {
+            var steamId = SteamIdHelper.Instance.Value ?? @"-1";
+            var arguments = new[] { carId, skinId, driverName, teamName, steamId, password }.Select(x => x ?? "").JoinToString('|');
+            var requestUri = $"http://{ip}:{portC}/SUB|{HttpUtility.UrlEncode(arguments)}";
+            
+            try {
+                var response = Load(requestUri);
+                var split = response.Split(',');
+                switch (split[0]) {
+                    case "OK":
+                        return new BookingResult(TimeSpan.FromSeconds(FlexibleParser.ParseDouble(split[1])));
+
+                    case "ILLEGAL CAR":
+                        return new BookingResult("Please, select a car supported by the server");
+
+                    case "INCORRECT PASSWORD":
+                        return new BookingResult("The password is not valid");
+
+                    case "CLOSED":
+                        return new BookingResult("Booking is closed");
+
+                    case "BLACKLISTED":
+                        return new BookingResult("You have been blacklisted on this server");
+
+                    case "SERVER FULL":
+                        return new BookingResult("Server is full");
+
+                    default:
+                        return new BookingResult($"Server says: “{response}”");
+                }
+            } catch (WebException e) {
+                Logging.Warning($"Cannot book: {requestUri}, {e.Message}");
+                return null;
+            } catch (Exception e) {
+                Logging.Warning($"Cannot book: {requestUri}\n{e}");
+                return null;
+            }
+        }
+
+        [CanBeNull]
+        public static void TryToUnbook(string ip, int portC) {
+            var steamId = SteamIdHelper.Instance.Value ?? @"-1";
+            var requestUri = $"http://{ip}:{portC}/UNSUB|{HttpUtility.UrlEncode(steamId)}";
+            
+            try {
+                Load(requestUri);
+            } catch (WebException e) {
+                Logging.Warning($"Cannot unbook: {requestUri}, {e.Message}");
+            } catch (Exception e) {
+                Logging.Warning($"Cannot unbook: {requestUri}\n{e}");
             }
         }
 

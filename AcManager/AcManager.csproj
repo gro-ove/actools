@@ -214,6 +214,9 @@
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\BookingDialog.xaml.cs">
+      <DependentUpon>BookingDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\CarSetupsDialog.xaml.cs">
       <DependentUpon>CarSetupsDialog.xaml</DependentUpon>
     </Compile>
@@ -572,6 +575,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dialogs\AssistsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\BookingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1092,12 +1099,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>AppStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AppStrings.it.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AppStrings.ru.resx">
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

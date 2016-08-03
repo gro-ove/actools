@@ -191,9 +191,6 @@
     <Compile Include="AcObjectListBox.cs" />
     <Compile Include="Helpers\AcObjectsUriProvider.cs" />
     <Compile Include="OxyPlotGraphViewer.cs" />
-    <Compile Include="GraphViewer.xaml.cs">
-      <DependentUpon>GraphViewer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Helpers\FinishableControl.cs" />
     <Compile Include="ViewModels\AcListPageViewModel.cs" />
     <Compile Include="ViewModels\AcObjectListCollectionViewWrapper.cs" />
@@ -258,10 +255,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomShowroom\LiteShowroomTools.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GraphViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -389,9 +382,6 @@
     <EmbeddedResource Include="ControlsStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ControlsStrings.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ControlsStrings.ru.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="App.config" />

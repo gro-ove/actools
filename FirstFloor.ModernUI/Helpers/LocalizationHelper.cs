@@ -34,8 +34,15 @@ namespace FirstFloor.ModernUI.Helpers {
             var result = new List<string>();
 
             var days = (int)span.TotalDays;
+            var months = days / 30;
+            if (months > 30) {
+                result.Add(PluralizingConverter.PluralizeExt(months, UiStrings.Time_Month));
+                days = days % 30;
+            }
+
             if (days > 0) {
-                result.Add(PluralizingConverter.PluralizeExt(days, UiStrings.Time_Day));
+                result.Add(days % 7 == 0
+                        ? PluralizingConverter.PluralizeExt(days / 7, UiStrings.Time_Week) : PluralizingConverter.PluralizeExt(days, UiStrings.Time_Day));
             }
 
             if (span.Hours > 0) {

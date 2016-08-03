@@ -24,7 +24,7 @@ namespace FirstFloor.ModernUI {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class UiStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace FirstFloor.ModernUI {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("FirstFloor.ModernUI.UiStrings", typeof(UiStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FirstFloor.ModernUI.UiStrings", typeof(UiStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1195,11 +1195,29 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} month.
+        /// </summary>
+        public static string Time_Month {
+            get {
+                return ResourceManager.GetString("Time_Month", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} second.
         /// </summary>
         public static string Time_Second {
             get {
                 return ResourceManager.GetString("Time_Second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} week.
+        /// </summary>
+        public static string Time_Week {
+            get {
+                return ResourceManager.GetString("Time_Week", resourceCulture);
             }
         }
         

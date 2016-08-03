@@ -24,7 +24,7 @@ namespace AcManager.Controls {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ControlsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Controls {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -952,7 +952,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Gyroscopic effect.
+        ///   Looks up a localized string similar to Gyroscopic effect.
         /// </summary>
         public static string Controls_GyroscopicEffect {
             get {
@@ -1339,7 +1339,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Lights.
+        ///   Looks up a localized string similar to Lights.
         /// </summary>
         public static string CustomShowroom_Control_Lights {
             get {
@@ -1348,7 +1348,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Wireframe.
+        ///   Looks up a localized string similar to Wireframe.
         /// </summary>
         public static string CustomShowroom_Control_Wireframe {
             get {
@@ -2305,7 +2305,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disable _SweetFX.
+        ///   Looks up a localized string similar to Disable SweetFX.
         /// </summary>
         public static string Showroom_DisableSweetFx {
             get {
@@ -2332,7 +2332,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide _watermark.
+        ///   Looks up a localized string similar to Hide watermark.
         /// </summary>
         public static string Showroom_HideWatermark {
             get {

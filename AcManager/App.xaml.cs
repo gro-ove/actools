@@ -123,7 +123,11 @@ namespace AcManager {
             AppAppearanceManager.Initialize();
 
             AcObjectsUriManager.Register(new UriProvider());
-            GameWrapper.RegisterFactory(new GameWrapperUiFactory());
+
+            var uiFactory = new GameWrapperUiFactory();
+            GameWrapper.RegisterFactory(uiFactory);
+            ServerEntry.RegisterFactory(uiFactory);
+
             AcError.RegisterFixer(new AcErrorFixer());
             AcError.RegisterSolutionsFactory(new SolutionsFactory());
 

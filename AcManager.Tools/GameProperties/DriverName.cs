@@ -6,13 +6,18 @@ using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.GameProperties {
     public class DriverName : Game.RaceIniProperties {
-        public override void Set(IniFile file) {
+        public static string GetOnline() {
             var drive = SettingsHolder.Drive;
+            return drive.DifferentPlayerNameOnline ? drive.PlayerNameOnline : drive.PlayerName;
+        }
+
+        public override void Set(IniFile file) {
             if (file["REMOTE"].GetBool("ACTIVE", false)) {
-                var driverName = drive.DifferentPlayerNameOnline ? drive.PlayerNameOnline : drive.PlayerName;
+                var driverName = GetOnline();
                 file["REMOTE"].Set("NAME", driverName);
                 file["CAR_0"].Set("DRIVER_NAME", driverName);
             } else {
+                var drive = SettingsHolder.Drive;
                 var playerName = drive.PlayerName;
                 if (SettingsHolder.Live.RsrEnabled && SettingsHolder.Live.RsrDifferentPlayerName &&
                         AcSettingsHolder.Forms.Entries.GetByIdOrDefault(RsrMark.FormId)?.IsVisible == true) {

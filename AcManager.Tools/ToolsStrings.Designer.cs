@@ -2656,6 +2656,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to in process.
+        /// </summary>
+        public static string Online_Server_SessionInProcess {
+            get {
+                return ResourceManager.GetString("Online_Server_SessionInProcess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Track {0} is missing..
         /// </summary>
         public static string Online_Server_TrackIsMissing {
@@ -3007,56 +3016,38 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Every day.
+        ///   Looks up a localized string similar to Player.
         /// </summary>
-        public static string Settings_Autoupdate_Day {
+        public static string Settings_DefaultPlayerName {
             get {
-                return ResourceManager.GetString("Settings_Autoupdate_Day", resourceCulture);
+                return ResourceManager.GetString("Settings_DefaultPlayerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On opening only.
+        /// </summary>
+        public static string Settings_Period_OnOpening {
+            get {
+                return ResourceManager.GetString("Settings_Period_OnOpening", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to On startup only.
         /// </summary>
-        public static string Settings_Autoupdate_Startup {
+        public static string Settings_Period_Startup {
             get {
-                return ResourceManager.GetString("Settings_Autoupdate_Startup", resourceCulture);
+                return ResourceManager.GetString("Settings_Period_Startup", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Every ten hours.
+        ///   Looks up a localized string similar to Every {0}.
         /// </summary>
-        public static string Settings_Autoupdate_TenHours {
+        public static string Settings_PeriodFormat {
             get {
-                return ResourceManager.GetString("Settings_Autoupdate_TenHours", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Every 30 minutes.
-        /// </summary>
-        public static string Settings_Autoupdate_ThirtyMinutes {
-            get {
-                return ResourceManager.GetString("Settings_Autoupdate_ThirtyMinutes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Every three hours.
-        /// </summary>
-        public static string Settings_Autoupdate_ThreeHours {
-            get {
-                return ResourceManager.GetString("Settings_Autoupdate_ThreeHours", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Player.
-        /// </summary>
-        public static string Settings_DefaultPlayerName {
-            get {
-                return ResourceManager.GetString("Settings_DefaultPlayerName", resourceCulture);
+                return ResourceManager.GetString("Settings_PeriodFormat", resourceCulture);
             }
         }
         

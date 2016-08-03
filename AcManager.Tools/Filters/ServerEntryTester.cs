@@ -48,6 +48,8 @@ namespace AcManager.Tools.Filters {
                     return nameof(ServerEntry.HasErrors);
 
                 case "active":
+                    return nameof(ServerEntry.CurrentSessionType);
+
                 case "booking":
                 case "practice":
                 case "qualification":
@@ -140,8 +142,7 @@ namespace AcManager.Tools.Filters {
                     return value.Test(obj.HasErrors);
 
                 case "active":
-                    var activeSession = obj.Sessions.FirstOrDefault(x => x.IsActive);
-                    return activeSession != null && value.Test(activeSession.Type.ToString());
+                    return value.Test(obj.CurrentSessionType?.ToString());
 
                 case "left":
                     var now = DateTime.Now;

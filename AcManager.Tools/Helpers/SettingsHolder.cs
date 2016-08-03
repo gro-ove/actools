@@ -16,10 +16,22 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public class SettingsHolder {
-        public class PeriodEntry {
-            public string DisplayName { get; internal set; }
+        public sealed class PeriodEntry : Displayable {
+            public TimeSpan TimeSpan { get; }
 
-            public TimeSpan TimeSpan { get; internal set; }
+            public PeriodEntry() {}
+
+            public PeriodEntry(TimeSpan timeSpan, string displayName = null) {
+                TimeSpan = timeSpan;
+                DisplayName = displayName ?? (timeSpan == TimeSpan.Zero ? ToolsStrings.Common_Disabled :
+                        timeSpan == TimeSpan.MaxValue ? ToolsStrings.Settings_Period_OnOpening :
+                                string.Format(ToolsStrings.Settings_PeriodFormat, timeSpan.ToReadableTime()));
+            }
+
+            public PeriodEntry(string displayName) {
+                TimeSpan = TimeSpan.MaxValue;
+                DisplayName = displayName;
+            }
         }
 
         public class SearchEngineEntry {
@@ -46,6 +58,36 @@ namespace AcManager.Tools.Helpers {
 
         public class OnlineSettings : NotifyPropertyChanged {
             internal OnlineSettings() { }
+
+            private PeriodEntry[] _refreshPeriods;
+
+            public PeriodEntry[] RefreshPeriods => _refreshPeriods ?? (_refreshPeriods = new[] {
+                new PeriodEntry(TimeSpan.Zero),
+                new PeriodEntry(ToolsStrings.Settings_Period_OnOpening),
+                new PeriodEntry(TimeSpan.FromSeconds(3)),
+                new PeriodEntry(TimeSpan.FromSeconds(5)),
+                new PeriodEntry(TimeSpan.FromSeconds(10)),
+                new PeriodEntry(TimeSpan.FromSeconds(25)),
+                new PeriodEntry(TimeSpan.FromMinutes(1)),
+                new PeriodEntry(TimeSpan.FromMinutes(2)),
+                new PeriodEntry(TimeSpan.FromMinutes(5))
+            });
+
+            private PeriodEntry _refreshPeriod;
+
+            public PeriodEntry RefreshPeriod {
+                get {
+                    var saved = ValuesStorage.GetTimeSpan("Settings.OnlineSettings.RefreshPeriod");
+                    return _refreshPeriod ?? (_refreshPeriod = RefreshPeriods.FirstOrDefault(x => x.TimeSpan == saved) ??
+                            RefreshPeriods.ElementAt(4));
+                }
+                set {
+                    if (Equals(value, _refreshPeriod)) return;
+                    _refreshPeriod = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.RefreshPeriod", value.TimeSpan);
+                    OnPropertyChanged();
+                }
+            }
 
             private OnlineServerEntry[] _onlineServers;
 
@@ -228,12 +270,12 @@ namespace AcManager.Tools.Helpers {
             private PeriodEntry[] _periodEntries;
 
             public PeriodEntry[] Periods => _periodEntries ?? (_periodEntries = new[] {
-                new PeriodEntry { DisplayName = ToolsStrings.Common_Disabled, TimeSpan = TimeSpan.Zero },
-                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_Startup, TimeSpan = TimeSpan.MaxValue },
-                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_ThirtyMinutes, TimeSpan = TimeSpan.FromMinutes(30) },
-                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_ThreeHours, TimeSpan = TimeSpan.FromHours(3) },
-                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_TenHours, TimeSpan = TimeSpan.FromHours(6) },
-                new PeriodEntry { DisplayName = ToolsStrings.Settings_Autoupdate_Day, TimeSpan = TimeSpan.FromDays(1) }
+                new PeriodEntry(TimeSpan.Zero),
+                new PeriodEntry(ToolsStrings.Settings_Period_Startup),
+                new PeriodEntry(TimeSpan.FromMinutes(30)),
+                new PeriodEntry(TimeSpan.FromHours(3)),
+                new PeriodEntry(TimeSpan.FromHours(6)),
+                new PeriodEntry(TimeSpan.FromDays(1))
             });
 
             private PeriodEntry _updatePeriod;
@@ -241,9 +283,9 @@ namespace AcManager.Tools.Helpers {
             [NotNull]
             public PeriodEntry UpdatePeriod {
                 get {
-                    return _updatePeriod ?? (_updatePeriod = Periods.FirstOrDefault(x =>
-                            x.TimeSpan == ValuesStorage.GetTimeSpan("Settings.CommonSettings.UpdatePeriod", Periods.ElementAt(3).TimeSpan)) ??
-                            Periods.First());
+                    var saved = ValuesStorage.GetTimeSpan("Settings.CommonSettings.UpdatePeriod");
+                    return _updatePeriod ?? (_updatePeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
+                            Periods.ElementAt(2));
                 }
                 set {
                     if (Equals(value, _updatePeriod)) return;
@@ -822,13 +864,30 @@ namespace AcManager.Tools.Helpers {
             private PeriodEntry[] _periodEntries;
 
             public PeriodEntry[] NewContentPeriods => _periodEntries ?? (_periodEntries = new[] {
-                new PeriodEntry { DisplayName = ToolsStrings.Common_Disabled, TimeSpan = TimeSpan.Zero },
-                new PeriodEntry { DisplayName = ToolsStrings.Period_OneDay, TimeSpan = TimeSpan.FromDays(1) },
-                new PeriodEntry { DisplayName = ToolsStrings.Period_ThreeDays, TimeSpan = TimeSpan.FromDays(3) },
-                new PeriodEntry { DisplayName = ToolsStrings.Period_Week, TimeSpan = TimeSpan.FromDays(7) },
-                new PeriodEntry { DisplayName = ToolsStrings.Period_TwoWeeks, TimeSpan = TimeSpan.FromDays(14) },
-                new PeriodEntry { DisplayName = ToolsStrings.Period_Month, TimeSpan = TimeSpan.FromDays(30) }
+                new PeriodEntry(TimeSpan.Zero),
+                new PeriodEntry(TimeSpan.FromDays(1)),
+                new PeriodEntry(TimeSpan.FromDays(3)),
+                new PeriodEntry(TimeSpan.FromDays(7)),
+                new PeriodEntry(TimeSpan.FromDays(14)),
+                new PeriodEntry(TimeSpan.FromDays(30)),
+                new PeriodEntry(TimeSpan.FromDays(60))
             });
+
+            private PeriodEntry _newContentPeriod;
+
+            public PeriodEntry NewContentPeriod {
+                get {
+                    var saved = ValuesStorage.GetTimeSpan("Settings.ContentSettings.NewContentPeriod");
+                    return _newContentPeriod ?? (_newContentPeriod = NewContentPeriods.FirstOrDefault(x => x.TimeSpan == saved) ??
+                            NewContentPeriods.ElementAt(4));
+                }
+                set {
+                    if (Equals(value, _newContentPeriod)) return;
+                    _newContentPeriod = value;
+                    ValuesStorage.Set("Settings.ContentSettings.NewContentPeriod", value.TimeSpan);
+                    OnPropertyChanged();
+                }
+            }
 
             private bool? _deleteConfirmation;
 
@@ -838,22 +897,6 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _deleteConfirmation)) return;
                     _deleteConfirmation = value;
                     ValuesStorage.Set("Settings.ContentSettings.DeleteConfirmation", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private PeriodEntry _newContentPeriod;
-
-            public PeriodEntry NewContentPeriod {
-                get {
-                    return _newContentPeriod ?? (_newContentPeriod = NewContentPeriods.FirstOrDefault(x =>
-                            x.TimeSpan == ValuesStorage.GetTimeSpan("Settings.ContentSettings.NewContentPeriod", NewContentPeriods.ElementAt(4).TimeSpan)) ??
-                            NewContentPeriods.First());
-                }
-                set {
-                    if (Equals(value, _newContentPeriod)) return;
-                    _newContentPeriod = value;
-                    ValuesStorage.Set("Settings.ContentSettings.NewContentPeriod", value.TimeSpan);
                     OnPropertyChanged();
                 }
             }

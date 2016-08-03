@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -261,7 +261,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Activated.
+        ///   Looks up a localized string similar to Activated.
         /// </summary>
         public static string AcObject_AppActivated {
             get {
@@ -1026,7 +1026,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable _post-processing effects.
+        ///   Looks up a localized string similar to Enable post-processing effects.
         /// </summary>
         public static string AcSettings_Video_EnablePostProcessing {
             get {
@@ -1053,7 +1053,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Fullscreen.
+        ///   Looks up a localized string similar to Fullscreen.
         /// </summary>
         public static string AcSettings_Video_Fullscreen {
             get {
@@ -1062,7 +1062,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _FXAA.
+        ///   Looks up a localized string similar to FXAA.
         /// </summary>
         public static string AcSettings_Video_Fxaa {
             get {
@@ -1098,7 +1098,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Limit framerate.
+        ///   Looks up a localized string similar to Limit framerate.
         /// </summary>
         public static string AcSettings_Video_LimitFramerate {
             get {
@@ -1332,7 +1332,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Vertical syncronization.
+        ///   Looks up a localized string similar to Vertical syncronization.
         /// </summary>
         public static string AcSettings_Video_VerticalSyncronization {
             get {
@@ -1885,7 +1885,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto_blip.
+        ///   Looks up a localized string similar to Autoblip.
         /// </summary>
         public static string Assists_AutoBlip {
             get {
@@ -1903,7 +1903,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic _clutch.
+        ///   Looks up a localized string similar to Automatic clutch.
         /// </summary>
         public static string Assists_AutoClutch {
             get {
@@ -1921,7 +1921,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Automatic shifting.
+        ///   Looks up a localized string similar to Automatic shifting.
         /// </summary>
         public static string Assists_AutoShifting {
             get {
@@ -1939,7 +1939,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Fuel consumption.
+        ///   Looks up a localized string similar to Fuel consumption.
         /// </summary>
         public static string Assists_FuelConsumption {
             get {
@@ -1948,7 +1948,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ideal _line.
+        ///   Looks up a localized string similar to Ideal line.
         /// </summary>
         public static string Assists_IdealLine {
             get {
@@ -1966,7 +1966,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mechanical _damage.
+        ///   Looks up a localized string similar to Mechanical damage.
         /// </summary>
         public static string Assists_MechanicalDamage {
             get {
@@ -2002,7 +2002,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Stability control.
+        ///   Looks up a localized string similar to Stability control.
         /// </summary>
         public static string Assists_StabilityControl {
             get {
@@ -2047,7 +2047,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Tyre blankets.
+        ///   Looks up a localized string similar to Tyre blankets.
         /// </summary>
         public static string Assists_TyreBlankets {
             get {
@@ -2227,7 +2227,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable all e_ffects.
+        ///   Looks up a localized string similar to Enable all effects.
         /// </summary>
         public static string CarPreviews_AllEffects {
             get {
@@ -2326,7 +2326,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable FX_AA.
+        ///   Looks up a localized string similar to Enable FXAA.
         /// </summary>
         public static string CarPreviews_Fxaa {
             get {
@@ -2389,7 +2389,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Resize previews.
+        ///   Looks up a localized string similar to Resize previews.
         /// </summary>
         public static string CarPreviews_ResizePreviews {
             get {
@@ -2506,7 +2506,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Automatically recalculate P/W ratio.
+        ///   Looks up a localized string similar to Automatically recalculate P/W ratio.
         /// </summary>
         public static string CarSpecs_AutomaticallyRecalculatePwRatio {
             get {
@@ -3217,7 +3217,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Combine with _keyboard.
+        ///   Looks up a localized string similar to Combine with keyboard.
         /// </summary>
         public static string Controls_CombineWithKeyboard {
             get {
@@ -3244,7 +3244,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable _mouse steering.
+        ///   Looks up a localized string similar to Enable mouse steering.
         /// </summary>
         public static string Controls_EnableMouseSteering {
             get {
@@ -3316,7 +3316,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Invert FFB.
+        ///   Looks up a localized string similar to Invert FFB.
         /// </summary>
         public static string Controls_InvertFfb {
             get {
@@ -3505,7 +3505,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use _H-shifter.
+        ///   Looks up a localized string similar to Use H-shifter.
         /// </summary>
         public static string Controls_UseHShifter {
             get {
@@ -3514,7 +3514,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use mouse _buttons for throttle and brakes.
+        ///   Looks up a localized string similar to Use mouse buttons for throttle and brakes.
         /// </summary>
         public static string Controls_UseMouseButtons {
             get {
@@ -3559,7 +3559,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In _Shadow.
+        ///   Looks up a localized string similar to In Shadow.
         /// </summary>
         public static string CreateShowroom_InShadow {
             get {
@@ -3794,7 +3794,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Fixed opponents strength.
+        ///   Looks up a localized string similar to Fixed opponents strength.
         /// </summary>
         public static string Drive_FixedOpponentsStrength {
             get {
@@ -3803,7 +3803,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Ghost car.
+        ///   Looks up a localized string similar to Ghost car.
         /// </summary>
         public static string Drive_GhostCar {
             get {
@@ -3902,7 +3902,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Penalty for _jump start.
+        ///   Looks up a localized string similar to Penalty for jump start.
         /// </summary>
         public static string Drive_JumpStartPenalty {
             get {
@@ -3992,7 +3992,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Penalties.
+        ///   Looks up a localized string similar to Penalties.
         /// </summary>
         public static string Drive_Penalties {
             get {
@@ -4010,7 +4010,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Real conditions.
+        ///   Looks up a localized string similar to Real conditions.
         /// </summary>
         public static string Drive_RealConditions {
             get {
@@ -4100,7 +4100,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Tyre blankets.
+        ///   Looks up a localized string similar to Tyre blankets.
         /// </summary>
         public static string Drive_TyreBlankets {
             get {
@@ -7549,7 +7549,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t remove ui_skin.json.
+        ///   Looks up a localized string similar to Can’t remove “ui_skin.json”.
         /// </summary>
         public static string Skin_CannotRemoveUiSkin {
             get {
@@ -9648,7 +9648,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View “readme__weather.txt”.
+        ///   Looks up a localized string similar to View “readme_weather.txt”.
         /// </summary>
         public static string WeatherEdit_ViewReadmeHeader {
             get {

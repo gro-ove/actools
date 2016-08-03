@@ -13,9 +13,9 @@ using StringBasedFilter;
 
 namespace AcManager.Tools.SemiGui {
     public static class GameWrapper {
-        private static IGameUiFactory _factory;
+        private static IUiFactory<IGameUi> _factory;
 
-        public static void RegisterFactory(IGameUiFactory factory) {
+        public static void RegisterFactory(IUiFactory<IGameUi> factory) {
             _factory = factory;
         }
 

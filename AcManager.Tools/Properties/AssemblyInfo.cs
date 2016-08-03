@@ -41,6 +41,7 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.AcObjectsNew")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Data")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Managers")]
+[assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Managers.Online")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Helpers")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.Objects")]
 [assembly: XmlnsPrefix("http://acstuff.ru/app/tools", "t")]
