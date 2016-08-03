@@ -181,6 +181,9 @@ namespace AcTools.Processes {
             [CanBeNull]
             public ReplayProperties ReplayProperties;
 
+            [CanBeNull]
+            public BenchmarkProperties BenchmarkProperties;
+
             public List<object> AdditionalPropertieses = new List<object>();
 
             public DateTime StartTime { get; internal set; }
@@ -204,6 +207,10 @@ namespace AcTools.Processes {
             private List<string> _removeLater;
 
             public StartProperties() { }
+
+            public StartProperties(BenchmarkProperties benchmarkProperties) {
+                BenchmarkProperties = benchmarkProperties;
+            }
 
             public StartProperties(ReplayProperties replayProperties) {
                 ReplayProperties = replayProperties;
@@ -253,7 +260,9 @@ namespace AcTools.Processes {
                         }
 
                         ReplayProperties.Set(iniFile);
-                    } else {
+                    } else if (BenchmarkProperties != null) {
+                        BenchmarkProperties.Set(iniFile);
+                    } else { 
                         throw new NotSupportedException();
                     }
                 }

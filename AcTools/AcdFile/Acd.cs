@@ -66,9 +66,10 @@ namespace AcTools.AcdFile {
         }
 
         public void ExportDirectory(string dir) {
-            Directory.CreateDirectory(dir);
             foreach (var entry in Entries.Values) {
-                File.WriteAllBytes(Path.Combine(dir, entry.Name), entry.Data);
+                var destination = Path.Combine(dir, entry.Name);
+                Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
+                File.WriteAllBytes(destination, entry.Data);
             }
         }
     }

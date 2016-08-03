@@ -1289,15 +1289,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>cd $(ProjectDir)\Properties
-copy AssemblyInfo.cs AssemblyInfo.cs~
-perl -0pe 's/(?:\d+\.){3}\K(\d+)/$1+1/ge' AssemblyInfo.cs~ &gt; AssemblyInfo.cs
-del AssemblyInfo.cs~</PreBuildEvent>
+    <PreBuildEvent>vsincver $(ProjectDir)</PreBuildEvent>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>rem "$(ProjectDir)\Assets\Libs\7z.dll" 
-rem if $(ConfigurationName) == Release packedhelper "$(ProjectPath)" "$(ProjectDir)\bin\Release\Confused\AcManager.Tools.dll" "$(ProjectDir)\bin\Release\Confused\AcManager.Internal.dll" "$(ProjectDir)\bin\Release\Lua52.dll" --ignore AcManager.Internal.dll AcManager.Tools.dll Magick.NET-x86.dll Windows.winmd</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

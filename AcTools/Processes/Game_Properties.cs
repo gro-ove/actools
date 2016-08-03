@@ -491,6 +491,12 @@ namespace AcTools.Processes {
             }
         }
 
+        public class BenchmarkProperties {
+            internal void Set(IniFile file) {
+                file["BENCHMARK"].Set("ACTIVE", true);
+            }
+        }
+
         public class ReplayProperties {
             public string Filename, Name, TrackId, TrackConfiguration;
 

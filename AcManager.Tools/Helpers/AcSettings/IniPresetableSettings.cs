@@ -1,5 +1,7 @@
+using System;
 using System.ComponentModel;
 using AcTools.DataFile;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public abstract class IniPresetableSettings : IniSettings {
@@ -7,7 +9,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public void Import(string serialized) {
             if (serialized == null) return;
-            Replace(IniFile.Parse(serialized));
+            try {
+                Replace(IniFile.Parse(serialized));
+            } catch (Exception e) {
+                Logging.Write("Cannot import settings: " + e);
+            }
         }
 
         public string Export() {

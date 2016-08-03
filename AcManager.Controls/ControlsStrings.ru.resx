@@ -480,4 +480,16 @@
   <data name="Common_SecondsPostfix" xml:space="preserve">
     <value> с</value>
   </data>
+  <data name="Common_Change" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="Common_ChangeSkin" xml:space="preserve">
+    <value>Сменить скин</value>
+  </data>
+  <data name="Common_OpponentsPostfix" xml:space="preserve">
+    <value> оппонент</value>
+  </data>
+  <data name="Common_TryAgain" xml:space="preserve">
+    <value>Ещё раз</value>
+  </data>
 </root>

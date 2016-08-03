@@ -941,5 +941,5 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Common_FpsPostfix" xml:space="preserve">
     <value> FPS</value>
-  </data>
+  <comment>@Invariant</comment></data>
 </root>

@@ -456,10 +456,10 @@ Author: [b]{3}[/b]</value>
   </data>
   <data name="Main_Rsr" xml:space="preserve">
     <value>RSR</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="Main_Srs" xml:space="preserve">
     <value>SRS</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="Main_QuickDrive" xml:space="preserve">
     <value>Quick</value>
   </data>
@@ -745,9 +745,6 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
   <data name="Settings_General_AcFolderLabel" xml:space="preserve">
     <value>Assetto Corsa folder:</value>
   </data>
-  <data name="Common_Change" xml:space="preserve">
-    <value>Change</value>
-  </data>
   <data name="Common_DevMode" xml:space="preserve">
     <value>Developer mode</value>
   </data>
@@ -910,7 +907,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>Server presets manager:</value>
   </data>
   <data name="Settings_General" xml:space="preserve">
-    <value>general</value>
+    <value>General</value>
   </data>
   <data name="Settings_Plugins" xml:space="preserve">
     <value>Plugins</value>
@@ -922,7 +919,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>Sharing</value>
   </data>
   <data name="Settings_Appearance" xml:space="preserve">
-    <value>appearance</value>
+    <value>Appearance</value>
   </data>
   <data name="Settings_Dev" xml:space="preserve">
     <value>Dev</value>
@@ -3408,5 +3405,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="KunosCareer_ResetProgress_Message" xml:space="preserve">
     <value>All progress in this championship will be lost. Are you sure?</value>
+  </data>
+  <data name="AcSettings_Video_Benchmark" xml:space="preserve">
+    <value>Benchmark</value>
+  </data>
+  <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
+    <value>Start a benchmark (Ctrl+G)</value>
   </data>
 </root>

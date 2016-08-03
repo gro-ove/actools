@@ -12,6 +12,8 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
+using AcManager.Tools.SemiGui;
+using AcTools.Processes;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
@@ -33,6 +35,11 @@ namespace AcManager.Pages.AcSettings {
             public ICommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new RelayCommand(o => {
                 (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/PpFiltersListPage.xaml", UriKind.RelativeOrAbsolute));
             }, o => AppKeyHolder.IsAllRight));
+
+            private ICommand _benchmarkCommand;
+
+            public ICommand BenchmarkCommand => _benchmarkCommand ??
+                    (_benchmarkCommand = new AsyncCommand(o => GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()))));
 
             private ICommand _shareCommand;
 
@@ -59,6 +66,7 @@ namespace AcManager.Pages.AcSettings {
             DataContext = new ViewModel();
             InitializeComponent();
             InputBindings.AddRange(new[] {
+                new InputBinding(Model.BenchmarkCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
             });

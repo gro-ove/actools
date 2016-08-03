@@ -359,9 +359,6 @@
   <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
     <value>Автоматически конвертировать скриншоты из BMP в JPEG при выходе</value>
   </data>
-  <data name="Common_Change" xml:space="preserve">
-    <value>Изменить</value>
-  </data>
   <data name="Common_DevMode" xml:space="preserve">
     <value>Режим разработчика</value>
   </data>
@@ -391,7 +388,7 @@
     <value>Сервер:</value>
   </data>
   <data name="Settings_General" xml:space="preserve">
-    <value>общее</value>
+    <value>Общее</value>
   </data>
   <data name="Settings_Plugins" xml:space="preserve">
     <value>Плагины</value>
@@ -403,7 +400,7 @@
     <value>Шаринг</value>
   </data>
   <data name="Settings_Appearance" xml:space="preserve">
-    <value>оформление</value>
+    <value>Оформление</value>
   </data>
   <data name="Settings_Dev" xml:space="preserve">
     <value>Системное</value>
@@ -732,5 +729,47 @@
   </data>
   <data name="Common_Manage" xml:space="preserve">
     <value>Изменить</value>
+  </data>
+  <data name="App_LocaleUpdated" xml:space="preserve">
+    <value>Локализация обновлена</value>
+  </data>
+  <data name="App_LocaleUpdated_Details" xml:space="preserve">
+    <value>Перезапустите приложение, чтобы увидеть изменения</value>
+  </data>
+  <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
+    <value>Не удалось установить сетап</value>
+  </data>
+  <data name="Settings_Content_InformationSearchHeader" xml:space="preserve">
+    <value>Поиск информации:</value>
+  </data>
+  <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
+    <value>Сперва искать на Википедии</value>
+  </data>
+  <data name="Settings_Content_ChangeBrandIcon" xml:space="preserve">
+    <value>Автоматически менять логотип бренда</value>
+  </data>
+  <data name="Settings_Drive_Starter" xml:space="preserve">
+    <value>Стартер</value>
+  </data>
+  <data name="Settings_Drive_ExpandBounds" xml:space="preserve">
+    <value>Расширить границы</value>
+  </data>
+  <data name="Settings_Drive_ExpandBounds_Tooltip" xml:space="preserve">
+    <value>Позволяет ставить до 999 кругов и всё такое, используйте на свой риск</value>
+  </data>
+  <data name="Settings_Live_RsrNameLabel" xml:space="preserve">
+    <value>Имя в RSR:</value>
+  </data>
+  <data name="Settings_Live_RsrName_Tooltip" xml:space="preserve">
+    <value>Если включено, в RSR будет использоваться другое имя</value>
+  </data>
+  <data name="Settings_Live_CustomStyle" xml:space="preserve">
+    <value>Специальный стиль</value>
+  </data>
+  <data name="Settings_Live_EnableRsr" xml:space="preserve">
+    <value>Включить секцию RSR Live Timing</value>
+  </data>
+  <data name="Common_Go_RaceTooltip" xml:space="preserve">
+    <value>Начать заезд (Ctrl+G)</value>
   </data>
 </root>

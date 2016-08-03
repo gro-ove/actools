@@ -51,7 +51,7 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.AcSettings_Replays_QualityLabel}" />
-                <ComboBox ItemsSource="{Binding Replay.Qualities}" SelectedItem="{Binding Replay.Quality}" />
+                <ComboBox ItemsSource="{Binding Replay.Qualities}" SelectedItem="{Binding Replay.Quality}" DisplayMemberPath="DisplayName" />
             </DockPanel>
 
             <DockPanel>

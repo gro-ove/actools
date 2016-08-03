@@ -999,6 +999,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Benchmark.
+        /// </summary>
+        public static string AcSettings_Video_Benchmark {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_Benchmark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start a benchmark (Ctrl+G).
+        /// </summary>
+        public static string AcSettings_Video_Benchmark_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_Benchmark_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Crepuscular rays.
         /// </summary>
         public static string AcSettings_Video_CrepuscularRays {
@@ -2862,15 +2880,6 @@ namespace AcManager {
         public static string Common_CannotStartRace {
             get {
                 return ResourceManager.GetString("Common_CannotStartRace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Change.
-        /// </summary>
-        public static string Common_Change {
-            get {
-                return ResourceManager.GetString("Common_Change", resourceCulture);
             }
         }
         
@@ -6012,7 +6021,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to appearance.
+        ///   Looks up a localized string similar to Appearance.
         /// </summary>
         public static string Settings_Appearance {
             get {
@@ -6571,17 +6580,17 @@ namespace AcManager {
         
         /// <summary>
         ///   Looks up a localized string similar to This command will be executed after acs.exe finished, but before reading all result json-files.
-        ///[br]
-        ///[br]Values for replacement:
-        ///[br] [b][mono]{type}[/mono][/b] — type of race;
-        ///[br] [b][mono]{car}[/mono][/b] — car&apos;s name;
-        ///[br] [b][mono]{car.id}[/mono][/b] — car&apos;s id;
-        ///[br] [b][mono]{track}[/mono][/b] — track&apos;s name;
-        ///[br] [b][mono]{track.id}[/mono][/b] — track&apos;s id.
-        ///[br]
-        ///[br]If you need some other values, please, contact us and we&apos;ll add them.
-        ///[br]
-        ///[br]Working directory will be set to Assetto Corsa [rest of string was truncated]&quot;;.
+        ///
+        ///Values for replacement:
+        /// [b][mono]{type}[/mono][/b] — type of race;
+        /// [b][mono]{car}[/mono][/b] — car&apos;s name;
+        /// [b][mono]{car.id}[/mono][/b] — car&apos;s id;
+        /// [b][mono]{track}[/mono][/b] — track&apos;s name;
+        /// [b][mono]{track.id}[/mono][/b] — track&apos;s id.
+        ///
+        ///If you need some other values, please, contact us and we&apos;ll add them.
+        ///
+        ///Working directory will be set to Assetto Corsa folder in Documents..
         /// </summary>
         public static string Settings_Drive_PostCommand_Tooltip {
             get {
@@ -6600,17 +6609,17 @@ namespace AcManager {
         
         /// <summary>
         ///   Looks up a localized string similar to This command will be executed before starting acs.exe, but after setting all ini-files.
-        ///[br]
-        ///[br]Values for replacement:
-        ///[br] [b][mono]{type}[/mono][/b] — type of race;
-        ///[br] [b][mono]{car}[/mono][/b] — car&apos;s name;
-        ///[br] [b][mono]{car.id}[/mono][/b] — car&apos;s id;
-        ///[br] [b][mono]{track}[/mono][/b] — track&apos;s name;
-        ///[br] [b][mono]{track.id}[/mono][/b] — track&apos;s id.
-        ///[br]
-        ///[br]If you need some other values, please, contact us and we&apos;ll add them.
-        ///[br]
-        ///[br]Working directory will be set to Assetto Corsa folder  [rest of string was truncated]&quot;;.
+        ///
+        ///Values for replacement:
+        /// [b][mono]{type}[/mono][/b] — type of race;
+        /// [b][mono]{car}[/mono][/b] — car&apos;s name;
+        /// [b][mono]{car.id}[/mono][/b] — car&apos;s id;
+        /// [b][mono]{track}[/mono][/b] — track&apos;s name;
+        /// [b][mono]{track.id}[/mono][/b] — track&apos;s id.
+        ///
+        ///If you need some other values, please, contact us and we&apos;ll add them.
+        ///
+        ///Working directory will be set to Assetto Corsa folder in Documents..
         /// </summary>
         public static string Settings_Drive_PreCommand_Tooltip {
             get {
@@ -6664,7 +6673,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to general.
+        ///   Looks up a localized string similar to General.
         /// </summary>
         public static string Settings_General {
             get {
@@ -7358,18 +7367,19 @@ namespace AcManager {
         
         /// <summary>
         ///   Looks up a localized string similar to Used for saving or autosaving replays after the race.
-        ///[br]
-        ///[br]Values for replacement:
-        ///[br] [b][mono]{type}[/mono][/b] — type of race;
-        ///[br] [b][mono]{car}[/mono][/b] — car&apos;s name;
-        ///[br] [b][mono]{car.id}[/mono][/b] — car&apos;s id;
-        ///[br] [b][mono]{track}[/mono][/b] — track&apos;s name;
-        ///[br] [b][mono]{track.id}[/mono][/b] — track&apos;s id;
-        ///[br] [b][mono]{date}[/mono][/b] — date and time in proper format;
-        ///[br] [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
-        ///[br]
-        ///[br]Modifiers:
-        ///[br] [b][mono]{…:l}[/mon [rest of string was truncated]&quot;;.
+        ///
+        ///Values for replacement:
+        /// [b][mono]{type}[/mono][/b] — type of race;
+        /// [b][mono]{car}[/mono][/b] — car&apos;s name;
+        /// [b][mono]{car.id}[/mono][/b] — car&apos;s id;
+        /// [b][mono]{track}[/mono][/b] — track&apos;s name;
+        /// [b][mono]{track.id}[/mono][/b] — track&apos;s id;
+        /// [b][mono]{date}[/mono][/b] — date and time in proper format;
+        /// [b][mono]{date_ac}[/mono][/b] — date and time in AC format.
+        ///
+        ///Modifiers:
+        /// [b][mono]{…:l}[/mono][/b] — lowercase;
+        /// [b][mono]{…:u}[/mono][/b]  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Settings_Replays_NameFormat_Tooltip {
             get {

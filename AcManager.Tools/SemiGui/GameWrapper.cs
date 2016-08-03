@@ -35,6 +35,10 @@ namespace AcManager.Tools.SemiGui {
             }
         }
 
+        public static Task StartBenchmarkAsync(Game.StartProperties properties) {
+            return StartAsync(properties, false);
+        }
+
         public static Task StartReplayAsync(Game.StartProperties properties) {
             return StartAsync(properties, false);
         }

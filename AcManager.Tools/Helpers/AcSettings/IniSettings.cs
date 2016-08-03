@@ -69,6 +69,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         protected void Replace(IniFile ini, bool backup = false) {
+            _saving = false;
             IgnoreChangesForAWhile();
             ini.SaveAs(Filename, backup);
             Ini = ini;
@@ -78,6 +79,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         protected void Reload() {
+            _saving = false;
             Ini = new IniFile(Filename);
             IsLoading = true;
             LoadFromIni();
