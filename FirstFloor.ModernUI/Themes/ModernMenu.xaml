@@ -29,6 +29,11 @@
             <DataTrigger Binding="{Binding IsShown}" Value="False">
                 <Setter Property="Visibility" Value="Collapsed" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                <Setter Property="IsEnabled" Value="False" />
+                <Setter Property="Foreground" Value="{DynamicResource MenuTextDisabled}" />
+                <Setter Property="attached:LimitedService.Limited" Value="True" />
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 

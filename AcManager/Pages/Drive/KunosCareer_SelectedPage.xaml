@@ -389,13 +389,11 @@
                             </ContextMenu>
                         </mui:BetterImage.ContextMenu>
                         <mui:BetterImage.ToolTip>
-                            <ToolTip>
-                                <StackPanel Margin="4 8">
-                                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding Car.DisplayName}" Margin="0 0 0 4" />
-                                    <c:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}" Width="512"
-                                            MaxHeight="320" />
-                                </StackPanel>
-                            </ToolTip>
+                            <StackPanel Margin="4 8">
+                                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Car.DisplayName}" Margin="0 0 0 4" />
+                                <c:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}" Width="512"
+                                        MaxHeight="320" />
+                            </StackPanel>
                         </mui:BetterImage.ToolTip>
                     </mui:BetterImage>
 
@@ -419,12 +417,10 @@
                         <mui:BetterImage Filename="{Binding TrackObject.OutlineImage}" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="240"
                                 MaxHeight="135" HorizontalAlignment="Center" VerticalAlignment="Center" ShowBroken="False" />
                         <Grid.ToolTip>
-                            <ToolTip>
-                                <StackPanel Margin="4 8">
-                                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding TrackObject.DisplayName}" Margin="0 0 0 4" />
-                                    <c:TrackBlock Track="{Binding TrackObject}" Width="512" MaxHeight="320" />
-                                </StackPanel>
-                            </ToolTip>
+                            <StackPanel Margin="4 8">
+                                <TextBlock Style="{StaticResource Heading2}" Text="{Binding TrackObject.DisplayName}" Margin="0 0 0 4" />
+                                <c:TrackBlock Track="{Binding TrackObject}" Width="512" MaxHeight="320" />
+                            </StackPanel>
                         </Grid.ToolTip>
                     </Grid>
                 </StackPanel>

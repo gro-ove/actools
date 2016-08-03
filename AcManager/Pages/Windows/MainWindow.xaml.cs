@@ -89,7 +89,7 @@ namespace AcManager.Pages.Windows {
             }
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => string.Equals(x.GroupKey, AppStrings.Main_Content, StringComparison.OrdinalIgnoreCase))) {
+                                                 .Where(x => x.GroupKey == "content")) {
                 result.LinkChanged += ContentLinkChanged;
             }
 

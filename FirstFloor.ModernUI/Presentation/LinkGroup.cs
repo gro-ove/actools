@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -12,6 +13,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private string KeyTemporary => @"LinkGroup.Temporary_" + Id;
 
+        [Localizable(false)]
         public string GroupKey {
             get { return _groupKey ?? string.Empty; }
             set {

@@ -29,7 +29,7 @@ namespace AcManager.Tools.Managers {
         public override IAcDirectories Directories => AcRootDirectory.Instance.WeatherDirectories;
 
         public override WeatherObject GetDefault() {
-            var v = WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"clear"));
+            var v = WrappersList.GetByIdOrDefault("3_clear") ?? WrappersList.FirstOrDefault(x => x.Value.Id.Contains(@"clear"));
             return v == null ? base.GetDefault() : EnsureWrapperLoaded(v);
         }
 

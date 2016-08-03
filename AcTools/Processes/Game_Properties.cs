@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using AcTools.DataFile;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcTools.Processes {
     public partial class Game {
@@ -370,12 +372,14 @@ namespace AcTools.Processes {
             }
         }
 
-        public class TrackPropertiesPreset {
+        public class TrackPropertiesPreset : IWithId<int?> {
+            [NotNull]
             public readonly TrackProperties Properties;
 
+            [NotNull]
             public string Name { get; }
 
-            public TrackPropertiesPreset(string name, TrackProperties properties) {
+            public TrackPropertiesPreset([NotNull] string name, [NotNull] TrackProperties properties) {
                 Name = name;
                 Properties = properties;
             }
@@ -383,6 +387,9 @@ namespace AcTools.Processes {
             public override string ToString() {
                 return Name;
             }
+
+            [CanBeNull]
+            public int? Id => Properties.Preset;
         }
 
         private static BindingList<TrackPropertiesPreset> _defaultTrackPropertiesPresets;
@@ -392,56 +399,52 @@ namespace AcTools.Processes {
                    DefaultTrackPropertiesPresets.FirstOrDefault();
         }
 
-        public static BindingList<TrackPropertiesPreset> DefaultTrackPropertiesPresets {
-            get {
-                if (_defaultTrackPropertiesPresets != null) return _defaultTrackPropertiesPresets;
-
-                return _defaultTrackPropertiesPresets = new BindingList<TrackPropertiesPreset>(new[] {
-                    new TrackPropertiesPreset("Dusty", new TrackProperties {
-                        Preset = 0,
-                        SessionStart = 86.0,
-                        Randomness = 1.0,
-                        LapGain = 18.0,
-                        SessionTransfer = 50.0
-                    }),
-                    new TrackPropertiesPreset("Old", new TrackProperties {
-                        Preset = 1,
-                        SessionStart = 89.0,
-                        Randomness = 3.0,
-                        LapGain = 50.0,
-                        SessionTransfer = 80.0
-                    }),
-                    new TrackPropertiesPreset("Slow", new TrackProperties {
-                        Preset = 2,
-                        SessionStart = 96.0,
-                        Randomness = 1.0,
-                        LapGain = 60.0,
-                        SessionTransfer = 80.0
-                    }),
-                    new TrackPropertiesPreset("Green", new TrackProperties {
-                        Preset = 3,
-                        SessionStart = 95.0,
-                        Randomness = 2.0,
-                        LapGain = 10.0,
-                        SessionTransfer = 90.0
-                    }),
-                    new TrackPropertiesPreset("Fast", new TrackProperties {
-                        Preset = 4,
-                        SessionStart = 98.0,
-                        Randomness = 2.0,
-                        LapGain = 20.0,
-                        SessionTransfer = 80.0
-                    }),
-                    new TrackPropertiesPreset("Optimum", new TrackProperties {
-                        Preset = 5,
-                        SessionStart = 100.0,
-                        Randomness = 0.0,
-                        LapGain = 1.0,
-                        SessionTransfer = 100.0
-                    })
-                });
-            }
-        }
+        // TODO: rework; move everything related to actools?
+        public static BindingList<TrackPropertiesPreset> DefaultTrackPropertiesPresets
+            => _defaultTrackPropertiesPresets ?? (_defaultTrackPropertiesPresets = new BindingList<TrackPropertiesPreset>(new[] {
+                new TrackPropertiesPreset("Dusty", new TrackProperties {
+                    Preset = 0,
+                    SessionStart = 86.0,
+                    Randomness = 1.0,
+                    LapGain = 30.0,
+                    SessionTransfer = 50.0
+                }),
+                new TrackPropertiesPreset("Old", new TrackProperties {
+                    Preset = 1,
+                    SessionStart = 89.0,
+                    Randomness = 3.0,
+                    LapGain = 50.0,
+                    SessionTransfer = 80.0
+                }),
+                new TrackPropertiesPreset("Slow", new TrackProperties {
+                    Preset = 2,
+                    SessionStart = 96.0,
+                    Randomness = 1.0,
+                    LapGain = 300.0,
+                    SessionTransfer = 80.0
+                }),
+                new TrackPropertiesPreset("Green", new TrackProperties {
+                    Preset = 3,
+                    SessionStart = 95.0,
+                    Randomness = 2.0,
+                    LapGain = 132.0,
+                    SessionTransfer = 90.0
+                }),
+                new TrackPropertiesPreset("Fast", new TrackProperties {
+                    Preset = 4,
+                    SessionStart = 98.0,
+                    Randomness = 2.0,
+                    LapGain = 700.0,
+                    SessionTransfer = 80.0
+                }),
+                new TrackPropertiesPreset("Optimum", new TrackProperties {
+                    Preset = 5,
+                    SessionStart = 100.0,
+                    Randomness = 0.0,
+                    LapGain = 1.0,
+                    SessionTransfer = 100.0
+                })
+            }));
 
         public class AssistsProperties : AdditionalProperties {
             public bool IdealLine;

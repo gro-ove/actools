@@ -13,10 +13,13 @@ using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public class IniFile : AbstractDataFile, IEnumerable<KeyValuePair<string, IniFileSection>> {
-        public IniFile(string carDir, string filename, Acd loadedAcd) : base(carDir, filename, loadedAcd) { }
-        public IniFile(string carDir, string filename) : base(carDir, filename) { }
-        public IniFile(string filename) : base(filename) { }
-        public IniFile() { }
+        public IniFile(string carDir, string filename, Acd loadedAcd) : base(carDir, filename, loadedAcd) {}
+
+        public IniFile(string carDir, string filename) : base(carDir, filename) {}
+
+        public IniFile(string filename) : base(filename) {}
+
+        public IniFile() {}
 
         public readonly Dictionary<string, IniFileSection> Content = new Dictionary<string, IniFileSection>();
 
@@ -201,7 +204,7 @@ namespace AcTools.DataFile {
         /// </summary>
         /// <param name="prefixName">Prefix</param>
         /// <param name="startFrom">ID of first section</param>
-        public void RemoveSections(string prefixName, int startFrom = 0) {
+        public void RemoveSections([Localizable(false)] string prefixName, int startFrom = 0) {
             foreach (var key in GetSectionNames(prefixName, startFrom)) {
                 Remove(key);
             }
@@ -230,7 +233,7 @@ namespace AcTools.DataFile {
             return Parse(Stringify());
         }
     }
-    
+
     public class IniCommentariesScheme : Dictionary<string, Dictionary<string, string>> {
         [NotNull]
         public new Dictionary<string, string> this[string key] {

@@ -31,10 +31,10 @@ namespace AcManager.Pages.Drive {
             KunosCareerManager.Instance.EnsureLoaded();
         }
 
-        private KunosCareerViewModel Model => (KunosCareerViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         public void Initialize() {
-            DataContext = new KunosCareerViewModel(Filter.Create(AcObjectTester.Instance, "enabled+"));
+            DataContext = new ViewModel(Filter.Create(AcObjectTester.Instance, "enabled+"));
             InitializeComponent();
 
             if (!KunosCareerManager.Instance.ShowIntro) return;
@@ -48,14 +48,14 @@ namespace AcManager.Pages.Drive {
 
         private ScrollViewer _scrollViewer;
 
-        private void KunosCareer_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             Model.Load();
 
             _scrollViewer = ListBox.FindVisualChild<ScrollViewer>();
             _scrollViewer?.ScrollToHorizontalOffset(ValuesStorage.GetDoubleNullable(KeyScrollValue) ?? 0d);
         }
 
-        private void KunosCareer_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             Model.Unload();
         }
 
@@ -72,7 +72,7 @@ namespace AcManager.Pages.Drive {
 
         public static void NavigateToCareerPage(KunosCareerObject kunosCareer) {
             var mainWindow = Application.Current.MainWindow as MainWindow;
-            var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == AppStrings.Main_Drive && x.DisplayName == AppStrings.Main_Single);
+            var group = mainWindow?.MenuLinkGroups.FirstOrDefault(x => x.GroupKey == "drive" && x.DisplayName == AppStrings.Main_Single);
             var links = group?.Links;
             links?.Remove(links.OfType<CustomLink>().FirstOrDefault());
 
@@ -95,8 +95,8 @@ namespace AcManager.Pages.Drive {
             mainWindow.NavigateTo(link.Source);
         }
 
-        public class KunosCareerViewModel : BaseAcObjectListCollectionViewWrapper<KunosCareerObject> {
-            public KunosCareerViewModel(IFilter<KunosCareerObject> listFilter)
+        public class ViewModel : BaseAcObjectListCollectionViewWrapper<KunosCareerObject> {
+            public ViewModel(IFilter<KunosCareerObject> listFilter)
                     : base(KunosCareerManager.Instance, listFilter, false) {
             }
 

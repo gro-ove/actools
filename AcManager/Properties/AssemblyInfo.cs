@@ -38,8 +38,8 @@ using System.Windows.Media;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.7.423.9545")]
-[assembly: AssemblyFileVersion("0.7.423.9545")]
+[assembly: AssemblyVersion("0.7.425.9555")]
+[assembly: AssemblyFileVersion("0.7.425.9555")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app", "AcManager.About")]

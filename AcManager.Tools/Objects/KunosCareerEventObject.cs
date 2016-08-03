@@ -408,15 +408,14 @@ namespace AcManager.Tools.Objects {
             Temperature = ini["TEMPERATURE"].GetDouble("AMBIENT", 26);
             RoadTemperature = ini["TEMPERATURE"].GetDouble("ROAD", 32);
 
-            TrackPreset = Game.DefaultTrackPropertiesPresets.ElementAtOrDefault(ini["DYNAMIC_TRACK"].GetInt("PRESET", 5) - 1) ??
+            TrackPreset = Game.DefaultTrackPropertiesPresets.GetByIdOrDefault(ini["DYNAMIC_TRACK"].GetIntNullable("PRESET")) ??
                     Game.DefaultTrackPropertiesPresets[4];
-
-            DisplayType = ini.ContainsKey("SESSION_1") ? "Weekend" : (ini["SESSION_0"].Get("NAME") ?? "Race");
+            DisplayType = ini.ContainsKey(@"SESSION_1") ? ToolsStrings.Common_Weekend : (ini["SESSION_0"].Get("NAME") ?? ToolsStrings.Session_Race);
 
             StartingPosition = ini["SESSION_0"].GetIntNullable("STARTING_POSITION");
             OpponentsCount = ini["RACE"].GetInt("CARS", 1) - 1;
 
-            if (StartingPosition != null || ini.ContainsKey("SESSION_1")) {
+            if (StartingPosition != null || ini.ContainsKey(@"SESSION_1")) {
                 Laps = ini["RACE"].GetInt("RACE_LAPS", 0);
             } else {
                 Laps = null;
@@ -437,7 +436,8 @@ namespace AcManager.Tools.Objects {
 
                 if (conditions.Count != 3 || conditions[0].Type == null ||
                         conditions.Any(x => x.Value == null || x.Type != null && x.Type != conditions[0].Type)) {
-                    Logging.Warning("[KunosCareerEventObject] Unsupported conditions: " + conditions.Select(x => $"type: {x.Type}, value: {x.Type}").JoinToString("\n"));
+                    Logging.Warning("[KunosCareerEventObject] Unsupported conditions: " +
+                            conditions.Select(x => $"type: {x.Type}, value: {x.Type}").JoinToString(Environment.NewLine));
                     AddError(AcErrorType.Data_KunosCareerConditions);
                 } else {
                     ConditionType = conditions[0].Type.Value;
@@ -501,8 +501,8 @@ namespace AcManager.Tools.Objects {
 
         private IniFile ConvertConfig(string original) {
             var iniFile = IniFile.Parse(original);
-            iniFile.Remove("EVENT");
-            iniFile.Remove("SPECIAL_EVENT");
+            iniFile.Remove(@"EVENT");
+            iniFile.Remove(@"SPECIAL_EVENT");
             iniFile.RemoveSections("CONDITION");
 
             iniFile["RACE"].Set("AI_LEVEL", SettingsHolder.Drive.KunosCareerUserAiLevel ? UserAiLevel : AiLevel);
@@ -526,11 +526,11 @@ namespace AcManager.Tools.Objects {
 
             IniFile opponentsIniFile = null;
             foreach (var i in Enumerable.Range(0, iniFile["RACE"].GetInt("CARS", 0)).Skip(1)) {
-                var sectionKey = "CAR_" + i;
+                var sectionKey = @"CAR_" + i;
                 if (!iniFile.ContainsKey(sectionKey) || string.IsNullOrWhiteSpace(iniFile[sectionKey].Get("DRIVER_NAME"))) {
                     if (opponentsIniFile == null) {
                         var career = KunosCareerManager.Instance.GetById(KunosCareerId);
-                        if (career == null) throw new Exception("Can’t find parent career with ID=" + KunosCareerId);
+                        if (career == null) throw new Exception(string.Format("Can’t find parent career with ID={0}", KunosCareerId));
 
                         opponentsIniFile = new IniFile(career.OpponentsIniFilename);
                         if (opponentsIniFile.IsEmptyOrDamaged()) break;
