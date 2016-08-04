@@ -74,4 +74,14 @@
             <TextBlock Text="{Binding Car.DisplayName}" />
         </StackPanel>
     </DataTemplate>
+
+    <Style x:Key="TargetValue" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+                <Setter Property="TextDecorations" Value="Strikethrough" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

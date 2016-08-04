@@ -353,7 +353,7 @@
     <value>Nothing found</value>
   </data>
 	<data name="Online_ScanningNothingFound_Commentary" xml:space="preserve">
-    <value>Make sure server's address is correct and server itself is accessible.</value>
+    <value>Make sure server’s address is correct and server itself is accessible.</value>
   </data>
 	<data name="Online_ScanningProgress" xml:space="preserve">
     <value>Scanning ({0}/{1}), {2} found…</value>
@@ -1022,7 +1022,7 @@
     <value>Enter the Google Drive authentication code:</value>
   </data>
 	<data name="Uploader_CannotFinishAuthorization" xml:space="preserve">
-    <value>Can't finish authorization process</value>
+    <value>Can’t finish authorization process</value>
   </data>
 	<data name="Uploader_AuthenticationTokenIsMissing" xml:space="preserve">
     <value>Authentication token is missing</value>
@@ -1064,7 +1064,7 @@
     <value>Events of “{0}” are missing</value>
   </data>
 	<data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
-    <value>Event conditions aren’t supported</value>
+    <value>Event condition “{0}” isn’t supported yet</value>
   </data>
 	<data name="AcError_RequiredContentIsMissing" xml:space="preserve">
     <value>Required content is missing</value>
@@ -1121,7 +1121,7 @@
     <value>Track “{0}” is missing</value>
   </data>
 	<data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
-    <value>Name shouldn't contain symbols like “[” or “]”</value>
+    <value>Name shouldn’t contain symbols like “[” or “]”</value>
   </data>
 	<data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
     <value>File “colorCurves.ini” is missing</value>

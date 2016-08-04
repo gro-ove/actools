@@ -239,6 +239,9 @@
     <Compile Include="Pages\Drive\QuickDrive_Weekend.xaml.cs">
       <DependentUpon>QuickDrive_Weekend.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\SpecialEvents.xaml.cs">
+      <DependentUpon>SpecialEvents.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\Srs.xaml.cs">
       <DependentUpon>Srs.xaml</DependentUpon>
     </Compile>
@@ -665,6 +668,10 @@
     <Page Include="Pages\Drive\QuickDrive_Practice.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Drive\SpecialEvents.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Drive\Srs.xaml">
       <Generator>MSBuild:Compile</Generator>

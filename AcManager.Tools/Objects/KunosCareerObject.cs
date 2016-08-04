@@ -185,7 +185,7 @@ namespace AcManager.Tools.Objects {
                 Id = -1,
                 Name = SettingsHolder.Drive.PlayerName,
                 Nationality = SettingsHolder.Drive.PlayerNationality,
-                Car = firstEvent?.Car,
+                Car = firstEvent?.CarObject,
                 CarSkin = firstEvent?.CarSkin,
                 IsPlayer = true
             });

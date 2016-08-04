@@ -271,7 +271,7 @@ namespace AcTools.Processes {
                     properties.Set(iniFile);
                 }
 
-                iniFile.Save(iniFilename);
+                iniFile.SaveAs(iniFilename);
 
                 _disposeLater.Add(AssistsProperties?.Set());
                 _disposeLater.AddRange(AdditionalPropertieses.OfType<AdditionalProperties>().Select(x => x.Set()).NonNull());

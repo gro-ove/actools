@@ -486,7 +486,7 @@ namespace AcTools.Processes {
             public override IDisposable Set() {
                 var assistsIniFilename = FileUtils.GetAssistsIniFilename();
                 var result = FileUtils.RestoreLater(assistsIniFilename);
-                ToIniFile().Save(assistsIniFilename);
+                ToIniFile().SaveAs(assistsIniFilename);
                 return result;
             }
         }

@@ -47,6 +47,7 @@ namespace AcTools.DataFile {
             }
         }
 
+        [Localizable(false)]
         [CanBeNull, Pure]
         public string Get([NotNull, LocalizationRequired(false)] string key) {
             return ContainsKey(key) ? base[key] : null;

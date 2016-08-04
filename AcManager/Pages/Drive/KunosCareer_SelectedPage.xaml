@@ -34,7 +34,7 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Foreground="White" HorizontalAlignment="Left" Margin="4 4 24 0" Text="{Binding Car.DisplayName}"
+                        <TextBlock Grid.Row="0" Foreground="White" HorizontalAlignment="Left" Margin="4 4 24 0" Text="{Binding CarObject.DisplayName}"
                                 x:Name="CarName" FontSize="{DynamicResource SmallFontSize}" />
                         <TextBlock Grid.Row="1" Foreground="White" HorizontalAlignment="Left" Margin="4 0 24 4" Text="{Binding TrackObject.LayoutName}"
                                 x:Name="TrackName" FontSize="{DynamicResource SmallFontSize}" />
@@ -94,16 +94,6 @@
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
-
-            <Style x:Key="TargetValue" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                <Setter Property="FontWeight" Value="Bold" />
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled" Value="True">
-                        <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" />
-                        <Setter Property="TextDecorations" Value="Strikethrough" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
 
             <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
         </ResourceDictionary>
@@ -266,12 +256,10 @@
                         <Setter Property="Margin" Value="20 0 0 0" />
                     </Style>
                 </Grid.Resources>
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="1.5*" MinWidth="149" />
                 </Grid.ColumnDefinitions>
-
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -390,8 +378,8 @@
                         </mui:BetterImage.ContextMenu>
                         <mui:BetterImage.ToolTip>
                             <StackPanel Margin="4 8">
-                                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Car.DisplayName}" Margin="0 0 0 4" />
-                                <c:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}" Width="512"
+                                <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />
+                                <c:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}" Width="512"
                                         MaxHeight="320" />
                             </StackPanel>
                         </mui:BetterImage.ToolTip>
@@ -399,7 +387,7 @@
 
                     <Border
                             Visibility="{Binding KunosCareerUserSkin, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                        <ListBox ItemsSource="{Binding CarObject.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                 ScrollViewer.CanContentScroll="True" Margin="0 0 0 8" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}"
                                 MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}" VirtualizingPanel.IsVirtualizing="True"
                                 VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"

@@ -38,7 +38,7 @@ namespace AcManager.Tools.Starters {
                     ["AppId"] = AcSteamId,
                     ["Offline"] = true,
                 }
-            }.Save(_filename);
+            }.SaveAs(_filename);
 
             LauncherProcess = Process.Start(new ProcessStartInfo {
                 FileName = addon.GetFilename("sse.exe"),

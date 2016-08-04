@@ -165,7 +165,7 @@ namespace AcManager.Pages.Drive {
             if (ev == null) return;
 
             var control = new CarBlock {
-                Car = ev.Car,
+                Car = ev.CarObject,
                 SelectedSkin = ev.CarSkin,
                 SelectSkin = SettingsHolder.Drive.KunosCareerUserSkin,
                 OpenShowroom = true
@@ -178,7 +178,7 @@ namespace AcManager.Pages.Drive {
                 MaxWidth = 640,
                 MaxHeight = 720,
                 SizeToContent = SizeToContent.Manual,
-                Title = ev.Car.DisplayName
+                Title = ev.CarObject.DisplayName
             };
 
             dialog.Buttons = new[] { dialog.OkButton, dialog.CancelButton };
@@ -193,16 +193,16 @@ namespace AcManager.Pages.Drive {
             var ev = Model.AcObject.SelectedEvent;
             if (ev == null) return;
 
-            await ev.Car.SkinsManager.EnsureLoadedAsync();
+            await ev.CarObject.SkinsManager.EnsureLoadedAsync();
 
             var viewer = new ImageViewer(
-                ev.Car.Skins.Select(x => x.PreviewImage),
-                ev.Car.Skins.IndexOf(ev.CarSkin)
+                ev.CarObject.Skins.Select(x => x.PreviewImage),
+                ev.CarObject.Skins.IndexOf(ev.CarSkin)
             );
 
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
                 var selected = viewer.ShowDialogInSelectMode();
-                ev.CarSkin = ev.Car.Skins.ElementAtOrDefault(selected ?? -1) ?? ev.CarSkin;
+                ev.CarSkin = ev.CarObject.Skins.ElementAtOrDefault(selected ?? -1) ?? ev.CarSkin;
             } else {
                 viewer.ShowDialog();
             }

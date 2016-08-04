@@ -54,7 +54,7 @@ namespace AcTools.Processes {
                 iniFile["SHOWROOM"].Set("SKIN", (properties.CarSkinId ?? "").ToLowerInvariant());
                 iniFile["SHOWROOM"].Set("TRACK", (properties.ShowroomId ?? "").ToLowerInvariant());
                 iniFile["SETTINGS"].Set("CAMERA_FOV", properties.CameraFov);
-                iniFile.Save(filename);
+                iniFile.SaveAs(filename);
 
                 using (properties.UseBmp ? new ScreenshotFormatChange(properties.AcRoot, "BMP") : null)
                 using (properties.DisableWatermark ? new DisableShowroomWatermarkChange(properties.AcRoot) : null)

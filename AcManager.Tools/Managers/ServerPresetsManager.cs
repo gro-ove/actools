@@ -24,7 +24,7 @@ namespace AcManager.Tools.Managers {
         private static readonly string Directory;
 
         static ServerPresetsManager() {
-            Directory = Path.Combine(AcRootDirectory.Instance.RequireValue, "server", "presets");
+            Directory = Path.Combine(AcRootDirectory.Instance.RequireValue, @"server", @"presets");
             System.IO.Directory.CreateDirectory(Directory);
         }
 

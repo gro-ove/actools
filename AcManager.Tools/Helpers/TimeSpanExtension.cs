@@ -5,5 +5,9 @@ namespace AcManager.Tools.Helpers {
         public static string ToProperString(this TimeSpan span) {
             return $"{span.Hours:D2}:{span.Minutes:D2}:{span.Seconds:D2}";
         }
+
+        public static string ToMillisecondsString(this TimeSpan span) {
+            return $"{span.Minutes:D2}:{span.Seconds:D2}:{span.Milliseconds:D3}";
+        }
     }
 }

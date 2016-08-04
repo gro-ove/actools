@@ -14,18 +14,18 @@ namespace AcManager.Tools.Data.GameSpecific {
 
         public const int UnremarkablePlace = 4;
 
-        public int GetTakenPlace(int points) {
+        public int GetTakenPlace(int value) {
             switch (Type) {
                 case PlaceConditionsType.Points:
-                    return FirstPlaceTarget.HasValue && points >= FirstPlaceTarget ? 1 :
-                            SecondPlaceTarget.HasValue && points >= SecondPlaceTarget ? 2 :
-                                    ThirdPlaceTarget.HasValue && points >= ThirdPlaceTarget ? 3 :
+                    return FirstPlaceTarget.HasValue && value >= FirstPlaceTarget ? 1 :
+                            SecondPlaceTarget.HasValue && value >= SecondPlaceTarget ? 2 :
+                                    ThirdPlaceTarget.HasValue && value >= ThirdPlaceTarget ? 3 :
                                             UnremarkablePlace;
                 case PlaceConditionsType.Position:
                 case PlaceConditionsType.Time:
-                    return FirstPlaceTarget.HasValue && points <= FirstPlaceTarget ? 1 :
-                            SecondPlaceTarget.HasValue && points <= SecondPlaceTarget ? 2 :
-                                    ThirdPlaceTarget.HasValue && points <= ThirdPlaceTarget ? 3 :
+                    return FirstPlaceTarget.HasValue && value <= FirstPlaceTarget ? 1 :
+                            SecondPlaceTarget.HasValue && value <= SecondPlaceTarget ? 2 :
+                                    ThirdPlaceTarget.HasValue && value <= ThirdPlaceTarget ? 3 :
                                             UnremarkablePlace;
                 default:
                     throw new ArgumentOutOfRangeException();

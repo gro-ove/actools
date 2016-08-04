@@ -13,25 +13,34 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ac:AcObjectErrorsSection">
-                            <StackPanel Margin="{TemplateBinding Padding}" DataContext="{Binding AcObject, RelativeSource={RelativeSource TemplatedParent}}">
-                                <DockPanel HorizontalAlignment="Stretch">
-                                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
-                                            x:Name="ErrorIcon" DockPanel.Dock="Right" />
-                                    <TextBlock Margin="10 2 2 2" Style="{StaticResource Heading2}"
-                                            Text="{Binding Errors.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static ac:ControlsStrings.AcObject_ErrorsHeader}}" />
-                                </DockPanel>
-                                <ItemsControl ItemsSource="{Binding Errors}" x:Name="AcObjectInDataContext">
+                            <Grid Margin="{TemplateBinding Padding}" DataContext="{Binding AcObject, RelativeSource={RelativeSource TemplatedParent}}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Margin="10 2 2 2" Style="{StaticResource Heading2}"
+                                        Text="{Binding Errors.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static ac:ControlsStrings.AcObject_ErrorsHeader}}" />
+                                <Path Grid.Row="0" Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
+                                        x:Name="ErrorIcon" HorizontalAlignment="Right" />
+                                <ItemsControl Grid.Row="1" ItemsSource="{Binding Errors}" x:Name="AcObjectInDataContext" HorizontalAlignment="Left">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel IsItemsHost="True" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Margin="40 0 0 0">
+                                            <TextBlock Margin="40 0 0 0" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left">
                                                 <Hyperlink Command="{Binding StartErrorFixerCommand}">
-                                                    <TextBlock Text="{Binding Message}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                                                    <Hyperlink.Inlines>
+                                                        <Run Text="{Binding Message, Mode=OneWay}" />
+                                                    </Hyperlink.Inlines>
                                                 </Hyperlink>
                                             </TextBlock>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                            </StackPanel>
+                            </Grid>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>

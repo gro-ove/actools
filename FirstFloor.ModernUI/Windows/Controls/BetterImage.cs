@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -220,19 +221,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        public static async Task<BitmapEntry> LoadBitmapSourceAsync(string filename, int decodeWidth = -1, int decodeHeight = -1) {
-            if (string.IsNullOrEmpty(filename)) {
-                return new BitmapEntry();
-            }
-
-            byte[] data;
-            try {
-                // TODO: cancellation?
-                data = await ReadAllBytesAsync(filename);
-            } catch (Exception) {
-                return new BitmapEntry();
-            }
-
+        private static BitmapEntry LoadBitmapSourceFromBytes(byte[] data, int decodeWidth = -1, int decodeHeight = -1) {
             try {
                 using (var stream = new WrappingStream(new MemoryStream(data))) {
                     int width = 0, height = 0;
@@ -267,6 +256,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
             } catch (Exception e) {
                 Logging.Warning("[BetterImage] Loading failed: " + e);
+                return new BitmapEntry();
+            }
+        }
+
+        public static async Task<BitmapEntry> LoadBitmapSourceAsync(string filename, int decodeWidth = -1, int decodeHeight = -1) {
+            if (string.IsNullOrEmpty(filename)) {
+                return new BitmapEntry();
+            }
+            
+            try {
+                return LoadBitmapSourceFromBytes(await ReadAllBytesAsync(filename), decodeWidth, decodeHeight);
+            } catch (Exception) {
                 return new BitmapEntry();
             }
         }
@@ -312,27 +313,93 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        private static readonly List<DateTime> RecentlyLoaded = new List<DateTime>(50);
+
+        private static void UpdateLoaded() {
+            var now = DateTime.Now;
+            var remove = RecentlyLoaded.TakeWhile(x => now - x > TimeSpan.FromSeconds(3)).Count();
+            if (remove > 0) {
+                RecentlyLoaded.RemoveRange(0, remove);
+            }
+
+            RecentlyLoaded.Add(now);
+        }
+
         private async void ReloadImageAsync() {
             if (_loading) return;
             _loading = true;
             _broken = false;
 
-            try {
-                if (AdditionalDelay) {
-                    await Task.Delay(100);
+            var filename = Filename;
+
+            byte[] data;
+            if (string.IsNullOrEmpty(filename)) {
+                data = null;
+            } else {
+                try {
+                    data = await ReadAllBytesAsync(filename);
+                } catch (Exception) {
+                    data = null;
                 }
+            }
 
-                var current = await LoadBitmapSourceAsync(Filename, InnerDecodeWidth, InnerDecodeHeight);
-                if (!_loading) return;
+            if (data == null) {
+#if DEBUG
+                Logging.Write("[BetterImage] Data=null: " + filename);
+#endif
 
-                _current = current;
-                _broken = _current.BitmapSource == null;
+                _current = new BitmapEntry();
+                _broken = true;
 
                 InvalidateMeasure();
                 InvalidateVisual();
-            } finally {
-                _loading = false;
+                return;
             }
+
+            if (AdditionalDelay) {
+                await Task.Delay(100);
+                if (!_loading) return;
+            }
+
+            UpdateLoaded();
+            var innerDecodeWidth = InnerDecodeWidth;
+            var innerDecodeHeight = InnerDecodeHeight;
+            
+            if (RecentlyLoaded.Count < 2 || data.Length < 5000) {
+                try {
+                    _current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
+                    _broken = _current.BitmapSource == null;
+
+                    InvalidateMeasure();
+                    InvalidateVisual();
+                } finally {
+                    _loading = false;
+                }
+
+                return;
+            }
+
+            if (RecentlyLoaded.Count > 5) {
+                await Task.Delay((RecentlyLoaded.Count - 3) * 10);
+                if (!_loading) return;
+            }
+
+            ThreadPool.QueueUserWorkItem(o => {
+                var current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
+                Dispatcher.BeginInvoke((Action)(() => {
+                    try {
+                        if (!_loading) return;
+
+                        _current = current;
+                        _broken = _current.BitmapSource == null;
+
+                        InvalidateMeasure();
+                        InvalidateVisual();
+                    } finally {
+                        _loading = false;
+                    }
+                }));
+            });
         }
 
         private void OnFilenameChanged() {

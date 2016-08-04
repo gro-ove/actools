@@ -100,7 +100,7 @@ namespace AcManager.Pages.Windows {
             SettingsHolder.Online.PropertyChanged += Online_PropertyChanged;
 
             if (!OfficialStarterNotification() && PluginsManager.Instance.HasAnyNew()) {
-                Toast.Show("Don’t forget to install plugins!", "");
+                Toast.Show("Don’t forget to install plugins!", ""); // TODO
             }
         }
 

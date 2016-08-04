@@ -49,7 +49,7 @@ namespace AcTools.Processes {
                         ["MIN_EXPOSURE"] = 0.2,
                         ["MAX_EXPOSURE"] = 10000
                     }
-                }.Save(iniFilename);
+                }.SaveAs(iniFilename);
             }
 
             public override void Shot(string skinId) {

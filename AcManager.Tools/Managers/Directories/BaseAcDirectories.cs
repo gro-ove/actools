@@ -21,7 +21,7 @@ namespace AcManager.Tools.Managers.Directories {
             Actual = true;
         }
 
-        protected BaseAcDirectories([NotNull] string enabledDirectory) : this(enabledDirectory, enabledDirectory + "-off") {}
+        protected BaseAcDirectories([NotNull] string enabledDirectory) : this(enabledDirectory, enabledDirectory + @"-off") {}
 
         public void CreateIfMissing() {
             Directory.CreateDirectory(EnabledDirectory);

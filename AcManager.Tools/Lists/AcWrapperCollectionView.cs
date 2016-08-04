@@ -4,8 +4,7 @@ using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Tools.Lists {
     public class AcWrapperCollectionView : BetterListCollectionView {
-        public AcWrapperCollectionView(IAcObjectList list)
-                : base(list) { }
+        public AcWrapperCollectionView(IAcObjectList list) : base(list) {}
 
         public void MoveCurrentToOrFirst(IAcObjectNew obj) {
             if (obj == null) {

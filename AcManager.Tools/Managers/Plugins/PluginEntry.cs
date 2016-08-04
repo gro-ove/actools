@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -14,30 +15,30 @@ using Newtonsoft.Json;
 namespace AcManager.Tools.Managers.Plugins {
     [JsonObject(MemberSerialization.OptIn)]
     public class PluginEntry : NotifyPropertyChanged, IWithId, IProgress<double?> {
-        [JsonProperty(PropertyName = "id")]
+        [JsonProperty(PropertyName = @"id")]
         public string Id { get; private set; }
 
-        [JsonProperty(PropertyName = "name")]
+        [JsonProperty(PropertyName = @"name")]
         private string _name;
 
-        [JsonProperty(PropertyName = "hidden")]
+        [JsonProperty(PropertyName = @"hidden")]
         private bool _hidden;
 
-        [JsonProperty(PropertyName = "description")]
+        [JsonProperty(PropertyName = @"description")]
         private string _description;
 
-        [JsonProperty(PropertyName = "version")]
+        [JsonProperty(PropertyName = @"version")]
         private string _version;
 
-        [JsonProperty(PropertyName = "installedVersion")]
+        [JsonProperty(PropertyName = @"installedVersion")]
         private string _installedVersion;
 
-        [JsonProperty(PropertyName = "size")]
+        [JsonProperty(PropertyName = @"size")]
 #pragma warning disable 649
         private int _size;
 #pragma warning restore 649
 
-        [JsonProperty(PropertyName = "appVersion")]
+        [Localizable(false),JsonProperty(PropertyName = @"appVersion")]
         public string AppVersion { get; private set; }
 
         public string Name {
@@ -51,7 +52,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
         public string DisplaySize => LocalizationHelper.ToReadableSize(_size);
 
-        public string KeyEnabled => "_appAddon__" + Id + "__enabled";
+        public string KeyEnabled => $"_appAddon__{Id}__enabled";
 
         public bool AvailableToInstall => !IsInstalled && !InstallationInProgress;
 
@@ -172,8 +173,7 @@ namespace AcManager.Tools.Managers.Plugins {
             AppVersion = "0";
         }
 
-        [JsonConstructor]
-        [UsedImplicitly]
+        [JsonConstructor, UsedImplicitly]
         private PluginEntry() { }
 
         private ICommand _installCommand;
@@ -211,7 +211,7 @@ namespace AcManager.Tools.Managers.Plugins {
         [JsonIgnore]
         public string Directory => PluginsManager.Instance.GetPluginDirectory(Id);
         
-        public string GetFilename(string fileId) {
+        public string GetFilename([Localizable(false)] string fileId) {
             return PluginsManager.Instance.GetPluginFilename(Id, fileId);
         }
     }

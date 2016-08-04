@@ -102,6 +102,10 @@ namespace AcManager.Tools.Helpers {
         private static Regex _decodeDescriptionRegex;
         private static Regex _cleanDescriptionRegex;
 
+        /// <summary>
+        /// Converts HTML-like description to a normal one. We don't need any YouTube-players built-in it.
+        /// </summary>
+        // TODO: Add support for some tags which could be drawn using MUI bb-codes?
         [CanBeNull]
         public static string DecodeDescription([CanBeNull] string s) {
             if (s == null) return null;
