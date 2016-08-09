@@ -10,8 +10,8 @@ namespace AcManager.Controls.ViewModels {
     public class AcObjectListCollectionViewWrapper<T> : BaseAcObjectListCollectionViewWrapper<T> where T : AcObjectNew {
         public readonly string Key;
 
-        public AcObjectListCollectionViewWrapper([NotNull] IAcManagerNew list, IFilter<T> listFilter, [Localizable(false)] string key, bool allowNonSelected,
-                bool delayedLoad = false) : base(list, listFilter, allowNonSelected, delayedLoad) {
+        public AcObjectListCollectionViewWrapper([NotNull] IAcManagerNew list, IFilter<T> listFilter, [Localizable(false)] string key, bool allowNonSelected)
+                : base(list, listFilter, allowNonSelected) {
             Key = key + @"_" + typeof(T).Name + @"_" + listFilter?.Source;
         }
 

@@ -147,9 +147,16 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         public void SaveImmediately() {
-            SetToIni();
-            IgnoreChangesForAWhile();
-            Ini.SaveAs(Filename);
+            try {
+                SetToIni();
+                IgnoreChangesForAWhile();
+                Ini.SaveAs(Filename);
+            } catch (Exception e) {
+                NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
+            } finally {
+                _saving = false;
+            }
+
             _saving = false;
         }
 

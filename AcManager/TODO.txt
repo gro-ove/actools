@@ -552,6 +552,7 @@ fixme:
     - find information dialog
     - smart textbox with version
     - 1ff opponent?!
+    - replays layout
 
 todo:
     - include “dev apps” option to apps presets

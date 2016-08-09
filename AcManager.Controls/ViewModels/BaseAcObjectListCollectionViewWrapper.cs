@@ -5,7 +5,6 @@ using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -38,32 +37,18 @@ namespace AcManager.Controls.ViewModels {
         protected AcItemWrapper CurrentItem => Loaded ? _mainList.CurrentItem as AcItemWrapper : null;
 
         private readonly bool _allowNonSelected;
-        private bool _delayedLoad;
-        private bool _delayedLoadActive;
 
-        protected BaseAcObjectListCollectionViewWrapper([NotNull] IAcManagerNew manager, IFilter<T> listFilter, bool allowNonSelected, bool delayedLoad = false) {
+        protected BaseAcObjectListCollectionViewWrapper([NotNull] IAcManagerNew manager, IFilter<T> listFilter, bool allowNonSelected) {
             if (manager == null) throw new ArgumentNullException(nameof(manager));
             _manager = manager;
             _list = _manager.WrappersAsIList;
             _mainList = new AcWrapperCollectionView(_list);
             ListFilter = listFilter;
             _allowNonSelected = allowNonSelected;
-            _delayedLoad = delayedLoad;
-        }
-
-        protected void ActualLoad() {
-            if (!_delayedLoad) return;
-            _delayedLoad = false;
-
-            if (_delayedLoadActive) {
-                _delayedLoadActive = false;
-                Load();
-            }
         }
 
         private void List_CollectionReady(object sender, EventArgs e) {
-            if (!Loaded) return; // TODO: could be a mistake
-            // MainList.CustomSort = null;
+            if (!Loaded) return;
             _mainList.Refresh();
         }
 
@@ -75,11 +60,6 @@ namespace AcManager.Controls.ViewModels {
         /// Don’t forget to use me!
         /// </summary>
         public virtual void Load() {
-            if (_delayedLoad) {
-                _delayedLoadActive = true;
-                return;
-            }
-
             if (Loaded) return;
             Loaded = true;
 

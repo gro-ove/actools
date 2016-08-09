@@ -283,7 +283,7 @@ namespace AcManager.Pages.Drive {
             public CombinedFilter<ServerEntry> ServerCombinedFilter => (CombinedFilter<ServerEntry>)ListFilter;
 
             public OnlineViewModel(OnlineManagerType type, BaseOnlineManager manager, string filter)
-                    : base(manager, GetFilter(filter), type.ToString(), false, false) {
+                    : base(manager, GetFilter(filter), type.ToString(), false) {
                 Type = type;
                 Manager = manager;
 
@@ -291,8 +291,6 @@ namespace AcManager.Pages.Drive {
                 SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key)) ?? SortingModes[0];
                 ServerCombinedFilter.Second = CreateQuickFilter();
                 Logging.Write("ServerCombinedFilter: " + ServerCombinedFilter);
-
-                // ActualLoad();
             }
 
             private CancellationTokenSource _pingingSource;
