@@ -9,9 +9,7 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="streamBase">The wrapped stream.</param>
         public WrappingStream(Stream streamBase) {
             // check parameters
-            if (streamBase == null)
-                throw new ArgumentNullException(nameof(streamBase));
-
+            if (streamBase == null) throw new ArgumentNullException(nameof(streamBase));
             WrappedStream = streamBase;
         }
 

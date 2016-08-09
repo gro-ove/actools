@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// Represents a control that indicates that an operation is ongoing. 
     /// </summary>
-    [TemplateVisualState(GroupName = GroupActiveStates, Name = StateInactive)]
-    [TemplateVisualState(GroupName = GroupActiveStates, Name = StateActive)]
-    public class ModernProgressRing
-            : Control {
+    [TemplateVisualState(GroupName = GroupActiveStates, Name = StateInactive), TemplateVisualState(GroupName = GroupActiveStates, Name = StateActive)]
+    public class ModernProgressRing : Control {
         private const string GroupActiveStates = "ActiveStates";
         private const string StateInactive = "Inactive";
         private const string StateActive = "Active";

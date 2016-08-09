@@ -44,7 +44,7 @@ namespace AcTools.Processes {
         public void Run() {
             if (!Process.GetProcessesByName("steam").Any()) {
                 TryToRunSteam();
-                throw new Exception("Runned Steam is required");
+                throw new Exception("Running Steam is required");
             }
 
             _acLauncher = FileUtils.GetAcLauncherFilename(AcRoot);

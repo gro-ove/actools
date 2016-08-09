@@ -187,7 +187,7 @@ namespace AcManager.Controls.Helpers {
 
             // device
             var section = ini["CONTROLLERS"];
-            var devices = LinqExtension.RangeFrom().Select(x => section.Get("CON" + x.ToInvariantString())).TakeWhile(x => x != null).Distinct().ToList();
+            var devices = LinqExtension.RangeFrom().Select(x => section.GetNonEmpty("CON" + x.ToInvariantString())).TakeWhile(x => x != null).Distinct().ToList();
             if (devices.Count > 1) {
                 result.Append('\n');
                 result.AppendFormat(ControlsStrings.Controls_Preview_Devices, devices.JoinToString(@", "));

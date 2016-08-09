@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Plugins;
@@ -10,6 +11,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 // ReSharper disable RedundantArgumentDefaultValue
@@ -362,12 +364,12 @@ namespace AcManager.Tools.Helpers {
             public bool FixResolutionAutomatically {
                 get {
                     return _fixResolutionAutomatically ??
-                            (_fixResolutionAutomatically = ValuesStorage.GetBool("Settings.CommonSettings.FixResolutionAutomatically", true)).Value;
+                            (_fixResolutionAutomatically = ValuesStorage.GetBool("Settings.CommonSettings.FixResolutionAutomatically_", false)).Value;
                 }
                 set {
                     if (Equals(value, _fixResolutionAutomatically)) return;
                     _fixResolutionAutomatically = value;
-                    ValuesStorage.Set("Settings.CommonSettings.FixResolutionAutomatically", value);
+                    ValuesStorage.Set("Settings.CommonSettings.FixResolutionAutomatically_", value);
                     OnPropertyChanged();
                 }
             }
@@ -380,37 +382,53 @@ namespace AcManager.Tools.Helpers {
         public class DriveSettings : NotifyPropertyChanged {
             internal DriveSettings() {
                 if (PlayerName == null) {
-                    PlayerName = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].Get("DRIVER_NAME") ?? ToolsStrings.Settings_DefaultPlayerName;
+                    PlayerName = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].GetNonEmpty("DRIVER_NAME") ?? ToolsStrings.Settings_DefaultPlayerName;
                     PlayerNameOnline = PlayerName;
                 }
 
                 if (PlayerNationality == null) {
-                    PlayerNationality = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].Get("NATIONALITY");
+                    PlayerNationality = new IniFile(FileUtils.GetRaceIniFilename())["CAR_0"].GetPossiblyEmpty("NATIONALITY");
                 }
             }
 
-            public class StarterType : NotifyPropertyChanged, IWithId {
+            public sealed class StarterType : Displayable, IWithId {
                 internal readonly string RequiredAddonId;
 
                 public string Id { get; }
 
-                public string DisplayName { get; }
+                public string Description { get; }
 
                 public bool IsAvailable => RequiredAddonId == null || PluginsManager.Instance.IsPluginEnabled(RequiredAddonId);
 
-                internal StarterType(string displayName, string requiredAddonId = null) {
+                internal StarterType(string displayName, string description, string requiredAddonId = null) {
                     Id = displayName;
                     DisplayName = displayName;
+                    Description = description;
 
                     RequiredAddonId = requiredAddonId;
                 }
             }
 
-            public static readonly StarterType OfficialStarterType = new StarterType(string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official));
-            public static readonly StarterType TrickyStarterType = new StarterType(ToolsStrings.Settings_Starter_Tricky);
-            public static readonly StarterType StarterPlusType = new StarterType(ToolsStrings.Settings_Starter_StarterPlus, StarterPlus.AddonId);
-            public static readonly StarterType SseStarterType = new StarterType(ToolsStrings.Settings_Starter_Sse, SseStarter.AddonId);
-            public static readonly StarterType NaiveStarterType = new StarterType(ToolsStrings.Settings_Starter_Naive);
+            public static readonly StarterType OfficialStarterType = new StarterType(
+                    string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official),
+                    "Official way from Kunos; might be slow and unreliable, but doesn’t require patching");
+
+            public static readonly StarterType TrickyStarterType = new StarterType(ToolsStrings.Settings_Starter_Tricky,
+                    "Tricky way to start the race; one of the fastest, but doesn’t work without running Steam or Internet-connection");
+
+            public static readonly StarterType UiModuleStarterType = new StarterType("UI Module",
+                    "Adds a special UI module in original launcher which listens to some orders and runs the game; use it if you need to use both CM and original launcher at the same time");
+
+            public static readonly StarterType StarterPlusType = new StarterType(ToolsStrings.Settings_Starter_StarterPlus,
+                    "Modified version of original launcher, obsolete since 1.7 release",
+                    StarterPlus.AddonId);
+
+            public static readonly StarterType SseStarterType = new StarterType(ToolsStrings.Settings_Starter_Sse,
+                    "Fastest one, runs game directly without using Steam at all; online will work, but you’ll miss all achievments",
+                    SseStarter.AddonId);
+
+            public static readonly StarterType NaiveStarterType = new StarterType(ToolsStrings.Settings_Starter_Naive,
+                    "Just tries to run acs.exe directly; in most cases will fail");
 
             private StarterType _selectedStarterType;
 
@@ -426,13 +444,19 @@ namespace AcManager.Tools.Helpers {
                     _selectedStarterType = value;
                     ValuesStorage.Set("Settings.DriveSettings.SelectedStarterType", value.Id);
                     OnPropertyChanged();
+
+                    if (value == UiModuleStarterType && ModuleStarter.TryToInstallModule() && ModuleStarter.IsAssettoCorsaRunning) {
+                        Application.Current.Dispatcher.BeginInvoke((Action)(() => {
+                            ModernDialog.ShowMessage("UI module “CM Helper” installed and activated. Don’t forget to restart AssettoCorsa.exe before racing!");
+                        }));
+                    }
                 }
             }
 
             private StarterType[] _starterTypes;
 
             public StarterType[] StarterTypes => _starterTypes ?? (_starterTypes = new[] {
-                OfficialStarterType, TrickyStarterType, StarterPlusType, SseStarterType, NaiveStarterType
+                OfficialStarterType, TrickyStarterType, UiModuleStarterType, StarterPlusType, SseStarterType, NaiveStarterType
             });
 
             private bool? _copyFilterToSystemForOculus;
@@ -1277,7 +1301,7 @@ namespace AcManager.Tools.Helpers {
             private string _localeName;
 
             public string LocaleName {
-                get { return _localeName ?? (_localeName = ValuesStorage.GetString("Settings.LocaleSettings.LocaleName_", "en")); }
+                get { return _localeName ?? (_localeName = ValuesStorage.GetString("Settings.LocaleSettings.LocaleName_", @"en")); }
                 set {
                     value = value.Trim();
                     if (Equals(value, _localeName)) return;

@@ -125,8 +125,15 @@ namespace AcManager.Tools.Objects {
             UserAiLevel = AiLevel;
         }, o => UserAiLevel != AiLevel));
 
+        protected override void SetCustomSkinId(IniFile ini) {
+            if (SettingsHolder.Drive.KunosCareerUserSkin) {
+                base.SetCustomSkinId(ini);
+            }
+        }
+
         protected override IniFile ConvertConfig(IniFile ini) {
-            base.ConvertConfig(ini);
+            ini = base.ConvertConfig(ini);
+
             if (SettingsHolder.Drive.KunosCareerUserAiLevel) {
                 ini["RACE"].Set("AI_LEVEL", UserAiLevel);
             }
@@ -134,7 +141,7 @@ namespace AcManager.Tools.Objects {
             IniFile opponentsIniFile = null;
             foreach (var i in Enumerable.Range(0, ini["RACE"].GetInt("CARS", 0)).Skip(1)) {
                 var sectionKey = @"CAR_" + i;
-                if (!ini.ContainsKey(sectionKey) || string.IsNullOrWhiteSpace(ini[sectionKey].Get("DRIVER_NAME"))) {
+                if (!ini.ContainsKey(sectionKey) || string.IsNullOrWhiteSpace(ini[sectionKey].GetPossiblyEmpty("DRIVER_NAME"))) {
                     if (opponentsIniFile == null) {
                         var career = KunosCareerManager.Instance.GetById(KunosCareerId);
                         if (career == null) throw new Exception(string.Format("Can’t find parent career with ID={0}", KunosCareerId));
@@ -146,8 +153,8 @@ namespace AcManager.Tools.Objects {
                     ini[sectionKey] = opponentsIniFile["AI" + i];
                 }
 
-                ini[sectionKey].SetId("MODEL", ini[sectionKey].Get("MODEL"));
-                ini[sectionKey].SetId("SKIN", ini[sectionKey].Get("SKIN"));
+                ini[sectionKey].SetId("MODEL", ini[sectionKey].GetPossiblyEmpty("MODEL"));
+                ini[sectionKey].SetId("SKIN", ini[sectionKey].GetPossiblyEmpty("SKIN"));
             }
 
             return ini;

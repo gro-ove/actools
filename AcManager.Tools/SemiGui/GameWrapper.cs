@@ -128,6 +128,7 @@ namespace AcManager.Tools.SemiGui {
             }
 
             using (var ui = _factory.Create()) {
+                Logging.Write($"[GameWrapper] Starting game: {properties.GetDescription()}");
                 ui.Show(properties);
                 
                 try {
@@ -143,6 +144,7 @@ namespace AcManager.Tools.SemiGui {
                         result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
                     }
 
+                    Logging.Write($"[GameWrapper] Result: {result?.GetDescription() ?? @"NONE"}");
                     if (ui.CancellationToken.IsCancellationRequested) {
                         ui.OnError(new UserCancelledException());
                         return null;
@@ -159,7 +161,7 @@ namespace AcManager.Tools.SemiGui {
                         var param = new GameEndedArgs(properties, result);
                         Ended?.Invoke(null, param);
                         /* TODO: should set result to null if param.Cancel is true? */
-
+                        
                         var replayHelper = new ReplayHelper(properties, result);
                         (result == null || param.Cancel ? Cancelled : Finished)?.Invoke(null, new GameFinishedArgs(properties, result));
 

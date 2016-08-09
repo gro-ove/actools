@@ -14,6 +14,10 @@ namespace AcManager.Tools.Starters {
                 return new OfficialStarter();
             }
 
+            if (type == SettingsHolder.DriveSettings.UiModuleStarterType) {
+                return new ModuleStarter();
+            }
+
             if (type == SettingsHolder.DriveSettings.NaiveStarterType) {
                 return new NaiveStarter();
             }

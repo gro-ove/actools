@@ -55,6 +55,7 @@ namespace AcManager.Tools.Objects {
 
         public abstract TrackObject MainTrackObject { get; }
 
+        [CanBeNull]
         public abstract string LayoutId { get; }
 
         public abstract string IdWithLayout { get; }

@@ -147,7 +147,7 @@ namespace AcTools.Processes {
                     raceSection.Remove("SERVER_HTTP_PORT");
                 }
 
-                raceSection.Set("REQUESTED_CAR", RequestedCar ?? file["RACE"].Get("MODEL"));
+                raceSection.Set("REQUESTED_CAR", RequestedCar ?? file["RACE"].GetPossiblyEmpty("MODEL"));
                 raceSection.Set("GUID", Guid);
                 raceSection.Set("PASSWORD", Password);
                 raceSection.Set("ACTIVE", true);
@@ -498,11 +498,16 @@ namespace AcTools.Processes {
         }
 
         public class ReplayProperties {
-            public string Filename, Name, TrackId, TrackConfiguration;
+            public string Filename, Name, TrackId, TrackConfiguration, WeatherId;
 
             internal void Set(IniFile file) {
                 file["REPLAY"].Set("ACTIVE", true);
                 file["REPLAY"].Set("FILENAME", Name);
+
+                // for custom clouds
+                if (WeatherId != null) {
+                    file["WEATHER"].Set("NAME", WeatherId);
+                }
 
                 // another weirdness of Assetto Corsa
                 file["RACE"].SetId("TRACK", TrackId);

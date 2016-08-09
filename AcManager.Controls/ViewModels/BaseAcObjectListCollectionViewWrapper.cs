@@ -5,6 +5,7 @@ using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -34,22 +35,36 @@ namespace AcManager.Controls.ViewModels {
         }
 
         [CanBeNull]
-        protected AcItemWrapper CurrentItem => MainList.CurrentItem as AcItemWrapper;
+        protected AcItemWrapper CurrentItem => Loaded ? _mainList.CurrentItem as AcItemWrapper : null;
 
         private readonly bool _allowNonSelected;
+        private bool _delayedLoad;
+        private bool _delayedLoadActive;
 
-        protected BaseAcObjectListCollectionViewWrapper([NotNull] IAcManagerNew manager, IFilter<T> listFilter, bool allowNonSelected) {
+        protected BaseAcObjectListCollectionViewWrapper([NotNull] IAcManagerNew manager, IFilter<T> listFilter, bool allowNonSelected, bool delayedLoad = false) {
             if (manager == null) throw new ArgumentNullException(nameof(manager));
             _manager = manager;
             _list = _manager.WrappersAsIList;
             _mainList = new AcWrapperCollectionView(_list);
             ListFilter = listFilter;
             _allowNonSelected = allowNonSelected;
+            _delayedLoad = delayedLoad;
+        }
+
+        protected void ActualLoad() {
+            if (!_delayedLoad) return;
+            _delayedLoad = false;
+
+            if (_delayedLoadActive) {
+                _delayedLoadActive = false;
+                Load();
+            }
         }
 
         private void List_CollectionReady(object sender, EventArgs e) {
+            if (!Loaded) return; // TODO: could be a mistake
             // MainList.CustomSort = null;
-            MainList.Refresh();
+            _mainList.Refresh();
         }
 
         protected bool Loaded { get; private set; }
@@ -60,6 +75,11 @@ namespace AcManager.Controls.ViewModels {
         /// Don’t forget to use me!
         /// </summary>
         public virtual void Load() {
+            if (_delayedLoad) {
+                _delayedLoadActive = true;
+                return;
+            }
+
             if (Loaded) return;
             Loaded = true;
 
@@ -73,18 +93,37 @@ namespace AcManager.Controls.ViewModels {
             if (_second) return;
             _second = true;
 
-            using (MainList.DeferRefresh()) {
+            using (_mainList.DeferRefresh()) {
                 if (ListFilter == null) {
-                    MainList.Filter = null;
+                    _mainList.Filter = null;
                 } else {
-                    MainList.Filter = FilterTest;
+                    _mainList.Filter = FilterTest;
                 }
-                MainList.CustomSort = this;
+
+                _mainList.CustomSort = SortingComparer;
             }
 
             LoadCurrent();
-            _oldNumber = MainList.Count;
-            MainList.CurrentChanged += OnCurrentChanged;
+            _oldNumber = _mainList.Count;
+            _mainList.CurrentChanged += OnCurrentChanged;
+        }
+
+        private IComparer _sorting;
+
+        [NotNull]
+        public IComparer SortingComparer {
+            get { return _sorting ?? this; }
+            set {
+                value = ReferenceEquals(value, this) ? null : value;
+
+                if (Equals(value, _sorting)) return;
+                _sorting = value;
+                OnPropertyChanged();
+
+                if (Loaded) {
+                    _mainList.CustomSort = this;
+                }
+            }
         }
 
         /// <summary>
@@ -110,7 +149,7 @@ namespace AcManager.Controls.ViewModels {
         private bool _userChange = true;
 
         private void LoadCurrent() {
-            if (MainList.IsEmpty) return;
+            if (!Loaded || _mainList.IsEmpty) return;
 
             var selectedId = LoadCurrentId();
             if (selectedId == InvalidId) return;
@@ -119,11 +158,11 @@ namespace AcManager.Controls.ViewModels {
 
             _userChange = false;
             if (_allowNonSelected) {
-                MainList.MoveCurrentToOrNull(selected);
+                _mainList.MoveCurrentToOrNull(selected);
             } else if (selected == null) {
-                MainList.MoveCurrentToFirst();
+                _mainList.MoveCurrentToFirst();
             } else {
-                MainList.MoveCurrentToOrFirst(selected);
+                _mainList.MoveCurrentToOrFirst(selected);
             }
             _userChange = true;
         }
@@ -153,9 +192,11 @@ namespace AcManager.Controls.ViewModels {
         private int _oldNumber;
 
         private void MainListUpdated() {
-            var newNumber = MainList.Count;
+            if (!Loaded) return; // TODO: could be a mistake
 
-            if (MainList.CurrentItem == null) {
+            var newNumber = _mainList.Count;
+
+            if (_mainList.CurrentItem == null) {
                 LoadCurrent();
             }
 
@@ -167,6 +208,8 @@ namespace AcManager.Controls.ViewModels {
         private AcItemWrapper _testMeLater;
 
         private void RefreshFilter(AcPlaceholderNew obj) {
+            if (!Loaded) return; // TODO: could be a mistake
+
             if (CurrentItem?.Value == obj) {
                 _testMeLater = CurrentItem;
                 return;
@@ -174,7 +217,7 @@ namespace AcManager.Controls.ViewModels {
 
             _testMeLater = null;
 
-            var contains = MainList.OfType<AcItemWrapper>().Any(x => x.Value == obj);
+            var contains = _mainList.OfType<AcItemWrapper>().Any(x => x.Value == obj);
             var newValue = FilterTest(obj);
 
             if (contains != newValue) {
@@ -183,6 +226,8 @@ namespace AcManager.Controls.ViewModels {
         }
 
         private void RefreshFilter(AcItemWrapper obj) {
+            if (!Loaded) return; // TODO: could be a mistake
+
             if (CurrentItem == obj) {
                 _testMeLater = CurrentItem;
                 return;
@@ -190,7 +235,7 @@ namespace AcManager.Controls.ViewModels {
 
             _testMeLater = null;
 
-            var contains = MainList.OfType<AcItemWrapper>().Contains(obj);
+            var contains = _mainList.OfType<AcItemWrapper>().Contains(obj);
             var newValue = FilterTest(obj);
 
             if (contains != newValue) {
@@ -224,6 +269,6 @@ namespace AcManager.Controls.ViewModels {
         }
 
         // TODO: remove
-        public bool IsEmpty => MainList.IsEmpty;
+        public bool IsEmpty => !Loaded || _mainList.IsEmpty; // TODO: could be a mistake
     }
 }

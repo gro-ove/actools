@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class BetterImage : Control {
+        public static bool OptionBackgroundLoading = true;
+
         #region Wrapper with size (for solving DPI-related problems)
         public struct BitmapEntry {
             public readonly ImageSource BitmapSource;
@@ -58,14 +62,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public bool DelayedCreation {
             get { return (bool)GetValue(DelayedCreationProperty); }
             set { SetValue(DelayedCreationProperty, value); }
-        }
-
-        public static readonly DependencyProperty AdditionalDelayProperty = DependencyProperty.Register(nameof(AdditionalDelay), typeof(bool),
-                typeof(BetterImage));
-
-        public bool AdditionalDelay {
-            get { return (bool)GetValue(AdditionalDelayProperty); }
-            set { SetValue(AdditionalDelayProperty, value); }
         }
 
         public static readonly DependencyProperty DecodeHeightProperty = DependencyProperty.Register(nameof(DecodeHeight), typeof(int),
@@ -129,19 +125,27 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnSourceChanged(object newValue) {
             if (newValue is BitmapEntry) {
-                _loading = false;
+                ++_loading;
                 _current = (BitmapEntry)newValue;
                 InvalidateVisual();
             } else {
                 var source = newValue as ImageSource;
                 if (newValue == null || source != null) {
-                    _loading = false;
+                    ++_loading;
                     _current = source == null ? new BitmapEntry() : new BitmapEntry(source, (int)source.Width, (int)source.Height);
                     InvalidateVisual();
                 } else {
                     Filename = newValue as string;
                 }
             }
+        }
+
+        public static readonly DependencyProperty ForceFillProperty = DependencyProperty.Register(nameof(ForceFill), typeof(bool),
+                typeof(BetterImage));
+
+        public bool ForceFill {
+            get { return (bool)GetValue(ForceFillProperty); }
+            set { SetValue(ForceFillProperty, value); }
         }
         #endregion
 
@@ -221,8 +225,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private static BitmapEntry LoadBitmapSourceFromBytes(byte[] data, int decodeWidth = -1, int decodeHeight = -1) {
+        /// <summary>
+        /// Safe (handles all exceptions inside).
+        /// </summary>
+        private static BitmapEntry LoadBitmapSourceFromBytes(byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0) {
             try {
+                // for more information about WrappingStream: https://code.logos.com/blog/2008/04/memory_leak_with_bitmapimage_and_memorystream.html
                 using (var stream = new WrappingStream(new MemoryStream(data))) {
                     int width = 0, height = 0;
 
@@ -231,12 +239,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     if (decodeWidth > 0) {
                         bi.DecodePixelWidth = (int)(decodeWidth * DpiAwareWindow.OptionScale);
-                        width = decodeWidth;
+                        width = bi.DecodePixelWidth;
                     }
 
                     if (decodeHeight > 0) {
                         bi.DecodePixelHeight = (int)(decodeHeight * DpiAwareWindow.OptionScale);
-                        height = decodeHeight;
+                        height = bi.DecodePixelHeight;
                     }
 
                     bi.CacheOption = BitmapCacheOption.OnLoad;
@@ -254,6 +262,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     return new BitmapEntry(bi, width, height);
                 }
+            } catch (FileFormatException e) {
+                // I AM THE GOD OF STUPID WORKAROUNDS, AND I BRING YOU, WORKAROUND!
+                if (attempt++ < 2 && e.InnerException is COMException) {
+                    Logging.Warning("[BetterImage] Recover attempt: " + attempt);
+                    return LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, attempt);
+                }
+
+                Logging.Warning("[BetterImage] Loading failed: " + e);
+                return new BitmapEntry();
             } catch (Exception e) {
                 Logging.Warning("[BetterImage] Loading failed: " + e);
                 return new BitmapEntry();
@@ -300,12 +317,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public int InnerDecodeHeight => DecodeHeight;
 
         private BitmapEntry _current;
-        private bool _loading, _broken;
+        private int _loading;
+        private bool _broken;
 
         private void ReloadImage() {
             if (DelayedCreation) {
-                ReloadImageAsync();
-            } else if (!_loading) {
+                if (OptionBackgroundLoading) {
+                    ReloadImageAsync();
+                } else {
+                    ReloadImageAsyncOld();
+                }
+            } else {
+                ++_loading;
                 _current = LoadBitmapSource(Filename, InnerDecodeWidth, InnerDecodeHeight);
                 _broken = _current.BitmapSource == null;
                 InvalidateMeasure();
@@ -325,9 +348,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             RecentlyLoaded.Add(now);
         }
 
+        private async void ReloadImageAsyncOld() {
+            var loading = ++_loading;
+            _broken = false;
+
+            var current = await LoadBitmapSourceAsync(Filename, InnerDecodeWidth, InnerDecodeHeight);
+            if (loading != _loading) return;
+
+            _current = current;
+            _broken = _current.BitmapSource == null;
+
+            InvalidateMeasure();
+            InvalidateVisual();
+        }
+        
         private async void ReloadImageAsync() {
-            if (_loading) return;
-            _loading = true;
+            var loading = ++_loading;
             _broken = false;
 
             var filename = Filename;
@@ -343,11 +379,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
             }
 
+            if (loading != _loading) return;
             if (data == null) {
-#if DEBUG
-                Logging.Write("[BetterImage] Data=null: " + filename);
-#endif
-
                 _current = new BitmapEntry();
                 _broken = true;
 
@@ -356,48 +389,34 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return;
             }
 
-            if (AdditionalDelay) {
-                await Task.Delay(100);
-                if (!_loading) return;
-            }
-
-            UpdateLoaded();
             var innerDecodeWidth = InnerDecodeWidth;
             var innerDecodeHeight = InnerDecodeHeight;
             
+            UpdateLoaded();
             if (RecentlyLoaded.Count < 2 || data.Length < 5000) {
-                try {
-                    _current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
-                    _broken = _current.BitmapSource == null;
+                _current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
+                _broken = _current.BitmapSource == null;
 
-                    InvalidateMeasure();
-                    InvalidateVisual();
-                } finally {
-                    _loading = false;
-                }
-
+                InvalidateMeasure();
+                InvalidateVisual();
                 return;
             }
 
             if (RecentlyLoaded.Count > 5) {
                 await Task.Delay((RecentlyLoaded.Count - 3) * 10);
-                if (!_loading) return;
+                if (loading != _loading) return;
             }
 
             ThreadPool.QueueUserWorkItem(o => {
                 var current = LoadBitmapSourceFromBytes(data, innerDecodeWidth, innerDecodeHeight);
-                Dispatcher.BeginInvoke((Action)(() => {
-                    try {
-                        if (!_loading) return;
+                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() => {
+                    if (loading != _loading) return;
 
-                        _current = current;
-                        _broken = _current.BitmapSource == null;
+                    _current = current;
+                    _broken = _current.BitmapSource == null;
 
-                        InvalidateMeasure();
-                        InvalidateVisual();
-                    } finally {
-                        _loading = false;
-                    }
+                    InvalidateMeasure();
+                    InvalidateVisual();
                 }));
             });
         }
@@ -417,7 +436,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_current.BitmapSource == null && HideBroken) return new Size();
 
             _size = MeasureArrangeHelper(constraint);
-            return new Size(Math.Min(_size.Width, constraint.Width), Math.Min(_size.Height, constraint.Height));
+
+            var forceFill = ForceFill;
+            return new Size(forceFill && !double.IsPositiveInfinity(constraint.Width) ? constraint.Width : Math.Min(_size.Width, constraint.Width),
+                    forceFill && !double.IsPositiveInfinity(constraint.Height) ? constraint.Height : Math.Min(_size.Height, constraint.Height));
         }
 
         private double HorizontalContentAlignmentMultipler => HorizontalContentAlignment == HorizontalAlignment.Center ? 0.5d :

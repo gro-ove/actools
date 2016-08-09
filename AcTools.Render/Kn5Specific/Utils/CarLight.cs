@@ -9,6 +9,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
     public class CarLight {
         public CarLightType Type { get; private set; }
 
+        [CanBeNull]
         public string Name { get; private set; }
 
         public Vector3 Emissive { get; private set; }
@@ -34,7 +35,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
 
         public virtual void Initialize(CarLightType type, Kn5RenderableList main, IniFileSection section) {
             Type = type;
-            Name = section.Get("NAME");
+            Name = section.GetNonEmpty("NAME");
             Emissive = section.GetVector3("COLOR").Select(y => (float)y).ToArray().ToVector3();
             Node = main.GetByName(Name);
         }

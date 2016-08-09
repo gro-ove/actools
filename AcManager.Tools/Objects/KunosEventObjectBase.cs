@@ -403,7 +403,7 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         protected virtual void LoadObjects() {
-            TrackObject = TrackId == null ? null : TracksManager.Instance.GetById(TrackId);
+            TrackObject = TrackId == null ? null : TracksManager.Instance.GetLayoutById(TrackId, TrackConfigurationId);
             CarObject = CarId == null ? null : CarsManager.Instance.GetById(CarId);
             WeatherObject = WeatherManager.Instance.GetById(WeatherId ?? string.Empty);
 
@@ -436,10 +436,7 @@ namespace AcManager.Tools.Objects {
 
             if (conditions.Count != 3 || conditions[0].Type == null ||
                     conditions.Any(x => x.Value == null || x.Type != null && x.Type != conditions[0].Type)) {
-                Logging.Warning("[KunosCareerEventObject] Unsupported conditions: " +
-                        conditions.Select(x => $"type: {x.Type}, value: {x.Type}").JoinToString(Environment.NewLine));
-                AddError(AcErrorType.Data_KunosCareerConditions, ini["CONDITION_0"].Get("TYPE") ?? @"?");
-                AddError(AcErrorType.Data_KunosCareerWeatherIsMissing, ini["CONDITION_0"].Get("TYPE") ?? @"?");
+                AddError(AcErrorType.Data_KunosCareerConditions, ini["CONDITION_0"].GetNonEmpty("TYPE") ?? @"?");
             } else {
                 RemoveError(AcErrorType.Data_KunosCareerConditions);
                 ConditionType = conditions[0].Type.Value;
@@ -452,14 +449,14 @@ namespace AcManager.Tools.Objects {
         public abstract void LoadProgress();
 
         protected override void LoadData(IniFile ini) {
-            Name = ini["EVENT"].Get("NAME");
-            Description = AcStringValues.DecodeDescription(ini["EVENT"].Get("DESCRIPTION"));
+            Name = ini["EVENT"].GetPossiblyEmpty("NAME");
+            Description = AcStringValues.DecodeDescription(ini["EVENT"].GetPossiblyEmpty("DESCRIPTION"));
 
-            TrackId = ini["RACE"].Get("TRACK");
-            TrackConfigurationId = ini["RACE"].Get("CONFIG_TRACK");
-            CarId = ini["RACE"].Get("MODEL");
-            CarSkinId = ini["CAR_0"].Get("SKIN");
-            WeatherId = ini["WEATHER"].Get("NAME") ?? WeatherManager.Instance.GetDefault()?.Id;
+            TrackId = ini["RACE"].GetNonEmpty("TRACK");
+            TrackConfigurationId = ini["RACE"].GetNonEmpty("CONFIG_TRACK");
+            CarId = ini["RACE"].GetNonEmpty("MODEL");
+            CarSkinId = ini["CAR_0"].GetNonEmpty("SKIN");
+            WeatherId = ini["WEATHER"].GetNonEmpty("NAME") ?? WeatherManager.Instance.GetDefault()?.Id;
 
             Time = (int)Game.ConditionProperties.GetSeconds(ini["LIGHTING"].GetInt("SUN_ANGLE", 40));
             Temperature = ini["TEMPERATURE"].GetDouble("AMBIENT", 26);
@@ -468,10 +465,14 @@ namespace AcManager.Tools.Objects {
             TrackPreset = Game.DefaultTrackPropertiesPresets.GetByIdOrDefault(ini["DYNAMIC_TRACK"].GetIntNullable("PRESET")) ??
                     Game.DefaultTrackPropertiesPresets[4];
             DisplayType = ini.ContainsKey(@"SESSION_1") ? ToolsStrings.Common_Weekend :
-                    (ini["SESSION_0"].Get("NAME")?.Replace(@" Session", "") ?? ToolsStrings.Session_Race);
+                    (ini["SESSION_0"].GetNonEmpty("NAME")?.Replace(@" Session", "") ?? ToolsStrings.Session_Race);
 
             StartingPosition = ini["SESSION_0"].GetIntNullable("STARTING_POSITION");
             OpponentsCount = ini["RACE"].GetInt("CARS", 1) - 1;
+
+            if (OpponentsCount > 0 && StartingPosition == null) {
+                StartingPosition = OpponentsCount + 1;
+            }
 
             if (StartingPosition != null || ini.ContainsKey(@"SESSION_1")) {
                 Laps = ini["SESSION_0"].GetIntNullable("LAPS") ?? ini["RACE"].GetIntNullable("RACE_LAPS") ?? 0;
@@ -500,9 +501,12 @@ namespace AcManager.Tools.Objects {
 
                 if (Loaded) {
                     OnPropertyChanged();
+                    TakenPlaceChanged();
                 }
             }
         }
+
+        protected virtual void TakenPlaceChanged() {}
         #endregion
 
         public void ResetSkinToDefault() {
@@ -515,26 +519,28 @@ namespace AcManager.Tools.Objects {
             throw new NotSupportedException();
         }
 
+        protected virtual void SetCustomSkinId(IniFile ini) {
+            ini["RACE"].SetId("SKIN", CarSkin.Id);
+            ini["CAR_0"].SetId("SKIN", CarSkin.Id);
+        }
+
         protected virtual IniFile ConvertConfig(IniFile ini) {
             // iniFile.Remove(@"EVENT");
             // iniFile.Remove(@"SPECIAL_EVENT");
             // iniFile.RemoveSections("CONDITION");
 
-            if (SettingsHolder.Drive.KunosCareerUserSkin) {
-                ini["RACE"].SetId("SKIN", CarSkin.Id);
-                ini["CAR_0"].SetId("SKIN", CarSkin.Id);
-            }
+            SetCustomSkinId(ini);
 
             var trackProperties = Game.DefaultTrackPropertiesPresets.ElementAtOrDefault(ini["DYNAMIC_TRACK"].GetInt("PRESET", -1)) ??
                     Game.GetDefaultTrackPropertiesPreset();
             trackProperties.Properties.Set(ini);
 
-            ini["RACE"].SetId("MODEL", ini["RACE"].Get("MODEL"));
-            ini["RACE"].SetId("SKIN", ini["RACE"].Get("SKIN"));
-            ini["RACE"].SetId("TRACK", ini["RACE"].Get("TRACK"));
+            ini["RACE"].SetId("MODEL", ini["RACE"].GetPossiblyEmpty("MODEL"));
+            ini["RACE"].SetId("SKIN", ini["RACE"].GetPossiblyEmpty("SKIN"));
+            ini["RACE"].SetId("TRACK", ini["RACE"].GetPossiblyEmpty("TRACK"));
 
-            ini["CAR_0"].SetId("MODEL", ini["CAR_0"].Get("MODEL"));
-            ini["CAR_0"].SetId("SKIN", ini["CAR_0"].Get("SKIN"));
+            ini["CAR_0"].SetId("MODEL", ini["CAR_0"].GetPossiblyEmpty("MODEL"));
+            ini["CAR_0"].SetId("SKIN", ini["CAR_0"].GetPossiblyEmpty("SKIN"));
             ini["CAR_0"].Set("DRIVER_NAME", SettingsHolder.Drive.PlayerName);
             ini["CAR_0"].Set("NATIONALITY", SettingsHolder.Drive.PlayerNationality);
             return ini;

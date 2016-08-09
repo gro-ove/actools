@@ -533,6 +533,9 @@ done:
         + custom locale
         + some tool/manual for localization
     + don't let to replace sound from itself
+    + local weather instead of track's one
+        + http://ipinfo.io/geo
+    + online: proper refresh button
 
 fixme:
     - notifypropertychanged for commands
@@ -561,8 +564,7 @@ todo:
     - shape with triangle at right bottom (audi r8)
     - change "Author:" to "Version:" or "URL:" if author is missing
 
-    - local weather instead of track's one
-        - http://ipinfo.io/geo
+    - hide CM window based on shared mem!
 
     - convert BMP to JPG automatically
         + for races and replays
@@ -580,7 +582,6 @@ todo:
     - notification for plugins
     - upload Content to Trello for those who doesn't have Internet connection
     - custom showroom: proper wpf-based errors handling for invalid dx and stuff
-    - online: proper refresh button
 
     - lite mode (without main form): overlays, second commands, attempts to open main form?
     - automatically fix name, brand name and badge for URD-cars
@@ -668,10 +669,10 @@ todo:
         + online
             + custom sorting
             + flag fitting
-            - booking!
+            + booking!
+            + periodic refreshing of selected server
             - favorites
             - periodic refreshing of all servers 
-            - periodic refreshing of selected server
             - keyboard shortcuts
             - login as admin?
             - list all cars?

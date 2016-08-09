@@ -21,7 +21,7 @@ namespace AcManager.Tools.Starters {
                 throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.OfficialStarter_OriginalLauncherIsMissing);
             }
 
-            if (!FileVersionInfo.GetVersionInfo(LauncherFilename).FileVersion.IsVersionOlderThan("0.16.714")) return;
+            if (!FileVersionInfo.GetVersionInfo(LauncherFilename).FileVersion.IsVersionOlderThan(@"0.16.714")) return;
 
             if (StarterPlus.IsPatched(LauncherFilename)) {
                 var backupFilename = StarterPlus.BackupFilename;
@@ -61,7 +61,7 @@ namespace AcManager.Tools.Starters {
 
         private void RunInner() {
             IniFile.Write(FileUtils.GetRaceIniFilename(), "AUTOSPAWN", "ACTIVE", "1");
-            IniFile.Write(Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "launcher.ini"), "WINDOW", "X86", Use32Version ? "1" : "0");
+            SetAcX86Param();
             LauncherProcess = Process.Start(new ProcessStartInfo {
                 FileName = LauncherFilename,
                 WorkingDirectory = AcRootDirectory.Instance.RequireValue

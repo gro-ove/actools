@@ -212,7 +212,7 @@ namespace AcManager.Pages.Drive {
                             CarId = Car.Id,
                             TrackId = Track.Id,
                             TrackConfigurationId = Track.LayoutId,
-                            CarSkinId = CarSkin?.Id
+                            CarSkinId = CarSkin?.Id,
                         },
                         AssistsProperties = Assists.GameProperties,
                         ConditionProperties = new Game.ConditionProperties {

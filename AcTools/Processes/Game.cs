@@ -22,13 +22,17 @@ namespace AcTools.Processes {
 
             file.RemoveSections("CAR", 1); // because CAR_0 is a player’s car
             file.RemoveSections("SESSION");
+            file.RemoveSections("CONDITION");
+
+            file.Remove("EVENT");
+            file.Remove("SPECIAL_EVENT");
         }
 
         private static void SetDefaultProperies(IniFile file) {
             var lapInvalidatorSection = file["LAP_INVALIDATOR"];
             lapInvalidatorSection.Set("ALLOWED_TYRES_OUT", -1);
         }
-
+        
         public static bool OptionDebugMode = false;
 
         [CanBeNull]
@@ -164,7 +168,7 @@ namespace AcTools.Processes {
             public IniFile PreparedConfig;
 
             [CanBeNull]
-            public BasicProperties BasicProperties;
+            public BasicProperties BasicProperties { get; set; }
 
             [CanBeNull]
             public AssistsProperties AssistsProperties;
@@ -297,6 +301,12 @@ namespace AcTools.Processes {
                     }
                 }
                 _removeLater.Clear();
+            }
+
+            public string GetDescription() {
+                return $"(Basic={(BasicProperties != null ? "Race" : ReplayProperties != null ? "Replay" : BenchmarkProperties != null ? "Benchmark" : "Unknown")}, " +
+                        $"Mode={ModeProperties?.GetType().Name}, Additional=[{AdditionalPropertieses.Select(x => x.GetType().Name).JoinToString(", ")}])";
+
             }
         }
     }

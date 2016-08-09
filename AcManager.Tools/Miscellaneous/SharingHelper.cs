@@ -140,7 +140,7 @@ namespace AcManager.Tools.Miscellaneous {
                         if (pair.Key.Contains(@":")) {
                             throw new Exception(@"Invalid key");
                         }
-                        s.Append(IniMetadataPrefix + pair.Key + @":" + ValuesStorage.Encode(pair.Value) + '\n');
+                        s.Append(IniMetadataPrefix + pair.Key + @":" + Storage.Encode(pair.Value) + '\n');
                     }
                     return s + data;
 
@@ -155,7 +155,7 @@ namespace AcManager.Tools.Miscellaneous {
                     var r = new SharedMetadata();
                     var s = data.Split('\n');
                     foreach (var k in s.Where(x => x.StartsWith(IniMetadataPrefix)).Select(l => l.Split(new[] { ':' }, 3)).Where(k => k.Length == 3)) {
-                        r[k[1]] = ValuesStorage.Decode(k[2]);
+                        r[k[1]] = Storage.Decode(k[2]);
                     }
                     cleaned = s.Where(x => !x.StartsWith(IniMetadataPrefix)).JoinToString('\n');
                     return r;

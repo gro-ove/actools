@@ -827,8 +827,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             var section = Ini["CONTROLLERS"];
             var devices = LinqExtension.RangeFrom().Select(x => new {
-                Id = section.Get($"PGUID{x}"),
-                Name = section.Get($"CON{x}")
+                Id = section.GetNonEmpty($"PGUID{x}"),
+                Name = section.GetNonEmpty($"CON{x}")
             }).TakeWhile(x => x.Id != null).Select((x, i) => {
                 var device = Devices.GetByIdOrDefault(x.Id);
                 if (device == null) {
@@ -854,7 +854,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
 
             section = Ini["__LAUNCHER_CM"];
-            var name = section.Get("PRESET_NAME");
+            var name = section.GetNonEmpty("PRESET_NAME");
             CurrentPresetFilename = name == null ? null : Path.Combine(PresetsDirectory, name);
             CurrentPresetChanged = CurrentPresetName != null && section.GetBool("PRESET_CHANGED", true);
         }

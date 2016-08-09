@@ -591,6 +591,12 @@ namespace AcTools.Utils.Helpers {
             var j = 0;
             return source.Any(i => predicate(i, j++));
         }
+        
+        public static IEnumerable<T> CollectRest<T>([NotNull] this IEnumerator<T> source) {
+            while (source.MoveNext()) {
+                yield return source.Current;
+            }
+        }
     }
 
     public interface IWithId {

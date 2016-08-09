@@ -118,7 +118,7 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override void LoadData(IniFile ini) {
-            Name = ini["LAUNCHER"].Get("NAME");
+            Name = ini["LAUNCHER"].GetPossiblyEmpty("NAME");
             TemperatureCoefficient = ini["LAUNCHER"].GetDouble("TEMPERATURE_COEFF", 0d);
 
             WeatherType? type;

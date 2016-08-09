@@ -35,9 +35,10 @@ namespace AcManager.Tools.SemiGui {
         private bool _requiredDisposal;
 
         public override void Set(IniFile file) {
-            Logging.Write("[WeatherSpecificCloudsHelper] Set()");
             try {
-                var weatherId = file["WEATHER"].Get("NAME");
+                if (file["REMOTE"].GetBool("ACTIVE", false) || file["REMOTE"].GetBool("BENCHMARK", false)) return;
+
+                var weatherId = file["WEATHER"].GetNonEmpty("NAME");
                 var weather = weatherId == null ? null : WeatherManager.Instance.GetById(weatherId);
                 if (weather == null) return;
 
@@ -64,7 +65,6 @@ namespace AcManager.Tools.SemiGui {
         }
 
         public void Dispose() {
-            Logging.Write("[WeatherSpecificCloudsHelper] Dispose()");
             if (!_requiredDisposal) return;
 
             try {

@@ -80,7 +80,7 @@
 
                 <DockPanel Grid.Row="1" Grid.Column="0" Margin="8 0 0 0" Background="Transparent">
                     <DockPanel.ContextMenu>
-                        <ContextMenu x:Name="ConditionsOptions" IsEnabled="{Binding RealConditions}" DataContext="{Binding Data, Source={StaticResource Model}}">
+                        <ContextMenu x:Name="ConditionsOptions" DataContext="{Binding Data, Source={StaticResource Model}}">
                             <!--TODO-->
                             <MenuItem Header="Local weather" IsChecked="{Binding RealConditionsLocalWeather, Mode=OneWay}" IsCheckable="True"
                                     ToolTip="Use local weather instead of weather on the track" Command="{Binding SwitchLocalWeatherCommand}" />
@@ -93,7 +93,8 @@
                     <CheckBox DockPanel.Dock="Left" IsChecked="{Binding RealConditions}" ToolTip="{Binding RealWeather.FullDescription}">
                         <Label Content="{x:Static g:AppStrings.Drive_RealConditions}" />
                     </CheckBox>
-                    <Button PreviewMouseLeftButtonUp="MoreConditionsOptions_OnPreviewMouseLeftButtonUp">
+                    <Button PreviewMouseLeftButtonUp="MoreConditionsOptions_OnPreviewMouseLeftButtonUp"
+                            Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border Background="Transparent" Padding="0 8 4 8">

@@ -47,7 +47,7 @@ namespace AcManager.Pages.Selected {
                 SelectedObject.FuelMaximum = main["FUEL"].GetInt("MAX_FUEL", 0);
 
                 var tyres = Car.AcdData.GetIniFile("tyres.ini");
-                Tyres = tyres.GetSections("FRONT", -1).Select((x, i) => new SettingEntry(i, x.Get("NAME"))).ToArray();
+                Tyres = tyres.GetSections("FRONT", -1).Select((x, i) => new SettingEntry(i, x.GetPossiblyEmpty("NAME"))).ToArray();
                 SelectedTyres = Tyres.ElementAtOrDefault(SelectedObject.Tyres);
 
                 WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);

@@ -112,6 +112,11 @@
     <Compile Include="AcManagersNew\AcManagerNew.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject_Errors.cs" />
     <Compile Include="AcObjectsNew\AcObjectNew.cs" />
+    <Compile Include="BinaryResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BinaryResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ContentInstallation\FileInfoEnumerableExtension.cs" />
     <Compile Include="ContentInstallation\Types\TypeCar.cs" />
     <Compile Include="ContentInstallation\Types\TypeCarSkin.cs" />
@@ -190,6 +195,7 @@
     <Compile Include="Helpers\Api\IpGeoProvider.cs" />
     <Compile Include="Helpers\Api\Kunos\BookingResult.cs" />
     <Compile Include="Helpers\Api\Rsr\RsrApiProvider.cs" />
+    <Compile Include="Helpers\Api\SteamWebProvider.cs" />
     <Compile Include="Helpers\CookieAwareWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -257,6 +263,7 @@
     <Compile Include="Objects\WeatherColorEntry.cs" />
     <Compile Include="SemiGui\CopyFilterToSystemForOculusHelper.cs" />
     <Compile Include="SemiGui\IBookingUi.cs" />
+    <Compile Include="Starters\ModuleStarter.cs" />
     <Compile Include="ToolsStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -399,9 +406,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Assets\CmHelper.zip" />
     <None Include="Packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BinaryResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BinaryResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="ToolsStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>

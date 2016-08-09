@@ -55,7 +55,7 @@ namespace AcManager.Tools.Miscellaneous {
                     }
 
                     try {
-                        writer.WriteString("Values.txt", ValuesStorage.Instance.GetData());
+                        writer.WriteString("Values.txt", ValuesStorage.Storage.GetData());
                     } catch (Exception e) {
                         Logging.Warning("Can’t attach Values.data: " + e);
                     }
@@ -117,7 +117,7 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                     }
 
                     try {
-                        writer.WriteString("Values.txt", ValuesStorage.Instance.GetData());
+                        writer.WriteString("Values.txt", ValuesStorage.Storage.GetData());
                     } catch (Exception e) {
                         Logging.Warning("Can’t attach Values.data: " + e);
                     }
@@ -147,6 +147,24 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                             } catch (Exception e) {
                                 Logging.Warning("Can’t attach SysConfig/" + fileInfo.Name + ": " + e);
                             }
+                        }
+                    }
+
+                    var raceOut = FileUtils.GetResultJsonFilename();
+                    if (File.Exists(raceOut)) {
+                        try {
+                            writer.Write("Race.json", raceOut);
+                        } catch (Exception e) {
+                            Logging.Warning("Can’t attach Race.json:" + e);
+                        }
+                    }
+
+                    var career = FileUtils.GetKunosCareerProgressFilename(); ;
+                    if (File.Exists(career)) {
+                        try {
+                            writer.Write("Career.ini", career);
+                        } catch (Exception e) {
+                            Logging.Warning("Can’t attach Career.ini:" + e);
                         }
                     }
 

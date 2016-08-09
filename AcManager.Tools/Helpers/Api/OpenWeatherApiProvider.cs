@@ -6,6 +6,7 @@ using AcManager.Internal;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 // ReSharper disable PossibleNullReferenceException
 // try-catch will catch them and return null, relax
@@ -237,6 +238,7 @@ namespace AcManager.Tools.Helpers.Api {
         private const string RequestWeatherUri = "http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&APPID={2}&mode=xml&units=metric";
         private const string IconUri = "http://openweathermap.org/img/w/{0}.png";
 
+        [CanBeNull]
         public WeatherDescription TryToGetWeather(GeoTagsEntry geoTags) {
             var requestUri = string.Format(RequestWeatherUri, geoTags.LatitudeValue, geoTags.LongitudeValue, InternalUtils.GetOpenWeatherApiCode());
 
@@ -265,10 +267,10 @@ namespace AcManager.Tools.Helpers.Api {
                     }
                 }
             } catch (WebException e) {
-                Logging.Warning("[OpenWeatherApiProvider] TryToGetWeather(): {0}, {1}", requestUri, e.Message);
+                Logging.Warning($"[OpenWeatherApiProvider] TryToGetWeather(): {requestUri}, {e.Message}");
                 return null;
             } catch (Exception e) {
-                Logging.Warning("[OpenWeatherApiProvider] TryToGetWeather(): {0}\n{1}", requestUri, e);
+                Logging.Warning($"[OpenWeatherApiProvider] TryToGetWeather(): {requestUri}\n{e}");
                 return null;
             }
         }

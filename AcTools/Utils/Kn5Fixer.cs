@@ -73,9 +73,9 @@ namespace AcTools.Utils {
                 var blurredRimsList = new List<string>();
                 foreach (var section in new IniFile(FileUtils.GetCarDirectory(acRoot, carName), "blurred_objects.ini").Values) {
                     if (Math.Abs(section.GetDouble("MIN_SPEED", 0d)) < 0.001) {
-                        normalRimsList.Add(section.Get("NAME"));
+                        normalRimsList.Add(section.GetPossiblyEmpty("NAME"));
                     } else {
-                        blurredRimsList.Add(section.Get("NAME"));
+                        blurredRimsList.Add(section.GetPossiblyEmpty("NAME"));
                     }
                 }
                     

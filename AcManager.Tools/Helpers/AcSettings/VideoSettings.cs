@@ -205,12 +205,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                                  .Select(i => User32.EnumDisplaySettings(null, i, ref d)
                                          ? new ResolutionEntry(d.dmPelsWidth, d.dmPelsHeight, d.dmDisplayFrequency) : null)
                                  .TakeWhile(x => x != null)
-                                 .Append(Fullscreen ? null : CustomResolution)
-                                 .NonNull().ToArray();
+                                 .Append(CustomResolution).ToArray();
             Resolutions = l;
             Resolution = Resolutions.FirstOrDefault(x => x.Equals(r)) ?? GetPreferredResolution();
         }
 
+        [NotNull]
         public ResolutionEntry CustomResolution { get; } = new ResolutionEntry();
 
         [NotNull]
@@ -636,13 +636,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
             CustomResolution.Height = section.GetInt("HEIGHT", 0);
             CustomResolution.Framerate = section.GetInt("REFRESH", 0);
 
-            var resolution = Resolutions.FirstOrDefault(x => x.Same(CustomResolution));
-            if (resolution != null) {
-                Resolution = resolution;
-            } else if (Fullscreen && !UseCustomResolution) {
+            var resolution = Resolutions.FirstOrDefault(x => x.Same(CustomResolution)) ?? CustomResolution;
+            if (Fullscreen && ReferenceEquals(resolution, CustomResolution) && SettingsHolder.Common.FixResolutionAutomatically) {
                 Resolution = GetClosestToCustom();
                 ForceSave();
                 Logging.Warning($"RESOLUTION ({CustomResolution.DisplayName}) IS INVALID, CHANGED TO ({Resolution?.DisplayName})");
+            } else {
+                Resolution = resolution;
             }
 
             VerticalSyncronization = section.GetBool("VSYNC", false);
@@ -671,7 +671,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section = Ini["POST_PROCESS"];
             PostProcessing = section.GetBool("ENABLED", true);
             PostProcessingQuality = section.GetEntry("QUALITY", PostProcessingQualities, "4");
-            PostProcessingFilter = section.Get("FILTER", "default");
+            PostProcessingFilter = section.GetNonEmpty("FILTER", "default");
             GlareQuality = section.GetEntry("GLARE", GlareQualities, "4");
             DepthOfFieldQuality = section.GetEntry("DOF", DepthOfFieldQualities, "4");
             RaysOfGod = section.GetBool("RAYS_OF_GOD", true);

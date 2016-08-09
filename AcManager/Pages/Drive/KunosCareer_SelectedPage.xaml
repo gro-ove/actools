@@ -15,9 +15,7 @@
 
             <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:KunosCareerEventObject}">
                 <Grid Width="200" Height="100" Background="Black" ClipToBounds="True">
-                    <mui:BetterImage x:Name="Image" ToolTip="{Binding DisplayName}" Filename="{Binding PreviewImage}" Stretch="UniformToFill"
-                            StretchDirection="DownOnly" />
-
+                    <mui:BetterImage x:Name="Image" Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True" />
                     <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayType}"
                             Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}"
                             Visibility="{Binding KunosCareerType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:KunosCareerObjectType.SingleEvents}}">
@@ -25,31 +23,19 @@
                             <TranslateTransform />
                         </TextBlock.RenderTransform>
                     </TextBlock>
-
-                    <Grid VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}" x:Name="BottomPanel">
-                        <Grid.RenderTransform>
+                    <StackPanel VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}" x:Name="BottomPanel"
+                            TextBlock.FontSize="{DynamicResource SmallFontSize}" TextBlock.Foreground="White">
+                        <StackPanel.RenderTransform>
                             <TranslateTransform />
-                        </Grid.RenderTransform>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Foreground="White" HorizontalAlignment="Left" Margin="4 4 24 0" Text="{Binding CarObject.DisplayName}"
-                                x:Name="CarName" FontSize="{DynamicResource SmallFontSize}" />
-                        <TextBlock Grid.Row="1" Foreground="White" HorizontalAlignment="Left" Margin="4 0 24 4" Text="{Binding TrackObject.LayoutName}"
-                                x:Name="TrackName" FontSize="{DynamicResource SmallFontSize}" />
-                    </Grid>
-
+                        </StackPanel.RenderTransform>
+                        <TextBlock Margin="4 4 24 0" Text="{Binding CarObject.DisplayName}" />
+                        <TextBlock Margin="4 0 24 4" Text="{Binding TrackObject.LayoutName}" />
+                    </StackPanel>
                     <TextBlock Text="{Binding TakenPlace, Converter={StaticResource OrdinalizingConverter}}" Style="{StaticResource Heading1}" Padding="8"
                             TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" x:Name="TakenPlaceText"
                             Background="{StaticResource DarkenPanel}" />
-
-                    <Grid VerticalAlignment="Bottom" Height="{Binding ActualHeight, ElementName=BottomPanel}" x:Name="TakenPlaceIcon">
-                        <Ellipse Width="8" Height="8" Margin="8 4" VerticalAlignment="Center" HorizontalAlignment="Right"
-                                Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
-                    </Grid>
-
-                    <Border BorderBrush="{StaticResource Completed}" BorderThickness="1" Visibility="Collapsed" x:Name="FullyFinished" />
+                    <Ellipse Width="8" Height="8" Margin="8 12" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                            Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
                 </Grid>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding IsAvailable}" Value="False">
@@ -59,17 +45,14 @@
                             </Setter.Value>
                         </Setter>
                     </DataTrigger>
-
                     <DataTrigger Binding="{Binding IsPassed}" Value="True">
                         <Setter TargetName="TakenPlaceText" Property="Visibility" Value="Visible" />
                         <Setter TargetName="TopPanel" Property="Visibility" Value="Collapsed" />
                         <Setter TargetName="BottomPanel" Property="Visibility" Value="Hidden" />
                     </DataTrigger>
-
                     <DataTrigger Binding="{Binding TakenPlace}" Value="1">
                         <Setter TargetName="Image" Property="Effect" Value="{x:Null}" />
                     </DataTrigger>
-
                     <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Value="True">
                         <DataTrigger.EnterActions>
                             <BeginStoryboard>
@@ -94,8 +77,6 @@
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
-
-            <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -336,9 +317,9 @@
                     <Label Content="{x:Static g:AppStrings.KunosCareer_AiLevelLabel}" />
                     <Grid>
                         <TextBlock Text="{Binding AiLevel, StringFormat='{}{0}%'}" Style="{StaticResource Value}"
-                                Visibility="{Binding Data.DriveSettings.KunosCareerUserAiLevel, Source={StaticResource DataContextProxy}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                                Visibility="{Binding KunosCareerUserAiLevel, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                         <StackPanel
-                                Visibility="{Binding Data.DriveSettings.KunosCareerUserAiLevel, Source={StaticResource DataContextProxy}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                Visibility="{Binding KunosCareerUserAiLevel, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Text="{Binding UserAiLevel, StringFormat='{}{0}%'}" Style="{StaticResource Value}" />
                             <Slider Minimum="75" Maximum="100" Value="{Binding UserAiLevel}" TickFrequency="5" IsSnapToTickEnabled="False"
                                     TickPlacement="TopLeft" />
@@ -379,8 +360,8 @@
                         <mui:BetterImage.ToolTip>
                             <StackPanel Margin="4 8">
                                 <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />
-                                <c:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}" Width="512"
-                                        MaxHeight="320" />
+                                <c:CarBlock Car="{Binding CarObject}" ShowSkinsAndPreview="False" SelectSkin="False" SelectedSkin="{Binding CarSkin}"
+                                        Width="512" MaxHeight="320" />
                             </StackPanel>
                         </mui:BetterImage.ToolTip>
                     </mui:BetterImage>
@@ -465,10 +446,10 @@
                     </StackPanel>
 
                     <DockPanel Grid.Column="1" VerticalAlignment="Bottom">
-                        <c:UserPresetsControl UserPresetable="{Binding Data.AssistsViewModel, Source={StaticResource DataContextProxy}}" ShowSaveButton="False"
-                                Margin="0 0 4 0" DockPanel.Dock="Left" />
+                        <c:UserPresetsControl UserPresetable="{Binding Source={x:Static c:AssistsViewModel.Instance}}" ShowSaveButton="False" Margin="0 0 4 0"
+                                DockPanel.Dock="Left" />
 
-                        <Button DockPanel.Dock="Left" DataContext="{Binding Data.AssistsViewModel, Source={StaticResource DataContextProxy}}"
+                        <Button DockPanel.Dock="Left" DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}"
                                 PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp" Margin="0 0 4 0">
                             …
                             <Button.ToolTip>
@@ -476,8 +457,7 @@
                             </Button.ToolTip>
                         </Button>
                         <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
-                                CommandParameter="{Binding Data.AssistsViewModel.GameProperties, Source={StaticResource DataContextProxy}}"
-                                Content="{x:Static g:AppStrings.Common_Go}" />
+                                CommandParameter="{Binding Source={x:Static c:AssistsViewModel.Instance}}" Content="{x:Static g:AppStrings.Common_Go}" />
                     </DockPanel>
                 </Grid>
             </Grid>

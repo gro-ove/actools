@@ -46,8 +46,8 @@
                 <Label Content="{x:Static g:AppStrings.Settings_General_AppVersionLabel}" />
                 <Button Command="{Binding AppUpdater.CheckAndUpdateIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}"
                         Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
-                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}"
-                        Text="{Binding Source={x:Static t:BuildInformation.AppVersion}, Mode=OneTime}" mui:WatermarkService.Watermark="?" />
+                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding Source={x:Static t:BuildInformation.AppVersion}, Mode=OneTime}"
+                        mui:WatermarkService.Watermark="?" />
             </DockPanel>
 
             <TextBlock Text="{Binding AppUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"
@@ -71,7 +71,7 @@
                 <Button Command="{Binding CleanUpStorageCommand}" ToolTip="{x:Static g:AppStrings.Settings_General_ValuesCleanUp_Tooltip}"
                         Content="{x:Static g:AppStrings.Settings_General_ValuesCleanUp}" />
                 <TextBlock
-                        Text="{Binding ValuesStorage.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Settings_General_ValuesNumber}, Mode=OneWay}" />
+                        Text="{Binding Count, Source={x:Static mui:ValuesStorage.Storage}, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Settings_General_ValuesNumber}, Mode=OneWay}" />
             </DockPanel>
 
             <DockPanel>
@@ -82,8 +82,8 @@
 
             <!--beta access-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_TestingAccessHeader}" />
-            <CheckBox IsChecked="{Binding Common.UpdateToNontestedVersions}" mui:LimitedService.Limited="True" HorizontalAlignment="Left"
-                    ClipToBounds="False" Padding="0 0 24 0">
+            <CheckBox IsChecked="{Binding Common.UpdateToNontestedVersions}" mui:LimitedService.Limited="True" HorizontalAlignment="Left" ClipToBounds="False"
+                    Padding="0 0 24 0">
                 <Label Content="{x:Static g:AppStrings.Settings_General_TestingAccess}" />
             </CheckBox>
         </StackPanel>

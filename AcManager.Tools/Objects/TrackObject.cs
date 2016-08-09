@@ -14,7 +14,6 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class TrackObject : TrackBaseObject {
-        [CanBeNull]
         public sealed override string LayoutId { get; }
 
         [NotNull]
@@ -31,16 +30,17 @@ namespace AcManager.Tools.Objects {
         public TrackObject(IFileAcManager manager, string id, bool enabled)
                 : base(manager, id, enabled) {
             InitializeLocationsOnce();
+
             try {
-                var list = GetMultiLayouts();
-                if (IsInMultiLayoutsMode(list)) {
-                    _layoutLocation = list[0];
+                var information = GetLayouts();
+                if (information != null) {
+                    _layoutLocation = information.MainLayout;
                     InitializeLocationsInner(_layoutLocation);
 
-                    LayoutId = Path.GetFileName(_layoutLocation);
-                    IdWithLayout = $"{Id}/{LayoutId}";
+                    LayoutId = information.SimpleMainLayout ? null : Path.GetFileName(_layoutLocation);
+                    IdWithLayout = information.SimpleMainLayout ? Id : $"{Id}/{LayoutId}";
                     MultiLayouts = new BetterObservableCollection<TrackBaseObject>(
-                            list.Skip(1).Select(x => {
+                            information.AdditionalLayouts.Select(x => {
                                 var c = new TrackExtraLayoutObject(manager, id, enabled, x);
                                 c.PropertyChanged += Configuration_PropertyChanged;
                                 return c;
@@ -49,11 +49,13 @@ namespace AcManager.Tools.Objects {
                 }
             } catch (AcErrorException e) {
                 AddError(e.AcError);
-                IdWithLayout = Id;
             }
 
             InitializeLocationsInner(Path.Combine(Location, "ui"));
+            _layoutLocation = null;
+            LayoutId = null;
             IdWithLayout = Id;
+            MultiLayouts = null;
         }
 
         private TrackBaseObject _selectedLayout;
@@ -87,36 +89,63 @@ namespace AcManager.Tools.Objects {
             OutlineImage = Path.Combine(uiDirectory, "outline.png");
         }
 
+        private class LayoutsInformation {
+            public string MainLayout;
+            public List<string> AdditionalLayouts;
+            public bool SimpleMainLayout;
+
+            public int TotalLayouts => AdditionalLayouts.Count + 1;
+        }
+
         /// <summary>
         /// </summary>
         /// <exception cref="AcErrorException"></exception>
         /// <returns></returns>
-        private List<string> GetMultiLayouts() {
+        [CanBeNull]
+        private LayoutsInformation GetLayouts() {
             var uiDirectory = Path.Combine(Location, "ui");
             if (!Directory.Exists(uiDirectory)) throw new AcErrorException(this, AcErrorType.Data_UiDirectoryIsMissing);
-            return Directory.GetDirectories(uiDirectory).Where(x => File.Exists(Path.Combine(x, "ui_track.json"))).ToList();
-        }
 
-        private bool IsInMultiLayoutsMode(IEnumerable<string> list) => !File.Exists(Path.Combine(Location, @"ui", @"ui_track.json")) && list.Any();
+            var basic = Path.Combine(uiDirectory, "ui_track.json");
+            var additional = Directory.GetDirectories(uiDirectory).Where(x => File.Exists(Path.Combine(x, "ui_track.json"))).ToList();
+            if (additional.Count == 0) return null;
+
+            if (File.Exists(basic)) {
+                return new LayoutsInformation {
+                    MainLayout = uiDirectory,
+                    AdditionalLayouts = additional.ToList(),
+                    SimpleMainLayout = true
+                };
+            }
+
+            return new LayoutsInformation {
+                MainLayout = additional[0],
+                AdditionalLayouts = additional.Skip(1).ToList(),
+                SimpleMainLayout = false
+            };
+        }
 
         private bool IsMultiLayoutsChanged() {
             var previous = MultiLayouts != null;
 
-            List<string> list;
+            LayoutsInformation information;
             try {
-                list = GetMultiLayouts();
+                information = GetLayouts();
             } catch (Exception) {
                 return previous;
             }
 
-            var actual = IsInMultiLayoutsMode(list);
+            if (information == null) {
+                return MultiLayouts != null;
+            }
+            
             if (MultiLayouts == null) {
-                return actual;
+                return true;
             }
 
-            return previous != actual || list.Count != MultiLayouts.Count ||
-                   list[0] != _layoutLocation ||
-                   list.Skip(1).Any((x, i) => !x.Equals(MultiLayouts[i + 1].Location, StringComparison.OrdinalIgnoreCase));
+            return information.TotalLayouts != MultiLayouts.Count ||
+                    !string.Equals(information.MainLayout, _layoutLocation, StringComparison.OrdinalIgnoreCase) ||
+                    information.AdditionalLayouts.Any((x, i) => !string.Equals(x, MultiLayouts[i + 1].Location, StringComparison.OrdinalIgnoreCase));
         }
 
         public override void Reload() {
@@ -152,7 +181,7 @@ namespace AcManager.Tools.Objects {
         /// <param name="layoutId">Layout id ("touristenfahrten", not "ks_nordschleife/touristenfahrten"!)</param>
         /// <returns></returns>
         public TrackBaseObject GetLayoutByLayoutId(string layoutId) {
-            return MultiLayouts?.FirstOrDefault(x => x.LayoutId.Equals(layoutId, StringComparison.OrdinalIgnoreCase));
+            return MultiLayouts?.FirstOrDefault(x => x.LayoutId?.Equals(layoutId, StringComparison.OrdinalIgnoreCase) == true);
         }
 
         private bool _extraLayoutChanged;

@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:g="clr-namespace:AcManager"
         xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance dr:SpecialEvents+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
+        d:DataContext="{d:DesignInstance dr:SpecialEvents+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,6 +12,58 @@
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <c:PlaceToColorConverter x:Key="RacePlaceToColorConverter" FirstPlaceColor="{StaticResource Ultimate}" SecondPlaceColor="{StaticResource Gold}"
+                    ThirdPlaceColor="{StaticResource Silver}" ForthPlaceColor="{StaticResource Bronze}" DefaultColor="Transparent" />
+
+            <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:SpecialEventObject}">
+                <Grid Background="Black" ClipToBounds="True" MinHeight="100">
+                    <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True" ForceFill="True" />
+                    <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayType}"
+                            Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}">
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform />
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                    <StackPanel VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}" x:Name="BottomPanel"
+                            TextBlock.FontSize="{DynamicResource SmallFontSize}" TextBlock.Foreground="White">
+                        <StackPanel.RenderTransform>
+                            <TranslateTransform />
+                        </StackPanel.RenderTransform>
+                        <TextBlock Margin="4 4 24 0" Text="{Binding CarObject.DisplayName}" />
+                        <TextBlock Margin="4 0 24 4" Text="{Binding TrackObject.LayoutName}" />
+                    </StackPanel>
+                    <Ellipse x:Name="PlaceEllipse" Width="8" Height="8" Margin="8 12" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                            Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
+                </Grid>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding ConditionType}" Value="{x:Null}">
+                        <Setter TargetName="PlaceEllipse" Property="Fill" Value="{Binding TakenPlace, Converter={StaticResource RacePlaceToColorConverter}}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Duration="0:0:0.12" To="-40" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                    <DoubleAnimation Duration="0:0:0.12" To="40" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="TopPanel"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                    <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="BottomPanel"
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -25,27 +77,57 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="500" />
+            <ColumnDefinition Width="440" />
         </Grid.ColumnDefinitions>
 
-        <ListBox Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding List}" ScrollViewer.CanContentScroll="True"
-                ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="-4 0 -4 12">
+        <DockPanel Grid.ColumnSpan="3"
+                Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=520}">
+            <Button DockPanel.Dock="Right" Command="{Binding SyncronizeProgressUsingModuleCommand}"
+                    ToolTip="Works with private Steam profiles, but UI module should be installed and AC launcher should be running"
+                    Content="Sync via Module Starter" Margin="4 0 0 0" />
+            <Button DockPanel.Dock="Right" Command="{Binding SyncronizeProgressCommand}" ToolTip="Works only with non-private Steam profiles at the moment"
+                    Content="Sync via Steam Web API" Margin="4 0 0 0" />
+            <Grid>
+                <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+                <StackPanel Margin="8">
+                    <mui:BbCodeBlock TextWrapping="Wrap">Still WIP, you can check its progress [url="https://trello.com/c/6aAhOuzm/13-kunos-challenges"]here[/url].</mui:BbCodeBlock>
+                </StackPanel>
+            </Grid>
+        </DockPanel>
+
+        <ListBox x:Name="ListBox" Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" ItemsSource="{Binding List}" ScrollViewer.CanContentScroll="True"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="-4 0 -4 12"
+                ScrollViewer.ScrollChanged="OnScrollChanged" ScrollViewer.SizeChanged="OnScrollSizeChanged">
             <i:Interaction.Behaviors>
                 <mui:HorizontalScrollBehavior />
             </i:Interaction.Behaviors>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+                    <Setter Property="FontWeight" Value="Normal" />
+                    <Setter Property="Padding" Value="4" />
+
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ItemTextHover}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
+                            <Setter Property="FontWeight" Value="Normal" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <mui:VirtualizingTilePanel Orientation="Vertical" VerticalContentAlignment="Center" />
+                    <mui:VirtualizingTilePanel Orientation="Vertical" VerticalContentAlignment="Center" Loaded="TilePanel_OnLoaded" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type t:AcItemWrapper}">
-                    <Grid Width="195" Height="110">
-                        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                        <mui:BetterImage Filename="{Binding Value.PreviewImage}" Width="195" Stretch="UniformToFill" ClearOnChange="True" />
-                        <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding}"
-                                Foreground="White" />
-                    </Grid>
+                    <ContentControl Content="{Binding Value}" ContentTemplate="{StaticResource ItemTemplate}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -145,10 +227,10 @@
                 <TextBlock Text="{Binding AiLevel, StringFormat='{}{0}%'}" Style="{StaticResource Value}" />
             </DockPanel>
         </Grid>
-        
+
         <!--car and track previews-->
-        <ScrollViewer Grid.Row="2" Grid.Column="0" Width="240" Margin="0 0 24 0" DataContext="{Binding Selected}"
-                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+        <ScrollViewer Grid.Row="2" Grid.Column="0" Width="240" Margin="0 0 24 0" DataContext="{Binding Selected}" HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto"
                 Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
             <StackPanel>
                 <mui:BetterImage Margin="0 0 0 8" Filename="{Binding CarSkin.PreviewImage}" Width="240"
@@ -169,21 +251,6 @@
                     </mui:BetterImage.ToolTip>
                 </mui:BetterImage>
 
-                <Border
-                        Visibility="{Binding KunosCareerUserSkin, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <ListBox ItemsSource="{Binding CarObject.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                            ScrollViewer.CanContentScroll="True" Margin="0 0 0 8" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}"
-                            MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}" VirtualizingPanel.IsVirtualizing="True"
-                            VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"
-                            Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=564}">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                    </ListBox>
-                </Border>
-
                 <Grid Width="240" Height="135" HorizontalAlignment="Center" VerticalAlignment="Top">
                     <mui:BetterImage Filename="{Binding TrackObject.PreviewImage}" Stretch="UniformToFill" MaxWidth="240" />
                     <mui:BetterImage Filename="{Binding TrackObject.OutlineImage}" Stretch="Uniform" StretchDirection="DownOnly" MaxWidth="240" MaxHeight="135"
@@ -203,6 +270,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0">
@@ -214,54 +282,85 @@
 
                     <TextBlock Style="{StaticResource Heading1}" Text="{Binding Selected.DisplayType}" Margin="0 0 0 4" />
                     <Ellipse Grid.Column="1" Width="16" Height="16" Margin="8 4" VerticalAlignment="Center" HorizontalAlignment="Right"
-                            Fill="{Binding Selected.TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
+                            Fill="{Binding Selected.TakenPlace, Converter={StaticResource PlaceToColorConverter}}"
+                            Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                    <Ellipse Grid.Column="1" Width="16" Height="16" Margin="8 4" VerticalAlignment="Center" HorizontalAlignment="Right"
+                            Fill="{Binding Selected.TakenPlace, Converter={StaticResource RacePlaceToColorConverter}}"
+                            Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}}" />
                 </Grid>
                 <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.DisplayName}" Margin="0 0 0 4" TextTrimming="CharacterEllipsis" />
             </StackPanel>
 
-            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 24">
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 12">
                 <TextBlock Text="{Binding Selected.DisplayDescription}" TextWrapping="Wrap" Margin="0 0 0 12" />
             </ScrollViewer>
 
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="2" Margin="0 0 0 24"
+                    Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.ConditionType}" />
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{StaticResource Gold}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Selected.DisplayFirstPlaceTarget}" Style="{StaticResource TargetValue}"
+                            IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=2}" />
 
-                <StackPanel Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.ConditionType}" />
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="8" Height="8" Margin="0 4 8 4" Fill="{StaticResource Gold}" VerticalAlignment="Center" />
-                        <TextBlock Text="{Binding Selected.DisplayFirstPlaceTarget}" Style="{StaticResource TargetValue}"
-                                IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=2}" />
+                    <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{StaticResource Silver}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Selected.DisplaySecondPlaceTarget}" Style="{StaticResource TargetValue}"
+                            IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=3}" />
 
-                        <Ellipse Width="8" Height="8" Margin="12 4 8 4" Fill="{StaticResource Silver}" VerticalAlignment="Center" />
-                        <TextBlock Text="{Binding Selected.DisplaySecondPlaceTarget}" Style="{StaticResource TargetValue}"
-                                IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=3}" />
-
-                        <Ellipse Width="8" Height="8" Margin="12 4 8 4" Fill="{StaticResource Bronze}" VerticalAlignment="Center" />
-                        <TextBlock Text="{Binding Selected.DisplayThirdPlaceTarget}" Style="{StaticResource TargetValue}"
-                                IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=4}" />
-                    </StackPanel>
+                    <Ellipse Width="8" Height="8" Margin="24 4 8 4" Fill="{StaticResource Bronze}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Selected.DisplayThirdPlaceTarget}" Style="{StaticResource TargetValue}"
+                            IsEnabled="{Binding Selected.TakenPlace, Converter={StaticResource LessToBooleanConverter}, ConverterParameter=4}" />
                 </StackPanel>
+            </StackPanel>
 
-                <DockPanel Grid.Column="1" VerticalAlignment="Bottom">
-                    <c:UserPresetsControl UserPresetable="{Binding Source={x:Static c:AssistsViewModel.Instance}}" ShowSaveButton="False"
-                            Margin="0 0 4 0" DockPanel.Dock="Left" />
+            <StackPanel Grid.Row="2" Margin="0 0 0 24"
+                    Visibility="{Binding Selected.AiLevels, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                <TextBlock Style="{StaticResource Heading2}" Text="Difficulty" />
+                <ListBox ItemsSource="{Binding Selected.AiLevels}" SelectedItem="{Binding Selected.SelectedLevel}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel.ToolTip>
+                                    <ToolTip Content="{Binding AiLevel}" ContentStringFormat="{}AI level: {0}%" />
+                                </StackPanel.ToolTip>
+                                <Ellipse Width="8" Height="8" Margin="0 4 8 4" VerticalAlignment="Center"
+                                        Fill="{Binding Place, Converter={StaticResource RacePlaceToColorConverter}}" />
+                                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource TargetValue}">
+                                    <TextBlock.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource MultiLessToBooleanConverter}" ConverterParameter="-1">
+                                            <Binding Path="DataContext.Selected.TakenPlace" ElementName="This" />
+                                            <Binding Path="Place" />
+                                        </MultiBinding>
+                                    </TextBlock.IsEnabled>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+                            <Setter Property="Padding" Value="2 2 8 2" />
+                            <Setter Property="Margin" Value="0 0 18 0" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </StackPanel>
 
-                    <Button DockPanel.Dock="Left" DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}"
-                            PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp" Margin="0 0 4 0">
-                        …
-                        <Button.ToolTip>
-                            <c:AssistsDescription />
-                        </Button.ToolTip>
-                    </Button>
-                    <Button Command="{Binding Selected.GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
-                            CommandParameter="{Binding GameProperties, Source={x:Static c:AssistsViewModel.Instance}}"
-                            Content="{x:Static g:AppStrings.Common_Go}" />
-                </DockPanel>
-            </Grid>
+            <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right">
+                <c:UserPresetsControl UserPresetable="{Binding Source={x:Static c:AssistsViewModel.Instance}}" ShowSaveButton="False" Margin="0 0 4 0" />
+                <Button DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp"
+                        Margin="0 0 4 0" Content="…">
+                    <Button.ToolTip>
+                        <c:AssistsDescription />
+                    </Button.ToolTip>
+                </Button>
+                <Button Command="{Binding Selected.GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
+                        CommandParameter="{Binding GameProperties, Source={x:Static c:AssistsViewModel.Instance}}" Content="{x:Static g:AppStrings.Common_Go}" />
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

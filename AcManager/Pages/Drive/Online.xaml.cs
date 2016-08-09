@@ -237,7 +237,7 @@ namespace AcManager.Pages.Drive {
                     FilterEmpty ? @"(drivers>0)" : null,
                     FilterFull ? @"(full-)" : null,
                     FilterPassword ? @"(password-)" : null,
-                    FilterMissing ? @"(missing- & haserrors-)" : null,
+                    FilterMissing ? @"(haserrors-)" : null,
                     FilterBooking ? @"(booking-)" : null
                 }.Where(x => x != null).JoinToString('&');
             }
@@ -250,7 +250,7 @@ namespace AcManager.Pages.Drive {
             private bool _updatingQuickFilter;
 
             private async void UpdateQuickFilter() {
-                if (_updatingQuickFilter) return;
+                if (!Loaded || _updatingQuickFilter) return;
                 _updatingQuickFilter = true;
 
                 await Task.Delay(50);
@@ -283,13 +283,16 @@ namespace AcManager.Pages.Drive {
             public CombinedFilter<ServerEntry> ServerCombinedFilter => (CombinedFilter<ServerEntry>)ListFilter;
 
             public OnlineViewModel(OnlineManagerType type, BaseOnlineManager manager, string filter)
-                    : base(manager, GetFilter(filter), type.ToString(), false) {
+                    : base(manager, GetFilter(filter), type.ToString(), false, false) {
                 Type = type;
                 Manager = manager;
 
                 LoadQuickFilter();
                 SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key)) ?? SortingModes[0];
                 ServerCombinedFilter.Second = CreateQuickFilter();
+                Logging.Write("ServerCombinedFilter: " + ServerCombinedFilter);
+
+                // ActualLoad();
             }
 
             private CancellationTokenSource _pingingSource;
@@ -373,23 +376,23 @@ namespace AcManager.Pages.Drive {
 
                     switch (value.Value) {
                         case "drivers":
-                            MainList.CustomSort = new SortingDriversCount();
+                            SortingComparer = new SortingDriversCount();
                             break;
 
                         case "capacity":
-                            MainList.CustomSort = new SortingCapacityCount();
+                            SortingComparer = new SortingCapacityCount();
                             break;
 
                         case "cars":
-                            MainList.CustomSort = new SortingCarsNumberCount();
+                            SortingComparer = new SortingCarsNumberCount();
                             break;
 
                         case "ping":
-                            MainList.CustomSort = new SortingPing();
+                            SortingComparer = new SortingPing();
                             break;
 
                         default:
-                            MainList.CustomSort = this;
+                            SortingComparer = this;
                             break;
                     }
 

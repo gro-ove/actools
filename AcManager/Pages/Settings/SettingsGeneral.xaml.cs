@@ -42,13 +42,11 @@ namespace AcManager.Pages.Settings {
 
             public DataUpdater DataUpdater => DataUpdater.Instance;
 
-            public ValuesStorage ValuesStorage => ValuesStorage.Instance;
-
             private RelayCommand _cleanUpStorageCommand;
 
             [Localizable(false)]
             public RelayCommand CleanUpStorageCommand => _cleanUpStorageCommand ?? (_cleanUpStorageCommand = new RelayCommand(o => {
-                ValuesStorage.CleanUp(x =>
+                ValuesStorage.Storage.CleanUp(x =>
                         x.StartsWith(".") || 
                         x.StartsWith("KunosCareerObject.SelectedEvent__") ||
                         x.StartsWith("__aclistpageviewmodel_selected_") ||

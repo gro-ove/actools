@@ -221,6 +221,7 @@ namespace AcManager.Tools.Objects {
 
         private string _password;
 
+        [CanBeNull]
         public string Password {
             get { return _password; }
             set {
@@ -235,6 +236,7 @@ namespace AcManager.Tools.Objects {
 
         private string _adminPassword;
 
+        [CanBeNull]
         public string AdminPassword {
             get { return _adminPassword; }
             set {
@@ -438,9 +440,9 @@ namespace AcManager.Tools.Objects {
 
         protected override void LoadData(IniFile ini) {
             var section = ini["SERVER"];
-            Name = section.Get("NAME");
-            Password = section.Get("PASSWORD");
-            AdminPassword = section.Get("ADMIN_PASSWORD");
+            Name = section.GetPossiblyEmpty("NAME");
+            Password = section.GetNonEmpty("PASSWORD");
+            AdminPassword = section.GetNonEmpty("ADMIN_PASSWORD");
             ShowOnLobby = section.GetBool("REGISTER_TO_LOBBY", true);
             LoopMode = section.GetBool("LOOP_MODE", true);
             PickupMode = section.GetBool("PICKUP_MODE_ENABLED", false);
@@ -452,8 +454,8 @@ namespace AcManager.Tools.Objects {
             SendIntervalHz = section.GetInt("CLIENT_SEND_INTERVAL_HZ", 18);
             Threads = section.GetInt("NUM_THREADS", 2);
 
-            TrackId = section.Get("TRACK");
-            TrackLayoutId = section.Get("CONFIG_TRACK");
+            TrackId = section.GetNonEmpty("TRACK");
+            TrackLayoutId = section.GetNonEmpty("CONFIG_TRACK");
             CarIds = section.GetStrings("CARS", ';');
 
             Abs = section.GetIntEnum("ABS_ALLOWED", ServerPresetAssistState.Factory);

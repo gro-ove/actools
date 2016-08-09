@@ -17,7 +17,7 @@ namespace AcTools.Processes {
         }
         
         private static string GetCurrentFilterIni() {
-            return new IniFile(FileUtils.GetCfgVideoFilename())["POST_PROCESS"].Get("FILTER");
+            return new IniFile(FileUtils.GetCfgVideoFilename())["POST_PROCESS"].GetPossiblyEmpty("FILTER");
         }
         
         private static void SetCurrentFilterIni(string filter) {

@@ -23,6 +23,11 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
+        public static string ToBase64([NotNull] this string a) {
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(a));
+        }
+
+        [Pure]
         public static bool IsVersionNewerThan([CanBeNull] this string currentVersion, [CanBeNull] string checkableVersion) {
             return currentVersion.CompareAsVersionTo(checkableVersion) > 0;
         }

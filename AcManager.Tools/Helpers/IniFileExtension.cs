@@ -13,7 +13,7 @@ namespace AcManager.Tools.Helpers {
         public static SettingEntry GetEntry(this IniFileSection section, [LocalizationRequired(false)] string key, IList<SettingEntry> entries,
                 [NotNull] SettingEntry defaultValue) {
             if (defaultValue == null) throw new ArgumentNullException(nameof(defaultValue));
-            var value = section.Get(key);
+            var value = section.GetNonEmpty(key);
             return entries.FirstOrDefault(x => x.Value == value) ?? defaultValue;
         }
 
@@ -21,20 +21,20 @@ namespace AcManager.Tools.Helpers {
         public static SettingEntry GetEntry(this IniFileSection section, [LocalizationRequired(false)] string key, IList<SettingEntry> entries,
                 [LocalizationRequired(false), NotNull] string defaultValueId) {
             if (defaultValueId == null) throw new ArgumentNullException(nameof(defaultValueId));
-            var value = section.Get(key);
+            var value = section.GetNonEmpty(key);
             return entries.FirstOrDefault(x => x.Value == value) ?? entries.GetByIdOrDefault(defaultValueId) ?? entries.First();
         }
 
         [NotNull]
         public static SettingEntry GetEntry(this IniFileSection section, [LocalizationRequired(false)] string key, IList<SettingEntry> entries,
                 int defaultValueId) {
-            var value = section.Get(key);
+            var value = section.GetNonEmpty(key);
             return entries.FirstOrDefault(x => x.Value == value) ?? entries.FirstOrDefault(x => x.IntValue == defaultValueId) ?? entries.First();
         }
 
         [NotNull]
         public static SettingEntry GetEntry(this IniFileSection section, [LocalizationRequired(false)] string key, IList<SettingEntry> entries) {
-            var value = section.Get(key);
+            var value = section.GetNonEmpty(key);
             return entries.FirstOrDefault(x => x.Value == value) ?? entries.First();
         }
 

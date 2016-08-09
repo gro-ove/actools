@@ -55,7 +55,7 @@ namespace AcTools.DataFile {
 
             if (_splitRegex == null) {
                 _splitRegex = new Regex(@"\r?\n|\r|(?=\[[A-Z])", RegexOptions.Compiled);
-                _commentRegex = new Regex(@"//|(?<!\S);|;(?!\S)", RegexOptions.CultureInvariant | RegexOptions.Compiled);
+                _commentRegex = new Regex(@"//|;", RegexOptions.CultureInvariant | RegexOptions.Compiled);
             }
 
             IniFileSection currentSection = null;
@@ -99,7 +99,7 @@ namespace AcTools.DataFile {
 
         public override string Stringify() {
             if (_cleanUp == null) {
-                _cleanUp = new Regex(@"[\[\]]|(?!\S);|;(?!\S)", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+                _cleanUp = new Regex(@"[\[\]]|;", RegexOptions.Compiled | RegexOptions.CultureInvariant);
             }
 
             var s = new StringBuilder();
@@ -149,14 +149,16 @@ namespace AcTools.DataFile {
         }
 
         public void Remove(string key) {
-            Content.Remove(key);
+            if (Content.ContainsKey(key)) {
+                Content.Remove(key);
+            }
         }
 
         public bool IsEmptyOrDamaged() {
             return Content.Count == 0;
         }
 
-        public static void Write(string path, string section, string key, string value) {
+        public static void Write(string path, [Localizable(false)] string section, [Localizable(false)] string key, [Localizable(false)] string value) {
             Kernel32.WritePrivateProfileString(section, key, value, path);
         }
 

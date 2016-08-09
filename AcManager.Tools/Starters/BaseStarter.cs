@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Managers;
+using AcTools.DataFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
@@ -31,6 +33,10 @@ namespace AcManager.Tools.Starters {
 
             Thread.Sleep(1000);
             GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+        }
+
+        protected void SetAcX86Param() {
+            IniFile.Write(Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "launcher.ini"), "WINDOW", "X86", Use32Version ? @"1" : @"0");
         }
 
         public virtual void WaitGame() {

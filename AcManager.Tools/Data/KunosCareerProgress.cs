@@ -146,7 +146,7 @@ namespace AcManager.Tools.Data {
 
             var iniFile = new IniFile(_filename);
             Completed = iniFile["CAREER"].GetStrings("COMPLETE").Select(x => x.ToLowerInvariant()).ToArray();
-            CurrentSeries = iniFile["CAREER"].Get("CURRENTSERIES");
+            CurrentSeries = iniFile["CAREER"].GetPossiblyEmpty("CURRENTSERIES");
             AiLevel = iniFile["CAREER"].GetDouble("AI_LEVEL", 95d);
             IsNew = iniFile["CAREER"].GetInt("INTRO", 0) != 2;
             Entries = iniFile.Where(x => x.Key.StartsWith(@"SERIES")).ToDictionary(

@@ -58,7 +58,7 @@ namespace AcTools.Utils {
         public static string GetMainCarFilename(string carDir) {
             var iniFile = new IniFile(carDir, "lods.ini");
             if (iniFile.Exists()) {
-                var fromData = iniFile["LOD_0"].Get("FILE");
+                var fromData = iniFile["LOD_0"].GetNonEmpty("FILE");
                 if (fromData != null) {
                     return Path.Combine(carDir, fromData);
                 }
@@ -70,7 +70,7 @@ namespace AcTools.Utils {
         public static string GetMainCarFilename(string carDir, DataWrapper data) {
             var iniFile = data.GetIniFile("lods.ini");
             if (iniFile.Exists()) {
-                var fromData = iniFile["LOD_0"].Get("FILE");
+                var fromData = iniFile["LOD_0"].GetNonEmpty("FILE");
                 if (fromData != null) {
                     return Path.Combine(carDir, fromData);
                 }

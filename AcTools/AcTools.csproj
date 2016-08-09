@@ -67,6 +67,7 @@
     <Compile Include="AcdFile\AcdWriter.cs" />
     <Compile Include="AcdFile\AcdReader.cs" />
     <Compile Include="AcToolsInformation.cs" />
+    <Compile Include="CommonAcConsts.cs" />
     <Compile Include="DataAnalyzer\HashStorage.cs" />
     <Compile Include="DataAnalyzer\RulesSet.cs" />
     <Compile Include="DataAnalyzer\RulesSet_Test.cs" />

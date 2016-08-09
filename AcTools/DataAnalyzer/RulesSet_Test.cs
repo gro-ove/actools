@@ -24,7 +24,7 @@ namespace AcTools.DataAnalyzer {
                 var file = files[rule.Filename];
 
                 if (file[rule.Section].ContainsKey(rule.Property)) {
-                    var propertyValue = file[rule.Section].Get(rule.Property)?.Trim();
+                    var propertyValue = file[rule.Section].GetPossiblyEmpty(rule.Property)?.Trim();
                     if (propertyValue == null) continue;
 
                     switch (rule.Type) {

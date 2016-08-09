@@ -56,6 +56,9 @@ namespace AcManager.Pages.Drive {
         public void Initialize() {
             if (!(DataContext is ViewModel)) return;
             InitializeComponent();
+            InputBindings.AddRange(new[] {
+                new InputBinding(new RelayCommand(o => Model.AcObject.SelectedEvent?.GoCommand.Execute(o)), new KeyGesture(Key.G, ModifierKeys.Control))
+            });
 
             var acObject = Model.AcObject;
             if (acObject.LastSelectedTimestamp != 0) return;

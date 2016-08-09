@@ -105,6 +105,7 @@
     <Compile Include="Helpers\LocalizationHelper.cs" />
     <Compile Include="Helpers\Logging.cs" />
     <Compile Include="Helpers\LZF.cs" />
+    <Compile Include="Helpers\Storage.cs" />
     <Compile Include="Helpers\StringCipher.cs" />
     <Compile Include="Helpers\TreeViewExtension.cs" />
     <Compile Include="Helpers\UriExtension.cs" />

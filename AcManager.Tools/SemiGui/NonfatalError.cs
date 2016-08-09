@@ -24,7 +24,7 @@ namespace AcManager.Tools.SemiGui {
 
             var i = exception as InformativeException;
             if (i != null) {
-                _notifier?.Notify(i.Message, i.SolutionCommentary, null);
+                _notifier?.Notify(i.Message, i.SolutionCommentary, i.InnerException);
             } else {
                 _notifier?.Notify(problemDescription, solutionCommentary, exception);
             }

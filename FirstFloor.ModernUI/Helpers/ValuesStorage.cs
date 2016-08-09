@@ -6,14 +6,20 @@ using System.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
+    // TODO: Rename to Values?
     public static partial class ValuesStorage {
         private static Storage _storage;
 
-        public static Storage Instance => _storage ?? (_storage = new Storage(encryptionKey: EncryptionKey));
+        public static Storage Storage => _storage;
 
         public static void Initialize(string filename, bool disableCompression = false) {
             Debug.Assert(_storage == null);
             _storage = new Storage(filename, EncryptionKey, disableCompression);
+        }
+
+        public static void Initialize() {
+            Debug.Assert(_storage == null);
+            _storage = new Storage(encryptionKey: EncryptionKey);
         }
 
         [CanBeNull, Pure]
@@ -183,5 +189,16 @@ namespace FirstFloor.ModernUI.Helpers {
             _storage.SetEncrypted(key, value);
         }
 
+        public static string GetEncryptedString([NotNull, LocalizationRequired(false)] string key, [LocalizationRequired(false)] string defaultValue = null) {
+            return _storage.GetEncryptedString(key, defaultValue);
+        }
+
+        public static bool GetEncryptedBool([NotNull, LocalizationRequired(false)] string key, bool defaultValue = false) {
+            return _storage.GetEncryptedBool(key, defaultValue);
+        }
+
+        public static void Remove([NotNull, LocalizationRequired(false)] string key) {
+            _storage.Remove(key);
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using AcTools.Processes;
+using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Data.GameSpecific {
     public class PlaceConditions : Game.AdditionalProperties {
@@ -49,14 +50,18 @@ namespace AcManager.Tools.Data.GameSpecific {
                 case PlaceConditionsType.Points:
                     return UnremarkablePlace;
                 case PlaceConditionsType.Position:
-                    var place = result.Sessions.LastOrDefault(x => x.BestLaps.Any())?.CarPerTakenPlace?.FirstOrDefault();
-                    return place.HasValue ? GetTakenPlace(place.Value) : UnremarkablePlace;
+                    var place = result.Sessions.LastOrDefault(x => x.BestLaps.Any())?.CarPerTakenPlace?.IndexOf(0);
+                    return place.HasValue ? GetTakenPlace(place.Value + 1) : UnremarkablePlace;
                 case PlaceConditionsType.Time:
                     var time = result.Sessions.LastOrDefault(x => x.BestLaps.Any())?.BestLaps.FirstOrDefault(x => x.CarNumber == 0)?.Time;
-                    return time.HasValue ? GetTakenPlace(time.Value.Milliseconds) : UnremarkablePlace;
+                    return time.HasValue ? GetTakenPlace((int)time.Value.TotalMilliseconds) : UnremarkablePlace;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public string GetDescription() {
+            return $"({Type}, Targets=[{FirstPlaceTarget}, {SecondPlaceTarget}, {ThirdPlaceTarget}])";
         }
     }
 }

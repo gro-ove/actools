@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Windows.Converters;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.Converters {
     [ValueConversion(typeof(int), typeof(Brush))]
@@ -12,6 +13,9 @@ namespace AcManager.Controls.Converters {
         public Brush SecondPlaceColor { get; set; }
 
         public Brush ThirdPlaceColor { get; set; }
+
+        [CanBeNull]
+        public Brush ForthPlaceColor { get; set; }
 
         public Brush DefaultColor { get; set; }
 
@@ -23,6 +27,8 @@ namespace AcManager.Controls.Converters {
                     return SecondPlaceColor;
                 case 3:
                     return ThirdPlaceColor;
+                case 4:
+                    return ForthPlaceColor ?? DefaultColor;
                 default:
                     return DefaultColor;
             }

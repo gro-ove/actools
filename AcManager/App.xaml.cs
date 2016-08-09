@@ -43,7 +43,9 @@ namespace AcManager {
 
         public static void CreateAndRun() {
             FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
-            if (!AppArguments.GetBool(AppFlag.DisableSaving)) {
+            if (AppArguments.GetBool(AppFlag.DisableSaving)) {
+                ValuesStorage.Initialize();
+            } else {
                 ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
             }
 
@@ -55,8 +57,7 @@ namespace AcManager {
                 }
 
                 Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename));
-                Logging.Write("App version: " + BuildInformation.AppVersion);
-                Logging.Write("Windows version: " + WindowsVersionHelper.GetVersion());
+                Logging.Write($"App version: {BuildInformation.AppVersion} ({WindowsVersionHelper.GetVersion()})");
             }
 
             if (AppArguments.GetBool(AppFlag.IgnoreSystemProxy, true)) {
@@ -91,6 +92,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.SmartPresetsChangedHandling, ref UserPresetsControl.OptionSmartChangedHandling);
             AppArguments.Set(AppFlag.EnableRaceIniRestoration, ref Game.OptionEnableRaceIniRestoration);
             AppArguments.Set(AppFlag.EnableRaceIniTestMode, ref Game.OptionRaceIniTestMode);
+            AppArguments.Set(AppFlag.RaceOutDebug, ref Game.OptionDebugMode);
 
             AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
 
@@ -165,6 +167,8 @@ namespace AcManager {
             Toast.SetDefaultIcon(iconUri);
             Toast.SetDefaultAction(() => (Current.MainWindow as ModernWindow)?.BringToFront());
             BbCodeBlock.ImageClicked += BbCodeBlock_ImageClicked;
+
+            AppArguments.Set(AppFlag.LoadImagesInBackground, ref BetterImage.OptionBackgroundLoading);
             
             StartupUri = new Uri(Superintendent.Instance.IsReady ?
                     @"Pages/Windows/MainWindow.xaml" : @"Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
@@ -214,7 +218,7 @@ namespace AcManager {
                 foreach (var f in from file in Directory.GetFiles(directory)
                                   where file.EndsWith(@".txt") || file.EndsWith(@".json")
                                   let info = new FileInfo(file)
-                                  where info.CreationTime < DateTime.Now.AddDays(-10)
+                                  where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(10)
                                   select info){
                     f.Delete();
                 }
@@ -266,7 +270,7 @@ namespace AcManager {
         }
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {
-            ValuesStorage.SaveBeforeExit();
+            Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
         }
     }

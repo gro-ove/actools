@@ -170,7 +170,8 @@ namespace AcManager.Pages.Selected {
                 await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
                     Name = SelectedObject.Id,
                     TrackId = SelectedObject.TrackId,
-                    TrackConfiguration = SelectedObject.TrackConfiguration
+                    TrackConfiguration = SelectedObject.TrackConfiguration,
+                    WeatherId = SelectedObject.WeatherId
                 }));
             }, o => !SelectedObject.HasError(AcErrorType.Replay_TrackIsMissing)));
         }

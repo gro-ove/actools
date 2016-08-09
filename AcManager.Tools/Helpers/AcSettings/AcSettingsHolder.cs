@@ -91,17 +91,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             public void ImportFromPresetData(string data) {
                 var entry = JsonConvert.DeserializeObject<Saveable>(data);
-                Logging.Write("[VideoPresetsInner] ImportFromPresetData()");
                 Video.Import(entry.VideoData);
-                Logging.Write("[VideoPresetsInner] Video settings loaded");
                 Graphics.Import(entry.GraphicsData);
-                Logging.Write("[VideoPresetsInner] Graphics settings loaded");
-                Logging.Write("[VideoPresetsInner] PPD value=" +
-                        new IniFile(Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "oculus.ini"))["SETTINGS"].Get("PIXEL_PER_DISPLAY"));
                 Oculus.Import(entry.OculusData);
-                Logging.Write("[VideoPresetsInner] Oculus settings loaded: " + entry.VideoData);
-                Logging.Write("[VideoPresetsInner] PPD value=" +
-                        new IniFile(Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "oculus.ini"))["SETTINGS"].Get("PIXEL_PER_DISPLAY"));
             }
         }
 

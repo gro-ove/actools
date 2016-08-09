@@ -408,10 +408,10 @@ namespace AcTools.Render.Kn5Specific.Utils {
                 return;
             }
 
-            var y1 = Math.Min(wheelLf.BoundingBox?.Minimum.Y ?? float.MaxValue,
-                    wheelRf.BoundingBox?.Minimum.Y ?? float.MaxValue);
-            var y2 = Math.Min(wheelLr.BoundingBox?.Minimum.Y ?? float.MaxValue,
-                    wheelRr.BoundingBox?.Minimum.Y ?? float.MaxValue);
+            var y1 = Math.Min((float)wheelLf.BoundingBox?.Minimum.Y,
+                    (float)wheelRf.BoundingBox?.Minimum.Y);
+            var y2 = Math.Min((float)wheelLr.BoundingBox?.Minimum.Y,
+                    (float)wheelRr.BoundingBox?.Minimum.Y);
 
             if (float.IsPositiveInfinity(y1) || float.IsPositiveInfinity(y2)) {
                 node.LocalMatrix = Matrix.Translation(0, -node.BoundingBox?.Minimum.Y ?? 0f, 0) * node.LocalMatrix;
@@ -426,7 +426,7 @@ namespace AcTools.Render.Kn5Specific.Utils {
         public void LoadMirrors(Kn5RenderableList node, DeviceContextHolder holder) {
             if (Data.IsEmpty) return;
             foreach (var obj in from section in Data.GetIniFile("mirrors.ini").GetSections("MIRROR")
-                                select node.GetByName(section.Get("NAME"))) {
+                                select node.GetByName(section.GetNonEmpty("NAME"))) {
                 obj?.SwitchToMirror(holder);
             }
         }

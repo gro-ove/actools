@@ -3,14 +3,20 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.SemiGui {
     public class InformativeException : Exception {
+        [CanBeNull]
         public string SolutionCommentary { get; }
 
-        public InformativeException([LocalizationRequired] string message, [LocalizationRequired] string solutionCommentary) : base(message) {
+        public InformativeException([LocalizationRequired] string message, Exception innerException = null) : base(message, innerException) {
+            SolutionCommentary = null;
+        }
+
+        public InformativeException([LocalizationRequired] string message, [LocalizationRequired] string solutionCommentary, Exception innerException = null)
+                : base(message, innerException) {
             SolutionCommentary = solutionCommentary;
         }
 
         public string ToSingleString() {
-            return $"{Message}. {SolutionCommentary}";
+            return SolutionCommentary == null ? $"{Message}." : $"{Message}. {SolutionCommentary}";
         }
     }
 }

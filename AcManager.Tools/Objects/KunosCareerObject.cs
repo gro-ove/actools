@@ -148,13 +148,13 @@ namespace AcManager.Tools.Objects {
 
             var ini = new IniFile(OpponentsIniFilename);
             var drivers = LinqExtension.RangeFrom(1).Select(x => $"AI{x}").TakeWhile(ini.ContainsKey).Select(x => ini[x]).Select((section, id) => {
-                var model = section.Get("MODEL");
+                var model = section.GetNonEmpty("MODEL");
                 if (model == null) {
                     Logging.Error($"Section AI{id + 1}: MODEL is required, fallback to default");
                     model = CarsManager.Instance.GetDefault()?.Id ?? "";
                 }
 
-                var skin = section.Get("SKIN");
+                var skin = section.GetNonEmpty("SKIN");
                 if (skin == null) {
                     Logging.Error($"Section AI{id + 1}: SKIN is required, fallback to default");
                 }
@@ -162,22 +162,22 @@ namespace AcManager.Tools.Objects {
                 var car = CarsManager.Instance.GetById(model);
                 CarSkinObject carSkin;
                 if (car == null) {
-                    AddError(AcErrorType.Data_KunosCareerCarIsMissing, section.Get("MODEL"));
+                    AddError(AcErrorType.Data_KunosCareerCarIsMissing, section.GetNonEmpty("MODEL"));
                     carSkin = null;
                 } else {
                     carSkin = skin == null ? car.GetFirstSkinOrNull() : car.GetSkinByIdFromConfig(skin);
                     if (carSkin == null) {
-                        AddError(AcErrorType.Data_KunosCareerCarSkinIsMissing, car.DisplayName, section.Get("SKIN"));
+                        AddError(AcErrorType.Data_KunosCareerCarSkinIsMissing, car.DisplayName, section.GetNonEmpty("SKIN"));
                         carSkin = car.GetFirstSkinOrNull();
                     }
                 }
 
                 return new ChampionshipDriverEntry {
                     Id = id,
-                    Name = section.Get("DRIVER_NAME"),
-                    Nationality = section.Get("NATIONALITY"),
+                    Name = section.GetPossiblyEmpty("DRIVER_NAME"),
+                    Nationality = section.GetPossiblyEmpty("NATIONALITY"),
                     AiLevel = section.GetInt("AI_LEVEL", 100),
-                    SetupId = section.Get("SETUP"),
+                    SetupId = section.GetPossiblyEmpty("SETUP"),
                     Car = car,
                     CarSkin = carSkin
                 };
@@ -539,11 +539,11 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         protected override void LoadData(IniFile ini) {
-            Name = ini["SERIES"].Get("NAME");
-            Code = ini["SERIES"].Get("CODE");
-            Description = AcStringValues.DecodeDescription(ini["SERIES"].Get("DESCRIPTION"));
+            Name = ini["SERIES"].GetPossiblyEmpty("NAME");
+            Code = ini["SERIES"].GetPossiblyEmpty("CODE");
+            Description = AcStringValues.DecodeDescription(ini["SERIES"].GetPossiblyEmpty("DESCRIPTION"));
 
-            PointsForPlace = ini["SERIES"].Get("POINTS")?.Split(',').Select(x => FlexibleParser.TryParseInt(x)).OfType<int>().ToArray();
+            PointsForPlace = ini["SERIES"].GetPossiblyEmpty("POINTS")?.Split(',').Select(x => FlexibleParser.TryParseInt(x)).OfType<int>().ToArray();
             ChampionshipPointsGoal = ini["GOALS"].GetIntNullable("POINTS") ?? 0;
             ThirdPlacesGoal = ini["GOALS"].GetIntNullable("TIER1") ?? 0;
             SecondPlacesGoal = ini["GOALS"].GetIntNullable("TIER2") ?? 0;

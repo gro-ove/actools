@@ -27,8 +27,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
             }
         }
 
-        [Pure]
-        [CanBeNull]
+        [Pure, CanBeNull]
         public static T FindVisualChild<T>([NotNull] this DependencyObject obj) where T : DependencyObject {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
             return FindVisualChildren<T>(obj).FirstOrDefault();
@@ -50,8 +49,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
             }
         }
 
-        [Pure]
-        [CanBeNull]
+        [Pure, CanBeNull]
         public static T FindLogicalChild<T>([NotNull] this DependencyObject obj) where T : DependencyObject {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
             return FindLogicalChildren<T>(obj).FirstOrDefault();
@@ -128,8 +126,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
         /// </summary>
         /// <param name="dependencyObject">The dependency object</param>
         /// <returns>The parent object or null if there is no parent.</returns>
-        [Pure]
-        [CanBeNull]
+        [Pure, CanBeNull]
         public static DependencyObject GetParent(this DependencyObject dependencyObject) {
             if (dependencyObject == null) throw new ArgumentNullException(nameof(dependencyObject));
 
@@ -159,15 +156,13 @@ namespace FirstFloor.ModernUI.Windows.Media {
             }
         }
 
-        [Pure]
-        [CanBeNull]
+        [Pure, CanBeNull]
         public static DependencyObject GetParentWhere([NotNull] this DependencyObject dependencyObject, [NotNull] Func<DependencyObject, bool> predicate) {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             return dependencyObject.GetParents().Where(predicate).FirstOrDefault();
         }
 
-        [Pure]
-        [CanBeNull]
+        [Pure, CanBeNull]
         public static T GetParentOfType<T>([NotNull] this FrameworkElement dependencyObject) where T : DependencyObject {
             return dependencyObject.GetParents().OfType<T>().FirstOrDefault();
         }

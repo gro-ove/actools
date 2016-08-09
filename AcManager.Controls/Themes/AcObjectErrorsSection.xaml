@@ -23,11 +23,6 @@
                                 <Path Grid.Row="0" Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                         x:Name="ErrorIcon" HorizontalAlignment="Right" />
                                 <ItemsControl Grid.Row="1" ItemsSource="{Binding Errors}" x:Name="AcObjectInDataContext" HorizontalAlignment="Left">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel IsItemsHost="True" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Margin="40 0 0 0" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left">

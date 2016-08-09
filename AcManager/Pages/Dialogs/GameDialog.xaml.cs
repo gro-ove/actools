@@ -98,6 +98,8 @@ namespace AcManager.Pages.Dialogs {
             var conditions = properties?.GetAdditional<PlaceConditions>();
             var takenPlace = conditions?.GetTakenPlace(result) ?? PlaceConditions.UnremarkablePlace;
 
+            Logging.Write($"[GameDialog] Place conditions: {conditions?.GetDescription()}, result: {result.GetDescription()}");
+
             {
                 var extra = result.GetExtraByType<Game.ResultExtraDrift>();
                 if (extra != null) {
@@ -129,7 +131,7 @@ namespace AcManager.Pages.Dialogs {
                     var bestLapTime = result.Sessions.SelectMany(x => from lap in x.BestLaps where lap.CarNumber == 0 select lap.Time).MinOrDefault();
 
                     var sectorsPerSections = result.Sessions.SelectMany(x => from lap in x.Laps where lap.CarNumber == 0 select lap.SectorsTime).ToList();
-                    var theoreticallLapTime = sectorsPerSections.First().Select((x, i) => sectorsPerSections.Select(y => y[i]).Min()).Sum();
+                    var theoreticallLapTime = sectorsPerSections.FirstOrDefault()?.Select((x, i) => sectorsPerSections.Select(y => y[i]).Min()).Sum();
 
                     return new HotlapFinishedData {
                         Laps = result.Sessions.Sum(x => x.LapsTotalPerCar.FirstOrDefault()),
@@ -260,8 +262,8 @@ namespace AcManager.Pages.Dialogs {
 
         void IGameUi.OnResult(Game.Result result, ReplayHelper replayHelper) {
             if (result != null && result.NumberOfSessions == 1 && result.Sessions.Length == 1
-                    && result.Sessions[0].Type == Game.SessionType.Practice && SettingsHolder.Drive.SkipPracticeResults ||
-                    _properties?.BasicProperties == null) {
+                    && result.Sessions[0].Type == Game.SessionType.Practice && SettingsHolder.Drive.SkipPracticeResults
+                    || _properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null) {
                 Close();
                 return;
             }
@@ -295,7 +297,7 @@ namespace AcManager.Pages.Dialogs {
 
             if (result == null || !result.IsNotCancelled) {
                 Model.CurrentState = ViewModel.State.Cancelled;
-                Model.ErrorMessage = _properties.GetAdditional<AcLogHelper.WhatsGoingOn?>()?.GetDescription();
+                Model.ErrorMessage = _properties?.GetAdditional<AcLogHelper.WhatsGoingOn?>()?.GetDescription();
             } else {
                 try {
                     Model.CurrentState = ViewModel.State.Finished;

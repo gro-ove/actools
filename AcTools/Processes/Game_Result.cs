@@ -21,8 +21,7 @@ namespace AcTools.Processes {
             [JsonProperty(PropertyName = "sessions")]
             public ResultSession[] Sessions;
 
-            [JsonProperty(PropertyName = "extras")]
-            [JsonConverter(typeof(ResultExtraConverter))]
+            [JsonProperty(PropertyName = "extras"), JsonConverter(typeof(ResultExtraConverter))]
             public ResultExtra[] Extras;
 
             public T GetExtraByType<T>() where T : ResultExtra {
@@ -30,6 +29,13 @@ namespace AcTools.Processes {
             }
 
             public bool IsNotCancelled => NumberOfSessions == Sessions.Length && (Sessions.Any(x => x.IsNotCancelled) || Extras.Any(x => x.IsNotCancelled));
+
+            public string GetDescription() {
+                return $"(Track={TrackId}, Sessions={NumberOfSessions}, " +
+                        $"Players=[{Players?.Select(x => x.GetDescription()).JoinToString(", ")}], " +
+                        $"Sessions=[{Sessions?.Select(x => x.GetDescription()).JoinToString(", ")}], " +
+                        $"Extras=[{Extras?.Select(x => x.GetDescription()).JoinToString(", ")}])";
+            }
         }
 
         public class ResultExtra {
@@ -37,14 +43,21 @@ namespace AcTools.Processes {
             public string Name;
 
             public virtual bool IsNotCancelled => false;
+
+            public virtual string GetDescription() {
+                return $"({Name}, Cancelled={!IsNotCancelled})";
+            }
         }
 
         public class ResultExtraBestLap : ResultExtra {
-            [JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
-            [JsonProperty(PropertyName = "time")]
+            [JsonConverter(typeof(MillisecondsToTimeSpanConverter)), JsonProperty(PropertyName = "time")]
             public TimeSpan Time;
 
             public override bool IsNotCancelled => Time != TimeSpan.Zero;
+
+            public override string GetDescription() {
+                return $"({Name}, Cancelled={!IsNotCancelled}, Time={Time})";
+            }
         }
 
         public class ResultExtraSpecialEvent : ResultExtra {
@@ -58,6 +71,10 @@ namespace AcTools.Processes {
             public int Tier;
 
             public override bool IsNotCancelled => Guid != string.Empty || Max != 0 || Tier != -1;
+
+            public override string GetDescription() {
+                return $"({Name}, Cancelled={!IsNotCancelled}, Guid={Guid}, Tier={Tier}, Max={Max})";
+            }
         }
 
         public class ResultExtraTimeAttack : ResultExtra {
@@ -65,6 +82,10 @@ namespace AcTools.Processes {
             public int Points;
 
             public override bool IsNotCancelled => Points > 0;
+
+            public override string GetDescription() {
+                return $"({Name}, Cancelled={!IsNotCancelled}, Points={Points})";
+            }
         }
 
         public class ResultExtraDrift : ResultExtra {
@@ -78,6 +99,10 @@ namespace AcTools.Processes {
             public int MaxLevel;
 
             public override bool IsNotCancelled => Points > 0 || MaxCombo != 0 || MaxLevel != 0;
+
+            public override string GetDescription() {
+                return $"({Name}, Cancelled={!IsNotCancelled}, Points={Points})";
+            }
         }
 
         internal class ResultExtraConverter : JsonConverter {
@@ -156,6 +181,10 @@ namespace AcTools.Processes {
 
             [JsonProperty(PropertyName = "skin")]
             public string CarSkinId;
+
+            public string GetDescription() {
+                return $"({Name} in {CarId})";
+            }
         }
 
         public class ResultLap {
@@ -170,16 +199,14 @@ namespace AcTools.Processes {
             /// </summary>
             [JsonProperty(PropertyName = "car")]
             public int CarNumber;
-            
-            [JsonProperty(PropertyName = "sectors")]
-            [JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
+
+            [JsonProperty(PropertyName = "sectors"), JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
             public TimeSpan[] SectorsTime;
 
             /// <summary>
             /// Milliseconds.
             /// </summary>
-            [JsonProperty(PropertyName = "time")]
-            [JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
+            [JsonProperty(PropertyName = "time"), JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
             public TimeSpan Time;
         }
 
@@ -199,8 +226,7 @@ namespace AcTools.Processes {
             /// <summary>
             /// Milliseconds.
             /// </summary>
-            [JsonProperty(PropertyName = "time")]
-            [JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
+            [JsonProperty(PropertyName = "time"), JsonConverter(typeof(MillisecondsToTimeSpanConverter))]
             public TimeSpan Time;
         }
 
@@ -223,8 +249,7 @@ namespace AcTools.Processes {
             /// <summary>
             /// Minutes.
             /// </summary>
-            [JsonProperty(PropertyName = "duration")]
-            [JsonConverter(typeof(MinutesToTimeSpanConverter))]
+            [JsonProperty(PropertyName = "duration"), JsonConverter(typeof(MinutesToTimeSpanConverter))]
             public TimeSpan Duration;
 
             /// <summary>
@@ -242,8 +267,7 @@ namespace AcTools.Processes {
             /// <summary>
             /// [Place] = Car ID
             /// </summary>
-            [JsonProperty(PropertyName = "raceResult")]
-            [CanBeNull]
+            [JsonProperty(PropertyName = "raceResult"), CanBeNull]
             public int[] CarPerTakenPlace;
 
             public bool IsNotCancelled {
@@ -260,7 +284,7 @@ namespace AcTools.Processes {
                         case SessionType.Hotlap:
                         case SessionType.TimeAttack:
                             return LapsTotalPerCar.FirstOrDefault() > 0;
-                    
+
                         case SessionType.Booking:
                             return true;
 
@@ -288,6 +312,10 @@ namespace AcTools.Processes {
             /// <returns>[Car ID] = Place (starts with 0!)</returns>
             public int[] GetTakenPlacesPerCar() {
                 return GetCarPerTakenPlace().Select((x, i) => new[] { x, i }).OrderBy(x => x[0]).Select(x => x[1]).ToArray();
+            }
+            
+            public string GetDescription() {
+                return $"({Name}, Laps={LapsCount}, Places=[{CarPerTakenPlace?.JoinToString(", ")}])";
             }
         }
     }

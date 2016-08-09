@@ -29,7 +29,6 @@ namespace AcManager.Tools.Managers {
 
         private KunosCareerManager() {
             SettingsHolder.Drive.PropertyChanged += Drive_PropertyChanged;
-
             KunosCareerProgress.Instance.PropertyChanged += Progress_Updated;
             GameWrapper.Finished += GameWrapper_Finished;
             ShowIntro = KunosCareerProgress.Instance.IsNew;
@@ -80,8 +79,15 @@ namespace AcManager.Tools.Managers {
         }
 
         private void GameWrapper_Finished(object sender, GameFinishedArgs e) {
+            Logging.Write("[KunosCareerManager] Race finished");
+
             var careerProperties = e.StartProperties.GetAdditional<CareerProperties>();
-            if (careerProperties == null) return;
+            if (careerProperties == null) {
+                Logging.Write("[KunosCareerManager] Not a career race");
+                return;
+            }
+
+            Logging.Write($"[KunosCareerManager] Career: {careerProperties.CareerId}");
 
             var career = GetById(careerProperties.CareerId);
             var ev = career?.GetEventById(careerProperties.EventId);
@@ -92,6 +98,7 @@ namespace AcManager.Tools.Managers {
 
             /* just for in case */
             career.EnsureEventsLoaded();
+            Logging.Write($"[KunosCareerManager] Finished: {careerProperties.CareerId}, {careerProperties.EventId}.");
 
             switch (career.Type) {
                 case KunosCareerObjectType.SingleEvents:
@@ -102,14 +109,16 @@ namespace AcManager.Tools.Managers {
                     }
 
                     var takenPlace = conditionProperties.GetTakenPlace(e.Result);
-                    if (takenPlace >= ev.TakenPlace) return;
+                    if (takenPlace >= ev.TakenPlace) {
+                        Logging.Warning("[KunosCareerManager] Taken place is worse than saved place.");
+                        return;
+                    }
 
+                    Logging.Write($"[KunosCareerManager] Taken place is changed from {ev.TakenPlace} to {takenPlace}.");
                     ev.TakenPlace = takenPlace;
                     career.SaveProgress(true);
                     if (!career.IsCompleted && CheckIfCareerCompleted(career)) {
-                        KunosCareerProgress.Instance.Completed = KunosCareerProgress.Instance.Completed.Union(new[] {
-                            career.Id
-                        }).ToArray();
+                        KunosCareerProgress.Instance.Completed = KunosCareerProgress.Instance.Completed.Append(career.Id).ToArray();
                     }
                     break;
 

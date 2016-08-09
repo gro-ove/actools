@@ -82,7 +82,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var child = (UIElement)_itemsGenerator.GenerateNext(out newlyRealized);
                 _itemsGenerator.PrepareItemContainer(child);
                 child.Measure(limitation);
-                Logging.Write($"Here: {generatorStartPosition}, {newlyRealized}, {child.DesiredSize}, {child.RenderSize}");
                 return child.DesiredSize;
             }
         }
@@ -99,14 +98,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 if (double.IsInfinity(_itemWidth) || double.IsInfinity(_itemHeight)) {
                     try {
-                        Logging.Write($"Here");
                         var itemSize = DetectItemSize(new Size(_itemWidth, _itemHeight));
                         _itemWidth = itemSize.Width;
                         _itemHeight = itemSize.Height;
-
-                        Logging.Write($"Item size: {_itemWidth}×{_itemHeight}");
                     } catch (Exception e) {
-                        Logging.Write($"Exception: {e}");
+                        Logging.Write($"[VirtualizingTilePanel] Exception: {e}");
                     }
                 }
             }
@@ -492,7 +488,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void HandleItemDimensionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            (d as VirtualizingTilePanel)?.InvalidateMeasure();
+            var t = d as VirtualizingTilePanel;
+            if (t == null) return;
+            t.InvalidateMeasure();
+            t._itemWidth = double.PositiveInfinity;
+            t._itemHeight = double.PositiveInfinity;
         }
 
         private static double Clamp(double value, double min, double max) {

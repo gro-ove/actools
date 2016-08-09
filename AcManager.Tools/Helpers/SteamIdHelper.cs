@@ -18,7 +18,7 @@ namespace AcManager.Tools.Helpers {
     public class SteamIdHelper {
         public static string OptionForceValue = null;
 
-        public const string Key = "_steam_id";
+        private const string Key = "_steam_id";
 
         public static SteamIdHelper Instance { get; private set; }
 

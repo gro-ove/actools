@@ -1,18 +1,40 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:converters="clr-namespace:AcManager.Controls.Converters"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:con="clr-namespace:AcManager.Controls.Converters"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Brush x:Key="DarkenPanel">#99000000</Brush>
     <Brush x:Key="Completed">GreenYellow</Brush>
 
+    <VisualBrush x:Key="Ultimate">
+        <VisualBrush.Visual>
+            <Ellipse Fill="Aqua" Width="8" Height="8">
+                <Ellipse.Triggers>
+                    <EventTrigger RoutedEvent="Rectangle.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <ColorAnimation From="#ff0000" To="#00ff00" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                        Duration="0:0:0.6" />
+                                <ColorAnimation From="#00ff00" To="#0000ff" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                        Duration="0:0:0.3" BeginTime="0:0:0.6" />
+                                <ColorAnimation From="#0000ff" To="#ff0000" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                        Duration="0:0:0.3" BeginTime="0:0:0.9" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Ellipse.Triggers>
+            </Ellipse>
+        </VisualBrush.Visual>
+    </VisualBrush>
     <Brush x:Key="Gold">Yellow</Brush>
     <Brush x:Key="Silver">Silver</Brush>
-    <Brush x:Key="Bronze">SaddleBrown</Brush>
+    <Brush x:Key="Bronze">Brown</Brush>
 
-    <system:Double x:Key="TileSize">160</system:Double>
+    <sys:Double x:Key="TileSize">160</sys:Double>
 
     <Style x:Key="PlaceMark" TargetType="Ellipse">
         <Setter Property="Width" Value="8" />
@@ -26,9 +48,9 @@
         <Setter Property="Margin" Value="4 0" />
     </Style>
 
-    <converters:PlaceToColorConverter x:Key="PlaceToColorConverter" FirstPlaceColor="{StaticResource Gold}" SecondPlaceColor="{StaticResource Silver}"
+    <con:PlaceToColorConverter x:Key="PlaceToColorConverter" FirstPlaceColor="{StaticResource Gold}" SecondPlaceColor="{StaticResource Silver}"
             ThirdPlaceColor="{StaticResource Bronze}" DefaultColor="Transparent" />
-    <converters:KunosCareerTypeToIconConverter x:Key="KunosCareerTypeToIconConverter" ChampionshipIconData="{StaticResource LeaderboardIconData}"
+    <con:KunosCareerTypeToIconConverter x:Key="KunosCareerTypeToIconConverter" ChampionshipIconData="{StaticResource LeaderboardIconData}"
             SingleEventsIconData="{StaticResource ListCheckIconData}" />
 
     <!--datagrid specific-->
@@ -44,11 +66,11 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
-    <DataTemplate x:Key="DataGridCell.DriverName">
+    <DataTemplate x:Key="DataGridCell.DriverName" DataType="{x:Type t:KunosCareerObject+ChampionshipDriverEntry}">
         <DockPanel>
             <Ellipse Style="{StaticResource PlaceMark}" DockPanel.Dock="Left" Margin="0 0 8 4"
                     Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}"
-                    Visibility="{Binding PrizePlace, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    Visibility="{Binding TakenPlacePrizePlace, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <TextBlock Text="{Binding Name}" x:Name="NameTextBlock" TextTrimming="CharacterEllipsis" />
         </DockPanel>
 
@@ -60,7 +82,7 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <DataTemplate x:Key="DataGridCell.Car">
+    <DataTemplate x:Key="DataGridCell.Car" DataType="{x:Type t:KunosCareerObject+ChampionshipDriverEntry}">
         <StackPanel Orientation="Horizontal">
             <StackPanel.ToolTip>
                 <ToolTip>

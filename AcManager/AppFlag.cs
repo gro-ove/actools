@@ -5,10 +5,23 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Load images without blocking main UI thread. Enabled by default, but could cause
+        /// some problems. In this case, try to disable it.
+        /// Example: --load-images-in-background=no.
+        /// </summary>
+        LoadImagesInBackground,
+
+        /// <summary>
         /// For internal use.
         /// Example: --log-packed.
         /// </summary>
         LogPacked,
+
+        /// <summary>
+        /// For internal use.
+        /// Example: --race-out-debug.
+        /// </summary>
+        RaceOutDebug,
 
         /// <summary>
         /// Force specific locale even if it’s not supported at the moment. Could be useful

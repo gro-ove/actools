@@ -46,7 +46,7 @@
                                 </DockPanel>
                             </StackPanel>
                         </Grid.ToolTip>
-                        <mui:BetterImage Filename="{Binding Filename}" AdditionalDelay="True" Width="192" Background="Black" ClearOnChange="True" />
+                        <mui:BetterImage Filename="{Binding Filename}" Width="192" Background="Black" ClearOnChange="True" />
                         <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding DisplayName}"
                                 TextTrimming="CharacterEllipsis" Foreground="White" FontSize="{DynamicResource SmallFontSize}" />
                     </Grid>

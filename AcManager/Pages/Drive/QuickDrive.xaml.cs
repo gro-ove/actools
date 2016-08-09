@@ -899,6 +899,7 @@ namespace AcManager.Pages.Drive {
         public static IContentLoader ContentLoader { get; } = new ImmediateContentLoader();
 
         private void MoreConditionsOptions_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+            // TODO: Don’t reopen if menu just have closed
             ConditionsOptions.IsOpen = true;
         }
     }

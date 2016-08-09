@@ -74,7 +74,7 @@ namespace AcTools.Processes {
         public ScreenshotFormatChange(string acRoot, string value) {
             _cfgFile = Path.Combine(FileUtils.GetSystemCfgDirectory(acRoot), "assetto_corsa.ini");
             var iniFile = new IniFile(_cfgFile);
-            _originalFormat = iniFile["SCREENSHOT"].Get("FORMAT");
+            _originalFormat = iniFile["SCREENSHOT"].GetPossiblyEmpty("FORMAT");
             iniFile["SCREENSHOT"].Set("FORMAT", value);
             iniFile.Save();
         }

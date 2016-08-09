@@ -46,16 +46,23 @@ namespace AcTools.DataFile {
                 }
             }
         }
-
-        [Localizable(false)]
-        [CanBeNull, Pure]
-        public string Get([NotNull, LocalizationRequired(false)] string key) {
+        
+        [CanBeNull, Pure, Localizable(false)]
+        public string GetPossiblyEmpty([NotNull, LocalizationRequired(false)] string key) {
             return ContainsKey(key) ? base[key] : null;
         }
+        
+        [CanBeNull, Pure, Localizable(false)]
+        public string GetNonEmpty([NotNull, LocalizationRequired(false)] string key) {
+            if (!ContainsKey(key)) return null;
 
-        [CanBeNull, Pure]
-        public string Get([NotNull, LocalizationRequired(false)] string key, [Localizable(false)] string defaultValue) {
-            return ContainsKey(key) ? base[key] : defaultValue;
+            var value = base[key];
+            return string.IsNullOrWhiteSpace(value) ? null : value;
+        }
+
+        [NotNull, Pure]
+        public string GetNonEmpty([NotNull, LocalizationRequired(false)] string key, [NotNull, Localizable(false)] string defaultValue) {
+            return GetNonEmpty(key) ?? defaultValue;
         }
 
         /// <summary>
@@ -64,28 +71,28 @@ namespace AcTools.DataFile {
         [Obsolete, Pure]
         public bool GetBool([NotNull, LocalizationRequired(false)] string key) {
             if (!ContainsKey(key)) throw new Exception("Value is missing!");
-            var value = Get(key);
+            var value = GetPossiblyEmpty(key);
             return value == "1";
         }
 
         [Pure]
         public bool GetBool([NotNull, LocalizationRequired(false)] string key, bool defaultValue) {
             if (!ContainsKey(key)) return defaultValue;
-            var value = Get(key);
+            var value = GetPossiblyEmpty(key);
             return value == "1";
         }
 
         [Pure]
         public bool? GetBoolNullable([NotNull, LocalizationRequired(false)] string key) {
             if (!ContainsKey(key)) return null;
-            var value = Get(key);
+            var value = GetPossiblyEmpty(key);
             return value == "1" || string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) ||
                     string.Equals(value, "yes", StringComparison.OrdinalIgnoreCase) || string.Equals(value, "y", StringComparison.OrdinalIgnoreCase);
         }
 
         [NotNull, Pure]
         public string[] GetStrings([NotNull, LocalizationRequired(false)] string key, char delimiter = ',') {
-            return Get(key)?.Split(delimiter).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray() ?? new string[0];
+            return GetPossiblyEmpty(key)?.Split(delimiter).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray() ?? new string[0];
         }
 
         [NotNull, Pure]
@@ -99,17 +106,17 @@ namespace AcTools.DataFile {
         /// </summary>
         [Obsolete, Pure]
         public double GetDouble([NotNull, LocalizationRequired(false)] string key) {
-            return FlexibleParser.ParseDouble(Get(key));
+            return FlexibleParser.ParseDouble(GetPossiblyEmpty(key));
         }
 
         [Pure]
         public double? GetDoubleNullable([NotNull, LocalizationRequired(false)] string key) {
-            return FlexibleParser.TryParseDouble(Get(key));
+            return FlexibleParser.TryParseDouble(GetPossiblyEmpty(key));
         }
 
         [Pure]
         public double GetDouble([NotNull, LocalizationRequired(false)] string key, double defaultValue) {
-            return FlexibleParser.ParseDouble(Get(key), defaultValue);
+            return FlexibleParser.ParseDouble(GetPossiblyEmpty(key), defaultValue);
         }
 
         /// <summary>
@@ -117,17 +124,17 @@ namespace AcTools.DataFile {
         /// </summary>
         [Obsolete, Pure]
         public int GetInt([NotNull, LocalizationRequired(false)] string key) {
-            return FlexibleParser.ParseInt(Get(key));
+            return FlexibleParser.ParseInt(GetPossiblyEmpty(key));
         }
 
         [Pure]
         public int? GetIntNullable([NotNull, LocalizationRequired(false)] string key) {
-            return FlexibleParser.TryParseInt(Get(key));
+            return FlexibleParser.TryParseInt(GetPossiblyEmpty(key));
         }
 
         [Pure]
         public int GetInt([NotNull, LocalizationRequired(false)] string key, int defaultValue) {
-            return FlexibleParser.TryParseInt(Get(key)) ?? defaultValue;
+            return FlexibleParser.TryParseInt(GetPossiblyEmpty(key)) ?? defaultValue;
         }
 
         /// <summary>
@@ -135,17 +142,17 @@ namespace AcTools.DataFile {
         /// </summary>
         [Obsolete, Pure]
         public long GetLong([NotNull, LocalizationRequired(false)] string key) {
-            return FlexibleParser.ParseLong(Get(key));
+            return FlexibleParser.ParseLong(GetPossiblyEmpty(key));
         }
 
         [Pure]
         public long? GetLongNullable([NotNull, LocalizationRequired(false)] string key) {
-            return FlexibleParser.TryParseLong(Get(key));
+            return FlexibleParser.TryParseLong(GetPossiblyEmpty(key));
         }
 
         [Pure]
         public long GetLong([NotNull, LocalizationRequired(false)] string key, int defaultValue) {
-            return FlexibleParser.TryParseLong(Get(key)) ?? defaultValue;
+            return FlexibleParser.TryParseLong(GetPossiblyEmpty(key)) ?? defaultValue;
         }
 
         /// <summary>
@@ -157,7 +164,7 @@ namespace AcTools.DataFile {
                 throw new ArgumentException("T must be an enumerated type");
             }
 
-            var value = Get(key);
+            var value = GetPossiblyEmpty(key);
             return (T)Enum.Parse(typeof(T), value ?? "", ignoreCase);
         }
 
@@ -168,7 +175,7 @@ namespace AcTools.DataFile {
             }
 
             T result;
-            return Enum.TryParse(Get(key), ignoreCase, out result) ? result : (T?)null;
+            return Enum.TryParse(GetPossiblyEmpty(key), ignoreCase, out result) ? result : (T?)null;
         }
 
         [Pure]
@@ -178,7 +185,7 @@ namespace AcTools.DataFile {
             }
 
             T result;
-            return Enum.TryParse(Get(key), ignoreCase, out result) ? result : defaultValue;
+            return Enum.TryParse(GetPossiblyEmpty(key), ignoreCase, out result) ? result : defaultValue;
         }
 
         [Pure]

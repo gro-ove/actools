@@ -30,6 +30,12 @@ namespace FirstFloor.ModernUI.Helpers {
             _useDeflate = useDeflate;
 
             Load();
+
+            _exitEvent += (sender, args) => {
+                if (_dirty) {
+                    Save();
+                }
+            };
         }
 
         public int Count => _storage.Count;
@@ -248,10 +254,10 @@ namespace FirstFloor.ModernUI.Helpers {
             PreviosSaveTime = sw.Elapsed;
         }
 
-        public void SaveBeforeExit() {
-            if (_dirty) {
-                Save();
-            }
+        private static event EventHandler _exitEvent;
+
+        public static void SaveBeforeExit() {
+            _exitEvent?.Invoke(null, EventArgs.Empty);
         }
 
         private bool _dirty;
