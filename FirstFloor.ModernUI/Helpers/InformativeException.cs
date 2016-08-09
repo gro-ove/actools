@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.SemiGui {
+namespace FirstFloor.ModernUI.Helpers {
     public class InformativeException : Exception {
         [CanBeNull]
         public string SolutionCommentary { get; }

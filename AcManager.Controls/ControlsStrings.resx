@@ -373,9 +373,6 @@
   <data name="Controls_Preview_Device" xml:space="preserve">
     <value>Device: [b]{0}[/b]</value>
   </data>
-  <data name="Common_Oops" xml:space="preserve">
-    <value>Oops!</value>
-  </data>
   <data name="Share_EnterName" xml:space="preserve">
     <value>Enter name or keep field empty:</value>
   </data>

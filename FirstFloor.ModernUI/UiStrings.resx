@@ -570,4 +570,7 @@
     <value>{0} second</value>
     <comment>For stuff like “5 days 12 hours”, will be pluralized automatically</comment>
   </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Oops!</value>
+  </data>
 </root>

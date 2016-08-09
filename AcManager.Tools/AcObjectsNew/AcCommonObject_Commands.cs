@@ -5,8 +5,8 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 

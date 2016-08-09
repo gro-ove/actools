@@ -8,8 +8,8 @@ using System.Windows;
 using AcManager.Annotations;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.ContentInstallation;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {

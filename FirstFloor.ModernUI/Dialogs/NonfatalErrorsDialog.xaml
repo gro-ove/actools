@@ -1,0 +1,53 @@
+﻿<co:ModernDialog x:Class="FirstFloor.ModernUI.Dialogs.NonfatalErrorsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:co="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
+        xmlns:h="clr-namespace:FirstFloor.ModernUI.Helpers" xmlns:pr="clr-namespace:FirstFloor.ModernUI.Presentation" mc:Ignorable="d" d:DesignHeight="300"
+        d:DesignWidth="300" Title="Errors" DataContext="{x:Static h:NonfatalError.Instance}" SizeToContent="Manual" Width="480" Height="600"
+                 LocationAndSizeKey="NonfatalErrors.LS" KeyDown="OnKeyDown">
+    <co:ModernDialog.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <pr:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+                <pr:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </co:ModernDialog.Resources>
+    <ListBox x:Name="List" SelectionMode="Extended" ItemsSource="{Binding Errors}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
+            VirtualizingPanel.ScrollUnit="Pixel" SelectionChanged="OnSelectionChanged">
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <DockPanel Margin="0 4 0 4" TextBlock.FontWeight="Normal">
+                    <Ellipse Width="4" Height="4" Fill="{DynamicResource Go}" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="4 0 8 0"
+                            Visibility="{Binding Unseen, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
+                    <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" DockPanel.Dock="Top" />
+                    <TextBlock FontFamily="Consolas" Text="{Binding Exception.Message}" Margin="4 4 0 0" DockPanel.Dock="Top"
+                            Visibility="{Binding Exception, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                    <TextBlock Style="{StaticResource Small}" Text="{Binding Commentary}" Margin="4 4 0 0"
+                            Visibility="{Binding Commentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                </DockPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+                <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling"
+                        IsVirtualizing="True" />
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+    </ListBox>
+</co:ModernDialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

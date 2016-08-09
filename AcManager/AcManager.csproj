@@ -342,7 +342,6 @@
     </Compile>
     <Compile Include="Tools\About\AboutHelper.cs" />
     <Compile Include="Tools\About\PieceOfInformation.cs" />
-    <Compile Include="Tools\NonfatalErrorNotifier.cs" />
     <Compile Include="Tools\GameWrapperUiFactory.cs" />
     <Compile Include="Pages\Dialogs\AssistsDialog.xaml.cs">
       <DependentUpon>AssistsDialog.xaml</DependentUpon>

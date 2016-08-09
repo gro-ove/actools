@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.SemiGui;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.Online {
     public class OnlineManager : BaseOnlineManager {

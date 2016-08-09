@@ -150,7 +150,6 @@
     </Compile>
     <Compile Include="CustomShowroom\LiteShowroomWrapperWithTools.cs" />
     <Compile Include="Helpers\DelayedPropertyWrapper.cs" />
-    <Compile Include="Helpers\ErrorMessage.cs" />
     <Compile Include="Helpers\FancyBackgroundManager.cs" />
     <Compile Include="Helpers\PresetsMenuHelper.cs" />
     <Compile Include="Dialogs\CarOpenInShowroomDialog.xaml.cs">

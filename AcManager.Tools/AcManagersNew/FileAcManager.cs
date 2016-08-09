@@ -6,14 +6,13 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcManagersNew {
     /// <summary>
     /// AcManager for files (but without watching).
-    /// TODO: Combine with AcManagerNew since watchers are required anyway?
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class FileAcManager<T> : BaseAcManager<T>, IFileAcManager where T : AcCommonObject {

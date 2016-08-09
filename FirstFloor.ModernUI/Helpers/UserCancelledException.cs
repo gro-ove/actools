@@ -1,5 +1,5 @@
 ﻿using System;
 
-namespace AcManager.Tools.SemiGui {
+namespace FirstFloor.ModernUI.Helpers {
     public class UserCancelledException : Exception {}
 }

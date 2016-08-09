@@ -4,7 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.UserControls {
     public partial class KunosCareerBlock {
@@ -28,7 +28,7 @@ namespace AcManager.Controls.UserControls {
                     var videoViewer = new VideoViewer(career.StartVideo, career.Name);
                     videoViewer.ShowDialog();
                 } else {
-                    NonfatalError.Notify(Controls.ControlsStrings.Video_CannotPlay, Controls.ControlsStrings.Video_CannotPlay_Commentary);
+                    NonfatalError.Notify(ControlsStrings.Video_CannotPlay, ControlsStrings.Video_CannotPlay_Commentary);
                 }
             }
             

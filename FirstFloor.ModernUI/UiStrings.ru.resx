@@ -404,4 +404,7 @@
   <data name="Time_Week" xml:space="preserve">
     <value>{0} неделя</value>
   </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Ой!</value>
+  </data>
 </root>

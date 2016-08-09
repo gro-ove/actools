@@ -271,11 +271,9 @@
     </Compile>
     <Compile Include="SemiGui\GameEndedArgs.cs" />
     <Compile Include="SemiGui\GameFinishedArgs.cs" />
-    <Compile Include="SemiGui\InformativeException.cs" />
     <Compile Include="SemiGui\ReplayHelper.cs" />
     <Compile Include="SemiGui\IGameUi.cs" />
     <Compile Include="SemiGui\IUiFactory.cs" />
-    <Compile Include="SemiGui\UserCancelledException.cs" />
     <Compile Include="SemiGui\VariablesReplacement.cs" />
     <Compile Include="SemiGui\WeatherSpecificCloudsHelper.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />
@@ -305,7 +303,6 @@
     <Compile Include="SemiGui\GameWrapper.cs" />
     <Compile Include="GameProperties\ImmediateStart.cs" />
     <Compile Include="SemiGui\INonfatalErrorNotifier.cs" />
-    <Compile Include="SemiGui\NonfatalError.cs" />
     <Compile Include="Helpers\WeatherProvider.cs" />
     <Compile Include="Helpers\TimezoneDeterminer.cs" />
     <Compile Include="Helpers\TracksLocator.cs" />

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
-using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.Starters {

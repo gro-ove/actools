@@ -64,6 +64,7 @@ namespace AcManager {
                 WebRequest.DefaultWebProxy = null;
             }
 
+            NonfatalError.Initialize();
             LocaleHelper.InitializeAsync().Wait();
             new App().Run();
         }
@@ -95,8 +96,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.RaceOutDebug, ref Game.OptionDebugMode);
 
             AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
-
-            NonfatalError.Register(new NonfatalErrorNotifier());
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();

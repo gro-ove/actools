@@ -381,9 +381,6 @@
   <data name="Controls_UserPresets" xml:space="preserve">
     <value>Пользовательские пресеты</value>
   </data>
-  <data name="Common_Oops" xml:space="preserve">
-    <value>Ой!</value>
-  </data>
   <data name="Share_EnterNameHeader" xml:space="preserve">
     <value>Расшарить как</value>
   </data>
