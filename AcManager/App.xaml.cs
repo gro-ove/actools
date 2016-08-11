@@ -151,7 +151,7 @@ namespace AcManager {
                     new AwesomiumPluginWrapper(),
                     new StarterPlus());
 
-            SteamIdHelper.Initialize();
+            SteamIdHelper.Initialize(AppArguments.Get(AppFlag.ForceSteamId));
             OnlineManager.Initialize();
             LanManager.Initialize();
             RecentManager.Initialize();
@@ -164,13 +164,14 @@ namespace AcManager {
                     UriKind.Absolute);
             CustomShowroomWrapper.SetDefaultIcon(iconUri);
             Toast.SetDefaultIcon(iconUri);
-            Toast.SetDefaultAction(() => (Current.MainWindow as ModernWindow)?.BringToFront());
+            Toast.SetDefaultAction(() => (Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive) ??
+                    Current.MainWindow as ModernWindow)?.BringToFront());
             BbCodeBlock.ImageClicked += BbCodeBlock_ImageClicked;
 
             AppArguments.Set(AppFlag.LoadImagesInBackground, ref BetterImage.OptionBackgroundLoading);
             
-            StartupUri = new Uri(Superintendent.Instance.IsReady ?
-                    @"Pages/Windows/MainWindow.xaml" : @"Pages/Dialogs/AcRootDirectorySelector.xaml", UriKind.Relative);
+            StartupUri = new Uri(!Superintendent.Instance.IsReady || AcRootDirectorySelector.IsReviewNeeded() ?
+                    @"Pages/Dialogs/AcRootDirectorySelector.xaml" : @"Pages/Windows/MainWindow.xaml", UriKind.Relative);
 
             InitializeUpdatableStuff();
             BackgroundInitialization();

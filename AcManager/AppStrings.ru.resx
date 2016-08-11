@@ -390,9 +390,6 @@
   <data name="Settings_General" xml:space="preserve">
     <value>Общее</value>
   </data>
-  <data name="Settings_Plugins" xml:space="preserve">
-    <value>Плагины</value>
-  </data>
   <data name="Settings_QuickSwitches" xml:space="preserve">
     <value>Переключатели</value>
   </data>
@@ -771,5 +768,8 @@
   </data>
   <data name="Common_Go_RaceTooltip" xml:space="preserve">
     <value>Начать заезд (Ctrl+G)</value>
+  </data>
+  <data name="Settings_Plugins" xml:space="preserve">
+    <value>Плагины</value>
   </data>
 </root>

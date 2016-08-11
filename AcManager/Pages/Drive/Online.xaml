@@ -18,7 +18,7 @@
 
         <!-- error -->
         <StackPanel Visibility="{Binding Manager.Status, Converter={StaticResource EnumToVisibilityConverter}, 
-                ConverterParameter={x:Static mn:AsyncScanManagerStatus.Error}}" Margin="40 0 40 0">
+                ConverterParameter={x:Static mn:AsyncScanManagerStatus.Error}}" Margin="40 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" />
             <mui:BbCodeBlock BbCode="{Binding Manager.ErrorMessage}" Margin="20" />
             <Button Command="{Binding Manager.RefreshListCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" Margin="20 0 20 0"
@@ -111,8 +111,9 @@
                         <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}"
                                 IsChecked="{Binding FilterFull}" ToolTip="{x:Static g:AppStrings.Online_FilterFull}"
                                 Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
-                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
-                                ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
+                        <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}"
+                                IsChecked="{Binding FilterPassword}" ToolTip="{x:Static g:AppStrings.Online_FilterPassword}"
+                                Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
                         <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
                                 IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
                                 Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />
@@ -144,14 +145,18 @@
                     Grid.Column="0" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" TextAlignment="Center" />
                 <StackPanel Orientation="Horizontal" Margin="8 16 0 0">
-                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}" IsChecked="{Binding FilterBooking}"
-                            ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}" Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}" IsChecked="{Binding FilterEmpty}"
-                            ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}" Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}" IsChecked="{Binding FilterFull}"
-                            ToolTip="{x:Static g:AppStrings.Online_FilterFull}" Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
-                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}" IsChecked="{Binding FilterPassword}"
-                            ToolTip="{x:Static g:AppStrings.Online_FilterPassword}" Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
+                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource ListCheckIconData}"
+                            IsChecked="{Binding FilterBooking}" ToolTip="{x:Static g:AppStrings.Online_FilterWithBooking}"
+                            Content="{x:Static g:AppStrings.Online_FilterBooking_Short}" />
+                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource EmptyGlassIconData}"
+                            IsChecked="{Binding FilterEmpty}" ToolTip="{x:Static g:AppStrings.Online_FilterEmpty}"
+                            Content="{x:Static g:AppStrings.Online_FilterEmpty_Short}" />
+                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource FullGlassIconData}"
+                            IsChecked="{Binding FilterFull}" ToolTip="{x:Static g:AppStrings.Online_FilterFull}"
+                            Content="{x:Static g:AppStrings.Online_FilterFull_Short}" />
+                    <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource LockIconData}"
+                            IsChecked="{Binding FilterPassword}" ToolTip="{x:Static g:AppStrings.Online_FilterPassword}"
+                            Content="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
                     <mui:ModernToggleButton Style="{StaticResource BigToggleButton}" IconData="{StaticResource QuestionMarkIconData}"
                             IsChecked="{Binding FilterMissing}" ToolTip="{x:Static g:AppStrings.Online_FilterMissing}"
                             Content="{x:Static g:AppStrings.Online_FilterMissing_Short}" />

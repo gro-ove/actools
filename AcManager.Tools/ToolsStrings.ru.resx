@@ -614,4 +614,7 @@
   <data name="Common_IdIsTaken" xml:space="preserve">
     <value>ID занят</value>
   </data>
+  <data name="Common_InvalidFormat" xml:space="preserve">
+    <value>Неверный формат</value>
+  </data>
 </root>

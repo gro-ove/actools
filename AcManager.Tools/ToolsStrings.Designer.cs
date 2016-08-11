@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -115,7 +115,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Event conditions aren’t supported.
+        ///   Looks up a localized string similar to Event condition “{0}” isn’t supported yet.
         /// </summary>
         public static string AcError_EventConditionsAreNotSupported {
             get {
@@ -196,7 +196,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name shouldn&apos;t contain symbols like “[” or “]”.
+        ///   Looks up a localized string similar to Name shouldn’t contain symbols like “[” or “]”.
         /// </summary>
         public static string AcError_NameShouldnTContainSymbolsLikeOr {
             get {
@@ -1195,15 +1195,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can’t find Steam ID.
-        /// </summary>
-        public static string CannotFindSteamId {
-            get {
-                return ResourceManager.GetString("CannotFindSteamId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Car’s parent is missing.
         /// </summary>
         public static string CarParentIsMissing {
@@ -1398,6 +1389,15 @@ namespace AcManager.Tools {
         public static string Common_IdIsTaken_Commentary {
             get {
                 return ResourceManager.GetString("Common_IdIsTaken_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid format.
+        /// </summary>
+        public static string Common_InvalidFormat {
+            get {
+                return ResourceManager.GetString("Common_InvalidFormat", resourceCulture);
             }
         }
         
@@ -2545,7 +2545,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure server&apos;s address is correct and server itself is accessible..
+        ///   Looks up a localized string similar to Make sure server’s address is correct and server itself is accessible..
         /// </summary>
         public static string Online_ScanningNothingFound_Commentary {
             get {
@@ -2683,7 +2683,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unhandled error..
+        ///   Looks up a localized string similar to Internal error: {0}..
         /// </summary>
         public static string Online_Server_UnhandledError {
             get {
@@ -3358,7 +3358,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t finish authorization process.
+        ///   Looks up a localized string similar to Can’t finish authorization process.
         /// </summary>
         public static string Uploader_CannotFinishAuthorization {
             get {

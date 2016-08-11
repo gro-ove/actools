@@ -3,8 +3,8 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="clr-namespace:AcManager.Controls"
         xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="WaitingButton" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">

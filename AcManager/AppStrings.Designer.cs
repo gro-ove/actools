@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -504,7 +504,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify Assetto Corsa root folder:.
+        ///   Looks up a localized string similar to Assetto Corsa root folder:.
         /// </summary>
         public static string AcRoot_Prompt {
             get {
@@ -513,7 +513,16 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to Content Manager and thanks for using it! You have only one thing left to do before launch:.
+        ///   Looks up a localized string similar to Your Steam ID for online:.
+        /// </summary>
+        public static string AcRoot_SteamId_Prompt {
+            get {
+                return ResourceManager.GetString("AcRoot_SteamId_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to Content Manager and thanks for using it! You have only couple of things left to do before launch:.
         /// </summary>
         public static string AcRoot_Welcome {
             get {
@@ -7191,33 +7200,6 @@ namespace AcManager {
         public static string Settings_Plugins {
             get {
                 return ResourceManager.GetString("Settings_Plugins", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Download And Install ({0}).
-        /// </summary>
-        public static string Settings_Plugins_DownloadAndInstall {
-            get {
-                return ResourceManager.GetString("Settings_Plugins_DownloadAndInstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Not available, required app version is {0}..
-        /// </summary>
-        public static string Settings_Plugins_NotAvailable {
-            get {
-                return ResourceManager.GetString("Settings_Plugins_NotAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update (New Version: {0}).
-        /// </summary>
-        public static string Settings_Plugins_Update {
-            get {
-                return ResourceManager.GetString("Settings_Plugins_Update", resourceCulture);
             }
         }
         

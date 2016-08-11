@@ -118,7 +118,7 @@ namespace AcManager.Tools.Managers.Online {
             try {
                 CreateAndAddEntry(information);
             } catch (Exception e) {
-                Logging.Warning("[RECENTMANAGER] Recent add error: " + e);
+                Logging.Warning("[RecentManager] Recent add error: " + e);
             }
 
             AddToRecentList(information.Ip, information.PortC);
@@ -194,7 +194,7 @@ namespace AcManager.Tools.Managers.Online {
 
                         Pinged++;
                     } catch (Exception e) {
-                        Logging.Warning("[LANMANAGER] Cannot create ServerEntry: " + e);
+                        Logging.Warning("[RecentManager] Cannot create ServerEntry: " + e);
                     }
                 }).WhenAll(SettingsHolder.Online.PingConcurrency);
             } finally {

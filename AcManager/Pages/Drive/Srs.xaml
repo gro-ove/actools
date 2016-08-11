@@ -1,11 +1,15 @@
-﻿<UserControl x:Class="AcManager.Pages.Drive.Srs" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Grid x:Class="AcManager.Pages.Drive.Srs" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-        xmlns:uc="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:se="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" d:DataContext="{d:DesignInstance drive:Srs+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" x:Name="This">
-
-    <Grid Style="{StaticResource ContentRootWithPadding}">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager"
+        xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance drive:Srs+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" x:Name="This">
+    <StackPanel Visibility="{Binding Value, Source={x:Static t:SteamIdHelper.Instance}, Converter={StaticResource NullToVisibilityConverter}}"
+            Margin="40 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" />
+        <mui:BbCodeBlock BbCode="{Binding Source={x:Static t:ToolsStrings.Common_SteamIdIsMissing}, StringFormat='{}{0}.'}" Margin="20" />
+    </StackPanel>
+    <Grid Style="{StaticResource ContentRootWithPadding}"
+            Visibility="{Binding Value, Source={x:Static t:SteamIdHelper.Instance}, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -18,7 +22,7 @@
             <mui:BbCodeBlock></mui:BbCodeBlock>
         </DockPanel>
 
-        <uc:WebBlock Grid.Row="1" x:Name="WebBrowser" UserAgent="Assetto Corsa Launcher" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" />
+        <c:WebBlock Grid.Row="1" x:Name="WebBrowser" UserAgent="Assetto Corsa Launcher" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" />
         <Grid Grid.Row="2" Margin="0 16 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -30,11 +34,11 @@
                     <DockPanel.ToolTip>
                         <StackPanel Margin="4 8">
                             <TextBlock Style="{StaticResource Heading2}" Text="{Binding Car.DisplayName}" Margin="0 0 0 4" />
-                            <uc:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
+                            <c:CarBlock Car="{Binding Car}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
                         </StackPanel>
                     </DockPanel.ToolTip>
                     <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" DockPanel.Dock="Left"
-                            se:ImageViewerService.Image="{Binding CarSkin.PreviewImage}" />
+                            c:ImageViewerService.Image="{Binding CarSkin.PreviewImage}" />
                     <TextBlock Text="{Binding Car.DisplayName}" Style="{StaticResource Heading2}" VerticalAlignment="Center" Margin="0 -2 0 0" />
                 </DockPanel>
 
@@ -105,4 +109,4 @@
             </StackPanel>
         </Grid>
     </Grid>
-</UserControl>
+</Grid>

@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:co="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
         xmlns:h="clr-namespace:FirstFloor.ModernUI.Helpers" xmlns:pr="clr-namespace:FirstFloor.ModernUI.Presentation" mc:Ignorable="d" d:DesignHeight="300"
         d:DesignWidth="300" Title="Errors" DataContext="{x:Static h:NonfatalError.Instance}" SizeToContent="Manual" Width="480" Height="600"
-                 LocationAndSizeKey="NonfatalErrors.LS" KeyDown="OnKeyDown">
+                 LocationAndSizeKey=".NonfatalErrors.LS" KeyDown="OnKeyDown">
     <co:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

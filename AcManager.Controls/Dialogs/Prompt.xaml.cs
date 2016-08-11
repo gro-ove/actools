@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -117,6 +120,11 @@ namespace AcManager.Controls.Dialogs {
             }
         }
 
+        public async Task ShowAsync(CancellationToken cancellation) {
+            await Application.Current.Dispatcher.InvokeAsync(ShowDialog, DispatcherPriority.Normal, cancellation).Task;
+            if (cancellation.IsCancellationRequested) Close();
+        }
+
         [CanBeNull]
         public string Result { get; private set; }
 
@@ -142,6 +150,42 @@ namespace AcManager.Controls.Dialogs {
 
             var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, maxLength, suggestions);
             dialog.ShowDialog();
+
+            var result = dialog.Result;
+            if (maxLength != -1 && result?.Length > maxLength) {
+                result = result.Substring(0, maxLength);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Shows a message for user to input something, returns result string or null if user cancelled input. Async version with cancellation support.
+        /// </summary>
+        /// <param name="description">Some description, could ends with “:”.</param>
+        /// <param name="title">Title, in title casing</param>
+        /// <param name="defaultValue">Default value in the input area</param>
+        /// <param name="watermark">Some semi-transparent hint in the input area</param>
+        /// <param name="toolTip">Tooltip for the input area</param>
+        /// <param name="multiline">Is the input area should be multilined.</param>
+        /// <param name="passwordMode">Hide inputting value.</param>
+        /// <param name="maxLength">Length limitation.</param>
+        /// <param name="suggestions">Suggestions if needed.</param>
+        /// <param name="cancellation">Cancellation token.</param>
+        /// <returns>Result string or null if user cancelled input.</returns>
+        [ItemCanBeNull]
+        public static async Task<string> ShowAsync(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
+                bool multiline = false, bool passwordMode = false, int maxLength = -1, IEnumerable<string> suggestions = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
+            if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
+            if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
+
+            var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, maxLength, suggestions);
+            try {
+                await dialog.ShowAsync(cancellation);
+            } catch (TaskCanceledException) {
+                return null;
+            }
 
             var result = dialog.Result;
             if (maxLength != -1 && result?.Length > maxLength) {

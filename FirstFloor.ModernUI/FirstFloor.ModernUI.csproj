@@ -109,7 +109,7 @@
     <Compile Include="Helpers\LimitedStorage.cs" />
     <Compile Include="Helpers\LocalizationHelper.cs" />
     <Compile Include="Helpers\Logging.cs" />
-    <Compile Include="Helpers\LZF.cs" />
+    <Compile Include="Helpers\Lzf.cs" />
     <Compile Include="Helpers\NonfatalError.cs" />
     <Compile Include="Helpers\Storage.cs" />
     <Compile Include="Helpers\StringCipher.cs" />
@@ -226,6 +226,7 @@
     <Compile Include="Windows\Converters\InvertBooleanConverter.cs" />
     <Compile Include="Windows\Converters\LessToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\MoreToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\MultiBooleanToVisibilityConverter.cs" />
     <Compile Include="Windows\Converters\MultiLessToBooleanConverter.cs" />
     <Compile Include="Windows\Converters\MultiMultiplyConverter.cs" />
     <Compile Include="Windows\Converters\MultiplyConverter.cs" />

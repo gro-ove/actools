@@ -120,7 +120,7 @@ if (document.body){
         }
 
         private void OnStartPageChanged(string newValue) {
-            Navigate(newValue);
+            Navigate(newValue ?? @"about:blank");
         }
 
         public void Navigate(string url) {

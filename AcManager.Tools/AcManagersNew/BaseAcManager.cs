@@ -128,7 +128,7 @@ namespace AcManager.Tools.AcManagersNew {
 
                 InnerWrappersList.ReplaceEverythingBy(ScanInner().Select(x => new AcItemWrapper(this, x)));
             } catch(Exception e) {
-                Logging.Error($"[MANAGER ({GetType()})] Scanning error: {e}");
+                Logging.Error($"[{GetType().Name}] Scanning error: {e}");
                 InnerWrappersList.Clear();
                 throw;
             } finally {
@@ -195,7 +195,7 @@ namespace AcManager.Tools.AcManagersNew {
                 ListReady();
                 
                 if (GetType() != typeof(CarSkinsManager)) {
-                    Logging.Write($"{{0}}, loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms", GetType());
+                    Logging.Write($"[{GetType().Name}] Loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms");
                 }
             }
         }
@@ -219,7 +219,7 @@ namespace AcManager.Tools.AcManagersNew {
             IsLoaded = true;
             ListReady();
 
-            Logging.Write($"{{0}}, async loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms", GetType());
+            Logging.Write($"[{GetType().Name}] Async loading finished: {WrappersList.Count} objects, {start.ElapsedMilliseconds} ms");
 
             if (LoadingReset) {
                 Load();

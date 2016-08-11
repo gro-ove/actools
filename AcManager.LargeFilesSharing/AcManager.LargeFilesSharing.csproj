@@ -60,7 +60,6 @@
     <Compile Include="DirectoryEntryLinqExtension.cs" />
     <Compile Include="FileUploaderBase.cs" />
     <Compile Include="GoogleDrive\GoogleDriveUploader.cs" />
-    <Compile Include="GoogleDrive\OpenWindowGetter.cs" />
     <Compile Include="GoogleDrive\Request.cs" />
     <Compile Include="ILargeFileUploader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

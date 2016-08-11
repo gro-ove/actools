@@ -56,7 +56,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         private string DecodeBytes(byte[] bytes) {
             if (bytes[0] == LzfFlag) {
-                return Encoding.UTF8.GetString(LZF.Decompress(bytes, 1, bytes.Length - 1));
+                return Encoding.UTF8.GetString(Lzf.Decompress(bytes, 1, bytes.Length - 1));
             }
 
             var deflateMode = bytes[0] == DeflateFlag;
@@ -93,7 +93,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 }
             }
 
-            return LZF.CompressWithPrefix(bytes, LzfFlag);
+            return Lzf.CompressWithPrefix(bytes, LzfFlag);
         }
 
         public static string EncodeBase64([NotNull] string s) {

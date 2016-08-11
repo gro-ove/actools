@@ -7,12 +7,9 @@ using AcManager.Tools.Objects;
 
 namespace AcManager.Tools.Managers {
     public class ReplaysManager : AcManagerFileSpecific<ReplayObject> {
-        public static ReplaysManager Instance { get; private set; }
+        private static ReplaysManager _instance;
 
-        public static ReplaysManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new ReplaysManager();
-        }
+        public static ReplaysManager Instance => _instance ?? (_instance = new ReplaysManager());
 
         private ReplaysManager() {
             SettingsHolder.Drive.PropertyChanged += Drive_PropertyChanged;

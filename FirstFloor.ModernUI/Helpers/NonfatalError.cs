@@ -70,7 +70,7 @@ namespace FirstFloor.ModernUI.Helpers {
         private const int ErrorsLimit = 30;
 
         private static void NotifyInner(NonfatalErrorEntry entry) {
-            Logging.Warning(entry.DisplayName + ":\n" + entry.Exception);
+            Logging.Warning($"{entry.DisplayName}:\n{entry.Exception}");
             Application.Current.Dispatcher.InvokeAsync(() => {
                 try {
                     _active = true;

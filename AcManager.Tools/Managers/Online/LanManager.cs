@@ -22,7 +22,7 @@ namespace AcManager.Tools.Managers.Online {
 
             KunosApiProvider.TryToGetLanList(i => {
                 try {
-                    result.Add(new ServerEntry(this, i));
+                    result.Add(new ServerEntry(this, i, true));
                 } catch (Exception e) {
                     Logging.Warning("[LanManager] Cannot create ServerEntry: " + e);
                 }
@@ -43,7 +43,7 @@ namespace AcManager.Tools.Managers.Online {
             await Task.Run(() => {
                 KunosApiProvider.TryToGetLanList(async i => {
                     try {
-                        var entry = new ServerEntry(this, i);
+                        var entry = new ServerEntry(this, i, true);
                         InnerWrappersList.Add(new AcItemWrapper(this, entry));
                         if (entry.Status == ServerStatus.Unloaded) {
                             await entry.Update(ServerEntry.UpdateMode.Lite); // BUG: Wait?

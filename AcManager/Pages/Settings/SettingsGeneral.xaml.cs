@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -11,22 +12,76 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsGeneral {
+        public ViewModel Model => (ViewModel)DataContext;
+
         public SettingsGeneral() {
             InitializeComponent();
             DataContext = new ViewModel();
         }
 
         public class ViewModel : NotifyPropertyChanged {
-            internal ViewModel() {}
-
             public string AcRootDirectoryValue => AcRootDirectory.Instance.Value;
 
-            private RelayCommand _changeAcRootCommand;
+            private string _steamId;
 
-            public RelayCommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new RelayCommand(o => {
+            public string SteamId {
+                get { return _steamId; }
+                set {
+                    if (Equals(value, _steamId)) return;
+                    _steamId = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _steamProfileName;
+
+            public string SteamProfileName {
+                get { return _steamProfileName; }
+                set {
+                    if (Equals(value, _steamProfileName)) return;
+                    _steamProfileName = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            internal ViewModel() {
+                UpdateSteamId();
+            }
+
+            public void Load() {
+                SteamIdHelper.Instance.PropertyChanged += SteamIdHelper_PropertyChanged;
+            }
+
+            public void Unload() {
+                SteamIdHelper.Instance.PropertyChanged -= SteamIdHelper_PropertyChanged;
+            }
+
+            private void SteamIdHelper_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(SteamIdHelper.Value)) {
+                    UpdateSteamId();
+                }
+            }
+
+            private async void UpdateSteamId() {
+                SteamId = SteamIdHelper.Instance.Value;
+                SteamProfileName = await SteamIdHelper.GetSteamName(SteamId);
+            }
+
+            private ICommand _changeAcRootCommand;
+
+            public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new RelayCommand(o => {
                 if (ModernDialog.ShowMessage(AppStrings.Settings_General_ChangeAcRoot_Message, AppStrings.Settings_General_ChangeAcRoot,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
                 AcRootDirectory.Instance.Reset();
+                WindowsHelper.RestartCurrentApplication();
+            }));
+
+            private ICommand _changeSteamIdCommand;
+
+            public ICommand ChangeSteamIdCommand => _changeSteamIdCommand ?? (_changeSteamIdCommand = new RelayCommand(o => {
+                if (ModernDialog.ShowMessage("Do you want to change Steam ID? App will be restarted; also, RSR and SRS progress will be nulled.",
+                                "Change Steam ID", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+                new AcRootDirectorySelector(false, true).ShowDialog();
                 WindowsHelper.RestartCurrentApplication();
             }));
 
@@ -63,6 +118,20 @@ namespace AcManager.Pages.Settings {
                         x.StartsWith("MainWindow__") ||
                         x.StartsWith("__tmp_FontObject.UsingsCarsIds_"));
             }));
+        }
+
+        private bool _loaded;
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            if (_loaded) return;
+            _loaded = true;
+            Model.Load();
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
+            if (!_loaded) return;
+            _loaded = false;
+            Model.Unload();
         }
     }
 }

@@ -29,6 +29,18 @@
             <StackPanel Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Error}">
                 <!-- server's name -->
                 <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                
+                <!-- ip, ping -->
+                <DockPanel Margin="0 4 0 0">
+                    <TextBox Style="{StaticResource TextBoxAsTextBlock.Small.ReadOnly}" HorizontalAlignment="Left">
+                        <TextBox.Text>
+                            <MultiBinding StringFormat="{}{0}:{1}">
+                                <Binding Path="Ip" Mode="OneWay" />
+                                <Binding Path="PortC" Mode="OneWay" />
+                            </MultiBinding>
+                        </TextBox.Text>
+                    </TextBox>
+                </DockPanel>
 
                 <DockPanel HorizontalAlignment="Stretch" Margin="0 12 0 0">
                     <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"

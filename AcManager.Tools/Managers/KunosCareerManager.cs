@@ -16,12 +16,9 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers {
     public class KunosCareerManager : AcManagerNew<KunosCareerObject> {
-        public static KunosCareerManager Instance { get; private set; }
+        private static KunosCareerManager _instance;
 
-        public static KunosCareerManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new KunosCareerManager();
-        }
+        public static KunosCareerManager Instance => _instance ?? (_instance = new KunosCareerManager());
 
         internal class CareerProperties {
             public string CareerId, EventId;

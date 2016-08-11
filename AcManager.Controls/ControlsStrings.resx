@@ -745,9 +745,6 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_Loading" xml:space="preserve">
     <value>Loading…</value>
   </data>
-  <data name="Common_InvalidFormat" xml:space="preserve">
-    <value>Invalid format</value>
-  </data>
   <data name="Common_GoodNews" xml:space="preserve">
     <value>Good news!</value>
   </data>
@@ -939,4 +936,14 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_FpsPostfix" xml:space="preserve">
     <value> FPS</value>
   <comment>@Invariant</comment></data>
+  <data name="Plugins_DownloadAndInstall" xml:space="preserve">
+    <value>Download And Install ({0})</value>
+    <comment>{0} — plugin’s size</comment>
+  </data>
+  <data name="Plugins_NotAvailable" xml:space="preserve">
+    <value>Not available, required app version is {0}.</value>
+  </data>
+  <data name="Plugins_Update" xml:space="preserve">
+    <value>Update (New Version: {0})</value>
+  </data>
 </root>

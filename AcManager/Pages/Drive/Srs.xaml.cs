@@ -100,7 +100,7 @@ namespace AcManager.Pages.Drive {
                 ShowExtensionMessage = false;
             }));
 
-            public string StartPage => @"http://www.simracingsystem.com";
+            public string StartPage => SteamIdHelper.Instance.IsReady ? @"http://www.simracingsystem.com/race4.php" : null;
 
             public void Reset() {
                 Server = null;
@@ -277,8 +277,7 @@ namespace AcManager.Pages.Drive {
             WebBrowser.Execute(@"location.reload(true)");
         }));
 
-        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        [ComVisible(true)]
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
         public class ScriptProvider : BaseScriptProvider {
             private readonly ViewModel _model;
 

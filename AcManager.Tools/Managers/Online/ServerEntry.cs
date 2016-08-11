@@ -184,12 +184,13 @@ namespace AcManager.Tools.Managers.Online {
             IsUnavailable = true;
         }
 
-        public ServerEntry(IOnlineManager manager, [NotNull] ServerInformation information) : base(manager, information.GetUniqueId(), true) {
+        public ServerEntry(IOnlineManager manager, [NotNull] ServerInformation information, bool? forceIsLan = null)
+                : base(manager, information.GetUniqueId(), true) {
             if (information == null) throw new ArgumentNullException(nameof(information));
 
             OriginalInformation = information;
-            
-            IsLan = information.IsLan;
+
+            IsLan = forceIsLan ?? information.IsLan;
 
             Ip = information.Ip;
             Port = information.Port;
@@ -654,15 +655,13 @@ namespace AcManager.Tools.Managers.Online {
             Full
         }
 
-        private Task _updateTask;
-
         public Task Update(UpdateMode mode, bool background = false) {
             if (!background) {
                 Status = ServerStatus.Loading;
                 IsAvailable = false;
             }
 
-            return _updateTask ?? (_updateTask = UpdateInner(mode, background));
+            return UpdateInner(mode, background);
         }
 
         private async Task UpdateInner(UpdateMode mode, bool background = false) {
@@ -681,15 +680,17 @@ namespace AcManager.Tools.Managers.Online {
                 SetMissingCarErrorIfNeeded(ref errorMessage);
                 if (!string.IsNullOrWhiteSpace(errorMessage)) return;
 
+                if (!IsLan && SteamIdHelper.Instance.Value == null) {
+                    throw new InformativeException(ToolsStrings.Common_SteamIdIsMissing);
+                }
+
                 if (mode == UpdateMode.Full) {
-                    var newInformation = await Task.Run(() => IsLan || SettingsHolder.Online.LoadServerInformationDirectly ?
-                            KunosApiProvider.TryToGetInformationDirect(Ip, PortC) :
-                            KunosApiProvider.TryToGetInformation(Ip, Port));
+                    var newInformation = await Task.Run(() => IsLan || SettingsHolder.Online.LoadServerInformationDirectly
+                            ? KunosApiProvider.TryToGetInformationDirect(Ip, PortC) : KunosApiProvider.TryToGetInformation(Ip, Port));
                     if (newInformation == null) {
                         errorMessage = ToolsStrings.Online_Server_CannotRefresh;
                         return;
                     } else if (!UpdateValuesFrom(newInformation)) {
-                        // TODO: what if ports were changed?
                         errorMessage = ToolsStrings.Online_Server_NotImplemented;
                         return;
                     }
@@ -785,21 +786,20 @@ namespace AcManager.Tools.Managers.Online {
                     var firstAvailable = Cars.FirstOrDefault(x => x.IsAvailable);
                     CarsView.MoveCurrentTo(firstAvailable);
                 }
-
-                IsAvailable = CarsView.CurrentItem != null;
-                if (!background) {
-                    Status = ServerStatus.Ready;
-                }
+            } catch (InformativeException e) {
+                errorMessage = $"{e.Message}.";
             } catch (Exception e) {
-                errorMessage = ToolsStrings.Online_Server_UnhandledError;
-                Logging.Warning("ServerEntry error:" + e);
+                errorMessage = string.Format(ToolsStrings.Online_Server_UnhandledError, e.Message);
+                Logging.Warning("[ServerEntry] UpdateInner(): " + e);
             } finally {
                 ErrorMessage = errorMessage;
                 if (!string.IsNullOrWhiteSpace(errorMessage)) {
                     Status = ServerStatus.Error;
+                } else if (Status == ServerStatus.Loading) {
+                    Status = ServerStatus.Ready;
                 }
 
-                _updateTask = null;
+                IsAvailable = Status == ServerStatus.Ready && CarsView?.CurrentItem != null;
             }
         }
 
@@ -992,7 +992,7 @@ namespace AcManager.Tools.Managers.Online {
         public static ServerEntry FromAddress(IOnlineManager manager, [NotNull] string address) {
             if (address == null) throw new ArgumentNullException(nameof(address));
             var information = KunosApiProvider.TryToGetInformationDirect(address);
-            return information == null ? null : new ServerEntry(manager, information);
+            return information == null ? null : new ServerEntry(manager, information, true);
         }
 
         private static IUiFactory<IBookingUi> _factory;

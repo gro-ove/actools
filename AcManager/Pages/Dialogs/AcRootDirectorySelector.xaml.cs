@@ -1,35 +1,118 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
+using AcManager.Controls.Dialogs;
+using AcManager.Internal;
 using AcManager.Pages.Windows;
+using AcManager.Tools.Helpers;
+using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Plugins;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class AcRootDirectorySelector {
+        private const string WizardVersion = "2";
+        private const string KeyWizardVersion = "_wizardVersion";
+
+        public static bool IsReviewNeeded() {
+            return ValuesStorage.GetString(KeyWizardVersion) != WizardVersion;
+        }
+
+        public static void JustReviewed() {
+            ValuesStorage.Set(KeyWizardVersion, WizardVersion);
+        }
+
         private ViewModel Model => (ViewModel)DataContext;
 
-        public AcRootDirectorySelector() {
+        public AcRootDirectorySelector() : this(true, true) {}
+
+        public AcRootDirectorySelector(bool changeAcRoot, bool changeSteamId) {
             InitializeComponent();
-            DataContext = new ViewModel();
+            DataContext = new ViewModel(changeAcRoot, changeSteamId);
+
+            if (AppArguments.Values.Any()) {
+                ProcessArguments(AppArguments.Values);
+            }
 
             Buttons = new[] {
-                CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new RelayCommand(o => {
-                    new MainWindow {
-                        Owner = null
-                    }.Show();
+                CreateExtraDialogButton(UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new RelayCommand(o => {
+                    if (Model.FirstRun || Model.ReviewMode) {
+                        new MainWindow {
+                            Owner = null
+                        }.Show();
+                    }
+
                     CloseWithResult(MessageBoxResult.OK);
                 }))),
                 CancelButton
             };
+
+            EntryPoint.HandleSecondInstanceMessages(this, ProcessArguments);
+            PluginsManager.Instance.UpdateIfObsolete().Forget();
+        }
+
+        private void ProcessArguments(IEnumerable<string> arguments) {
+            foreach (var message in arguments) {
+                var request = CustomUriRequest.TryParse(message);
+                if (request == null) continue;
+
+                switch (request.Path) {
+                    case "setsteamid":
+                        Model.SetPacked(request.Params.Get(@"code"));
+                        break;
+                }
+            }
         }
 
         public class ViewModel : NotifyPropertyChanged, INotifyDataErrorInfo {
-            public bool FirstRun { get; private set; }
+            private static readonly string AdditionalSalt = (DateTime.Now - default(DateTime)).Milliseconds.ToInvariantString();
+
+            public bool FirstRun { get; }
+
+            public bool ReviewMode { get; }
+
+            public bool ChangeAcRoot { get; }
+
+            public bool ChangeSteamId { get; }
+
+            public bool SettingsRun => !FirstRun && !ReviewMode;
+
+            private const string KeyFirstRun = "_second_run";
+
+            public ViewModel(bool changeAcRoot, bool changeSteamId) {
+                ChangeAcRoot = changeAcRoot;
+                ChangeSteamId = changeSteamId;
+
+                FirstRun = ValuesStorage.GetBool(KeyFirstRun) == false;
+                if (FirstRun) {
+                    ValuesStorage.Set(KeyFirstRun, true);
+                }
+
+                ReviewMode = !FirstRun && IsReviewNeeded();
+                Value = AcRootDirectory.Instance.IsReady ? AcRootDirectory.Instance.Value : AcRootDirectory.TryToFind();
+
+                var steamId = SteamIdHelper.Instance.Value;
+                SteamProfiles = new BetterObservableCollection<SteamProfile>(SteamIdHelper.TryToFind().Append(SteamProfile.None));
+                SteamProfile = SteamProfiles.GetByIdOrDefault(steamId) ?? SteamProfiles.First();
+
+                if (steamId != null && SteamProfile.SteamId != steamId) {
+                    SetSteamId(steamId);
+                }
+            }
 
             private bool _isValueAcceptable;
             private string _previousInacceptanceReason;
@@ -60,25 +143,102 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
+            private SteamProfile _steamProfile = SteamProfile.None;
+
+            [NotNull]
+            public SteamProfile SteamProfile {
+                get { return _steamProfile; }
+                set {
+                    if (Equals(value, _steamProfile)) return;
+                    _steamProfile = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _steamName;
+
+            public string SteamName {
+                get { return _steamName; }
+                set {
+                    if (Equals(value, _steamName)) return;
+                    _steamName = value;
+                    OnPropertyChanged();
+                } 
+            }
+
+            public BetterObservableCollection<SteamProfile> SteamProfiles { get; }
+
+            public void SetPacked(string packed) {
+                SetSteamId(InternalUtils.GetPackedSteamId(packed, AdditionalSalt));
+            }
+
+            public async void SetSteamId(string steamId) {
+                if (steamId == null) return;
+
+                _cancellationTokenSource?.Cancel();
+
+                var existing = SteamProfiles.FirstOrDefault(x => x.SteamId == steamId);
+                if (existing != null) {
+                    SteamProfile = existing;
+                    return;
+                }
+
+                var profile = new SteamProfile(steamId);
+                SteamProfiles.Add(profile);
+                SteamProfile = profile;
+
+                profile.ProfileName = await SteamIdHelper.GetSteamName(steamId);
+            }
+
+            private CancellationTokenSource _cancellationTokenSource;
+
+            private ICommand _changeAcRootCommand;
+
+            public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new RelayCommand(o => {
+                var dialog = new FolderBrowserDialog {
+                    ShowNewFolderButton = false,
+                    SelectedPath = Value
+                };
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    Value = dialog.SelectedPath;
+                }
+            }));
+
+            private ICommand _getSteamIdCommand;
+
+            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new AsyncCommand(async o => {
+                using (_cancellationTokenSource = new CancellationTokenSource()) {
+                    try {
+                        var packed = await PromptCodeFromBrowser.Show($"http://acstuff.ru/u/steam?s={AdditionalSalt}",
+                                new Regex(@"CM Steam ID Helper: (\w+)", RegexOptions.Compiled),
+                                "Enter the authentication code:", "Steam (via acstuff.ru)", cancellation: _cancellationTokenSource.Token);
+                        if (!_cancellationTokenSource.IsCancellationRequested && packed != null) {
+                            SetPacked(packed);
+                        }
+                    } catch (TaskCanceledException) { }
+                }
+
+                _cancellationTokenSource = null;
+            }));
+
             private RelayCommand _applyCommand;
 
             public RelayCommand ApplyCommand => _applyCommand ?? (_applyCommand = new RelayCommand(o => {
-                Logging.Write("APPLY ACROOT DIRECTORY VALUE: " + Value);
+                Logging.Write($"[Initial setup] AC root=“{Value}”, Steam ID=“{SteamProfile.SteamId}”");
                 AcRootDirectory.Instance.Value = Value;
+                SteamIdHelper.Instance.Value = SteamProfile.SteamId;
+                JustReviewed();
             }, o => IsValueAcceptable));
 
-            public ViewModel() {
-                FirstRun = ValuesStorage.GetBool("_second_run") == false;
-                if (FirstRun) {
-                    ValuesStorage.Set("_second_run", true);
-                }
-
-                Value = AcRootDirectory.Instance.IsReady ? AcRootDirectory.Instance.Value : AcRootDirectory.TryToFind();
-            }
-
             public IEnumerable GetErrors(string propertyName) {
-                return propertyName == nameof(Value) ? (string.IsNullOrWhiteSpace(Value) ? new[] { AppStrings.Common_RequiredValue } :
-                        IsValueAcceptable ? null : new[] { _previousInacceptanceReason ?? AppStrings.AcRoot_FolderIsUnacceptable }) : null;
+                switch (propertyName) {
+                    case nameof(Value):
+                        return string.IsNullOrWhiteSpace(Value) ? new[] { AppStrings.Common_RequiredValue } :
+                                IsValueAcceptable ? null : new[] { _previousInacceptanceReason ?? AppStrings.AcRoot_FolderIsUnacceptable };
+                    default:
+                        return null;
+                }
             }
 
             public bool HasErrors => string.IsNullOrWhiteSpace(Value) || !IsValueAcceptable;
@@ -86,17 +246,6 @@ namespace AcManager.Pages.Dialogs {
 
             public void OnErrorsChanged([CallerMemberName] string propertyName = null) {
                 ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            }
-        }
-
-        private void Button_OnClick(object sender, RoutedEventArgs e) {
-            var dialog = new FolderBrowserDialog {
-                ShowNewFolderButton = false,
-                SelectedPath = Model.Value
-            };
-
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                Model.Value = dialog.SelectedPath;
             }
         }
     }

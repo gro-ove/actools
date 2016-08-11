@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Managers.Plugins {
-    public class PluginsManager {
+    public class PluginsManager : NotifyPropertyChanged {
         public static PluginsManager Instance { get; private set; }
 
         public static PluginsManager Initialize(string dir) {
@@ -26,7 +26,8 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         public readonly string PluginsDirectory;
-        public readonly BetterObservableCollection<PluginEntry> List;
+
+        public BetterObservableCollection<PluginEntry> List { get; }
 
         private bool _locallyLoaded;
 
@@ -76,6 +77,17 @@ namespace AcManager.Tools.Managers.Plugins {
             _locallyLoaded = true;
         }
 
+        private static DateTime _lastUpdated;
+
+        public Task UpdateIfObsolete() {
+            if (DateTime.Now - _lastUpdated < TimeSpan.FromMinutes(10d)) {
+                return Task.Delay(0);
+            }
+
+            _lastUpdated = DateTime.Now;
+            return Instance.UpdateList();
+        }
+
         public async Task UpdateList() {
             if (!_locallyLoaded) {
                 ReloadLocalList();
@@ -115,7 +127,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
             try {
                 plugin.IsInstalling = true;
-
+                
                 var data = await CmApiProvider.GetDataAsync($"plugins/get/{plugin.Id}", progress, cancellation);
                 if (data == null || cancellation.IsCancellationRequested) return;
 

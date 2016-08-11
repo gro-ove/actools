@@ -33,13 +33,6 @@ using SharpCompress.Reader;
 using ZipArchive = SharpCompress.Archive.Zip.ZipArchive;
 
 namespace AcManager.Tools {
-    public enum ArgumentHandleResult {
-        Successful,
-        SuccessfulShow,
-        Failed,
-        FailedShow
-    }
-
     public class ArgumentsHandler {
         public async Task<ArgumentHandleResult> ProcessArgument(string argument) {
             if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
@@ -148,59 +141,43 @@ namespace AcManager.Tools {
             return ArgumentHandleResult.Successful;
         }
 
-        internal class ParsedUriRequest {
-            public string Path { get; private set; }
-
-            public NameValueCollection Params { get; private set; }
-
-            public string Hash { get; private set; }
-
-            public static ParsedUriRequest Parse(string s) {
-                var m = Regex.Match(s, @"^/((?:/[\w\.-]+)+)/?([?&][^#]*)?(?:#(.*))?");
-                if (!m.Success) throw new Exception(ControlsStrings.Common_InvalidFormat);
-
-                return new ParsedUriRequest {
-                    Path = m.Groups[1].Value.Substring(1),
-                    Params = HttpUtility.ParseQueryString(m.Groups[2].Value),
-                    Hash = m.Groups[3].Value
-                };
-            }
-        }
-
         private async Task<ArgumentHandleResult> ProcessUriRequest(string uri) {
             if (!uri.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.OrdinalIgnoreCase)) return ArgumentHandleResult.FailedShow;
 
             var request = uri.SubstringExt(CustomUriSchemeHelper.UriScheme.Length);
-            Logging.Write("[MAINWINDOW] URI Request: " + request);
+            Logging.Write("[ArgumentsHandler] URI Request: " + request);
 
             if (!request.StartsWith(@"//", StringComparison.Ordinal)) {
                 return await ProcessUriRequestObsolete(request);
             }
 
-            ParsedUriRequest parsed;
+            CustomUriRequest custom;
             try {
-                parsed = ParsedUriRequest.Parse(request);
+                custom = CustomUriRequest.Parse(uri);
             } catch (Exception) {
                 NonfatalError.Notify(AppStrings.Arguments_CannotParseRequest, AppStrings.Main_CannotProcessArgument_Commentary);
                 return ArgumentHandleResult.Failed;
             }
 
             try {
-                switch (parsed.Path) {
+                switch (custom.Path) {
+                    case "setsteamid":
+                        return ArgumentHandleResult.Ignore; // TODO?
+
                     case "replay":
-                        return await ProcessReplay(parsed.Params.Get(@"url"), parsed.Params.Get(@"uncompressed") == null);
+                        return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);
 
                     case "rsr":
-                        return await ProcessRsrEvent(parsed.Params.Get(@"id"));
+                        return await ProcessRsrEvent(custom.Params.Get(@"id"));
 
                     case "rsr/setup":
-                        return await ProcessRsrSetup(parsed.Params.Get(@"id"));
+                        return await ProcessRsrSetup(custom.Params.Get(@"id"));
 
                     case "shared":
-                        return await ProcessShared(parsed.Params.Get(@"id"));
+                        return await ProcessShared(custom.Params.Get(@"id"));
 
                     default:
-                        NonfatalError.Notify($"Not supported request: “{parsed.Path}”", AppStrings.Main_CannotProcessArgument_Commentary);
+                        NonfatalError.Notify($"Not supported request: “{custom.Path}”", AppStrings.Main_CannotProcessArgument_Commentary);
                         return ArgumentHandleResult.Failed;
                 }
             } catch (Exception e) {

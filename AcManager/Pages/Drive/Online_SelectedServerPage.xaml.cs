@@ -66,6 +66,10 @@ namespace AcManager.Pages.Drive {
 
         private bool RequiresUpdate() {
             var entry = Model.Entry;
+            if (entry.Status != ServerStatus.Ready) {
+                return false;
+            }
+
             var now = DateTime.Now;
 
             if (now - entry.PreviousUpdateTime > TimeSpan.FromSeconds(5)) {

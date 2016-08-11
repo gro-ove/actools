@@ -19,7 +19,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         [CanBeNull]
-        public static TValue GetValueOrDefault<TKey, TValue>([NotNull] this IReadOnlyDictionary<TKey, TValue> dictionary, [NotNull] [Localizable(false)] TKey key) {
+        public static TValue GetValueOrDefault<TKey, TValue>([NotNull] this IReadOnlyDictionary<TKey, TValue> dictionary, [NotNull, Localizable(false)]  TKey key) {
             if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
             if (key == null) throw new ArgumentNullException(nameof(key));
 

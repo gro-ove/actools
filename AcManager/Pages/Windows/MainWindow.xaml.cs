@@ -102,6 +102,16 @@ namespace AcManager.Pages.Windows {
             if (!OfficialStarterNotification() && PluginsManager.Instance.HasAnyNew()) {
                 Toast.Show("Don’t forget to install plugins!", ""); // TODO
             }
+
+            EntryPoint.HandleSecondInstanceMessages(this, HandleMessagesAsync);
+        }
+
+        private async void HandleMessagesAsync(IEnumerable<string> data) {
+            await Task.Delay(1);
+            foreach (var argument in data) {
+                await _argumentsHandler.ProcessArgument(argument);
+                await Task.Delay(1);
+            }
         }
 
         private void Online_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -276,14 +286,6 @@ namespace AcManager.Pages.Windows {
             FancyBackgroundManager.Instance.AddListener(this);
             AboutHelper.Instance.PropertyChanged += About_PropertyChanged;
             UpdateAboutIsNew();
-
-            try {
-                _hook = HandleMessages;
-                HwndSource.FromHwnd(new WindowInteropHelper(this).Handle)?.AddHook(_hook);
-            } catch (Exception) {
-                Logging.Warning("Can’t add one-instance hook");
-                _hook = null;
-            }
         }
 
         private void UpdateAboutIsNew() {
@@ -319,24 +321,6 @@ namespace AcManager.Pages.Windows {
             }
 
             _hook = null;
-        }
-
-        private IntPtr HandleMessages(IntPtr handle, int message, IntPtr wParam, IntPtr lParam, ref bool handled) {
-            if (message != EntryPoint.SecondInstanceMessage) return IntPtr.Zero;
-
-            var data = EntryPoint.ReceiveSomeData();
-            HandleMessagesAsync(data);
-
-            BringToFront();
-            return IntPtr.Zero;
-        }
-
-        private async void HandleMessagesAsync(IEnumerable<string> data) {
-            await Task.Delay(1);
-            foreach (var filename in data) {
-                await _argumentsHandler.ProcessArgument(filename);
-                await Task.Delay(1);
-            }
         }
 
         private void OnDrop(object sender, DragEventArgs e) {

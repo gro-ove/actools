@@ -9,7 +9,6 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -18,12 +17,9 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.Managers {
     public class FontsManager : AcManagerFileSpecific<FontObject> {
-        public static FontsManager Instance { get; private set; }
+        private static FontsManager _instance;
 
-        public static FontsManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new FontsManager();
-        }
+        public static FontsManager Instance => _instance ?? (_instance = new FontsManager());
 
         public FontsManager() {
             SettingsHolder.Content.PropertyChanged += Content_PropertyChanged;

@@ -25,10 +25,7 @@ namespace AcManager.Tools.Managers {
                 ShowroomsManager.Initialize(),
                 WeatherManager.Initialize(),
                 PpFiltersManager.Initialize(),
-                PythonAppsManager.Initialize(),
-                FontsManager.Initialize(),
-                ReplaysManager.Initialize(),
-                KunosCareerManager.Initialize()
+                PythonAppsManager.Initialize()
             };
 
             if (IsReady) {

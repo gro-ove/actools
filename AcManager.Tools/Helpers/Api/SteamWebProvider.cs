@@ -40,5 +40,33 @@ namespace AcManager.Tools.Helpers.Api {
                 return null;
             }
         }
+
+        private const string RequestPlayerSummariesUri = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={1}&steamids={0}";
+
+        [Localizable(false), CanBeNull]
+        public static string TryToGetUserName(string steamId) {
+            var requestUri = string.Format(RequestPlayerSummariesUri, steamId, InternalUtils.GetSteamApiCode());
+
+            try {
+                var httpRequest = WebRequest.Create(requestUri);
+                httpRequest.Method = "GET";
+
+                using (var response = (HttpWebResponse)httpRequest.GetResponse()) {
+                    if (response.StatusCode != HttpStatusCode.OK) return null;
+
+                    var result = response.GetResponseStream()?.ReadAsStringAndDispose();
+                    if (result == null) return null;
+
+                    var parsed = JObject.Parse(result);
+                    return (string)(((JArray)((JObject)parsed["response"])["players"]).FirstOrDefault() as JObject)?["personaname"];
+                }
+            } catch (WebException e) {
+                Logging.Warning($"[SteamWebProvider] TryToGetUserName(): {requestUri}, {e.Message}");
+                return null;
+            } catch (Exception e) {
+                Logging.Warning($"[SteamWebProvider] TryToGetUserName(): {requestUri}\n{e}");
+                return null;
+            }
+        }
     }
 }

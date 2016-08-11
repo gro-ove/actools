@@ -24,7 +24,7 @@ namespace AcManager.Controls {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ControlsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Controls {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -601,15 +601,6 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid format.
-        /// </summary>
-        public static string Common_InvalidFormat {
-            get {
-                return ResourceManager.GetString("Common_InvalidFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to  lap.
         /// </summary>
         public static string Common_LapsPostfix {
@@ -669,15 +660,6 @@ namespace AcManager.Controls {
         public static string Common_OfflineMode {
             get {
                 return ResourceManager.GetString("Common_OfflineMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Oops!.
-        /// </summary>
-        public static string Common_Oops {
-            get {
-                return ResourceManager.GetString("Common_Oops", resourceCulture);
             }
         }
         
@@ -1831,6 +1813,33 @@ namespace AcManager.Controls {
         public static string Online_TrackIsMissingLabel {
             get {
                 return ResourceManager.GetString("Online_TrackIsMissingLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download And Install ({0}).
+        /// </summary>
+        public static string Plugins_DownloadAndInstall {
+            get {
+                return ResourceManager.GetString("Plugins_DownloadAndInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not available, required app version is {0}..
+        /// </summary>
+        public static string Plugins_NotAvailable {
+            get {
+                return ResourceManager.GetString("Plugins_NotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update (New Version: {0}).
+        /// </summary>
+        public static string Plugins_Update {
+            get {
+                return ResourceManager.GetString("Plugins_Update", resourceCulture);
             }
         }
         

@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
         xmlns:t="http://acstuff.ru/app/tools" xmlns:in="clr-namespace:AcManager.Internal;assembly=AcManager.Internal" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsGeneral+ViewModel}">
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsGeneral+ViewModel}" Loaded="OnLoaded"  Unloaded="OnUnloaded">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
@@ -13,6 +13,19 @@
                 <Label Content="{x:Static g:AppStrings.Settings_General_AcFolderLabel}" />
                 <Button Command="{Binding ChangeAcRootCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
                 <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
+            </DockPanel>
+
+            <DockPanel ToolTip="Used for online">
+                <Label Content="Steam profile:" />
+                <Button Command="{Binding ChangeSteamIdCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
+                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}">
+                    <TextBox.Text>
+                        <MultiBinding StringFormat="{}{0} ({1})" Mode="OneWay">
+                            <Binding Path="SteamId" TargetNullValue="None" />
+                            <Binding Path="SteamProfileName" TargetNullValue="?" />
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Common.DeveloperMode}"

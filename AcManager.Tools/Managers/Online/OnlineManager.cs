@@ -23,7 +23,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (SteamIdHelper.Instance.Value == null) {
                 ErrorFatal = true;
-                throw new Exception(ToolsStrings.CannotFindSteamId);
+                throw new Exception(ToolsStrings.Common_SteamIdIsMissing);
             }
 
             var data = KunosApiProvider.TryToGetList()?.Select(x => new ServerEntry(this, x));
@@ -40,7 +40,7 @@ namespace AcManager.Tools.Managers.Online {
 
             if (SteamIdHelper.Instance.Value == null) {
                 ErrorFatal = true;
-                throw new Exception(ToolsStrings.CannotFindSteamId);
+                throw new Exception(ToolsStrings.Common_SteamIdIsMissing);
             }
 
             var data = await Task.Run(() => KunosApiProvider.TryToGetList()?.Select(x => new ServerEntry(this, x)).ToList());

@@ -408,9 +408,6 @@
   <data name="Common_GoodNews" xml:space="preserve">
     <value>Хорошие новости!</value>
   </data>
-  <data name="Common_InvalidFormat" xml:space="preserve">
-    <value>Неверный формат</value>
-  </data>
   <data name="Common_Loading" xml:space="preserve">
     <value>Загрузка…</value>
   </data>

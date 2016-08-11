@@ -1,22 +1,21 @@
 using System;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Windows;
 using AcManager.Controls.Dialogs;
 using AcManager.Internal;
+using AcManager.Tools;
 using AcManager.Tools.Data;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
 
 namespace AcManager.LargeFilesSharing.GoogleDrive {
     internal class GoogleDriveUploader : FileUploaderBase {
-        public GoogleDriveUploader() : base(Tools.ToolsStrings.Uploader_GoogleDrive, true, true) { }
+        public GoogleDriveUploader() : base(ToolsStrings.Uploader_GoogleDrive, true, true) { }
 
         private const string RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
 
@@ -25,45 +24,11 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
             @"https://www.googleapis.com/auth/drive.file"
         };
 
-        private async Task<string> GetAutenficationCode(string clientId, CancellationToken cancellation) {
-            Process.Start($"https://accounts.google.com/o/oauth2/v2/auth?scope={Uri.EscapeDataString(Scopes.JoinToString(' '))}&" +
+        private static Task<string> GetAutenficationCode(string clientId, CancellationToken cancellation) {
+            return PromptCodeFromBrowser.Show($"https://accounts.google.com/o/oauth2/v2/auth?scope={Uri.EscapeDataString(Scopes.JoinToString(' '))}&" +
                     $"redirect_uri={RedirectUrl}&response_type=code&" +
-                    $"client_id={clientId}");
-
-            string code = null;
-            var waiting = true;
-
-            var handler = new EventHandler((sender, args) => {
-                if (!waiting) return;
-                waiting = false;
-
-                // ReSharper disable once AccessToModifiedClosure
-                code = Prompt.Show(Tools.ToolsStrings.Uploader_EnterGoogleDriveAuthenticationCode, Tools.ToolsStrings.Uploader_GoogleDrive, code);
-            });
-
-            Application.Current.MainWindow.Activated += handler;
-
-            for (var i = 0; i < 500 && waiting; i++) {
-                if (cancellation.IsCancellationRequested) {
-                    Application.Current.MainWindow.Activated -= handler;
-                    return null;
-                }
-
-                if (code == null) {
-                    code = OpenWindowGetter.GetOpenWindows()
-                                           .Select(x => x.Value)
-                                           .FirstOrDefault(x => x.Contains(@"Success code="))?
-                                           .Split(new[] { @"Success code=" }, StringSplitOptions.None)
-                                           .ElementAtOrDefault(1)?
-                                           .Split(' ')
-                                           .FirstOrDefault();
-                }
-
-                await Task.Delay(200, cancellation);
-            }
-
-            Application.Current.MainWindow.Activated -= handler;
-            return code;
+                    $"client_id={clientId}", new Regex(@"Success code=(\S+)", RegexOptions.Compiled),
+                    ToolsStrings.Uploader_EnterGoogleDriveAuthenticationCode, ToolsStrings.Uploader_GoogleDrive, cancellation: cancellation);
         }
 
 #pragma warning disable 0649
@@ -172,7 +137,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
             if (cancellation.IsCancellationRequested) return;
 
             if (response == null) {
-                throw new Exception(Tools.ToolsStrings.Uploader_CannotFinishAuthorization);
+                throw new Exception(ToolsStrings.Uploader_CannotFinishAuthorization);
             }
 
             _authToken = response;
@@ -212,7 +177,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
             await Prepare(cancellation);
 
             if (_authToken == null) {
-                throw new Exception(Tools.ToolsStrings.Uploader_AuthenticationTokenIsMissing);
+                throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
             }
 
             const string query = "mimeType='application/vnd.google-apps.folder' and trashed = false and 'me' in writers";
@@ -223,7 +188,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                     _authToken.AccessToken, cancellation);
             
             if (data == null) {
-                throw new Exception(Tools.ToolsStrings.Uploader_RequestFailed);
+                throw new Exception(ToolsStrings.Uploader_RequestFailed);
             }
 
             var directories = data.Items.Select(x => new DirectoryEntry {
@@ -239,7 +204,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
             return new [] {
                 new DirectoryEntry {
                     Id = null,
-                    DisplayName = Tools.ToolsStrings.Uploader_RootDirectory,
+                    DisplayName = ToolsStrings.Uploader_RootDirectory,
                     Children = data.Items.Where(x => x.Parents.All(y => y.IsRoot)).Select(x => directories.GetById(x.Id)).ToArray()
                 }
             };
@@ -290,7 +255,7 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
             await Prepare(cancellation);
 
             if (_authToken == null) {
-                throw new Exception(Tools.ToolsStrings.Uploader_AuthenticationTokenIsMissing);
+                throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
             }
             
             var entry = await Request.PostMultipart<InsertResult>(@"https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart",
@@ -309,16 +274,16 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                     progress,
                     cancellation);
             if (entry == null) {
-                throw new InformativeException(Tools.ToolsStrings.Uploader_CannotUploadToGoogleDrive, Tools.ToolsStrings.Common_MakeSureThereIsEnoughSpace);
+                throw new InformativeException(ToolsStrings.Uploader_CannotUploadToGoogleDrive, ToolsStrings.Common_MakeSureThereIsEnoughSpace);
             }
 
             var shared = await Request.Post<PermissionResult>($"https://www.googleapis.com/drive/v2/files/fileId/permissions?fileId={entry.Id}",
                     JsonConvert.SerializeObject(new {
                         role = @"reader",
-                        type = @"anyone",
+                        type = @"anyone"
                     }).GetBytes(), _authToken.AccessToken, cancellation);
             if (shared == null) {
-                throw new Exception(Tools.ToolsStrings.Uploader_CannotShareGoogleDrive);
+                throw new Exception(ToolsStrings.Uploader_CannotShareGoogleDrive);
             }
 
             return new UploadResult {

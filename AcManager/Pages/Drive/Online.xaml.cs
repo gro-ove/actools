@@ -289,7 +289,6 @@ namespace AcManager.Pages.Drive {
                 LoadQuickFilter();
                 SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key)) ?? SortingModes[0];
                 ServerCombinedFilter.Second = CreateQuickFilter();
-                Logging.Write("ServerCombinedFilter: " + ServerCombinedFilter);
             }
 
             private CancellationTokenSource _pingingSource;

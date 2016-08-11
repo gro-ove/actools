@@ -451,5 +451,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 ValuesStorage.Set(maximizedKey, WindowState == WindowState.Maximized);
             }
         }
+
+        public void BringToFront() {
+            if (!IsVisible) {
+                Show();
+            }
+
+            if (WindowState == WindowState.Minimized) {
+                WindowState = WindowState.Normal;
+            }
+
+            Topmost = true;
+            Topmost = false;
+            Focus();
+        }
     }
 }

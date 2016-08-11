@@ -72,7 +72,7 @@ namespace AcManager.Pages.Drive {
                 ShowExtensionMessage = false;
             }));
 
-            public string StartPage => @"http://www.radiators-champ.com/RSRLiveTiming/index.php?page=hottest_combos";
+            public string StartPage => SteamIdHelper.Instance.IsReady ? @"http://www.radiators-champ.com/RSRLiveTiming/index.php?page=hottest_combos" : null;
 
             private string _eventId;
 

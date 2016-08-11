@@ -221,7 +221,9 @@
     <Compile Include="Helpers\Loaders\GoogleDriveLoader.cs" />
     <Compile Include="Helpers\Loaders\ILoader.cs" />
     <Compile Include="Helpers\Loaders\RaceDepartmentLoader.cs" />
+    <Compile Include="Helpers\CustomUriRequest.cs" />
     <Compile Include="Helpers\SettingEntry.cs" />
+    <Compile Include="Helpers\Vdf.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Lists\CompositeObservableCollection.cs" />

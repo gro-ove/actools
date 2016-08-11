@@ -113,7 +113,7 @@ namespace AcManager.Tools.AcManagersNew {
 
                 InnerWrappersList.Clear();
                 Status = AsyncScanManagerStatus.Error;
-                ErrorMessage = e.Message;
+                ErrorMessage = $"{e.Message}.";
                 IsScanned = true;
                 return;
             }

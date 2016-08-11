@@ -1,18 +1,53 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.AcRootDirectorySelector" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static g:AppStrings.Main_ContentManager}"
+        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
+        xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static g:AppStrings.Main_ContentManager}"
         ShowInTaskbar="True" WindowStartupLocation="CenterScreen" LocationAndSizeKey="__AcRootDirectorySelector_LS"
         d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}">
-    <StackPanel Width="480">
-        <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.AcRoot_Welcome}" Margin="0 0 0 8"
+    <mui:ModernDialog.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </mui:ModernDialog.Resources>
+    <StackPanel Width="500">
+        <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.AcRoot_Welcome}" Margin="0 0 0 20"
                 Visibility="{Binding FirstRun, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <TextBlock Text="{x:Static g:AppStrings.AcRoot_Prompt}" Style="{StaticResource Heading2}" />
-        <DockPanel Margin="0 8 0 0">
-            <Button Content="…" Click="Button_OnClick" DockPanel.Dock="Right" Margin="4 0 0 0" />
-            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" a:WatermarkService.Watermark="?"
-                    a:FocusAdvancement.AdvancesByEnterKey="True" />
-        </DockPanel>
+        <mui:BbCodeBlock BbCode="Content Manager was updated. Please, review if these settings are still valid:" Margin="0 0 0 20"
+                Visibility="{Binding ReviewMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+        <!--AC root-->
+        <StackPanel Visibility="{Binding ChangeAcRoot, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="{x:Static g:AppStrings.AcRoot_Prompt}" Style="{StaticResource Heading2}" />
+            <DockPanel Margin="20 8 0 0">
+                <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding ChangeAcRootCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
+                <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" mui:WatermarkService.Watermark="?"
+                        mui:FocusAdvancement.AdvancesByEnterKey="True" />
+            </DockPanel>
+        </StackPanel>
+
+        <!--Steam ID-->
+        <StackPanel Visibility="{Binding ChangeSteamId, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="{x:Static g:AppStrings.AcRoot_SteamId_Prompt}" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+            <DockPanel Margin="20 8 0 0">
+                <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding GetSteamIdCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
+                <ComboBox ItemsSource="{Binding SteamProfiles}" SelectedItem="{Binding SteamProfile}" mui:WatermarkService.Watermark="?"
+                        mui:FocusAdvancement.AdvancesByEnterKey="True" Foreground="{DynamicResource InputText}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+        </StackPanel>
+
+        <!--plugins-->
+        <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <TextBlock Text="Would you like to install some plugins as well?" Style="{StaticResource Heading2}" Margin="0 20 0 0"
+                    Visibility="{Binding List.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
+            <DockPanel Margin="20 8 0 0">
+                <ScrollViewer MaxHeight="200">
+                    <ItemsControl ItemsSource="{Binding List, Source={x:Static t:PluginsManager.Instance}}" ItemTemplate="{StaticResource PluginItemTemplate}" />
+                </ScrollViewer>
+            </DockPanel>
+        </StackPanel>
     </StackPanel>
 </mui:ModernDialog>
+

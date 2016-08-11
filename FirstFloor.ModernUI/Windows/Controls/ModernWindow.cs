@@ -247,20 +247,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(LinkNavigatorProperty, value); }
         }
 
-        public void BringToFront() {
-            if (!IsVisible) {
-                Show();
-            }
-
-            if (WindowState == WindowState.Minimized) {
-                WindowState = WindowState.Normal;
-            }
-            
-            Topmost = true;
-            Topmost = false;
-            Focus();
-        }
-
         public static readonly DependencyProperty AppUpdateAvailableProperty = DependencyProperty.Register(nameof(AppUpdateAvailable), typeof(string),
                 typeof(ModernWindow));
 

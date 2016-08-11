@@ -154,6 +154,11 @@
     </Compile>
     <Compile Include="AppArguments.cs" />
     <Compile Include="AppFlag.cs" />
+    <Compile Include="AppStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AppStrings.resx</DependentUpon>
+    </Compile>
     <Compile Include="EntryPoint.cs" />
     <Compile Include="LocaleHelper.cs" />
     <Compile Include="PackedHelper.cs" />
@@ -301,12 +306,8 @@
     </Compile>
     <Compile Include="Plugins\AwesomiumPluginWrapper.cs" />
     <Compile Include="Plugins\MagickPluginWrapper.cs" />
-    <Compile Include="AppStrings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AppStrings.resx</DependentUpon>
-    </Compile>
     <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
+    <Compile Include="Tools\ArgumentHandleResult.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
     <Compile Include="Tools\TextEditing\IniFoldingStrategy.cs" />

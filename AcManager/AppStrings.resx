@@ -909,9 +909,6 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
   <data name="Settings_General" xml:space="preserve">
     <value>General</value>
   </data>
-  <data name="Settings_Plugins" xml:space="preserve">
-    <value>Plugins</value>
-  </data>
   <data name="Settings_QuickSwitches" xml:space="preserve">
     <value>Quick Switches</value>
   </data>
@@ -923,16 +920,6 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
   </data>
   <data name="Settings_Dev" xml:space="preserve">
     <value>Dev</value>
-  </data>
-  <data name="Settings_Plugins_NotAvailable" xml:space="preserve">
-    <value>Not available, required app version is {0}.</value>
-  </data>
-  <data name="Settings_Plugins_DownloadAndInstall" xml:space="preserve">
-    <value>Download And Install ({0})</value>
-    <comment>{0} — plugin’s size</comment>
-  </data>
-  <data name="Settings_Plugins_Update" xml:space="preserve">
-    <value>Update (New Version: {0})</value>
   </data>
   <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
     <value>Enable Quick Switches</value>
@@ -2175,10 +2162,10 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Can’t solve the problem</value>
   </data>
   <data name="AcRoot_Welcome" xml:space="preserve">
-    <value>Welcome to Content Manager and thanks for using it! You have only one thing left to do before launch:</value>
+    <value>Welcome to Content Manager and thanks for using it! You have only couple of things left to do before launch:</value>
   </data>
   <data name="AcRoot_Prompt" xml:space="preserve">
-    <value>Specify Assetto Corsa root folder:</value>
+    <value>Assetto Corsa root folder:</value>
   </data>
   <data name="Common_RequiredValue" xml:space="preserve">
     <value>Required value</value>
@@ -3411,5 +3398,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
     <value>Start a benchmark (Ctrl+G)</value>
+  </data>
+  <data name="AcRoot_SteamId_Prompt" xml:space="preserve">
+    <value>Your Steam ID for online:</value>
+  </data>
+  <data name="Settings_Plugins" xml:space="preserve">
+    <value>Plugins</value>
   </data>
 </root>

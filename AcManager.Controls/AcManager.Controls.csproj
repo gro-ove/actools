@@ -104,6 +104,7 @@
     <Compile Include="AcObjectHeaderSection.cs" />
     <Compile Include="ChangedPresetEventArgs.cs" />
     <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
+    <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
     <Compile Include="Helpers\AwesomiumResolverService.cs" />
     <Compile Include="Helpers\BetterWebControl.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
@@ -198,6 +199,10 @@
     <Compile Include="ViewModels\BaseAssistsViewModel.cs" />
     <Compile Include="ViewModels\RealismLevel.cs" />
     <Page Include="Assets\AcSelectedSpecific.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\Plugins.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

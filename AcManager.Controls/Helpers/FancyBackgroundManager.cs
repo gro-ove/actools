@@ -13,6 +13,7 @@ using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.Helpers {
     public interface IFancyBackgroundListener {
@@ -111,7 +112,8 @@ namespace AcManager.Controls.Helpers {
         private readonly Queue<string> _queue = new Queue<string>();
         private DispatcherTimer _timer;
 
-        public void ChangeBackground(string filename) {
+        // TODO: Rework behavior
+        public void ChangeBackground([CanBeNull] string filename) {
             if (filename == null) return;
             _queue.Enqueue(filename);
 

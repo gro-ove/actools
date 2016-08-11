@@ -86,8 +86,7 @@ namespace FirstFloor.ModernUI.Helpers {
     /// <summary>
     /// Improved C# LZF Compressor, a very small data compression library. The compression algorithm is extremely fast. 
     /// </summary>
-    // ReSharper disable once InconsistentNaming
-    internal sealed class LZF {
+    internal sealed class Lzf {
         /// <summary>
         /// Hashtable, thac can be allocated only once
         /// </summary>
@@ -138,12 +137,16 @@ namespace FirstFloor.ModernUI.Helpers {
 
                             if (oidx + lit + 1 + 3 >= outputLength) return 0;
 
-                            do len++; while (len < maxlen && input[reference + len] == input[iidx + len]);
+                            do {
+                                len++;
+                            } while (len < maxlen && input[reference + len] == input[iidx + len]);
 
                             if (lit != 0) {
                                 output[oidx++] = (byte)(lit - 1);
                                 lit = -lit;
-                                do output[oidx++] = input[iidx + lit]; while (++lit != 0);
+                                do {
+                                    output[oidx++] = input[iidx + lit];
+                                } while (++lit != 0);
                             }
 
                             len -= 2;
@@ -259,7 +262,9 @@ namespace FirstFloor.ModernUI.Helpers {
 
                     //SET_ERRNO (E2BIG);
                     if (oidx + ctrl > outputLength) return 0;
-                    do output[oidx++] = input[iidx++]; while (--ctrl != 0);
+                    do {
+                        output[oidx++] = input[iidx++];
+                    } while (--ctrl != 0);
                 } else {
                     /* back reference */
                     var len = ctrl >> 5;
