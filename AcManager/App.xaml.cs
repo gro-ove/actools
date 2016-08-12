@@ -13,6 +13,7 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Windows;
 using AcManager.Plugins;
 using AcManager.Properties;
 using AcManager.Tools;
@@ -189,19 +190,18 @@ namespace AcManager {
 
         private async void TestKey() {
             AppKeyHolder.Initialize(FilesStorage.Instance.GetFilename("License.txt"));
-            var revoked = AppKeyHolder.IsAllRight ? null : AppKeyHolder.Instance.Revoked;
+            if (AppKeyHolder.Instance.Revoked == null) return;
 
-            await Task.Delay(500);
-            
-            if (revoked != null || AppKeyHolder.IsAllRight && await InternalUtils.CheckKeyAsync(AppKeyHolder.Key, CmApiProvider.UserAgent) == false) {
-                ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, revoked ?? AppKeyHolder.Key);
-                AppKeyHolder.Instance.SetKey(null);
+            await Task.Delay(3000);
 
-                Dispatcher.Invoke(AppKeyDialog.ShowRevokedMessage);
-                if (revoked == null) {
-                    Dispatcher.Invoke(WindowsHelper.RestartCurrentApplication);
+            ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, AppKeyHolder.Instance.Revoked);
+            AppKeyHolder.Instance.SetKey(null);
+
+            Current.Dispatcher.Invoke(() => {
+                if (Current?.MainWindow is MainWindow && Current.MainWindow.IsActive) {
+                    AppKeyDialog.ShowRevokedMessage();
                 }
-            }
+            });
         }
 
         private async void BackgroundInitialization() {

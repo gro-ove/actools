@@ -3,14 +3,23 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers {
     public static class WindowsHelper {
         public const string RestartArg = "--restart";
 
         public static void RestartCurrentApplication() {
-            ProcessExtension.Start(MainExecutingFile.Location, Environment.GetCommandLineArgs().Skip(1).Prepend(RestartArg));
-            Application.Current.Shutdown();
+            try {
+                ProcessExtension.Start(MainExecutingFile.Location, Environment.GetCommandLineArgs().Skip(1).ApartFrom(RestartArg).Prepend(RestartArg));
+                if (Application.Current != null) {
+                    Application.Current.Shutdown();
+                } else {
+                    Environment.Exit(0);
+                }
+            } catch (Exception e) {
+                Logging.Warning("[WindowsHelper] RestartCurrentApplication(): " + e);
+            }
         }
 
         public static void ViewDirectory(string directory) {

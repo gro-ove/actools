@@ -35,9 +35,8 @@ namespace AcManager.Pages.Dialogs {
 
         public static void ShowRevokedMessage() {
             if (ShowMessage(AppStrings.AppKey_KeyRevoked_Message, AppStrings.AppKey_KeyRevoked_Title,
-                    MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes) {
+                    MessageBoxButton.YesNoCancel, Application.Current.MainWindow) == MessageBoxResult.Yes) {
                 RequestNewKeyUsingEmail();
-                WindowsHelper.RestartCurrentApplication();
             }
         }
 
