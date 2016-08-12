@@ -207,6 +207,14 @@ namespace AcTools.DataFile {
             base[key] = value;
         }
 
+        public void SetOrRemove([NotNull, LocalizationRequired(false)] string key, [LocalizationRequired(false), CanBeNull] string value) {
+            if (value != null) {
+                base[key] = value;
+            } else if (ContainsKey(key)){
+                Remove(key);
+            }
+        }
+
         public void Set<T>([NotNull, LocalizationRequired(false)] string key, IEnumerable<T> value, char delimiter = ',') {
             if (value == null) return;
             Set(key, value.Select(x => x.ToInvariantString()).JoinToString(delimiter));

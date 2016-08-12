@@ -707,7 +707,7 @@ namespace AcManager.Pages.Drive {
                 if (type == null) throw new ArgumentNullException(nameof(type));
 
                 if (type == GridType.FilteredBy && !useUserFilter) {
-                    return CarsManager.Instance.LoadedOnly.Where(x => x.Enabled).ToArray();
+                    return CarsManager.Instance.EnabledOnly.ToArray();
                 }
 
                 await Task.Delay(200, cancellation);
@@ -720,7 +720,7 @@ namespace AcManager.Pages.Drive {
                     } else if (type == GridType.Manual) {
                         carsEnumerable = OpponentsCars;
                     } else {
-                        carsEnumerable = CarsManager.Instance.LoadedOnly;
+                        carsEnumerable = CarsManager.Instance.EnabledOnly;
                     }
 
                     carsEnumerable = carsEnumerable.Where(x => x.Enabled);
@@ -781,7 +781,7 @@ namespace AcManager.Pages.Drive {
                 var opponentsCarsEntries = (from x in opponentsCars
                                             select new {
                                                 Car = x,
-                                                Skins = GoodShuffle.Get(x.SkinsManager.LoadedOnlyCollection)
+                                                Skins = GoodShuffle.Get(x.EnabledOnlySkins)
                                             }).ToList();
                 var opponentsCarsShuffled = GoodShuffle.Get(opponentsCarsEntries);
 

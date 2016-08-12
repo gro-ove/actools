@@ -424,9 +424,11 @@ namespace AcManager.Pages.Selected {
                 CarOpenInShowroomDialog.Run(_model.SelectedObject, _model.SelectedObject.SelectedSkin?.Id);
             } else if (e.ClickCount == 1 && ReferenceEquals(sender, SelectedSkinPreviewImage) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
+
+                var skins = _model.SelectedObject.EnabledOnlySkins.ToList();
                 new ImageViewer(
-                        from skin in _model.SelectedObject.Skins where skin.Enabled select skin.PreviewImage,
-                        _model.SelectedObject.Skins.Where(x => x.Enabled).IndexOf(_model.SelectedObject.SelectedSkin),
+                        from skin in skins select skin.PreviewImage,
+                        skins.IndexOf(_model.SelectedObject.SelectedSkin),
                         1022).ShowDialog();
             }
         }

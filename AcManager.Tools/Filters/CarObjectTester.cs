@@ -112,7 +112,8 @@ namespace AcManager.Tools.Filters {
             switch (key) {
                 case null:
                 case "skin":
-                    return obj.Skins?.Any(x => filter.Test(CarSkinObjectTester.Instance, x)) == true;
+                    var skins = obj.SkinsManager;
+                    return skins.IsScanned && skins.LoadedOnly.Any(x => filter.Test(CarSkinObjectTester.Instance, x)); // TODO: non-scanned?
 
                 case "parent":
                     return obj.Parent != null && filter.Test(Instance, obj.Parent);

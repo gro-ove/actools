@@ -1,12 +1,10 @@
-﻿<selected:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedWeatherPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<sel:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedWeatherPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-        xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager"
-        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance selected:SelectedWeatherPage+ViewModel}" x:Name="This">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager"
+        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:c="http://acstuff.ru/app/controls"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance sel:SelectedWeatherPage+ViewModel}" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,6 +14,22 @@
 
             <!-- ReSharper disable once Xaml.RedundantResource -->
             <StackPanel x:Key="EditMode">
+                <DockPanel>
+                    <Label Content="{x:Static g:AppStrings.AcObject_IdLabel}" />
+                    <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Id, Mode=OneTime}" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="{x:Static g:AppStrings.AcObject_WeatherUseAsLabel}" />
+                    <ComboBox ItemsSource="{Binding WeatherTypes}" SelectedItem="{Binding SelectedObject.Type}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </DockPanel>
+                
                 <Grid x:Name="Grid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -23,27 +37,23 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <DockPanel>
-                            <Label Content="{x:Static g:AppStrings.AcObject_IdLabel}" />
-                            <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Id, Mode=OneTime}" />
+                        <DockPanel ToolTip="Preferable temperature diapason in Celsius, example: “10-15,17-20,22”">
+                            <Label Content="Temperature diapason:" />
+                            <TextBox Text="{Binding SelectedObject.TemperatureDiapason}" mui:WatermarkService.Watermark="?"
+                                    mui:FocusAdvancement.AdvancesByEnterKey="True" />
                         </DockPanel>
 
-                        <DockPanel>
-                            <Label Content="{x:Static g:AppStrings.AcObject_WeatherUseAsLabel}" />
-                            <ComboBox ItemsSource="{Binding WeatherTypes}" SelectedItem="{Binding SelectedObject.Type}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                        <DockPanel ToolTip="Preferable time diapason in 24-hour format, example: “10:30-11:00,11:30-15:25”">
+                            <Label Content="Time diapason:" />
+                            <TextBox Text="{Binding SelectedObject.TimeDiapason}" mui:WatermarkService.Watermark="?"
+                                    mui:FocusAdvancement.AdvancesByEnterKey="True" />
                         </DockPanel>
 
                         <CheckBox IsChecked="{Binding SelectedObject.ForceCarLights}">
                             <Label Content="{x:Static g:AppStrings.WeatherEdit_Headlights}" />
                         </CheckBox>
 
-                        <DockPanel attached:ContextMenuAdvancement.PropagateToChildren="True"
+                        <DockPanel mui:ContextMenuAdvancement.PropagateToChildren="True"
                                 ToolTip="{x:Static g:AppStrings.WeatherEdit_TemperatureCoefficient_Tooltip}">
                             <DockPanel.ContextMenu>
                                 <ContextMenu>
@@ -66,15 +76,14 @@
                             <StackPanel Orientation="Horizontal" Margin="0 8 0 8">
                                 <StackPanel Margin="0 0 8 0" Width="120">
                                     <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0 0 0 4" Content="{x:Static t:ToolsStrings.Common_Time}" />
-                                    <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}"
-                                            Value="{Binding Time}" Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight"
-                                            IsSnapToTickEnabled="False" />
+                                    <Slider Minimum="{x:Static dr:QuickDrive.TimeMinimum}" Maximum="{x:Static dr:QuickDrive.TimeMaximum}" Value="{Binding Time}"
+                                            Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                                 </StackPanel>
                                 <StackPanel Width="120">
                                     <mui:ValueLabel Value="{Binding Temperature, StringFormat='{}{0:F1}'}" Mode="Number"
                                             Postfix="{x:Static c:ControlsStrings.Common_CelsiusPostfix}"
                                             Content="{x:Static g:AppStrings.WeatherEdit_TemperatureCoefficientAirTemperature}" />
-                                    <Slider Minimum="{x:Static drive:QuickDrive.TemperatureMinimum}" Maximum="{x:Static drive:QuickDrive.TemperatureMaximum}"
+                                    <Slider Minimum="{x:Static dr:QuickDrive.TemperatureMinimum}" Maximum="{x:Static dr:QuickDrive.TemperatureMaximum}"
                                             Value="{Binding Temperature}" x:Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False"
                                             TickPlacement="BottomRight" />
                                 </StackPanel>
@@ -278,7 +287,7 @@
                 Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel Visibility="{Binding EditMode, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                 <mui:BetterImage Margin="0 0 0 12" Filename="{Binding SelectedObject.PreviewImage}" HideBroken="True"
-                        services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1022"
+                        c:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1022"
                         Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}" />
 
                 <DockPanel>
@@ -307,4 +316,5 @@
             </StackPanel>
         </StackPanel>
     </c:AcObjectBase>
-</selected:SelectedAcObjectPage>
+</sel:SelectedAcObjectPage>
+

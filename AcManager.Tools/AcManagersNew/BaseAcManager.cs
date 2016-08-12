@@ -86,11 +86,18 @@ namespace AcManager.Tools.AcManagersNew {
             }
         }
 
+        [NotNull]
         public IEnumerable<T> LoadedOnly => WrappersList.Select(x => x.Value).OfType<T>();
 
-        private AcLoadedOnlyCollection<T> _loadedOnlyList;
+        [NotNull]
+        public IEnumerable<T> EnabledOnly => _enabledOnlyList ?? WrappersList.Select(x => x.Value).Where(x => x.Enabled).OfType<T>();
 
-        public AcLoadedOnlyCollection<T> LoadedOnlyCollection => _loadedOnlyList ?? (_loadedOnlyList = new AcLoadedOnlyCollection<T>(WrappersList));
+        private AcEnabledOnlyCollection<T> _enabledOnlyList;
+
+        /// <summary>
+        /// Only loaded and enabled items, in order.
+        /// </summary>
+        public AcEnabledOnlyCollection<T> EnabledOnlyCollection => _enabledOnlyList ?? (_enabledOnlyList = new AcEnabledOnlyCollection<T>(WrappersList));
 
         private void WrappersListListenersChanged(object sender, ListenersChangedEventHandlerArgs args) {
             if (args.OldListenersCount == 0 && !IsLoaded) {

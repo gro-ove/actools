@@ -519,6 +519,18 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
+        public static int Count<T>([NotNull] this IEnumerable<T> source, T item) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            return source.Count(x => Equals(x, item));
+        }
+
+        [Pure]
+        public static int Count<T>([NotNull] this IEnumerable<T> source, params T[] additionalItems) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            return source.Count(additionalItems.Contains);
+        }
+
+        [Pure]
         public static TValue Aggregate<T, TValue>([NotNull] this IEnumerable<T> source, TValue seed, Func<TValue, T, int, TValue> func) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             var j = 0;

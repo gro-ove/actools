@@ -189,7 +189,7 @@
                 </ScrollViewer>
             </DockPanel>
 
-            <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding AcObject.LoadedOnlyEvents}"
+            <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding AcObject.EnabledOnlyEvents}"
                     SelectedItem="{Binding AcObject.SelectedEvent, Mode=TwoWay}" ScrollViewer.CanContentScroll="False" x:Name="ListBox"
                     ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                     ItemTemplate="{StaticResource ItemTemplate}" Margin="-4 0 -4 12" ScrollViewer.ScrollChanged="ListBox_ScrollChanged"

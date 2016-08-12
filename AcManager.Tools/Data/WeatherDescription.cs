@@ -7,6 +7,8 @@ namespace AcManager.Tools.Data {
     public class WeatherDescription {
         [Pure]
         public static WeatherType? FindClosestWeather(IEnumerable<WeatherType> list, WeatherType type) {
+            if (type == WeatherType.None) return null;
+
             var weatherTypes = list.Select(x => (WeatherType?)x).ToList();
             for (var i = 0; i < 5; i++) {
                 if (weatherTypes.Contains(type)) return type;

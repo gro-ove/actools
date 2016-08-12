@@ -553,6 +553,7 @@ fixme:
     - smart textbox with version
     - 1ff opponent?!
     - replays layout
+    - openweatherapi: {"cod":"404","message":"Error: Not found city"}
 
 todo:
     - include “dev apps” option to apps presets

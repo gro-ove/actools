@@ -9,24 +9,24 @@ using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Lists {
     // potentially a bad place, requires reworking
-    public class AcLoadedOnlyCollection<T> : BetterObservableCollection<T>, IWeakEventListener where T : AcObjectNew {
+    public class AcEnabledOnlyCollection<T> : BetterObservableCollection<T>, IWeakEventListener where T : AcObjectNew {
         private readonly IAcWrapperObservableCollection _collection;
 
-        internal AcLoadedOnlyCollection(IAcWrapperObservableCollection collection) : base(collection.Select(x => x.Value).OfType<T>()) {
+        internal AcEnabledOnlyCollection(IAcWrapperObservableCollection collection) : base(collection.Select(x => x.Value).Where(x => x.Enabled).OfType<T>()) {
             _collection = collection;
             collection.CollectionChanged += Collection_CollectionChanged;
             collection.WrappedValueChanged += Collection_WrappedValueChanged;
         }
 
         private void Rebuild() {
-            ReplaceEverythingBy(_collection.Select(x => x.Value).OfType<T>());
+            ReplaceEverythingBy(_collection.Select(x => x.Value).Where(x => x.Enabled).OfType<T>());
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void Collection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             switch (e.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    AddRange(e.NewItems.Cast<AcItemWrapper>().Select(x => x.Value).OfType<T>());
+                case NotifyCollectionChangedAction.Add: 
+                    AddRange(e.NewItems.Cast<AcItemWrapper>().Select(x => x.Value).Where(x => x.Enabled).OfType<T>());
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -35,12 +35,14 @@ namespace AcManager.Tools.Lists {
                     }
                     break;
 
-                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Replace: {
                     foreach (var item in e.OldItems.Cast<AcItemWrapper>().Select(x => x.Value).OfType<T>()) {
                         Remove(item);
                     }
-                    AddRange(e.NewItems.Cast<AcItemWrapper>().Select(x => x.Value).OfType<T>());
+
+                    AddRange(e.NewItems.Cast<AcItemWrapper>().Select(x => x.Value).OfType<T>().Where(x => x.Enabled));
                     break;
+                }
 
                 case NotifyCollectionChangedAction.Move:
                 case NotifyCollectionChangedAction.Reset:
@@ -57,27 +59,27 @@ namespace AcManager.Tools.Lists {
             }
 
             var n = e.NewValue as T;
-            if (n != null) {
-                var i = _collection.FindIndex(x => x.Value == n);
-                if (i == -1 || i == _collection.Count - 1) {
-                    Add(n);
-                    return;
-                }
+            if (n?.Enabled != true) return;
 
-                var after = _collection.Take(i).LastOrDefault(x => x.IsLoaded);
-                if (after == null) {
-                    Insert(0, n);
-                    return;
-                }
-
-                var afterLocal = Items.IndexOf(after.Value);
-                if (afterLocal == -1 || afterLocal == Items.Count - 1) {
-                    Add(n);
-                    return;
-                }
-
-                Insert(afterLocal + 1, n);
+            var i = _collection.FindIndex(x => x.Value == n);
+            if (i == -1 || i == _collection.Count - 1) {
+                Add(n);
+                return;
             }
+
+            var after = _collection.Take(i).LastOrDefault(x => x.IsLoaded && x.Value.Enabled);
+            if (after == null) {
+                Insert(0, n);
+                return;
+            }
+
+            var afterLocal = Items.IndexOf(after.Value);
+            if (afterLocal == -1 || afterLocal == Items.Count - 1) {
+                Add(n);
+                return;
+            }
+
+            Insert(afterLocal + 1, n);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]

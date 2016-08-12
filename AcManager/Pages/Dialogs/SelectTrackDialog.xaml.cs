@@ -1,12 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -15,8 +13,6 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class SelectTrackDialog {
-        public const string UriKey = "SelectTrackDialog.UriKey";
-
 
         private static WeakReference<SelectTrackDialog> _instance;
 
@@ -36,8 +32,7 @@ namespace AcManager.Pages.Dialogs {
 
             DataContext = new ViewModel(selectedTrackConfiguration);
             InitializeComponent();
-
-            Tabs.SelectedSource = ValuesStorage.GetUri(UriKey) ?? Tabs.Links.FirstOrDefault()?.Source;
+            
             Model.PropertyChanged += Model_PropertyChanged;
             BackgroundImage0.Source = UriToCachedImageConverter.Convert(Model.CurrentPreviewImage);
 
@@ -72,9 +67,6 @@ namespace AcManager.Pages.Dialogs {
 
             _list.SelectedItem = Model.SelectedTrackConfiguration?.MainTrackObject;
             _list.PropertyChanged += List_PropertyChanged;
-
-            /* save uri */
-            ValuesStorage.Set(UriKey, e.Source);
         }
 
         private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {

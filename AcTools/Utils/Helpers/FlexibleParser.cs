@@ -102,16 +102,20 @@ namespace AcTools.Utils.Helpers {
             }
 
             var splitted = value.Split(':');
-            if (splitted.Length == 2) {
+            if (splitted.Length == 1) {
+                int hours;
+                if (TryParseInt(splitted[0], out hours)) {
+                    totalSeconds = hours * 60 * 60;
+                    return true;
+                }
+            } else if (splitted.Length == 2) {
                 int hours, minutes;
-
                 if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes)) {
                     totalSeconds = hours * 60 * 60 + minutes * 60;
                     return true;
                 }
             } else if (splitted.Length == 3) {
                 int hours, minutes, seconds;
-
                 if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes) && TryParseInt(splitted[2], out seconds)) {
                     totalSeconds = hours * 60 * 60 + minutes * 60 + seconds;
                     return true;
@@ -120,6 +124,11 @@ namespace AcTools.Utils.Helpers {
 
             totalSeconds = 0;
             return false;
+        }
+
+        public static int? TryParseTime(string s) {
+            int result;
+            return TryParseTime(s, out result) ? result : (int?)null;
         }
 
         [CanBeNull]
@@ -194,6 +203,25 @@ namespace AcTools.Utils.Helpers {
         public static long ParseLong(string s, long defaultValue) {
             long result;
             return TryParseLong(s, out result) ? result : defaultValue;
+        }
+
+        /// <summary>
+        /// Throws an exception if can’t parse!
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static int ParseTime(string s) {
+            int result;
+            if (!TryParseTime(s, out result)) {
+                throw new FormatException();
+            }
+
+            return result;
+        }
+
+        public static int ParseTime(string s, int defaultValue) {
+            int result;
+            return TryParseTime(s, out result) ? result : defaultValue;
         }
     }
 }

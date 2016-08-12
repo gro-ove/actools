@@ -14,6 +14,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class WeatherObject : AcIniObject {
@@ -34,6 +35,38 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private string _timeDiapason;
+
+        [CanBeNull]
+        public string TimeDiapason {
+            get { return _timeDiapason; }
+            set {
+                if (string.IsNullOrWhiteSpace(value)) value = null;
+                if (Equals(value, _timeDiapason)) return;
+                _timeDiapason = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private string _temperatureDiapason;
+
+        [CanBeNull]
+        public string TemperatureDiapason {
+            get { return _temperatureDiapason; }
+            set {
+                if (string.IsNullOrWhiteSpace(value)) value = null;
+                if (Equals(value, _temperatureDiapason)) return;
+                _temperatureDiapason = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
         private double _temperatureCoefficient;
 
         public double TemperatureCoefficient {
@@ -41,7 +74,6 @@ namespace AcManager.Tools.Objects {
             set { 
                 if (Equals(_temperatureCoefficient, value)) return;
                 _temperatureCoefficient = value;
-
                 if (Loaded) {
                     OnPropertyChanged();
                     Changed = true;
@@ -125,8 +157,11 @@ namespace AcManager.Tools.Objects {
             try {
                  type = ini["__LAUNCHER_CM"].GetEnumNullable<WeatherType>("WEATHER_TYPE");
             } catch (Exception) {
-                type = null;
+                 type = null;
             }
+
+            TemperatureDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TEMPERATURE_DIAPASON");
+            TimeDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TIME_DIAPASON");
 
             Type = type ?? TryToDetectWeatherTypeById(Id);
 
@@ -139,11 +174,9 @@ namespace AcManager.Tools.Objects {
             ini["LAUNCHER"].Set("NAME", Name);
             ini["LAUNCHER"].Set("TEMPERATURE_COEFF", TemperatureCoefficient);
 
-            if (Type == WeatherType.None) {
-                ini["__LAUNCHER_CM"].Remove(@"WEATHER_TYPE");
-            } else {
-                ini["__LAUNCHER_CM"].Set("WEATHER_TYPE", Type);
-            }
+            ini["__LAUNCHER_CM"].Set("WEATHER_TYPE", Type);
+            ini["__LAUNCHER_CM"].SetOrRemove("TEMPERATURE_DIAPASON", TemperatureDiapason);
+            ini["__LAUNCHER_CM"].SetOrRemove("TIME_DIAPASON", TimeDiapason);
 
             if (_loadedExtended) {
                 SaveExtended(ini);

@@ -2401,6 +2401,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time Attack mode is not supported by selected track.
+        /// </summary>
+        public static string LogHelper_TimeAttackNotSupported {
+            get {
+                return ResourceManager.GetString("LogHelper_TimeAttackNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wheels objects (WHEEL_LF, WHEEL_LR, …) are missing.
         /// </summary>
         public static string LogHelper_WheelsAreMissing {

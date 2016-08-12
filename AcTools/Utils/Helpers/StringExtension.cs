@@ -126,6 +126,74 @@ namespace AcTools.Utils.Helpers {
             return (UTF8Checker.IsUtf8(bytes, 200) ? Encoding.UTF8 : Encoding.Default).GetString(bytes);
         }
 
+        [Pure]
+        public static bool DiapasonContains([NotNull] this string s, double value, bool roundSingle = true) {
+            if (s == null) throw new ArgumentNullException(nameof(s));
+
+            return s.Split(',', ';').Select(x => x.Trim()).Any(part => {
+                var n = part.IndexOf('-');
+                double fromValue, toValue;
+                if (n > 0 && n < part.Length - 1) { // "x-y"
+                    if (FlexibleParser.TryParseDouble(part.Substring(0, n), out fromValue) &&
+                            FlexibleParser.TryParseDouble(part.Substring(n + 1), out toValue)) {
+                        return value >= fromValue && value <= toValue;
+                    }
+                } else if (n < 0) { // "x"
+                    if (FlexibleParser.TryParseDouble(part, out fromValue)) {
+                        return roundSingle ? value.RoughlyEquals(fromValue) : Equals(fromValue, value);
+                    }
+                } else if (part.Length == 1) { // "-"
+                    return true;
+                } else if (n == part.Length - 1) { // "x-"
+                    if (FlexibleParser.TryParseDouble(part.Substring(0, n), out fromValue)) {
+                        return value >= fromValue;
+                    }
+                } else { // "-x"
+                    if (FlexibleParser.TryParseDouble(part.Substring(n + 1), out toValue)) {
+                        return value <= toValue;
+                    }
+                }
+
+                return false;
+            });
+        }
+
+        [Pure]
+        public static bool TimeDiapasonContains([NotNull] this string s, int value, bool roundSingle = true) {
+            if (s == null) throw new ArgumentNullException(nameof(s));
+
+            return s.Split(',', ';').Select(x => x.Trim()).Any(part => {
+                int n = part.IndexOf('-'), fromValue, toValue;
+                if (n > 0 && n < part.Length - 1) { // "x-y"
+                    if (FlexibleParser.TryParseTime(part.Substring(0, n), out fromValue) &&
+                            FlexibleParser.TryParseTime(part.Substring(n + 1), out toValue)) {
+                        return value >= fromValue && value <= toValue;
+                    }
+                } else if (n < 0) { // "x"
+                    if (FlexibleParser.TryParseTime(part, out fromValue)) {
+                        if (roundSingle) {
+                            var delimiters = part.Count(':');
+                            return fromValue.Equals(delimiters == 2 ? value : delimiters == 1 ? value.Floor(60) : value.Floor(60 * 60));
+                        }
+
+                        return Equals(fromValue, value);
+                    }
+                } else if (part.Length == 1) { // "-"
+                    return true;
+                } else if (n == part.Length - 1) { // "x-"
+                    if (FlexibleParser.TryParseTime(part.Substring(0, n), out fromValue)) {
+                        return value >= fromValue;
+                    }
+                } else { // "-x"
+                    if (FlexibleParser.TryParseTime(part.Substring(n + 1), out toValue)) {
+                        return value <= toValue;
+                    }
+                }
+
+                return false;
+            });
+        }
+
         /// <summary>
         /// Only in about two times slower than Enumerable.Range.
         /// </summary>
@@ -139,26 +207,27 @@ namespace AcTools.Utils.Helpers {
             if (min < 0) throw new ArgumentOutOfRangeException(nameof(min), @"Negative numbers aren’t supported");
             if (max < min) throw new ArgumentOutOfRangeException(nameof(max));
 
-            return s.Split(',').SelectMany(part => {
+            return s.Split(',', ';').Select(x => x.Trim()).SelectMany(part => {
                 int n = part.IndexOf('-'), fromValue, toValue;
                 if (n > 0 && n < part.Length - 1) { // "x-y"
-                    if (int.TryParse(part.Substring(0, n), out fromValue) && int.TryParse(part.Substring(n + 1), out toValue)) {
+                    if (FlexibleParser.TryParseInt(part.Substring(0, n), out fromValue) &&
+                            FlexibleParser.TryParseInt(part.Substring(n + 1), out toValue)) {
                         fromValue = Math.Max(fromValue, min);
                         return Enumerable.Range(fromValue, 1 + Math.Min(toValue, max) - fromValue);
                     }
                 } else if (n < 0) { // "x"
-                    if (int.TryParse(part, out fromValue) && fromValue >= min && fromValue <= max) {
+                    if (FlexibleParser.TryParseInt(part, out fromValue) && fromValue >= min && fromValue <= max) {
                         return new[] { fromValue };
-                    }
-                } else if (n == part.Length - 1) { // "x-"
-                    if (int.TryParse(part.Substring(0, n), out fromValue)) {
-                        fromValue = Math.Max(fromValue, min);
-                        return Enumerable.Range(fromValue, 1 + max - fromValue);
                     }
                 } else if (part.Length == 1) { // "-"
                     return Enumerable.Range(min, 1 + max - min);
+                } else if (n == part.Length - 1) { // "x-"
+                    if (FlexibleParser.TryParseInt(part.Substring(0, n), out fromValue)) {
+                        fromValue = Math.Max(fromValue, min);
+                        return Enumerable.Range(fromValue, 1 + max - fromValue);
+                    }
                 } else { // "-x"
-                    if (int.TryParse(part.Substring(n + 1), out toValue)) {
+                    if (FlexibleParser.TryParseInt(part.Substring(n + 1), out toValue)) {
                         return Enumerable.Range(min, 1 + Math.Min(toValue, max) - min);
                     }
                 }

@@ -233,15 +233,7 @@
                 VerticalScrollBarVisibility="Auto"
                 Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
             <StackPanel>
-                <mui:BetterImage Margin="0 0 0 8" Filename="{Binding CarSkin.PreviewImage}" Width="240"
-                        PreviewMouseLeftButtonDown="CarPreview_OnPreviewMouseLeftButtonDown">
-                    <mui:BetterImage.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="{x:Static c:ControlsStrings.Common_ChangeSkin}"
-                                    IsEnabled="{Binding Source={x:Static t:SettingsHolder.Drive}, Path=KunosCareerUserSkin}"
-                                    PreviewMouseLeftButtonUp="ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp" />
-                        </ContextMenu>
-                    </mui:BetterImage.ContextMenu>
+                <mui:BetterImage Margin="0 0 0 8" Filename="{Binding CarSkin.PreviewImage}" Width="240">
                     <mui:BetterImage.ToolTip>
                         <StackPanel Margin="4 8">
                             <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObject.DisplayName}" Margin="0 0 0 4" />

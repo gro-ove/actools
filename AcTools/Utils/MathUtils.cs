@@ -1,4 +1,5 @@
 ﻿using System;
+using AcTools.Utils.Helpers;
 
 namespace AcTools.Utils {
     public static class MathUtils {
@@ -39,10 +40,10 @@ namespace AcTools.Utils {
         // [Obsolete] TODO
         public static double ToDoublePercentage(this int value) => 0.01 * value;
 
-        public static int RoundToInt(this double value) => (int)Math.Round(value);
+        public static int RoundToInt(this double value) => (int)Math.Floor(value);
 
         /// <summary>
-        /// Round(0.342, 0.05) → 0.35
+        /// For example: Round(0.342, 0.05) → 0.35.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="precision"></param>
@@ -52,13 +53,47 @@ namespace AcTools.Utils {
         }
 
         /// <summary>
-        /// Round(340, 25) → 325
+        /// For example: Round(0.342, 0.05) → 0.30.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="precision"></param>
+        /// <returns></returns>
+        public static double Floor(this double value, double precision) {
+            return Math.Floor(value / precision) * precision;
+        }
+
+        /// <summary>
+        /// For example: Round(340, 25) → 350.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="precision"></param>
         /// <returns></returns>
         public static int Round(this int value, int precision) {
             return (int)(Math.Round((double)value / precision) * precision);
+        }
+
+        /// <summary>
+        /// For example: Round(340, 25) → 325.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="precision"></param>
+        /// <returns></returns>
+        public static int Floor(this int value, int precision) {
+            return (int)(Math.Floor((double)value / precision) * precision);
+        }
+
+        /// <summary>
+        /// Checks if double is equal to another double considering another double’s precision. For example:
+        /// RoughlyEquals(15.342, 15.34) → true; RoughlyEquals(15.34, 15.342) → false.
+        /// </summary>
+        /// <param name="value">Value which will be compared</param>
+        /// <param name="origin">Another value which will be compared and will define precision</param>
+        /// <returns></returns>
+        public static bool RoughlyEquals(this double value, double origin) {
+            // Stupidest way. But if it works, is it so stupid? Yes, it is.
+            var first = value.ToInvariantString();
+            var second = origin.ToInvariantString();
+            return first.Length > second.Length ? Equals(first.Substring(0, second.Length), second) : Equals(first, second);
         }
 
         public static float[] MatrixInverse(this float[] matrix) {

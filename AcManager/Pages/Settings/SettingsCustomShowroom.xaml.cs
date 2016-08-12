@@ -12,9 +12,11 @@ using FirstFloor.ModernUI.Windows;
 namespace AcManager.Pages.Settings {
     public partial class SettingsCustomShowroom : ILoadableContent {
         public class ViewModel : NotifyPropertyChanged {
-            public class NoneShowroom {
+            public class NoneShowroomInner {
                 public override string ToString() => Tools.ToolsStrings.Common_None;
             }
+
+            public static readonly object NoneShowroom = new NoneShowroomInner();
 
             public SettingsHolder.CustomShowroomSettings Holder => SettingsHolder.CustomShowroom;
 
@@ -34,8 +36,8 @@ namespace AcManager.Pages.Settings {
 
             internal ViewModel() {
                 Showrooms = new ObservableCollection<object>(
-                        ShowroomsManager.Instance.LoadedOnlyCollection.OrderBy(x => x.DisplayName).Prepend((object)new NoneShowroom()));
-                SelectedShowroom = Holder.ShowroomId == null ? (object)new NoneShowroom() : ShowroomsManager.Instance.GetById(Holder.ShowroomId);
+                        ShowroomsManager.Instance.EnabledOnlyCollection.OrderBy(x => x.DisplayName).Prepend(NoneShowroom));
+                SelectedShowroom = Holder.ShowroomId == null ? NoneShowroom : ShowroomsManager.Instance.GetById(Holder.ShowroomId);
             }
         }
 

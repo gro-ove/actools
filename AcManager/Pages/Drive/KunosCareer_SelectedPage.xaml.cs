@@ -198,14 +198,15 @@ namespace AcManager.Pages.Drive {
 
             await ev.CarObject.SkinsManager.EnsureLoadedAsync();
 
+            var skins = ev.CarObject.EnabledOnlySkins.ToList();
             var viewer = new ImageViewer(
-                ev.CarObject.Skins.Select(x => x.PreviewImage),
-                ev.CarObject.Skins.IndexOf(ev.CarSkin)
+                skins.Select(x => x.PreviewImage),
+                skins.IndexOf(ev.CarSkin)
             );
 
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
                 var selected = viewer.ShowDialogInSelectMode();
-                ev.CarSkin = ev.CarObject.Skins.ElementAtOrDefault(selected ?? -1) ?? ev.CarSkin;
+                ev.CarSkin = skins.ElementAtOrDefault(selected ?? -1) ?? ev.CarSkin;
             } else {
                 viewer.ShowDialog();
             }

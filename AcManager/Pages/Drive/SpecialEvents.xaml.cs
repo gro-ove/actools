@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
-using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcManagersNew;
@@ -16,9 +14,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -105,40 +101,6 @@ namespace AcManager.Pages.Drive {
                         await SpecialEventsManager.Instance.UpdateProgressViaModule(waiting, waiting.CancellationToken);
                     }
                 }, o => SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.UiModuleStarterType));
-        }
-
-        private void CarPreview_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-            var ev = Model.Selected;
-            if (ev == null) return;
-
-            var dialog = new ModernDialog {
-                Content = new CarBlock {
-                    Car = ev.CarObject,
-                    SelectedSkin = ev.CarSkin,
-                    SelectSkin = false,
-                    OpenShowroom = true
-                },
-                Width = 640,
-                Height = 720,
-                MaxWidth = 640,
-                MaxHeight = 720,
-                SizeToContent = SizeToContent.Manual,
-                Title = ev.CarObject.DisplayName
-            };
-
-            dialog.Buttons = new[] { dialog.OkButton, dialog.CancelButton };
-            dialog.ShowDialog();
-        }
-
-        private async void ChangeSkinMenuItem_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            var ev = Model.Selected;
-            if (ev == null) return;
-
-            await ev.CarObject.SkinsManager.EnsureLoadedAsync();
-            new ImageViewer(
-                ev.CarObject.Skins.Select(x => x.PreviewImage),
-                ev.CarObject.Skins.IndexOf(ev.CarSkin)
-            ).ShowDialog();
         }
 
         private ScrollViewer _scrollViewer;

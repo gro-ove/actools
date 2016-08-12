@@ -21,7 +21,6 @@ using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -170,7 +169,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public AcLoadedOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.LoadedOnlyCollection;
+        public AcEnabledOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.EnabledOnlyCollection;
 
         private IWithId _selectedFilter;
 
@@ -234,7 +233,7 @@ namespace AcManager.Pages.Dialogs {
             get {
                 PpFiltersManager.Instance.EnsureLoaded();
                 return _filters ?? (_filters = new ObservableCollection<IWithId>(
-                        PpFiltersManager.Instance.LoadedOnly.Where(x => DefaultPpFilter.Id != x.Id)
+                        PpFiltersManager.Instance.EnabledOnly.Where(x => DefaultPpFilter.Id != x.Id)
                                         .Cast<IWithId>().Prepend(DefaultPpFilter)));
             }
         }
@@ -296,28 +295,22 @@ namespace AcManager.Pages.Dialogs {
             public double CameraFov;
             public double? CameraExposure;
 
-            [DefaultValue(true)]
-            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            [DefaultValue(true), JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
             public bool DisableSweetFx;
 
-            [DefaultValue(true)]
-            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            [DefaultValue(true), JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
             public bool DisableWatermark;
 
-            [DefaultValue(true)]
-            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            [DefaultValue(true), JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
             public bool ResizePreviews;
 
-            [DefaultValue(true)]
-            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            [DefaultValue(true), JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
             public bool MaximizeVideoSettings;
 
-            [DefaultValue(true)]
-            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            [DefaultValue(true), JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
             public bool EnableFxaa;
 
-            [DefaultValue(true)]
-            [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+            [DefaultValue(true), JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
             public bool UseSpecialResolution;
         }
 

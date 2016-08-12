@@ -15,11 +15,8 @@ namespace AcManager.Tools.Objects {
         [NotNull]
         public CarSkinsManager SkinsManager { get; }
 
-        public IAcWrapperObservableCollection SkinsWrappers => SkinsManager.WrappersList;
-
-        public IEnumerable<CarSkinObject> Skins => SkinsManager.LoadedOnly;
-
-        public AcLoadedOnlyCollection<CarSkinObject> LoadedOnlySkins => SkinsManager.LoadedOnlyCollection;
+        [NotNull]
+        public AcEnabledOnlyCollection<CarSkinObject> EnabledOnlySkins => SkinsManager.EnabledOnlyCollection;
 
         /* TODO: force sorting by ID! */
         [CanBeNull]
@@ -39,7 +36,7 @@ namespace AcManager.Tools.Objects {
                 OnPropertyChanged(nameof(SelectedSkin));
 
                 if (_selectedSkin == null) return;
-                if (_selectedSkin.Id == SkinsWrappers.FirstOrDefault()?.Value.Id) {
+                if (_selectedSkin.Id == SkinsManager.WrappersList.FirstOrDefault()?.Value.Id) {
                     LimitedStorage.Remove(LimitedSpace.SelectedSkin, Id);
                 } else {
                     LimitedStorage.Set(LimitedSpace.SelectedSkin, Id, _selectedSkin.Id);
@@ -103,9 +100,7 @@ namespace AcManager.Tools.Objects {
             get {
                 if (_skinsActualListView != null) return _skinsActualListView;
 
-                _skinsActualListView = new BetterListCollectionView(SkinsManager.LoadedOnlyCollection) {
-                    Filter = o => (o as CarSkinObject)?.Enabled == true
-                };
+                _skinsActualListView = new BetterListCollectionView(SkinsManager.EnabledOnlyCollection);
                 _skinsActualListView.MoveCurrentTo(SelectedSkin);
                 _skinsActualListView.CurrentChanged += (sender, args) => {
                     SelectedSkin = _skinsActualListView.CurrentItem as CarSkinObject;

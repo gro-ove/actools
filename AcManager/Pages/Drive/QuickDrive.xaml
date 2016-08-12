@@ -113,7 +113,13 @@
                         <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                                 Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Border.ToolTip>
-                                <ToolTip Content="{Binding RealWeather.Description}" ContentStringFormat="{x:Static g:AppStrings.Drive_Weather_Warning}" />
+                                <Grid>
+                                    <TextBlock Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}"
+                                            Text="Can’t load real weather" />
+                                    <TextBlock
+                                            Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                                            Text="{Binding RealWeather.Description, StringFormat={x:Static g:AppStrings.Drive_Weather_Warning}, FallbackValue=?}" />
+                                </Grid>
                             </Border.ToolTip>
                             <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
                         </Border>

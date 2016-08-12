@@ -23,7 +23,8 @@ namespace AcManager.Pages.Dialogs {
 
             var skin = error.Target as CarSkinObject;
             if (skin != null) {
-                return CarsManager.Instance.GetById(skin.CarId)?.Skins.SelectMany(x => x.Errors) ?? new IAcError[0];
+                var skins = CarsManager.Instance.GetById(skin.CarId)?.SkinsManager;
+                return skins?.IsScanned == true ? skins.SelectMany(x => x.Errors) : new IAcError[0];
             }
 
             var setup = error.Target as CarSetupObject;

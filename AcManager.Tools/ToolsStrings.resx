@@ -250,6 +250,9 @@
   <data name="LogHelper_WheelsAreMissing" xml:space="preserve">
     <value>Wheels objects (WHEEL_LF, WHEEL_LR, …) are missing</value>
   </data>
+  <data name="LogHelper_TimeAttackNotSupported" xml:space="preserve">
+    <value>Time Attack mode is not supported by selected track</value>
+  </data>
   <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>Unpacked version doesn’t support auto-updating.</value>
   </data>

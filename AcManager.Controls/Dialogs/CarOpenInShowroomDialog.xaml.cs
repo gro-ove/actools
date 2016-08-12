@@ -133,9 +133,9 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            public AcLoadedOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.LoadedOnlyCollection;
+            public AcEnabledOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.EnabledOnlyCollection;
 
-            public AcLoadedOnlyCollection<PpFilterObject> Filters => PpFiltersManager.Instance.LoadedOnlyCollection;
+            public AcEnabledOnlyCollection<PpFilterObject> Filters => PpFiltersManager.Instance.EnabledOnlyCollection;
 
             public bool CanBeSaved => SelectedShowroom != null && SelectedFilter != null;
 

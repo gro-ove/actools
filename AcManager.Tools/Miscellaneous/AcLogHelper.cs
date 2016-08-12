@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Miscellaneous {
@@ -21,6 +22,9 @@ namespace AcManager.Tools.Miscellaneous {
 
             [LocalizedDescription("LogHelper_DriverIsMissing")]
             DriverModelIsMissing,
+
+            [LocalizedDescription("LogHelper_TimeAttackNotSupported")]
+            TimeAttackNotSupported,
         }
 
         public static WhatsGoingOn? TryToDetermineWhatsGoingOn() {
@@ -43,8 +47,13 @@ namespace AcManager.Tools.Miscellaneous {
                 if (log.Contains(@"COULD NOT FIND SUSPENSION OBJECT WHEEL_")) {
                     return WhatsGoingOn.WheelsAreMissing;
                 }
+
+                var crash = log.SkipWhile(x => x != @"CRASH in:").JoinToString('\n');
+                if (crash.Contains(@" evaluateTimeFromTrackSpline")) {
+                    return WhatsGoingOn.TimeAttackNotSupported;
+                }
                 
-                if (log.SkipWhile(x => x != @"CRASH in:").Any(x => x.Contains(@"DriverModel::DriverModel"))) {
+                if (crash.Contains(@"DriverModel::DriverModel")) {
                     return WhatsGoingOn.DriverModelIsMissing;
                 }
             } catch (Exception e) {

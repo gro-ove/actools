@@ -311,7 +311,7 @@
     <Compile Include="Helpers\Api\GoogleApiProvider.cs" />
     <Compile Include="Helpers\Api\YahooApiProvider.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />
-    <Compile Include="Lists\AcLoadedOnlyCollection.cs" />
+    <Compile Include="Lists\AcEnabledOnlyCollection.cs" />
     <Compile Include="Lists\AcWrapperCollectionView.cs" />
     <Compile Include="Lists\AutocompleteValuesList.cs" />
     <Compile Include="Lists\BetterListCollectionView.cs" />

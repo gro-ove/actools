@@ -71,10 +71,10 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void PreviewImage_OnMouseDown(object sender, MouseButtonEventArgs e) {
-            var list = Car.SkinsManager.LoadedOnly.Select(x => x.PreviewImage).ToList();
+            var list = Car.SkinsManager.EnabledOnly.Select(x => x.PreviewImage).ToList();
             var selected = new ImageViewer(list, list.IndexOf(SelectedSkin.PreviewImage))
                     .ShowDialogInSelectMode();
-            SelectedSkin = Car.Skins.ElementAtOrDefault(selected ?? -1) ?? SelectedSkin;
+            SelectedSkin = Car.EnabledOnlySkins.ElementAtOrDefault(selected ?? -1) ?? SelectedSkin;
         }
 
         private void ShowroomButton_OnMouseDown(object sender, MouseButtonEventArgs e) {

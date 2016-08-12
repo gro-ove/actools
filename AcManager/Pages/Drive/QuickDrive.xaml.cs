@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -19,7 +20,6 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -29,10 +29,11 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Pages.Drive {
-    public partial class QuickDrive {
+    public partial class QuickDrive : ILoadableContent {
         public static double TimeMinimum { get; } = 8d * 60 * 60;
 
         public static double TimeMaximum { get; } = 18d * 60 * 60;
@@ -46,7 +47,15 @@ namespace AcManager.Pages.Drive {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        public QuickDrive() {
+        public Task LoadAsync(CancellationToken cancellationToken) {
+            return WeatherManager.Instance.EnsureLoadedAsync();
+        }
+
+        public void Load() {
+            WeatherManager.Instance.EnsureLoaded();
+        }
+
+        public void Initialize() {
             DataContext = new ViewModel(null, true, _selectNextCar, _selectNextCarSkinId, _selectNextTrack);
             InitializeComponent();
             InputBindings.AddRange(new[] {
@@ -59,7 +68,7 @@ namespace AcManager.Pages.Drive {
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
         }
-
+        
         private DispatcherTimer _realConditionsTimer;
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
@@ -196,6 +205,22 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private WeatherType _selectedWeatherType;
+
+            public WeatherType SelectedWeatherType {
+                get { return _selectedWeatherType; }
+                set {
+                    if (Equals(value, _selectedWeatherType)) return;
+                    _selectedWeatherType = value;
+                    OnPropertyChanged();
+
+                    if (value != WeatherType.None) {
+                        TryToSetWeather();
+                    }
+                }
+            }
+
+            [CanBeNull]
             public WeatherObject SelectedWeather {
                 get { return _selectedWeather; }
                 set {
@@ -354,6 +379,10 @@ namespace AcManager.Pages.Drive {
                     if (!RealConditions) {
                         SaveLater();
                     }
+
+                    if (RealConditions) {
+                        TryToSetWeatherLater();
+                    }
                 }
             }
 
@@ -371,6 +400,10 @@ namespace AcManager.Pages.Drive {
 
                     if (!RealConditions || RealConditionsManualTime) {
                         SaveLater();
+                    }
+
+                    if (RealConditions) {
+                        TryToSetWeatherLater();
                     }
                 }
             }
@@ -400,16 +433,21 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            [CanBeNull]
             public WeatherDescription RealWeather {
                 get { return _realWeather; }
                 set {
                     if (Equals(value, _realWeather)) return;
                     _realWeather = value;
                     OnPropertyChanged();
+                    SelectedWeatherType = value?.Type ?? WeatherType.None;
+                    if (value != null) {
+                        TryToSetTemperature(value.Temperature);
+                    }
                 }
             }
 
-            public AcLoadedOnlyCollection<WeatherObject> WeatherList => WeatherManager.Instance.LoadedOnlyCollection;
+            public AcEnabledOnlyCollection<WeatherObject> WeatherList => WeatherManager.Instance.EnabledOnlyCollection;
             #endregion
 
             private GeoTagsEntry _selectedTrackGeoTags;
@@ -699,8 +737,6 @@ namespace AcManager.Pages.Drive {
 
                     if (weather != null) {
                         RealWeather = weather;
-                        TryToSetTemperature(weather.Temperature);
-                        await TryToSetWeatherType(weather.Type);
                     }
                 } finally {
                     _realWeatherInProcess = false;
@@ -713,22 +749,43 @@ namespace AcManager.Pages.Drive {
                 Temperature = clamped;
             }
 
-            private bool _waitingForWeatherList;
+            private bool _tryToSetWeatherLater;
 
-            private async Task TryToSetWeatherType(WeatherType type) {
-                if (_waitingForWeatherList) return;
-
-                _waitingForWeatherList = true;
-                await WeatherManager.Instance.EnsureLoadedAsync();
-                _waitingForWeatherList = false;
+            private async void TryToSetWeatherLater() {
+                if (_tryToSetWeatherLater || _realTimeInProcess || _realWeatherInProcess || !RealConditions) return;
+                _tryToSetWeatherLater = true;
 
                 try {
-                    var closest = WeatherDescription.FindClosestWeather(from w in WeatherManager.Instance.LoadedOnly
-                                                                        select w.Type, type);
+                    await Task.Delay(500);
+                    if (RealConditions) {
+                        TryToSetWeather();
+                    }
+                } finally {
+                    _tryToSetWeatherLater = false;
+                }
+            }
+
+            private string _weatherCandidatesFootprint;
+
+            private void TryToSetWeather() {
+                if (SelectedWeatherType == WeatherType.None) return;
+
+                try {
+                    var candidates = WeatherManager.Instance.LoadedOnly.Where(x => x.Enabled && x.TemperatureDiapason?.DiapasonContains(Temperature) != false
+                            && x.TimeDiapason?.TimeDiapasonContains(Time) != false).ToList();
+                    var closest = WeatherDescription.FindClosestWeather(from w in candidates select w.Type, SelectedWeatherType);
                     if (closest == null) {
                         IsWeatherNotSupported = true;
                     } else {
-                        SelectedWeather = WeatherManager.Instance.LoadedOnly.Where(x => x.Type == closest).RandomElement();
+                        candidates = candidates.Where(x => x.Type == closest).ToList();
+
+                        var footprint = candidates.Select(x => x.Id).JoinToString(';');
+                        if (footprint != _weatherCandidatesFootprint || !candidates.Contains(SelectedWeather)) {
+                            SelectedWeather = candidates.RandomElement();
+                            _weatherCandidatesFootprint = footprint;
+                        }
+
+                        IsWeatherNotSupported = false;
                     }
                 } catch (Exception e) {
                     IsWeatherNotSupported = true;

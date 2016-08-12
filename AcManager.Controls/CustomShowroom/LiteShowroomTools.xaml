@@ -109,7 +109,7 @@
                 </CheckBox>
 
                 <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_SkinHeader}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                <ComboBox ItemsSource="{Binding Car.LoadedOnlySkins}" SelectedItem="{Binding Skin}" Margin="0 4 0 0">
+                <ComboBox ItemsSource="{Binding Car.EnabledOnlySkins}" SelectedItem="{Binding Skin}" Margin="0 4 0 0">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <DockPanel Height="18">

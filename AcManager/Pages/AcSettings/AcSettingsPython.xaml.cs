@@ -23,7 +23,7 @@ namespace AcManager.Pages.AcSettings {
 
             public IUserPresetable Presets => AcSettingsHolder.AppsPresets;
 
-            public AcLoadedOnlyCollection<PythonAppObject> Apps => PythonAppsManager.Instance.LoadedOnlyCollection;
+            public AcEnabledOnlyCollection<PythonAppObject> Apps => PythonAppsManager.Instance.EnabledOnlyCollection;
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {
