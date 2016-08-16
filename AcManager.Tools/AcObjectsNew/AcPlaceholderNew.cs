@@ -2,9 +2,11 @@
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public class AcPlaceholderNew : NotifyPropertyChanged, IAcObjectNew, IWithId {
+        [NotNull]
         public string Id { get; }
 
         public virtual string DisplayName => Id;
@@ -15,7 +17,7 @@ namespace AcManager.Tools.AcObjectsNew {
             return Id;
         }
 
-        internal AcPlaceholderNew(string id, bool enabled) {
+        internal AcPlaceholderNew([NotNull] string id, bool enabled) {
             Id = id;
             Enabled = enabled;
         }

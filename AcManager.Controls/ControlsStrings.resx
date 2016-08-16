@@ -130,13 +130,7 @@
     <value>Auto clutch:</value>
   </data>
   <data name="Assists_AutoBlipLabel" xml:space="preserve">
-    <value>Auto blip:</value>
-  </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
-  </data>
-  <data name="Assists_TractionControlLabel" xml:space="preserve">
-    <value>TC:</value>
+    <value>Autoblip:</value>
   </data>
   <data name="Assists_StabilityControlLabel" xml:space="preserve">
     <value>Stability control:</value>
@@ -195,10 +189,6 @@
   <data name="KunosCareer_CompletedLabel" xml:space="preserve">
     <value>Completed: </value>
     <comment>Don’t forget about space at the end!</comment>
-  </data>
-  <data name="KunosCareer_Point" xml:space="preserve">
-    <value>point</value>
-    <comment>Will be pluralized automatically</comment>
   </data>
   <data name="KunosCareer_Error" xml:space="preserve">
     <value>{0} error</value>

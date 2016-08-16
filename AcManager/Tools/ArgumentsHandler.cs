@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -271,7 +271,7 @@ namespace AcManager.Tools {
             var author = match.Groups[2].Value;
 
             CarObject car = null;
-            TrackBaseObject track = null;
+            TrackObjectBase track = null;
 
             var splitted = ids.Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
             for (var i = 1; i < splitted.Length - 1 && (car == null || track == null); i++) {

@@ -20,6 +20,12 @@ namespace AcManager.Tools.AcObjectsNew {
             AddError(new AcError(this, type, args));
         }
 
+        private static bool IsSeveralAllowed(AcErrorType errorType) {
+            var type = typeof(AcErrorType);
+            var memInfo = type.GetMember(errorType.ToString());
+            return memInfo[0].GetCustomAttributes(typeof(SeveralAllowedAttribute), false).Length > 0;
+        }
+
         /// <summary>
         /// Add error if condition is true, remove existing if exists otherwise.
         /// </summary>
@@ -35,7 +41,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public void AddError(IAcError error) {
-            if (HasError(error.Type)) return;
+            if (HasError(error.Type) && !IsSeveralAllowed(error.Type)) return;
             _errors.Add(error);
             if (Errors.Count == 1) {
                 OnPropertyChanged(nameof(HasErrors));

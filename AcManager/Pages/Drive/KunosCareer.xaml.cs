@@ -46,13 +46,24 @@ namespace AcManager.Pages.Drive {
             KunosCareerManager.Instance.ShowIntro = false;
         }
 
-        private ScrollViewer _scrollViewer;
+        private ScrollViewer _scroll;
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             Model.Load();
 
-            _scrollViewer = ListBox.FindVisualChild<ScrollViewer>();
-            _scrollViewer?.ScrollToHorizontalOffset(ValuesStorage.GetDoubleNullable(KeyScrollValue) ?? 0d);
+            _scroll = ListBox.FindVisualChild<ScrollViewer>();
+            if (_scroll != null) {
+                _scroll.LayoutUpdated += ScrollLayoutUpdated;
+            }
+        }
+
+        private bool _positionLoaded;
+
+        private void ScrollLayoutUpdated(object sender, EventArgs e) {
+            if (_positionLoaded) return;
+            var value = ValuesStorage.GetDoubleNullable(KeyScrollValue) ?? 0d;
+            _scroll?.ScrollToHorizontalOffset(value);
+            _positionLoaded = true;
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -66,8 +77,8 @@ namespace AcManager.Pages.Drive {
         private const string KeyScrollValue = "KunosCareer.ListBox.Scroll";
 
         private void ListBox_ScrollChanged(object sender, ScrollChangedEventArgs e) {
-            if (_scrollViewer == null) return;
-            ValuesStorage.Set(KeyScrollValue, _scrollViewer.HorizontalOffset);
+            if (_scroll == null || !_positionLoaded) return;
+            ValuesStorage.Set(KeyScrollValue, _scroll.HorizontalOffset);
         }
 
         public static void NavigateToCareerPage(KunosCareerObject kunosCareer) {

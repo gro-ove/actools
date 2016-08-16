@@ -26,7 +26,7 @@ namespace AcManager.Pages.Drive {
             return GameWrapper.StartAsync(properties);
         }
 
-        public virtual void OnSelectedUpdated(CarObject selectedCar, TrackBaseObject selectedTrack) {
+        public virtual void OnSelectedUpdated(CarObject selectedCar, TrackObjectBase selectedTrack) {
         }
 
         public string ToSerializedString() {

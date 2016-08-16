@@ -296,9 +296,6 @@
   <data name="AcObject_PlaceIsTaken" xml:space="preserve">
     <value>Место занято</value>
   </data>
-  <data name="CannotFindSteamId" xml:space="preserve">
-    <value>Не удаётся найти Steam ID</value>
-  </data>
   <data name="TryAgainDot" xml:space="preserve">
     <value>Попробуйте ещё раз.</value>
   </data>
@@ -616,5 +613,18 @@
   </data>
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Неверный формат</value>
+  </data>
+  <data name="Uploader_GoogleDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
+  <data name="Settings_PeriodFormat" xml:space="preserve">
+    <value>Раз в {0}</value>
+  </data>
+  <data name="KunosCareer_Point" xml:space="preserve">
+    <value>очко</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="KunosCareer_Place" xml:space="preserve">
+    <value>место</value>
   </data>
 </root>

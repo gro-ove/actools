@@ -134,16 +134,16 @@ namespace AcManager.Controls.Presentation {
         
         #region Theme and color
         public Color[] AccentColors { get; } = {
-            Color.FromArgb(0xff, 0xa2, 0x00, 0x25), // nordschleife special
-            Color.FromArgb(0xff, 0x33, 0x99, 0xff), // blue
-            Color.FromArgb(0xff, 0x00, 0xab, 0xa9), // teal
-            Color.FromArgb(0xff, 0x33, 0x99, 0x33), // green
-            Color.FromArgb(0xff, 0x8c, 0xbf, 0x26), // lime
-            Color.FromArgb(0xff, 0xf0, 0x96, 0x09), // orange
-            Color.FromArgb(0xff, 0xff, 0x45, 0x00), // orange red
-            Color.FromArgb(0xff, 0xe5, 0x14, 0x00), // red
-            Color.FromArgb(0xff, 0xff, 0x00, 0x97), // magenta
-            Color.FromArgb(0xff, 0xa2, 0x00, 0xff), // purple            
+            Color.FromRgb(0xa2, 0x00, 0x25), // nordschleife special
+            Color.FromRgb(0x33, 0x99, 0xff), // blue
+            Color.FromRgb(0x00, 0xab, 0xa9), // teal
+            Color.FromRgb(0x33, 0x99, 0x33), // green
+            Color.FromRgb(0x8c, 0xbf, 0x26), // lime
+            Color.FromRgb(0xf0, 0x96, 0x09), // orange
+            Color.FromRgb(0xff, 0x45, 0x00), // orange red
+            Color.FromRgb(0xe5, 0x14, 0x00), // red
+            Color.FromRgb(0xff, 0x00, 0x97), // magenta
+            Color.FromRgb(0xa2, 0x00, 0xff), // purple            
         };
 
         private Color _accentColor;

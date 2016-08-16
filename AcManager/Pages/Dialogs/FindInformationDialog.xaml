@@ -3,12 +3,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Title="{Binding SelectedObject.DisplayName, Mode=OneTime}" MaxWidth="1200" MaxHeight="900"
-        d:DataContext="{d:DesignInstance di:FindInformationDialog+FindInformationViewModel}">
+        d:DataContext="{d:DesignInstance di:FindInformationDialog+ViewModel}" PreviewKeyDown="OnPreviewKeyDown">
     <mui:ModernDialog.ButtonsRowContent>
         <Button Command="{Binding SaveCommand}" Content="{Binding SaveLabel}" />
     </mui:ModernDialog.ButtonsRowContent>
     <StackPanel Margin="0 0 0 -36">
-        <c:WebBlock x:Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" Width="1080" Height="640" />
+        <c:WebBlock x:Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="OnPageLoaded" Width="1080" Height="640" OpenNewWindowsExternally="False" />
         <TextBlock FontStyle="Italic" Margin="8" Text="{x:Static c:ControlsStrings.FindInformation_Description}" />
     </StackPanel>
 </mui:ModernDialog>

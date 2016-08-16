@@ -15,10 +15,10 @@ using OxyPlot.Reporting;
 
 namespace AcManager.Pages.Dialogs {
     public partial class FindInformationDialog {
-        private FindInformationViewModel Model => (FindInformationViewModel)DataContext;
+        private ViewModel Model => (ViewModel)DataContext;
 
         public FindInformationDialog(AcJsonObjectNew obj) {
-            DataContext = new FindInformationViewModel(obj);
+            DataContext = new ViewModel(obj);
             InitializeComponent();
 
             Buttons = new[] {
@@ -29,12 +29,11 @@ namespace AcManager.Pages.Dialogs {
             WebBrowser.SetScriptProvider(new ScriptProvider(Model));
         }
 
-        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        [ComVisible(true)]
-        public class ScriptProvider : BaseScriptProvider {
-            private readonly FindInformationViewModel _model;
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
+        public class ScriptProvider : ScriptProviderBase {
+            private readonly ViewModel _model;
 
-            public ScriptProvider(FindInformationViewModel model) {
+            public ScriptProvider(ViewModel model) {
                 _model = model;
             }
 
@@ -43,7 +42,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public class FindInformationViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             public AcJsonObjectNew SelectedObject { get; }
 
             public string StartPage { get; }
@@ -73,7 +72,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            public FindInformationViewModel(AcJsonObjectNew selectedObject) {
+            public ViewModel(AcJsonObjectNew selectedObject) {
                 SelectedObject = selectedObject;
                 StartPage = GetMapAddress(SelectedObject);
             }
@@ -127,11 +126,11 @@ namespace AcManager.Pages.Dialogs {
         }
         
         private static string GetMapAddress(AcCommonObject obj) {
-            return SettingsHolder.Content.SearchEngine?.GetUri(obj.DisplayName) ??
-                    $"https://duckduckgo.com/?q=site%3Awikipedia.org+{Uri.EscapeDataString(obj.DisplayName)}&ia=web";
+            return SettingsHolder.Content.SearchEngine?.GetUri(obj.Name ?? obj.Id) ??
+                    $"https://duckduckgo.com/?q=site%3Awikipedia.org+{Uri.EscapeDataString(obj.Name ?? obj.Id)}&ia=web";
         }
 
-        private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
+        private void OnPageLoaded(object sender, PageLoadedEventArgs e) {
             WebBrowser.Execute(@"
 document.addEventListener('mouseup', function(){
     window.external.Update(window.getSelection().toString());
@@ -142,6 +141,12 @@ document.addEventListener('mousedown', function(e){
         e.target.setAttribute('target', '_parent');
     }
 }, false);");
+        }
+
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                e.Handled = true;
+            }
         }
     }
 }

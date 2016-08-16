@@ -53,6 +53,9 @@
                                 IsChecked="{Binding AiLevelArrangeRandomly, Mode=TwoWay}" />
                         <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder}" IsCheckable="True"
                                 ToolTip="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder_Tooltip}" IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
+                        <Separator />
+                        <MenuItem Header="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" IsCheckable="True"
+                                IsChecked="{Binding AiLevelInDriverName, Mode=TwoWay}" />
                     </ContextMenu>
                 </StackPanel.ContextMenu>
                 <mui:ValueLabel Value="{Binding AiLevelMin}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrengthMin}" />

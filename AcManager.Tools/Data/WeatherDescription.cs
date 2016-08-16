@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Data {
     public class WeatherDescription {
-        [Pure]
+        [System.Diagnostics.Contracts.Pure]
         public static WeatherType? FindClosestWeather(IEnumerable<WeatherType> list, WeatherType type) {
             if (type == WeatherType.None) return null;
 
@@ -185,6 +185,7 @@ namespace AcManager.Tools.Data {
 
         public double Temperature { get; }
 
+        [CanBeNull]
         public string Icon { get; }
 
         public string Description { get; }

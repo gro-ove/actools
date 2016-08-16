@@ -15,7 +15,7 @@ namespace AcManager.Pages.Dialogs {
     public partial class TrackGeoTagsDialog {
         private ViewModel Model => (ViewModel)DataContext;
 
-        public TrackGeoTagsDialog(TrackBaseObject track) {
+        public TrackGeoTagsDialog(TrackObjectBase track) {
             DataContext = new ViewModel(track);
             InitializeComponent();
 
@@ -105,7 +105,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            public ViewModel(TrackBaseObject track) {
+            public ViewModel(TrackObjectBase track) {
                 Track = track;
 
                 if (track.GeoTags != null) {
@@ -117,7 +117,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            public TrackBaseObject Track { get; }
+            public TrackObjectBase Track { get; }
 
             private RelayCommand _saveCommand;
 
@@ -126,12 +126,12 @@ namespace AcManager.Pages.Dialogs {
             }, o => Latitude != null && Longitude != null));
         }
 
-        private static string GetQuery(TrackBaseObject track) {
+        private static string GetQuery(TrackObjectBase track) {
             return string.IsNullOrEmpty(track.City) && string.IsNullOrEmpty(track.Country) ? track.Name :
                     new[] { track.City, track.Country }.Where(x => x != null).JoinToString(@", ");
         }
 
-        private static string GetMapAddress(TrackBaseObject track) {
+        private static string GetMapAddress(TrackObjectBase track) {
             var tags = track.GeoTags;
             return CmHelpersProvider.GetAddress("map") + @"?t#" +
                     (tags?.IsEmptyOrInvalid == false ? $"{tags.LatitudeValue};{tags.LongitudeValue}" : GetQuery(track));

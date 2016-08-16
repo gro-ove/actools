@@ -6,9 +6,9 @@ namespace AcManager.Pages.Settings {
     public partial class SettingsPage {
         public SettingsPage() {
             InitializeComponent();
-            if (SettingsHolder.Common.MsMode) {
+            if (SettingsHolder.Common.DeveloperMode) {
                 Tab.Links.Add(new Link {
-                    DisplayName = AcManager.AppStrings.Settings_Dev,
+                    DisplayName = AppStrings.Settings_Dev,
                     Source = new Uri("/Pages/Settings/SettingsDev.xaml", UriKind.Relative)
                 });
             }

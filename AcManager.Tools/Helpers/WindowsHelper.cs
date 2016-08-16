@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -31,7 +32,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         // TODO
-        public static void ViewInBrowser(string url) {
+        public static void ViewInBrowser([Localizable(false)] string url) {
             if (url == null) return;
             Process.Start(url);
         }

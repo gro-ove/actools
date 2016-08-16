@@ -141,14 +141,11 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private int? _year;
 
-        public int? Year {
+        public virtual int? Year {
             get { return _year; }
             set {
-                if (value == 0) {
-                    value = null;
-                }
-
-                if (value == _year) return;
+                if (value == 0) value = null;
+                if (Equals(value, _year)) return;
                 _year = value;
 
                 if (_year.HasValue && Name != null) {

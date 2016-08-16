@@ -1,10 +1,8 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.AssistsDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:vm="clr-namespace:AcManager.Controls.ViewModels;assembly=AcManager.Controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
-        d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static g:AppStrings.Assists_Title}" d:DataContext="{d:DesignInstance vm:AssistsViewModel}"
-        MaxWidth="99999">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
+        xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{x:Static t:ToolsStrings.Assists_Title}"
+        d:DataContext="{d:DesignInstance c:AssistsViewModel}" MaxWidth="99999">
 
     <mui:ModernDialog.Resources>
         <Thickness x:Key="EntryMargin">0 0 8 8</Thickness>
@@ -26,69 +24,69 @@
 
         <!-- first row -->
         <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding AutoShifter}" Margin="{StaticResource EntryMargin}"
-                ToolTip="{x:Static g:AppStrings.Assists_AutoShifting_Tooltip}">
-            <Label Content="{x:Static g:AppStrings.Assists_AutoShifting}" />
+                ToolTip="{x:Static t:ToolsStrings.Assists_AutoShifting_Tooltip}">
+            <Label Content="{x:Static t:ToolsStrings.Assists_AutoShifting}" />
         </CheckBox>
 
         <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding AutoClutch}" Margin="{StaticResource EntryMargin}"
-                ToolTip="{x:Static g:AppStrings.Assists_AutoClutch_Tooltip}">
-            <Label Content="{x:Static g:AppStrings.Assists_AutoClutch}" />
+                ToolTip="{x:Static t:ToolsStrings.Assists_AutoClutch_Tooltip}">
+            <Label Content="{x:Static t:ToolsStrings.Assists_AutoClutch}" />
         </CheckBox>
 
         <!-- second row -->
         <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutoBlip}" Margin="{StaticResource EntryMargin}"
-                ToolTip="{x:Static g:AppStrings.Assists_AutoBlip_Tooltip}">
-            <Label Content="{x:Static g:AppStrings.Assists_AutoBlip}" />
+                ToolTip="{x:Static t:ToolsStrings.Assists_AutoBlip_Tooltip}">
+            <Label Content="{x:Static t:ToolsStrings.Assists_AutoBlip}" />
         </CheckBox>
 
         <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IdealLine}" Margin="{StaticResource EntryMargin}"
-                ToolTip="{x:Static g:AppStrings.Assists_IdealLine_Tooltip}">
-            <Label Content="{x:Static g:AppStrings.Assists_IdealLine}" />
+                ToolTip="{x:Static t:ToolsStrings.Assists_IdealLine_Tooltip}">
+            <Label Content="{x:Static t:ToolsStrings.Assists_IdealLine}" />
         </CheckBox>
 
         <!-- third row -->
-        <StackPanel Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="0" ToolTip="{x:Static g:AppStrings.Assists_TractionControlLabel_Tooltip}">
-            <TextBlock Text="{x:Static g:AppStrings.Assists_TractionControlLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+        <StackPanel Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="0" ToolTip="{x:Static t:ToolsStrings.Assists_TractionControlLabel_Tooltip}">
+            <TextBlock Text="{x:Static t:ToolsStrings.Assists_TractionControlLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
             <ComboBox Margin="4 0 4 0" SelectedItem="{Binding TractionControl}" ItemsSource="{Binding AssistStates}" />
         </StackPanel>
 
-        <StackPanel Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="1" ToolTip="{x:Static g:AppStrings.Assists_AbsLabel_Tooltip}">
-            <TextBlock Text="{x:Static g:AppStrings.Assists_AbsLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
+        <StackPanel Margin="{StaticResource EntryMargin}" Grid.Row="2" Grid.Column="1" ToolTip="{x:Static t:ToolsStrings.Assists_AbsLabel_Tooltip}">
+            <TextBlock Text="{x:Static t:ToolsStrings.Assists_AbsLabel}" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 4" />
             <ComboBox Margin="4 0 4 0" SelectedItem="{Binding Abs}" ItemsSource="{Binding AssistStates}" />
         </StackPanel>
 
         <!-- forth row -->
-        <StackPanel Grid.Row="3" Grid.Column="0" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static g:AppStrings.Assists_StabilityControl_Tooltip}">
-            <mui:ValueLabel Content="{x:Static g:AppStrings.Assists_StabilityControl}" Value="{Binding StabilityControl}" Postfix="%" />
+        <StackPanel Grid.Row="3" Grid.Column="0" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static t:ToolsStrings.Assists_StabilityControl_Tooltip}">
+            <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_StabilityControl}" Value="{Binding StabilityControl}" Postfix="%" />
             <Slider Minimum="0" Maximum="100" Value="{Binding StabilityControl}" Margin="0 0 0 4" TickFrequency="10" TickPlacement="BottomRight"
                     IsSnapToTickEnabled="False" />
         </StackPanel>
 
         <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding FuelConsumption}" Margin="{StaticResource EntryMargin}">
-            <Label Content="{x:Static g:AppStrings.Assists_FuelConsumption}" />
+            <Label Content="{x:Static t:ToolsStrings.Assists_FuelConsumption}" />
         </CheckBox>
 
         <!-- fifth row -->
-        <StackPanel Grid.Row="4" Grid.Column="0" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static g:AppStrings.Assists_MechanicalDamage_Tooltip}">
-            <mui:ValueLabel Content="{x:Static g:AppStrings.Assists_MechanicalDamage}" Value="{Binding Damage}" Postfix="%" />
+        <StackPanel Grid.Row="4" Grid.Column="0" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static t:ToolsStrings.Assists_MechanicalDamage_Tooltip}">
+            <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_MechanicalDamage}" Value="{Binding Damage}" Postfix="%" />
             <Slider Minimum="0" Maximum="100" Value="{Binding Damage}" Margin="0 0 0 4" TickFrequency="10" TickPlacement="BottomRight"
                     IsSnapToTickEnabled="True" />
         </StackPanel>
 
-        <StackPanel Grid.Row="4" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static g:AppStrings.Assists_TyreWear_Tooltip}">
-            <mui:ValueLabel Content="{x:Static g:AppStrings.Assists_TyreWear}" Value="{Binding TyreWearMultipler}" Postfix="×" />
+        <StackPanel Grid.Row="4" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static t:ToolsStrings.Assists_TyreWear_Tooltip}">
+            <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_TyreWear}" Value="{Binding TyreWearMultipler}" Postfix="×" />
             <Slider Minimum="0" Maximum="5" Value="{Binding TyreWearMultipler}" Margin="0 0 0 4" TickFrequency="1" TickPlacement="BottomRight"
                     IsSnapToTickEnabled="False" />
         </StackPanel>
 
         <!-- sixth row -->
         <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding TyreBlankets}" Margin="{StaticResource EntryMargin}"
-                ToolTip="{x:Static g:AppStrings.Assists_TyreBlankets_Tooltip}">
-            <Label Content="{x:Static g:AppStrings.Assists_TyreBlankets}" />
+                ToolTip="{x:Static t:ToolsStrings.Assists_TyreBlankets_Tooltip}">
+            <Label Content="{x:Static t:ToolsStrings.Assists_TyreBlankets}" />
         </CheckBox>
 
-        <StackPanel Grid.Row="5" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static g:AppStrings.Assists_SlipstreamEffect_Tooltip}">
-            <mui:ValueLabel Content="{x:Static g:AppStrings.Assists_SlipstreamEffect}" Value="{Binding SlipsteamMultipler}" Postfix="×" />
+        <StackPanel Grid.Row="5" Grid.Column="1" Margin="{StaticResource EntryMargin}" ToolTip="{x:Static t:ToolsStrings.Assists_SlipstreamEffect_Tooltip}">
+            <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_SlipstreamEffect}" Value="{Binding SlipsteamMultipler}" Postfix="×" />
             <Slider Minimum="0" Maximum="10" Value="{Binding SlipsteamMultipler}" Margin="0 0 0 4" TickFrequency="1" TickPlacement="BottomRight"
                     IsSnapToTickEnabled="True" />
         </StackPanel>

@@ -13,14 +13,14 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public class TrackObject : TrackBaseObject {
+    public class TrackObject : TrackObjectBase {
         public sealed override string LayoutId { get; }
 
         [NotNull]
         public sealed override string IdWithLayout { get; }
 
         [CanBeNull]
-        public BetterObservableCollection<TrackBaseObject> MultiLayouts { get; }
+        public BetterObservableCollection<TrackObjectBase> MultiLayouts { get; }
 
         [CanBeNull]
         private readonly string _layoutLocation;
@@ -39,12 +39,12 @@ namespace AcManager.Tools.Objects {
 
                     LayoutId = information.SimpleMainLayout ? null : Path.GetFileName(_layoutLocation);
                     IdWithLayout = information.SimpleMainLayout ? Id : $"{Id}/{LayoutId}";
-                    MultiLayouts = new BetterObservableCollection<TrackBaseObject>(
+                    MultiLayouts = new BetterObservableCollection<TrackObjectBase>(
                             information.AdditionalLayouts.Select(x => {
-                                var c = new TrackExtraLayoutObject(manager, id, enabled, x);
+                                var c = new TrackExtraLayoutObject(manager, this, enabled, x);
                                 c.PropertyChanged += Configuration_PropertyChanged;
                                 return c;
-                            }).Prepend((TrackBaseObject)this));
+                            }).Prepend((TrackObjectBase)this));
                     return;
                 }
             } catch (AcErrorException e) {
@@ -58,10 +58,10 @@ namespace AcManager.Tools.Objects {
             MultiLayouts = null;
         }
 
-        private TrackBaseObject _selectedLayout;
+        private TrackObjectBase _selectedLayout;
 
         [NotNull]
-        public TrackBaseObject SelectedLayout {
+        public TrackObjectBase SelectedLayout {
             get {
                 if (!MultiLayoutMode) return this;
                 if (_selectedLayout == null) {
@@ -171,7 +171,7 @@ namespace AcManager.Tools.Objects {
         /// </summary>
         /// <param name="idWithLayout">Id with layout id ("ks_nordschleife/touristenfahrten")</param>
         /// <returns></returns>
-        public TrackBaseObject GetLayoutById(string idWithLayout) {
+        public TrackObjectBase GetLayoutById(string idWithLayout) {
             return MultiLayouts?.FirstOrDefault(x => x.IdWithLayout.Equals(idWithLayout, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -180,7 +180,7 @@ namespace AcManager.Tools.Objects {
         /// </summary>
         /// <param name="layoutId">Layout id ("touristenfahrten", not "ks_nordschleife/touristenfahrten"!)</param>
         /// <returns></returns>
-        public TrackBaseObject GetLayoutByLayoutId(string layoutId) {
+        public TrackObjectBase GetLayoutByLayoutId(string layoutId) {
             return MultiLayouts?.FirstOrDefault(x => x.LayoutId?.Equals(layoutId, StringComparison.OrdinalIgnoreCase) == true);
         }
 
@@ -219,7 +219,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private static string FindNameForMultiLayoutMode(IReadOnlyList<TrackBaseObject> obj) {
+        private static string FindNameForMultiLayoutMode(IReadOnlyList<TrackObjectBase> obj) {
             var baseName = obj[0].Name;
             if (baseName == null) return null;
 

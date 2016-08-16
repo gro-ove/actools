@@ -826,11 +826,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
             DebouncingInterval = Ini["STEER"].GetInt("DEBOUNCING_MS", 50);
 
             var section = Ini["CONTROLLERS"];
-            var devices = LinqExtension.RangeFrom().Select(x => new {
-                Id = section.GetNonEmpty($"PGUID{x}"),
-                Name = section.GetNonEmpty($"CON{x}")
-            }).TakeWhile(x => x.Id != null).Select((x, i) => {
-                var device = Devices.GetByIdOrDefault(x.Id);
+            var devices = section.Keys.Where(x => x.StartsWith(@"CON")).Select(x => new {
+                Id = section.GetNonEmpty($"PGUID{x.Substring(3)}"),
+                Name = section.GetNonEmpty(x)
+            }).TakeWhile(x => x.Id != null && x.Name != null).Select((x, i) => {
+                var device = Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name) ?? Devices.GetByIdOrDefault(x.Id);
                 if (device == null) {
                     return (IDirectInputDevice)GetPlaceholderDevice(x.Id, x.Name, i);
                 }

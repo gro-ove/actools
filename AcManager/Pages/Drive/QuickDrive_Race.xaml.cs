@@ -16,7 +16,6 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -184,6 +183,7 @@ namespace AcManager.Pages.Drive {
                     if (value && _aiLevelMin != _aiLevel) {
                         _aiLevelMin = _aiLevel;
                         OnPropertyChanged(nameof(AiLevelMin));
+                        OnPropertyChanged(nameof(AiLevelInDriverName));
                     }
                 }
             }
@@ -217,6 +217,20 @@ namespace AcManager.Pages.Drive {
                     if (value) {
                         AiLevelArrangeRandomly = false;
                     }
+                }
+            }
+
+            private const string KeyAiLevelInDriverName = "QuickDrive_Race.AiLevelInDriverName";
+
+            private bool _aiLevelInDriverName = ValuesStorage.GetBool(KeyAiLevelInDriverName);
+
+            public bool AiLevelInDriverName {
+                get { return _aiLevelInDriverName && !AiLevelFixed; }
+                set {
+                    if (Equals(value, _aiLevelInDriverName)) return;
+                    _aiLevelInDriverName = value;
+                    OnPropertyChanged();
+                    ValuesStorage.Set(KeyAiLevelInDriverName, value);
                 }
             }
 
@@ -693,14 +707,12 @@ namespace AcManager.Pages.Drive {
                 script = script.Trim();
                 if (script.Contains('\n')) return script;
                 
-                script = $@"return function(tested)
-                    return {script}
-                end";
+                script = $"return function(tested)\nreturn {script}\nend";
                 Logging.Write(script);
                 return script;
             }
 
-            private async Task<CarObject[]> FindAppropriateCars([NotNull] CarObject car, [NotNull] TrackBaseObject track, [NotNull] GridType type, 
+            private async Task<CarObject[]> FindAppropriateCars([NotNull] CarObject car, [NotNull] TrackObjectBase track, [NotNull] GridType type, 
                     bool useUserFilter, CancellationToken cancellation = default(CancellationToken)) {
                 if (car == null) throw new ArgumentNullException(nameof(car));
                 if (track == null) throw new ArgumentNullException(nameof(track));
@@ -756,7 +768,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private async Task<IEnumerable<Game.AiCar>> GenerateAiCars(CarObject selectedCar, AcJsonObjectNew selectedTrack, int opponentsNumber, params CarObject[] opponentsCars) {
-                NameNationality[] nameNationalities = null;
+                NameNationality[] nameNationalities;
                 var trackCountry = selectedTrack.Country == null
                         ? null : DataProvider.Instance.Countries.GetValueOrDefault(selectedTrack.Country.Trim().ToLower()) ?? @"Italy";
 
@@ -772,6 +784,8 @@ namespace AcManager.Pages.Drive {
                     };
                 } else if (DataProvider.Instance.NationalitiesAndNames.Any()) {
                     nameNationalities = GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList).Take(opponentsNumber).ToArray();
+                } else {
+                    nameNationalities = null;
                 }
 
                 foreach (var car in opponentsCars) {
@@ -791,32 +805,41 @@ namespace AcManager.Pages.Drive {
                     playerCarEntry.Skins.IgnoreOnce(selectedCar.SelectedSkin);
                 }
 
-                var aiLevels = from i in Enumerable.Range(0, opponentsNumber)
-                               select AiLevelMin + (int)((opponentsNumber < 2 ? 1f : (float)i / (opponentsNumber - 1)) * (AiLevel - AiLevelMin));
-                if (AiLevelArrangeRandomly) {
-                    aiLevels = GoodShuffle.Get(aiLevels);
-                } else if (!AiLevelArrangeReverse) {
-                    aiLevels = aiLevels.Reverse();
+                List<int> aiLevels;
+                if (AiLevelFixed) {
+                    aiLevels = null;
+                } else {
+                    var aiLevelsInner = from i in Enumerable.Range(0, opponentsNumber)
+                                        select AiLevelMin + (int)((opponentsNumber < 2 ? 1f : (float)i / (opponentsNumber - 1)) * (AiLevel - AiLevelMin));
+                    if (AiLevelArrangeRandomly) {
+                        aiLevelsInner = GoodShuffle.Get(aiLevelsInner);
+                    } else if (!AiLevelArrangeReverse) {
+                        aiLevelsInner = aiLevelsInner.Reverse();
+                    }
+
+                    aiLevels = AiLevelFixed ? null : aiLevelsInner.Take(opponentsNumber).ToList();
                 }
 
-                var list = aiLevels.Take(opponentsNumber).ToList();
                 return from i in Enumerable.Range(0, opponentsNumber)
                        let entry = opponentsCarsShuffled.Next
+                       let level = aiLevels?[i] ?? 100
+                       let name = nameNationalities?[i].Name ?? @"AI #" + i
+                       let nationality = nameNationalities?[i].Nationality ?? trackCountry
                        select new Game.AiCar {
-                           AiLevel = AiLevelFixed ? 100 : list[i],
+                           AiLevel = level,
                            CarId = entry.Car.Id,
-                           DriverName = nameNationalities?[i].Name ?? @"AI #" + i,
-                           Nationality = nameNationalities?[i].Nationality ?? trackCountry,
+                           DriverName = AiLevelInDriverName ? $"{name} ({level}%)" : name,
+                           Nationality = nationality,
                            Setup = "",
                            SkinId = entry.Skins.Next?.Id
                        };
             }
 
             [CanBeNull]
-            private TrackBaseObject _selectedTrack;
+            private TrackObjectBase _selectedTrack;
             private GridType _selectedGridType;
 
-            public override void OnSelectedUpdated(CarObject selectedCar, TrackBaseObject selectedTrack) {
+            public override void OnSelectedUpdated(CarObject selectedCar, TrackObjectBase selectedTrack) {
                 SelectedCar = selectedCar;
 
                 if (_selectedTrack != null) {

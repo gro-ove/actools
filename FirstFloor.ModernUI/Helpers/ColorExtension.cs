@@ -15,10 +15,10 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [CanBeNull]
         public static Color? ToColor(this string s) {
+            if (s == null) return null;
             try {
                 return ColorTranslator.FromHtml(s).ToColor();
             } catch (Exception) {
-                // TODO
                 return null;
             }
         }
@@ -32,91 +32,30 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static double GetSaturation(this Color c) {
-            return System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B).GetSaturation();
+            int max = Math.Max(c.R, Math.Max(c.G, c.B));
+            return max == 0 ? 0 : 1d - 1d * Math.Min(c.R, Math.Min(c.G, c.B)) / max;
         }
 
-        /// <summary>
-        /// Creates a Color from alpha, hue, saturation and brightness.
-        /// </summary>
-        /// <param name="hue">The hue value.</param>
-        /// <param name="saturation">The saturation value.</param>
-        /// <param name="brightness">The brightness value.</param>
-        /// <returns>A Color with the given values.</returns>
-        public static Color FromHsb(double hue, double saturation, double brightness) {
-            while (hue < 0) {
-                hue += 360;
+        public static Color FromHsb(double hue, double saturation, double value) {
+            var f = hue / 60 - Math.Floor(hue / 60);
+            var v = Clamp(255 * value);
+            var p = Clamp(255 * value * (1 - saturation));
+            var q = Clamp(255 * value * (1 - f * saturation));
+            var t = Clamp(255 * value * (1 - (1 - f) * saturation));
+            switch ((int)Math.Floor(hue / 60) % 6) {
+                case 0:
+                    return Color.FromRgb(v, t, p);
+                case 1:
+                    return Color.FromRgb(q, v, p);
+                case 2:
+                    return Color.FromRgb(p, v, t);
+                case 3:
+                    return Color.FromRgb(p, q, v);
+                case 4:
+                    return Color.FromRgb(t, p, v);
+                default:
+                    return Color.FromRgb(v, p, q);
             }
-            while (hue >= 360) {
-                hue -= 360;
-            }
-
-            double r, g, b;
-            if (brightness <= 0) {
-                r = g = b = 0;
-            } else if (saturation <= 0) {
-                r = g = b = brightness;
-            } else {
-                var hf = hue / 60.0;
-                var i = (int)Math.Floor(hf);
-                var f = hf - i;
-                var pv = brightness * (1 - saturation);
-                var qv = brightness * (1 - saturation * f);
-                var tv = brightness * (1 - saturation * (1 - f));
-                switch (i) {
-                    case 0:
-                        r = brightness;
-                        g = tv;
-                        b = pv;
-                        break;
-
-                    case 1:
-                        r = qv;
-                        g = brightness;
-                        b = pv;
-                        break;
-                    case 2:
-                        r = pv;
-                        g = brightness;
-                        b = tv;
-                        break;
-
-                    case 3:
-                        r = pv;
-                        g = qv;
-                        b = brightness;
-                        break;
-
-                    case 4:
-                        r = tv;
-                        g = pv;
-                        b = brightness;
-                        break;
-
-                    case 5:
-                        r = brightness;
-                        g = pv;
-                        b = qv;
-                        break;
-
-                    case 6:
-                        r = brightness;
-                        g = tv;
-                        b = pv;
-                        break;
-
-                    case -1:
-                        r = brightness;
-                        g = pv;
-                        b = qv;
-                        break;
-
-                    default:
-                        r = g = b = brightness;
-                        break;
-                }
-            }
-
-            return Color.FromRgb(Clamp(r * 255d), Clamp(g * 255d), Clamp(b * 255d));
         }
 
         private static byte Clamp(double i) {

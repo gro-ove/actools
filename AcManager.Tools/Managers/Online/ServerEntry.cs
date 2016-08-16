@@ -563,10 +563,10 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         [CanBeNull]
-        private TrackBaseObject _track;
+        private TrackObjectBase _track;
 
         [CanBeNull]
-        public TrackBaseObject Track {
+        public TrackObjectBase Track {
             get { return _track; }
             set {
                 if (Equals(value, _track)) return;
@@ -616,7 +616,7 @@ namespace AcManager.Tools.Managers.Online {
             return CarsManager.Instance.GetWrapperById(informationId);
         }
 
-        private static TrackBaseObject GetTrack(string informationId) {
+        private static TrackObjectBase GetTrack(string informationId) {
             return TracksManager.Instance.GetById(informationId) ??
                     (informationId.Contains(@"-") ? TracksManager.Instance.GetLayoutById(informationId.ReplaceLastOccurrence(@"-", @"/")) : null);
         }

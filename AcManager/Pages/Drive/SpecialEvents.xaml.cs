@@ -97,38 +97,43 @@ namespace AcManager.Pages.Drive {
 
             public ICommand SyncronizeProgressUsingModuleCommand
                 => _syncronizeProgressUsingModuleCommand ?? (_syncronizeProgressUsingModuleCommand = new AsyncCommand(async o => {
-                    using (var waiting = new WaitingDialog()) {
-                        await SpecialEventsManager.Instance.UpdateProgressViaModule(waiting, waiting.CancellationToken);
+                    try {
+                        using (var waiting = new WaitingDialog()) {
+                            await SpecialEventsManager.Instance.UpdateProgressViaModule(waiting, waiting.CancellationToken);
+                        }
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can’t get challenges progress", e);
                     }
                 }, o => SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.UiModuleStarterType));
         }
 
-        private ScrollViewer _scrollViewer;
+        private ScrollViewer _scroll;
 
         private const string KeyScrollValue = ".SpecialEvents.Scroll";
         private const string KeySelectedId = ".SpecialEvents.Selected";
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
-            _scrollViewer = ListBox.FindVisualChild<ScrollViewer>();
-            if (_scrollViewer != null) {
-                _scrollViewer.LayoutUpdated += _scrollViewer_LayoutUpdated;
+            _scroll = ListBox.FindVisualChild<ScrollViewer>();
+            if (_scroll != null) {
+                _scroll.LayoutUpdated += ScrollLayoutUpdated;
             }
         }
 
         private bool _positionLoaded;
 
-        private void _scrollViewer_LayoutUpdated(object sender, EventArgs e) {
+        private async void ScrollLayoutUpdated(object sender, EventArgs e) {
             if (_positionLoaded) return;
             var value = ValuesStorage.GetDoubleNullable(KeyScrollValue) ?? 0d;
-            _scrollViewer?.ScrollToHorizontalOffset(value);
+            await Task.Delay(10);
+            _scroll?.ScrollToHorizontalOffset(OptionScalableTiles ? value / (Equals(_scale, 0d) ? 1d : _scale) : value);
             _positionLoaded = true;
         }
 
         private void OnScrollSizeChanged(object sender, SizeChangedEventArgs e) {}
 
         private void OnScrollChanged(object sender, ScrollChangedEventArgs e) {
-            if (_scrollViewer == null || !_positionLoaded) return;
-            ValuesStorage.Set(KeyScrollValue, _scrollViewer.HorizontalOffset);
+            if (_scroll == null || !_positionLoaded) return;
+            ValuesStorage.Set(KeyScrollValue, OptionScalableTiles ? _scroll.HorizontalOffset * _scale : _scroll.HorizontalOffset);
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -139,22 +144,21 @@ namespace AcManager.Pages.Drive {
             new AssistsDialog(AssistsViewModel.Instance).ShowDialog();
         }
 
-        private double _previousScale;
+        private double _scale;
 
         private void ResizeTiles() {
             if (_tilePanel == null || !OptionScalableTiles) return;
 
+            _positionLoaded = false;
+
             // Width="195" Height="110"
             var scale = 1d + ((ActualHeight - 640d) / 540d).Saturate();
             if (scale < 1.3) scale = 1d;
-            if (Math.Abs(scale - _previousScale) < 0.2) return;
-            if (!Equals(_previousScale, 0d)) {
-                _scrollViewer.ScrollToHorizontalOffset(_scrollViewer.HorizontalOffset * scale / _previousScale);
-            }
-
+            if (Math.Abs(scale - _scale) < 0.2) return;
+            
             _tilePanel.ItemWidth = 195d * scale;
             _tilePanel.ItemHeight = 110d * scale;
-            _previousScale = scale;
+            _scale = scale;
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {

@@ -32,7 +32,6 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
@@ -46,17 +45,14 @@ namespace AcManager {
             FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
             if (AppArguments.GetBool(AppFlag.DisableSaving)) {
                 ValuesStorage.Initialize();
+                CacheStorage.Initialize();
             } else {
                 ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
+                CacheStorage.Initialize(FilesStorage.Instance.GetFilename("Cache.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
             }
 
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
-                var logFilename = FilesStorage.Instance.GetFilename("Logs", "Main Log.txt");
-                if (File.Exists(logFilename)) {
-                    File.Move(logFilename, $"{logFilename.ApartFromLast(@".txt", StringComparison.OrdinalIgnoreCase)}_{DateTime.Now.ToUnixTimestamp()}.txt");
-                    DeleteOldLogs();
-                }
-
+                var logFilename = EntryPoint.GetLogName("Main Log");
                 Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename));
                 Logging.Write($"App version: {BuildInformation.AppVersion} ({WindowsVersionHelper.GetVersion()})");
             }
@@ -206,20 +202,21 @@ namespace AcManager {
 
         private async void BackgroundInitialization() {
             await Task.Delay(1500);
-            CustomUriSchemeHelper.EnsureRegistered();
             WeatherSpecificCloudsHelper.Revert();
+            WeatherSpecificPpFilterHelper.Revert();
             CopyFilterToSystemForOculusHelper.Revert();
-        }
 
-        private static async void DeleteOldLogs() {
+            await Task.Delay(1500);
+            CustomUriSchemeHelper.EnsureRegistered();
+
             await Task.Delay(5000);
             await Task.Run(() => {
                 var directory = FilesStorage.Instance.GetDirectory("Logs");
                 foreach (var f in from file in Directory.GetFiles(directory)
-                                  where file.EndsWith(@".txt") || file.EndsWith(@".json")
+                                  where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
                                   let info = new FileInfo(file)
                                   where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(10)
-                                  select info){
+                                  select info) {
                     f.Delete();
                 }
             });
@@ -231,7 +228,7 @@ namespace AcManager {
 
         private void InitializeUpdatableStuff() {
             DataUpdater.Initialize();
-            DataUpdater.Instance.Updated += ContentSyncronizer_Updated;
+            DataUpdater.Instance.Updated += DataUpdater_Updated;
 
             AppUpdater.Initialize();
             AppUpdater.Instance.Updated += AppUpdater_Updated;
@@ -244,7 +241,7 @@ namespace AcManager {
             LocaleUpdater.Instance.Updated += LocaleUpdater_Updated;
         }
 
-        private void ContentSyncronizer_Updated(object sender, EventArgs e) {
+        private void DataUpdater_Updated(object sender, EventArgs e) {
             Toast.Show(AppStrings.App_DataUpdated, string.Format(AppStrings.App_DataUpdated_Details, DataUpdater.Instance.InstalledVersion));
         }
 

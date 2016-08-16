@@ -1186,6 +1186,222 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ABS:.
+        /// </summary>
+        public static string Assists_AbsLabel {
+            get {
+                return ResourceManager.GetString("Assists_AbsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anti-lock braking system.
+        /// </summary>
+        public static string Assists_AbsLabel_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_AbsLabel_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autoblip.
+        /// </summary>
+        public static string Assists_AutoBlip {
+            get {
+                return ResourceManager.GetString("Assists_AutoBlip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically syncronize RPM on downshifts.
+        /// </summary>
+        public static string Assists_AutoBlip_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_AutoBlip_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic clutch.
+        /// </summary>
+        public static string Assists_AutoClutch {
+            get {
+                return ResourceManager.GetString("Assists_AutoClutch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically press clutch on shifting.
+        /// </summary>
+        public static string Assists_AutoClutch_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_AutoClutch_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic shifting.
+        /// </summary>
+        public static string Assists_AutoShifting {
+            get {
+                return ResourceManager.GetString("Assists_AutoShifting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don’t confuse it with automatic gearbox.
+        /// </summary>
+        public static string Assists_AutoShifting_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_AutoShifting_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fuel consumption.
+        /// </summary>
+        public static string Assists_FuelConsumption {
+            get {
+                return ResourceManager.GetString("Assists_FuelConsumption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ideal line.
+        /// </summary>
+        public static string Assists_IdealLine {
+            get {
+                return ResourceManager.GetString("Assists_IdealLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show ideal driving line.
+        /// </summary>
+        public static string Assists_IdealLine_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_IdealLine_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mechanical damage.
+        /// </summary>
+        public static string Assists_MechanicalDamage {
+            get {
+                return ResourceManager.GetString("Assists_MechanicalDamage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Damageable engine, gearbox, suspension and stuff.
+        /// </summary>
+        public static string Assists_MechanicalDamage_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_MechanicalDamage_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slipstream effect.
+        /// </summary>
+        public static string Assists_SlipstreamEffect {
+            get {
+                return ResourceManager.GetString("Assists_SlipstreamEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multipler for slipstream effect.
+        /// </summary>
+        public static string Assists_SlipstreamEffect_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_SlipstreamEffect_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stability control.
+        /// </summary>
+        public static string Assists_StabilityControl {
+            get {
+                return ResourceManager.GetString("Assists_StabilityControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrealistic, but could be helpful if you’re just starting to learn how to drive or drift.
+        /// </summary>
+        public static string Assists_StabilityControl_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_StabilityControl_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assists.
+        /// </summary>
+        public static string Assists_Title {
+            get {
+                return ResourceManager.GetString("Assists_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Traction control:.
+        /// </summary>
+        public static string Assists_TractionControlLabel {
+            get {
+                return ResourceManager.GetString("Assists_TractionControlLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optimise grip during acceleration.
+        /// </summary>
+        public static string Assists_TractionControlLabel_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_TractionControlLabel_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tyre blankets.
+        /// </summary>
+        public static string Assists_TyreBlankets {
+            get {
+                return ResourceManager.GetString("Assists_TyreBlankets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heat tires in pits.
+        /// </summary>
+        public static string Assists_TyreBlankets_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_TyreBlankets_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tyre wear.
+        /// </summary>
+        public static string Assists_TyreWear {
+            get {
+                return ResourceManager.GetString("Assists_TyreWear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multipler for tyre wear.
+        /// </summary>
+        public static string Assists_TyreWear_Tooltip {
+            get {
+                return ResourceManager.GetString("Assists_TyreWear_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t download information about latest version..
         /// </summary>
         public static string BaseUpdater_CannotDownloadInformation {
@@ -2356,11 +2572,47 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to place.
+        /// </summary>
+        public static string KunosCareer_Place {
+            get {
+                return ResourceManager.GetString("KunosCareer_Place", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to point.
+        /// </summary>
+        public static string KunosCareer_Point {
+            get {
+                return ResourceManager.GetString("KunosCareer_Point", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resume.
+        /// </summary>
+        public static string KunosCareer_Resume {
+            get {
+                return ResourceManager.GetString("KunosCareer_Resume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Single events.
         /// </summary>
         public static string KunosCareer_SingleEvents {
             get {
                 return ResourceManager.GetString("KunosCareer_SingleEvents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string KunosCareer_Start {
+            get {
+                return ResourceManager.GetString("KunosCareer_Start", resourceCulture);
             }
         }
         

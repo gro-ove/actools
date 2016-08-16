@@ -46,6 +46,10 @@
                 <Label Content="{x:Static g:AppStrings.Settings_Content_ChangeBrandIcon}" />
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding Holder.CarsYearPostfix}">
+                <Label Content="Add year postfix to cars’ names" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Holder.SkinsSkipPriority}" ToolTip="I hope AC won’t brake because of it with some future update">
                 <Label Content="Remove skin’s priority field on saving" />
             </CheckBox>

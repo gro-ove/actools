@@ -172,7 +172,7 @@ namespace AcManager.Controls.Helpers {
                 Presets.Add(Rebuild(ControlsStrings.Controls_UserPresets, ControlsSettings.SubUserPresets, _userPresets));
                 PresetsReady = true;
             } catch (Exception e) {
-                Logging.Warning("RebuildPresetsList() exception: " + e);
+                Logging.Warning("[ControlsPresets] RebuildPresetsList(): " + e);
             } finally {
                 _reloading = false;
             }

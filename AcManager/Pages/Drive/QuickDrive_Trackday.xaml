@@ -1,0 +1,131 @@
+﻿<UserControl x:Class="AcManager.Pages.Drive.QuickDrive_Trackday" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
+        xmlns:tools="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance drive:QuickDrive_Weekend+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Thickness x:Key="ElementMargin">0 0 8 8</Thickness>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid x:Name="Wrapper">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid MaxHeight="320" VerticalAlignment="Top" Height="{Binding ActualHeight, ElementName=Wrapper}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
+                <mui:ValueLabel Value="{Binding AiLevel}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
+                <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevel}" />
+            </StackPanel>
+
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0"
+                    IsEnabled="{Binding AiLevelFixed, Converter={StaticResource InvertBooleanConverter}}">
+                <StackPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeRandomly}" IsCheckable="True"
+                                IsChecked="{Binding AiLevelArrangeRandomly, Mode=TwoWay}" />
+                        <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder}" IsCheckable="True"
+                                ToolTip="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder_Tooltip}" IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
+                        <Separator />
+                        <MenuItem Header="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" IsCheckable="True"
+                                IsChecked="{Binding AiLevelInDriverName, Mode=TwoWay}" />
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
+                <mui:ValueLabel Value="{Binding AiLevelMin}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrengthMin}" />
+                <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevelMin}" />
+            </StackPanel>
+
+            <Grid Grid.Row="2" Grid.Column="0" Grid.RowSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0">
+                    <CheckBox Margin="8 0 0 0" IsChecked="{Binding AiLevelFixed}">
+                        <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
+                    </CheckBox>
+                </StackPanel>
+
+                <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1">
+                    <CheckBox Margin="8 0 0 0" IsChecked="{Binding Penalties}">
+                        <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
+                    </CheckBox>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
+                <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static g:AppStrings.Drive_GridType}" Margin="0 0 0 4" />
+                <ComboBox Margin="4 0 4 0" ItemsSource="{Binding GridTypes}" SelectedItem="{Binding SelectedGridType}" DisplayMemberPath="DisplayName" />
+            </StackPanel>
+
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
+                <StackPanel.ToolTip>
+                    <ToolTip Content="{Binding TrackPitsNumber}" ContentStringFormat="{x:Static g:AppStrings.Drive_OpponentsMaximumLimitation_Tooltip}" />
+                </StackPanel.ToolTip>
+
+                <mui:ValueLabel Value="{Binding OpponentsNumber}"
+                        Postfix="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}">
+                </mui:ValueLabel>
+                <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
+            </StackPanel>
+        </Grid>
+
+        <mui:ModernProgressRing Grid.Column="1" Margin="8" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <DockPanel Grid.Column="1"
+                Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8"
+                    Text="{x:Static g:AppStrings.Drive_ListOfPossibleOpponentsLabel}"
+                    ToolTip="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_ListOfPossibleOpponents_Tooltip}}" />
+
+            <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Error}" Text="{Binding OpponentsCarsError}"
+                    Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+            <Grid Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <DockPanel Margin="0 0 0 8" HorizontalAlignment="Stretch"
+                        Visibility="{Binding SelectedGridType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠same_car'}">
+                    <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
+                    <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="*"
+                            Text="{Binding OpponentsCarsFilter, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" IsTextSearchEnabled="True"
+                            ItemsSource="{Binding OpponentsCarsFilterHistory}" LostFocus="OpponentsCarsFilterTextBox_OnLostFocus" />
+                </DockPanel>
+
+                <ListBox x:Name="ListBox" ItemsSource="{Binding OpponentsCarsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
+                        VirtualizingPanel.ScrollUnit="Pixel" Grid.Row="1" SelectionMode="Extended" />
+
+                <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0 0 4 0">
+                    <mui:ModernButton IconData="{StaticResource AddIconData}" Command="{Binding AddOpponentCarCommand}"
+                            ToolTip="{x:Static g:AppStrings.Drive_GridAdd_Tooltip}" />
+                    <mui:ModernButton IconData="{StaticResource RemoveIconData}" Command="{Binding RemoveOpponentCarCommand}"
+                            CommandParameter="{Binding ElementName=ListBox}" ToolTip="{x:Static g:AppStrings.Drive_GridRemove_Tooltip}" />
+                </StackPanel>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</UserControl>

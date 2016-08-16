@@ -39,7 +39,7 @@ namespace AcManager.Controls.UserControls {
             return _inner.Source.OriginalString;
         }
 
-        public void SetScriptProvider(BaseScriptProvider provider) {
+        public void SetScriptProvider(ScriptProviderBase provider) {
             _inner.ObjectForScripting = provider;
         }
 

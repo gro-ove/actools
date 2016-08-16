@@ -18,11 +18,11 @@ namespace AcManager.Controls.UserControls {
             set { SetValue(ShowPreviewProperty, value); }
         }
 
-        public static readonly DependencyProperty TrackProperty = DependencyProperty.Register(nameof(Track), typeof(TrackBaseObject),
+        public static readonly DependencyProperty TrackProperty = DependencyProperty.Register(nameof(Track), typeof(TrackObjectBase),
                 typeof(TrackBlock));
 
-        public TrackBaseObject Track {
-            get { return (TrackBaseObject)GetValue(TrackProperty); }
+        public TrackObjectBase Track {
+            get { return (TrackObjectBase)GetValue(TrackProperty); }
             set { SetValue(TrackProperty, value); }
         }
 

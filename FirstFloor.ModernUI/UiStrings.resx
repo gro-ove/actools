@@ -254,7 +254,7 @@
   </data>
   <data name="StackTrace" xml:space="preserve">
     <value>Stack Trace</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="Suggestions" xml:space="preserve">
     <value>Suggestions</value>
   </data>

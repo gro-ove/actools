@@ -2,8 +2,6 @@
 
 namespace AcTools.Utils.Helpers {
     public class GeoTagsEntry {
-        public static readonly GeoTagsEntry Invalid = new GeoTagsEntry("", "");
-
         public readonly string Latitude, Longitude;
         public readonly double? LatitudeValue, LongitudeValue;
 

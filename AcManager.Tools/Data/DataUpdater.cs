@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
@@ -26,7 +25,7 @@ namespace AcManager.Tools.Data {
         }
 
         private static string GetInstalledVersion() {
-            var versionFilename = FilesStorage.Instance.CombineFilename(FilesStorage.ContentDirName, @"Manifest.json");
+            var versionFilename = FilesStorage.Instance.CombineFilename(FilesStorage.DataDirName, @"Manifest.json");
 
             try {
                 return File.Exists(versionFilename) ? VersionFromData(File.ReadAllText(versionFilename)) : null;
@@ -81,7 +80,7 @@ namespace AcManager.Tools.Data {
 
                 string installedVersion = null;
                 await Task.Run(() => {
-                    var location = FilesStorage.Instance.CombineFilename(FilesStorage.ContentDirName);
+                    var location = FilesStorage.Instance.CombineFilename(FilesStorage.DataDirName);
                     Directory.Delete(location, true);
 
                     using (var stream = new MemoryStream(data, false))

@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
+using System.Windows;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -9,32 +12,45 @@ namespace AcManager.Tools.Helpers {
     public static class TracksLocator {
         private const string Key = ".TrackLocator:";
 
-        [CanBeNull]
-        public static GeoTagsEntry TryToLocate([CanBeNull] string address) {
+        [ItemCanBeNull]
+        public static async Task<GeoTagsEntry> TryToLocateAsync([CanBeNull] string address) {
             if (string.IsNullOrWhiteSpace(address)) return null;
 
             var key = Key + address;
-            var cache = ValuesStorage.GetPointNullable(key);
-            if (cache.HasValue) {
-                return new GeoTagsEntry(cache.Value.X, cache.Value.Y);
+            if (CacheStorage.Contains(key)) {
+                var cache = CacheStorage.GetPointNullable(key);
+                return cache.HasValue ? new GeoTagsEntry(cache.Value.X, cache.Value.Y) : null;
             }
 
-            var result = YahooApiProvider.TryToLocate(address);
-            if (result?.LatitudeValue == null || result.LongitudeValue == null) return null;
+            try {
+                var result = await YahooApiProvider.LocateAsync(address);
+                if (result.LatitudeValue.HasValue && result.LongitudeValue.HasValue) {
+                    Logging.Write($"[QuickDrive] “{address}”, geo tags: ({result})");
+                    CacheStorage.Set(key, new Point(result.LatitudeValue.Value, result.LongitudeValue.Value));
+                    return result;
+                }
 
-            ValuesStorage.Set(key, new Point(result.LatitudeValue.Value, result.LongitudeValue.Value));
-            return result;
+                CacheStorage.Set(key, "");
+                return null;
+            } catch (WebException e) {
+                Logging.Warning("[TracksLocator] TryToLocateAsync(): " + e.Message);
+                return null;
+            } catch (Exception e) {
+                Logging.Warning("[TracksLocator] TryToLocateAsync(): " + e);
+                CacheStorage.Set(key, "");
+                return null;
+            }
         }
 
-        [CanBeNull]
-        public static GeoTagsEntry TryToLocate([CanBeNull] string country, [CanBeNull] string city) {
-            return TryToLocate(string.IsNullOrWhiteSpace(country) ? city :
+        [ItemCanBeNull]
+        public static Task<GeoTagsEntry> TryToLocateAsync([CanBeNull] string country, [CanBeNull] string city) {
+            return TryToLocateAsync(string.IsNullOrWhiteSpace(country) ? city :
                     string.IsNullOrWhiteSpace(city) ? country : $"{city.Trim()},{country.Trim()}");
         }
 
-        [CanBeNull]
-        public static GeoTagsEntry TryToLocate([NotNull] TrackBaseObject track) {
-            return track.Country != null ? TryToLocate(track.Country, track.City) : null;
+        [ItemCanBeNull]
+        public static Task<GeoTagsEntry> TryToLocateAsync([NotNull] TrackObjectBase track) {
+            return track.Country != null ? TryToLocateAsync(track.Country, track.City) : Task.FromResult<GeoTagsEntry>(null);
         }
     }
 }

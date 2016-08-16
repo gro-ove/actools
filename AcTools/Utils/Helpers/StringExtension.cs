@@ -132,6 +132,13 @@ namespace AcTools.Utils.Helpers {
 
             return s.Split(',', ';').Select(x => x.Trim()).Any(part => {
                 var n = part.IndexOf('-');
+                if (n == 0) {
+                    var m = part.IndexOf('-', n + 1);
+                    if (m != -1 && m != 1) {
+                        n = m;
+                    }
+                }
+
                 double fromValue, toValue;
                 if (n > 0 && n < part.Length - 1) { // "x-y"
                     if (FlexibleParser.TryParseDouble(part.Substring(0, n), out fromValue) &&
@@ -164,6 +171,13 @@ namespace AcTools.Utils.Helpers {
 
             return s.Split(',', ';').Select(x => x.Trim()).Any(part => {
                 int n = part.IndexOf('-'), fromValue, toValue;
+                if (n == 0) {
+                    var m = part.IndexOf('-', n + 1);
+                    if (m != -1 && m != 1) {
+                        n = m;
+                    }
+                }
+
                 if (n > 0 && n < part.Length - 1) { // "x-y"
                     if (FlexibleParser.TryParseTime(part.Substring(0, n), out fromValue) &&
                             FlexibleParser.TryParseTime(part.Substring(n + 1), out toValue)) {
@@ -204,11 +218,17 @@ namespace AcTools.Utils.Helpers {
         [Pure]
         public static IEnumerable<int> ToDiapason([NotNull] this string s, int min, int max) {
             if (s == null) throw new ArgumentNullException(nameof(s));
-            if (min < 0) throw new ArgumentOutOfRangeException(nameof(min), @"Negative numbers aren’t supported");
             if (max < min) throw new ArgumentOutOfRangeException(nameof(max));
 
             return s.Split(',', ';').Select(x => x.Trim()).SelectMany(part => {
                 int n = part.IndexOf('-'), fromValue, toValue;
+                if (n == 0) {
+                    var m = part.IndexOf('-', n + 1);
+                    if (m != -1 && m != 1) {
+                        n = m;
+                    }
+                }
+
                 if (n > 0 && n < part.Length - 1) { // "x-y"
                     if (FlexibleParser.TryParseInt(part.Substring(0, n), out fromValue) &&
                             FlexibleParser.TryParseInt(part.Substring(n + 1), out toValue)) {

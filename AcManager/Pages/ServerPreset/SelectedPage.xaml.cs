@@ -55,9 +55,9 @@ namespace AcManager.Pages.ServerPreset {
         public static IMultiValueConverter ClientsToBandwidthConverter { get; } = new ClientsToBandwidthConverterInner();
 
         public class ViewModel : SelectedAcObjectViewModel<ServerPresetObject> {
-            private TrackBaseObject _track;
+            private TrackObjectBase _track;
 
-            public TrackBaseObject Track {
+            public TrackObjectBase Track {
                 get { return _track; }
                 set {
                     if (Equals(value, _track)) return;
@@ -90,7 +90,7 @@ namespace AcManager.Pages.ServerPreset {
                 Track = SelectTrackDialog.Show(Track);
             }));
 
-            public ViewModel([NotNull] ServerPresetObject acObject, TrackBaseObject track, CarObject[] cars) : base(acObject) {
+            public ViewModel([NotNull] ServerPresetObject acObject, TrackObjectBase track, CarObject[] cars) : base(acObject) {
                 SelectedObject.PropertyChanged += AcObject_PropertyChanged;
 
                 Track = track;
@@ -131,7 +131,7 @@ namespace AcManager.Pages.ServerPreset {
         }
 
         private ServerPresetObject _object;
-        private TrackBaseObject _track;
+        private TrackObjectBase _track;
         private CarObject[] _cars;
 
         async Task ILoadableContent.LoadAsync(CancellationToken cancellationToken) {

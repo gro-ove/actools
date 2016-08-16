@@ -9,7 +9,7 @@ namespace AcManager.Controls.UserControls {
 
         string GetUrl();
 
-        void SetScriptProvider(BaseScriptProvider provider);
+        void SetScriptProvider(ScriptProviderBase provider);
 
         void SetUserAgent(string userAgent);
 

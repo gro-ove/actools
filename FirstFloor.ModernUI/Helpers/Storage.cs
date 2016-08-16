@@ -459,12 +459,12 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        [Pure]
+        [Pure, CanBeNull]
         public TimeZoneInfo GetTimeZoneInfo([NotNull, LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             try {
                 var value = GetString(key);
-                return value == null ? null : TimeZoneInfo.FromSerializedString(value);
+                return string.IsNullOrEmpty(value) ? null : TimeZoneInfo.FromSerializedString(value);
             } catch (Exception) {
                 return null;
             }
@@ -584,6 +584,13 @@ namespace FirstFloor.ModernUI.Helpers {
         /* I know that this is not a proper protection or anything, but I just don’t want to save some
             stuff plain-texted */
         private const string Something = "encisfinedontworry";
+
+        [Pure, CanBeNull]
+        public string Decrypt([NotNull, LocalizationRequired(false)] string key, [NotNull, LocalizationRequired(false)] string value) {
+            if (_encryptionKey == null) return value;
+            var result = StringCipher.Decrypt(value, key + _encryptionKey);
+            return result == null ? null : result.EndsWith(Something) ? result.Substring(0, result.Length - Something.Length) : null;
+        }
 
         public string GetEncryptedString([NotNull, LocalizationRequired(false)] string key, string defaultValue = null) {
             if (key == null) throw new ArgumentNullException(nameof(key));

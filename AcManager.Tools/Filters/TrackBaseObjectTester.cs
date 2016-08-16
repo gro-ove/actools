@@ -2,27 +2,27 @@ using AcManager.Tools.Objects;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters {
-    public class TrackBaseObjectTester : ITester<TrackBaseObject> {
+    public class TrackBaseObjectTester : ITester<TrackObjectBase> {
         public static TrackBaseObjectTester Instance = new TrackBaseObjectTester();
 
         public static string InnerParameterFromKey(string key) {
             switch (key) {
                 case "city":
-                    return nameof(TrackBaseObject.City);
+                    return nameof(TrackObjectBase.City);
 
                 case "geotags":
-                    return nameof(TrackBaseObject.GeoTags);
+                    return nameof(TrackObjectBase.GeoTags);
 
                 case "len":
                 case "length":
-                    return nameof(TrackBaseObject.SpecsLength);
+                    return nameof(TrackObjectBase.SpecsLength);
 
                 case "width":
-                    return nameof(TrackBaseObject.SpecsWidth);
+                    return nameof(TrackObjectBase.SpecsWidth);
 
                 case "pits":
                 case "pitboxes":
-                    return nameof(TrackBaseObject.SpecsPitboxes);
+                    return nameof(TrackObjectBase.SpecsPitboxes);
             }
 
             return null;
@@ -36,7 +36,7 @@ namespace AcManager.Tools.Filters {
             return InheritingParameterFromKey(key);
         }
 
-        public bool Test(TrackBaseObject obj, string key, ITestEntry value) {
+        public bool Test(TrackObjectBase obj, string key, ITestEntry value) {
             switch (key) {
                 case "city":
                     return value.Test(obj.City);

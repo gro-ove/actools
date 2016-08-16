@@ -38,7 +38,7 @@
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_SkipPracticeResults}" />
             </CheckBox>
 
-            <!--player's name-->
+            <!--player’s name-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_PlayerNameHeader}" />
 
             <DockPanel>
@@ -121,9 +121,15 @@
             <CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots}" />
             </CheckBox>
+            
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Extended Weather" />
 
             <CheckBox IsChecked="{Binding Drive.WeatherSpecificClouds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_CustomClouds_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_CustomClouds}" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Drive.WeatherSpecificPpFilter}" ToolTip="PP-filter will be switched back later">
+                <Label Content="Use custom weather’s PP-filter" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

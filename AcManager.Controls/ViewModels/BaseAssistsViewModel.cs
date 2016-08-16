@@ -2,7 +2,6 @@ using System;
 using AcManager.Tools.Helpers;
 using AcTools.Processes;
 using AcTools.Utils;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Controls.ViewModels {

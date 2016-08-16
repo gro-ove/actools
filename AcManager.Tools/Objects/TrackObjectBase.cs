@@ -15,8 +15,8 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
-    public abstract partial class TrackBaseObject : AcJsonObjectNew {
-        protected TrackBaseObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) { }
+    public abstract partial class TrackObjectBase : AcJsonObjectNew {
+        protected TrackObjectBase(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) { }
 
         public override void PastLoad() {
             base.PastLoad();
@@ -53,6 +53,7 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
+        [NotNull]
         public abstract TrackObject MainTrackObject { get; }
 
         [CanBeNull]
@@ -205,9 +206,14 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override void LoadYear(JObject json) {
-            base.LoadYear(json);
-            if (!Year.HasValue) {
-                Year = DataProvider.Instance.TrackYears.GetValueOrDefault(Id);
+            Year = json.GetIntValueOnly("year");
+            if (Year.HasValue) return;
+
+            int year;
+            if (DataProvider.Instance.TrackYears.TryGetValue(Id, out year)) {
+                Year = year;
+            } else if (Name != null) {
+                Year = AcStringValues.GetYearFromName(Name) ?? AcStringValues.GetYearFromId(Name);
             }
         }
 

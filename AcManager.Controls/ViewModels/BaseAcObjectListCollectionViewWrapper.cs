@@ -88,20 +88,20 @@ namespace AcManager.Controls.ViewModels {
             _mainList.CurrentChanged += OnCurrentChanged;
         }
 
-        private IComparer _sorting;
-
         [NotNull]
-        public IComparer SortingComparer {
-            get { return _sorting ?? this; }
-            set {
-                value = ReferenceEquals(value, this) ? null : value;
+        public IComparer SortingComparer => (IComparer)_sorting ?? this;
 
+        private AcObjectSorter<T> _sorting;
+
+        [CanBeNull]
+        public AcObjectSorter<T> Sorting {
+            set {
                 if (Equals(value, _sorting)) return;
                 _sorting = value;
                 OnPropertyChanged();
 
                 if (Loaded) {
-                    _mainList.CustomSort = this;
+                    _mainList.CustomSort = SortingComparer;
                 }
             }
         }
@@ -124,6 +124,7 @@ namespace AcManager.Controls.ViewModels {
         public const string InvalidId = "";
 
         protected abstract string LoadCurrentId();
+
         protected abstract void SaveCurrentKey(string id);
 
         private bool _userChange = true;
@@ -172,7 +173,7 @@ namespace AcManager.Controls.ViewModels {
         private int _oldNumber;
 
         private void MainListUpdated() {
-            if (!Loaded) return; // TODO: could be a mistake
+            if (!Loaded) return;
 
             var newNumber = _mainList.Count;
 
@@ -188,7 +189,7 @@ namespace AcManager.Controls.ViewModels {
         private AcItemWrapper _testMeLater;
 
         private void RefreshFilter(AcPlaceholderNew obj) {
-            if (!Loaded) return; // TODO: could be a mistake
+            if (!Loaded) return;
 
             if (CurrentItem?.Value == obj) {
                 _testMeLater = CurrentItem;
@@ -206,7 +207,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         private void RefreshFilter(AcItemWrapper obj) {
-            if (!Loaded) return; // TODO: could be a mistake
+            if (!Loaded) return;
 
             if (CurrentItem == obj) {
                 _testMeLater = CurrentItem;
@@ -224,6 +225,11 @@ namespace AcManager.Controls.ViewModels {
         }
 
         private void List_ItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (_sorting?.IsAffectedBy(e.PropertyName) == true) {
+                _list.RefreshFilter((AcPlaceholderNew)sender);
+                return;
+            }
+
             if (!ListFilter.IsAffectedBy(e.PropertyName)) return;
             RefreshFilter((AcPlaceholderNew)sender);
             MainListUpdated();
@@ -249,6 +255,6 @@ namespace AcManager.Controls.ViewModels {
         }
 
         // TODO: remove
-        public bool IsEmpty => !Loaded || _mainList.IsEmpty; // TODO: could be a mistake
+        public bool IsEmpty => !Loaded || _mainList.IsEmpty;
     }
 }

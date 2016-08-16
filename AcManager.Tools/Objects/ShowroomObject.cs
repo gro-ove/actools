@@ -138,9 +138,14 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override void LoadYear(JObject json) {
-            base.LoadYear(json);
-            if (!Year.HasValue) {
-                Year = DataProvider.Instance.ShowroomYears.GetValueOrDefault(Id);
+            Year = json.GetIntValueOnly("year");
+            if (Year.HasValue) return;
+
+            int year;
+            if (DataProvider.Instance.ShowroomYears.TryGetValue(Id, out year)) {
+                Year = year;
+            } else if (Name != null) {
+                Year = AcStringValues.GetYearFromName(Name) ?? AcStringValues.GetYearFromId(Name);
             }
         }
 

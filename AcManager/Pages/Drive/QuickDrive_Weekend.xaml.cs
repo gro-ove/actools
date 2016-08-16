@@ -16,13 +16,13 @@ namespace AcManager.Pages.Drive {
 
         private bool _loaded;
 
-        private void QuickDrive_Weekend_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;
             ActualModel.Load();
         }
 
-        private void QuickDrive_Weekend_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
             ActualModel.Unload();

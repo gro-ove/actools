@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers {
     public interface ISaveHelper {
+        bool IsLoading { get; }
+
         void Initialize();
 
         void LoadOrReset();
@@ -41,6 +43,8 @@ namespace AcManager.Tools.Helpers {
             _reset = reset;
         }
 
+        public bool IsLoading { get; private set; }
+
         public void Initialize() {
             Reset();
             Load();
@@ -53,9 +57,9 @@ namespace AcManager.Tools.Helpers {
         }
 
         public void Reset() {
-            _disableSaving = true;
+            IsLoading = true;
             _reset();
-            _disableSaving = false;
+            IsLoading = false;
         }
 
         public bool Load() {
@@ -63,13 +67,13 @@ namespace AcManager.Tools.Helpers {
             if (data == null) return false;
 
             try {
-                _disableSaving = true;
+                IsLoading = true;
                 _load(JsonConvert.DeserializeObject<T>(data));
                 return true;
             } catch (Exception e) {
                 Logging.Warning("Cannot load data: " + e);
             } finally {
-                _disableSaving = false;
+                IsLoading = false;
             }
 
             return false;
@@ -84,12 +88,12 @@ namespace AcManager.Tools.Helpers {
 
         public void FromSerializedString(string data, bool disableSaving) {
             try {
-                _disableSaving = disableSaving;
+                IsLoading = disableSaving;
                 _load(JsonConvert.DeserializeObject<T>(data));
             } catch (Exception e) {
                 Logging.Warning("Cannot load data: " + e);
             } finally {
-                _disableSaving = false;
+                IsLoading = false;
             }
         }
 
@@ -107,15 +111,15 @@ namespace AcManager.Tools.Helpers {
             ValuesStorage.Set(_key, serialized);
         }
 
-        private bool _disableSaving, _savingInProgress;
+        private bool _savingInProgress;
 
         public async void SaveLater() {
-            if (_disableSaving || _savingInProgress) return;
+            if (IsLoading || _savingInProgress) return;
             _savingInProgress = true;
 
             await Task.Delay(300);
 
-            if (_disableSaving) {
+            if (IsLoading) {
                 return;
             }
             

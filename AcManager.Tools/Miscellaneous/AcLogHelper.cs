@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -29,8 +28,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         public static WhatsGoingOn? TryToDetermineWhatsGoingOn() {
             try {
-                // TODO: file could be busy
-                var log = File.ReadAllLines(FileUtils.GetLogFilename());
+                var log = File.Open(FileUtils.GetLogFilename(), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite).ReadAsStringAndDispose();
 
                 if (log.Contains(@"ACClient:: ACP_WRONG_PASSWORD")) {
                     return WhatsGoingOn.OnlineWrongPassword;
@@ -48,7 +46,10 @@ namespace AcManager.Tools.Miscellaneous {
                     return WhatsGoingOn.WheelsAreMissing;
                 }
 
-                var crash = log.SkipWhile(x => x != @"CRASH in:").JoinToString('\n');
+                var i = log.IndexOf(@"CRASH in:", StringComparison.Ordinal);
+                if (i == -1) return null;
+
+                var crash = log.Substring(i);
                 if (crash.Contains(@" evaluateTimeFromTrackSpline")) {
                     return WhatsGoingOn.TimeAttackNotSupported;
                 }

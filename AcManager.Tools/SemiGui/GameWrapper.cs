@@ -96,6 +96,8 @@ namespace AcManager.Tools.SemiGui {
         private static async Task<Game.Result> StartAsync(Game.StartProperties properties, bool raceMode) {
             AcSettingsHolder.Graphics.FixShadowMapBias();
 
+            Logging.Write("[GameWrapper] Assists: " + properties.AssistsProperties?.GetDescription());
+
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {
                 properties.SetAdditional(new CopyFilterToSystemForOculusHelper());
             }
@@ -106,6 +108,10 @@ namespace AcManager.Tools.SemiGui {
 
             if (SettingsHolder.Drive.WeatherSpecificClouds) {
                 properties.SetAdditional(new WeatherSpecificCloudsHelper());
+            }
+
+            if (SettingsHolder.Drive.WeatherSpecificPpFilter) {
+                properties.SetAdditional(new WeatherSpecificPpFilterHelper());
             }
 
             if (raceMode) {
@@ -171,6 +177,9 @@ namespace AcManager.Tools.SemiGui {
                     }
 
                     return result;
+                } catch (TaskCanceledException) {
+                    ui.OnError(new UserCancelledException());
+                    return null;
                 } catch (Exception e) {
                     Logging.Warning("[GameWrapper] StartAsync(): " + e);
                     ui.OnError(e);

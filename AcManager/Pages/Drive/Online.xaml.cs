@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -313,52 +312,48 @@ namespace AcManager.Pages.Drive {
                 base.Unload();
             }
 
-            private class SortingDriversCount : IComparer {
-                public int Compare(object x, object y) {
-                    var xs = (x as AcItemWrapper)?.Value as ServerEntry;
-                    var ys = (y as AcItemWrapper)?.Value as ServerEntry;
-                    if (xs == null) return ys == null ? 0 : 1;
-                    if (ys == null) return -1;
+            private class SortingDriversCount : AcObjectSorter<ServerEntry> {
+                public override int Compare(ServerEntry x, ServerEntry y) {
+                    var dif = -x.CurrentDriversCount.CompareTo(y.CurrentDriversCount);
+                    return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+                }
 
-                    var dif = -xs.CurrentDriversCount.CompareTo(ys.CurrentDriversCount);
-                    return dif == 0 ? string.Compare(xs.DisplayName, ys.DisplayName, StringComparison.Ordinal) : dif;
+                public override bool IsAffectedBy(string propertyName) {
+                    return propertyName == nameof(ServerEntry.CurrentDriversCount);
                 }
             }
 
-            private class SortingCapacityCount : IComparer {
-                public int Compare(object x, object y) {
-                    var xs = (x as AcItemWrapper)?.Value as ServerEntry;
-                    var ys = (y as AcItemWrapper)?.Value as ServerEntry;
-                    if (xs == null) return ys == null ? 0 : 1;
-                    if (ys == null) return -1;
+            private class SortingCapacityCount : AcObjectSorter<ServerEntry> {
+                public override int Compare(ServerEntry x, ServerEntry y) {
+                    var dif = -x.Capacity.CompareTo(y.Capacity);
+                    return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+                }
 
-                    var dif = -xs.Capacity.CompareTo(ys.Capacity);
-                    return dif == 0 ? string.Compare(xs.DisplayName, ys.DisplayName, StringComparison.Ordinal) : dif;
+                public override bool IsAffectedBy(string propertyName) {
+                    return propertyName == nameof(ServerEntry.Capacity);
                 }
             }
 
-            private class SortingCarsNumberCount : IComparer {
-                public int Compare(object x, object y) {
-                    var xs = (x as AcItemWrapper)?.Value as ServerEntry;
-                    var ys = (y as AcItemWrapper)?.Value as ServerEntry;
-                    if (xs == null) return ys == null ? 0 : 1;
-                    if (ys == null) return -1;
+            private class SortingCarsNumberCount : AcObjectSorter<ServerEntry> {
+                public override int Compare(ServerEntry x, ServerEntry y) {
+                    var dif = -x.CarIds.Length.CompareTo(y.CarIds.Length);
+                    return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+                }
 
-                    var dif = -xs.CarIds.Length.CompareTo(ys.CarIds.Length);
-                    return dif == 0 ? string.Compare(xs.DisplayName, ys.DisplayName, StringComparison.Ordinal) : dif;
+                public override bool IsAffectedBy(string propertyName) {
+                    return propertyName == nameof(ServerEntry.CarIds);
                 }
             }
 
-            private class SortingPing : IComparer {
-                public int Compare(object x, object y) {
-                    var xs = (x as AcItemWrapper)?.Value as ServerEntry;
-                    var ys = (y as AcItemWrapper)?.Value as ServerEntry;
-                    if (xs == null) return ys == null ? 0 : 1;
-                    if (ys == null) return -1;
-
+            private class SortingPing : AcObjectSorter<ServerEntry> {
+                public override int Compare(ServerEntry x, ServerEntry y) {
                     const long maxPing = 999999;
-                    var dif = (xs.Ping ?? maxPing).CompareTo(ys.Ping ?? maxPing);
-                    return dif == 0 ? string.Compare(xs.DisplayName, ys.DisplayName, StringComparison.Ordinal) : dif;
+                    var dif = (x.Ping ?? maxPing).CompareTo(y.Ping ?? maxPing);
+                    return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+                }
+
+                public override bool IsAffectedBy(string propertyName) {
+                    return propertyName == nameof(ServerEntry.Ping);
                 }
             }
 
@@ -372,23 +367,23 @@ namespace AcManager.Pages.Drive {
 
                     switch (value.Value) {
                         case "drivers":
-                            SortingComparer = new SortingDriversCount();
+                            Sorting = new SortingDriversCount();
                             break;
 
                         case "capacity":
-                            SortingComparer = new SortingCapacityCount();
+                            Sorting = new SortingCapacityCount();
                             break;
 
                         case "cars":
-                            SortingComparer = new SortingCarsNumberCount();
+                            Sorting = new SortingCarsNumberCount();
                             break;
 
                         case "ping":
-                            SortingComparer = new SortingPing();
+                            Sorting = new SortingPing();
                             break;
 
                         default:
-                            SortingComparer = this;
+                            Sorting = null;
                             break;
                     }
 
@@ -438,8 +433,9 @@ namespace AcManager.Pages.Drive {
 
             private void CurrentChanged() {
                 var currentId = ((AcItemWrapper)MainList.CurrentItem)?.Value.Id;
-                SelectedSource = currentId == null ? null :
-                        UriExtension.Create("/Pages/Drive/Online_SelectedServerPage.xaml?Mode={0}&Id={1}", Type, currentId);
+                if (currentId == null) return;
+
+                SelectedSource = UriExtension.Create("/Pages/Drive/Online_SelectedServerPage.xaml?Mode={0}&Id={1}", Type, currentId);
             }
 
             private bool _filterBooking;

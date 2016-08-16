@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AcTools.Tests {
     [TestClass]
-    public class StringUtilsTest {
+    public class StringExtensionTest {
         [TestMethod]
         public void Diapason() {
             Assert.AreEqual(101, "0-100".ToDiapason(0, 1000).Count());
@@ -30,6 +30,18 @@ namespace AcTools.Tests {
             Assert.IsFalse("-10,18.3,23-28,980-".DiapasonContains(18));
             Assert.IsFalse("-10,18.3,23-28,980-".DiapasonContains(979));
             Assert.IsFalse("-10,18.3,23-28,980-".DiapasonContains(18.35, false));
+        }
+
+        [TestMethod]
+        public void NegativeDiapason() {
+            Assert.AreEqual(201, "-100-100".ToDiapason(-1000, 1000).Count());
+            Assert.AreEqual(0, "-100-100".ToDiapason(-1000, 1000).Sum());
+            Assert.AreEqual(1, "-100 - -100".ToDiapason(-1000, 1000).Count());
+            Assert.AreEqual(1, "0 --0".ToDiapason(-1000, 1000).Count());
+            Assert.AreEqual(11, "--10".ToDiapason(-20, 1000).Count());
+            Assert.AreEqual(11, "-10-".ToDiapason(-20, 0).Count());
+
+            Assert.IsTrue("-10--5".DiapasonContains(-7));
         }
         
         [TestMethod]

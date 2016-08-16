@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Linq;
+using System.Web;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -23,10 +24,11 @@ namespace AcManager.Tools.Helpers {
         private static Regex _nameYearRegex;
 
         private static Regex NameYearRegex => _nameYearRegex ??
-                                              (_nameYearRegex = new Regex(@"\s(?:'(\d\d)|'?((?:19[2-9]|20[01])\d))$", RegexOptions.Compiled));
-
+                                              (_nameYearRegex = new Regex(@"\s(?:['’](\d\d)|['’]?((?:19[2-9]|20[01])\d))$", RegexOptions.Compiled));
+        
         public static int? GetYearFromName([NotNull] string name) {
             if (name == null) throw new ArgumentNullException(nameof(name));
+            if (name.Length == 0 || !char.IsDigit(name[name.Length - 1])) return null;
 
             var result = NameYearRegex.Match(name);
             if (!result.Success) return null;
@@ -44,8 +46,7 @@ namespace AcManager.Tools.Helpers {
 
         [NotNull]
         public static string NameReplaceYear([NotNull] string name, int year) {
-            var digits = (year % 100).ToString(CultureInfo.InvariantCulture);
-            return NameYearRegex.Replace(name, digits.Length == 2 ? " '" + digits : " '0" + digits, 1);
+            return NameYearRegex.Replace(name, $" '{year % 100:D2}", 1);
         }
 
         private static Regex _nameVersionRegex;
@@ -99,8 +100,7 @@ namespace AcManager.Tools.Helpers {
             return name.ToLower();
         }
 
-        private static Regex _decodeDescriptionRegex;
-        private static Regex _cleanDescriptionRegex;
+        private static Regex _decodeDescriptionRegex, _cleanDescriptionRegex;
 
         /// <summary>
         /// Converts HTML-like description to a normal one. We don't need any YouTube-players built-in it.
@@ -109,14 +109,20 @@ namespace AcManager.Tools.Helpers {
         [CanBeNull]
         public static string DecodeDescription([CanBeNull] string s) {
             if (s == null) return null;
-            s = (_decodeDescriptionRegex ?? (_decodeDescriptionRegex = new Regex(@"<\s*/?\s*br\s*/?\s*>\s*", RegexOptions.Compiled))).Replace(s, "\n");
-            s = (_cleanDescriptionRegex ?? (_cleanDescriptionRegex = new Regex(@"<\s*\w+(\s+[^>]*|\s*)>|</\s*\w+\s*>", RegexOptions.Compiled))).Replace(s, "");
-            return s;
+
+            if (_decodeDescriptionRegex == null) {
+                _decodeDescriptionRegex = new Regex(@"<\s*/?\s*br\s*/?\s*>\s*", RegexOptions.Compiled);
+                _cleanDescriptionRegex = new Regex(@"<\s*\w+(\s+[^>]*|\s*)>|</\s*\w+\s*>|\t", RegexOptions.Compiled);
+            }
+
+            s = _decodeDescriptionRegex.Replace(s, "\n");
+            s = _cleanDescriptionRegex.Replace(s, "");
+            return HttpUtility.HtmlDecode(s).Trim();
         }
 
         [CanBeNull]
         public static string EncodeDescription([CanBeNull] string s) {
-            return s?.Replace("\r", "").Replace("\n", "<br>");
+            return s == null ? null : HttpUtility.HtmlEncode(s).Trim().Replace("\r", "").Replace("\n", "<br>");
         }
 
         public static bool IsAppropriateId([CanBeNull] string id) {

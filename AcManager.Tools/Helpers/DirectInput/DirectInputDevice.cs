@@ -54,6 +54,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
     }
 
     public sealed class DirectInputDevice : Displayable, IDirectInputDevice, IDisposable {
+        [NotNull]
         public DeviceInstance Device { get; }
 
         public string Id { get; }
@@ -75,7 +76,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         private Joystick _joystick;
         private readonly int _buttonsCount;
 
-        private DirectInputDevice(SlimDX.DirectInput.DirectInput directInput, DeviceInstance device, int iniId) {
+        private DirectInputDevice([NotNull] SlimDX.DirectInput.DirectInput directInput, [NotNull] DeviceInstance device, int iniId) {
             Device = device;
             DisplayName = device.InstanceName;
 

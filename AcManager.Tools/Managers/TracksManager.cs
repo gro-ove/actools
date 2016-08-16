@@ -28,19 +28,19 @@ namespace AcManager.Tools.Managers {
         }
 
         [CanBeNull]
-        public TrackBaseObject GetLayoutById(string id) {
+        public TrackObjectBase GetLayoutById(string id) {
             if (!id.Contains('/')) return base.GetById(id);
             return base.GetById(id.Split('/')[0])?.GetLayoutById(id);
         }
 
         [CanBeNull]
-        public TrackBaseObject GetLayoutById([NotNull] string trackId, [CanBeNull] string layoutId) {
+        public TrackObjectBase GetLayoutById([NotNull] string trackId, [CanBeNull] string layoutId) {
             if (trackId == null) throw new ArgumentNullException(nameof(trackId));
             return layoutId == null ? GetById(trackId) : GetById(trackId)?.GetLayoutByLayoutId(layoutId);
         }
 
         [ItemCanBeNull]
-        public async Task<TrackBaseObject> GetLayoutByIdAsync([NotNull] string trackId, [CanBeNull] string layoutId) {
+        public async Task<TrackObjectBase> GetLayoutByIdAsync([NotNull] string trackId, [CanBeNull] string layoutId) {
             if (trackId == null) throw new ArgumentNullException(nameof(trackId));
             return layoutId == null ? await GetByIdAsync(trackId) : (await GetByIdAsync(trackId))?.GetLayoutByLayoutId(layoutId);
         }

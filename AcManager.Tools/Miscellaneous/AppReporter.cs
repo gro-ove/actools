@@ -12,6 +12,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Win32;
+using JetBrains.Annotations;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using SharpCompress.Common;
@@ -52,12 +53,6 @@ namespace AcManager.Tools.Miscellaneous {
                         }, Formatting.Indented));
                     } catch (Exception e) {
                         Logging.Warning("Can’t attach Description.txt: " + e);
-                    }
-
-                    try {
-                        writer.WriteString("Values.txt", ValuesStorage.Storage.GetData());
-                    } catch (Exception e) {
-                        Logging.Warning("Can’t attach Values.data: " + e);
                     }
 
                     foreach (var fileInfo in new DirectoryInfo(directory).GetFiles("*.resx")) {
@@ -168,8 +163,7 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                         }
                     }
 
-                    foreach (var fileInfo in new DirectoryInfo(logsDirectory).GetFiles("*.txt").Where(x => x.Length < 2000000)
-                                                                             .OrderBy(x => -x.CreationTime.ToUnixTimestamp()).Take(35)) {
+                    foreach (var fileInfo in new DirectoryInfo(logsDirectory).GetFiles("*.log").Where(x => x.Length < 2000000).TakeLast(35)) {
                         try {
                             writer.Write("Logs/" + fileInfo.Name, fileInfo.FullName);
                         } catch (Exception e) {
@@ -185,6 +179,29 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                 }
 
                 InternalUtils.SendAppReport(memory.ToArray(), $@"Name: {GetUserName()}
+Operating system: {GetWindowsName()}
+App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
+            }
+        }
+
+        [Localizable(false)]
+        public static void SendData([NotNull] string name, [NotNull] object obj) {
+            using (var memory = new MemoryStream()) {
+                using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
+                    try {
+                        writer.WriteString(name, JsonConvert.SerializeObject(obj));
+                    } catch (Exception e) {
+                        Logging.Warning($"Can’t attach {obj}: " + e);
+                    }
+                }
+
+                var data = memory.ToArray();
+                if (data.Length > 20000000) {
+                    File.WriteAllBytes(FilesStorage.Instance.GetTemporaryFilename("Data.zip"), data);
+                    throw new Exception("Size limit exceeded");
+                }
+
+                InternalUtils.SendData(memory.ToArray(), $@"Name: {GetUserName()}
 Operating system: {GetWindowsName()}
 App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
             }

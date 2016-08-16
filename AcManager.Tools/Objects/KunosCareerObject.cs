@@ -13,9 +13,11 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcTools.DataFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Tools.Objects {
     public partial class KunosCareerObject : AcIniObject, IComparer {
@@ -208,10 +210,10 @@ namespace AcManager.Tools.Objects {
 
         public bool IsStarted => CompletedEvents > 0;
 
-        public string DisplayGo => CompletedEvents > 0 ? @"Resume" : @"Start";
+        public string DisplayGo => CompletedEvents > 0 ? ToolsStrings.KunosCareer_Resume : ToolsStrings.KunosCareer_Start;
 
         public string DisplayRequired => (RequiredAnySeries && RequiredSeries.Length > 1 ? @"Any of " : "") +
-                RequiredSeries.Select(x => KunosCareerManager.Instance.GetById(x)?.Code ?? $"<{x}>").JoinToString(", ");
+                RequiredSeries.Select(x => KunosCareerManager.Instance.GetById(x)?.Code ?? $"<{x}>").JoinToString(@", ");
 
         protected override void InitializeLocations() {
             base.InitializeLocations();
@@ -313,6 +315,21 @@ namespace AcManager.Tools.Objects {
                 OnPropertyChanged();
             }
         }
+
+        private int _championshipRankingGoal;
+
+        public int ChampionshipRankingGoal {
+            get { return _championshipRankingGoal; }
+            set {
+                if (Equals(value, _championshipRankingGoal)) return;
+                _championshipRankingGoal = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string DisplayChampionshipGoal
+            => ChampionshipPointsGoal == 0 ? $"[b]{ChampionshipRankingGoal.ToOrdinalShort(ToolsStrings.KunosCareer_Place)}[/b] {ToolsStrings.KunosCareer_Place}"
+                    : $"[b]{ChampionshipPointsGoal}[/b] {PluralizingConverter.Pluralize(ChampionshipPointsGoal, ToolsStrings.KunosCareer_Point)}";
 
         private int _firstPlacesGoal;
 
@@ -545,10 +562,12 @@ namespace AcManager.Tools.Objects {
 
             PointsForPlace = ini["SERIES"].GetPossiblyEmpty("POINTS")?.Split(',').Select(x => FlexibleParser.TryParseInt(x)).OfType<int>().ToArray();
             ChampionshipPointsGoal = ini["GOALS"].GetIntNullable("POINTS") ?? 0;
+            ChampionshipRankingGoal = ini["GOALS"].GetIntNullable("RANKING") ?? 0;
             ThirdPlacesGoal = ini["GOALS"].GetIntNullable("TIER1") ?? 0;
             SecondPlacesGoal = ini["GOALS"].GetIntNullable("TIER2") ?? 0;
             FirstPlacesGoal = ini["GOALS"].GetIntNullable("TIER3") ?? 0;
-            Type = ChampionshipPointsGoal == 0 || PointsForPlace?.Sum() == 0 ? KunosCareerObjectType.SingleEvents : KunosCareerObjectType.Championship;
+            Type = ChampionshipPointsGoal == 0 && ChampionshipRankingGoal == 0 || PointsForPlace?.Sum() == 0
+                    ? KunosCareerObjectType.SingleEvents : KunosCareerObjectType.Championship;
 
             RequiredSeries = ini["SERIES"].GetStrings("REQUIRES").ToArray();
             RequiredAnySeries = ini["SERIES"].GetBool("REQUIRESANY", false);
@@ -562,12 +581,22 @@ namespace AcManager.Tools.Objects {
             LoadProgress();
         }
 
+        public override bool HandleChangedFile(string filename) {
+            if (base.HandleChangedFile(filename)) return true;
+            if (FileUtils.IsAffected(filename, OpponentsIniFilename) && Type == KunosCareerObjectType.Championship) {
+                LoadOpponents();
+            }
+
+            return true;
+        }
+
         public override void SaveData(IniFile ini) {
             ini["SERIES"].Set("NAME", Name);
             ini["SERIES"].Set("CODE", Code);
             ini["SERIES"].Set("DESCRIPTION", AcStringValues.EncodeDescription(Description));
-            ini["SERIES"].Set("POINTS", PointsForPlace.JoinToString(","));
+            ini["SERIES"].Set("POINTS", PointsForPlace.JoinToString(@","));
             ini["GOALS"].Set("POINTS", ChampionshipPointsGoal);
+            ini["GOALS"].Set("RANKING", ChampionshipRankingGoal);
             ini["GOALS"].Set("TIER1", ThirdPlacesGoal);
             ini["GOALS"].Set("TIER2", SecondPlacesGoal);
             ini["GOALS"].Set("TIER3", FirstPlacesGoal);
@@ -620,7 +649,7 @@ namespace AcManager.Tools.Objects {
                     if (driverEntry != null) {
                         driverEntry.Points = ChampionshipAiPoints[i];
                     } else {
-                        Logging.Warning("[KUNOSCAREEROBJECT] Missing driver entry with ID=" + i);
+                        Logging.Warning("[KunosCareerObject] Missing driver entry with ID=" + i);
                     }
                 }
 

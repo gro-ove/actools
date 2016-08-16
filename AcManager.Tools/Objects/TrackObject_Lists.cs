@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace AcManager.Tools.Objects {
 
-    public partial class TrackBaseObject {
+    public partial class TrackObjectBase {
         private static ListCollectionView _citiesList;
         public ListCollectionView CitiesList {
             get {

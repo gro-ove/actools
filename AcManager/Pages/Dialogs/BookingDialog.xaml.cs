@@ -48,10 +48,10 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private TrackBaseObject _track;
+        private TrackObjectBase _track;
 
         [CanBeNull]
-        public TrackBaseObject Track {
+        public TrackObjectBase Track {
             get { return _track; }
             set {
                 if (Equals(value, _track)) return;

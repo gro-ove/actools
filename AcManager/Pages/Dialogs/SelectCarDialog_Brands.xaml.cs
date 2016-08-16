@@ -54,15 +54,15 @@ namespace AcManager.Pages.Dialogs {
 
         private static ListCollectionView _brands;
         private static BetterObservableCollection<CarBrandInformation> _carBrandsInformationList;
-        private const string KeyBrandsCache = "__SelectAndSetupCarDialog_Brands__cache";
+        private const string KeyBrandsCache = ".SelectCarDialog.BrandsCache";
 
         public static void ClearBrandsCache() {
-            ValuesStorage.Set(KeyBrandsCache, new string[0]);
+            CacheStorage.Set(KeyBrandsCache, new string[0]);
         }
 
         private static void UpdateCache() {
             if (CarsManager.Instance.IsLoaded && SettingsHolder.Drive.QuickDriveCacheBrands) {
-                ValuesStorage.Set(KeyBrandsCache, _carBrandsInformationList.Where(x => x.BuiltInIcon).Select(x => x.Name));
+                CacheStorage.Set(KeyBrandsCache, _carBrandsInformationList.Where(x => x.BuiltInIcon).Select(x => x.Name));
             }
         }
 
@@ -79,7 +79,7 @@ namespace AcManager.Pages.Dialogs {
             } else if (SettingsHolder.Drive.QuickDriveCacheBrands) {
                 _carBrandsInformationList = new BetterObservableCollection<CarBrandInformation>(
                         SuggestionLists.CarBrandsList
-                                       .Select(x => new CarBrandInformation(x)).Union(from name in ValuesStorage.GetStringList(KeyBrandsCache)
+                                       .Select(x => new CarBrandInformation(x)).Union(from name in CacheStorage.GetStringList(KeyBrandsCache)
                                                                                       select new CarBrandInformation(name))
                                        .Distinct(new DistinctHelper()));
             } else {

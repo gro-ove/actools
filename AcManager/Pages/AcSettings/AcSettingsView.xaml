@@ -60,7 +60,7 @@
             <DockPanel>
                 <mui:ValueLabel Value="{Binding CameraOnboard.GlancingAngle}" Mode="Positive" Postfix="°"
                         Content="{x:Static t:ToolsStrings.AcSettings_View_GlancingAngle}" />
-                <Slider Minimum="10" Maximum="90" Value="{Binding CameraOnboard.GlancingSpeed}" TickFrequency="8" TickPlacement="BottomRight" />
+                <Slider Minimum="10" Maximum="90" Value="{Binding CameraOnboard.GlancingAngle}" TickFrequency="8" TickPlacement="BottomRight" />
             </DockPanel>
 
             <DockPanel>

@@ -791,6 +791,18 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _weatherSpecificPpFilter;
+
+            public bool WeatherSpecificPpFilter {
+                get { return _weatherSpecificPpFilter ?? (_weatherSpecificPpFilter = ValuesStorage.GetBool("Settings.DriveSettings.WeatherSpecificPpFilter", true)).Value; }
+                set {
+                    if (Equals(value, _weatherSpecificPpFilter)) return;
+                    _weatherSpecificPpFilter = value;
+                    ValuesStorage.Set("Settings.DriveSettings.WeatherSpecificPpFilter", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static DriveSettings _drive;
@@ -814,6 +826,18 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _loadingConcurrency)) return;
                     _loadingConcurrency = value;
                     ValuesStorage.Set("Settings.ContentSettings.LoadingConcurrency", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _carsYearPostfix;
+
+            public bool CarsYearPostfix {
+                get { return _carsYearPostfix ?? (_carsYearPostfix = ValuesStorage.GetBool("Settings.ContentSettings.CarsYearPostfix", false)).Value; }
+                set {
+                    if (Equals(value, _carsYearPostfix)) return;
+                    _carsYearPostfix = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarsYearPostfix", value);
                     OnPropertyChanged();
                 }
             }

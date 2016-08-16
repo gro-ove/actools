@@ -1,17 +1,18 @@
 ﻿using System.IO;
 using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.Managers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public class TrackExtraLayoutObject : TrackBaseObject {
+    public class TrackExtraLayoutObject : TrackObjectBase {
         private readonly string _location;
 
         public sealed override string LayoutId { get; }
 
-        public TrackExtraLayoutObject(IFileAcManager manager, string id, bool enabled, string fixedLocation)
-                : base(manager, id, enabled) {
+        public TrackExtraLayoutObject(IFileAcManager manager, [NotNull] TrackObject parent, bool enabled, string fixedLocation)
+                : base(manager, parent.Id, enabled) {
             _location = fixedLocation;
+            MainTrackObject = parent;
             LayoutId = Path.GetFileName(fixedLocation);
             IdWithLayout = $"{Id}/{LayoutId}";
         }
@@ -20,14 +21,7 @@ namespace AcManager.Tools.Objects {
             return _location;
         }
 
-        private TrackObject _mainTrackObject;
-
-        public override TrackObject MainTrackObject {
-            get {
-                if (Id == null) return null;
-                return _mainTrackObject ?? (_mainTrackObject = TracksManager.Instance.GetById(Id));
-            }
-        }
+        public override TrackObject MainTrackObject { get; }
 
         public override string Name {
             get { return base.Name; }

@@ -8,197 +8,196 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Helpers {
     // TODO: Rename to Values?
     public static partial class ValuesStorage {
-        private static Storage _storage;
-
-        public static Storage Storage => _storage;
+        public static Storage Storage { get; private set; }
 
         public static void Initialize(string filename, bool disableCompression = false) {
-            Debug.Assert(_storage == null);
-            _storage = new Storage(filename, EncryptionKey, disableCompression);
+            Debug.Assert(Storage == null);
+            Storage = new Storage(filename, EncryptionKey, disableCompression);
         }
 
         public static void Initialize() {
-            Debug.Assert(_storage == null);
-            _storage = new Storage(encryptionKey: EncryptionKey);
+            Debug.Assert(Storage == null);
+            Storage = new Storage(encryptionKey: EncryptionKey);
         }
 
         [CanBeNull, Pure]
         public static string GetString([NotNull, LocalizationRequired(false)] string key, string defaultValue = null) {
-            return _storage.GetString(key, defaultValue);
+            return Storage.GetString(key, defaultValue);
         }
 
         [Pure]
         public static T GetEnum<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T)) where T : struct, IConvertible {
-            return _storage.GetEnum(key, defaultValue);
+            return Storage.GetEnum(key, defaultValue);
         }
 
         [Pure]
         public static T? GetEnumNullable<T>([NotNull, LocalizationRequired(false)] string key) where T : struct, IConvertible {
-            return _storage.GetEnumNullable<T>(key);
+            return Storage.GetEnumNullable<T>(key);
         }
 
         [Pure]
         public static int GetInt([NotNull, LocalizationRequired(false)] string key, int defaultValue = 0) {
-            return _storage.GetInt(key, defaultValue);
+            return Storage.GetInt(key, defaultValue);
         }
 
         [Pure]
         public static int? GetIntNullable([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.GetIntNullable(key);
+            return Storage.GetIntNullable(key);
         }
 
         [Pure]
         public static double GetDouble([NotNull, LocalizationRequired(false)] string key, double defaultValue = 0) {
-            return _storage.GetDouble(key, defaultValue);
+            return Storage.GetDouble(key, defaultValue);
         }
 
         [Pure]
         public static double? GetDoubleNullable([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.GetDoubleNullable(key);
+            return Storage.GetDoubleNullable(key);
         }
         [Pure]
         public static Point GetPoint([NotNull, LocalizationRequired(false)] string key, Point defaultValue = default(Point)) {
-            return _storage.GetPoint(key, defaultValue);
+            return Storage.GetPoint(key, defaultValue);
         }
 
         [Pure]
         public static Point? GetPointNullable([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.GetPointNullable(key);
+            return Storage.GetPointNullable(key);
         }
 
         [Pure]
         public static bool GetBool([NotNull, LocalizationRequired(false)] string key, bool defaultValue = false) {
-            return _storage.GetBool(key, defaultValue);
+            return Storage.GetBool(key, defaultValue);
         }
 
         [Pure]
         public static bool? GetBoolNullable([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.GetBoolNullable(key);
+            return Storage.GetBoolNullable(key);
         }
 
         [NotNull, Pure]
         public static IEnumerable<string> GetStringList([NotNull, LocalizationRequired(false)] string key, IEnumerable<string> defaultValue = null) {
-            return _storage.GetStringList(key, defaultValue);
+            return Storage.GetStringList(key, defaultValue);
         }
 
         [Pure]
         public static TimeSpan GetTimeSpan([NotNull, LocalizationRequired(false)] string key, TimeSpan defaultValue) {
-            return _storage.GetTimeSpan(key, defaultValue);
+            return Storage.GetTimeSpan(key, defaultValue);
         }
 
         [Pure]
         public static TimeSpan? GetTimeSpan([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.GetTimeSpan(key);
+            return Storage.GetTimeSpan(key);
         }
 
         [Pure]
         public static DateTime GetDateTime([NotNull, LocalizationRequired(false)] string key, DateTime defaultValue) {
-            return _storage.GetDateTime(key, defaultValue);
+            return Storage.GetDateTime(key, defaultValue);
         }
 
         [Pure]
         public static DateTime GetDateTimeOrEpochTime([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.GetDateTimeOrEpochTime(key);
+            return Storage.GetDateTimeOrEpochTime(key);
         }
 
         [Pure]
         public static DateTime? GetDateTime([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.GetDateTime(key);
+            return Storage.GetDateTime(key);
         }
+
         [Pure]
         public static TimeZoneInfo GetTimeZoneInfo([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.GetTimeZoneInfo(key);
+            return Storage.GetTimeZoneInfo(key);
         }
 
         [Pure, CanBeNull]
         public static Uri GetUri([NotNull, LocalizationRequired(false)] string key, Uri defaultValue = null) {
-            return _storage.GetUri(key, defaultValue);
+            return Storage.GetUri(key, defaultValue);
         }
 
         [Pure]
         public static Color? GetColor([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.GetColor(key);
+            return Storage.GetColor(key);
         }
         [Pure]
         public static Color GetColor([NotNull, LocalizationRequired(false)] string key, Color defaultValue) {
-            return _storage.GetColor(key, defaultValue);
+            return Storage.GetColor(key, defaultValue);
         }
 
         [Pure]
         public static bool Contains([NotNull, LocalizationRequired(false)] string key) {
-            return _storage.Contains(key);
+            return Storage.Contains(key);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, string value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, int value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, double value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, bool value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, Point value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, [NotNull] IEnumerable<string> value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, [NotNull] IReadOnlyDictionary<string, string> value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, TimeSpan value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, DateTime value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, [NotNull] TimeZoneInfo value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, [NotNull] Uri value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void Set([NotNull, LocalizationRequired(false)] string key, Color value) {
-            _storage.Set(key, value);
+            Storage.Set(key, value);
         }
 
         public static void SetEnum<T>([NotNull, LocalizationRequired(false)] string key, T value) where T : struct, IConvertible {
-            _storage.SetEnum(key, value);
+            Storage.SetEnum(key, value);
         }
 
         public static void SetEncrypted([NotNull, LocalizationRequired(false)] string key, string value) {
-            _storage.SetEncrypted(key, value);
+            Storage.SetEncrypted(key, value);
         }
 
         public static void SetEncrypted([NotNull, LocalizationRequired(false)] string key, bool value) {
-            _storage.SetEncrypted(key, value);
+            Storage.SetEncrypted(key, value);
         }
 
         public static string GetEncryptedString([NotNull, LocalizationRequired(false)] string key, [LocalizationRequired(false)] string defaultValue = null) {
-            return _storage.GetEncryptedString(key, defaultValue);
+            return Storage.GetEncryptedString(key, defaultValue);
         }
 
         public static bool GetEncryptedBool([NotNull, LocalizationRequired(false)] string key, bool defaultValue = false) {
-            return _storage.GetEncryptedBool(key, defaultValue);
+            return Storage.GetEncryptedBool(key, defaultValue);
         }
 
         public static void Remove([NotNull, LocalizationRequired(false)] string key) {
-            _storage.Remove(key);
+            Storage.Remove(key);
         }
     }
 }

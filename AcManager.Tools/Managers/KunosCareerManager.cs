@@ -54,7 +54,8 @@ namespace AcManager.Tools.Managers {
         private bool CheckIfCareerCompleted(KunosCareerObject career) {
             switch (career.Type) {
                 case KunosCareerObjectType.Championship:
-                    return career.ChampionshipPoints >= career.ChampionshipPointsGoal;
+                    return career.ChampionshipPoints >= career.ChampionshipPointsGoal && (career.ChampionshipRankingGoal == 0 ||
+                            career.CompletedEvents == career.EventsManager.WrappersList.Count && career.ChampionshipPlace >= career.ChampionshipRankingGoal);
 
                 case KunosCareerObjectType.SingleEvents:
                     var first = career.FirstPlaces;

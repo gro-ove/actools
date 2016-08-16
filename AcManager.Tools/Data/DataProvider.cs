@@ -28,7 +28,7 @@ namespace AcManager.Tools.Data {
         }
 
         private DataProvider() {
-            FilesStorage.Instance.Watcher(ContentCategory.Data).Update += DataProvider_Update;
+            FilesStorage.Instance.Watcher(ContentCategory.Miscellaneous).Update += DataProvider_Update;
         }
 
         public void RefreshData() {
@@ -49,7 +49,7 @@ namespace AcManager.Tools.Data {
             get {
                 if (_kunosContent != null) return _kunosContent;
 
-                var j = FilesStorage.Instance.LoadJsonContentFile(ContentCategory.Data, "KunosContent.json");
+                var j = FilesStorage.Instance.LoadJsonContentFile(ContentCategory.Miscellaneous, "KunosContent.json");
                 if (j != null) {
                     _kunosContent = new Dictionary<string, string[]> {
                         [@"tracks"] = (j[@"tracks"] as JArray)?.Select(x => x.ToString()).ToArray() ?? new string[] { },
@@ -75,7 +75,7 @@ namespace AcManager.Tools.Data {
             get {
                 if (_nationalitiesAndNames != null) return _nationalitiesAndNames;
 
-                _nationalitiesAndNames = FilesStorage.Instance.LoadJsonContentFile<Dictionary<string, string[]>>(ContentCategory.Data,
+                _nationalitiesAndNames = FilesStorage.Instance.LoadJsonContentFile<Dictionary<string, string[]>>(ContentCategory.Miscellaneous,
                         "NationalitiesAndNames.json");
                 if (_nationalitiesAndNames != null) return _nationalitiesAndNames;
 
@@ -104,7 +104,7 @@ namespace AcManager.Tools.Data {
 
                 try {
                     _tagCountries = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
-                            FilesStorage.Instance.LoadContentFile(ContentCategory.Data, "TagCountries.json"))
+                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "TagCountries.json"))
                             .ManyToDictionaryK(x => x.Value, x => x.Key);
                 } catch (Exception e) {
                     Logging.Warning("Cannot load TagCountries.json: " + e);
@@ -124,7 +124,7 @@ namespace AcManager.Tools.Data {
 
                 try {
                     _countries = JsonConvert.DeserializeObject<string[]>(
-                        FilesStorage.Instance.LoadContentFile(ContentCategory.Data, "Countries.json"))
+                        FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "Countries.json"))
                         .ToDictionary(x => x.ToLower(CultureInfo.InvariantCulture), x => x);
                 } catch (Exception e) {
                     Logging.Warning("Cannot load Countries.json: " + e);
@@ -144,7 +144,7 @@ namespace AcManager.Tools.Data {
 
                 try {
                     _showroomsPreviews = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                        FilesStorage.Instance.LoadContentFile(ContentCategory.Data, "ShowroomsPreviews.json"));
+                        FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "ShowroomsPreviews.json"));
                 } catch (Exception e) {
                     Logging.Warning("Cannot load ShowroomsPreviews.json: " + e);
                     _showroomsPreviews = new Dictionary<string, string>();
@@ -163,7 +163,7 @@ namespace AcManager.Tools.Data {
 
                 try {
                     _countryByIds = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                        FilesStorage.Instance.LoadContentFile(ContentCategory.Data, "CountryIds.json"));
+                        FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "CountryIds.json"));
                 } catch (Exception e) {
                     Logging.Warning("Cannot load CountryIds.json: " + e);
                     _countryByIds = new Dictionary<string, string>();
@@ -197,7 +197,7 @@ namespace AcManager.Tools.Data {
                 
                 try {
                     _brandCountries = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
-                            FilesStorage.Instance.LoadContentFile(ContentCategory.Data, "BrandCountries.json"))
+                            FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "BrandCountries.json"))
                             .ManyToDictionaryK(x => x.Value, x => x.Key);
                 } catch(Exception e) {
                     Logging.Warning("Cannot load BrandCountries.json: " + e);
@@ -217,7 +217,7 @@ namespace AcManager.Tools.Data {
 
                 try {
                     _years = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(
-                        FilesStorage.Instance.LoadContentFile(ContentCategory.Data, "Years.json"));
+                        FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "Years.json"));
                 } catch (Exception e) {
                     Logging.Warning("Cannot load Years.json: " + e);
                     _years = new Dictionary<string, Dictionary<string, int>>();

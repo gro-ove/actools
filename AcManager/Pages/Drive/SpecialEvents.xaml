@@ -19,7 +19,7 @@
             <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:SpecialEventObject}">
                 <Grid Background="Black" ClipToBounds="True" MinHeight="100">
                     <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True" ForceFill="True" />
-                    <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayType}"
+                    <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayName}"
                             Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}">
                         <TextBlock.RenderTransform>
                             <TranslateTransform />
@@ -31,7 +31,7 @@
                             <TranslateTransform />
                         </StackPanel.RenderTransform>
                         <TextBlock Margin="4 4 24 0" Text="{Binding CarObject.DisplayName}" />
-                        <TextBlock Margin="4 0 24 4" Text="{Binding TrackObject.LayoutName}" />
+                        <TextBlock Margin="4 0 24 4" Text="{Binding DisplayType}" />
                     </StackPanel>
                     <Ellipse x:Name="PlaceEllipse" Width="8" Height="8" Margin="8 12" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                             Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
@@ -89,15 +89,13 @@
                     Content="Sync via Steam Web API" Margin="4 0 0 0" />
             <Grid>
                 <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
-                <StackPanel Margin="8">
-                    <mui:BbCodeBlock TextWrapping="Wrap">Still WIP, you can check its progress [url="https://trello.com/c/6aAhOuzm/13-kunos-challenges"]here[/url].</mui:BbCodeBlock>
-                </StackPanel>
+                <mui:BbCodeBlock TextWrapping="Wrap" Margin="8">Still WIP, you can check its progress [url="https://trello.com/c/6aAhOuzm/13-kunos-challenges"]here[/url].</mui:BbCodeBlock>
             </Grid>
         </DockPanel>
 
         <ListBox x:Name="ListBox" Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" ItemsSource="{Binding List}" ScrollViewer.CanContentScroll="True"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="-4 0 -4 12"
-                ScrollViewer.ScrollChanged="OnScrollChanged" ScrollViewer.SizeChanged="OnScrollSizeChanged">
+                ScrollViewer.ScrollChanged="OnScrollChanged" SizeChanged="OnScrollSizeChanged">
             <i:Interaction.Behaviors>
                 <mui:HorizontalScrollBehavior />
             </i:Interaction.Behaviors>
@@ -272,7 +270,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Style="{StaticResource Heading1}" Text="{Binding Selected.DisplayType}" Margin="0 0 0 4" />
+                    <TextBlock Style="{StaticResource Heading1}" Text="{Binding Selected.DisplayName}" Margin="0 0 0 4" />
                     <Ellipse Grid.Column="1" Width="16" Height="16" Margin="8 4" VerticalAlignment="Center" HorizontalAlignment="Right"
                             Fill="{Binding Selected.TakenPlace, Converter={StaticResource PlaceToColorConverter}}"
                             Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -280,7 +278,7 @@
                             Fill="{Binding Selected.TakenPlace, Converter={StaticResource RacePlaceToColorConverter}}"
                             Visibility="{Binding Selected.ConditionType, Converter={StaticResource NullToVisibilityConverter}}" />
                 </Grid>
-                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.DisplayName}" Margin="0 0 0 4" TextTrimming="CharacterEllipsis" />
+                <TextBlock Style="{StaticResource Heading2}" Text="{Binding Selected.DisplayType}" Margin="0 0 0 4" TextTrimming="CharacterEllipsis" />
             </StackPanel>
 
             <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 12">
@@ -344,12 +342,18 @@
 
             <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right">
                 <c:UserPresetsControl UserPresetable="{Binding Source={x:Static c:AssistsViewModel.Instance}}" ShowSaveButton="False" Margin="0 0 4 0" />
-                <Button DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp"
-                        Margin="0 0 4 0" Content="…">
-                    <Button.ToolTip>
-                        <c:AssistsDescription />
-                    </Button.ToolTip>
-                </Button>
+
+                <ToggleButton x:Name="AssistsButton" Content="…" Margin="0 0 4 0"
+                        IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
+                    <ToggleButton.ToolTip>
+                        <c:AssistsDescription DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}" />
+                    </ToggleButton.ToolTip>
+                </ToggleButton>
+                <c:ModernPopup x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}" Placement="Top"
+                        IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
+                    <c:AssistsEditor DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}" />
+                </c:ModernPopup>
+
                 <Button Command="{Binding Selected.GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
                         CommandParameter="{Binding GameProperties, Source={x:Static c:AssistsViewModel.Instance}}" Content="{x:Static g:AppStrings.Common_Go}" />
             </StackPanel>

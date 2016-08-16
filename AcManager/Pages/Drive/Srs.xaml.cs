@@ -278,7 +278,7 @@ namespace AcManager.Pages.Drive {
         }));
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class ScriptProvider : BaseScriptProvider {
+        public class ScriptProvider : ScriptProviderBase {
             private readonly ViewModel _model;
 
             public ScriptProvider(ViewModel model) {

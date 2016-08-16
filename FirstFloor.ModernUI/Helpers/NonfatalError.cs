@@ -66,7 +66,7 @@ namespace FirstFloor.ModernUI.Helpers {
             new NonfatalErrorsDialog().ShowDialog();
         });
 
-        private static readonly TimeSpan ErrorsTimeout = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan ErrorsTimeout = TimeSpan.FromSeconds(3);
         private const int ErrorsLimit = 30;
 
         private static void NotifyInner(NonfatalErrorEntry entry) {

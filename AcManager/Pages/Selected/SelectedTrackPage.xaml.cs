@@ -37,9 +37,9 @@ namespace AcManager.Pages.Selected {
                 SelectedTrackConfiguration = acObject.SelectedLayout;
             }
 
-            private TrackBaseObject _selectedTrackConfiguration;
+            private TrackObjectBase _selectedTrackConfiguration;
 
-            public TrackBaseObject SelectedTrackConfiguration {
+            public TrackObjectBase SelectedTrackConfiguration {
                 get { return _selectedTrackConfiguration; }
                 private set {
                     if (Equals(value, _selectedTrackConfiguration)) return;

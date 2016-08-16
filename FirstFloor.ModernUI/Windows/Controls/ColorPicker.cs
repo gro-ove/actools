@@ -12,6 +12,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public class ColorPicker : Control {
         private static WeakReference<ColorPicker> _lastColorPicker;
 
+        /// <summary>
+        /// Needed a reference so it could stay open while user is picking a color from screen.
+        /// </summary>
         [CanBeNull]
         internal static ColorPicker GetLastOpened() {
             ColorPicker r = null;

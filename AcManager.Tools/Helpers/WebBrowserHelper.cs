@@ -23,7 +23,7 @@ namespace AcManager.Tools.Helpers {
             using (var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Internet Explorer\Main\FeatureControl\" + feature,
                     RegistryKeyPermissionCheck.ReadWriteSubTree)) {
                 if (key == null) return;
-                Logging.Write($"[WEBBROWSERHELPER] SetBrowserFeatureControlKey('{appName}', '{value}')");
+                Logging.Write($"[WebBrowserHelper] SetBrowserFeatureControlKey('{appName}', '{value}')");
                 key.SetValue(appName, value, RegistryValueKind.DWord);
             }
         }

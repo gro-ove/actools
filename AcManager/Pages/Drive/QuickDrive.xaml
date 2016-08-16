@@ -1,10 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.QuickDrive" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager"
-        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
-        d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+        xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
+        xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
+        d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -115,7 +114,7 @@
                             <Border.ToolTip>
                                 <Grid>
                                     <TextBlock Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}}"
-                                            Text="Can’t load real weather" />
+                                            Text="Can't load real weather" />
                                     <TextBlock
                                             Visibility="{Binding RealWeather, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
                                             Text="{Binding RealWeather.Description, StringFormat={x:Static g:AppStrings.Drive_Weather_Warning}, FallbackValue=?}" />
@@ -198,17 +197,30 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Width="160" Margin="0 0 20 0" DataContext="{Binding AssistsViewModel}">
-                <c:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 10" />
-                <DockPanel>
-                    <Button DockPanel.Dock="Right" PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp" Content="…">
-                        <Button.ToolTip>
-                            <c:AssistsDescription />
-                        </Button.ToolTip>
-                    </Button>
-                    <CheckBox IsChecked="{Binding TyreBlankets}">
+                <c:UserPresetsControl UserPresetable="{Binding}" ShowSaveButton="False" Margin="0 0 0 8" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <CheckBox IsChecked="{Binding TyreBlankets}" VerticalAlignment="Center">
                         <Label Content="{x:Static g:AppStrings.Drive_TyreBlankets}" />
                     </CheckBox>
-                </DockPanel>
+
+                    <ToggleButton Grid.Column="1" x:Name="AssistsButton" Content="…"
+                            IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
+                        <ToggleButton.ToolTip>
+                            <c:AssistsDescription />
+                        </ToggleButton.ToolTip>
+                    </ToggleButton>
+
+                    <c:ModernPopup Grid.Column="1" x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}"
+                            IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
+                        <c:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
+                    </c:ModernPopup>
+                </Grid>
             </StackPanel>
 
             <mui:ModernTab Grid.Column="1" LinksMargin="0" FrameMargin="0 40 0 4" LinksHorizontalAlignment="Left"
@@ -219,8 +231,9 @@
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Hotlap}" Source="/Pages/Drive/QuickDrive_Hotlap.xaml" />
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_TimeAttack}" Source="/Pages/Drive/QuickDrive_TimeAttack.xaml" />
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Race}" Source="/Pages/Drive/QuickDrive_Race.xaml" />
+                    <mui:Link DisplayName="Track Day" Source="/Pages/Drive/QuickDrive_Trackday.xaml" />
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Common_Weekend}" Source="/Pages/Drive/QuickDrive_Weekend.xaml" />
-                    <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drag-race" />
+                    <!--<mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drag}" Source="/Pages/Miscellaneous/WorkInProgress.xaml?drag-race" />-->
                     <mui:Link DisplayName="{x:Static t:ToolsStrings.Session_Drift}" Source="/Pages/Drive/QuickDrive_Drift.xaml" />
                 </mui:ModernTab.Links>
             </mui:ModernTab>

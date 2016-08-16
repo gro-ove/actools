@@ -273,10 +273,10 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         internal WeatherObject Weather => _weather ?? (_weather = WeatherId == null ? null : WeatherManager.Instance.GetById(WeatherId));
 
-        private TrackBaseObject _track;
+        private TrackObjectBase _track;
 
         [CanBeNull]
-        internal TrackBaseObject Track => _track ?? (_track = TrackId == null ? null : TrackConfiguration == null
+        internal TrackObjectBase Track => _track ?? (_track = TrackId == null ? null : TrackConfiguration == null
                 ? TracksManager.Instance.GetById(TrackId) : TracksManager.Instance.GetLayoutById(TrackId, TrackConfiguration));
     }
 }

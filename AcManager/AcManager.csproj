@@ -239,8 +239,12 @@
     <Compile Include="Pages\Dialogs\FindInformationDialog.xaml.cs">
       <DependentUpon>FindInformationDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\QuickDrive_Conditions.cs" />
     <Compile Include="Pages\Drive\IQuickDriveModeControl.cs" />
     <Compile Include="Pages\Drive\QuickDriveModeViewModel.cs" />
+    <Compile Include="Pages\Drive\QuickDrive_Trackday.xaml.cs">
+      <DependentUpon>QuickDrive_Trackday.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\QuickDrive_Weekend.xaml.cs">
       <DependentUpon>QuickDrive_Weekend.xaml</DependentUpon>
     </Compile>
@@ -654,6 +658,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Drive\QuickDrive_Drift.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Drive\QuickDrive_Trackday.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

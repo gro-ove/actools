@@ -31,9 +31,19 @@ namespace AcManager.Pages.Selected {
 
             new ContextMenu {
                 Items = {
-                    new MenuItem { Header = AcManager.AppStrings.Tags_CleanUp, Command = SelectedAcJsonObject.TagsCleanUpCommand },
-                    new MenuItem { Header = AcManager.AppStrings.Tags_Sort, Command = SelectedAcJsonObject.TagsSortCommand },
-                    new MenuItem { Header = AcManager.AppStrings.Tags_CleanUpAndSort, Command = SelectedAcJsonObject.TagsCleanUpAndSortCommand, InputGestureText = @"Ctrl+Alt+T" }
+                    new MenuItem {
+                        Header = AppStrings.Tags_CleanUp,
+                        Command = SelectedAcJsonObject.TagsCleanUpCommand
+                    },
+                    new MenuItem {
+                        Header = AppStrings.Tags_Sort,
+                        Command = SelectedAcJsonObject.TagsSortCommand
+                    },
+                    new MenuItem {
+                        Header = AppStrings.Tags_CleanUpAndSort,
+                        Command = SelectedAcJsonObject.TagsCleanUpAndSortCommand,
+                        InputGestureText = @"Ctrl+Alt+T"
+                    }
                 }
             }.IsOpen = true;
             e.Handled = true;

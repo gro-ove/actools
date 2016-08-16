@@ -322,9 +322,6 @@
   <data name="Common_IdIsTaken" xml:space="preserve">
     <value>ID is preso</value>
   </data>
-  <data name="CannotFindSteamId" xml:space="preserve">
-    <value>Impossibile trovare lo Steam ID</value>
-  </data>
   <data name="Online_CannotLoadData" xml:space="preserve">
     <value>Impossibile caricare il data</value>
   </data>
@@ -410,7 +407,7 @@
     <comment>In caso di malfunzionamento del server e restituisce auto diverse in /JSON e responsi /INFO </comment>
   </data>
   <data name="Online_Server_UnhandledError" xml:space="preserve">
-    <value>Errore non gestito.</value>
+    <value>Errore non gestito: {0}.</value>
   </data>
   <data name="Plugins_CannotInstall" xml:space="preserve">
     <value>Impossibile installare plugin</value>
@@ -716,9 +713,6 @@
   </data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
     <value>Schermo triplo</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
   </data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
     <value>{0} (sperimentale)</value>
@@ -1061,7 +1055,7 @@
     <value>Eventi di “{0}” sono mancanti</value>
   </data>
   <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
-    <value>Evento condizioni non sono supportati</value>
+    <value>Evento condizioni “{0}” non sono supportati</value>
   </data>
   <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
     <value> Il contenuto richiesto è mancante</value>

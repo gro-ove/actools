@@ -319,9 +319,6 @@
   <data name="Common_IdIsTaken" xml:space="preserve">
     <value>ID est repris</value>
   </data>
-  <data name="CannotFindSteamId" xml:space="preserve">
-    <value>Impossible de trouver l'ID Steam</value>
-  </data>
   <data name="Online_CannotLoadData" xml:space="preserve">
     <value>Impossible de charger les données</value>
   </data>
@@ -401,7 +398,7 @@
     <comment>Dans le cas ou le serveur est devenu fou et retourne différentes voitures dans / JSON et / réponses</comment>
   </data>
   <data name="Online_Server_UnhandledError" xml:space="preserve">
-    <value>erreur non gérée.</value>
+    <value>Erreur non gérée: {0}.</value>
   </data>
   <data name="Plugins_CannotInstall" xml:space="preserve">
     <value>Impossible d'installer le plugin</value>
@@ -704,9 +701,6 @@
   </data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
     <value>Triple écran</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
   </data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
     <value>{0} (experimentale)</value>
@@ -1040,7 +1034,7 @@
     <value>L'évenement de “{0}” est absent</value>
   </data>
   <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
-    <value>Conditions de l'évenements non supporté</value>
+    <value>Conditions “{0}” de l'évenements non supporté</value>
   </data>
   <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
     <value>Le contenu requis est absent</value>

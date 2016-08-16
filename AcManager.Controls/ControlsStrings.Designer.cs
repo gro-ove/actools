@@ -277,16 +277,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ABS:.
-        /// </summary>
-        public static string Assists_AbsLabel {
-            get {
-                return ResourceManager.GetString("Assists_AbsLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Auto blip:.
+        ///   Looks up a localized string similar to Autoblip:.
         /// </summary>
         public static string Assists_AutoBlipLabel {
             get {
@@ -345,15 +336,6 @@ namespace AcManager.Controls {
         public static string Assists_StabilityControlLabel {
             get {
                 return ResourceManager.GetString("Assists_StabilityControlLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TC:.
-        /// </summary>
-        public static string Assists_TractionControlLabel {
-            get {
-                return ResourceManager.GetString("Assists_TractionControlLabel", resourceCulture);
             }
         }
         
@@ -1741,15 +1723,6 @@ namespace AcManager.Controls {
         public static string KunosCareer_Error {
             get {
                 return ResourceManager.GetString("KunosCareer_Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to point.
-        /// </summary>
-        public static string KunosCareer_Point {
-            get {
-                return ResourceManager.GetString("KunosCareer_Point", resourceCulture);
             }
         }
         

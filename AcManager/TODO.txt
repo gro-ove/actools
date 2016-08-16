@@ -549,11 +549,12 @@ fixme:
     - are all async requests killed by timeout?
     - practice: gold medals
     - SRS: three minutes instead of five
-    - find information dialog
     - smart textbox with version
     - 1ff opponent?!
     - replays layout
     - openweatherapi: {"cod":"404","message":"Error: Not found city"}
+    - colorpicker bug
+    - RebuildPresetsList() exception
 
 todo:
     - include “dev apps” option to apps presets

@@ -106,7 +106,8 @@ namespace AcTools.Utils {
                 if (maxWidth > 0d || maxHeight > 0d) {
                     var k = Math.Max(maxHeight / image.Height, maxWidth / image.Width);
                     image.Interpolate = PixelInterpolateMethod.Bicubic;
-                    image.FilterType = FilterType.Mitchell;
+                    image.FilterType = FilterType.Lanczos;
+                    image.Sharpen();
                     image.Resize((int)(k * image.Width), (int)(k * image.Height));
                     image.Crop(CommonAcConsts.PreviewWidth, CommonAcConsts.PreviewHeight, Gravity.Center);
                 }

@@ -75,17 +75,28 @@ namespace AcManager.Pages.Drive {
         }
 
         private string _id;
-        private ScrollViewer _scrollViewer;
+        private ScrollViewer _scroll;
         private bool _loaded;
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
-            _scrollViewer = ListBox.FindVisualChild<ScrollViewer>();
-            _scrollViewer?.ScrollToHorizontalOffset(ValuesStorage.GetDoubleNullable(KeyScrollValue) ?? 0d);
+            _scroll = ListBox.FindVisualChild<ScrollViewer>();
+            if (_scroll != null) {
+                _scroll.LayoutUpdated += ScrollLayoutUpdated;
+            }
 
             if (_loaded) return;
             _loaded = true;
 
             Model.AcObject.AcObjectOutdated += AcObject_AcObjectOutdated;
+        }
+
+        private bool _positionLoaded;
+
+        private void ScrollLayoutUpdated(object sender, EventArgs e) {
+            if (_positionLoaded) return;
+            var value = ValuesStorage.GetDoubleNullable(KeyScrollValue) ?? 0d;
+            _scroll?.ScrollToHorizontalOffset(value);
+            _positionLoaded = true;
         }
 
         private void AcObject_AcObjectOutdated(object sender, EventArgs e) {
@@ -110,8 +121,8 @@ namespace AcManager.Pages.Drive {
         private string KeyScrollValue => @"KunosCareer_SelectedPage.ListBox.Scroll__" + _id;
 
         private void ListBox_ScrollChanged(object sender, ScrollChangedEventArgs e) {
-            if (_scrollViewer == null) return;
-            ValuesStorage.Set(KeyScrollValue, _scrollViewer.HorizontalOffset);
+            if (_scroll == null || !_positionLoaded) return;
+            ValuesStorage.Set(KeyScrollValue, _scroll.HorizontalOffset);
         }
 
         private ViewModel Model => (ViewModel)DataContext;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -54,15 +55,26 @@ namespace AcTools.Utils.Helpers {
             return Process.Start(filename, args.Select(GetQuotedArgument).JoinToString(" "));
         }
 
-        public static Task WaitForExitAsync(this Process process, CancellationToken cancellationToken = default(CancellationToken)) {
-            var tcs = new TaskCompletionSource<object>();
-            process.EnableRaisingEvents = true;
-            process.Exited += (sender, args) => tcs.TrySetResult(null);
-            if (cancellationToken != default(CancellationToken)) {
-                cancellationToken.Register(() => { tcs.TrySetCanceled(); });
+        private static async Task WaitForExitAsyncFallback(Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+            while (!process.HasExited) {
+                await Task.Delay(300, cancellationToken);
+                if (cancellationToken.IsCancellationRequested) return;
             }
+        }
 
-            return tcs.Task;
+        public static Task WaitForExitAsync(this Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+            try {
+                var tcs = new TaskCompletionSource<object>();
+                process.EnableRaisingEvents = true;
+                process.Exited += (sender, args) => tcs.TrySetResult(null);
+                if (cancellationToken != default(CancellationToken)) {
+                    cancellationToken.Register(() => { tcs.TrySetCanceled(); });
+                }
+
+                return tcs.Task;
+            } catch (Exception) {
+                return WaitForExitAsyncFallback(process, cancellationToken);
+            }
         }
     }
 }

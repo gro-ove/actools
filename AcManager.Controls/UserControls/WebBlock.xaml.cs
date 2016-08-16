@@ -23,7 +23,7 @@ namespace AcManager.Controls.UserControls {
             ModifyPage();
         }
 
-        public void SetScriptProvider(BaseScriptProvider provider) {
+        public void SetScriptProvider(ScriptProviderBase provider) {
             _something.SetScriptProvider(provider);
             provider.Associated = this;
         }
@@ -32,6 +32,14 @@ namespace AcManager.Controls.UserControls {
             _something.Execute(onload ?
                         @"(function(){ var f = function(){" + js + @"}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
                         @"(function(){" + js + @"})();");
+        }
+
+        public static readonly DependencyProperty OpenNewWindowsExternallyProperty = DependencyProperty.Register(nameof(OpenNewWindowsExternally), typeof(bool),
+                typeof(WebBlock), new PropertyMetadata(true));
+
+        public bool OpenNewWindowsExternally {
+            get { return (bool)GetValue(OpenNewWindowsExternallyProperty); }
+            set { SetValue(OpenNewWindowsExternallyProperty, value); }
         }
 
         public static readonly DependencyProperty UserAgentProperty = DependencyProperty.Register(nameof(UserAgent), typeof(string),

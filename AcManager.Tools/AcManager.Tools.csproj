@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcErrors\JObjectRestorationSchemeProvider.cs" />
+    <Compile Include="AcErrors\SeveralAllowedAttribute.cs" />
     <Compile Include="AcErrors\Solutions\AsyncMultiSolution.cs" />
     <Compile Include="AcErrors\Solutions\AsyncSolution.cs" />
     <Compile Include="AcErrors\Solutions\IMultiSolution.cs" />
@@ -152,11 +153,13 @@
     <Compile Include="Filters\ReplayObjectTester.cs" />
     <Compile Include="Filters\TrackObjectTester.cs" />
     <Compile Include="Filters\UniqueAcObjectTester.cs" />
+    <Compile Include="GameProperties\WeatherSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ScreenshotsConverter.cs" />
     <Compile Include="GameProperties\RaceCommandExecutor.cs" />
     <Compile Include="GameProperties\ReplayCommandExecutor.cs" />
     <Compile Include="GameProperties\RsrMark.cs" />
     <Compile Include="GameProperties\SrsMark.cs" />
+    <Compile Include="GameProperties\WeatherSpecificPpFilterHelper.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcControlsConflictSolution.cs" />
@@ -277,7 +280,7 @@
     <Compile Include="SemiGui\IGameUi.cs" />
     <Compile Include="SemiGui\IUiFactory.cs" />
     <Compile Include="SemiGui\VariablesReplacement.cs" />
-    <Compile Include="SemiGui\WeatherSpecificCloudsHelper.cs" />
+    <Compile Include="GameProperties\WeatherSpecificCloudsHelper.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />
     <Compile Include="Helpers\Api\CmApiProvider.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider_Lan.cs" />
@@ -357,7 +360,7 @@
     <Compile Include="Objects\KunosCareerObject.cs" />
     <Compile Include="Objects\WeatherObject.cs" />
     <Compile Include="Objects\TrackExtraConfigurationObject.cs" />
-    <Compile Include="Objects\TrackBaseObject.cs" />
+    <Compile Include="Objects\TrackObjectBase.cs" />
     <Compile Include="Objects\TrackObject_Lists.cs" />
     <Compile Include="Objects\CarSkinObject.cs" />
     <Compile Include="Data\GraphData.cs" />

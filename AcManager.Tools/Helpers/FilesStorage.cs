@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Helpers {
     public class ContentCategory {
-        public const string Data = "Data";
+        public const string Miscellaneous = "Miscellaneous";
         public const string BrandBadges = "Brand Badges";
         public const string CarCategories = "Car Categories";
         public const string TrackCategories = "Track Categories";
@@ -23,7 +23,7 @@ namespace AcManager.Tools.Helpers {
     }
 
     public class FilesStorage : AbstractFilesStorage {
-        public const string ContentDirName = "Content", ContentUserDirName = "Content (User)";
+        public const string DataDirName = "Data", DataUserDirName = "Data (User)";
 
         private static FilesStorage _instance;
 
@@ -43,12 +43,12 @@ namespace AcManager.Tools.Helpers {
 
         protected FilesStorage(string path = null) : base(path ?? DefaultDataLocation) {
             EnsureDirectory();
-            EnsureDirectory(ContentDirName);
-            EnsureDirectory(ContentUserDirName);
+            EnsureDirectory(DataDirName);
+            EnsureDirectory(DataUserDirName);
         }
 
         public override ContentWatcher Watcher(params string[] name) {
-            return base.Watcher(CombineFilename(ContentUserDirName, Path.Combine(name)));
+            return base.Watcher(CombineFilename(DataUserDirName, Path.Combine(name)));
         }
 
         public class ContentEntry {
@@ -70,8 +70,8 @@ namespace AcManager.Tools.Helpers {
         public ContentEntry GetContentFile(params string[] name) {
             var nameJoined = Path.Combine(name);
 
-            var contentFile = CombineFilename(ContentDirName, nameJoined);
-            var contentUserFile = CombineFilename(ContentUserDirName, nameJoined);
+            var contentFile = CombineFilename(DataDirName, nameJoined);
+            var contentUserFile = CombineFilename(DataUserDirName, nameJoined);
             
             EnsureDirectory(Path.GetDirectoryName(contentFile));
             EnsureDirectory(Path.GetDirectoryName(contentUserFile));
@@ -118,8 +118,8 @@ namespace AcManager.Tools.Helpers {
 
         public IEnumerable<ContentEntry> GetContentDirectoryFiltered(string searchPattern, params string[] name) {
             var nameJoined = Path.Combine(name);
-            var contentDir = EnsureDirectory(ContentDirName, nameJoined);
-            var contentUserDir = EnsureDirectory(ContentUserDirName, nameJoined);
+            var contentDir = EnsureDirectory(DataDirName, nameJoined);
+            var contentUserDir = EnsureDirectory(DataUserDirName, nameJoined);
 
             var contentUserFiles = Directory.GetFiles(contentUserDir, searchPattern).Select(x => new ContentEntry(x, true)).ToList();
             var temp = contentUserFiles.Select(x => x.Name);
@@ -135,7 +135,7 @@ namespace AcManager.Tools.Helpers {
         public void AddUserContentToDirectory(string name, string filename, string saveAs) {
             saveAs = EscapeString(saveAs);
 
-            var contentUserDir = EnsureDirectory(ContentUserDirName, name);
+            var contentUserDir = EnsureDirectory(DataUserDirName, name);
             foreach (var file in Directory.GetFiles(contentUserDir, saveAs + ".*").Where(file => Path.GetFileNameWithoutExtension(file) == saveAs)) {
                 FileUtils.Recycle(file);
             }
@@ -145,7 +145,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public void OpenContentDirectoryInExplorer(string name) {
-            var contentUserDir = EnsureDirectory(ContentUserDirName, name);
+            var contentUserDir = EnsureDirectory(DataUserDirName, name);
             Process.Start(contentUserDir);
         }
 
@@ -212,7 +212,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         protected override string GetSubdirectoryFilename(string name) {
-            return Path.Combine(ContentUserDirName, name);
+            return Path.Combine(DataUserDirName, name);
         }
     }
 }

@@ -700,7 +700,7 @@
   </data>
   <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
     <value>JPEG</value>
-  </data>
+  <comment>@Invariant</comment></data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (without compression)</value>
   </data>
@@ -1389,5 +1389,91 @@
   </data>
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Invalid format</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
+    <comment>@Invariant</comment>
+  </data>
+  <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
+    <value>Anti-lock braking system</value>
+  </data>
+  <data name="Assists_AutoBlip" xml:space="preserve">
+    <value>Autoblip</value>
+  </data>
+  <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
+    <value>Automatically syncronize RPM on downshifts</value>
+  </data>
+  <data name="Assists_AutoClutch" xml:space="preserve">
+    <value>Automatic clutch</value>
+  </data>
+  <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
+    <value>Automatically press clutch on shifting</value>
+  </data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>Automatic shifting</value>
+  </data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Don’t confuse it with automatic gearbox</value>
+  </data>
+  <data name="Assists_FuelConsumption" xml:space="preserve">
+    <value>Fuel consumption</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Ideal line</value>
+  </data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>Show ideal driving line</value>
+  </data>
+  <data name="Assists_MechanicalDamage" xml:space="preserve">
+    <value>Mechanical damage</value>
+  </data>
+  <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
+    <value>Damageable engine, gearbox, suspension and stuff</value>
+  </data>
+  <data name="Assists_SlipstreamEffect" xml:space="preserve">
+    <value>Slipstream effect</value>
+  </data>
+  <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
+    <value>Multipler for slipstream effect</value>
+  </data>
+  <data name="Assists_StabilityControl" xml:space="preserve">
+    <value>Stability control</value>
+  </data>
+  <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
+    <value>Unrealistic, but could be helpful if you’re just starting to learn how to drive or drift</value>
+  </data>
+  <data name="Assists_Title" xml:space="preserve">
+    <value>Assists</value>
+  </data>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>Traction control:</value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Optimise grip during acceleration</value>
+  </data>
+  <data name="Assists_TyreBlankets" xml:space="preserve">
+    <value>Tyre blankets</value>
+  </data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Heat tires in pits</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Tyre wear</value>
+  </data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Multipler for tyre wear</value>
+  </data>
+  <data name="KunosCareer_Place" xml:space="preserve">
+    <value>place</value>
+  </data>
+  <data name="KunosCareer_Point" xml:space="preserve">
+    <value>point</value>
+    <comment>Will be pluralized automatically</comment>
+  </data>
+  <data name="KunosCareer_Resume" xml:space="preserve">
+    <value>Resume</value>
+  </data>
+  <data name="KunosCareer_Start" xml:space="preserve">
+    <value>Start</value>
   </data>
 </root>

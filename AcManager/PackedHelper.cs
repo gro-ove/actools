@@ -161,6 +161,10 @@ namespace AcManager {
             if (name.EndsWith(".resources")) return null;
 #endif
 
+            if (name == "Magick.NET-x86") {
+                return null;
+            }
+
             Log("resolve: " + args.Name + " as " + name);
 
             try {

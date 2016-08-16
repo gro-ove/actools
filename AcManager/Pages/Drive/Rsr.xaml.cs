@@ -128,9 +128,9 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private TrackBaseObject _track;
+            private TrackObjectBase _track;
 
-            public TrackBaseObject Track {
+            public TrackObjectBase Track {
                 get { return _track; }
                 set {
                     if (Equals(value, _track)) return;
@@ -249,7 +249,7 @@ namespace AcManager.Pages.Drive {
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         [ComVisible(true)]
-        public class ScriptProvider : BaseScriptProvider {
+        public class ScriptProvider : ScriptProviderBase {
             private readonly ViewModel _model;
 
             public ScriptProvider(ViewModel model) {

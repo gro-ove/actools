@@ -127,16 +127,12 @@
     <value>Завершено: </value>
     <comment>Don’t forget about space at the end!</comment>
   </data>
-  <data name="KunosCareer_Point" xml:space="preserve">
-    <value>очко</value>
-    <comment>Will be pluralized automatically</comment>
-  </data>
   <data name="KunosCareer_Error" xml:space="preserve">
     <value>{0} ошибка</value>
     <comment>Will be pluralized automatically</comment>
   </data>
   <data name="AcObject_ErrorsHeader" xml:space="preserve">
-    <value>{!Ошибка}:</value>
+    <value>{Ошибка}:</value>
   </data>
   <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
     <value>Координаты:</value>
@@ -485,5 +481,17 @@
   </data>
   <data name="Common_TryAgain" xml:space="preserve">
     <value>Ещё раз</value>
+  </data>
+  <data name="Theme_Nordschleife" xml:space="preserve">
+    <value>Nordschleife</value>
+  </data>
+  <data name="Common_OfflineMode" xml:space="preserve">
+    <value>Офлайн</value>
+  </data>
+  <data name="Common_Generic" xml:space="preserve">
+    <value>Общее</value>
+  </data>
+  <data name="Common_Downloading" xml:space="preserve">
+    <value>Скачивание…</value>
   </data>
 </root>

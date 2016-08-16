@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Windows.Media;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class FocusAdvancement {
@@ -16,7 +17,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public static readonly DependencyProperty AdvancesByEnterKeyProperty = DependencyProperty.RegisterAttached("AdvancesByEnterKey",
             typeof(bool), typeof(FocusAdvancement), new UIPropertyMetadata(OnAdvancesByEnterKeyPropertyChanged));
 
-        static void OnAdvancesByEnterKeyPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+        private static void OnAdvancesByEnterKeyPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = d as UIElement;
             if (element == null) return;
 
@@ -27,27 +28,34 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             }
         }
 
-        static void Element_KeyDown(object sender, KeyEventArgs e) {
+        public static bool MoveFocus([CanBeNull] DependencyObject element, FocusNavigationDirection direction = FocusNavigationDirection.Next) {
+            var e = element as UIElement;
+            if (e == null) return false;
+
+            e.MoveFocus(new TraversalRequest(direction));
+            return true;
+        }
+
+        public static bool RemoveFocus([CanBeNull] DependencyObject element) {
+            var parent = element?.GetParents().OfType<IInputElement>().FirstOrDefault(x => x.Focusable);
+            if (parent == null) return MoveFocus(element);
+
+            FocusManager.SetFocusedElement(FocusManager.GetFocusScope(element), parent);
+            return true;
+        }
+
+        private static void Element_KeyDown(object sender, KeyEventArgs e) {
             switch (e.Key) {
-                case Key.Escape: {
-                    var element = sender as DependencyObject;
-                    var parent = element?.GetParents().OfType<IInputElement>().FirstOrDefault(x => x.Focusable);
-                    if (parent != null) {
-                        FocusManager.SetFocusedElement(FocusManager.GetFocusScope(element), parent);
-                        break;
+                case Key.Escape:
+                    if (RemoveFocus(sender as DependencyObject)) {
+                        e.Handled = true;
                     }
-
-                    goto case Key.Enter;
-                }
-
-                case Key.Enter: {
-                    var element = sender as UIElement;
-                    if (element == null) return;
-
-                    element.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-                    e.Handled = true;
                     break;
-                }
+                case Key.Enter: 
+                    if (MoveFocus(sender as DependencyObject)) {
+                        e.Handled = true;
+                    }
+                    break;
             }
         }
     }

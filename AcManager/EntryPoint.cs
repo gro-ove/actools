@@ -29,19 +29,54 @@ namespace AcManager {
         public static string ApplicationDataDirectory => _applicationDataDirectory ?? (_applicationDataDirectory =
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager"));
 
+        public static string GetLogName(string id) {
+#if DEBUG
+            return Path.Combine(ApplicationDataDirectory, "Logs", $"{id}.log");
+#else
+            var now = DateTime.Now;
+            return Path.Combine(ApplicationDataDirectory, "Logs", $"{id}_{now.Year % 100:D2}{now.Month:D2}{now.Day:D2}_{now.Hour:D2}{now.Minute:D2}{now.Second:D2}.log");
+#endif
+        }
+
+        private static bool Rename(string oldName, string newName) {
+            var old = Path.Combine(ApplicationDataDirectory, oldName);
+            if (!Directory.Exists(old)) return false;
+
+            var renamed = Path.Combine(ApplicationDataDirectory, newName);
+            if (!Directory.Exists(renamed)) {
+                try {
+                    Directory.Move(old, renamed);
+                } catch (Exception) {
+                    // ignored
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void RenameContentToData() {
+            if (Rename("Content", "Data")) {
+                Rename("Content (User)", "Data (User)");
+                Rename(@"Data\Data", @"Data\Miscellaneous");
+                Rename(@"Data (User)\Data", @"Data (User)\Miscellaneous");
+            }
+        }
+
         [STAThread]
         private static void Main(string[] a) {
-            var logging = Assembly.GetEntryAssembly().Location.Contains("_log");
-            if (!Debugger.IsAttached && !logging) {
+            if (!Debugger.IsAttached) {
                 SetUnhandledExceptionHandler();
             }
-            
+
+            RenameContentToData();
+
             AppArguments.Initialize(a);
             AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
 
-            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References",
-                    logging || AppArguments.GetBool(AppFlag.LogPacked) ? Path.Combine(ApplicationDataDirectory, "Logs", "PackedLog.txt") : null).Handler;
-
+            var logFilename = AppArguments.GetBool(AppFlag.LogPacked, true) ? GetLogName("Packed Log") : null;
+            AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References", logFilename).Handler;
             MainInner(a);
         }
 

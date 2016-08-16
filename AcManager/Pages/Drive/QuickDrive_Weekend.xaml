@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
         xmlns:tools="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance drive:QuickDrive_Weekend+ViewModel}" Loaded="QuickDrive_Weekend_OnLoaded" Unloaded="QuickDrive_Weekend_OnUnloaded">
+        d:DataContext="{d:DesignInstance drive:QuickDrive_Weekend+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -53,6 +53,9 @@
                                 IsChecked="{Binding AiLevelArrangeRandomly, Mode=TwoWay}" />
                         <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder}" IsCheckable="True"
                                 ToolTip="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder_Tooltip}" IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
+                        <Separator />
+                        <MenuItem Header="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" IsCheckable="True"
+                                IsChecked="{Binding AiLevelInDriverName, Mode=TwoWay}" />
                     </ContextMenu>
                 </StackPanel.ContextMenu>
                 <mui:ValueLabel Value="{Binding AiLevelMin}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrengthMin}" />

@@ -65,14 +65,14 @@ namespace AcManager.Tools.AcErrors {
         /// <summary>
         /// {0}: skin id
         /// </summary>
-        [LocalizedDescription(nameof(ToolsStrings.AcError_RequiredCarIsMissing))]
+        [LocalizedDescription(nameof(ToolsStrings.AcError_RequiredCarIsMissing)), SeveralAllowed]
         Data_KunosCareerCarIsMissing,
 
         /// <summary>
         /// {0}: car name or id
         /// {1}: skin id
         /// </summary>
-        [LocalizedDescription(nameof(ToolsStrings.AcError_RequiredSkinForIsMissing))]
+        [LocalizedDescription(nameof(ToolsStrings.AcError_RequiredSkinForIsMissing)), SeveralAllowed]
         Data_KunosCareerCarSkinIsMissing,
 
         /// <summary>

@@ -277,8 +277,8 @@ namespace AcTools.Processes {
 
                 iniFile.SaveAs(iniFilename);
 
-                _disposeLater.Add(AssistsProperties?.Set());
-                _disposeLater.AddRange(AdditionalPropertieses.OfType<AdditionalProperties>().Select(x => x.Set()).NonNull());
+                _disposeLater.AddRange(AdditionalPropertieses.OfType<AdditionalProperties>().Select(x => x.Set())
+                                                             .Prepend(AssistsProperties?.Set()).NonNull());
 
                 StartTime = DateTime.Now;
             }

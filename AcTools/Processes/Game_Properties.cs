@@ -277,6 +277,17 @@ namespace AcTools.Processes {
             }
         }
 
+        public class TrackdayProperties : RaceProperties {
+            protected override void SetSessions(IniFile file) {
+                file["SESSION_0"] = new IniFileSection {
+                    ["NAME"] = "Track Day",
+                    ["DURATION_MINUTES"] = 1200,
+                    ["SPAWN_SET"] = StartType.Pit.Value,
+                    ["TYPE"] = SessionType.Qualification
+                };
+            }
+        }
+
         public class WeekendProperties : RaceProperties {
             public int PracticeDuration = 10,
                     QualificationDuration = 15;
@@ -484,10 +495,12 @@ namespace AcTools.Processes {
             }
 
             public override IDisposable Set() {
-                var assistsIniFilename = FileUtils.GetAssistsIniFilename();
-                var result = FileUtils.RestoreLater(assistsIniFilename);
-                ToIniFile().SaveAs(assistsIniFilename);
-                return result;
+                ToIniFile().SaveAs(FileUtils.GetAssistsIniFilename());
+                return null;
+            }
+
+            public string GetDescription() {
+                return $"(TyreBlankets={TyreBlankets}, ABS={(int)Abs}, TC={(int)TractionControl})";
             }
         }
 

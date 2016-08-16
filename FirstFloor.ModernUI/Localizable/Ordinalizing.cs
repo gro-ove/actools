@@ -23,6 +23,12 @@ namespace FirstFloor.ModernUI.Localizable {
 
         private static string RuPostfix(int v, string s) {
             // http://ilyabirman.ru/meanwhile/all/o-naraschenii-okonchaniy-chislitelnyh/
+
+            switch (s?.ToLower(CultureInfo.CurrentUICulture)) {
+                case "место":
+                    return "-е";
+            }
+
             return "-й";
         }
 

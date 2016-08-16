@@ -35,12 +35,12 @@ namespace AcManager {
             if (!File.Exists(filename)) return;
 
             foreach (var pair in File.ReadAllLines(filename).Where(x => x.StartsWith("--"))
-                    .Select(x => x.Split(new[] { '=' }, 2).Select(y => y.Trim()).ToArray())
-                    .Select(x => new {
-                        Key = ArgStringToFlag(x[0]),
-                        Value = x.Length == 2 ? x[1] : null
-                    })
-                    .Where(x => x.Key != null)) {
+                                     .Select(x => x.Split(new[] { '=' }, 2).Select(y => y.Trim()).ToArray())
+                                     .Select(x => new {
+                                         Key = ArgStringToFlag(x[0]),
+                                         Value = x.Length == 2 ? x[1] : null
+                                     })
+                                     .Where(x => x.Key != null)) {
                 _args[pair.Key.Value] = pair.Value;
             }
         }

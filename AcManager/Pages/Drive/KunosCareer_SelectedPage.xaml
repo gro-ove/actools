@@ -133,7 +133,7 @@
                                                             Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:KunosCareerObjectType.Championship}}">
                                                         <Run Text="{Binding ChampionshipPointsNeeded}" FontWeight="Bold" />
                                                         <Run
-                                                                Text="{Binding ChampionshipPointsNeeded, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.KunosCareer_Point}}" />
+                                                                Text="{Binding ChampionshipPointsNeeded, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static t:ToolsStrings.KunosCareer_Point}}" />
                                                     </TextBlock>
                                                 </StackPanel>
                                             </StackPanel>
@@ -159,12 +159,8 @@
                                     <TextBlock Text="{Binding ThirdPlacesGoal}" FontWeight="Bold" />
                                 </StackPanel>
 
-                                <TextBlock
-                                        Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:KunosCareerObjectType.Championship}}">
-                                <Run Text="{Binding ChampionshipPointsGoal}" FontWeight="Bold" />
-                                <Run
-                                            Text="{Binding ChampionshipPointsGoal, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.KunosCareer_Point}}" />
-                                </TextBlock>
+                                <mui:BbCodeBlock BbCode="{Binding DisplayChampionshipGoal}"
+                                        Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:KunosCareerObjectType.Championship}}" />
                             </StackPanel>
                         </DockPanel>
                     </c:KunosCareerBlock.ButtonPlaceholder>
@@ -449,13 +445,17 @@
                         <c:UserPresetsControl UserPresetable="{Binding Source={x:Static c:AssistsViewModel.Instance}}" ShowSaveButton="False" Margin="0 0 4 0"
                                 DockPanel.Dock="Left" />
 
-                        <Button DockPanel.Dock="Left" DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}"
-                                PreviewMouseLeftButtonUp="AssistsMore_OnPreviewMouseLeftButtonUp" Margin="0 0 4 0">
-                            …
-                            <Button.ToolTip>
-                                <c:AssistsDescription />
-                            </Button.ToolTip>
-                        </Button>
+                        <ToggleButton x:Name="AssistsButton" Content="…" Margin="0 0 4 0"
+                                IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
+                            <ToggleButton.ToolTip>
+                                <c:AssistsDescription DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}" />
+                            </ToggleButton.ToolTip>
+                        </ToggleButton>
+                        <c:ModernPopup x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}" Placement="Top"
+                                IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
+                            <c:AssistsEditor DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}" />
+                        </c:ModernPopup>
+
                         <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
                                 CommandParameter="{Binding Source={x:Static c:AssistsViewModel.Instance}}" Content="{x:Static g:AppStrings.Common_Go}" />
                     </DockPanel>

@@ -52,6 +52,20 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        public override string DisplayName => Name == null ? Id :
+                SettingsHolder.Content.CarsYearPostfix && Year.HasValue && !AcStringValues.GetYearFromName(Name).HasValue
+                        ? $"{Name} '{Year % 100:D2}" : Name;
+
+        public override int? Year {
+            get { return base.Year; }
+            set {
+                base.Year = value;
+                if (SettingsHolder.Content.CarsYearPostfix && Loaded) {
+                    OnPropertyChanged(nameof(DisplayName));
+                }
+            }
+        }
+
         protected override AutocompleteValuesList GetTagsList() {
             return SuggestionLists.CarTagsList;
         }
@@ -447,9 +461,14 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override void LoadYear(JObject json) {
-            base.LoadYear(json);
-            if (!Year.HasValue) {
-                Year = DataProvider.Instance.CarYears.GetValueOrDefault(Id);
+            Year = json.GetIntValueOnly("year");
+            if (Year.HasValue) return;
+
+            int year;
+            if (DataProvider.Instance.CarYears.TryGetValue(Id, out year)) {
+                Year = year;
+            } else if (Name != null) {
+                Year = AcStringValues.GetYearFromName(Name) ?? AcStringValues.GetYearFromId(Name);
             }
         }
 

@@ -63,9 +63,9 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private TrackBaseObject _track;
+            private TrackObjectBase _track;
 
-            public TrackBaseObject Track {
+            public TrackObjectBase Track {
                 get { return _track; }
                 set {
                     if (Equals(value, _track)) return;
@@ -186,7 +186,7 @@ namespace AcManager.Pages.Selected {
         }
 
         private ReplayObject _object;
-        private TrackBaseObject _trackObject;
+        private TrackObjectBase _trackObject;
         private CarObject _carObject;
         private CarSkinObject _carSkinObject;
         private WeatherObject _weather;

@@ -303,9 +303,9 @@ namespace AcManager.Tools.Objects {
         }
 
         #region Loadable objects
-        private TrackBaseObject _trackObject;
+        private TrackObjectBase _trackObject;
 
-        public TrackBaseObject TrackObject {
+        public TrackObjectBase TrackObject {
             get { return _trackObject; }
             set {
                 if (Equals(value, _trackObject)) return;

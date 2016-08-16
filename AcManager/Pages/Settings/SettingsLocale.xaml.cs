@@ -17,7 +17,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -263,22 +262,15 @@ namespace AcManager.Pages.Settings {
                 var directory = FilesStorage.Instance.CombineFilename("Locales", Locale.LocaleName);
                 if (!Directory.Exists(directory)) return;
 
-                if (SteamIdHelper.Instance.Value == null || SteamIdHelper.Instance.Value.Length < 5) {
-                    NonfatalError.Notify("Can't send unpacked locale",
-                            "Please, try another way, like, for example, through [url=\"mailto:cm-support@assettocorsa.club\"]e-mail[/url].");
-                    return;
-                }
-
-
                 try {
                     var message = Prompt.Show(
-                            "You’re going to send an unpacked locale to developers. Thanks in advance!\n\nWould you like to add some notes? Maybe your name for About page?",
-                            "Additional Noted", watermark: @"?", multiline: true);
+                            "You’re going to send an unpacked locale to developers. Thanks in advance!\n\nWould you like to add some notes? Maybe your name for About page? Or your address so I’ll be able to contact you back?",
+                            "Additional Notes", watermark: @"?", multiline: true);
                     if (message == null) return;
                     await Task.Run(() => AppReporter.SendUnpackedLocale(directory, message));
                     Toast.Show("Locale Sent", AppStrings.About_ReportAnIssue_Sent_Message);
                 } catch (Exception e) {
-                    NonfatalError.Notify("Can't send unpacked locale",
+                    NonfatalError.Notify("Can’t send unpacked locale",
                             "Please, try another way, like, for example, through [url=\"mailto:cm-support@assettocorsa.club\"]e-mail[/url].", e);
                 }
             }, o => Directory.Exists(FilesStorage.Instance.CombineFilename("Locales", Locale.LocaleName)), 3000));
@@ -287,6 +279,12 @@ namespace AcManager.Pages.Settings {
 
             public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new RelayCommand(o => {
                 WindowsHelper.RestartCurrentApplication();
+            }));
+
+            private ICommand _moreInformationCommand;
+
+            public ICommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new RelayCommand(o => {
+                WindowsHelper.ViewInBrowser("http://acstuff.ru/f/d/7-content-manager-how-to-localize");
             }));
 
             private RelayCommand _navigateCommand;

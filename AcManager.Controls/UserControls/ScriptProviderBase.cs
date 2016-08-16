@@ -1,15 +1,14 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
+using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
-    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-    [ComVisible(true)]
-    public abstract class BaseScriptProvider {
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
+    public abstract class ScriptProviderBase {
         private WeakReference<WebBlock> _lastAssociatedWebBrowser;
 
         [CanBeNull]
@@ -22,7 +21,11 @@ namespace AcManager.Controls.UserControls {
         }
 
         public void NavigateTo(string url) {
-            Process.Start(url);
+            if (Associated?.OpenNewWindowsExternally == false) {
+                Associated.Navigate(url);
+            } else {
+                WindowsHelper.ViewInBrowser(url);
+            }
         }
 
         public void Log(string message) {

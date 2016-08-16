@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using AcManager.Internal;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-
-// ReSharper disable PossibleNullReferenceException
-// try-catch will catch them and return null, relax
 
 namespace AcManager.Tools.Helpers.Api {
     public class OpenWeatherApiProvider {
@@ -238,40 +238,35 @@ namespace AcManager.Tools.Helpers.Api {
         private const string RequestWeatherUri = "http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&APPID={2}&mode=xml&units=metric";
         private const string IconUri = "http://openweathermap.org/img/w/{0}.png";
 
-        [CanBeNull]
-        public WeatherDescription TryToGetWeather(GeoTagsEntry geoTags) {
+        [ItemNotNull]
+        public async Task<WeatherDescription> GetWeatherAsync(GeoTagsEntry geoTags) {
             var requestUri = string.Format(RequestWeatherUri, geoTags.LatitudeValue, geoTags.LongitudeValue, InternalUtils.GetOpenWeatherApiCode());
 
-            try {
-                var httpRequest = WebRequest.Create(requestUri);
-                httpRequest.Method = "GET";
+#if DEBUG
+            Logging.Write(requestUri);
+#endif
 
-                using (var response = (HttpWebResponse) httpRequest.GetResponse()) {
-                    if (response.StatusCode != HttpStatusCode.OK) return null;
+            using (var order = KillerOrder.Create(new WebClient(), 5000)) {
+                var data = await order.Victim.DownloadStringTaskAsync(requestUri);
 
-                    using (var responseStream = response.GetResponseStream()) {
-                        if (responseStream == null) return null;
-
-                        var xml = new XmlDocument();
-                        xml.Load(responseStream);
-
-                        var temperatureNode = xml.GetElementsByTagName("temperature")[0];
-                        var weatherNode = xml.GetElementsByTagName("weather")[0];
-
-                        var temperature = double.Parse(temperatureNode.Attributes["value"].Value, CultureInfo.InvariantCulture);
-                        var type = OpenWeatherTypeToCommonType((OpenWeatherType)int.Parse(weatherNode.Attributes["number"].Value, NumberStyles.Any, CultureInfo.InvariantCulture));
-                        var description = weatherNode.Attributes["value"].Value;
-                        var iconAttribute = weatherNode.Attributes["icon"];
-                        var iconUri = iconAttribute == null ? null : string.Format(IconUri, iconAttribute.Value);
-                        return new WeatherDescription(type, temperature, description, iconUri);
-                    }
+                XDocument doc;
+                try {
+                    doc = XDocument.Parse(data);
+                } catch (XmlException) {
+                    Logging.Warning("response: " + data);
+                    throw;
                 }
-            } catch (WebException e) {
-                Logging.Warning($"[OpenWeatherApiProvider] TryToGetWeather(): {requestUri}, {e.Message}");
-                return null;
-            } catch (Exception e) {
-                Logging.Warning($"[OpenWeatherApiProvider] TryToGetWeather(): {requestUri}\n{e}");
-                return null;
+
+                var temperatureValue = doc.Descendants(@"temperature").FirstOrDefault()?.Attribute(@"value")?.Value;
+                var weatherNode = doc.Descendants(@"weather").FirstOrDefault();
+                if (temperatureValue == null || weatherNode == null) throw new Exception("Invalid response");
+
+                var temperature = FlexibleParser.ParseDouble(temperatureValue);
+                var type = OpenWeatherTypeToCommonType((OpenWeatherType)int.Parse(weatherNode.Attribute(@"number").Value, NumberStyles.Any, CultureInfo.InvariantCulture));
+                var description = weatherNode.Attribute(@"value").Value;
+                var icon = weatherNode.Attribute(@"icon")?.Value;
+                var iconUri = icon == null ? null : string.Format(IconUri, icon);
+                return new WeatherDescription(type, temperature, description, iconUri);
             }
         }
     }

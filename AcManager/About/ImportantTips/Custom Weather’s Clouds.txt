@@ -1,4 +1,4 @@
-﻿sid: 23_1914836418_-1434887877
+﻿sid: 23_1914836418_-1434887878
 
 Now you can set special clouds for any weather!
 
@@ -9,3 +9,7 @@ Put them into [i]clouds[/i] folder inside weather’s  folder and CM will replac
 Just in case, this behavior could be disabled in Settings/Drive.
 
 Thanks to [url="http://www.assettocorsa.net/forum/index.php?members/peter-boese.1619/"]@peter boese[/url] for the idea!
+
+[b]UPD:[b] Now it also supports custom PP filters as well. Just put a file named “filter.ini” in a weather’s folder.
+
+Also, at the moment the whole system doesn’t work with online mode (since servers don’t tell which weather they use). I’m trying to find a solution but not sure if it’s possible at all.

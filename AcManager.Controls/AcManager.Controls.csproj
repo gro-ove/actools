@@ -102,6 +102,9 @@
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="AcObjectHeaderSection.cs" />
+    <Compile Include="AssistsEditor.xaml.cs">
+      <DependentUpon>AssistsEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ChangedPresetEventArgs.cs" />
     <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
     <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
@@ -129,7 +132,7 @@
       <DependentUpon>ControlsStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
-    <Compile Include="UserControls\BaseScriptProvider.cs" />
+    <Compile Include="UserControls\ScriptProviderBase.cs" />
     <Compile Include="UserControls\IWebSomething.cs" />
     <Compile Include="UserControls\ModernPopup.xaml.cs">
       <DependentUpon>ModernPopup.xaml</DependentUpon>
@@ -194,6 +197,7 @@
     <Compile Include="Helpers\FinishableControl.cs" />
     <Compile Include="ViewModels\AcListPageViewModel.cs" />
     <Compile Include="ViewModels\AcObjectListCollectionViewWrapper.cs" />
+    <Compile Include="ViewModels\AcObjectSorter.cs" />
     <Compile Include="ViewModels\AssistsViewModel.cs" />
     <Compile Include="ViewModels\BaseAcObjectListCollectionViewWrapper.cs" />
     <Compile Include="ViewModels\BaseAssistsViewModel.cs" />
@@ -253,6 +257,10 @@
     <Page Include="Assets\SelectedObjectToolBarTray\Fixed.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AssistsEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomShowroom\CarTextureDialog.xaml">
       <SubType>Designer</SubType>

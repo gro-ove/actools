@@ -100,6 +100,7 @@
     <Compile Include="Effects\GrayscaleEffect.cs" />
     <Compile Include="Helpers\AlphanumComparatorFast.cs" />
     <Compile Include="Helpers\BitmapSourceExtension.cs" />
+    <Compile Include="Helpers\CacheStorage.cs" />
     <Compile Include="Helpers\ColorExtension.cs" />
     <Compile Include="Helpers\ContextMenuExtension.cs" />
     <Compile Include="Helpers\FileDialogFilters.cs" />

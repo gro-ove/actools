@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class AppearanceManager : NotifyPropertyChanged {
@@ -31,19 +32,12 @@ namespace FirstFloor.ModernUI.Presentation {
         private ResourceDictionary GetThemeDictionary() {
             // determine the current theme by looking at the app resources and return the first dictionary having the resource key 'WindowBackground' defined.
             return (from dict in Application.Current.Resources.MergedDictionaries
-                    where dict.Contains("WindowBackground")
+                    where dict.Contains(@"WindowBackground")
                     select dict).FirstOrDefault();
         }
 
-        private void ApplyAccentColor(Color accentColor) {
-            // set accent color and brush resources
-            Application.Current.Resources[KeyAccentColor] = accentColor;
-            Application.Current.Resources[KeyAccent] = new SolidColorBrush(accentColor);
-        }
-
         public static AppearanceManager Current { get; } = new AppearanceManager();
-
-        private bool _themeSkipAccentColor;
+        
         public Uri ThemeSource {
             get { return GetThemeDictionary()?.Source; }
             set {
@@ -52,19 +46,8 @@ namespace FirstFloor.ModernUI.Presentation {
                 var oldThemeDict = GetThemeDictionary();
                 var dictionaries = Application.Current.Resources.MergedDictionaries;
                 var themeDict = new ResourceDictionary { Source = value };
-
-                // if theme defines an accent color, use it
-                var accentColor = themeDict[KeyAccentColor] as Color?;
-                if (accentColor.HasValue) {
-                    themeDict.Remove(KeyAccentColor);
-                    if (!_themeSkipAccentColor) {
-                        ApplyAccentColor(accentColor.Value);
-                    }
-                }
-
-                _themeSkipAccentColor = false;
-                dictionaries.Add(themeDict);
                 
+                dictionaries.Add(themeDict);
                 if (oldThemeDict != null) {
                     dictionaries.Remove(oldThemeDict);
                 }
@@ -103,14 +86,16 @@ namespace FirstFloor.ModernUI.Presentation {
         public Color AccentColor {
             get { return Application.Current.Resources[KeyAccentColor] as Color? ?? Color.FromArgb(0xff, 0x1b, 0xa1, 0xe2); }
             set {
-                ApplyAccentColor(value);
+                Logging.Write("AccentColor=" + value);
+
+                Application.Current.Resources[KeyAccentColor] = value;
+                Application.Current.Resources[KeyAccent] = new SolidColorBrush(value);
 
                 var themeSource = ThemeSource;
                 if (themeSource != null) {
-                    _themeSkipAccentColor = true;
                     ThemeSource = themeSource;
                 }
-
+                
                 OnPropertyChanged();
             }
         }

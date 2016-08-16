@@ -5,6 +5,8 @@ using FirstFloor.ModernUI.Presentation;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class TagsList : Control {
@@ -87,18 +89,36 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ItemsSource.Add(tag);
         }
 
+        private static bool IsCaretAtFront(DependencyObject d) {
+            var t = d.FindVisualChild<TextBox>();
+            return t?.SelectionStart == 0 && t.SelectionLength == 0;
+        }
+
         private void TextBox_KeyDown(object sender, KeyEventArgs e) {
-            if (e.Key != Key.Enter && e.Key != Key.Tab) return;
+            if (e.Key != Key.Back && e.Key != Key.Enter && e.Key != Key.Tab &&
+                    e.Key != Key.Escape) return;
 
             var textBox = sender as ComboBox;
-            if (string.IsNullOrWhiteSpace(textBox?.Text)) return;
+            if (textBox == null) return;
 
-            AddNewTag(textBox.Text.Trim());
-            textBox.Text = "";
+            if (e.Key != Key.Back) {
+                if (string.IsNullOrWhiteSpace(textBox.Text)) return;
 
-            if (e.Key == Key.Tab) {
-                e.Handled = true;
+                AddNewTag(textBox.Text.Trim());
+                textBox.Text = "";
+
+                if (e.Key == Key.Tab) {
+                    FocusAdvancement.MoveFocus(textBox);
+                } else if (e.Key == Key.Escape) {
+                    FocusAdvancement.RemoveFocus(textBox);
+                }
+            } else if (string.IsNullOrWhiteSpace(textBox.Text) || IsCaretAtFront(textBox)) {
+                FocusAdvancement.MoveFocus(textBox, FocusNavigationDirection.Previous);
+            } else {
+                return;
             }
+
+            e.Handled = true;
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e) {
