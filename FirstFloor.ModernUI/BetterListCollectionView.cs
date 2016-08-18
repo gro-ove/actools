@@ -6,7 +6,7 @@ using System.Windows.Data;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Lists {
+namespace FirstFloor.ModernUI {
     public class BetterListCollectionView : ListCollectionView, IWeakEventListener {
         public BetterListCollectionView([NotNull] IList list)
                 : base(list) {

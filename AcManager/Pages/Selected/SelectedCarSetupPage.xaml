@@ -37,7 +37,7 @@
                 <Button Command="{Binding ChangeTrackCommand}" Content="{x:Static controls:ControlsStrings.Common_Change}" />
 
                 <Grid>
-                    <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Track.DisplayName, Mode=OneWay}"
+                    <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.Track.Name, Mode=OneWay}"
                             Visibility="{Binding SelectedObject.Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding SelectedObject.TrackId, Mode=OneWay}"
                             attached:WatermarkService.Watermark="{x:Static controls:ControlsStrings.Common_Generic}"

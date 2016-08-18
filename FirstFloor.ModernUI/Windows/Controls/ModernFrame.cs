@@ -55,11 +55,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static bool OptionDisableTransitionAnimation = false;
-        public static string OptionTransitionName = "ModernUITransition";
+        public static string OptionTransitionName = @"ModernUITransition";
 
         public override void OnApplyTemplate() {
             if (TransitionName == null) {
-                TransitionName = OptionDisableTransitionAnimation ? "Normal" : OptionTransitionName;
+                TransitionName = OptionDisableTransitionAnimation ? @"Normal" : OptionTransitionName;
             }
 
             base.OnApplyTemplate();
@@ -226,6 +226,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SetContent(newValue, navigationType, newContent, false);
         }
 
+        private void SetNavigationFailedContent(Uri newValue, NavigationType navigationType, Exception e) {
+            Logging.Warning("[FRAME] Navigation failed: " + e?.InnerException);
+
+            // raise failed event
+            var failedArgs = new NavigationFailedEventArgs {
+                Frame = this,
+                Source = newValue,
+                Error = e?.InnerException,
+                Handled = false
+            };
+
+            OnNavigationFailed(failedArgs);
+
+            // if not handled, show error as content
+            var newContent = failedArgs.Handled ? null : failedArgs.Error;
+            SetContent(newValue, navigationType, newContent, true);
+        }
+
         private void NavigateAsync(Uri oldValue, Uri newValue, NavigationType navigationType) {
             Debug.WriteLine("Navigating from '{0}' to '{1}'", oldValue, newValue);
 
@@ -266,29 +284,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     _tokenSource = localTokenSource;
                     // load the content (asynchronous!)
                     var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
-                    var task = ContentLoader.LoadContentAsync(newValue, _tokenSource.Token);
+
+                    Task<object> task;
+                    try {
+                        task = ContentLoader.LoadContentAsync(newValue, _tokenSource.Token);
+                    } catch (Exception e) {
+                        SetNavigationFailedContent(newValue, navigationType, e);
+                        return;
+                    }
 
                     task.ContinueWith(t => {
                         try {
                             if (t.IsCanceled || localTokenSource.IsCancellationRequested) {
                                 Debug.WriteLine("Cancelled navigation to '{0}'", newValue);
                             } else if (t.IsFaulted) {
-                                Logging.Warning("[FRAME] Navigation failed: " + t.Exception?.InnerException);
-
-                                // raise failed event
-                                var failedArgs = new NavigationFailedEventArgs {
-                                    Frame = this,
-                                    Source = newValue,
-                                    Error = t.Exception?.InnerException,
-                                    Handled = false
-                                };
-
-                                OnNavigationFailed(failedArgs);
-
-                                // if not handled, show error as content
-                                newContent = failedArgs.Handled ? null : failedArgs.Error;
-
-                                SetContent(newValue, navigationType, newContent, true);
+                                SetNavigationFailedContent(newValue, navigationType, t.Exception);
                             } else {
                                 newContent = t.Result;
                                 if (ShouldKeepContentAlive(newContent)) {

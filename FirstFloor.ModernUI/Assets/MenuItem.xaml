@@ -56,7 +56,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <ControlTemplate x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type MenuItem}, ResourceId=SubmenuHeaderTemplateKey}" TargetType="{x:Type MenuItem}">
         <Grid SnapsToDevicePixels="True">
             <Rectangle x:Name="Bg" Fill="{TemplateBinding MenuItem.Background}" />
@@ -92,8 +92,9 @@
                             BorderThickness="1" Margin="0 -1 0 0">
                         <ScrollViewer x:Name="SubMenuScrollViewer" CanContentScroll="True" Foreground="{DynamicResource ItemText}">
                             <Grid RenderOptions.ClearTypeHint="Enabled">
-                                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle"
-                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.IsSharedSizeScope="True" />
+                                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.TabNavigation="Cycle"
+                                        KeyboardNavigation.DirectionalNavigation="Cycle" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                        Grid.IsSharedSizeScope="True" />
                             </Grid>
                         </ScrollViewer>
                     </Border>

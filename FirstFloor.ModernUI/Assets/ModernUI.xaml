@@ -2,6 +2,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Button.xaml" />
+        <ResourceDictionary Source="ButtonWithComboBox.xaml" />
         <ResourceDictionary Source="Calendar.xaml" />
         <ResourceDictionary Source="CheckBox.xaml" />
         <ResourceDictionary Source="ComboBox.xaml" />

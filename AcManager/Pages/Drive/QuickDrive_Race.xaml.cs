@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Pages.Dialogs;
+using AcManager.Tools;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters;
@@ -19,6 +20,7 @@ using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -37,13 +39,13 @@ namespace AcManager.Pages.Drive {
 
         private bool _loaded;
 
-        private void QuickDrive_Race_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;
             ActualModel.Load();
         }
 
-        private void QuickDrive_Race_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
             ActualModel.Unload();
@@ -85,7 +87,7 @@ namespace AcManager.Pages.Drive {
 
             public int LapsNumberMaximumLimited => Math.Min(LapsNumberMaximum, 50);
 
-            public int AiLevelMinimum => SettingsHolder.Drive.QuickDriveExpandBounds ? 30 : 70;
+            public int AiLevelMinimum => SettingsHolder.Drive.AiLevelMinimum;
 
             public int AiLevelMinimumLimited => Math.Max(AiLevelMinimum, 50);
 
@@ -370,10 +372,10 @@ namespace AcManager.Pages.Drive {
             }
 
             public class GridType : IWithId {
-                public static readonly GridType SameCar = new GridType(AppStrings.Drive_Grid_SameCar);
-                public static readonly GridType SameGroup = new GridType(AppStrings.Drive_Grid_SameGroup);
-                public static readonly GridType FilteredBy = new GridType(AppStrings.Drive_Grid_FilteredBy);
-                public static readonly GridType Manual = new GridType(AppStrings.Drive_Grid_Manual);
+                public static readonly GridType SameCar = new GridType(ToolsStrings.Drive_Grid_SameCar);
+                public static readonly GridType SameGroup = new GridType(ToolsStrings.Drive_Grid_SameGroup);
+                public static readonly GridType FilteredBy = new GridType(ToolsStrings.Drive_Grid_FilteredBy);
+                public static readonly GridType Manual = new GridType(ToolsStrings.Drive_Grid_Manual);
 
                 [JsonProperty(PropertyName = @"id")]
                 private string _id;
@@ -650,7 +652,7 @@ namespace AcManager.Pages.Drive {
                         cars = new[] { selectedCar };
                     } else {
                         if (!CarsManager.Instance.IsLoaded) {
-                            waiting.Report(AppStrings.Drive_GridBuilding);
+                            waiting.Report(ToolsStrings.Drive_GridBuilding);
                             await CarsManager.Instance.EnsureLoadedAsync();
                             if (cancellation.IsCancellationRequested) return;
                         }

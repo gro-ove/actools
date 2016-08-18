@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Lists {
+namespace FirstFloor.ModernUI {
     public class BetterObservableCollection<T> : ObservableCollection<T> {
         public BetterObservableCollection() {}
 

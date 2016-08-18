@@ -6,6 +6,7 @@ using System.Windows;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 
 namespace AcManager.Tools.Lists {
     // potentially a bad place, requires reworking

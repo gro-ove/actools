@@ -2383,6 +2383,78 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filtered by….
+        /// </summary>
+        public static string Drive_Grid_FilteredBy {
+            get {
+                return ResourceManager.GetString("Drive_Grid_FilteredBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manual.
+        /// </summary>
+        public static string Drive_Grid_Manual {
+            get {
+                return ResourceManager.GetString("Drive_Grid_Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same car.
+        /// </summary>
+        public static string Drive_Grid_SameCar {
+            get {
+                return ResourceManager.GetString("Drive_Grid_SameCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same group.
+        /// </summary>
+        public static string Drive_Grid_SameGroup {
+            get {
+                return ResourceManager.GetString("Drive_Grid_SameGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a new car to the list.
+        /// </summary>
+        public static string Drive_GridAdd_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_GridAdd_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grid building….
+        /// </summary>
+        public static string Drive_GridBuilding {
+            get {
+                return ResourceManager.GetString("Drive_GridBuilding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove selected cars from the list.
+        /// </summary>
+        public static string Drive_GridRemove_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_GridRemove_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grid type:.
+        /// </summary>
+        public static string Drive_GridType {
+            get {
+                return ResourceManager.GetString("Drive_GridType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Font.
         /// </summary>
         public static string FontObject_DeleteFont {

@@ -168,9 +168,8 @@
                                                         ToolTip="{x:Static mui:UiStrings.Close}" Style="{StaticResource SystemCloseButton}"
                                                         RenderOptions.EdgeMode="Aliased">
                                                     <Path Data="M0,0 L9,9 M9,0 L0,9 Z" Width="10" Height="10" VerticalAlignment="Center"
-                                                            HorizontalAlignment="Center"
-                                                            Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
-                                                            StrokeThickness="1" />
+                                                            HorizontalAlignment="Center" StrokeThickness="1"
+                                                            Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" />
                                                 </Button>
                                             </StackPanel>
                                         </Grid>

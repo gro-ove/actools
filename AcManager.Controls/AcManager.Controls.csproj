@@ -52,6 +52,13 @@
       <HintPath>..\packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MoonSharp.Interpreter">
+      <HintPath>..\packages\MoonSharp.1.6.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="OxyPlot, Version=2014.1.546.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.2014.1.546\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
       <Private>False</Private>
@@ -102,7 +109,7 @@
     <Compile Include="AcObjectBase.cs" />
     <Compile Include="AcObjectErrorsSection.cs" />
     <Compile Include="AcObjectHeaderSection.cs" />
-    <Compile Include="AssistsEditor.xaml.cs">
+    <Compile Include="UserControls\AssistsEditor.xaml.cs">
       <DependentUpon>AssistsEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="ChangedPresetEventArgs.cs" />
@@ -132,6 +139,9 @@
       <DependentUpon>ControlsStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="UserControls\AwesomiumWrapper.cs" />
+    <Compile Include="UserControls\RaceGridEditorColumn.xaml.cs">
+      <DependentUpon>RaceGridEditorColumn.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ScriptProviderBase.cs" />
     <Compile Include="UserControls\IWebSomething.cs" />
     <Compile Include="UserControls\ModernPopup.xaml.cs">
@@ -201,6 +211,9 @@
     <Compile Include="ViewModels\AssistsViewModel.cs" />
     <Compile Include="ViewModels\BaseAcObjectListCollectionViewWrapper.cs" />
     <Compile Include="ViewModels\BaseAssistsViewModel.cs" />
+    <Compile Include="ViewModels\RaceGridEntry.cs" />
+    <Compile Include="ViewModels\RaceGridMode.cs" />
+    <Compile Include="ViewModels\RaceGridViewModel.cs" />
     <Compile Include="ViewModels\RealismLevel.cs" />
     <Page Include="Assets\AcSelectedSpecific.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -258,7 +271,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="AssistsEditor.xaml">
+    <Page Include="UserControls\AssistsEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -322,7 +335,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\UserPresetsControl_MenuAsComboBox.xaml">
+    <Page Include="Assets\MenuAsComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -354,6 +367,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="QuickSwitches\QuickSwitchesBlock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\RaceGridEditorColumn.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

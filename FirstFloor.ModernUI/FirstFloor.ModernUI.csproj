@@ -73,6 +73,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BetterListCollectionView.cs" />
+    <Compile Include="BetterObservableCollection.cs" />
     <Compile Include="BinaryResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -165,6 +167,7 @@
     <Compile Include="Windows\Attached\ContextMenuAdvancement.cs" />
     <Compile Include="Windows\Attached\NewMarkAdorner.cs" />
     <Compile Include="Windows\Attached\NewMarkService.cs" />
+    <Compile Include="Windows\Controls\HierarchicalComboBox.cs" />
     <Compile Include="Windows\Controls\InheritingContextMenu.cs" />
     <Compile Include="Windows\CommandDictionary.cs" />
     <Compile Include="Windows\Controls\AlignableWrapPanel.cs" />
@@ -316,7 +319,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\ButtonWithComboBox.xaml">
+    <Page Include="Assets\ButtonWithComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -325,6 +328,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\ColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\HierarchicalComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

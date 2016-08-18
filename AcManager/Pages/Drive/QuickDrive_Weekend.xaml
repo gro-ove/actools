@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:tools="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance drive:QuickDrive_Weekend+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -89,7 +89,7 @@
             </Grid>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
-                <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static g:AppStrings.Drive_GridType}" Margin="0 0 0 4" />
+                <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
                 <ComboBox Margin="4 0 4 0" ItemsSource="{Binding GridTypes}" SelectedItem="{Binding SelectedGridType}" DisplayMemberPath="DisplayName" />
             </StackPanel>
 
@@ -113,14 +113,14 @@
             <!--weekends stuff-->
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
                 <mui:ValueLabel Value="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialSessionConverter}}"
-                        Mode="IntegerOrZeroLabel" Content="{x:Static tools:ToolsStrings.Session_Practice}"
+                        Mode="IntegerOrZeroLabel" Content="{x:Static t:ToolsStrings.Session_Practice}"
                         Postfix="{Binding PracticeDuration, Converter={x:Static drive:QuickDrive_Weekend.SpecialPluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_MinutePostfix}}">
                 </mui:ValueLabel>
                 <Slider Minimum="0" Maximum="90" Value="{Binding PracticeDuration}" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="3" Grid.Column="1">
-                <mui:ValueLabel Value="{Binding QualificationDuration}" Mode="Positive" Content="{x:Static tools:ToolsStrings.Session_Qualification}"
+                <mui:ValueLabel Value="{Binding QualificationDuration}" Mode="Positive" Content="{x:Static t:ToolsStrings.Session_Qualification}"
                         Postfix="{Binding QualificationDuration, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_MinutePostfix}}" />
                 <Slider Minimum="5" Maximum="90" Value="{Binding QualificationDuration}" />
             </StackPanel>
@@ -156,9 +156,9 @@
 
                 <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0 0 4 0">
                     <mui:ModernButton IconData="{StaticResource AddIconData}" Command="{Binding AddOpponentCarCommand}"
-                            ToolTip="{x:Static g:AppStrings.Drive_GridAdd_Tooltip}" />
+                            ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}" />
                     <mui:ModernButton IconData="{StaticResource RemoveIconData}" Command="{Binding RemoveOpponentCarCommand}"
-                            CommandParameter="{Binding ElementName=ListBox}" ToolTip="{x:Static g:AppStrings.Drive_GridRemove_Tooltip}" />
+                            CommandParameter="{Binding ElementName=ListBox}" ToolTip="{x:Static t:ToolsStrings.Drive_GridRemove_Tooltip}" />
                 </StackPanel>
             </Grid>
         </DockPanel>

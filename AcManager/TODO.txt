@@ -553,10 +553,13 @@ fixme:
     - 1ff opponent?!
     - replays layout
     - openweatherapi: {"cod":"404","message":"Error: Not found city"}
-    - colorpicker bug
     - RebuildPresetsList() exception
+    - track.name, car.name - empty?
+        - car setup page
 
 todo:
+    - replace InvalidateRequerySuggested with proper stuff
+    
     - include “dev apps” option to apps presets
         - promixity indicator as well?
         - share python apps

@@ -133,9 +133,10 @@ namespace AcManager {
 
         private Assembly HandlerImpl(object sender, ResolveEventArgs args) {
             if (_ignore) return null;
-
-            var splitted = args.Name.Split(',');
-            var name = splitted[0];
+            
+            var name = new AssemblyName(args.Name).Name;
+            // TODO: http://www.aboutmycode.com/net-framework/assemblyresolve-event-tips/
+            // TODO: Tip 2: AssemblyResolve firing multiple times.
 
 #if LOCALIZABLE
             if (name == "Content Manager.resources" && _first) {
@@ -170,7 +171,7 @@ namespace AcManager {
             try {
                 _ignore = true;
                 var filename = ExtractResource(name);
-                return filename == null ? null : Assembly.LoadFrom(filename);
+                return filename == null ? null : Assembly.LoadFrom(filename); // BUG: Panda AV issue
             } catch (Exception e) {
                 Log("error: " + e);
                 return null;

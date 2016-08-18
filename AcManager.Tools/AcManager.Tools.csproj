@@ -317,8 +317,6 @@
     <Compile Include="Lists\AcEnabledOnlyCollection.cs" />
     <Compile Include="Lists\AcWrapperCollectionView.cs" />
     <Compile Include="Lists\AutocompleteValuesList.cs" />
-    <Compile Include="Lists\BetterListCollectionView.cs" />
-    <Compile Include="Lists\BetterObservableCollection.cs" />
     <Compile Include="Managers\Directories\AcDirectories.cs" />
     <Compile Include="Helpers\SteamIdHelper.cs" />
     <Compile Include="Managers\AcRootDirectory.cs" />

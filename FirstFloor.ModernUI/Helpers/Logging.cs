@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using JetBrains.Annotations;
 
@@ -31,7 +30,7 @@ namespace FirstFloor.ModernUI.Helpers {
         private static readonly object Locker = new object();
 
         private static void WriteInner(char c, string s) {
-            Debug.WriteLine(s);
+            System.Diagnostics.Debug.WriteLine(s);
 
             if (!IsInitialized()) return;
             if (++_entries > EntriesLimit) return;
@@ -43,7 +42,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     }
                 }
             } catch (Exception e) {
-                Debug.WriteLine("[LOGGING EXCEPTION] " + e);
+                System.Diagnostics.Debug.WriteLine("[LOGGING EXCEPTION] " + e);
             }
         }
 
@@ -51,17 +50,22 @@ namespace FirstFloor.ModernUI.Helpers {
             WriteInner('→', s);
         }
 
-        [StringFormatMethod("format")]
+        [StringFormatMethod(@"format")]
         public static void Write([LocalizationRequired(false)] string format, [LocalizationRequired(false)] params object[] args) {
             Write(args.Length == 0 ? format : string.Format(format, args));
         }
 
-        [StringFormatMethod("format")]
+        [StringFormatMethod(@"format")]
+        public static void Debug([LocalizationRequired(false)] string format, [LocalizationRequired(false)] params object[] args) {
+            WriteInner('…', args.Length == 0 ? format : string.Format(format, args));
+        }
+
+        [StringFormatMethod(@"format")]
         public static void Warning([LocalizationRequired(false)] string format, [LocalizationRequired(false)] params object[] args) {
             WriteInner('⚠', args.Length == 0 ? format : string.Format(format, args));
         }
 
-        [StringFormatMethod("format")]
+        [StringFormatMethod(@"format")]
         public static void Error([LocalizationRequired(false)] string format, [LocalizationRequired(false)] params object[] args) {
             WriteInner('×', args.Length == 0 ? format : string.Format(format, args));
         }

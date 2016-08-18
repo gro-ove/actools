@@ -85,7 +85,7 @@ namespace AcManager.Pages.Selected {
                             [@"car"] = Car.Id,
                             [@"track"] = SelectedObject.TrackId
                         });
-                var target = SelectedObject.Track == null ? Car.DisplayName : $"{Car.DisplayName} ({SelectedObject.Track.DisplayName})";
+                var target = SelectedObject.Track == null ? Car.Name : $"{Car.Name} ({SelectedObject.Track.Name})";
                 return SharingUiHelper.ShareAsync(SharedEntryType.CarSetup, SelectedObject.Name, target, data);
             }));
 

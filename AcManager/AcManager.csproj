@@ -242,6 +242,9 @@
     <Compile Include="Pages\Drive\QuickDrive_Conditions.cs" />
     <Compile Include="Pages\Drive\IQuickDriveModeControl.cs" />
     <Compile Include="Pages\Drive\QuickDriveModeViewModel.cs" />
+    <Compile Include="Pages\Drive\QuickDrive_GridTest.xaml.cs">
+      <DependentUpon>QuickDrive_GridTest.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\QuickDrive_Trackday.xaml.cs">
       <DependentUpon>QuickDrive_Trackday.xaml</DependentUpon>
     </Compile>
@@ -658,6 +661,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Drive\QuickDrive_Drift.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Drive\QuickDrive_GridTest.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

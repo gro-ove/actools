@@ -28,8 +28,9 @@
                             <Path x:Name="Arrow" Fill="{TemplateBinding Foreground}" VerticalAlignment="Bottom" Margin="2 3 2 3"
                                     Data="M -0.5 3 L 5.5 3 L 2.5 6 Z" />
                             <ContentPresenter />
-                            <Popup IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" x:Name="SubMenuPopup"
-                                    Focusable="False" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
+                            <Popup IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom"
+                                    PlacementTarget="{Binding ElementName=Chrome}" x:Name="SubMenuPopup" Focusable="False"
+                                    PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
                                 <Border x:Name="SubMenuBorder" BorderBrush="{DynamicResource WindowBorderActive}"
                                         Background="{DynamicResource WindowBackground}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                         BorderThickness="1" Padding="0">
@@ -67,7 +68,7 @@
 
     <Style x:Key="ButtonWithComboBoxWrapperMenu" TargetType="{x:Type Menu}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Focusable" Value="True" />
+        <Setter Property="Focusable" Value="False" />
         <Setter Property="FocusManager.IsFocusScope" Value="False" />
 
         <Setter Property="OverridesDefaultStyle" Value="True" />

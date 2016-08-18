@@ -59,6 +59,14 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = null;
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
+
+            if (SettingsHolder.Common.MsMode) {
+                ModeTab.Links.Add(new Link {
+                    DisplayName = "Next",
+                    IsNew = true,
+                    Source = new Uri("/Pages/Drive/QuickDrive_GridTest.xaml", UriKind.Relative)
+                });
+            }
         }
         
         private DispatcherTimer _realConditionsTimer;
@@ -147,6 +155,10 @@ namespace AcManager.Pages.Drive {
                             SelectedModeViewModel = new QuickDrive_Race.ViewModel(!_skipLoading);
                             break;
 
+                        case "/Pages/Drive/QuickDrive_GridTest.xaml":
+                            SelectedModeViewModel = new QuickDrive_GridTest.ViewModel(!_skipLoading);
+                            break;
+
                         case "/Pages/Drive/QuickDrive_Trackday.xaml":
                             SelectedModeViewModel = new QuickDrive_Trackday.ViewModel(!_skipLoading);
                             break;
@@ -161,7 +173,7 @@ namespace AcManager.Pages.Drive {
 
                         default:
                             Logging.Warning("[QuickDrive] Not supported mode: " + value);
-                            SelectedMode = new Uri("/Pages/Drive/QuickDrive_Practice.xaml");
+                            SelectedMode = new Uri("/Pages/Drive/QuickDrive_Practice.xaml", UriKind.Relative);
                             break;
                     }
                 }

@@ -1476,4 +1476,28 @@
   <data name="KunosCareer_Start" xml:space="preserve">
     <value>Start</value>
   </data>
+  <data name="Drive_Grid_Manual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="Drive_Grid_FilteredBy" xml:space="preserve">
+    <value>Filtered by…</value>
+  </data>
+  <data name="Drive_Grid_SameCar" xml:space="preserve">
+    <value>Same car</value>
+  </data>
+  <data name="Drive_Grid_SameGroup" xml:space="preserve">
+    <value>Same group</value>
+  </data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>Add a new car to the list</value>
+  </data>
+  <data name="Drive_GridBuilding" xml:space="preserve">
+    <value>Grid building…</value>
+  </data>
+  <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
+    <value>Remove selected cars from the list</value>
+  </data>
+  <data name="Drive_GridType" xml:space="preserve">
+    <value>Grid type:</value>
+  </data>
 </root>

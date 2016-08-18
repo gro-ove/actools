@@ -2062,9 +2062,6 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   <data name="Drive_JumpStartPenalty" xml:space="preserve">
     <value>Penalty for jump start</value>
   </data>
-  <data name="Drive_GridType" xml:space="preserve">
-    <value>Grid type:</value>
-  </data>
   <data name="Drive_OpponentsMaximumLimitation_Tooltip" xml:space="preserve">
     <value>Limited by number of pits available ({0})</value>
   </data>
@@ -2077,12 +2074,6 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
   <data name="Drive_ListOfPossibleOpponents_Tooltip" xml:space="preserve">
     <value>App will take {0} {opponent} from this list</value>
     <comment>Will be pluralized automatically</comment>
-  </data>
-  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
-    <value>Add a new car to the list</value>
-  </data>
-  <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
-    <value>Remove selected cars from the list</value>
   </data>
   <data name="Common_GotId" xml:space="preserve">
     <value>Got It</value>
@@ -3264,9 +3255,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="Drive_CannotStart_SetOpponent" xml:space="preserve">
     <value>Please, set at least one opponent.</value>
   </data>
-  <data name="Drive_GridBuilding" xml:space="preserve">
-    <value>Grid building…</value>
-  </data>
   <data name="Drive_AiFiltering" xml:space="preserve">
     <value>AI cars filtering…</value>
   </data>
@@ -3281,18 +3269,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Drive_AiCarsLoading" xml:space="preserve">
     <value>AI cars loading…</value>
-  </data>
-  <data name="Drive_Grid_SameCar" xml:space="preserve">
-    <value>Same car</value>
-  </data>
-  <data name="Drive_Grid_SameGroup" xml:space="preserve">
-    <value>Same group</value>
-  </data>
-  <data name="Drive_Grid_Manual" xml:space="preserve">
-    <value>Manual</value>
-  </data>
-  <data name="Drive_Grid_FilteredBy" xml:space="preserve">
-    <value>Filtered by…</value>
   </data>
   <data name="Drive_Ordinal_Parameter" xml:space="preserve">
     <value>driver</value>

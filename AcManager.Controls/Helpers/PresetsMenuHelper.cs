@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
+using FirstFloor.ModernUI;
 
 namespace AcManager.Controls.Helpers {
     public class PresetsMenuHelper : IDisposable {

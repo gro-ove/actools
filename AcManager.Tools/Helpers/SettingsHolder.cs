@@ -692,8 +692,11 @@ namespace AcManager.Tools.Helpers {
                     _quickDriveExpandBounds = value;
                     ValuesStorage.Set("Settings.DriveSettings.ExpandBounds", value);
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(AiLevelMinimum));
                 }
             }
+
+            public int AiLevelMinimum => QuickDriveExpandBounds ? 30 : 70;
 
             private bool? _kunosCareerUserAiLevel;
 
