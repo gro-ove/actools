@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/BBCodeBlock.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ButtonWithComboBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ColorPicker.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/HierarchicalComboBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernDialog.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernFrame.xaml" />
