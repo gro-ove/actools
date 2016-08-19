@@ -96,7 +96,7 @@
       <HintPath>..\packages\MoonSharp.1.6.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Newtonsoft.Json\Src\Newtonsoft.Json\bin\Release\Net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -238,6 +238,9 @@
     </Compile>
     <Compile Include="Pages\Dialogs\FindInformationDialog.xaml.cs">
       <DependentUpon>FindInformationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\SetupRaceGridDialog.xaml.cs">
+      <DependentUpon>SetupRaceGridDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Drive\QuickDrive_Conditions.cs" />
     <Compile Include="Pages\Drive\IQuickDriveModeControl.cs" />
@@ -412,6 +415,9 @@
     <Compile Include="Tools\TextEditing\TextEditorExtension.cs" />
     <Compile Include="Tools\UriProvider.cs" />
     <Compile Include="Tools\ArgumentsHandler.cs" />
+    <Compile Include="UserControls\RaceGridEditorColumn.xaml.cs">
+      <DependentUpon>RaceGridEditorColumn.xaml</DependentUpon>
+    </Compile>
     <Page Include="Assets\Livery\Numbers\Light.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -625,6 +631,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\SelectTrackDialog_Categories.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\SetupRaceGridDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1048,6 +1058,10 @@
     <Page Include="Pages\Lists\TracksListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\RaceGridEditorColumn.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

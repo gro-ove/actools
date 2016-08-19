@@ -43,7 +43,7 @@
       <HintPath>..\packages\Magick.NET-Q16-x86.6.8.9.601\lib\net40-client\Magick.NET-x86.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Newtonsoft.Json\Src\Newtonsoft.Json\bin\Release\Net40\Newtonsoft.Json.dll</HintPath>
     </Reference>

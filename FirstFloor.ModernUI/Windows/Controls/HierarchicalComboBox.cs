@@ -3,18 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
+
+// The only flaw of this solution is that HierarchicalComboBox wraps all provided items
+// in HierarchicalItem not on-demand, but immediately after ItemsSource was assigned (or
+// changed). Well, apart from the fact that HierarchicalComboBox do not support a lot of
+// regular ComboBox stuff such as DisplayMemberPath property or OnSelectionChanged event.
+// But, I think, they could be implemented when (and if) they will be needed.
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class HierarchicalGroup : BetterObservableCollection<object> {
         public HierarchicalGroup() {}
-        public HierarchicalGroup(List<object> list) : base(list) {}
-        public HierarchicalGroup([NotNull] IEnumerable<object> collection) : base(collection) {}
+
+        public HierarchicalGroup(string displayName, List<object> list) : base(list) {
+            _displayName = displayName;
+        }
+
+        public HierarchicalGroup(string displayName, [NotNull] IEnumerable<object> collection) : base(collection) {
+            _displayName = displayName;
+        }
 
         public HierarchicalGroup(string displayName) {
             _displayName = displayName;
@@ -93,6 +107,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        [ValueConversion(typeof(int), typeof(Visibility))]
+        private class InnerCountToVisibilityConverter : IValueConverter {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                return value.AsInt() > 0 ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+                throw new NotSupportedException();
+            }
+        }
+
         private UIElement Wrap([CanBeNull] object value) {
             var direct = value as UIElement;
             if (direct != null) {
@@ -115,6 +140,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 result.CommandParameter = value;
             } else {
                 result.ItemsSource = new MenuItemsView(_parent, group);
+                result.SetBinding(UIElement.VisibilityProperty, new Binding {
+                    Source = group,
+                    Path = new PropertyPath(nameof(HierarchicalGroup.Count)),
+                    Mode = BindingMode.OneWay,
+                    Converter = new InnerCountToVisibilityConverter()
+                });
             }
 
             return result;

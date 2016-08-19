@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance drive:QuickDrive_GridTest+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
+        xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance drive:QuickDrive_GridTest+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -94,25 +94,39 @@
                 <mui:HierarchicalComboBox ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}" FixedMode="False" />
             </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding RaceGridViewModel.Mode.CandidatesMode}">
                 <StackPanel.ToolTip>
-                    <ToolTip Content="{Binding TrackPitsNumber}" ContentStringFormat="{x:Static g:AppStrings.Drive_OpponentsMaximumLimitation_Tooltip}" />
+                    <ToolTip Content="{Binding RaceGridViewModel.TrackPitsNumber}"
+                            ContentStringFormat="{x:Static g:AppStrings.Drive_OpponentsMaximumLimitation_Tooltip}" />
                 </StackPanel.ToolTip>
-
-                <mui:ValueLabel Value="{Binding OpponentsNumber}"
-                        Postfix="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}" />
-                <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
+                <mui:ValueLabel Value="{Binding RaceGridViewModel.OpponentsNumber}"
+                        Postfix="{Binding RaceGridViewModel.OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}" />
+                <Slider Minimum="1" Maximum="{Binding RaceGridViewModel.OpponentsNumberLimit}" Value="{Binding RaceGridViewModel.OpponentsNumber}" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
                 <StackPanel.ToolTip>
-                    <TextBlock Margin="0 0 0 4" Text="{Binding DisplayStartingPosition}" />
+                    <TextBlock Margin="0 0 0 4">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{x:Static drive:QuickDrive_GridTest.StartingPositionConverter}">
+                                <Binding Path="RaceGridViewModel.StartingPosition" />
+                                <Binding Path="RaceGridViewModel.StartingPositionLimit" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </StackPanel.ToolTip>
-                <mui:ValueLabel Value="{Binding DisplayStartingPosition}" Content="{x:Static g:AppStrings.Drive_StartingPosition}" Mode="IntegerOrZeroLabel" />
-                <Slider Minimum="0" Maximum="{Binding StartingPositionLimit}" Value="{Binding StartingPosition}" />
+                <mui:ValueLabel Content="{x:Static g:AppStrings.Drive_StartingPosition}" Mode="IntegerOrZeroLabel">
+                    <mui:ValueLabel.Value>
+                        <MultiBinding Converter="{x:Static drive:QuickDrive_GridTest.StartingPositionConverter}">
+                            <Binding Path="RaceGridViewModel.StartingPosition" Mode="TwoWay" />
+                            <Binding Path="RaceGridViewModel.StartingPositionLimit" Mode="OneWay" />
+                        </MultiBinding>
+                    </mui:ValueLabel.Value>
+                </mui:ValueLabel>
+                <Slider Minimum="0" Maximum="{Binding RaceGridViewModel.StartingPositionLimit}" Value="{Binding RaceGridViewModel.StartingPosition}" />
             </StackPanel>
         </Grid>
 
-        <c:RaceGridEditorColumn Grid.Column="1" DataContext="{Binding RaceGridViewModel}" />
+        <uc:RaceGridEditorColumn Grid.Column="1" DataContext="{Binding RaceGridViewModel}" />
     </Grid>
 </UserControl>

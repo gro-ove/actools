@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
@@ -18,12 +20,14 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
+using AcManager.UserControls;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
@@ -101,91 +105,6 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private int _opponentsNumber;
-            private int _unclampedOpponentsNumber;
-            private int? _unclampedStartingPosition;
-
-            public int OpponentsNumber {
-                get { return _opponentsNumber; }
-                set {
-                    if (Equals(value, _opponentsNumber)) return;
-
-                    _unclampedOpponentsNumber = value;
-                    _opponentsNumber = value.Clamp(1, OpponentsNumberLimit);
-
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(StartingPositionLimit));
-
-                    if (_unclampedStartingPosition.HasValue && _unclampedStartingPosition != StartingPosition) {
-                        StartingPosition = _unclampedStartingPosition.Value;
-                    }
-
-                    if (_last || StartingPosition > StartingPositionLimit) {
-                        _innerChange = true;
-                        StartingPosition = StartingPositionLimit;
-                        _innerChange = false;
-                    } else if (StartingPosition == StartingPositionLimit && StartingPositionLimit != 0) {
-                        _last = true;
-                        OnPropertyChanged(nameof(DisplayStartingPosition));
-                    }
-
-                    SaveLater();
-                }
-            }
-
-            private int _trackPitsNumber;
-
-            public int TrackPitsNumber {
-                get { return _trackPitsNumber; }
-                set {
-                    if (Equals(value, _trackPitsNumber)) return;
-                    _trackPitsNumber = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(OpponentsNumberLimit));
-
-                    if (_unclampedOpponentsNumber != _opponentsNumber) {
-                        OpponentsNumber = _unclampedOpponentsNumber;
-                    } else if (OpponentsNumber > OpponentsNumberLimit) {
-                        OpponentsNumber = OpponentsNumberLimit;
-                    }
-                }
-            }
-
-            public int OpponentsNumberLimit => TrackPitsNumber - 1;
-
-            private bool _last;
-            private int _startingPosition;
-            private bool _innerChange;
-
-            public int StartingPosition {
-                get { return _startingPosition; }
-                set {
-                    if (!_innerChange) {
-                        _unclampedStartingPosition = Math.Max(value, 0);
-                    }
-
-                    value = value.Clamp(0, StartingPositionLimit);
-                    if (Equals(value, _startingPosition)) return;
-
-                    _startingPosition = value;
-                    _last = value == StartingPositionLimit && StartingPositionLimit != 0;
-
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayStartingPosition));
-                    SaveLater();
-                }
-            }
-
-            public string DisplayStartingPosition {
-                get {
-                    return StartingPosition == 0 ? AppStrings.Drive_Ordinal_Random
-                            : _last ? AppStrings.Drive_Ordinal_Last : StartingPosition.ToOrdinalShort(AppStrings.Drive_Ordinal_Parameter);
-                }
-                set { StartingPosition = FlexibleParser.TryParseInt(value) ?? StartingPosition; }
-            }
-
-            public int StartingPositionLimit => OpponentsNumber + 1;
-
             protected class SaveableData {
                 public bool? Penalties, AiLevelFixed, AiLevelArrangeRandomly, JumpStartPenalty, AiLevelArrangeReverse;
                 public int? AiLevel, AiLevelMin, LapsNumber, OpponentsNumber, StartingPosition;
@@ -197,7 +116,9 @@ namespace AcManager.Pages.Drive {
 
             protected virtual void Load(SaveableData o) {}
 
-            protected virtual void Reset() {}
+            protected virtual void Reset() {
+                RaceGridViewModel.OpponentsNumber = 7;
+            }
 
             /// <summary>
             /// Will be called in constuctor!
@@ -233,33 +154,30 @@ namespace AcManager.Pages.Drive {
                 throw new NotImplementedException();
             }
 
-            private TrackObjectBase _selectedTrack;
-
             public override void OnSelectedUpdated(CarObject selectedCar, TrackObjectBase selectedTrack) {
                 RaceGridViewModel.SetPlayerCar(selectedCar);
                 RaceGridViewModel.SetTrack(selectedTrack);
+            }
+        }
+        
+        private class InnerStartingPositionConverter : IMultiValueConverter {
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+                if (values.Length != 2) return null;
 
-                if (_selectedTrack != null) {
-                    _selectedTrack.PropertyChanged -= SelectedTrack_PropertyChanged;
-                }
-
-                _selectedTrack = selectedTrack;
-
-                if (selectedTrack != null) {
-                    TrackPitsNumber = FlexibleParser.ParseInt(selectedTrack.SpecsPitboxes, 2);
-                    _selectedTrack.PropertyChanged += SelectedTrack_PropertyChanged;
-                }
+                var startingPosition = values[0].AsInt();
+                var last = values[1].AsInt() == startingPosition;
+                return startingPosition == 0 ? AppStrings.Drive_Ordinal_Random
+                        : last ? AppStrings.Drive_Ordinal_Last : startingPosition.ToOrdinalShort(AppStrings.Drive_Ordinal_Parameter);
             }
 
-            void SelectedTrack_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-                if (_selectedTrack != null && e.PropertyName == nameof(_selectedTrack.SpecsPitboxes)) {
-                    TrackPitsNumber = FlexibleParser.ParseInt(_selectedTrack.SpecsPitboxes, 2);
-                }
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+                return new object[] {
+                    FlexibleParser.TryParseInt(value?.ToString()) ?? 0,
+                    0
+                };
             }
         }
 
-        private void OpponentsCarsFilterTextBox_OnLostFocus(object sender, RoutedEventArgs e) {
-            // ((ViewModel)Model).AddOpponentsCarsFilter();
-        }
+        public static IMultiValueConverter StartingPositionConverter = new InnerStartingPositionConverter();
     }
 }

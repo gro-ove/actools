@@ -6,6 +6,12 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.ViewModels {
+    public class RaceGridPlayerEntry : RaceGridEntry {
+        public override string DisplayName => "You";
+
+        public RaceGridPlayerEntry([NotNull] CarObject car) : base(car) {}
+    }
+
     public class RaceGridEntry : Displayable {
         public override string DisplayName => Car.DisplayName;
 
@@ -93,7 +99,7 @@ namespace AcManager.Controls.ViewModels {
         private ICommand _deleteCommand;
 
         public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
-            (o as RaceGridViewModel)?.Delete(this);
+            (o as RaceGridViewModel)?.DeleteOpponent(this);
         }));
 
         public override string ToString() {

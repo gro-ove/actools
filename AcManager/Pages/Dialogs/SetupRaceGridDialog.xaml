@@ -1,0 +1,17 @@
+﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.SetupRaceGridDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
+        xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="Racing Grid Setup" Width="600" Height="800"
+        SizeToContent="Manual" d:DataContext="{d:DesignInstance c:RaceGridViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0 0 0 8" Grid.Row="0">
+            <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Width="100" />
+            <mui:HierarchicalComboBox ItemsSource="{Binding Modes}" SelectedItem="{Binding Mode}" FixedMode="False" />
+        </DockPanel>
+    </Grid>
+</mui:ModernDialog>

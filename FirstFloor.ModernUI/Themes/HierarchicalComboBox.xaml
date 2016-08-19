@@ -94,16 +94,15 @@
     </Style>
 
     <ControlTemplate x:Key="SpecialMenuItemHeaderControlTemplate" TargetType="{x:Type c:HierarchicalItem}">
-        <Grid SnapsToDevicePixels="True">
+        <Grid x:Name="Bg" SnapsToDevicePixels="True" Background="Transparent">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition />
                 <ColumnDefinition Width="54" />
             </Grid.ColumnDefinitions>
-            <Rectangle x:Name="Bg" Grid.Column="0" Grid.ColumnSpan="2" Fill="{TemplateBinding MenuItem.Background}" />
             <ContentPresenter Grid.Column="0" ContentSource="Header" Margin="7 2 8 2" RecognizesAccessKey="True"
                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
             <Path x:Name="RightArrow" Grid.Column="1" VerticalAlignment="Center" Margin="41 0 0 0" Fill="{TemplateBinding MenuItem.Foreground}"
-                    Data="{StaticResource RightArrow}" />
+                    Data="{StaticResource RightArrow}" IsHitTestVisible="False" />
             <Popup x:Name="PART_Popup" Grid.Column="0" Grid.ColumnSpan="2" AllowsTransparency="True" Placement="Right"
                     IsOpen="{Binding IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
                     PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
@@ -126,7 +125,7 @@
                 <Setter TargetName="PART_Popup" Property="PopupAnimation" Value="None" />
             </Trigger>
             <Trigger Property="IsHighlighted" Value="True">
-                <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource Accent}" />
+                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource Accent}" />
                 <Setter Property="Foreground" Value="{DynamicResource ItemTextSelected}" />
                 <Setter TargetName="RightArrow" Property="Fill" Value="{DynamicResource ItemTextSelected}" />
             </Trigger>
@@ -138,7 +137,7 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="SpecialMenuItemControlTemplate" TargetType="{x:Type c:HierarchicalItem}">
-        <Border x:Name="Bg" Background="{TemplateBinding MenuItem.Background}" SnapsToDevicePixels="True" Tag="{TemplateBinding MenuItem.Tag}">
+        <Border x:Name="Bg" Background="Transparent" SnapsToDevicePixels="True" Tag="{TemplateBinding MenuItem.Tag}">
             <ContentPresenter ContentSource="Header" Margin="7 2 62 2" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                     ToolTip="{x:Null}" />
         </Border>
@@ -200,6 +199,7 @@
                                 Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
                             <MenuItem.Header>
+                                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                                 <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
                                         Text="{Binding SelectedItem.DisplayName, RelativeSource={RelativeSource TemplatedParent}}" />
                             </MenuItem.Header>

@@ -60,6 +60,7 @@ namespace AcManager.Tools.Helpers {
 
             public string Filename { get; }
 
+            [Localizable(false)]
             public string Name { get; }
 
             public bool UserFile { get; }

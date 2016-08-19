@@ -2,68 +2,73 @@ using System.ComponentModel;
 using AcManager.Tools;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Controls.ViewModels {
-    public class RaceGridMode : Displayable, IWithId {
+    public interface IRaceGridMode : INotifyPropertyChanged, IWithId {
+        string DisplayName { get; }
+
+        bool CandidatesMode { get; }
+
+        bool AffectedByCar { get; }
+
+        bool AffectedByTrack { get; }
+    }
+
+    public sealed class BuiltInGridMode : Displayable, IRaceGridMode {
         // Random category
-        public static readonly RaceGridMode SameCar = new RaceGridMode("same_car", ToolsStrings.Drive_Grid_SameCar);
-        public static readonly RaceGridMode SameGroup = new RaceGridMode("same_group", ToolsStrings.Drive_Grid_SameGroup);
-        public static readonly RaceGridMode Filtered = new RaceGridMode("filtered", ToolsStrings.Drive_Grid_FilteredBy, false);
-        public static readonly RaceGridMode Manual = new RaceGridMode("manual", ToolsStrings.Drive_Grid_Manual, false);
+        public static readonly IRaceGridMode SameCar = new BuiltInGridMode("same_car", ToolsStrings.Drive_Grid_SameCar, affectedByCar: true);
+        public static readonly IRaceGridMode SameGroup = new BuiltInGridMode("same_group", ToolsStrings.Drive_Grid_SameGroup, affectedByCar: true);
+        public static readonly IRaceGridMode Filtered = new BuiltInGridMode("filtered", ToolsStrings.Drive_Grid_FilteredBy);
+        public static readonly IRaceGridMode Manual = new BuiltInGridMode("manual", ToolsStrings.Drive_Grid_Manual);
 
         // Custom category
-        public static readonly RaceGridMode Custom = new RaceGridMode("custom", "Custom", false);
+        public static readonly IRaceGridMode Custom = new BuiltInGridMode("custom", "Custom", false);
+
+        public string Id { get; }
+
+        public bool CandidatesMode { get; }
+
+        public bool AffectedByCar { get; }
+
+        public bool AffectedByTrack { get; }
+
+        private BuiltInGridMode([Localizable(false)] string id, string displayName, bool candidatesMode = true, bool affectedByCar = false,
+                bool affectedByTrack = false) {
+            Id = id;
+            CandidatesMode = candidatesMode;
+            AffectedByCar = affectedByCar;
+            AffectedByTrack = affectedByTrack;
+            DisplayName = displayName;
+        }
+    }
+
+    public class CandidatesGridMode : Displayable, IRaceGridMode {
+        public bool CandidatesMode => true;
 
         [JsonProperty(PropertyName = @"id")]
-        private readonly string _id;
-
-        public string Id => _id;
+        public string Id { get; protected set; }
 
         [JsonProperty(PropertyName = @"name")]
-        private readonly string _displayName;
-
-        public override string DisplayName => _displayName;
+        public override string DisplayName { get; set; }
 
         [JsonProperty(PropertyName = @"filter")]
-        private readonly string _filter;
-
-        public string Filter => _filter;
+        public string Filter { get; protected set; }
 
         [JsonProperty(PropertyName = @"script")]
-        private readonly string _script;
-
-        public string Script => _script;
+        public string Script { get; protected set; }
 
         [JsonProperty(PropertyName = @"test")]
-        private readonly bool _test;
-
-        public bool Test => _test;
+        public bool Test { get; protected set; }
 
         [JsonProperty(PropertyName = @"affectedByTrack")]
-        private readonly bool _affectedByTrack;
-
-        public bool AffectedByTrack => _affectedByTrack;
+        public bool AffectedByTrack { get; protected set; }
 
         [DefaultValue(true), JsonProperty(PropertyName = @"affectedByCar", DefaultValueHandling = DefaultValueHandling.Populate)]
-        private readonly bool _affectedByCar;
+        public bool AffectedByCar { get; protected set; }
 
-        public bool AffectedByCar => _affectedByCar;
-
-        public override string ToString() => Id;
-
-        [JsonConstructor]
-        // ReSharper disable once UnusedMember.Local
-        private RaceGridMode() { }
-
-        private RaceGridMode([Localizable(false)] string id, string displayName, bool affectedByCar = true) {
-            _id = id;
-            _displayName = displayName;
-            _filter = "";
-            _script = "";
-            _test = false;
-            _affectedByTrack = false;
-            _affectedByCar = affectedByCar;
-        }
+        [JsonConstructor, UsedImplicitly]
+        private CandidatesGridMode() {}
     }
 }
