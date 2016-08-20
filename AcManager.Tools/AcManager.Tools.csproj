@@ -171,7 +171,6 @@
     <Compile Include="Helpers\AcSettingsControls\WheelHShifterButtonEntry.cs" />
     <Compile Include="Helpers\AcSettings\AcFormEntry.cs" />
     <Compile Include="Helpers\AcSettings\AcSettingsHolder.cs" />
-    <Compile Include="Helpers\AcSettings\AssistsSettings.cs" />
     <Compile Include="Helpers\AcSettings\ExposureSettings.cs" />
     <Compile Include="Helpers\AcSettings\GameplaySettings.cs" />
     <Compile Include="Helpers\AcSettings\GhostSettings.cs" />

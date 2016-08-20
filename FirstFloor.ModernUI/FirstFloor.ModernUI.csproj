@@ -87,6 +87,7 @@
     <Compile Include="Dialogs\ScreenColorPickerDialog.xaml.cs">
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\DragPreview.cs" />
     <Compile Include="Effects\ColorPickerBluePaletteEffect.cs" />
     <Compile Include="Effects\ColorPickerBlueSliderEffect.cs" />
     <Compile Include="Effects\ColorPickerBrightnessPaletteEffect.cs" />
@@ -255,10 +256,12 @@
     <Compile Include="Windows\Converters\ToUpperSpecialConverter.cs" />
     <Compile Include="Windows\Converters\ToUpperConverter.cs" />
     <Compile Include="Windows\DefaultContentLoader.cs" />
+    <Compile Include="Windows\DragAdorner.cs" />
     <Compile Include="Windows\ILoadableContent.cs" />
     <Compile Include="Windows\ImmediateContentLoader.cs" />
     <Compile Include="Windows\IParametrizedUriContent.cs" />
     <Compile Include="Windows\Media\BrokenIcon.cs" />
+    <Compile Include="Windows\Media\VisualExtension.cs" />
     <Compile Include="Windows\Navigation\DefaultLinkNavigator.cs" />
     <Compile Include="Windows\Navigation\FragmentNavigationEventArgs.cs" />
     <Compile Include="Windows\IContent.cs" />

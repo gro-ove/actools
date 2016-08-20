@@ -1,74 +1,73 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:AcManager.Controls.QuickSwitches" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:hs="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools" xmlns:conhs="clr-namespace:AcManager.Controls.Helpers"
-        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools" xmlns:c="clr-namespace:AcManager.Controls"
-                    xmlns:acSettings="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools">
+        xmlns:local="clr-namespace:AcManager.Controls.QuickSwitches" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
+        xmlns:c="clr-namespace:AcManager.Controls" xmlns:h="clr-namespace:AcManager.Controls.Helpers">
     <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/MenuAsComboBox.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/QuickSwitches/QuickSwitchesStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!--switches-->
-    <mui:ModernToggleButton x:Key="WidgetHideDriveArms" IsChecked="{Binding HideArms, Source={x:Static acSettings:AcSettingsHolder.Video}}"
+    <mui:ModernToggleButton x:Key="WidgetHideDriveArms" IsChecked="{Binding HideArms, Source={x:Static t:AcSettingsHolder.Video}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_HideArms}" IconData="{StaticResource HideIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideArms_Tooltip}">
     </mui:ModernToggleButton>
-    <mui:ModernToggleButton x:Key="WidgetHideSteeringWheel" IsChecked="{Binding HideSteeringWheel, Source={x:Static acSettings:AcSettingsHolder.Video}}"
+    <mui:ModernToggleButton x:Key="WidgetHideSteeringWheel" IsChecked="{Binding HideSteeringWheel, Source={x:Static t:AcSettingsHolder.Video}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_HideWheel}" IconData="{StaticResource HideIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_HideWheel_Tooltip}" />
-    <mui:ModernToggleButton x:Key="WidgetLockSteeringWheel" IsChecked="{Binding LockSteeringWheel, Source={x:Static acSettings:AcSettingsHolder.Video}}"
+    <mui:ModernToggleButton x:Key="WidgetLockSteeringWheel" IsChecked="{Binding LockSteeringWheel, Source={x:Static t:AcSettingsHolder.Video}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_LockWheel}" IconData="{StaticResource LockIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_LockWheel_Tooltip}" />
-    <mui:ModernToggleButton x:Key="WidgetLockOnboardCamera" IsChecked="{Binding WorldAligned, Source={x:Static acSettings:AcSettingsHolder.CameraOnboard}}"
+    <mui:ModernToggleButton x:Key="WidgetLockOnboardCamera" IsChecked="{Binding WorldAligned, Source={x:Static t:AcSettingsHolder.CameraOnboard}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_LockCamera}" IconData="{StaticResource HorizontalIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_LockCamera_Tooltip}" />
 
-    <mui:ModernToggleButton x:Key="WidgetVirtualMirror" IsChecked="{Binding DisplayMirror, Source={x:Static acSettings:AcSettingsHolder.Gameplay}}"
+    <mui:ModernToggleButton x:Key="WidgetVirtualMirror" IsChecked="{Binding DisplayMirror, Source={x:Static t:AcSettingsHolder.Gameplay}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_Mirror}" IconData="{StaticResource MirrorIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_Mirror_Tooltip}" />
-    <mui:ModernToggleButton x:Key="WidgetDriverNames" IsChecked="{Binding DisplayDriverNames, Source={x:Static acSettings:AcSettingsHolder.Gameplay}}"
+    <mui:ModernToggleButton x:Key="WidgetDriverNames" IsChecked="{Binding DisplayDriverNames, Source={x:Static t:AcSettingsHolder.Gameplay}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_Names}" IconData="{StaticResource AboveIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_Names_Tooltip}">
     </mui:ModernToggleButton>
-    <mui:ModernToggleButton x:Key="WidgetLeaderboard" IsChecked="{Binding DisplayLeaderboard, Source={x:Static acSettings:AcSettingsHolder.Gameplay}}"
+    <mui:ModernToggleButton x:Key="WidgetLeaderboard" IsChecked="{Binding DisplayLeaderboard, Source={x:Static t:AcSettingsHolder.Gameplay}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_Leaderboard}" IconData="{StaticResource LeaderboardIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_Leaderboard_Tooltip}" />
-    <mui:ModernToggleButton x:Key="WidgetDamage" IsChecked="{Binding DisplayDamage, Source={x:Static acSettings:AcSettingsHolder.Gameplay}}"
+    <mui:ModernToggleButton x:Key="WidgetDamage" IsChecked="{Binding DisplayDamage, Source={x:Static t:AcSettingsHolder.Gameplay}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_DamageUi}" IconData="{StaticResource AccidentIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_DamageUi_Tooltip}" />
 
-    <mui:ModernToggleButton x:Key="WidgetProximityIndicator" IsChecked="{Binding IsEnabled, Source={x:Static acSettings:AcSettingsHolder.ProximityIndicator}}"
+    <mui:ModernToggleButton x:Key="WidgetProximityIndicator" IsChecked="{Binding IsEnabled, Source={x:Static t:AcSettingsHolder.ProximityIndicator}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_Nearest}" IconData="{StaticResource ProximityIndicatiorIconData}"
             ToolTip="Show nearest opponents with proximity indicator" />
-    <mui:ModernToggleButton x:Key="WidgetFullscreen" IsChecked="{Binding Fullscreen, Source={x:Static acSettings:AcSettingsHolder.Video}}"
+    <mui:ModernToggleButton x:Key="WidgetFullscreen" IsChecked="{Binding Fullscreen, Source={x:Static t:AcSettingsHolder.Video}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_Fullscreen}" IconData="{StaticResource ExpandIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_Fullscreen_Tooltip}">
     </mui:ModernToggleButton>
-    <mui:ModernToggleButton x:Key="WidgetDeveloperApps" IsChecked="{Binding DeveloperApps, Source={x:Static acSettings:AcSettingsHolder.System}}"
+    <mui:ModernToggleButton x:Key="WidgetDeveloperApps" IsChecked="{Binding DeveloperApps, Source={x:Static t:AcSettingsHolder.System}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_DevApps}" IconData="{StaticResource RoadConeIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_DevApps_Tooltip}" />
-    <mui:ModernToggleButton x:Key="WidgetFreeCamera" IsChecked="{Binding AllowFreeCamera, Source={x:Static acSettings:AcSettingsHolder.System}}"
+    <mui:ModernToggleButton x:Key="WidgetFreeCamera" IsChecked="{Binding AllowFreeCamera, Source={x:Static t:AcSettingsHolder.System}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_FreeCamera}" IconData="{StaticResource FreeCameraIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_FreeCamera_Tooltip}" />
 
-    <mui:ModernToggleButton x:Key="WidgetDifferentPlayerNameOnline" IsChecked="{Binding DifferentPlayerNameOnline, Source={x:Static hs:SettingsHolder.Drive}}"
+    <mui:ModernToggleButton x:Key="WidgetDifferentPlayerNameOnline" IsChecked="{Binding DifferentPlayerNameOnline, Source={x:Static t:SettingsHolder.Drive}}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_OnlineName}" IconData="{StaticResource UserTieIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_OnlineName_Tooltip}" />
 
     <!--comboboxes-->
-    <local:QuickSwitchPresetsControl x:Key="WidgetUiPresets" UserPresetable="{x:Static acSettings:AcSettingsHolder.AppsPresets}"
+    <local:QuickSwitchPresetsControl x:Key="WidgetUiPresets" UserPresetable="{x:Static t:AcSettingsHolder.AppsPresets}"
             IconData="{StaticResource ScreenIconData}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_UiPresets_Tooltip}" />
     <DockPanel x:Key="WidgetControlsPresets" FocusVisualStyle="{x:Null}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_ControlsPresets_Tooltip}"
             Background="Transparent" Width="{StaticResource BlockSize}" Height="{StaticResource BlockSize}" Margin="{StaticResource BlockMargin}">
         <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
                 Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="PART_Menu" DockPanel.Dock="Bottom"
-                IsEnabled="{Binding PresetsReady, Source={x:Static conhs:ControlsPresets.Instance}}" Margin="{StaticResource LabelMargin}">
+                IsEnabled="{Binding PresetsReady, Source={x:Static h:ControlsPresets.Instance}}" Margin="{StaticResource LabelMargin}">
             <MenuItem HorizontalAlignment="Center" Style="{StaticResource UserPresetsControlMenuItem}"
-                    ItemsSource="{Binding Presets, Source={x:Static conhs:ControlsPresets.Instance}}" Background="Transparent" BorderThickness="0"
+                    ItemsSource="{Binding Presets, Source={x:Static h:ControlsPresets.Instance}}" Background="Transparent" BorderThickness="0"
                     HorizontalContentAlignment="Center" Margin="8 6 -2 0" Padding="1 0 3 0">
                 <MenuItem.Header>
                     <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"
                             FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource FontFamily}" FontSize="{StaticResource FontSize}"
-                            DataContext="{x:Static acSettings:AcSettingsHolder.Controls}"
+                            DataContext="{x:Static t:AcSettingsHolder.Controls}"
                             Text="{Binding CurrentPresetName, TargetNullValue='Unsaved', Converter={StaticResource ToUpperConverter}}">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
@@ -92,17 +91,17 @@
         <Path Data="{StaticResource KeyboardIconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" Fill="{DynamicResource ButtonText}"
                 Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
     </DockPanel>
-    <local:QuickSwitchPresetsControl x:Key="WidgetVideoPresets" UserPresetable="{x:Static acSettings:AcSettingsHolder.VideoPresets}"
+    <local:QuickSwitchPresetsControl x:Key="WidgetVideoPresets" UserPresetable="{x:Static t:AcSettingsHolder.VideoPresets}"
             IconData="{StaticResource VideoSettingsIconData}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_VideoPresets_Tooltip}" />
-    <local:QuickSwitchComboBox x:Key="WidgetPpFilters" ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static managers:PpFiltersManager.Instance}}"
-            SelectedItem="{Binding PostProcessingFilterObject, Source={x:Static acSettings:AcSettingsHolder.Video}}" IconData="{StaticResource PpFilterIconData}"
+    <local:QuickSwitchComboBox x:Key="WidgetPpFilters" ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:PpFiltersManager.Instance}}"
+            SelectedItem="{Binding PostProcessingFilterObject, Source={x:Static t:AcSettingsHolder.Video}}" IconData="{StaticResource PpFilterIconData}"
             ToolTip="{x:Static c:ControlsStrings.QuickSwitches_PpFilters_Tooltip}" DisplayMemberPath="DisplayName" />
 
     <!--sliders-->
-    <local:QuickSwitchSlider x:Key="WidgetExposure" DataContext="{x:Static acSettings:AcSettingsHolder.Exposure}" Maximum="200" Minimum="0" Value="{Binding Value}"
+    <local:QuickSwitchSlider x:Key="WidgetExposure" DataContext="{x:Static t:AcSettingsHolder.Exposure}" Maximum="200" Minimum="0" Value="{Binding Value}"
             Content="{x:Static c:ControlsStrings.QuickSwitches_Exposure}" IconData="{StaticResource SunIconData}" TickFrequency="5"
             DisplayValue="{Binding Value, StringFormat='{}{0}%'}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_Exposure_Tooltip}" />
-    <local:QuickSwitchSlider x:Key="WidgetFieldOfView" DataContext="{x:Static acSettings:AcSettingsHolder.CameraOnboard}" Maximum="92" Minimum="20"
-            Value="{Binding FieldOfView}" Content="{x:Static c:ControlsStrings.QuickSwitches_Fov}" IconData="{StaticResource FieldOfViewIconData}" TickFrequency="2"
-            DisplayValue="{Binding FieldOfView, StringFormat='{}{0}°'}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_Fov_Tooltip}" />
+    <local:QuickSwitchSlider x:Key="WidgetFieldOfView" DataContext="{x:Static t:AcSettingsHolder.CameraOnboard}" Maximum="92" Minimum="20"
+            Value="{Binding FieldOfView}" Content="{x:Static c:ControlsStrings.QuickSwitches_Fov}" IconData="{StaticResource FieldOfViewIconData}"
+            TickFrequency="2" DisplayValue="{Binding FieldOfView, StringFormat='{}{0}°'}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_Fov_Tooltip}" />
 </ResourceDictionary>

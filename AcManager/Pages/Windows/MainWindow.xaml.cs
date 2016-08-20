@@ -338,7 +338,7 @@ namespace AcManager.Pages.Windows {
 
         private void OnDragEnter(object sender, DragEventArgs e) {
             if (e.AllowedEffects.HasFlag(DragDropEffects.All) &&
-                (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.UnicodeText))) {
+                    (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.UnicodeText))) {
                 e.Effects = DragDropEffects.All;
             }
         }

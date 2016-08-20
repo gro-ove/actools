@@ -8,6 +8,8 @@ using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.UserControls {
@@ -33,7 +35,7 @@ namespace AcManager.UserControls {
             dialog.ShowDialog();
             if (!dialog.IsResultOk || dialog.SelectedCar == null) return;
 
-            model.AddOpponent(dialog.SelectedCar);
+            model.AddEntry(dialog.SelectedCar);
         }));
 
         private ICommand _setupCommand;
@@ -63,27 +65,48 @@ namespace AcManager.UserControls {
         public static IValueConverter ModeToLabelConverter = new InnerModeToLabelConverter();
 
         private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {
-            
+
+        }
+
+        private static class AdditionalDataFormats {
+            public const string RaceGridEntry = "Data-RaceGridEntry";
         }
 
         private void Item_OnPreviewMouseLeftButtonDown(object sender, MouseEventArgs e) {
-            if (e.LeftButton != MouseButtonState.Pressed) return;
-
-            var _draggedItem = sender as ListBoxItem;
-            var _draggedValue = _draggedItem?.DataContext as RaceGridEntry;
-            if (_draggedValue == null) return;
-            
-            var layer = InitializeAdornerLayer();
-            Application.Current.MainWindow.AllowDrop = false;
-
-            if (DragDrop.DoDragDrop(_draggedItem, _draggedValue, DragDropEffects.Move) == DragDropEffects.Move) {
-                Save();
+            if (e.LeftButton != MouseButtonState.Pressed || Model?.Mode.CandidatesMode != false) {
+                return;
             }
 
-            Application.Current.MainWindow.AllowDrop = true;
+            var item = sender as ListBoxItem;
+            if (item == null) return;
 
-            layer.Remove(_dragAdorner);
-            _dragAdorner = null;
+            var source = ListBox;
+            source.SelectedItem = item;
+
+            using (var dragPreview = new DragPreview(this, source, item)) {
+                dragPreview.SetTargets(this);
+
+                var data = new DataObject();
+                data.SetData(AdditionalDataFormats.RaceGridEntry, item.DataContext);
+                if (DragDrop.DoDragDrop(item, data, DragDropEffects.Move) == DragDropEffects.Move) {
+                    // Save();
+                }
+            }
+        }
+
+        private void ListBox_Drop(object sender, DragEventArgs e) {
+            var destination = (ListBox)sender;
+            
+            var item = e.Data.GetData(AdditionalDataFormats.RaceGridEntry) as RaceGridEntry;
+            if (item == null || Model == null) {
+                e.Effects = DragDropEffects.None;
+                return;
+            }
+            
+            var newIndex = destination.GetMouseItemIndex();
+            Model.InsertEntry(newIndex, item);
+
+            e.Effects = DragDropEffects.Move;
         }
     }
 }

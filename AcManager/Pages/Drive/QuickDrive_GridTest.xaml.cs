@@ -118,6 +118,7 @@ namespace AcManager.Pages.Drive {
 
             protected virtual void Reset() {
                 RaceGridViewModel.OpponentsNumber = 7;
+                RaceGridViewModel.StartingPosition = 1;
             }
 
             /// <summary>

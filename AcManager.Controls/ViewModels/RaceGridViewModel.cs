@@ -46,18 +46,20 @@ namespace AcManager.Controls.ViewModels {
         private void OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             if (e.OldItems != null) {
                 foreach (RaceGridEntry item in e.OldItems) {
-                    item.PropertyChanged -= OpponentEntry_PropertyChanged;
+                    item.PropertyChanged -= Entry_PropertyChanged;
+                    item.Deleted -= Entry_Deleted;
                 }
             }
 
             if (e.NewItems != null) {
                 foreach (RaceGridEntry item in e.NewItems) {
-                    item.PropertyChanged += OpponentEntry_PropertyChanged;
+                    item.PropertyChanged += Entry_PropertyChanged;
+                    item.Deleted += Entry_Deleted;
                 }
             }
         }
 
-        private void OpponentEntry_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void Entry_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
                 case nameof(RaceGridEntry.CandidatePriority):
                     if (Mode == BuiltInGridMode.Custom) {
@@ -67,6 +69,10 @@ namespace AcManager.Controls.ViewModels {
                     }
                     break;
             }
+        }
+
+        private void Entry_Deleted(object sender, EventArgs e) {
+            DeleteEntry((RaceGridEntry)sender);
         }
 
         public void Dispose() {
@@ -505,16 +511,49 @@ namespace AcManager.Controls.ViewModels {
             return (x as RaceGridEntry)?.Car.CompareTo((y as RaceGridEntry)?.Car) ?? 0;
         }
 
-        public void AddOpponent(CarObject car) {
+        public void AddEntry(CarObject car) {
+            AddEntry(new RaceGridEntry(car));
+        }
+
+        public void AddEntry(RaceGridEntry entry) {
+            InsertEntry(-1, entry);
+        }
+
+        public void InsertEntry(int index, CarObject car) {
+            InsertEntry(index, new RaceGridEntry(car));
+        }
+
+        public void InsertEntry(int index, RaceGridEntry entry) {
             if (Mode != BuiltInGridMode.Custom) {
                 Mode = BuiltInGridMode.Manual;
             }
 
-            NonfilteredList.Add(new RaceGridEntry(car));
-            UpdateOpponentsNumber();
+            var c = NonfilteredList.Count;
+            if (index < 0 || index > c) {
+                index = c;
+            }
+
+            var o = NonfilteredList.IndexOf(entry);
+            if (o == index) return;
+
+            if (o == -1) {
+                if (index == c) {
+                    NonfilteredList.Insert(index, entry);
+                } else {
+                    NonfilteredList.Add(entry);
+                }
+
+                UpdateOpponentsNumber();
+            } else if (index < c){
+                NonfilteredList.Move(o, index);
+            }
+
+            if (StartingPosition != 0) {
+                StartingPosition = NonfilteredList.IndexOf(_playerEntry) + 1;
+            }
         }
 
-        public void DeleteOpponent(RaceGridEntry entry) {
+        public void DeleteEntry(RaceGridEntry entry) {
             if (entry is RaceGridPlayerEntry) {
                 StartingPosition = 0;
                 return;

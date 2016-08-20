@@ -6,7 +6,7 @@
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ButtonWithComboBox.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/UserPresetsControl_MenuAsComboBox.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/MenuAsComboBox.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/QuickSwitches/QuickSwitchesIconData.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -157,12 +157,12 @@
                                     </Border>
                                 </Grid>
                             </Popup>
-                            
+
                             <ToggleButton Background="Transparent" BorderThickness="0"
                                     IsChecked="{Binding IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" />
 
-                            <Path x:Name="Arrow" Margin="3 1 0 0" Fill="{TemplateBinding Foreground}"
-                                    Data="{DynamicResource DownArrowGeometry}" HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
+                            <Path x:Name="Arrow" Margin="3 1 0 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}"
+                                    HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
 
                             <TextBlock x:Name="PART_Text" IsHitTestVisible="False" DataContext="{TemplateBinding SelectionBoxItem}"
                                     Text="{Binding Converter={StaticResource ToUpperConverter}}" TextTrimming="CharacterEllipsis"

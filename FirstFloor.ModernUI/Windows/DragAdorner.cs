@@ -3,7 +3,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace AcManager.Controls.Helpers {
+namespace FirstFloor.ModernUI.Windows {
     public class DragAdorner : Adorner {
         private readonly Rectangle _child;
         private double _offsetLeft;

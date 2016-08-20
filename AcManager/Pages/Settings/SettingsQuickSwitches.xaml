@@ -65,8 +65,7 @@
                         Text="{x:Static AcManager:AppStrings.Settings_QuickSwitches_LibraryLabel}" />
 
                 <ListBox x:Name="AddedItems" Grid.Row="1" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ItemContainerStyle="{StaticResource ListBoxItem}" Background="Transparent" AllowDrop="True" DragEnter="List_OnDragEnter"
-                        DragLeave="List_OnDragLeave" DragOver="List_OnDragOver" Drop="List_OnDrop">
+                        ItemContainerStyle="{StaticResource ListBoxItem}" Background="Transparent" AllowDrop="True" Drop="List_OnDrop">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
@@ -78,8 +77,7 @@
                         VerticalAlignment="Stretch" />
 
                 <ListBox x:Name="StoredItems" Grid.Row="1" Grid.Column="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ItemContainerStyle="{StaticResource ListBoxItem}" Background="Transparent" AllowDrop="True" DragEnter="List_OnDragEnter"
-                        DragLeave="List_OnDragLeave" DragOver="List_OnDragOver" Drop="List_OnDrop">
+                        ItemContainerStyle="{StaticResource ListBoxItem}" Background="Transparent" AllowDrop="True" Drop="List_OnDrop">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />

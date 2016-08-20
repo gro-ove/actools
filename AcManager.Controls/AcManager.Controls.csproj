@@ -115,7 +115,6 @@
     <Compile Include="Helpers\AwesomiumResolverService.cs" />
     <Compile Include="Helpers\BetterWebControl.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />
-    <Compile Include="Helpers\DragAdorner.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
     <Compile Include="Helpers\ShellLink.cs" />
     <Compile Include="Helpers\TaskbarProgress.cs" />

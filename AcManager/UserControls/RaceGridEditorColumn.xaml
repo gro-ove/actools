@@ -40,8 +40,8 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            
-            <Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+
+            <Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource FlatListBoxItem}">
                 <EventSetter Event="PreviewMouseMove" Handler="Item_OnPreviewMouseLeftButtonDown" />
                 <EventSetter Event="PreviewMouseDoubleClick" Handler="Item_OnPreviewDoubleClick" />
                 <Setter Property="AllowDrop" Value="True" />
@@ -80,8 +80,7 @@
                                 <DataTemplate DataType="{x:Type c:RaceGridEntry}">
                                     <DockPanel>
                                         <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
-                                                RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}"
-                                                CommandParameter="{Binding DataContext, ElementName=This}">
+                                                RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}">
                                             <Button.Style>
                                                 <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                                                     <Setter Property="Background" Value="Transparent" />
@@ -120,8 +119,7 @@
                                         <DataTemplate DataType="{x:Type c:RaceGridEntry}">
                                             <DockPanel>
                                                 <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
-                                                        RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}"
-                                                        CommandParameter="{Binding DataContext, ElementName=This}">
+                                                        RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}">
                                                     <Button.Style>
                                                         <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                                                             <Setter Property="Background" Value="Transparent" />
@@ -132,7 +130,8 @@
                                                             Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
                                                             VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
                                                 </Button>
-                                                <TextBlock Text="{Binding DisplayName}" />
+                                                <TextBlock Text="{Binding DisplayName}"
+                                                        Style="{Binding SpecialEntry, Converter={StaticResource BooleanToFontStyleConverter}}" />
                                             </DockPanel>
                                         </DataTemplate>
                                     </Setter.Value>

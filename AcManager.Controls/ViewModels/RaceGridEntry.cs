@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
@@ -7,12 +8,16 @@ using JetBrains.Annotations;
 
 namespace AcManager.Controls.ViewModels {
     public class RaceGridPlayerEntry : RaceGridEntry {
+        public override bool SpecialEntry => true;
+
         public override string DisplayName => "You";
 
         public RaceGridPlayerEntry([NotNull] CarObject car) : base(car) {}
     }
 
     public class RaceGridEntry : Displayable {
+        public virtual bool SpecialEntry => false;
+
         public override string DisplayName => Car.DisplayName;
 
         private CarObject _car;
@@ -96,10 +101,12 @@ namespace AcManager.Controls.ViewModels {
             _aiLevel = null;
         }
 
+        public event EventHandler Deleted;
+
         private ICommand _deleteCommand;
 
         public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
-            (o as RaceGridViewModel)?.DeleteOpponent(this);
+            Deleted?.Invoke(this, EventArgs.Empty);
         }));
 
         public override string ToString() {
