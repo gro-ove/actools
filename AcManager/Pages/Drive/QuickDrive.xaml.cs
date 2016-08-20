@@ -60,6 +60,7 @@ namespace AcManager.Pages.Drive {
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
 
+#if DEBUG
             if (SettingsHolder.Common.MsMode) {
                 ModeTab.Links.Add(new Link {
                     DisplayName = "Next",
@@ -67,6 +68,7 @@ namespace AcManager.Pages.Drive {
                     Source = new Uri("/Pages/Drive/QuickDrive_GridTest.xaml", UriKind.Relative)
                 });
             }
+#endif
         }
         
         private DispatcherTimer _realConditionsTimer;
@@ -433,9 +435,9 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private AsyncCommand _shareCommand;
+            private ICommand _shareCommand;
 
-            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
             private async Task Share(object o) {
                 await SharingUiHelper.ShareAsync(SharedEntryType.QuickDrivePreset,

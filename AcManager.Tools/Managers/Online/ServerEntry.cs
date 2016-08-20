@@ -996,9 +996,9 @@ namespace AcManager.Tools.Managers.Online {
             return information == null ? null : new ServerEntry(manager, information, true);
         }
 
-        private static IUiFactory<IBookingUi> _factory;
+        private static IAnyFactory<IBookingUi> _factory;
 
-        public static void RegisterFactory(IUiFactory<IBookingUi> factory) {
+        public static void RegisterFactory(IAnyFactory<IBookingUi> factory) {
             _factory = factory;
         }
     }

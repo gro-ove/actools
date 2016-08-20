@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
+using System.Threading;
 
 namespace AcManager {
     [Localizable(false)]
@@ -131,12 +132,17 @@ namespace AcManager {
         private bool _first = true;
 #endif
 
+        private readonly Dictionary<string, Assembly> _cached = new Dictionary<string, Assembly>();
+
         private Assembly HandlerImpl(object sender, ResolveEventArgs args) {
             if (_ignore) return null;
-            
+
             var name = new AssemblyName(args.Name).Name;
             // TODO: http://www.aboutmycode.com/net-framework/assemblyresolve-event-tips/
             // TODO: Tip 2: AssemblyResolve firing multiple times.
+
+            Assembly result;
+            if (_cached.TryGetValue(name, out result)) return result;
 
 #if LOCALIZABLE
             if (name == "Content Manager.resources" && _first) {
@@ -170,11 +176,31 @@ namespace AcManager {
 
             try {
                 _ignore = true;
-                var filename = ExtractResource(name);
-                return filename == null ? null : Assembly.LoadFrom(filename); // BUG: Panda AV issue
-            } catch (Exception e) {
-                Log("error: " + e);
-                return null;
+
+                string filename;
+                try {
+                    filename = ExtractResource(name);
+                    if (filename == null) return null;
+                } catch (Exception e) {
+                    Log("error: " + e);
+                    return null;
+                }
+
+                for (var i = 0; i < 100; i++) {
+                    try {
+                        result = Assembly.LoadFrom(filename);
+                    } catch (FileLoadException) {
+                        // special case for idiotic Panda AV
+                        Thread.Sleep(50);
+                    }
+                }
+
+                if (result == null) {
+                    throw new Exception("Can’t access unpacked library");
+                }
+
+                _cached[name] = result;
+                return result;
             } finally {
                 _ignore = false;
             }

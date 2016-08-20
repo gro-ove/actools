@@ -171,6 +171,7 @@
     <Compile Include="Helpers\AcSettingsControls\WheelHShifterButtonEntry.cs" />
     <Compile Include="Helpers\AcSettings\AcFormEntry.cs" />
     <Compile Include="Helpers\AcSettings\AcSettingsHolder.cs" />
+    <Compile Include="Helpers\AcSettings\AssistsSettings.cs" />
     <Compile Include="Helpers\AcSettings\ExposureSettings.cs" />
     <Compile Include="Helpers\AcSettings\GameplaySettings.cs" />
     <Compile Include="Helpers\AcSettings\GhostSettings.cs" />
@@ -278,7 +279,7 @@
     <Compile Include="SemiGui\GameFinishedArgs.cs" />
     <Compile Include="SemiGui\ReplayHelper.cs" />
     <Compile Include="SemiGui\IGameUi.cs" />
-    <Compile Include="SemiGui\IUiFactory.cs" />
+    <Compile Include="SemiGui\IAnyFactory.cs" />
     <Compile Include="SemiGui\VariablesReplacement.cs" />
     <Compile Include="GameProperties\WeatherSpecificCloudsHelper.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />

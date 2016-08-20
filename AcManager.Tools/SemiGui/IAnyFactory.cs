@@ -1,8 +1,7 @@
-using System;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.SemiGui {
-    public interface IUiFactory<out T> where T : IDisposable {
+    public interface IAnyFactory<out T> {
         [NotNull]
         T Create();
     }

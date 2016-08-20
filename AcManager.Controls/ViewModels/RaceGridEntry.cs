@@ -103,7 +103,7 @@ namespace AcManager.Controls.ViewModels {
         }));
 
         public override string ToString() {
-            return Car.DisplayName;
+            return DisplayName;
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.ViewModels;
@@ -59,5 +61,29 @@ namespace AcManager.UserControls {
         }
 
         public static IValueConverter ModeToLabelConverter = new InnerModeToLabelConverter();
+
+        private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {
+            
+        }
+
+        private void Item_OnPreviewMouseLeftButtonDown(object sender, MouseEventArgs e) {
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+
+            var _draggedItem = sender as ListBoxItem;
+            var _draggedValue = _draggedItem?.DataContext as RaceGridEntry;
+            if (_draggedValue == null) return;
+            
+            var layer = InitializeAdornerLayer();
+            Application.Current.MainWindow.AllowDrop = false;
+
+            if (DragDrop.DoDragDrop(_draggedItem, _draggedValue, DragDropEffects.Move) == DragDropEffects.Move) {
+                Save();
+            }
+
+            Application.Current.MainWindow.AllowDrop = true;
+
+            layer.Remove(_dragAdorner);
+            _dragAdorner = null;
+        }
     }
 }

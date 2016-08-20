@@ -40,6 +40,12 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            
+            <Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                <EventSetter Event="PreviewMouseMove" Handler="Item_OnPreviewMouseLeftButtonDown" />
+                <EventSetter Event="PreviewMouseDoubleClick" Handler="Item_OnPreviewDoubleClick" />
+                <Setter Property="AllowDrop" Value="True" />
+            </Style>
         </ResourceDictionary>
     </FrameworkElement.Resources>
 
@@ -65,41 +71,76 @@
 
             <ListBox x:Name="ListBox" ItemsSource="{Binding FilteredView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
-                    VirtualizingPanel.ScrollUnit="Pixel" Grid.Row="1" SelectionMode="Extended">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type c:RaceGridEntry}">
-                        <DockPanel>
-                            <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased"
-                                    Padding="2" Command="{Binding DeleteCommand}" CommandParameter="{Binding DataContext, ElementName=This}">
-                                <Button.Style>
-                                    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                                        <Setter Property="Background" Value="Transparent" />
-                                        <Setter Property="BorderBrush" Value="Transparent" />
-                                    </Style>
-                                </Button.Style>
-                                <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
-                                        Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
-                                        VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
-                            </Button>
-                            <TextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
-                                    mui:TextBoxAdvancement.SpecialMode="Positive" ToolTip="Candidate priority" Style="{StaticResource TextBoxAsTextBlock.Small}"
-                                    VerticalAlignment="Center" Width="20" Padding="0 -1 0 -1" />
-                            <TextBlock Text="{Binding Car.DisplayName}" />
-                        </DockPanel>
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding CandidatePriority}" Value="1">
-                                <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Collapsed" />
+                    VirtualizingPanel.ScrollUnit="Pixel" Grid.Row="1" SelectionMode="Extended" ItemContainerStyle="{StaticResource ListBoxItem}"
+                    Drop="ListBox_Drop" AllowDrop="True">
+                <ListBox.Style>
+                    <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                        <Setter Property="ItemTemplate">
+                            <Setter.Value>
+                                <DataTemplate DataType="{x:Type c:RaceGridEntry}">
+                                    <DockPanel>
+                                        <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
+                                                RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}"
+                                                CommandParameter="{Binding DataContext, ElementName=This}">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                                </Style>
+                                            </Button.Style>
+                                            <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
+                                                    Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                                                    VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
+                                        </Button>
+                                        <TextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
+                                                mui:TextBoxAdvancement.SpecialMode="Positive" ToolTip="Candidate priority"
+                                                Style="{StaticResource TextBoxAsTextBlock.Small}" VerticalAlignment="Center" Width="20" Padding="0 -1 0 -1" />
+                                        <TextBlock Text="{Binding Car.DisplayName}" />
+                                    </DockPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding CandidatePriority}" Value="1">
+                                            <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger
+                                                Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}"
+                                                Value="True">
+                                            <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding DataContext.Mode.Id, ElementName=This}" Value="custom">
+                                            <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Mode.CandidatesMode}" Value="False">
+                                <Setter Property="ItemTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate DataType="{x:Type c:RaceGridEntry}">
+                                            <DockPanel>
+                                                <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
+                                                        RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}"
+                                                        CommandParameter="{Binding DataContext, ElementName=This}">
+                                                    <Button.Style>
+                                                        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
+                                                            Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                                                            VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
+                                                </Button>
+                                                <TextBlock Text="{Binding DisplayName}" />
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}"
-                                    Value="True">
-                                <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding DataContext.Mode.Id, ElementName=This}" Value="custom">
-                                <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Style>
             </ListBox>
 
             <TextBlock Grid.Row="1" Text="Matching candidates not found" Style="{StaticResource Small}" Foreground="{DynamicResource Error}"
@@ -109,8 +150,8 @@
             <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0 0 4 0">
                 <mui:ModernButton IconData="{StaticResource AddIconData}" Command="{Binding AddOpponentCarCommand, ElementName=This}"
                         ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}" Style="{StaticResource NonTransparent}" />
-                <mui:ModernButton IconData="{StaticResource ListGearIconData}" Command="{Binding SetupCommand, ElementName=This}" ToolTip="Detailed setup"
-                        Style="{StaticResource NonTransparent}" />
+                <!--<mui:ModernButton IconData="{StaticResource ListGearIconData}" Command="{Binding SetupCommand, ElementName=This}" ToolTip="Detailed setup"
+                        Style="{StaticResource NonTransparent}" />-->
             </StackPanel>
         </Grid>
     </DockPanel>

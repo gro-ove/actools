@@ -6,6 +6,6 @@
         Title="{Binding Car.DisplayName, StringFormat={x:Static g:AppStrings.CarSpecs_TransmissionLossTitle}}">
     <StackPanel>
         <mui:ValueLabel Value="{Binding Value}" Content="{x:Static g:AppStrings.CarSpecs_TransmissionLoss}" Postfix="%" Margin="0 0 0 4" />
-        <Slider Value="{Binding Value}" Minimum="5" Maximum="45" TickFrequency="4" TickPlacement="BottomRight" />
+        <Slider Value="{Binding Value}" Minimum="0" Maximum="45" TickFrequency="4" TickPlacement="BottomRight" />
     </StackPanel>
 </mui:ModernDialog>

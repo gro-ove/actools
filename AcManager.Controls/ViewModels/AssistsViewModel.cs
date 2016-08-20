@@ -12,10 +12,8 @@ namespace AcManager.Controls.ViewModels {
 
         public static AssistsViewModel Instance => _instance ?? (_instance = new AssistsViewModel("qdassists"));
 
-        private readonly string _customKey;
-
         public AssistsViewModel([Localizable(false)] string customKey = null) : base(customKey, false) {
-            _customKey = customKey ?? UserPresetableKeyValue;
+            PresetableKey = customKey ?? UserPresetableKeyValue;
             Saveable.Initialize();
         }
 
@@ -27,19 +25,19 @@ namespace AcManager.Controls.ViewModels {
         #region Presetable
         bool IUserPresetable.CanBeSaved => true;
 
-        string IUserPresetable.PresetableKey => _customKey;
+        public string PresetableKey { get; }
 
         string IUserPresetable.PresetableCategory => UserPresetableKeyValue;
 
         string IUserPresetable.DefaultPreset => ControlsStrings.AssistsPreset_Pro;
 
-        string IUserPresetable.ExportToPresetData() {
+        public string ExportToPresetData() {
             return Saveable.ToSerializedString();
         }
 
         public event EventHandler Changed;
 
-        void IUserPresetable.ImportFromPresetData(string data) {
+        public void ImportFromPresetData(string data) {
             Saveable.FromSerializedString(data);
         }
 

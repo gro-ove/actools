@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
+             xmlns:uc="clr-namespace:AcManager.UserControls"
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         Loaded="OnLoaded" Unloaded="OnUnloaded" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp"
         d:DataContext="{d:DesignInstance dr:Online_SelectedServerPage+ViewModel}">
     <UserControl.Resources>
@@ -29,7 +31,7 @@
             <StackPanel Visibility="{Binding Status, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Error}">
                 <!-- server's name -->
                 <TextBlock Text="{Binding Name}" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                
+
                 <!-- ip, ping -->
                 <DockPanel Margin="0 4 0 0">
                     <TextBox Style="{StaticResource TextBoxAsTextBlock.Small.ReadOnly}" HorizontalAlignment="Left">
@@ -280,6 +282,16 @@
                 <Button Content="{x:Static g:AppStrings.Toolbar_Refresh}" ToolTip="{x:Static g:AppStrings.Toolbar_Refresh_OnlineTooltip}"
                         Command="{Binding RefreshCommand}" />
                 <Separator />
+                <ToggleButton x:Name="AssistsButton" Content="Assists"
+                        IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
+                    <ToggleButton.ToolTip>
+                        <c:AssistsDescription />
+                    </ToggleButton.ToolTip>
+                </ToggleButton>
+                <c:ModernPopup x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}" Placement="Top"
+                        IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
+                    <uc:AssistsEditor DataContext="{x:Static c:AssistsViewModel.Instance}" />
+                </c:ModernPopup>
                 <Button Content="{x:Static g:AppStrings.Toolbar_Join}" Command="{Binding JoinCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_Join_OnlineTooltip}" Style="{StaticResource Go.ToolBarButton}"
                         Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />

@@ -318,6 +318,7 @@
     <Compile Include="Plugins\MagickPluginWrapper.cs" />
     <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
     <Compile Include="Tools\ArgumentHandleResult.cs" />
+    <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Tools\TextEditing\HighlighterHolder.cs" />
     <Compile Include="Tools\TextEditing\IniFoldingStrategy.cs" />
@@ -415,6 +416,9 @@
     <Compile Include="Tools\TextEditing\TextEditorExtension.cs" />
     <Compile Include="Tools\UriProvider.cs" />
     <Compile Include="Tools\ArgumentsHandler.cs" />
+    <Compile Include="UserControls\AssistsEditor.xaml.cs">
+      <DependentUpon>AssistsEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\RaceGridEditorColumn.xaml.cs">
       <DependentUpon>RaceGridEditorColumn.xaml</DependentUpon>
     </Compile>
@@ -1058,6 +1062,10 @@
     <Page Include="Pages\Lists\TracksListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\AssistsEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\RaceGridEditorColumn.xaml">
       <Generator>MSBuild:Compile</Generator>

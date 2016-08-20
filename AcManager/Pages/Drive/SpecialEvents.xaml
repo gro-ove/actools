@@ -2,8 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:g="clr-namespace:AcManager"
-        xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance dr:SpecialEvents+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" SizeChanged="OnSizeChanged" x:Name="This">
+        xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance dr:SpecialEvents+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded"
+        SizeChanged="OnSizeChanged" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -351,7 +352,7 @@
                 </ToggleButton>
                 <c:ModernPopup x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}" Placement="Top"
                         IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
-                    <c:AssistsEditor DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}" />
+                    <uc:AssistsEditor DataContext="{Binding Source={x:Static c:AssistsViewModel.Instance}}" />
                 </c:ModernPopup>
 
                 <Button Command="{Binding Selected.GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"

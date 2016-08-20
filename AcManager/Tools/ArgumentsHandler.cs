@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using AcManager.Controls;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
+using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
@@ -522,6 +523,27 @@ namespace AcManager.Tools {
                             return ArgumentHandleResult.SuccessfulShow;
                         case Choise.Apply:
                             AcSettingsHolder.VideoPresets.ImportFromPresetData(data.ToUtf8String());
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
+                    }
+                }
+
+                case SharedEntryType.AssistsSetupPreset: {
+                    var result = ShowDialog(shared);
+                    switch (result) {
+                        case Choise.Save:
+                        case Choise.ApplyAndSave:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(
+                                    PresetsManager.Instance.GetDirectory(AssistsViewModel.Instance.PresetableKey), @"Loaded", shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllBytes(filename, data);
+                            if (result == Choise.ApplyAndSave) {
+                                UserPresetsControl.LoadPreset(AssistsViewModel.Instance.PresetableKey, filename);
+                            }
+                            return ArgumentHandleResult.SuccessfulShow;
+                        case Choise.Apply:
+                            AssistsViewModel.Instance.ImportFromPresetData(data.ToUtf8String());
                             return ArgumentHandleResult.SuccessfulShow;
                         default:
                             return ArgumentHandleResult.Failed;

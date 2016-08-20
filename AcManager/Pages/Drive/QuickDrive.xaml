@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-        xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
+        xmlns:c="http://acstuff.ru/app/controls"
+        xmlns:uc="clr-namespace:AcManager.UserControls"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
         d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -218,7 +220,7 @@
 
                     <c:ModernPopup Grid.Column="1" x:Name="AssistsPopup" PlacementTarget="{Binding ElementName=AssistsButton}"
                             IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
-                        <c:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
+                        <uc:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
                     </c:ModernPopup>
                 </Grid>
             </StackPanel>

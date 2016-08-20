@@ -3430,6 +3430,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assists preset.
+        /// </summary>
+        public static string Shared_AssistsSetupPreset {
+            get {
+                return ResourceManager.GetString("Shared_AssistsSetupPreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Car setup.
         /// </summary>
         public static string Shared_CarSetup {

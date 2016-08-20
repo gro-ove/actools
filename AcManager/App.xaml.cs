@@ -126,6 +126,8 @@ namespace AcManager {
             GameWrapper.RegisterFactory(uiFactory);
             ServerEntry.RegisterFactory(uiFactory);
 
+            GameWrapper.RegisterFactory(new DefaultAssistsFactory());
+
             AcError.RegisterFixer(new AcErrorFixer());
             AcError.RegisterSolutionsFactory(new SolutionsFactory());
 

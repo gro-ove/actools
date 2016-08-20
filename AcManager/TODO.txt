@@ -559,7 +559,8 @@ fixme:
 
 todo:
     - replace InvalidateRequerySuggested with proper stuff
-    
+    - booking: show notification
+
     - include “dev apps” option to apps presets
         - promixity indicator as well?
         - share python apps

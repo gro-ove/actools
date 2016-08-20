@@ -119,11 +119,11 @@ namespace AcManager.Controls.ViewModels {
                 var index = NonfilteredList.IndexOf(_playerEntry);
                 var pos = StartingPosition - 1;
                 if (index == -1) {
-                    if (pos > 0) {
+                    if (pos >= 0) {
                         NonfilteredList.Insert(pos, _playerEntry);
                     }
                 } else {
-                    if (pos <= 0) {
+                    if (pos < 0) {
                         NonfilteredList.RemoveAt(index);
                     } else if (pos != index) {
                         NonfilteredList.Move(index, pos);
@@ -515,6 +515,11 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public void DeleteOpponent(RaceGridEntry entry) {
+            if (entry is RaceGridPlayerEntry) {
+                StartingPosition = 0;
+                return;
+            }
+
             NonfilteredList.Remove(entry);
             if (Mode == BuiltInGridMode.Custom) {
                 UpdateOpponentsNumber();
@@ -569,6 +574,7 @@ namespace AcManager.Controls.ViewModels {
                 _startingPosition = value;
 
                 OnPropertyChanged();
+                UpdatePlayerEntry();
             }
         }
     }

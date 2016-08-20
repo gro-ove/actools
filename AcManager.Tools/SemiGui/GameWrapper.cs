@@ -13,10 +13,16 @@ using StringBasedFilter;
 
 namespace AcManager.Tools.SemiGui {
     public static class GameWrapper {
-        private static IUiFactory<IGameUi> _factory;
+        private static IAnyFactory<IGameUi> _uiFactory;
 
-        public static void RegisterFactory(IUiFactory<IGameUi> factory) {
-            _factory = factory;
+        public static void RegisterFactory(IAnyFactory<IGameUi> factory) {
+            _uiFactory = factory;
+        }
+
+        private static IAnyFactory<Game.AssistsProperties> _defaultAssistsFactory;
+
+        public static void RegisterFactory(IAnyFactory<Game.AssistsProperties> factory) {
+            _defaultAssistsFactory = factory;
         }
 
         public static event EventHandler<GameEndedArgs> Ended;
@@ -96,8 +102,6 @@ namespace AcManager.Tools.SemiGui {
         private static async Task<Game.Result> StartAsync(Game.StartProperties properties, bool raceMode) {
             AcSettingsHolder.Graphics.FixShadowMapBias();
 
-            Logging.Write("[GameWrapper] Assists: " + properties.AssistsProperties?.GetDescription());
-
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {
                 properties.SetAdditional(new CopyFilterToSystemForOculusHelper());
             }
@@ -115,12 +119,18 @@ namespace AcManager.Tools.SemiGui {
             }
 
             if (raceMode) {
+                if (properties.AssistsProperties == null) {
+                    properties.AssistsProperties = _defaultAssistsFactory?.Create();
+                }
+
                 PrepareRaceModeImmediateStart(properties);
                 PrepareRaceModeRsr(properties);
                 PrepareRaceDriverName(properties);
+
+                Logging.Write("[GameWrapper] Assists: " + properties.AssistsProperties?.GetDescription());
             }
 
-            if (_factory == null) {
+            if (_uiFactory == null) {
                 using (ReplaysExtensionSetter.OnlyNewIfEnabled())
                 using (ScreenshotsConverter.OnlyNewIfEnabled()) {
                     if (raceMode) {
@@ -133,7 +143,7 @@ namespace AcManager.Tools.SemiGui {
                 }
             }
 
-            using (var ui = _factory.Create()) {
+            using (var ui = _uiFactory.Create()) {
                 Logging.Write($"[GameWrapper] Starting game: {properties.GetDescription()}");
                 ui.Show(properties);
                 

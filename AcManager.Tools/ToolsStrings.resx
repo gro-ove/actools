@@ -301,6 +301,9 @@
   <data name="Shared_QuickDrivePreset" xml:space="preserve">
     <value>Quick Drive preset</value>
   </data>
+  <data name="Shared_AssistsSetupPreset" xml:space="preserve">
+    <value>Assists preset</value>
+  </data>
   <data name="Shared_Replay" xml:space="preserve">
     <value>Replay</value>
   </data>

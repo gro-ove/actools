@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.Lists;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
@@ -31,6 +29,9 @@ namespace AcManager.Tools.Miscellaneous {
 
         [LocalizedDescription("Shared_VideoSettingsPreset")]
         VideoSettingsPreset,
+
+        [LocalizedDescription("Shared_AssistsSetupPreset")]
+        AssistsSetupPreset,
 
         [LocalizedDescription("Shared_Replay")]
         Replay,
@@ -118,6 +119,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 case SharedEntryType.QuickDrivePreset:
                 case SharedEntryType.VideoSettingsPreset:
+                case SharedEntryType.AssistsSetupPreset:
                     return @".cmpreset";
 
                 case SharedEntryType.Replay:
