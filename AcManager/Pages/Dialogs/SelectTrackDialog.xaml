@@ -4,7 +4,7 @@
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:uc="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls"
         xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Title="{Binding SelectedTrackConfiguration.Name}"
         d:DataContext="{d:DesignInstance di:SelectTrackDialog+ViewModel}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600"
-        MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600" LocationAndSizeKey="SelectTrackDialog_LS">
+        MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600" LocationAndSizeKey="SelectTrackDialog_LS" WindowStartupLocation="Manual">
     <mui:ModernDialog.BackgroundContent>
         <Rectangle>
             <Rectangle.Fill>

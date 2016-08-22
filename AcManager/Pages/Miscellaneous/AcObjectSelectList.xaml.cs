@@ -9,7 +9,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Miscellaneous {
     public partial class AcObjectSelectList : ITitleable, IParametrizedUriContent {
-        public AcObjectSelectListViewModel Model => (AcObjectSelectListViewModel) DataContext;
+        public ViewModel Model => (ViewModel) DataContext;
 
         public string Title { get; set; }
 
@@ -22,11 +22,11 @@ namespace AcManager.Pages.Miscellaneous {
                 : type == @"showroom" ? ShowroomsManager.Instance.WrappersList : null;
             var filter = uri.GetQueryParam("Filter");
 
-            DataContext = new AcObjectSelectListViewModel(mainList, filter);
+            DataContext = new ViewModel(mainList, filter);
             InitializeComponent();
         }
 
-        public class AcObjectSelectListViewModel : NotifyPropertyChanged {
+        public class ViewModel : NotifyPropertyChanged {
             private AcObjectNew _selectedItem;
 
             public string Filter { get; }
@@ -42,7 +42,7 @@ namespace AcManager.Pages.Miscellaneous {
                 }
             }
 
-            public AcObjectSelectListViewModel(IAcWrapperObservableCollection list, string filter) {
+            public ViewModel(IAcWrapperObservableCollection list, string filter) {
                 MainList = list;
                 Filter = filter;
             }

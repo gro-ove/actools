@@ -253,6 +253,12 @@
   <data name="LogHelper_TimeAttackNotSupported" xml:space="preserve">
     <value>Time Attack mode is not supported by selected track</value>
   </data>
+  <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
+    <value>Default PP filter (default.ini) is missing but required</value>
+  </data>
+  <data name="LogHelper_PpFilterIsMissing" xml:space="preserve">
+    <value>PP filter is missing</value>
+  </data>
   <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>Unpacked version doesn’t support auto-updating.</value>
   </data>

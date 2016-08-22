@@ -2698,6 +2698,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default PP filter (default.ini) is missing but required.
+        /// </summary>
+        public static string LogHelper_DefaultPpFilterIsMissing {
+            get {
+                return ResourceManager.GetString("LogHelper_DefaultPpFilterIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Driver model is probably missing.
         /// </summary>
         public static string LogHelper_DriverIsMissing {
@@ -2712,6 +2721,15 @@ namespace AcManager.Tools {
         public static string LogHelper_PasswordIsInvalid {
             get {
                 return ResourceManager.GetString("LogHelper_PasswordIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PP filter is missing.
+        /// </summary>
+        public static string LogHelper_PpFilterIsMissing {
+            get {
+                return ResourceManager.GetString("LogHelper_PpFilterIsMissing", resourceCulture);
             }
         }
         

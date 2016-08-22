@@ -59,16 +59,14 @@ namespace AcManager.Pages.Drive {
             _selectNextCar = null;
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
-
-#if DEBUG
-            if (SettingsHolder.Common.MsMode) {
+            
+            if (SettingsHolder.Common.DeveloperMode) {
                 ModeTab.Links.Add(new Link {
                     DisplayName = "Next",
                     IsNew = true,
                     Source = new Uri("/Pages/Drive/QuickDrive_GridTest.xaml", UriKind.Relative)
                 });
             }
-#endif
         }
         
         private DispatcherTimer _realConditionsTimer;
@@ -540,6 +538,19 @@ namespace AcManager.Pages.Drive {
         private void MoreConditionsOptions_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
             // TODO: Don’t reopen if menu just have closed
             ConditionsOptions.IsOpen = true;
+        }
+
+        private void Car_OnDrop(object sender, DragEventArgs e) {
+            var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
+            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
+
+            if (raceGridEntry == null && carObject == null) {
+                e.Effects = DragDropEffects.None;
+                return;
+            }
+
+            Model.SelectedCar = carObject ?? raceGridEntry.Car;
+            e.Effects = DragDropEffects.Copy;
         }
     }
 }

@@ -134,6 +134,7 @@
     <Compile Include="Data\GameSpecific\PlaceConditionsType.cs" />
     <Compile Include="Data\GameSpecific\SessionResult.cs" />
     <Compile Include="Data\GameSpecific\SessionTypeExtension.cs" />
+    <Compile Include="Data\HierarchicalHelper.cs" />
     <Compile Include="Data\KunosCareerProgress.cs" />
     <Compile Include="Data\AsyncProgressEntry.cs" />
     <Compile Include="Data\KunosCareerProgressEntry.cs" />

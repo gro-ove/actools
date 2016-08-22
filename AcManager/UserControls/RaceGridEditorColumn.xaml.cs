@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -7,8 +8,8 @@ using System.Windows.Input;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
@@ -18,8 +19,14 @@ namespace AcManager.UserControls {
     /// </summary>
     public partial class RaceGridEditorColumn {
         public RaceGridEditorColumn() {
+            InputBindings.AddRange(new[] {
+                new InputBinding(new RelayCommand(o => {
+                    foreach (var entry in ListBox.SelectedItems.OfType<RaceGridEntry>().ToList()) {
+                        entry.DeleteCommand.Execute(o);
+                    }
+                }), new KeyGesture(Key.Delete)),
+            });
             InitializeComponent();
-            // TODO: Keybinding for Delete key!
         }
 
         [CanBeNull]
@@ -27,12 +34,12 @@ namespace AcManager.UserControls {
 
         private ICommand _addOpponentCarCommand;
 
-        public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new RelayCommand(o => {
+        public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new AsyncCommand(async o => {
             var model = Model;
             if (model == null) return;
 
             var dialog = new SelectCarDialog(CarsManager.Instance.GetDefault());
-            dialog.ShowDialog();
+            await (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ? dialog.ShowAndWaitAsync() : dialog.ShowDialogAsync());
             if (!dialog.IsResultOk || dialog.SelectedCar == null) return;
 
             model.AddEntry(dialog.SelectedCar);
@@ -50,11 +57,7 @@ namespace AcManager.UserControls {
         [ValueConversion(typeof(bool), typeof(string))]
         private class InnerModeToLabelConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                if (value as bool? == true) {
-                    return "Candidates:";
-                } else {
-                    return "Opponents:";
-                }
+                return value as bool? == true ? "Candidates:" : "Opponents:";
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -64,47 +67,25 @@ namespace AcManager.UserControls {
 
         public static IValueConverter ModeToLabelConverter = new InnerModeToLabelConverter();
 
-        private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {
-
-        }
-
-        private static class AdditionalDataFormats {
-            public const string RaceGridEntry = "Data-RaceGridEntry";
-        }
-
-        private void Item_OnPreviewMouseLeftButtonDown(object sender, MouseEventArgs e) {
-            if (e.LeftButton != MouseButtonState.Pressed || Model?.Mode.CandidatesMode != false) {
-                return;
-            }
-
-            var item = sender as ListBoxItem;
-            if (item == null) return;
-
-            var source = ListBox;
-            source.SelectedItem = item;
-
-            using (var dragPreview = new DragPreview(this, source, item)) {
-                dragPreview.SetTargets(this);
-
-                var data = new DataObject();
-                data.SetData(AdditionalDataFormats.RaceGridEntry, item.DataContext);
-                if (DragDrop.DoDragDrop(item, data, DragDropEffects.Move) == DragDropEffects.Move) {
-                    // Save();
-                }
-            }
-        }
+        private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {}
 
         private void ListBox_Drop(object sender, DragEventArgs e) {
             var destination = (ListBox)sender;
             
-            var item = e.Data.GetData(AdditionalDataFormats.RaceGridEntry) as RaceGridEntry;
-            if (item == null || Model == null) {
+            var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
+            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
+
+            if (raceGridEntry == null && carObject == null || Model == null) {
                 e.Effects = DragDropEffects.None;
                 return;
             }
             
             var newIndex = destination.GetMouseItemIndex();
-            Model.InsertEntry(newIndex, item);
+            if (raceGridEntry != null) {
+                Model.InsertEntry(newIndex, raceGridEntry);
+            } else {
+                Model.InsertEntry(newIndex, carObject);
+            }
 
             e.Effects = DragDropEffects.Move;
         }

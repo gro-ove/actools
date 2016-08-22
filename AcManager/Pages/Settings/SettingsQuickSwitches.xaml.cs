@@ -66,9 +66,7 @@ namespace AcManager.Pages.Settings {
             var source = AddedItems.Items.Contains(item.DataContext) ? AddedItems : StoredItems;
             source.SelectedItem = item;
 
-            using (var dragPreview = new DragPreview(this, source, item)) {
-                dragPreview.SetTargets(this);
-
+            using (new DragPreview(item)) {
                 var data = new DataObject();
                 data.SetData(AdditionalDataFormats.Widget, item.DataContext);
                 data.SetData(AdditionalDataFormats.Source, source);

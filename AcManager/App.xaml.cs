@@ -11,6 +11,7 @@ using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
+using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
@@ -93,6 +94,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.RaceOutDebug, ref Game.OptionDebugMode);
 
             AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
+            AppArguments.Set(AppFlag.NfsPorscheTribute, ref RaceGridViewModel.OptionNfsPorscheNames);
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();

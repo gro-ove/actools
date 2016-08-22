@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public class GoodShuffle {
@@ -54,6 +55,7 @@ namespace AcTools.Utils.Helpers {
             _ignoreItem = false;
         }
 
+        [CanBeNull]
         public T GetNext() {
             if (_buffer.Length == 0) return default(T);
 
@@ -71,6 +73,7 @@ namespace AcTools.Utils.Helpers {
             Limit = int.MaxValue;
         }
 
+        [CanBeNull]
         public T Next => GetNext();
 
         public IEnumerator<T> GetEnumerator() {

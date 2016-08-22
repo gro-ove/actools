@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -24,6 +25,12 @@ namespace AcManager.Tools.Miscellaneous {
 
             [LocalizedDescription("LogHelper_TimeAttackNotSupported")]
             TimeAttackNotSupported,
+
+            [LocalizedDescription("LogHelper_DefaultPpFilterIsMissing")]
+            DefaultPpFilterIsMissing,
+
+            [LocalizedDescription("LogHelper_TimeAttackNotSupported")]
+            PpFilterIsMissing,
         }
 
         public static WhatsGoingOn? TryToDetermineWhatsGoingOn() {
@@ -44,6 +51,14 @@ namespace AcManager.Tools.Miscellaneous {
                 
                 if (log.Contains(@"COULD NOT FIND SUSPENSION OBJECT WHEEL_")) {
                     return WhatsGoingOn.WheelsAreMissing;
+                }
+                
+                if (log.Contains(@"Error, cannot initialize Post Processing, system/cfg/ppfilters/default.ini not found")) {
+                    return WhatsGoingOn.DefaultPpFilterIsMissing;
+                }
+                
+                if (Regex.IsMatch(log, @"Error, cannot initialize Post Processing, .+ not found", RegexOptions.CultureInvariant)) {
+                    return WhatsGoingOn.PpFilterIsMissing;
                 }
 
                 var i = log.IndexOf(@"CRASH in:", StringComparison.Ordinal);

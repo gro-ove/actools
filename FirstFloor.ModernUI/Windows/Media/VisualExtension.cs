@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,10 +17,16 @@ namespace FirstFloor.ModernUI.Windows.Media {
         [DllImport(@"user32.dll")]
         private static extern bool GetCursorPos(ref Win32Point pt);
 
+        public static Point GetMousePosition() {
+            var mouse = new Win32Point();
+            GetCursorPos(ref mouse);
+            return new Point(mouse.X, mouse.Y);
+        }
+
         public static Point GetMousePosition(this Visual relativeTo) {
             var mouse = new Win32Point();
             GetCursorPos(ref mouse);
-            return relativeTo.PointFromScreen(new Point(mouse.X, mouse.Y));
+            return relativeTo.PointFromScreen(GetMousePosition());
         }
 
         public static bool IsMouseOverElement(this Visual target) {
@@ -44,6 +51,10 @@ namespace FirstFloor.ModernUI.Windows.Media {
             }
 
             return -1;
+        }
+
+        public static double DistanceTo(this Point a, Point b) {
+            return Math.Sqrt(Math.Pow(a.X - b.X, 2d) + Math.Pow(a.Y - b.Y, 2d));
         }
     }
 }

@@ -15,13 +15,14 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
     [MoonSharpUserData]
-    public sealed partial class CarObject : AcJsonObjectNew {
+    public sealed partial class CarObject : AcJsonObjectNew, IDraggable {
         public static int OptionSkinsLoadingConcurrency = 5;
 
         public CarObject(IFileAcManager manager, string id, bool enabled) : base(manager, id, enabled) {
@@ -505,5 +506,9 @@ namespace AcManager.Tools.Objects {
             json["powerCurve"] = SpecsPowerCurve?.ToJArray();
         }
         #endregion
+
+        public const string DraggableFormat = "Data-CarObject";
+
+        string IDraggable.DraggableFormat => DraggableFormat;
     }
 }

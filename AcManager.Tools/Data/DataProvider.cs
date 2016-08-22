@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -13,7 +14,9 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Data {
     public class NameNationality {
+        [Localizable(false)]
         public string Name;
+        [Localizable(false)]
         public string Nationality;
     }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Tools.Objects {
     public sealed partial class CarObject {

@@ -87,6 +87,8 @@
     <Compile Include="Dialogs\ScreenColorPickerDialog.xaml.cs">
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Attached\Draggable.cs" />
+    <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
     <Compile Include="Effects\ColorPickerBluePaletteEffect.cs" />
     <Compile Include="Effects\ColorPickerBlueSliderEffect.cs" />

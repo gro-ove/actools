@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance c:RaceGridViewModel}" x:Name="This">
+        d:DataContext="{d:DesignInstance c:RaceGridViewModel}" x:Name="This" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
     <FrameworkElement.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -42,8 +42,8 @@
             </Style>
 
             <Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource FlatListBoxItem}">
-                <EventSetter Event="PreviewMouseMove" Handler="Item_OnPreviewMouseLeftButtonDown" />
                 <EventSetter Event="PreviewMouseDoubleClick" Handler="Item_OnPreviewDoubleClick" />
+                <Setter Property="mui:Draggable.Enabled" Value="True" />
                 <Setter Property="AllowDrop" Value="True" />
             </Style>
         </ResourceDictionary>
@@ -53,7 +53,12 @@
             Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
     <DockPanel Grid.Column="1" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-        <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8"
+        <Grid DockPanel.Dock="Top" Margin="0 0 0 8">
+            <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
+            <mui:BbCodeBlock TextWrapping="Wrap" Margin="8">WIP, [url="https://trello.com/c/zILPYnYX/59-fully-customizable-race"]more information[/url].</mui:BbCodeBlock>
+        </Grid>
+
+        <TextBlock DockPanel.Dock="Top" Margin="0 0 0 8" Style="{StaticResource LabelWithPadding}"
                 Text="{Binding Mode.CandidatesMode, Converter={x:Static uc:RaceGridEditorColumn.ModeToLabelConverter}}" />
 
         <Grid>
@@ -63,7 +68,7 @@
             </Grid.RowDefinitions>
 
             <DockPanel Margin="0 0 0 8" HorizontalAlignment="Stretch"
-                    Visibility="{Binding Mode.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠same_car'}">
+                    Visibility="{Binding Mode.Filterable, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="40" DockPanel.Dock="Left" />
                 <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="*"
                         Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" IsTextSearchEnabled="True" />
@@ -92,9 +97,10 @@
                                                     VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
                                         </Button>
                                         <TextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
-                                                mui:TextBoxAdvancement.SpecialMode="Positive" ToolTip="Candidate priority"
-                                                Style="{StaticResource TextBoxAsTextBlock.Small}" VerticalAlignment="Center" Width="20" Padding="0 -1 0 -1" />
-                                        <TextBlock Text="{Binding Car.DisplayName}" />
+                                                ToolTip="Candidate priority" Style="{StaticResource TextBoxAsTextBlock.Small}" VerticalAlignment="Center"
+                                                Width="20" Padding="0 -1 0 -1" mui:TextBoxAdvancement.SpecialMode="Positive"
+                                                mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                                        <TextBlock Text="{Binding DisplayName}" />
                                     </DockPanel>
                                     <DataTemplate.Triggers>
                                         <DataTrigger Binding="{Binding CandidatePriority}" Value="1">
@@ -117,7 +123,7 @@
                                 <Setter Property="ItemTemplate">
                                     <Setter.Value>
                                         <DataTemplate DataType="{x:Type c:RaceGridEntry}">
-                                            <DockPanel>
+                                            <DockPanel x:Name="Panel">
                                                 <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
                                                         RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}">
                                                     <Button.Style>
@@ -130,9 +136,21 @@
                                                             Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
                                                             VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
                                                 </Button>
-                                                <TextBlock Text="{Binding DisplayName}"
-                                                        Style="{Binding SpecialEntry, Converter={StaticResource BooleanToFontStyleConverter}}" />
+                                                <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"
+                                                        Fill="{DynamicResource Error}" Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon"
+                                                        Margin="2 2 4 0" VerticalAlignment="Center" />
+                                                <TextBlock x:Name="Name" Text="{Binding DisplayName}" />
                                             </DockPanel>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding ExceedsLimit}" Value="True">
+                                                    <!--<Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextDisabled}" />-->
+                                                    <Setter Property="ToolTip" Value="There is no pit stop for this car" />
+                                                    <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
+                                                    <Setter TargetName="Name" Property="FontStyle" Value="Italic" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -144,7 +162,7 @@
 
             <TextBlock Grid.Row="1" Text="Matching candidates not found" Style="{StaticResource Small}" Foreground="{DynamicResource Error}"
                     Visibility="{Binding FilteredView.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Margin="0 4 0 0"
-                    FontWeight="Bold" />
+                    FontWeight="Bold" IsHitTestVisible="False" />
 
             <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0 0 4 0">
                 <mui:ModernButton IconData="{StaticResource AddIconData}" Command="{Binding AddOpponentCarCommand, ElementName=This}"

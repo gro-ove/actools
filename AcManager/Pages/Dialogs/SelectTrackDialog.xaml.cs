@@ -54,7 +54,7 @@ namespace AcManager.Pages.Dialogs {
             _state = 1 - _state;
         }
 
-        private AcObjectSelectList.AcObjectSelectListViewModel _list;
+        private AcObjectSelectList.ViewModel _list;
 
         private void Tabs_OnNavigated(object sender, NavigationEventArgs e) {
             /* process AcObjectSelectList: unsubscribe from old, check if there is one */

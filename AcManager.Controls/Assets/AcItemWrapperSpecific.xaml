@@ -29,7 +29,7 @@
 
                 <!-- accommonobject -->
                 <DataTemplate DataType="{x:Type acObjectsNew:AcCommonObject}">
-                    <DockPanel HorizontalAlignment="Stretch">
+                    <DockPanel HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}"
                                 Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon" />
                         <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="4"

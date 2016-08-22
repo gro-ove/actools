@@ -5,12 +5,12 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Annotations;
+using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
@@ -172,6 +172,12 @@ namespace AcManager.Pages.Dialogs {
             _instance = new WeakReference<SelectCarDialog>(this);
 
             DataContext = this;
+            InputBindings.AddRange(new[] {
+                new InputBinding(OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
+                new InputBinding(OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
+                new InputBinding(OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt | ModifierKeys.Control))
+            });
             InitializeComponent();
 
             CarBlock.BrandArea.PreviewMouseLeftButtonDown += (sender, args) => {
@@ -235,7 +241,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private AcObjectSelectList.AcObjectSelectListViewModel _list;
+        private AcObjectSelectList.ViewModel _list;
 
         private void Tabs_OnFrameNavigated(object sender, NavigationEventArgs e) {
             /* process AcObjectSelectList: unsubscribe from old, check if there is one */
@@ -263,6 +269,12 @@ namespace AcManager.Pages.Dialogs {
                     !CarOpenInShowroomDialog.Run(SelectedCar, SelectedSkin?.Id)) {
                 OpenInShowroomOptionsCommand.Execute(null);
             }
+        }, o => SelectedCar != null && SelectedSkin != null));
+
+        private RelayCommand _openInCustomShowroomCommand;
+
+        public RelayCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new RelayCommand(o => {
+            CustomShowroomWrapper.StartAsync(SelectedCar, SelectedSkin);
         }, o => SelectedCar != null && SelectedSkin != null));
 
         private RelayCommand _openInShowroomOptionsCommand;

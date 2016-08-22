@@ -37,6 +37,17 @@ namespace AcTools.Utils.Helpers {
             return -1;
         }
 
+        [NotNull]
+        public static T ElementAtOr<T>([NotNull] this IEnumerable<T> source, int index, [NotNull] T defaultValue) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            
+            foreach (var item in source) {
+                if (--index < 0) return item;
+            }
+
+            return defaultValue;
+        }
+
         [CanBeNull]
         public static T MaxOr<T>([NotNull] this IEnumerable<T> source, T defaultValue) where T : IComparable<T> {
             if (source == null) throw new ArgumentNullException(nameof(source));
@@ -86,7 +97,7 @@ namespace AcTools.Utils.Helpers {
         public static T MinOrDefault<T>([NotNull] this IEnumerable<T> source) where T : IComparable<T> {
             return MinOr(source, default(T));
         }
-        
+
         public static T MaxEntry<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector) where TResult : IComparable<TResult> {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (selector == null) throw new ArgumentNullException(nameof(selector));
@@ -112,7 +123,8 @@ namespace AcTools.Utils.Helpers {
         }
 
         [CanBeNull]
-        public static T MaxEntryOrDefault<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector) where TResult : IComparable<TResult> {
+        public static T MaxEntryOrDefault<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector)
+                where TResult : IComparable<TResult> {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (selector == null) throw new ArgumentNullException(nameof(selector));
 
@@ -134,7 +146,7 @@ namespace AcTools.Utils.Helpers {
 
             return result;
         }
-        
+
         public static T MinEntry<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector) where TResult : IComparable<TResult> {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (selector == null) throw new ArgumentNullException(nameof(selector));
@@ -160,7 +172,8 @@ namespace AcTools.Utils.Helpers {
         }
 
         [CanBeNull]
-        public static T MinEntryOrDefault<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector) where TResult : IComparable<TResult> {
+        public static T MinEntryOrDefault<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector)
+                where TResult : IComparable<TResult> {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (selector == null) throw new ArgumentNullException(nameof(selector));
 
@@ -196,8 +209,7 @@ namespace AcTools.Utils.Helpers {
             return -1;
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static IEnumerable<IEnumerable<T>> Chunk<T>([NotNull] this IEnumerable<T> source, int chunksize) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             var list = source as IList<T> ?? source.ToList();
@@ -215,6 +227,21 @@ namespace AcTools.Utils.Helpers {
             return enumerable.Aggregate(TimeSpan.Zero, (current, timeSpan) => current + timeSpan);
         }
 
+        [Pure, NotNull]
+        public static IEnumerable<T> Repeat<T>([NotNull] this IList<T> enumerable, int repetition) {
+            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+            for (var i = 0; i < repetition; i++) {
+                for (var j = 0; j < enumerable.Count; j++) {
+                    yield return enumerable[j];
+                }
+            }
+        }
+
+        [Pure, NotNull]
+        public static IEnumerable<T> Repeat<T>([NotNull] this IEnumerable<T> enumerable, int repetition) {
+            return repetition == 1 ? enumerable : enumerable.ToList().Repeat(repetition);
+        }
+
         [Pure]
         public static T RandomElement<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
@@ -222,38 +249,32 @@ namespace AcTools.Utils.Helpers {
             return list.ElementAt(new Random().Next(0, list.Count));
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static string JoinToString([NotNull] this IEnumerable<uint> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static string JoinToString([NotNull] this IEnumerable<ushort> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static string JoinToString([NotNull] this IEnumerable<float> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static string JoinToString([NotNull] this IEnumerable<double> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static string JoinToString([NotNull] this IEnumerable<int> enumerable, string s) {
             return JoinToString(enumerable.Select(x => x.ToString(CultureInfo.InvariantCulture)), s);
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static string JoinToString<T>([NotNull] this IEnumerable<T> enumerable, string s) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var sb = new StringBuilder();
@@ -267,8 +288,7 @@ namespace AcTools.Utils.Helpers {
             return sb.ToString();
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static string JoinToString<T>([NotNull] this IEnumerable<T> enumerable, char s) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var sb = new StringBuilder();
@@ -547,8 +567,7 @@ namespace AcTools.Utils.Helpers {
             public int Compare(T x, T y) => _fn(x, y);
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static T GetById<T>([NotNull] this IEnumerable<T> source, string id) where T : IWithId {
             if (source == null) throw new ArgumentNullException(nameof(source));
             foreach (var i in source) {
@@ -557,29 +576,25 @@ namespace AcTools.Utils.Helpers {
             throw new Exception("Element with given ID not found");
         }
 
-        [Pure]
-        [CanBeNull]
+        [Pure, CanBeNull]
         public static T GetByIdOrDefault<T>([NotNull] this IEnumerable<T> source, [Localizable(false)] string id) where T : IWithId {
             if (source == null) throw new ArgumentNullException(nameof(source));
             return source.FirstOrDefault(x => x.Id == id);
         }
 
-        [Pure]
-        [CanBeNull]
+        [Pure, CanBeNull]
         public static T GetByIdOrDefault<T>([NotNull] this IEnumerable<T> source, string id, StringComparison comparison) where T : IWithId {
             if (source == null) throw new ArgumentNullException(nameof(source));
             return source.FirstOrDefault(x => string.Equals(x.Id, id, comparison));
         }
 
-        [NotNull]
-        [Pure]
+        [Pure, NotNull]
         public static T GetById<T, TId>([NotNull] this IEnumerable<T> source, TId id) where T : IWithId<TId> {
             if (source == null) throw new ArgumentNullException(nameof(source));
             return source.First(x => Equals(x.Id, id));
         }
 
-        [Pure]
-        [CanBeNull]
+        [Pure, CanBeNull]
         public static T GetByIdOrDefault<T, TId>([NotNull] this IEnumerable<T> source, TId id) where T : IWithId<TId> {
             if (source == null) throw new ArgumentNullException(nameof(source));
             foreach (var i in source) {
@@ -603,7 +618,7 @@ namespace AcTools.Utils.Helpers {
             var j = 0;
             return source.Any(i => predicate(i, j++));
         }
-        
+
         public static IEnumerable<T> CollectRest<T>([NotNull] this IEnumerator<T> source) {
             while (source.MoveNext()) {
                 yield return source.Current;

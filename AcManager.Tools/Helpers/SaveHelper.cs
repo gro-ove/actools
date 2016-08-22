@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers {
@@ -31,12 +32,13 @@ namespace AcManager.Tools.Helpers {
 
 
     public class SaveHelper<T> : ISaveHelper {
+        [CanBeNull]
         private readonly string _key;
         private readonly Func<T> _save;
         private readonly Action<T> _load;
         private readonly Action _reset;
 
-        public SaveHelper([Localizable(false)] string key, Func<T> save, Action<T> load, Action reset) {
+        public SaveHelper([CanBeNull, Localizable(false)] string key, Func<T> save, Action<T> load, Action reset) {
             _key = key;
             _save = save;
             _load = load;
@@ -63,6 +65,8 @@ namespace AcManager.Tools.Helpers {
         }
 
         public bool Load() {
+            if (_key == null) return false;
+
             var data = ValuesStorage.GetString(_key);
             if (data == null) return false;
 
@@ -79,7 +83,7 @@ namespace AcManager.Tools.Helpers {
             return false;
         }
 
-        public bool HasSavedData => ValuesStorage.Contains(_key);
+        public bool HasSavedData => _key != null && ValuesStorage.Contains(_key);
 
         public string ToSerializedString() {
             var obj = _save();
@@ -106,6 +110,8 @@ namespace AcManager.Tools.Helpers {
         }
 
         public void Save() {
+            if (_key == null) return;
+
             var serialized = ToSerializedString();
             if (serialized == null) return;
             ValuesStorage.Set(_key, serialized);
@@ -114,7 +120,7 @@ namespace AcManager.Tools.Helpers {
         private bool _savingInProgress;
 
         public async void SaveLater() {
-            if (IsLoading || _savingInProgress) return;
+            if (IsLoading || _savingInProgress || _key == null) return;
             _savingInProgress = true;
 
             await Task.Delay(300);

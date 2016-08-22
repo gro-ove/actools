@@ -1,37 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using AcManager.Controls.ViewModels;
-using AcManager.Pages.Dialogs;
-using AcManager.Tools;
-using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Data;
-using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.UserControls;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
-using JetBrains.Annotations;
-using MoonSharp.Interpreter;
-using Newtonsoft.Json;
-using StringBasedFilter;
 using WaitingDialog = AcManager.Controls.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
@@ -117,8 +100,7 @@ namespace AcManager.Pages.Drive {
             protected virtual void Load(SaveableData o) {}
 
             protected virtual void Reset() {
-                RaceGridViewModel.OpponentsNumber = 7;
-                RaceGridViewModel.StartingPosition = 1;
+                LapsNumber = 2;
             }
 
             /// <summary>
@@ -150,9 +132,56 @@ namespace AcManager.Pages.Drive {
                 RaceGridViewModel.Dispose();
             }
 
-            public override Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
+            public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
-                throw new NotImplementedException();
+                var selectedCar = CarsManager.Instance.GetById(basicProperties.CarId);
+                var selectedTrack = TracksManager.Instance.GetLayoutById(basicProperties.TrackId, basicProperties.TrackConfigurationId);
+
+                IEnumerable<Game.AiCar> botCars;
+
+                try {
+                    using (var waiting = new WaitingDialog()) {
+                        if (selectedCar == null || !selectedCar.Enabled) {
+                            ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SelectNonDisabled, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
+                            return;
+                        }
+
+                        if (selectedTrack == null) {
+                            ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SelectTrack, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
+                            return;
+                        }
+
+                        botCars = await RaceGridViewModel.GenerateGameEntries(waiting.CancellationToken);
+                        if (waiting.CancellationToken.IsCancellationRequested) return;
+
+                        if (botCars == null || !botCars.Any()) {
+                            ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SetOpponent, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
+                            return;
+                        }
+                    }
+                } catch (TaskCanceledException) {
+                    return;
+                }
+
+                await StartAsync(new Game.StartProperties {
+                    BasicProperties = basicProperties,
+                    AssistsProperties = assistsProperties,
+                    ConditionProperties = conditionProperties,
+                    TrackProperties = trackProperties,
+                    ModeProperties = GetModeProperties(botCars)
+                });
+            }
+
+            protected virtual Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
+                return new Game.RaceProperties {
+                    AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,
+                    Penalties = Penalties,
+                    JumpStartPenalty = JumpStartPenalty,
+                    StartingPosition = RaceGridViewModel.StartingPosition == 0
+                            ? MathUtils.Random(1, RaceGridViewModel.OpponentsNumber + 2) : RaceGridViewModel.StartingPosition,
+                    RaceLaps = LapsNumber,
+                    BotCars = botCars
+                };
             }
 
             public override void OnSelectedUpdated(CarObject selectedCar, TrackObjectBase selectedTrack) {

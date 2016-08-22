@@ -804,6 +804,10 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private void LoadSelected() {
+            
+        }
+
         private RelayCommand _addToRecentCommand;
 
         public ICommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new RelayCommand(o => {

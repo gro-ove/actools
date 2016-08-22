@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
@@ -103,7 +102,7 @@
                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
             <Path x:Name="RightArrow" Grid.Column="1" VerticalAlignment="Center" Margin="41 0 0 0" Fill="{TemplateBinding MenuItem.Foreground}"
                     Data="{StaticResource RightArrow}" IsHitTestVisible="False" />
-            <Popup x:Name="PART_Popup" Grid.Column="0" Grid.ColumnSpan="2" AllowsTransparency="True" Placement="Right"
+            <Popup x:Name="PART_Popup" Grid.Column="0" Grid.ColumnSpan="2" AllowsTransparency="True" Placement="Left"
                     IsOpen="{Binding IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
                     PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
                 <Grid Margin="4" Background="{DynamicResource PopupBackground}">

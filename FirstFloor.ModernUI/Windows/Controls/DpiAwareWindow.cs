@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
@@ -79,7 +80,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        public new void ShowDialog() {
+        public new bool? ShowDialog() {
             DimOwner();
 
             if (Owner == null || Owner.Visibility == Visibility.Hidden) {
@@ -87,10 +88,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             try {
-                base.ShowDialog();
+                return base.ShowDialog();
             } finally {
                 UndimOwner();
             }
+        }
+
+        public Task ShowAndWaitAsync() {
+            var task = new TaskCompletionSource<object>();
+            Closed += (s, a) => task.SetResult(null);
+            Show();
+            Focus();
+            return task.Task;
+        }
+
+        public Task<bool?> ShowDialogAsync() {
+            var completion = new TaskCompletionSource<bool?>();
+            Dispatcher.BeginInvoke(new Action(() => completion.SetResult(ShowDialog())));
+            return completion.Task;
         }
 
         public new void Close() {
@@ -357,7 +372,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void ShowDialogWithoutBlocking() {
-            Application.Current.Dispatcher.BeginInvoke(new Action(ShowDialog));
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => ShowDialog()));
         }
 
         private const int GwlStyle = -16;

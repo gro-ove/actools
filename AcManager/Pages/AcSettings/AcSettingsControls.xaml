@@ -11,7 +11,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/UserPresetsControl_MenuAsComboBox.xaml" />
+                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/MenuAsComboBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

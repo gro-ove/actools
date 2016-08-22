@@ -4,6 +4,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.ViewModels {
@@ -15,10 +16,21 @@ namespace AcManager.Controls.ViewModels {
         public RaceGridPlayerEntry([NotNull] CarObject car) : base(car) {}
     }
 
-    public class RaceGridEntry : Displayable {
+    public class RaceGridEntry : Displayable, IDraggable {
         public virtual bool SpecialEntry => false;
 
         public override string DisplayName => Car.DisplayName;
+
+        private bool _exceedsLimit;
+
+        public bool ExceedsLimit {
+            get { return _exceedsLimit; }
+            set {
+                if (Equals(value, _exceedsLimit)) return;
+                _exceedsLimit = value;
+                OnPropertyChanged();
+            }
+        }
 
         private CarObject _car;
 
@@ -111,6 +123,26 @@ namespace AcManager.Controls.ViewModels {
 
         public override string ToString() {
             return DisplayName;
+        }
+
+        public const string DraggableFormat = "Data-RaceGridEntry";
+
+        string IDraggable.DraggableFormat => DraggableFormat;
+
+        public RaceGridEntry Clone() {
+            return new RaceGridEntry(Car) {
+                CarSkin = CarSkin,
+                AiLevel = AiLevel,
+                CandidatePriority = CandidatePriority,
+                Name = Name,
+                Nationality = Nationality
+            };
+        }
+
+        public bool Same(RaceGridEntry other) {
+            // TODO: If later candidates will become customizable, check more
+            return GetType().Name == other.GetType().Name && Car == other.Car && 
+                    CarSkin == other.CarSkin;
         }
     }
 }

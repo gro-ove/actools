@@ -4,7 +4,7 @@
         xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
         d:DesignHeight="300" d:DesignWidth="300" Title="{Binding SelectedCar.DisplayName}" IconSource="{Binding SelectedCar.LogoIcon}" Loaded="OnLoaded"
         Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance di:SelectCarDialog}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960"
-        MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="540" Height="640" LocationAndSizeKey="SelectCarDialog_LS">
+        MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="540" Height="640" LocationAndSizeKey="SelectCarDialog_LS" WindowStartupLocation="Manual">
     <mui:ModernDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
