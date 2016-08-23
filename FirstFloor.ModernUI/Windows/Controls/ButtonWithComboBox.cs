@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    [ContentProperty("MenuItems")]
+    [ContentProperty(@"MenuItems")]
     public class ButtonWithComboBox : Button {
         public ButtonWithComboBox() {
             DefaultStyleKey = typeof(ButtonWithComboBox);

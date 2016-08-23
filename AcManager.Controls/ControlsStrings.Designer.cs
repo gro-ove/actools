@@ -781,6 +781,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unsaved.
+        /// </summary>
+        public static string Common_Unsaved {
+            get {
+                return ResourceManager.GetString("Common_Unsaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uploading….
         /// </summary>
         public static string Common_Uploading {

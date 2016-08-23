@@ -88,8 +88,8 @@ namespace AcManager.Tools.Managers.Presets {
                 }
             }
 
-            File.WriteAllText(filename, data);
             resultFilename = filename;
+            File.WriteAllText(filename, data);
             return true;
         }
     }

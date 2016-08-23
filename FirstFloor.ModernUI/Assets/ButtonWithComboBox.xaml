@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
@@ -90,10 +90,10 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type controls:ButtonWithComboBox}" BasedOn="{StaticResource BaseButtonStyle}">
+    <Style TargetType="{x:Type c:ButtonWithComboBox}" BasedOn="{StaticResource BaseButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:ButtonWithComboBox}">
+                <ControlTemplate TargetType="{x:Type c:ButtonWithComboBox}">
                     <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
                         <StackPanel Orientation="Horizontal">
@@ -103,7 +103,7 @@
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ToolTip="{TemplateBinding ButtonToolTip}" />
                             <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
                                     Foreground="{TemplateBinding Foreground}">
-                                <MenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
+                                <c:LazyMenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
                                         ItemsSource="{TemplateBinding MenuItems}" />
                             </Menu>
                         </StackPanel>
@@ -131,7 +131,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="Go.ButtonWithComboBox" TargetType="{x:Type controls:ButtonWithComboBox}" BasedOn="{StaticResource {x:Type controls:ButtonWithComboBox}}">
+    <Style x:Key="Go.ButtonWithComboBox" TargetType="{x:Type c:ButtonWithComboBox}" BasedOn="{StaticResource {x:Type c:ButtonWithComboBox}}">
         <Setter Property="Background" Value="{DynamicResource GoButtonBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource GoButtonBorder}" />
         <Setter Property="Foreground" Value="{DynamicResource GoButtonText}" />
@@ -139,7 +139,7 @@
 
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:ButtonWithComboBox}">
+                <ControlTemplate TargetType="{x:Type c:ButtonWithComboBox}">
                     <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
                         <StackPanel Orientation="Horizontal">
@@ -149,7 +149,7 @@
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ToolTip="{TemplateBinding ButtonToolTip}" />
                             <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
                                     Foreground="{TemplateBinding Foreground}" FontWeight="Normal">
-                                <MenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
+                                <c:LazyMenuItem Style="{StaticResource ButtonWithComboBoxExtraMenu}" Background="{TemplateBinding Background}"
                                         ItemsSource="{TemplateBinding MenuItems}" />
                             </Menu>
                         </StackPanel>
@@ -177,7 +177,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="Go.ToolBarButtonWithComboBox" BasedOn="{StaticResource Go.ButtonWithComboBox}" TargetType="{x:Type controls:ButtonWithComboBox}">
+    <Style x:Key="Go.ToolBarButtonWithComboBox" BasedOn="{StaticResource Go.ButtonWithComboBox}" TargetType="{x:Type c:ButtonWithComboBox}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
     </Style>

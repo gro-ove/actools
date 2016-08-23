@@ -185,6 +185,7 @@
         <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
         <Setter Property="ScrollViewer.PanningMode" Value="Both" />
         <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="SelectedContent">
             <Setter.Value>
                 <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
@@ -195,12 +196,13 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type c:HierarchicalComboBox}">
-                    <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                            Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="Menu">
-                        <c:LazyMenuItem HorizontalAlignment="Stretch" Style="{StaticResource HierarchicalComboBoxMenuItem}"
+                    <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Style="{StaticResource ButtonWithComboBoxWrapperMenu}"
+                            x:Name="Menu">
+                        <c:LazyMenuItem HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Style="{StaticResource HierarchicalComboBoxMenuItem}"
                                 Width="{Binding ActualWidth, ElementName=Menu}" ItemsSource="{TemplateBinding InnerItems}"
                                 Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
+                                BorderThickness="{TemplateBinding BorderThickness}" Margin="{TemplateBinding InnerMargin}" Padding="{TemplateBinding Padding}">
                             <MenuItem.Header>
                                 <ContentPresenter Content="{TemplateBinding SelectedContent}" />
                             </MenuItem.Header>

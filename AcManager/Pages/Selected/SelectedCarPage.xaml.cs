@@ -56,7 +56,6 @@ namespace AcManager.Pages.Selected {
             public override void Load() {
                 base.Load();
                 SelectedObject.PropertyChanged += SelectedObject_PropertyChanged;
-                // new LiveryIconEditor(SelectedObject.SelectedSkin).ShowDialog();
             }
 
             public override void Unload() {
@@ -184,7 +183,7 @@ namespace AcManager.Pages.Selected {
             #endregion
 
             #region Presets
-            public ObservableCollection<MenuItem> ShowroomPresets {
+            public HierarchicalItemsView ShowroomPresets {
                 get { return _showroomPresets; }
                 private set {
                     if (Equals(value, _showroomPresets)) return;
@@ -193,7 +192,7 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            public ObservableCollection<MenuItem> UpdatePreviewsPresets {
+            public HierarchicalItemsView UpdatePreviewsPresets {
                 get { return _updatePreviewsPresets; }
                 private set {
                     if (Equals(value, _updatePreviewsPresets)) return;
@@ -202,7 +201,7 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            public ObservableCollection<MenuItem> QuickDrivePresets {
+            public HierarchicalItemsView QuickDrivePresets {
                 get { return _quickDrivePresets; }
                 private set {
                     if (Equals(value, _quickDrivePresets)) return;
@@ -211,7 +210,7 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private ObservableCollection<MenuItem> _showroomPresets, _updatePreviewsPresets, _quickDrivePresets;
+            private HierarchicalItemsView _showroomPresets, _updatePreviewsPresets, _quickDrivePresets;
             private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
 
             public void InitializeShowroomPresets() {

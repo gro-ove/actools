@@ -1,11 +1,12 @@
+using System;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.Managers.Presets {
     internal class SavedPresetEntry : Displayable, ISavedPresetEntry {
-        public string BaseDirectory { get; private set; }
+        public string BaseDirectory { get; }
 
-        public string Filename { get; private set; }
+        public string Filename { get; }
 
         public override string DisplayName {
             get {
@@ -28,6 +29,22 @@ namespace AcManager.Tools.Managers.Presets {
 
         public override string ToString() {
             return DisplayName;
+        }
+
+        public bool Equals(ISavedPresetEntry other) {
+            return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override bool Equals(object other) {
+            return Equals(other as ISavedPresetEntry);
+        }
+
+        protected bool Equals(SavedPresetEntry other) {
+            return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override int GetHashCode() {
+            return Filename?.GetHashCode() ?? 0;
         }
     }
 }

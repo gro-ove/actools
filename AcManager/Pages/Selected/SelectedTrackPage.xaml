@@ -26,13 +26,7 @@
                 <Separator />
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_TrackTooltip}"
                         Command="{Binding DriveCommand}" PreviewMouseDown="ToolbarButtonQuickDrive_OnPreviewMouseDown"
-                        Style="{StaticResource Go.ToolBarButtonWithComboBox}">
-                    <mui:ButtonWithComboBox.MenuItems>
-                        <CompositeCollection>
-                            <CollectionContainer Collection="{Binding Source={StaticResource QuickDrivePresetsItems}}" />
-                        </CompositeCollection>
-                    </mui:ButtonWithComboBox.MenuItems>
-                </mui:ButtonWithComboBox>
+                        Style="{StaticResource Go.ToolBarButtonWithComboBox}" MenuItems="{Binding QuickDrivePresets}" />
                 <Separator />
                 <Button Content="{x:Static g:AppStrings.Toolbar_Analyze}" IsEnabled="False" />
             </ToolBar>

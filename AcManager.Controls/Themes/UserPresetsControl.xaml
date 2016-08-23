@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ac="clr-namespace:AcManager.Controls"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+        xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ButtonWithComboBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -24,23 +23,7 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <!--<Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                                Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="PART_Menu">
-                            <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}"
-                                    ItemsSource="{TemplateBinding SavedPresetsGrouped}" Width="{Binding ActualWidth, ElementName=PART_Menu}"
-                                    Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}"
-                                    FontSize="{TemplateBinding FontSize}" BorderBrush="{TemplateBinding BorderBrush}" Foreground="{TemplateBinding Foreground}"
-                                    FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}">
-                                <MenuItem.Header>
-                                    <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
-                                            Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                </MenuItem.Header>
-                                <MenuItem.ItemContainerStyle>
-                                    <Style TargetType="MenuItem" BasedOn="{StaticResource SpecialMenuItem}" />
-                                </MenuItem.ItemContainerStyle>
-                            </MenuItem>
-                        </Menu>-->
-                        <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" ShowPreview="True">
+                        <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False">
                             <mui:HierarchicalComboBox.SelectedContent>
                                 <TextBlock x:Name="PART_CurrentText" TextTrimming="CharacterEllipsis"
                                         Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource TemplatedParent}}" />
@@ -51,10 +34,6 @@
                                 ToolTip="{x:Static ac:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static ac:ControlsStrings.Presets_Save}" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <!--<Trigger Property="ShowPreview" Value="True">
-                            <Setter TargetName="PART_ComboBox" Property="ShowPreview" Value="True" />
-                            <Setter TargetName="PART_ComboBox" Property="PreviewProvider" Value="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
-                        </Trigger>-->
                         <Trigger Property="Changed" Value="True">
                             <Setter TargetName="PART_CurrentText" Property="FontStyle" Value="Italic" />
                         </Trigger>

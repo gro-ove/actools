@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using FirstFloor.ModernUI.Presentation;
 
@@ -7,7 +8,7 @@ namespace AcManager.Tools.Managers.Presets {
 
         public string BaseDirectory { get; }
 
-        public string Filename { get; internal set; }
+        public string Filename { get; }
 
         public BuiltInPresetEntry(string baseDirectory, string filename, byte[] data) {
             BaseDirectory = baseDirectory;
@@ -32,6 +33,22 @@ namespace AcManager.Tools.Managers.Presets {
 
         public override string ToString() {
             return DisplayName;
+        }
+
+        public bool Equals(ISavedPresetEntry other) {
+            return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override bool Equals(object other) {
+            return Equals(other as ISavedPresetEntry);
+        }
+
+        protected bool Equals(BuiltInPresetEntry other) {
+            return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override int GetHashCode() {
+            return Filename?.GetHashCode() ?? 0;
         }
     }
 }

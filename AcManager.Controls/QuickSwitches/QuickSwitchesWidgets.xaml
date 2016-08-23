@@ -58,36 +58,30 @@
             IconData="{StaticResource ScreenIconData}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_UiPresets_Tooltip}" />
     <DockPanel x:Key="WidgetControlsPresets" FocusVisualStyle="{x:Null}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_ControlsPresets_Tooltip}"
             Background="Transparent" Width="{StaticResource BlockSize}" Height="{StaticResource BlockSize}" Margin="{StaticResource BlockMargin}">
-        <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-                Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="PART_Menu" DockPanel.Dock="Bottom"
-                IsEnabled="{Binding PresetsReady, Source={x:Static h:ControlsPresets.Instance}}" Margin="{StaticResource LabelMargin}">
-            <MenuItem HorizontalAlignment="Center" Style="{StaticResource UserPresetsControlMenuItem}"
-                    ItemsSource="{Binding Presets, Source={x:Static h:ControlsPresets.Instance}}" Background="Transparent" BorderThickness="0"
-                    HorizontalContentAlignment="Center" Margin="8 6 -2 0" Padding="1 0 3 0">
-                <MenuItem.Header>
-                    <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"
-                            FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource FontFamily}" FontSize="{StaticResource FontSize}"
-                            DataContext="{x:Static t:AcSettingsHolder.Controls}"
-                            Text="{Binding CurrentPresetName, TargetNullValue='Unsaved', Converter={StaticResource ToUpperConverter}}">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
-                                        <Setter Property="FontStyle" Value="Italic" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
-                                        <Setter Property="FontStyle" Value="Italic" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </MenuItem.Header>
-                <MenuItem.ItemContainerStyle>
-                    <Style TargetType="MenuItem" BasedOn="{StaticResource SpecialMenuItem}" />
-                </MenuItem.ItemContainerStyle>
-            </MenuItem>
-        </Menu>
+        <mui:HierarchicalComboBox x:Name="PART_ComboBox" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}"
+                Background="Transparent" BorderThickness="0" Padding="1 0 3 0" InnerMargin="8 6 -2 0"
+                ItemsSource="{Binding Presets, Source={x:Static h:ControlsPresets.Instance}}"
+                SelectedItem="{Binding SelectedPreset, Source={x:Static h:ControlsPresets.Instance}}"
+                IsEnabled="{Binding PresetsReady, Source={x:Static h:ControlsPresets.Instance}}" HorizontalContentAlignment="Center" FixedMode="False">
+            <mui:HierarchicalComboBox.SelectedContent>
+                <TextBlock TextTrimming="CharacterEllipsis" TextAlignment="Center" DataContext="{x:Static t:AcSettingsHolder.Controls}"
+                        Text="{Binding CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}, Converter={StaticResource ToUpperConverter}}"
+                        FontWeight="{StaticResource FontWeight}" FontFamily="{StaticResource FontFamily}" FontSize="{StaticResource FontSize}">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
+                                    <Setter Property="FontStyle" Value="Italic" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
+                                    <Setter Property="FontStyle" Value="Italic" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </mui:HierarchicalComboBox.SelectedContent>
+        </mui:HierarchicalComboBox>
         <Path Data="{StaticResource KeyboardIconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}" Fill="{DynamicResource ButtonText}"
                 Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
     </DockPanel>

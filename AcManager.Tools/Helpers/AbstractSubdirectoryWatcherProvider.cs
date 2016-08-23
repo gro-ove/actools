@@ -67,12 +67,11 @@ namespace AcManager.Tools.Helpers {
                 if (_dispatched) return;
                 _dispatched = true;
 
-                await Task.Delay(100);
-
-                Application.Current.Dispatcher.Invoke(() => {
+                await Task.Delay(300);
+                Application.Current.Dispatcher.InvokeAsync(() => {
                     UpdateInternal?.Invoke(this, new EventArgs());
                     _dispatched = false;
-                });
+                }).Task.Forget();
             }
 
             public void Dispose() {

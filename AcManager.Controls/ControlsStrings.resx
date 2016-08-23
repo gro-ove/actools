@@ -936,4 +936,7 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Plugins_Update" xml:space="preserve">
     <value>Update (New Version: {0})</value>
   </data>
+  <data name="Common_Unsaved" xml:space="preserve">
+    <value>Unsaved</value>
+  </data>
 </root>

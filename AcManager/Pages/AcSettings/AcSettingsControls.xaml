@@ -132,34 +132,27 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
-                        Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="Menu"
-                        IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}">
-                    <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource UserPresetsControlMenuItem}"
-                            ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}" Width="{Binding ActualWidth, ElementName=Menu}">
-                        <MenuItem.Header>
-                            <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis" DataContext="{Binding Controls}"
-                                    Text="{Binding CurrentPresetName, TargetNullValue='Unsaved'}">
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
-                                                <Setter Property="FontStyle" Value="Italic" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
-                                                <Setter Property="FontStyle" Value="Italic" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </MenuItem.Header>
-                        <MenuItem.ItemContainerStyle>
-                            <Style TargetType="MenuItem" BasedOn="{StaticResource SpecialMenuItem}" />
-                        </MenuItem.ItemContainerStyle>
-                    </MenuItem>
-                </Menu>
-
+                <mui:HierarchicalComboBox ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"
+                        SelectedItem="{Binding SelectedPreset, Source={x:Static c:ControlsPresets.Instance}}"
+                        IsEnabled="{Binding PresetsReady, Source={x:Static c:ControlsPresets.Instance}}" FixedMode="False">
+                    <mui:HierarchicalComboBox.SelectedContent>
+                        <TextBlock TextTrimming="CharacterEllipsis" DataContext="{Binding Controls}"
+                                Text="{Binding Path=CurrentPresetName, TargetNullValue={x:Static c:ControlsStrings.Common_Unsaved}}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentPresetChanged}" Value="True">
+                                            <Setter Property="FontStyle" Value="Italic" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CurrentPresetName}" Value="{x:Null}">
+                                            <Setter Property="FontStyle" Value="Italic" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </mui:HierarchicalComboBox.SelectedContent>
+                </mui:HierarchicalComboBox>
                 <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0"
                         ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static c:ControlsStrings.Presets_Save}" />
             </Grid>
@@ -167,8 +160,8 @@
                     ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}" Content="{x:Static g:AppStrings.Common_Share}">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="ShareContextMenu">
-                        <MenuItem Header="{x:Static g:AppStrings.Controls_SharePreset}" Command="{Binding ShareCommand, Mode=OneTime}"
-                                CommandParameter="Basic" ToolTip="{x:Static g:AppStrings.Controls_SharePreset_Tooltip}" />
+                        <MenuItem Header="{x:Static g:AppStrings.Controls_SharePreset}" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="Basic"
+                                ToolTip="{x:Static g:AppStrings.Controls_SharePreset_Tooltip}" />
                         <MenuItem Header="{x:Static g:AppStrings.Controls_ShareFfbOnly}" Command="{Binding ShareCommand, Mode=OneTime}"
                                 CommandParameter="FFBOnly" ToolTip="{x:Static g:AppStrings.Controls_ShareFfbOnly_Tooltip}" />
                     </ContextMenu>

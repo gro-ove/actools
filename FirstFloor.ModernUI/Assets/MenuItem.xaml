@@ -80,22 +80,18 @@
                 <Path x:Name="RightArrow" Grid.Column="5" VerticalAlignment="Center" Margin="4 0 0 0" Fill="{TemplateBinding MenuItem.Foreground}"
                         Data="{StaticResource RightArrow}" />
             </Grid>
-            <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Right" VerticalOffset="-3" HorizontalOffset="-2"
+            <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Left"
                     IsOpen="{Binding IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
                     PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
                 <Grid Margin="4" Background="{DynamicResource PopupBackground}">
-                    <Grid x:Name="Shdw">
-                        <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                        <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-                    </Grid>
+                    <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
+                    <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
                     <Border x:Name="SubMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
                             BorderThickness="1" Margin="0 -1 0 0">
                         <ScrollViewer x:Name="SubMenuScrollViewer" CanContentScroll="True" Foreground="{DynamicResource ItemText}">
-                            <Grid RenderOptions.ClearTypeHint="Enabled">
-                                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.TabNavigation="Cycle"
-                                        KeyboardNavigation.DirectionalNavigation="Cycle" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                        Grid.IsSharedSizeScope="True" />
-                            </Grid>
+                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Grid.IsSharedSizeScope="True"
+                                    RenderOptions.ClearTypeHint="Enabled" />
                         </ScrollViewer>
                     </Border>
                 </Grid>
@@ -117,9 +113,6 @@
             <Trigger Property="IsChecked" Value="True">
                 <Setter TargetName="GlyphPanel" Property="Visibility" Value="Visible" />
                 <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
-            </Trigger>
-            <Trigger SourceName="PART_Popup" Property="Popup.HasDropShadow" Value="True">
-                <Setter TargetName="Shdw" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />

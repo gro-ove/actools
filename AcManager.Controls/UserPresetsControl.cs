@@ -81,11 +81,17 @@ namespace AcManager.Controls {
             return true;
         }
 
+        private bool _loaded;
+
         private void UserPresetsControl_Loaded(object sender, RoutedEventArgs e) {
+            if (_loaded) return;
+            _loaded = true;
             PresetSelected += UserPresetsControl_PresetSelected;
         }
 
         private void UserPresetsControl_Unloaded(object sender, RoutedEventArgs e) {
+            if (!_loaded) return;
+            _loaded = false;
             PresetSelected -= UserPresetsControl_PresetSelected;
         }
 
@@ -98,8 +104,8 @@ namespace AcManager.Controls {
 
         public string SelectedPresetFilename {
             get {
-                return _selectedPresetFilename ?? ValuesStorage.GetString("__userpresets_p_" + _presetable.PresetableKey) 
-                    ?? string.Empty;
+                return _selectedPresetFilename ?? ValuesStorage.GetString("__userpresets_p_" + _presetable.PresetableKey)
+                        ?? string.Empty;
             }
             private set {
                 if (Equals(value, _selectedPresetFilename)) return;
@@ -176,9 +182,8 @@ namespace AcManager.Controls {
                                                                _presetable.ExportToPresetData(),
                                                                entry?.Filename,
                                                                out resultFilename)) return;
-
-            SetChanged(false);
             SelectedPresetFilename = resultFilename;
+            SetChanged(false);
         }
 
         public void SwitchToNext() {
@@ -273,61 +278,7 @@ namespace AcManager.Controls {
             return from;
         }
 
-        public class TagHelper : NotifyPropertyChanged {
-            private readonly IPresetsPreviewProvider _provider;
-
-            internal TagHelper(IPresetsPreviewProvider provider, ISavedPresetEntry entry) {
-                _provider = provider;
-                Entry = entry;
-            }
-
-            public ISavedPresetEntry Entry { get; }
-
-            public bool HasToolTips => _provider != null;
-
-            private bool _previewReady;
-            private object _toolTip;
-
-            public object ToolTip {
-                get {
-                    if (_previewReady) return _toolTip;
-
-                    _previewReady = true;
-                    _toolTip = _provider?.GetPreview(Entry.ReadData());
-                    return _toolTip;
-                }
-            }
-        }
-
-        private static MenuItem ToMenuItem(ISavedPresetEntry entry, string mainDirectory, RoutedEventHandler clickHandler,
-                IPresetsPreviewProvider previewProvider, string extension) {
-            try {
-                var l = mainDirectory.Length + 1;
-                var result = new MenuItem {
-                    Header = entry.Filename.Substring(l, entry.Filename.Length - l - extension.Length),
-                    Tag = new TagHelper(previewProvider, entry),
-                };
-
-                result.Click += clickHandler;
-                return result;
-            } catch (ArgumentOutOfRangeException e) {
-                Logging.Warning("ToMenuItem() exception:\n" +
-                        $"  mainDirectory: {mainDirectory}\n" +
-                        $"  filename: {entry.Filename}\n" +
-                        $"  extension: {extension}\n  " + e);
-                
-                var result = new MenuItem {
-                    Header = entry.Filename,
-                    Tag = new TagHelper(previewProvider, entry),
-                };
-
-                result.Click += clickHandler;
-                return result;
-            }
-        }
-
-        public static IEnumerable<object> GroupPresetsNew(IEnumerable<ISavedPresetEntry> entries, string mainDirectory, RoutedEventHandler clickHandler,
-                IPresetsPreviewProvider previewProvider = null, string extension = PresetsManager.FileExtension) {
+        public static IEnumerable<object> GroupPresets(IEnumerable<ISavedPresetEntry> entries, string mainDirectory) {
             var list = entries.Select(x => new {
                 Entry = x,
                 Directory = GetHead(x.Filename, mainDirectory)
@@ -337,54 +288,19 @@ namespace AcManager.Controls {
                 var directoryValue = directory;
                 var subList = list.Where(x => x.Directory == directoryValue).Select(x => x.Entry).ToList();
                 if (subList.Count > 1){
-                    yield return new HierarchicalGroup(Path.GetFileName(directory),
-                            GroupPresetsNew(subList, directory, clickHandler, previewProvider, extension));
+                    yield return new HierarchicalGroup(Path.GetFileName(directory), GroupPresets(subList, directory));
                 } else if (list.Any()) {
                     yield return subList[0];
-                    // yield return ToMenuItem(subList[0], mainDirectory, clickHandler, previewProvider, extension);
                 }
             }
 
             foreach (var entry in list.Where(x => x.Directory == mainDirectory)) {
                 yield return entry.Entry;
-                // yield return ToMenuItem(entry.Entry, mainDirectory, clickHandler, previewProvider, extension);
             }
         }
 
-        public static IEnumerable<MenuItem> GroupPresets(IEnumerable<ISavedPresetEntry> entries, string mainDirectory, RoutedEventHandler clickHandler,
-                IPresetsPreviewProvider previewProvider = null, string extension = PresetsManager.FileExtension) {
-            var list = entries.Select(x => new {
-                Entry = x,
-                Directory = GetHead(x.Filename, mainDirectory)
-            }).ToList();
-
-            foreach (var directory in list.Select(x => x.Directory).Where(x => x != mainDirectory).Distinct()) {
-                var directoryValue = directory;
-                var subList = list.Where(x => x.Directory == directoryValue).Select(x => x.Entry).ToList();
-                if (subList.Count > 1) {
-                    var group = new MenuItem {
-                        Header = Path.GetFileName(directory)
-                    };
-
-                    foreach (var sub in GroupPresets(subList, directory, clickHandler, previewProvider, extension)) {
-                        group.Items.Add(sub);
-                    }
-
-                    yield return group;
-                } else if (list.Any()) {
-                    yield return ToMenuItem(subList[0], mainDirectory, clickHandler, previewProvider, extension);
-                }
-            }
-
-            foreach (var entry in list.Where(x => x.Directory == mainDirectory)) {
-                yield return ToMenuItem(entry.Entry, mainDirectory, clickHandler, previewProvider, extension);
-            }
-        }
-
-        public static IEnumerable<MenuItem> GroupPresets(string presetableKey, RoutedEventHandler clickHandler,
-                IPresetsPreviewProvider previewProvider = null) {
-            return GroupPresets(PresetsManager.Instance.GetSavedPresets(presetableKey),
-                    PresetsManager.Instance.GetDirectory(presetableKey), clickHandler, previewProvider);
+        public static IEnumerable<object> GroupPresets(string presetableKey) {
+            return GroupPresets(PresetsManager.Instance.GetSavedPresets(presetableKey), PresetsManager.Instance.GetDirectory(presetableKey));
         }
 
         private void UpdateSavedPresets() {
@@ -393,26 +309,13 @@ namespace AcManager.Controls {
             var presets = new ObservableCollection<ISavedPresetEntry>(PresetsManager.Instance.GetSavedPresets(_presetable.PresetableCategory));
             SetValue(SavedPresetsPropertyKey, presets);
             SetValue(SavedPresetsGroupedPropertyKey, new HierarchicalGroup("",
-                    GroupPresetsNew(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory), MenuItem_Click, _presetable as IPresetsPreviewProvider)));
+                    GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory))));
             
             _ignoreNext = true;
             var defaultPreset = _presetable.DefaultPreset;
             CurrentUserPreset = presets.FirstOrDefault(x => x.Filename == SelectedPresetFilename) ??
                     (defaultPreset == null ? null : presets.FirstOrDefault(x => x.DisplayName == defaultPreset));
             _ignoreNext = false;
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e) {
-            e.Handled = true;
-
-            var entry = (((MenuItem)sender).Tag as TagHelper)?.Entry;
-            if (entry == null) return;
-
-            if (CurrentUserPreset != entry) {
-                CurrentUserPreset = entry;
-            } else {
-                SelectionChanged(entry);
-            }
         }
 
         private static readonly DependencyPropertyKey ChangedPropertyKey = DependencyProperty.RegisterReadOnly(nameof(Changed), 

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.About;
 using AcManager.Controls;
@@ -18,7 +16,6 @@ using AcManager.Tools;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -65,7 +62,7 @@ namespace AcManager.Pages.Selected {
                 QuickDrive.Show(track: SelectedTrackConfiguration);
             }, o => SelectedTrackConfiguration.Enabled));
 
-            public ObservableCollection<MenuItem> QuickDrivePresets {
+            public HierarchicalItemsView QuickDrivePresets {
                 get { return _quickDrivePresets; }
                 private set {
                     if (Equals(value, _quickDrivePresets)) return;
@@ -74,7 +71,7 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private static ObservableCollection<MenuItem> _quickDrivePresets;
+            private static HierarchicalItemsView _quickDrivePresets;
             private readonly PresetsMenuHelper _helper = new PresetsMenuHelper();
 
             public override void Unload() {

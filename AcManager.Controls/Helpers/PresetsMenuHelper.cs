@@ -1,11 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
-using AcManager.Tools.Lists;
-using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
-using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls.Helpers {
     public class PresetsMenuHelper : IDisposable {
@@ -15,17 +11,21 @@ namespace AcManager.Controls.Helpers {
             public string Key;
             public EventHandler Handler;
         }
+        public static IEnumerable<object> GroupPresets(string presetsKey, Action<string> action) {
+            var group = new HierarchicalGroup("", UserPresetsControl.GroupPresets(presetsKey));
+            var result = new HierarchicalItemsView(o => {
+                action(((ISavedPresetEntry)o).Filename);
+            }, group, false);
+            return result;
+        }
 
-        public static IEnumerable<MenuItem> GroupPresets(string presetsKey, Action<string> action) {
-            return UserPresetsControl.GroupPresets(presetsKey, (sender, args) => {
-                action(((UserPresetsControl.TagHelper)((MenuItem)sender).Tag).Entry.Filename);
-            });
-        } 
-        
-        public ObservableCollection<MenuItem> Create(string presetsKey, Action<string> action) {
-            var result = new BetterObservableCollection<MenuItem>(GroupPresets(presetsKey, action));
+        public HierarchicalItemsView Create(string presetsKey, Action<string> action) {
+            var group = new HierarchicalGroup("", UserPresetsControl.GroupPresets(presetsKey));
+            var result = new HierarchicalItemsView(o => {
+                action(((ISavedPresetEntry)o).Filename);
+            }, group, false);
 
-            var handler = new EventHandler((sender, e) => result.ReplaceEverythingBy(GroupPresets(presetsKey, action)));
+            var handler = new EventHandler((sender, e) => group.ReplaceEverythingBy(UserPresetsControl.GroupPresets(presetsKey)));
             PresetsManager.Instance.Watcher(presetsKey).Update += handler;
             _presetsHandlersToRemove.Add(new PresetsHandlerToRemove { Key = presetsKey, Handler = handler });
 
