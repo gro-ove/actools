@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using AcManager.Tools.AcManagersNew;
@@ -400,8 +401,8 @@ namespace AcManager.Tools.Helpers {
 
                 public bool IsAvailable => RequiredAddonId == null || PluginsManager.Instance.IsPluginEnabled(RequiredAddonId);
 
-                internal StarterType(string displayName, string description, string requiredAddonId = null) {
-                    Id = displayName;
+                internal StarterType([Localizable(false)] string id, string displayName, string description, string requiredAddonId = null) {
+                    Id = id;
                     DisplayName = displayName;
                     Description = description;
 
@@ -410,24 +411,35 @@ namespace AcManager.Tools.Helpers {
             }
 
             public static readonly StarterType OfficialStarterType = new StarterType(
+                    "Official",
                     string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official),
                     "Official way from Kunos; might be slow and unreliable, but doesn’t require patching");
 
-            public static readonly StarterType TrickyStarterType = new StarterType(ToolsStrings.Settings_Starter_Tricky,
+            public static readonly StarterType TrickyStarterType = new StarterType(
+                    "Tricky",
+                    ToolsStrings.Settings_Starter_Tricky,
                     "Tricky way to start the race; one of the fastest, but doesn’t work without running Steam or Internet-connection");
 
-            public static readonly StarterType UiModuleStarterType = new StarterType("UI Module",
+            public static readonly StarterType UiModuleStarterType = new StarterType(
+                    "UI Module",
+                    "UI Module",
                     "Adds a special UI module in original launcher which listens to some orders and runs the game; use it if you need to use both CM and original launcher at the same time");
 
-            public static readonly StarterType StarterPlusType = new StarterType(ToolsStrings.Settings_Starter_StarterPlus,
+            public static readonly StarterType StarterPlusType = new StarterType(
+                    "Starter+",
+                    ToolsStrings.Settings_Starter_StarterPlus,
                     "Modified version of original launcher, obsolete since 1.7 release",
                     StarterPlus.AddonId);
 
-            public static readonly StarterType SseStarterType = new StarterType(ToolsStrings.Settings_Starter_Sse,
+            public static readonly StarterType SseStarterType = new StarterType(
+                    "SSE",
+                    ToolsStrings.Settings_Starter_Sse,
                     "Fastest one, runs game directly without using Steam at all; online will work, but you’ll miss all achievments",
                     SseStarter.AddonId);
 
-            public static readonly StarterType NaiveStarterType = new StarterType(ToolsStrings.Settings_Starter_Naive,
+            public static readonly StarterType NaiveStarterType = new StarterType(
+                    "Naive",
+                    ToolsStrings.Settings_Starter_Naive,
                     "Just tries to run acs.exe directly; in most cases will fail");
 
             private StarterType _selectedStarterType;
@@ -453,10 +465,30 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _fallbackIfNotAvailable;
+
+            public bool StarterFallbackIfNotAvailable {
+                get {
+                    return _fallbackIfNotAvailable ??
+                            (_fallbackIfNotAvailable = ValuesStorage.GetBool("Settings.DriveSettings.FallbackIfNotAvailable", true)).Value;
+                }
+                set {
+                    if (Equals(value, _fallbackIfNotAvailable)) return;
+                    _fallbackIfNotAvailable = value;
+                    ValuesStorage.Set("Settings.DriveSettings.FallbackIfNotAvailable", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private StarterType[] _starterTypes;
 
             public StarterType[] StarterTypes => _starterTypes ?? (_starterTypes = new[] {
-                OfficialStarterType, TrickyStarterType, UiModuleStarterType, StarterPlusType, SseStarterType, NaiveStarterType
+                OfficialStarterType,
+                TrickyStarterType,
+                UiModuleStarterType,
+                StarterPlusType,
+                SseStarterType,
+                NaiveStarterType
             });
 
             private bool? _copyFilterToSystemForOculus;

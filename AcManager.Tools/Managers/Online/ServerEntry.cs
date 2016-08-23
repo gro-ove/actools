@@ -12,7 +12,6 @@ using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -45,7 +44,7 @@ namespace AcManager.Tools.Managers.Online {
                     Duration.ToReadableTime();
         }
 
-        public class CarEntry : Displayable {
+        public class CarEntry : Displayable, IWithId {
             private CarSkinObject _availableSkin;
 
             [NotNull]
@@ -97,6 +96,8 @@ namespace AcManager.Tools.Managers.Online {
                     return hashCode;
                 }
             }
+
+            public string Id => CarObject.Id;
         }
 
         public class CarOrOnlyCarIdEntry {
@@ -777,6 +778,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Cars == null || CarsView == null) {
                     Cars = new BetterObservableCollection<CarEntry>(cars);
                     CarsView = new ListCollectionView(Cars) { CustomSort = this };
+                    CarsView.CurrentChanged += SelectedCarChanged;
                 } else if (Cars.ReplaceIfDifferBy(cars)) {
                     OnPropertyChanged(nameof(Cars));
                 } else {
@@ -784,7 +786,8 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 if (changed) {
-                    var firstAvailable = Cars.FirstOrDefault(x => x.IsAvailable);
+                    var selected = LimitedStorage.Get(LimitedSpace.OnlineSelectedCar, Id);
+                    var firstAvailable = (selected == null ? null : Cars.GetByIdOrDefault(selected)) ?? Cars.FirstOrDefault(x => x.IsAvailable);
                     CarsView.MoveCurrentTo(firstAvailable);
                 }
             } catch (InformativeException e) {
@@ -804,8 +807,8 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private void LoadSelected() {
-            
+        private void SelectedCarChanged(object sender, EventArgs e) {
+            LimitedStorage.Set(LimitedSpace.OnlineSelectedCar, Id, GetSelectedCar()?.Id);
         }
 
         private RelayCommand _addToRecentCommand;

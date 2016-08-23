@@ -6,6 +6,7 @@ namespace AcManager.Tools.Helpers {
         public const string SelectedLayout = ".SelectedLayout";
         public const string SelectedEntry = ".SelectedEntry";
         public const string OnlineQuickFilter = ".QuickFilter";
+        public const string OnlineSelectedCar = ".OnlineSelectedCar";
         public const string OnlineSorting = ".OnlineSorting";
 
         public static void Initialize() {
@@ -13,6 +14,7 @@ namespace AcManager.Tools.Helpers {
             LimitedStorage.RegisterSpace(SelectedLayout, 25);
             LimitedStorage.RegisterSpace(SelectedEntry, 25);
             LimitedStorage.RegisterSpace(OnlineQuickFilter, 25);
+            LimitedStorage.RegisterSpace(OnlineSelectedCar, 100);
             LimitedStorage.RegisterSpace(OnlineSorting, 25);
         }
     }

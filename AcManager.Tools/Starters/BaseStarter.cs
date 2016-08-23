@@ -19,7 +19,7 @@ namespace AcManager.Tools.Starters {
         protected string AcsName => Use32Version ? "acs_x86.exe" : "acs.exe";
 
         protected string AcsFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, AcsName);
-
+        
         public abstract void Run();
 
         public void WaitUntilGame() {

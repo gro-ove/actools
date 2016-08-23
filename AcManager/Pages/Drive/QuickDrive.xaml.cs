@@ -60,9 +60,9 @@ namespace AcManager.Pages.Drive {
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
             
-            if (SettingsHolder.Common.DeveloperMode) {
+            if (SettingsHolder.Common.UpdateToNontestedVersions) {
                 ModeTab.Links.Add(new Link {
-                    DisplayName = "Next",
+                    DisplayName = "New Grids (Temporary)",
                     IsNew = true,
                     Source = new Uri("/Pages/Drive/QuickDrive_GridTest.xaml", UriKind.Relative)
                 });

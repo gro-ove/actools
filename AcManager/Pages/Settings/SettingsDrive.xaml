@@ -26,11 +26,16 @@
                 </ComboBox>
             </DockPanel>
 
+            <CheckBox IsChecked="{Binding Drive.StarterFallbackIfNotAvailable}"
+                    Visibility="{Binding Drive.SelectedStarterType.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='UI Module'}">
+                <Label Content="Fallback to Official Starter if original launcher isn't running" />
+            </CheckBox>
+
             <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_32bit}" />
             </CheckBox>
 
-            <CheckBox IsChecked="{Binding Drive.ImmediateStart}">
+            <CheckBox IsChecked="{Binding Drive.ImmediateStart}" Margin="0 20 0 8">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_StartImmediately}" />
             </CheckBox>
 
@@ -121,7 +126,7 @@
             <CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots}" />
             </CheckBox>
-            
+
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Extended Weather" />
 
             <CheckBox IsChecked="{Binding Drive.WeatherSpecificClouds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_CustomClouds_Tooltip}">
@@ -129,7 +134,7 @@
             </CheckBox>
 
             <CheckBox IsChecked="{Binding Drive.WeatherSpecificPpFilter}" ToolTip="PP-filter will be switched back later">
-                <Label Content="Use custom weather’s PP-filter" />
+                <Label Content="Use custom weather's PP-filter" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

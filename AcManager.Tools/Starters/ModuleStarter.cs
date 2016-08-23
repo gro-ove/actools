@@ -23,6 +23,10 @@ namespace AcManager.Tools.Starters {
 
         public static bool IsAssettoCorsaRunning => Process.GetProcessesByName("AssettoCorsa").Any();
 
+        public static bool IsAvailable() {
+            return IsAssettoCorsaRunning;
+        }
+
         public static bool TryToInstallModule() {
             try {
                 return InstallModule();

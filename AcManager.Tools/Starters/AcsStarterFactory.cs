@@ -15,6 +15,10 @@ namespace AcManager.Tools.Starters {
             }
 
             if (type == SettingsHolder.DriveSettings.UiModuleStarterType) {
+                if (SettingsHolder.Drive.StarterFallbackIfNotAvailable && !ModuleStarter.IsAvailable()) {
+                    return new OfficialStarter();
+                }
+
                 return new ModuleStarter();
             }
 

@@ -759,7 +759,6 @@ namespace AcManager.Controls.ViewModels {
                     _modeKeepOrder = false;
                 }
             } else if (isNew) {
-                Logging.Debug("Index: " + index + ", count: " + count);
                 if (index == count) {
                     NonfilteredList.Add(entry);
                 } else {
