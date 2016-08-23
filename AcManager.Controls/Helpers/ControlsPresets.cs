@@ -6,15 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers.Presets;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -51,6 +48,22 @@ namespace AcManager.Controls.Helpers {
 
             public string ReadData() {
                 return FileUtils.ReadAllText(Filename);
+            }
+
+            public bool Equals(ISavedPresetEntry other) {
+                return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+            }
+
+            public override bool Equals(object other) {
+                return Equals(other as ISavedPresetEntry);
+            }
+
+            protected bool Equals(PresetEntry other) {
+                return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+            }
+
+            public override int GetHashCode() {
+                return Filename?.GetHashCode() ?? 0;
             }
         }
 
@@ -98,25 +111,12 @@ namespace AcManager.Controls.Helpers {
             return Task.Run(() => FileUtils.GetFiles(directory, @"*" + ControlsSettings.PresetExtension).Select(x => new PresetEntry(x)).ToList());
         }
 
-        private MenuItem Rebuild(string header, [Localizable(false)] string sub, IEnumerable<PresetEntry> presets) {
-            var result = new MenuItem { Header = header };
+        private HierarchicalGroup Rebuild(string header, [Localizable(false)] string sub, IEnumerable<PresetEntry> presets) {
             var directory = Path.Combine(Controls.PresetsDirectory, sub);
-            foreach (var item in UserPresetsControl.GroupPresets(presets, directory, ClickHandler, this, ControlsSettings.PresetExtension)) {
-                result.Items.Add(item);
-            }
-            return result;
+            return new HierarchicalGroup(header, UserPresetsControl.GroupPresets(presets, directory));
         }
 
-        private void ClickHandler(object sender, RoutedEventArgs e) {
-            if (!PresetsReady) return;
-            e.Handled = true;
-
-            var entry = (((MenuItem)sender).Tag as UserPresetsControl.TagHelper)?.Entry as PresetEntry;
-            if (entry == null) return;
-            SwitchToPreset(entry);
-        }
-
-        public void SwitchToPreset(PresetEntry entry) {
+        public void SwitchToPreset(ISavedPresetEntry entry) {
             var backup = Controls.CurrentPresetName == null || Controls.CurrentPresetChanged;
             if (backup && WarnIfChanged && ModernDialog.ShowMessage(
                     string.Format(ControlsStrings.Controls_LoadPresetWarning, entry.DisplayName),
@@ -157,6 +157,7 @@ namespace AcManager.Controls.Helpers {
 
         private List<PresetEntry> _builtInPresets, _userPresets;
 
+        // TODO: Split for optimization?
         private async Task RebuildPresetsList() {
             if (_reloading) return;
 
@@ -202,6 +203,16 @@ namespace AcManager.Controls.Helpers {
             };
         }
 
-        public BetterObservableCollection<MenuItem> Presets { get; } = new BetterObservableCollection<MenuItem>();
+        public HierarchicalGroup Presets { get; } = new HierarchicalGroup();
+
+        public object SelectedPreset {
+            get { return null; }
+            set {
+                var entry = value as ISavedPresetEntry;
+                if (entry != null) {
+                    SwitchToPreset(entry);
+                }
+            }
+        }
     }
 }
