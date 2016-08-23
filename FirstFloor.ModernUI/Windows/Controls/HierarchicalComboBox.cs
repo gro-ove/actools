@@ -9,16 +9,27 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
-// The only flaw of this solution is that HierarchicalComboBox wraps all provided items
-// in HierarchicalItem not on-demand, but immediately after ItemsSource was assigned (or
-// changed). Well, apart from the fact that HierarchicalComboBox do not support a lot of
-// regular ComboBox stuff such as DisplayMemberPath property or OnSelectionChanged event.
-// But, I think, they could be implemented when (and if) they will be needed.
-
 namespace FirstFloor.ModernUI.Windows.Controls {
+    public class SelectedItemChangedEventArgs : EventArgs {
+        public object OldValue { get; }
+
+        public object NewValue { get; }
+
+        public SelectedItemChangedEventArgs(object oldValue, object newValue) {
+            OldValue = oldValue;
+            NewValue = newValue;
+        }
+    }
+
+    public interface IHierarchicalItemPreviewProvider {
+        [CanBeNull]
+        object GetPreview([CanBeNull] object item);
+    }
+
     public class HierarchicalGroup : BetterObservableCollection<object> {
         public HierarchicalGroup() {}
 
@@ -46,7 +57,33 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
     }
 
-    internal class HierarchicalItem : MenuItem {
+    internal class LazyMenuItem : MenuItem {
+        protected override void OnSubmenuOpened(RoutedEventArgs e) {
+            var view = ItemsSource as MenuItemsView;
+            if (view != null) {
+                view.Prepare();
+                foreach (var item in view.OfType<LazyMenuItem>()) {
+                    (item.ItemsSource as MenuItemsView)?.Prepare();
+                }
+            }
+
+            base.OnSubmenuOpened(e);
+        }
+
+        protected override void OnSubmenuClosed(RoutedEventArgs e) {
+            var view = ItemsSource as MenuItemsView;
+            if (view != null) {
+                view.Release();
+                foreach (var item in view.OfType<LazyMenuItem>()) {
+                    (item.ItemsSource as MenuItemsView)?.Release();
+                }
+            }
+
+            base.OnSubmenuClosed(e);
+        }
+    }
+
+    internal class HierarchicalItem : LazyMenuItem {
         [NotNull]
         public MenuItemsView ParentView { get; }
 
@@ -57,15 +94,34 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(HierarchicalItem), new FrameworkPropertyMetadata(typeof(HierarchicalItem)));
         }
 
-        public HierarchicalItem(MenuItemsView parentView, object originalValue) {
+        public HierarchicalItem([NotNull] MenuItemsView parentView, object originalValue) {
             ParentView = parentView;
             OriginalValue = originalValue;
         }
+
+        private bool _previewInitialized;
+
+        protected override void OnMouseEnter(MouseEventArgs e) {
+            base.OnMouseEnter(e);
+
+            if (_previewInitialized) return;
+            _previewInitialized = true;
+
+            SetValue(PreviewValuePropertyKey, ParentView.Parent.PreviewProvider?.GetPreview(OriginalValue));
+        }
+
+        public static readonly DependencyPropertyKey PreviewValuePropertyKey = DependencyProperty.RegisterReadOnly(nameof(PreviewValue), typeof(object),
+                typeof(HierarchicalItem), new PropertyMetadata(0));
+
+        public static readonly DependencyProperty PreviewValueProperty = PreviewValuePropertyKey.DependencyProperty;
+
+        [CanBeNull]
+        public object PreviewValue => GetValue(PreviewValueProperty);
     }
 
     internal class MenuItemsView : BetterObservableCollection<UIElement>, IDisposable, ICommand {
         [NotNull]
-        private readonly HierarchicalComboBox _parent;
+        public HierarchicalComboBox Parent { get; }
 
         [CanBeNull]
         private IList _source;
@@ -74,11 +130,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private INotifyCollectionChanged _notify;
 
         public MenuItemsView([NotNull] HierarchicalComboBox parent) {
-            _parent = parent;
+            Parent = parent;
         }
 
         public MenuItemsView([NotNull] HierarchicalComboBox parent, [CanBeNull] IList source) {
-            _parent = parent;
+            Parent = parent;
+
             _source = source;
             _notify = _source as INotifyCollectionChanged;
             if (_notify != null) {
@@ -86,7 +143,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         OnItemsSourceCollectionChanged);
             }
 
-            Rebuild();
+            _obsolete = true;
+        }
+
+        private bool _prepared;
+        private bool _obsolete;
+
+        public void Prepare() {
+            if (_prepared) return;
+            _prepared = true;
+
+            if (_obsolete) {
+                Rebuild();
+            }
+        }
+
+        public void Release() {
+            _prepared = false;
         }
 
         public void SetSource([CanBeNull] IList source) {
@@ -100,10 +173,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         OnItemsSourceCollectionChanged);
             }
 
-            Rebuild();
-
             if (changed) {
                 CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            if (_prepared) {
+                Rebuild();
+            } else {
+                _obsolete = true;
             }
         }
 
@@ -119,6 +196,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private UIElement Wrap([CanBeNull] object value) {
+            Logging.Debug("Wrap()");
+
             var direct = value as UIElement;
             if (direct != null) {
                 return direct;
@@ -139,7 +218,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 result.Command = this;
                 result.CommandParameter = value;
             } else {
-                result.ItemsSource = new MenuItemsView(_parent, group);
+                result.ItemsSource = new MenuItemsView(Parent, group);
                 result.SetBinding(UIElement.VisibilityProperty, new Binding {
                     Source = group,
                     Path = new PropertyPath(nameof(HierarchicalGroup.Count)),
@@ -151,7 +230,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return result;
         }
 
-        private void Rebuild() {
+        public void Rebuild() {
+            _obsolete = false;
             ReplaceEverythingBy(_source?.OfType<object>().Select(Wrap) ?? new HierarchicalItem[0]);
         }
 
@@ -159,22 +239,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_source == null || e.Action == NotifyCollectionChangedAction.Reset) {
                 return;
             }
-
-            foreach (var o in e.OldItems) {
-                var removed = this.Skip(e.OldStartingIndex).OfType<HierarchicalItem>().FirstOrDefault(x => x.Tag == o);
-                if (removed == null) continue;
-
-                (removed.ItemsSource as MenuItemsView)?.Dispose();
-                Remove(removed);
-            }
-
-            foreach (var n in e.NewItems) {
-                var index = _source.IndexOf(n);
-                if (index < 0 || index >= _source.Count - 1) {
-                    Add(Wrap(n));
+            if (_prepared) {
+                if (e.Action == NotifyCollectionChangedAction.Reset) {
+                    Rebuild();
                 } else {
-                    Insert(index, Wrap(n));
+                    foreach (var o in e.OldItems) {
+                        var removed = this.Skip(e.OldStartingIndex).OfType<HierarchicalItem>().FirstOrDefault(x => x.Tag == o);
+                        if (removed == null) continue;
+
+                        (removed.ItemsSource as MenuItemsView)?.Dispose();
+                        Remove(removed);
+                    }
+
+                    foreach (var n in e.NewItems) {
+                        var index = _source.IndexOf(n);
+                        if (index < 0 || index >= _source.Count - 1) {
+                            Add(Wrap(n));
+                        } else {
+                            Insert(index, Wrap(n));
+                        }
+                    }
                 }
+            } else {
+                _obsolete = true;
             }
         }
 
@@ -189,7 +276,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void Execute(object parameter) {
-            _parent.SelectedItem = parameter;
+            Parent.SelectedItem = parameter;
         }
 
         public event EventHandler CanExecuteChanged;
@@ -198,6 +285,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public class HierarchicalComboBox : Control {
         public HierarchicalComboBox() {
             DefaultStyleKey = typeof(HierarchicalComboBox);
+        }
+
+        public event EventHandler<SelectedItemChangedEventArgs> SelectionChanged;
+
+        public static readonly DependencyProperty SelectedContentProperty = DependencyProperty.Register(nameof(SelectedContent), typeof(object),
+                typeof(HierarchicalComboBox));
+
+        public object SelectedContent {
+            get { return GetValue(SelectedContentProperty); }
+            set { SetValue(SelectedContentProperty, value); }
         }
 
         public static readonly DependencyPropertyKey InnerItemsPropertyKey = DependencyProperty.RegisterReadOnly(nameof(InnerItems), typeof(MenuItemsView),
@@ -257,11 +354,36 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(nameof(SelectedItem), typeof(object),
-                typeof(HierarchicalComboBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                typeof(HierarchicalComboBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedItemChanged));
+
+        private static void OnSelectedItemChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((HierarchicalComboBox)o).OnSelectedItemChanged(e.OldValue, e.NewValue);
+        }
+
+        private void OnSelectedItemChanged(object oldValue, object newValue) {
+            SelectionChanged?.Invoke(this, new SelectedItemChangedEventArgs(oldValue, newValue));
+        }
 
         public object SelectedItem {
             get { return GetValue(SelectedItemProperty); }
             set { SetValue(SelectedItemProperty, value); }
+        }
+
+        public static readonly DependencyProperty PreviewProviderProperty = DependencyProperty.Register(nameof(PreviewProvider),
+                typeof(IHierarchicalItemPreviewProvider), typeof(HierarchicalComboBox));
+
+        [CanBeNull]
+        public IHierarchicalItemPreviewProvider PreviewProvider {
+            get { return (IHierarchicalItemPreviewProvider)GetValue(PreviewProviderProperty); }
+            set { SetValue(PreviewProviderProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowPreviewProperty = DependencyProperty.Register(nameof(ShowPreview), typeof(bool),
+                typeof(HierarchicalComboBox));
+
+        public bool ShowPreview {
+            get { return (bool)GetValue(ShowPreviewProperty); }
+            set { SetValue(ShowPreviewProperty, value); }
         }
     }
 }

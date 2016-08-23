@@ -20,7 +20,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls.Helpers {
-    public class ControlsPresets: NotifyPropertyChanged, IPreviewProvider {
+    public class ControlsPresets: NotifyPropertyChanged, IPresetsPreviewProvider {
         private static ControlsPresets _instance;
 
         public static ControlsPresets Instance => _instance ?? (_instance = new ControlsPresets());
@@ -179,7 +179,7 @@ namespace AcManager.Controls.Helpers {
             }
         }
 
-        object IPreviewProvider.GetPreview(string serializedData) {
+        object IPresetsPreviewProvider.GetPreview(string serializedData) {
             var ini = IniFile.Parse(serializedData);
             var result = new StringBuilder();
 

@@ -1,5 +1,5 @@
 namespace AcManager.Controls {
-    public interface IPreviewProvider {
+    public interface IPresetsPreviewProvider {
         object GetPreview(string serializedData);
     }
 }

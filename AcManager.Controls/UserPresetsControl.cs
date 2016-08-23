@@ -11,10 +11,11 @@ using AcManager.Tools.Managers.Presets;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
-    public class UserPresetsControl : Control {
+    public class UserPresetsControl : Control, IHierarchicalItemPreviewProvider {
         public static bool OptionSmartChangedHandling = true;
 
         private static readonly Dictionary<string, WeakReference<UserPresetsControl>> Instances =
@@ -208,6 +209,13 @@ namespace AcManager.Controls {
             }
         }
 
+        public static readonly DependencyPropertyKey PreviewProviderPropertyKey = DependencyProperty.RegisterReadOnly(nameof(PreviewProvider), typeof(IPresetsPreviewProvider),
+                typeof(UserPresetsControl), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty PreviewProviderProperty = PreviewProviderPropertyKey.DependencyProperty;
+
+        public IPresetsPreviewProvider PreviewProvider => (IPresetsPreviewProvider)GetValue(PreviewProviderProperty);
+
         public static readonly DependencyProperty UserPresetableProperty = DependencyProperty.Register("UserPresetable", typeof(IUserPresetable),
             typeof(UserPresetsControl), new PropertyMetadata(OnUserPresetableChanged));
 
@@ -222,10 +230,10 @@ namespace AcManager.Controls {
         public ObservableCollection<ISavedPresetEntry> SavedPresets => (ObservableCollection<ISavedPresetEntry>)GetValue(SavedPresetsProperty);
 
         private static readonly DependencyPropertyKey SavedPresetsGroupedPropertyKey = DependencyProperty.RegisterReadOnly("SavedPresetsGrouped", 
-            typeof(ObservableCollection<MenuItem>), typeof(UserPresetsControl), null);
+            typeof(HierarchicalGroup), typeof(UserPresetsControl), null);
         public static readonly DependencyProperty SavedPresetsGroupedProperty = SavedPresetsGroupedPropertyKey.DependencyProperty;
 
-        public ObservableCollection<MenuItem> SavedPresetsGrouped => (ObservableCollection<MenuItem>)GetValue(SavedPresetsGroupedProperty);
+        public HierarchicalGroup SavedPresetsGrouped => (HierarchicalGroup)GetValue(SavedPresetsGroupedProperty);
 
         private IUserPresetable _presetable;
 
@@ -246,6 +254,7 @@ namespace AcManager.Controls {
             }
 
             _presetable = newValue;
+            SetValue(PreviewProviderPropertyKey, _presetable as IPresetsPreviewProvider);
             if (_presetable == null) return;
 
             PresetsManager.Instance.Watcher(_presetable.PresetableCategory).Update += Presets_Update;
@@ -265,9 +274,9 @@ namespace AcManager.Controls {
         }
 
         public class TagHelper : NotifyPropertyChanged {
-            private readonly IPreviewProvider _provider;
+            private readonly IPresetsPreviewProvider _provider;
 
-            internal TagHelper(IPreviewProvider provider, ISavedPresetEntry entry) {
+            internal TagHelper(IPresetsPreviewProvider provider, ISavedPresetEntry entry) {
                 _provider = provider;
                 Entry = entry;
             }
@@ -291,7 +300,7 @@ namespace AcManager.Controls {
         }
 
         private static MenuItem ToMenuItem(ISavedPresetEntry entry, string mainDirectory, RoutedEventHandler clickHandler,
-                IPreviewProvider previewProvider, string extension) {
+                IPresetsPreviewProvider previewProvider, string extension) {
             try {
                 var l = mainDirectory.Length + 1;
                 var result = new MenuItem {
@@ -317,8 +326,8 @@ namespace AcManager.Controls {
             }
         }
 
-        public static IEnumerable<MenuItem> GroupPresets(IEnumerable<ISavedPresetEntry> entries, string mainDirectory, RoutedEventHandler clickHandler,
-                IPreviewProvider previewProvider = null, string extension = PresetsManager.FileExtension) {
+        public static IEnumerable<object> GroupPresetsNew(IEnumerable<ISavedPresetEntry> entries, string mainDirectory, RoutedEventHandler clickHandler,
+                IPresetsPreviewProvider previewProvider = null, string extension = PresetsManager.FileExtension) {
             var list = entries.Select(x => new {
                 Entry = x,
                 Directory = GetHead(x.Filename, mainDirectory)
@@ -328,16 +337,41 @@ namespace AcManager.Controls {
                 var directoryValue = directory;
                 var subList = list.Where(x => x.Directory == directoryValue).Select(x => x.Entry).ToList();
                 if (subList.Count > 1){
+                    yield return new HierarchicalGroup(Path.GetFileName(directory),
+                            GroupPresetsNew(subList, directory, clickHandler, previewProvider, extension));
+                } else if (list.Any()) {
+                    yield return subList[0];
+                    // yield return ToMenuItem(subList[0], mainDirectory, clickHandler, previewProvider, extension);
+                }
+            }
+
+            foreach (var entry in list.Where(x => x.Directory == mainDirectory)) {
+                yield return entry.Entry;
+                // yield return ToMenuItem(entry.Entry, mainDirectory, clickHandler, previewProvider, extension);
+            }
+        }
+
+        public static IEnumerable<MenuItem> GroupPresets(IEnumerable<ISavedPresetEntry> entries, string mainDirectory, RoutedEventHandler clickHandler,
+                IPresetsPreviewProvider previewProvider = null, string extension = PresetsManager.FileExtension) {
+            var list = entries.Select(x => new {
+                Entry = x,
+                Directory = GetHead(x.Filename, mainDirectory)
+            }).ToList();
+
+            foreach (var directory in list.Select(x => x.Directory).Where(x => x != mainDirectory).Distinct()) {
+                var directoryValue = directory;
+                var subList = list.Where(x => x.Directory == directoryValue).Select(x => x.Entry).ToList();
+                if (subList.Count > 1) {
                     var group = new MenuItem {
                         Header = Path.GetFileName(directory)
                     };
 
-                    foreach (var sub in GroupPresets(subList, directory, clickHandler, previewProvider, extension)){
+                    foreach (var sub in GroupPresets(subList, directory, clickHandler, previewProvider, extension)) {
                         group.Items.Add(sub);
                     }
 
                     yield return group;
-                } else if (list.Any()){
+                } else if (list.Any()) {
                     yield return ToMenuItem(subList[0], mainDirectory, clickHandler, previewProvider, extension);
                 }
             }
@@ -348,7 +382,7 @@ namespace AcManager.Controls {
         }
 
         public static IEnumerable<MenuItem> GroupPresets(string presetableKey, RoutedEventHandler clickHandler,
-                IPreviewProvider previewProvider = null) {
+                IPresetsPreviewProvider previewProvider = null) {
             return GroupPresets(PresetsManager.Instance.GetSavedPresets(presetableKey),
                     PresetsManager.Instance.GetDirectory(presetableKey), clickHandler, previewProvider);
         }
@@ -358,8 +392,8 @@ namespace AcManager.Controls {
 
             var presets = new ObservableCollection<ISavedPresetEntry>(PresetsManager.Instance.GetSavedPresets(_presetable.PresetableCategory));
             SetValue(SavedPresetsPropertyKey, presets);
-            SetValue(SavedPresetsGroupedPropertyKey, new ObservableCollection<MenuItem>(
-                    GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory), MenuItem_Click, _presetable as IPreviewProvider)));
+            SetValue(SavedPresetsGroupedPropertyKey, new HierarchicalGroup("",
+                    GroupPresetsNew(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory), MenuItem_Click, _presetable as IPresetsPreviewProvider)));
             
             _ignoreNext = true;
             var defaultPreset = _presetable.DefaultPreset;
@@ -389,7 +423,11 @@ namespace AcManager.Controls {
 
         private void SetChanged(bool? value = null) {
             if (_presetable == null || Changed == value) return;
-            
+
+            if (value == true && _comboBox != null) {
+                _comboBox.SelectedItem = null;
+            }
+
             SetValue(ChangedPropertyKey, value ?? ValuesStorage.GetBool("__userpresets_c_" + _presetable.PresetableKey));
             if (value.HasValue) {
                 ValuesStorage.Set("__userpresets_c_" + _presetable.PresetableKey, value.Value);
@@ -415,25 +453,47 @@ namespace AcManager.Controls {
             UpdateSavedPresets();
         }
 
+        private HierarchicalComboBox _comboBox;
+
+        public override void OnApplyTemplate() {
+            if (_comboBox != null) {
+                _comboBox.SelectionChanged -= ComboBox_SelectionChanged;
+                _comboBox.PreviewProvider = null;
+            }
+
+            _comboBox = GetTemplateChild(@"PART_ComboBox") as HierarchicalComboBox;
+            if (_comboBox != null) {
+                _comboBox.SelectionChanged += ComboBox_SelectionChanged;
+                _comboBox.PreviewProvider = this;
+            }
+
+            base.OnApplyTemplate();
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectedItemChangedEventArgs e) {
+            var entry = _comboBox?.SelectedItem as ISavedPresetEntry;
+            if (entry == null) return;
+
+            if (CurrentUserPreset != entry) {
+                CurrentUserPreset = entry;
+            } else {
+                SelectionChanged(entry);
+            }
+        }
+
         public IUserPresetable UserPresetable {
             get { return (IUserPresetable)GetValue(UserPresetableProperty); }
             set { SetValue(UserPresetableProperty, value); }
         }
 
-        public static readonly DependencyProperty ShowPreviewProperty = DependencyProperty.Register(nameof(ShowPreview), typeof(bool),
-                typeof(UserPresetsControl));
+        public object GetPreview(object item) {
+            var p = _presetable as IPresetsPreviewProvider;
+            if (p == null) return null;
 
-        public bool ShowPreview {
-            get { return (bool)GetValue(ShowPreviewProperty); }
-            set { SetValue(ShowPreviewProperty, value); }
-        }
+            var data = (item as ISavedPresetEntry)?.ReadData();
+            if (data == null) return null;
 
-        public static readonly DependencyProperty PreviewTemplateProperty = DependencyProperty.Register(nameof(PreviewTemplate), typeof(DataTemplate),
-                typeof(UserPresetsControl));
-
-        public DataTemplate PreviewTemplate {
-            get { return (DataTemplate)GetValue(PreviewTemplateProperty); }
-            set { SetValue(PreviewTemplateProperty, value); }
+            return p.GetPreview(data);
         }
     }
 }

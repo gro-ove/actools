@@ -136,7 +136,13 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="SpecialMenuItemControlTemplate" TargetType="{x:Type c:HierarchicalItem}">
-        <Border x:Name="Bg" Background="Transparent" SnapsToDevicePixels="True" Tag="{TemplateBinding MenuItem.Tag}">
+        <Border x:Name="Bg" Background="Transparent" SnapsToDevicePixels="True">
+            <Border.ToolTip>
+                <ToolTip Visibility="{Binding PreviewValue, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NullToVisibilityConverter},
+                    ConverterParameter=inverse}">
+                    <ContentPresenter IsHitTestVisible="False" Margin="4" Content="{Binding PreviewValue, RelativeSource={RelativeSource TemplatedParent}}" />
+                </ToolTip>
+            </Border.ToolTip>
             <ContentPresenter ContentSource="Header" Margin="7 2 62 2" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                     ToolTip="{x:Null}" />
         </Border>
@@ -148,15 +154,6 @@
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Foreground" Value="{DynamicResource ItemTextDisabled}" />
             </Trigger>
-            <DataTrigger Binding="{Binding Tag.HasToolTips, RelativeSource={RelativeSource Self}}" Value="True">
-                <Setter TargetName="Bg" Property="ToolTip">
-                    <Setter.Value>
-                        <ToolTip DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                            <ContentPresenter IsHitTestVisible="False" Margin="4" Content="{Binding ToolTip}" />
-                        </ToolTip>
-                    </Setter.Value>
-                </Setter>
-            </DataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
@@ -188,21 +185,26 @@
         <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
         <Setter Property="ScrollViewer.PanningMode" Value="Both" />
         <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
+        <Setter Property="SelectedContent">
+            <Setter.Value>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                <TextBlock TextTrimming="CharacterEllipsis"
+                        Text="{Binding SelectedItem.DisplayName, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type c:HierarchicalComboBox}}}" />
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type c:HierarchicalComboBox}">
                     <Menu VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                             Style="{StaticResource ButtonWithComboBoxWrapperMenu}" x:Name="Menu">
-                        <MenuItem HorizontalAlignment="Stretch" Style="{StaticResource HierarchicalComboBoxMenuItem}"
+                        <c:LazyMenuItem HorizontalAlignment="Stretch" Style="{StaticResource HierarchicalComboBoxMenuItem}"
                                 Width="{Binding ActualWidth, ElementName=Menu}" ItemsSource="{TemplateBinding InnerItems}"
                                 Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
                             <MenuItem.Header>
-                                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                                <TextBlock x:Name="CurrentUserPresetTextBlock" TextTrimming="CharacterEllipsis"
-                                        Text="{Binding SelectedItem.DisplayName, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <ContentPresenter Content="{TemplateBinding SelectedContent}" />
                             </MenuItem.Header>
-                        </MenuItem>
+                        </c:LazyMenuItem>
                     </Menu>
                 </ControlTemplate>
             </Setter.Value>

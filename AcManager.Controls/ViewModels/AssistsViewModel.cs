@@ -7,7 +7,7 @@ namespace AcManager.Controls.ViewModels {
     /// Full version with presets. Load-save-switch between presets-save as a preset, full
     /// package. Also, provides previews for presets!
     /// </summary>
-    public class AssistsViewModel : BaseAssistsViewModel, IUserPresetable, IPreviewProvider {
+    public class AssistsViewModel : BaseAssistsViewModel, IUserPresetable, IPresetsPreviewProvider {
         private static AssistsViewModel _instance;
 
         public static AssistsViewModel Instance => _instance ?? (_instance = new AssistsViewModel("qdassists"));
@@ -41,7 +41,7 @@ namespace AcManager.Controls.ViewModels {
             Saveable.FromSerializedString(data);
         }
 
-        object IPreviewProvider.GetPreview(string data) {
+        object IPresetsPreviewProvider.GetPreview(string data) {
             return new AssistsDescription { DataContext = CreateFixed(data) };
         }
         #endregion

@@ -120,7 +120,7 @@
     <Compile Include="Helpers\TaskbarProgress.cs" />
     <Compile Include="Helpers\Toast.cs" />
     <Compile Include="Helpers\ToastWin8Helper.cs" />
-    <Compile Include="IPreviewProvider.cs" />
+    <Compile Include="IPresetsPreviewProvider.cs" />
     <Compile Include="ControlsLocalizedDescriptionAttribute.cs" />
     <Compile Include="Presentation\DependencyObjectExtension.cs" />
     <Compile Include="QuickSwitches\QuickSwitchComboBox.cs" />

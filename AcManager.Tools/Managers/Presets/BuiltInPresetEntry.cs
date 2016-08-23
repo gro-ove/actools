@@ -1,7 +1,8 @@
 using System.Text;
+using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.Managers.Presets {
-    internal class BuiltInPresetEntry : ISavedPresetEntry {
+    internal class BuiltInPresetEntry : Displayable, ISavedPresetEntry {
         public byte[] Data { get; }
 
         public string BaseDirectory { get; }
@@ -20,7 +21,7 @@ namespace AcManager.Tools.Managers.Presets {
 
         private string _displayName;
         
-        public string DisplayName {
+        public override string DisplayName {
             get {
                 if (_displayName != null) return _displayName;
                 var start = BaseDirectory.Length + 1;
