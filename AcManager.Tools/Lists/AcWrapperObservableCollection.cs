@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -66,12 +67,16 @@ namespace AcManager.Tools.Lists {
             }
         }
 
+        public override bool ReplaceIfDifferBy(IEnumerable<AcItemWrapper> range) {
+            throw new NotSupportedException();
+        }
+
         public override void ReplaceEverythingBy(IEnumerable<AcItemWrapper> range) {
             foreach (var item in Items) {
                 Unsubscribe(item);
             }
 
-            var list = range.ToList();
+            var list = range.ToIListIfItsNot();
             base.ReplaceEverythingBy(list);
 
             foreach (var item in list) {

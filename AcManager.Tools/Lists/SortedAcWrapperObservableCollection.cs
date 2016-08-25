@@ -44,6 +44,10 @@ namespace AcManager.Tools.Lists {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
+        public override bool ReplaceIfDifferBy(IEnumerable<AcItemWrapper> range) {
+            return base.ReplaceIfDifferBy(range.Sort(this));
+        }
+
         public override void ReplaceEverythingBy(IEnumerable<AcItemWrapper> range) {
             base.ReplaceEverythingBy(range.Sort(this));
         }

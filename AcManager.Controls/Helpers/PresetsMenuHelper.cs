@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using AcManager.Tools.Managers.Presets;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls.Helpers {
@@ -11,21 +13,24 @@ namespace AcManager.Controls.Helpers {
             public string Key;
             public EventHandler Handler;
         }
-        public static IEnumerable<object> GroupPresets(string presetsKey, Action<string> action) {
+        public static IEnumerable<object> GroupPresets(string presetsKey, Action<ISavedPresetEntry> action) {
             var group = new HierarchicalGroup("", UserPresetsControl.GroupPresets(presetsKey));
             var result = new HierarchicalItemsView(o => {
-                action(((ISavedPresetEntry)o).Filename);
+                action((ISavedPresetEntry)o);
             }, group, false);
             return result;
         }
 
-        public HierarchicalItemsView Create(string presetsKey, Action<string> action) {
-            var group = new HierarchicalGroup("", UserPresetsControl.GroupPresets(presetsKey));
+        public HierarchicalItemsView Create(string presetsKey, Action<ISavedPresetEntry> action, string displayName = "") {
+            var group = new HierarchicalGroup(displayName, UserPresetsControl.GroupPresets(presetsKey));
             var result = new HierarchicalItemsView(o => {
-                action(((ISavedPresetEntry)o).Filename);
+                action((ISavedPresetEntry)o);
             }, group, false);
 
-            var handler = new EventHandler((sender, e) => group.ReplaceEverythingBy(UserPresetsControl.GroupPresets(presetsKey)));
+            var handler = new EventHandler((sender, e) => {
+                group.ReplaceEverythingBy(UserPresetsControl.GroupPresets(presetsKey));
+            });
+
             PresetsManager.Instance.Watcher(presetsKey).Update += handler;
             _presetsHandlersToRemove.Add(new PresetsHandlerToRemove { Key = presetsKey, Handler = handler });
 

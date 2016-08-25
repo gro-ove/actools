@@ -42,7 +42,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         object IPresetsPreviewProvider.GetPreview(string data) {
-            return new AssistsDescription { DataContext = CreateFixed(data) };
+            return new UserControls.AssistsDescription { DataContext = CreateFixed(data) };
         }
         #endregion
     }

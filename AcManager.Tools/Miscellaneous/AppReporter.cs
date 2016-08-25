@@ -45,6 +45,7 @@ namespace AcManager.Tools.Miscellaneous {
                     try {
                         writer.WriteString("Description.txt", JsonConvert.SerializeObject(new {
                             BuildInformation.AppVersion,
+                            BuildInformation.Platform,
                             MainExecutingFile.Location,
                             Environment.OSVersion,
                             Environment.CommandLine,
@@ -101,6 +102,7 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                     try {
                         writer.WriteString("Description.txt", JsonConvert.SerializeObject(new {
                             BuildInformation.AppVersion,
+                            BuildInformation.Platform,
                             MainExecutingFile.Location,
                             Environment.OSVersion,
                             Environment.CommandLine,
@@ -163,11 +165,13 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                         }
                     }
 
-                    foreach (var fileInfo in new DirectoryInfo(logsDirectory).GetFiles("*.log").Where(x => x.Length < 2000000).TakeLast(35)) {
+                    foreach (var filename in Directory.GetFiles(logsDirectory, "Main*.log").TakeLast(35)
+                                                      .Union(Directory.GetFiles(logsDirectory, "Packed*.log").TakeLast(35))) {
+                        var name = Path.GetFileName(filename);
                         try {
-                            writer.Write("Logs/" + fileInfo.Name, fileInfo.FullName);
+                            writer.Write("Logs/" + name, filename);
                         } catch (Exception e) {
-                            Logging.Warning("Can’t attach Logs/" + fileInfo.Name + ": " + e);
+                            Logging.Warning("Can’t attach Logs/" + name + ": " + e);
                         }
                     }
                 }

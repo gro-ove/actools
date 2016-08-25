@@ -55,7 +55,7 @@ namespace AcManager {
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
                 var logFilename = EntryPoint.GetLogName("Main Log");
                 Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename));
-                Logging.Write($"App version: {BuildInformation.AppVersion} ({WindowsVersionHelper.GetVersion()})");
+                Logging.Write($"App version: {BuildInformation.AppVersion} ({BuildInformation.Platform}, {WindowsVersionHelper.GetVersion()})");
             }
 
             if (AppArguments.GetBool(AppFlag.IgnoreSystemProxy, true)) {
@@ -215,11 +215,10 @@ namespace AcManager {
 
             await Task.Delay(5000);
             await Task.Run(() => {
-                var directory = FilesStorage.Instance.GetDirectory("Logs");
-                foreach (var f in from file in Directory.GetFiles(directory)
+                foreach (var f in from file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Logs"))
                                   where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
                                   let info = new FileInfo(file)
-                                  where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(10)
+                                  where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
                                   select info) {
                     f.Delete();
                 }

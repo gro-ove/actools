@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
@@ -106,7 +107,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
     internal class HierarchicalItem : LazyMenuItem {
         [CanBeNull]
-        private readonly HierarchicalComboBox _parent;
+        private readonly HierarchicalItemsView _view;
 
         [CanBeNull]
         public object OriginalValue { get; }
@@ -118,7 +119,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public HierarchicalItem() {}
 
         public HierarchicalItem([CanBeNull] HierarchicalItemsView parentView, [CanBeNull] object originalValue) {
-            _parent = parentView?.Parent;
+            _view = parentView;
             OriginalValue = originalValue;
         }
 
@@ -127,10 +128,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected override void OnMouseEnter(MouseEventArgs e) {
             base.OnMouseEnter(e);
 
-            if (_previewInitialized) return;
+            if (_previewInitialized || _view == null) return;
             _previewInitialized = true;
 
-            SetValue(PreviewValuePropertyKey, _parent?.PreviewProvider?.GetPreview(OriginalValue));
+            SetValue(PreviewValuePropertyKey, _view.PreviewProvider?.GetPreview(OriginalValue));
         }
 
         public static readonly DependencyPropertyKey PreviewValuePropertyKey = DependencyProperty.RegisterReadOnly(nameof(PreviewValue), typeof(object),
@@ -145,6 +146,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public class HierarchicalItemsView : BetterObservableCollection<UIElement>, IDisposable, ICommand {
         [CanBeNull]
         public HierarchicalComboBox Parent { get; }
+
+        [CanBeNull]
+        private WeakReference<HierarchicalComboBox> _temporaryParent;
+
+        [CanBeNull]
+        internal IHierarchicalItemPreviewProvider PreviewProvider {
+            get {
+                HierarchicalComboBox provider;
+                return (_temporaryParent != null && _temporaryParent.TryGetTarget(out provider) ? provider : Parent)?.PreviewProvider;
+            }
+        }
 
         [NotNull]
         public Action<object> Handler { get; }
@@ -180,8 +192,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Parent = parent;
         }
 
-        private bool _prepared;
-        private bool _obsolete;
+        private bool _prepared, _obsolete;
 
         public void Prepare() {
             if (_prepared) return;
@@ -238,24 +249,37 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var result = new HierarchicalItem(this, value);
             if (value == null) return result;
 
+            var view = value as HierarchicalItemsView;
             result.SetBinding(HeaderedItemsControl.HeaderProperty, new Binding {
-                Source = value,
-                Path = new PropertyPath(@"DisplayName"),
+                Source = view?._source ?? value,
+                Path = new PropertyPath(nameof(Displayable.DisplayName)),
                 Mode = BindingMode.OneWay
             });
 
-            var group = value as HierarchicalGroup;
-            if (group == null) {
-                result.Command = this;
-                result.CommandParameter = value;
-            } else {
-                result.ItemsSource = Parent == null ? new HierarchicalItemsView(Handler, group, _lazy) : new HierarchicalItemsView(Parent, group, _lazy);
+            if (view != null) {
+                view._temporaryParent = Parent == null ? null : new WeakReference<HierarchicalComboBox>(Parent);
+
+                result.ItemsSource = view;
                 result.SetBinding(UIElement.VisibilityProperty, new Binding {
-                    Source = group,
-                    Path = new PropertyPath(nameof(HierarchicalGroup.Count)),
+                    Source = view,
+                    Path = new PropertyPath(nameof(view.Count)),
                     Mode = BindingMode.OneWay,
                     Converter = new InnerCountToVisibilityConverter()
                 });
+            } else {
+                var group = value as HierarchicalGroup;
+                if (group == null) {
+                    result.Command = this;
+                    result.CommandParameter = value;
+                } else {
+                    result.ItemsSource = Parent == null ? new HierarchicalItemsView(Handler, group, _lazy) : new HierarchicalItemsView(Parent, group, _lazy);
+                    result.SetBinding(UIElement.VisibilityProperty, new Binding {
+                        Source = group,
+                        Path = new PropertyPath(nameof(group.Count)),
+                        Mode = BindingMode.OneWay,
+                        Converter = new InnerCountToVisibilityConverter()
+                    });
+                }
             }
 
             return result;
@@ -267,27 +291,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            if (_source == null || e.Action == NotifyCollectionChangedAction.Reset) {
-                return;
-            }
+            if (_source == null) return;
             if (!_lazy || _prepared) {
                 if (e.Action == NotifyCollectionChangedAction.Reset) {
                     Rebuild();
                 } else {
-                    foreach (var o in e.OldItems) {
-                        var removed = this.Skip(e.OldStartingIndex).OfType<HierarchicalItem>().FirstOrDefault(x => x.Tag == o);
-                        if (removed == null) continue;
+                    if (e.OldItems != null) {
+                        foreach (var o in e.OldItems) {
+                            var removed = this.Skip(e.OldStartingIndex).OfType<HierarchicalItem>().FirstOrDefault(x => x.Tag == o);
+                            if (removed == null) continue;
 
-                        (removed.ItemsSource as HierarchicalItemsView)?.Dispose();
-                        Remove(removed);
+                            (removed.ItemsSource as HierarchicalItemsView)?.Dispose();
+                            Remove(removed);
+                        }
                     }
 
-                    foreach (var n in e.NewItems) {
-                        var index = _source.IndexOf(n);
-                        if (index < 0 || index >= _source.Count - 1) {
-                            Add(Wrap(n));
-                        } else {
-                            Insert(index, Wrap(n));
+                    if (e.NewItems != null) {
+                        foreach (var n in e.NewItems) {
+                            var index = _source.IndexOf(n);
+                            if (index < 0 || index >= _source.Count - 1) {
+                                Add(Wrap(n));
+                            } else {
+                                Insert(index, Wrap(n));
+                            }
                         }
                     }
                 }

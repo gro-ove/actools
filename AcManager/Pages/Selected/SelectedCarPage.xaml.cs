@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -21,7 +20,6 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.AcdFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -216,7 +214,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
                     ShowroomPresets = _helper.Create(CarOpenInShowroomDialog.PresetableKeyValue, p => {
-                        CarOpenInShowroomDialog.RunPreset(p, SelectedObject, SelectedObject.SelectedSkin?.Id);
+                        CarOpenInShowroomDialog.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
             }
@@ -224,15 +222,15 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(QuickDrive.PresetableKeyValue, p => {
-                        QuickDrive.RunPreset(p, SelectedObject, SelectedObject.SelectedSkin?.Id);
+                        QuickDrive.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
             }
 
             public void InitializeUpdatePreviewsPresets() {
                 if (UpdatePreviewsPresets == null) {
-                    UpdatePreviewsPresets = _helper.Create(CarUpdatePreviewsDialog.PresetableKeyValue, presetFilename => {
-                        new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode(), presetFilename).ShowDialog();
+                    UpdatePreviewsPresets = _helper.Create(CarUpdatePreviewsDialog.PresetableKeyValue, p => {
+                        new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode(), p.Filename).ShowDialog();
                     });
                 }
             }

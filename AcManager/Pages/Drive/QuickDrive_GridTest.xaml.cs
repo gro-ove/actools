@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using AcManager.Controls.ViewModels;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -15,6 +17,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using Newtonsoft.Json;
 using WaitingDialog = AcManager.Controls.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
@@ -46,7 +49,7 @@ namespace AcManager.Pages.Drive {
 
         public ViewModel ActualModel => (ViewModel)DataContext;
 
-        public class ViewModel : QuickDriveModeViewModel {
+        public class ViewModel : QuickDriveModeViewModel, IHierarchicalItemPreviewProvider {
             public RaceGridViewModel RaceGridViewModel { get; } = new RaceGridViewModel();
 
             private bool _penalties;
@@ -188,23 +191,49 @@ namespace AcManager.Pages.Drive {
                 RaceGridViewModel.SetPlayerCar(selectedCar);
                 RaceGridViewModel.SetTrack(selectedTrack);
             }
+
+            public object GetPreview(object item) {
+                var preset = item as ISavedPresetEntry;
+                if (preset == null) return null;
+
+                RaceGridViewModel.SaveableData saved;
+                try {
+                    var data = preset.ReadData();
+                    saved = JsonConvert.DeserializeObject<RaceGridViewModel.SaveableData>(data);
+                } catch (Exception) {
+                    return null;
+                }
+
+                var mode = RaceGridViewModel.Modes.HierarchicalGetByIdOrDefault<IRaceGridMode>(saved.ModeId);
+                if (mode == null) return null;
+
+                var displayMode = mode.CandidatesMode ? $"{mode.DisplayName} ({"Random"})" : mode.DisplayName;
+                var opponentsNumber = mode.CandidatesMode ? saved.OpponentsNumber : saved.CarIds?.Length;
+                var description = new[] {
+                    $"[b]Mode:[/b] {displayMode}",
+                    mode == BuiltInGridMode.Custom
+                            ? $"[b]Opponents:[/b] {(saved.CarIds?.Length ?? saved.OpponentsNumber ?? 0).ToInvariantString() ?? @"?"}" : null,
+                    mode == BuiltInGridMode.CandidatesManual ? $"[b]Candidates:[/b] {saved.CarIds?.Length.ToInvariantString() ?? @"?"}" : null,
+                    !string.IsNullOrWhiteSpace(saved.FilterValue) ? $"[b]Filter:[/b] “{saved.FilterValue}”" : null,
+                    saved.StartingPosition.HasValue && opponentsNumber.HasValue
+                            ? $"[b]Starting position:[/b] {GetDisplayPosition(saved.StartingPosition.Value, opponentsNumber.Value)}" : null,
+                }.NonNull().JoinToString(Environment.NewLine);
+                return new BbCodeBlock { BbCode = description };
+            }
+        }
+
+        public static string GetDisplayPosition(int startingPosition, int limit) {
+            return startingPosition == 0 ? AppStrings.Drive_Ordinal_Random
+                    : startingPosition == limit ? AppStrings.Drive_Ordinal_Last : startingPosition.ToOrdinalShort(AppStrings.Drive_Ordinal_Parameter);
         }
         
         private class InnerStartingPositionConverter : IMultiValueConverter {
             public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-                if (values.Length != 2) return null;
-
-                var startingPosition = values[0].AsInt();
-                var last = values[1].AsInt() == startingPosition;
-                return startingPosition == 0 ? AppStrings.Drive_Ordinal_Random
-                        : last ? AppStrings.Drive_Ordinal_Last : startingPosition.ToOrdinalShort(AppStrings.Drive_Ordinal_Parameter);
+                return values.Length != 2 ? null : GetDisplayPosition(values[0].AsInt(), values[1].AsInt());
             }
 
             public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
-                return new object[] {
-                    FlexibleParser.TryParseInt(value?.ToString()) ?? 0,
-                    0
-                };
+                return new object[] { FlexibleParser.TryParseInt(value?.ToString()) ?? 0, 0 };
             }
         }
 

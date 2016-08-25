@@ -6,4 +6,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartArguments>"D:\Games\Assetto Corsa\content\cars\bmw_m5_e60\bmw_m5_e60.kn5"</StartArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <StartArguments>"D:\Games\Assetto Corsa\content\cars\bmw_m5_e60\bmw_m5_e60.kn5"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <StartArguments>"D:\Games\Assetto Corsa\content\cars\peugeot_504\peugeot_504_LOD_B.kn5"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <StartArguments>"D:\Games\Assetto Corsa\content\cars\bmw_m5_e60\bmw_m5_e60.kn5"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <StartArguments>"D:\Games\Assetto Corsa\content\cars\peugeot_504\peugeot_504_LOD_B.kn5"</StartArguments>
+  </PropertyGroup>
 </Project>

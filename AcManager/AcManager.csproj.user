@@ -17,4 +17,10 @@
     <StartArguments>
     </StartArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <StartArguments>--disable-values-compression --manager-mode</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <StartArguments>--disable-values-compression --manager-mode</StartArguments>
+  </PropertyGroup>
 </Project>

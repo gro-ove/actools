@@ -100,7 +100,7 @@ namespace AcManager.Controls.UserControls {
 
                 item = new MenuItem { Header = ControlsStrings.Common_Presets };
                 foreach (var menuItem in PresetsMenuHelper.GroupPresets(CarOpenInShowroomDialog.PresetableKeyValue, p => {
-                    CarOpenInShowroomDialog.RunPreset(p, Car, SelectedSkin?.Id);
+                    CarOpenInShowroomDialog.RunPreset(p.Filename, Car, SelectedSkin?.Id);
                 })) {
                     item.Items.Add(menuItem);
                 }

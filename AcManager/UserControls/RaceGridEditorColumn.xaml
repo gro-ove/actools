@@ -83,7 +83,14 @@
                         <Setter Property="ItemTemplate">
                             <Setter.Value>
                                 <DataTemplate DataType="{x:Type c:RaceGridEntry}">
-                                    <DockPanel>
+                                    <DockPanel mui:ContextMenuAdvancement.PropagateToChildren="True">
+                                        <DockPanel.ContextMenu>
+                                            <ContextMenu DataContext="{Binding Source={x:Reference This}}">
+                                                <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" />
+                                                <Separator />
+                                                <MenuItem Header="Save Preset" Command="{Binding SavePresetCommand}" />
+                                            </ContextMenu>
+                                        </DockPanel.ContextMenu>
                                         <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
                                                 RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}">
                                             <Button.Style>
@@ -123,7 +130,15 @@
                                 <Setter Property="ItemTemplate">
                                     <Setter.Value>
                                         <DataTemplate DataType="{x:Type c:RaceGridEntry}">
-                                            <DockPanel x:Name="Panel">
+                                            <DockPanel x:Name="Panel" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                                                <DockPanel.ContextMenu>
+                                                    <ContextMenu DataContext="{Binding Source={x:Reference This}}">
+                                                        <MenuItem Header="Clone" Command="{Binding CloneSelectedCommand}" />
+                                                        <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" />
+                                                        <Separator />
+                                                        <MenuItem Header="Save Preset" Command="{Binding SavePresetCommand}" />
+                                                    </ContextMenu>
+                                                </DockPanel.ContextMenu>
                                                 <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
                                                         RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}">
                                                     <Button.Style>

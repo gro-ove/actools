@@ -16,7 +16,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -66,6 +65,15 @@ namespace AcManager {
 
         [STAThread]
         private static void Main(string[] a) {
+            try {
+                MainReal(a);
+            } catch (Exception e) {
+                MessageBox.Show(e.ToString(), "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void MainReal(string[] a) {
             if (!Debugger.IsAttached) {
                 SetUnhandledExceptionHandler();
             }
@@ -178,10 +186,9 @@ namespace AcManager {
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
             var e = args.ExceptionObject as Exception;
 
-            var text = string.Format(AppStrings.Main_UnhandledException, (e?.ToString() ?? @"?"));
+            var text = e?.ToString() ?? @"?";
             try {
-                // ErrorMessage.ShowWithoutLogging("Unhandled exception", "Please, send MainLog.txt to developer.", e);
-                MessageBox.Show(text, UiStrings.Common_Oops, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             } catch (Exception) {
                 // ignored
             }

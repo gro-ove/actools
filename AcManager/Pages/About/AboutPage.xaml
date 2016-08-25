@@ -27,8 +27,14 @@
 
                 <StackPanel Orientation="Horizontal" Margin="0 20 0 40" PreviewMouseLeftButtonUp="Version_OnMouseLeftButtonUp">
                     <TextBlock Style="{StaticResource Label}" Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}" />
-                    <TextBox Style="{StaticResource TextBoxAsTextBlock.Label.ReadOnly}" Margin="8 0 0 0"
-                            Text="{Binding Source={x:Static t:BuildInformation.AppVersion}, Mode=OneTime}" />
+                    <TextBox Style="{StaticResource TextBoxAsTextBlock.Label.ReadOnly}" Margin="8 0 0 0">
+                        <TextBox.Text>
+                            <MultiBinding Mode="OneTime" StringFormat="{}{0} ({1})">
+                                <Binding Source="{x:Static t:BuildInformation.AppVersion}" />
+                                <Binding Source="{x:Static t:BuildInformation.Platform}" />
+                            </MultiBinding>
+                        </TextBox.Text>
+                    </TextBox>
                 </StackPanel>
 
                 <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.About_ContactUsHeader}" />

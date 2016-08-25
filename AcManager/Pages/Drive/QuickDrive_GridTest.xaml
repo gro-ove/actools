@@ -91,7 +91,8 @@
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
                 <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
-                <mui:HierarchicalComboBox ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}" FixedMode="False" />
+                <mui:HierarchicalComboBox ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}" FixedMode="False"
+                        PreviewProvider="{Binding}" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding RaceGridViewModel.Mode.CandidatesMode}">

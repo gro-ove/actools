@@ -32,6 +32,36 @@ namespace AcManager.UserControls {
         [CanBeNull]
         public RaceGridViewModel Model => DataContext as RaceGridViewModel;
 
+        private ICommand _cloneSelectedCommand;
+
+        public ICommand CloneSelectedCommand => _cloneSelectedCommand ?? (_cloneSelectedCommand = new RelayCommand(o => {
+            var items = ListBox.SelectedItems.OfType<RaceGridEntry>().Select(x => x.Clone()).ToList();
+            if (items.Count == 0 || Model == null) return;
+
+            var destination = Model.NonfilteredList.IndexOf(ListBox.SelectedItems.OfType<RaceGridEntry>().Last()) + 1;
+            foreach (var item in items) {
+                Model.InsertEntry(destination++, item);
+            }
+
+            ListBox.SelectedItems.Clear();
+            foreach (var item in items) {
+                ListBox.SelectedItems.Add(item);
+            }
+        }));
+
+        private ICommand _deleteSelectedCommand;
+
+        public ICommand DeleteSelectedCommand => _deleteSelectedCommand ?? (_deleteSelectedCommand = new RelayCommand(o => {
+            var items = ListBox.SelectedItems.OfType<RaceGridEntry>().ToList();
+            if (items.Count == 0 || Model == null) return;
+            
+            foreach (var item in items) {
+                Model.DeleteEntry(item);
+            }
+        }));
+
+        public ICommand SavePresetCommand => Model?.SavePresetCommand;
+
         private ICommand _addOpponentCarCommand;
 
         public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new AsyncCommand(async o => {

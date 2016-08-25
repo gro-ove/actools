@@ -8,10 +8,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Controls.Helpers;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
@@ -58,7 +60,7 @@ namespace AcManager.Controls.ViewModels {
             _saveable.FromSerializedString(data);
         }
 
-        private class SaveableData {
+        public class SaveableData {
             public string ModeId;
             public string FilterValue;
 
@@ -146,15 +148,18 @@ namespace AcManager.Controls.ViewModels {
                 StartingPosition = 7;
             });
 
+            _presetsHelper = new PresetsMenuHelper();
+
             _randomGroup = new HierarchicalGroup("Random");
-            _presetsGroup = new HierarchicalGroup("Presets");
             UpdateRandomModes();
 
-            Modes = new BetterObservableCollection<object> {
+            Modes = new HierarchicalGroup {
                 BuiltInGridMode.SameCar,
                 _randomGroup,
                 BuiltInGridMode.Custom,
-                _presetsGroup,
+                _presetsHelper.Create(PresetableKeyValue, p => {
+                    ImportFromPresetData(p.ReadData());
+                }, "Presets")
             };
 
             NonfilteredList.CollectionChanged += OnCollectionChanged;
@@ -172,7 +177,22 @@ namespace AcManager.Controls.ViewModels {
         public void Dispose() {
             Logging.Debug("Dispose()");
             FilesStorage.Instance.Watcher(ContentCategory.GridTypes).Update -= OnGridTypesUpdate;
+            _presetsHelper.Dispose();
         }
+        #endregion
+
+        #region Presets
+        private readonly PresetsMenuHelper _presetsHelper;
+
+        private ICommand _savePresetCommand;
+
+        public ICommand SavePresetCommand => _savePresetCommand ?? (_savePresetCommand = new RelayCommand(o => {
+            string resultFilename;
+            if (!PresetsManager.Instance.SavePresetUsingDialog(PresetableCategory,
+                                                               ExportToPresetData(),
+                                                               null, // TODO
+                                                               out resultFilename)) return;
+        }));
         #endregion
 
         #region Non-filtered list
@@ -339,7 +359,6 @@ namespace AcManager.Controls.ViewModels {
 
         #region Modes list
         private readonly HierarchicalGroup _randomGroup;
-        private HierarchicalGroup _presetsGroup;
 
         public BetterObservableCollection<object> Modes { get; }
 

@@ -60,7 +60,7 @@ namespace AcManager.Pages.Drive {
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
             
-            if (SettingsHolder.Common.UpdateToNontestedVersions) {
+            if (SettingsHolder.Common.UpdateToNontestedVersions || SettingsHolder.Common.DeveloperMode) {
                 ModeTab.Links.Add(new Link {
                     DisplayName = "New Grids (Temporary)",
                     IsNew = true,

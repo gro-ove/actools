@@ -57,10 +57,10 @@ namespace AcManager.Controls {
 
             c.UpdateSavedPresets();
 
-            var entry = c.SavedPresets.FirstOrDefault(x => x.Filename == filename);
+            var entry = c.SavedPresets.FirstOrDefault(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase));
             if (entry == null) {
                 Logging.Warning($@"[UserPresetsControl] Can’t set preset to “{filename}”, entry not found");
-            } else if (c.CurrentUserPreset != entry) {
+            } else if (!ReferenceEquals(c.CurrentUserPreset, entry)) {
                 c.CurrentUserPreset = entry;
             } else {
                 c.SelectionChanged(entry);

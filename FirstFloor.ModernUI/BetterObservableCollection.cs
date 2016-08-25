@@ -44,90 +44,31 @@ namespace FirstFloor.ModernUI {
         public virtual bool ReplaceIfDifferBy([NotNull] IEnumerable<T> range) {
             if (range == null) throw new ArgumentNullException(nameof(range));
 
-            var list = range.ToList();
+            var list = range as IList<T> ?? range.ToList();
             if (Items.SequenceEqual(list)) return false;
 
-            if (list.Count > 3) {
-                Items.Clear();
-                foreach (var item in list) {
-                    Items.Add(item);
-                }
-
-                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            } else {
-                Clear();
-                foreach (var item in list) {
-                    Add(item);
-                }
+            Items.Clear();
+            foreach (var item in list) {
+                Items.Add(item);
             }
 
-            return true;
-        }
-
-        public virtual bool ReplaceIfDifferBy([NotNull] IList<T> list) {
-            if (list == null) throw new ArgumentNullException(nameof(list));
-            
-            if (Items.SequenceEqual(list)) return false;
-            if (list.Count > 3) {
-                Items.Clear();
-                foreach (var item in list) {
-                    Items.Add(item);
-                }
-
-                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            } else {
-                Clear();
-                foreach (var item in list) {
-                    Add(item);
-                }
-            }
-
+            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             return true;
         }
 
         public virtual void ReplaceEverythingBy([NotNull] IEnumerable<T> range) {
             if (range == null) throw new ArgumentNullException(nameof(range));
-
-            var list = range.ToList();
-            if (list.Count > 3) {
-                Items.Clear();
-                foreach (var item in list) {
-                    Items.Add(item);
-                }
-
-                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            } else {
-                Clear();
-                foreach (var item in list) {
-                    Add(item);
-                }
-            }
-        }
-
-        public virtual void ReplaceEverythingBy([NotNull] IList<T> list) {
-            if (list == null) throw new ArgumentNullException(nameof(list));
             
-            if (list.Count > 3) {
-                Items.Clear();
-                foreach (var item in list) {
-                    Items.Add(item);
-                }
-
-                OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-                OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-            } else {
-                Clear();
-                foreach (var item in list) {
-                    Add(item);
-                }
+            Items.Clear();
+            foreach (var item in range) {
+                Items.Add(item);
             }
+
+            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public void Replace(T item, T newItem) {

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 #if LOCALIZABLE
 using System.Globalization;
 #endif
@@ -14,10 +15,13 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Threading;
+using System.Windows;
 
 namespace AcManager {
     [Localizable(false)]
     internal class PackedHelper {
+        public static bool OptionCache = false;
+
         private readonly string _logFilename;
         private readonly string _temporaryDirectory;
         private readonly ResourceManager _references;
@@ -138,11 +142,21 @@ namespace AcManager {
             if (_ignore) return null;
 
             var name = new AssemblyName(args.Name).Name;
-            // TODO: http://www.aboutmycode.com/net-framework/assemblyresolve-event-tips/
-            // TODO: Tip 2: AssemblyResolve firing multiple times.
 
             Assembly result;
             if (_cached.TryGetValue(name, out result)) return result;
+            
+            if (string.Equals(name, "system.web", StringComparison.OrdinalIgnoreCase)) {
+                if (MessageBox.Show("Looks like you don’t have .NET 4 installed. Would you like to install it?", "Error",
+                        MessageBoxButton.YesNo, MessageBoxImage.Asterisk) == MessageBoxResult.Yes) {
+                    Process.Start(new ProcessStartInfo {
+                        UseShellExecute = true,
+                        FileName = "http://www.microsoft.com/en-us/download/details.aspx?id=17718"
+                    });
+                }
+
+                Environment.Exit(10);
+            }
 
 #if LOCALIZABLE
             if (name == "Content Manager.resources" && _first) {
@@ -165,7 +179,7 @@ namespace AcManager {
                 }
             }
 #else
-            if (name.EndsWith(".resources")) return null;
+            if (name.StartsWith("PresentationFramework") || name.EndsWith(".resources")) return null;
 #endif
 
             if (name == "Magick.NET-x86") {
@@ -186,12 +200,13 @@ namespace AcManager {
                     return null;
                 }
 
-                for (var i = 0; i < 100; i++) {
+                for (var i = 0; i < 20; i++) {
                     try {
                         result = Assembly.LoadFrom(filename);
                     } catch (FileLoadException) {
                         // special case for idiotic Panda AV
-                        Thread.Sleep(50);
+                        Log("fileloadexception! next attempt in 250 ms");
+                        Thread.Sleep(250);
                     }
                 }
 
@@ -199,7 +214,10 @@ namespace AcManager {
                     throw new Exception("Can’t access unpacked library");
                 }
 
-                _cached[name] = result;
+                if (OptionCache) {
+                    _cached[name] = result;
+                }
+
                 return result;
             } finally {
                 _ignore = false;

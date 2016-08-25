@@ -82,7 +82,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(QuickDrive.PresetableKeyValue, p => {
-                        QuickDrive.RunPreset(p, track: SelectedTrackConfiguration);
+                        QuickDrive.RunPreset(p.Filename, track: SelectedTrackConfiguration);
                     });
                 }
             }

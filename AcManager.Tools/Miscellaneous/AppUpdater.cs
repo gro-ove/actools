@@ -60,11 +60,19 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         public override Task CheckAndUpdateIfNeeded() {
-            if (MainExecutingFile.IsPacked) return base.CheckAndUpdateIfNeeded();
+            if (!MainExecutingFile.IsPacked) {
+                LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
+                IsSupported = false;
+                return Task.Delay(0);
+            }
 
-            LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
-            IsSupported = false;
-            return Task.Delay(0);
+            if (BuildInformation.Platform != @"x86") {
+                LatestError = "Non-x86 version doesn’t support auto-updating yet.";
+                IsSupported = false;
+                return Task.Delay(0);
+            }
+
+            return base.CheckAndUpdateIfNeeded();
         }
 
         protected override async Task<bool> CheckAndUpdateIfNeededInner() {
