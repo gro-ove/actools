@@ -84,7 +84,7 @@ namespace AcManager.Controls.Helpers {
 
             base.OnDocumentReady(e);
         }
-
+        
         private static object ConvertArgument(JSValue a) {
             if (a.IsNaN) return double.NaN;
             if (a.IsDouble) return (double)a;

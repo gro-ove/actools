@@ -11,7 +11,9 @@
     <AssemblyName>AcTools.Render</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>3c04502e</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp></NuGetPackageImportStamp>
+    <ActualPlatform>$(Platform)</ActualPlatform>
+    <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,23 +73,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
+      <HintPath>..\Packages\JetBrains.Annotations.10.1.5\lib\net\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Magick.NET-x86">
-      <HintPath>..\..\..\Temp\magicknet\6.8\Magick.NET-x86.dll</HintPath>
+    <Reference Include="Magick.NET-$(ActualPlatform), Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\Magick.NET-6.8-$(ActualPlatform)\Magick.NET-$(ActualPlatform).dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SlimDX">
-      <HintPath>..\..\..\Temp\sharp-dx\SlimDX.dll</HintPath>
+    <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
     </Reference>
     <Reference Include="SpriteTextRenderer, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\SpriteTextRenderer\SpriteTextRenderer.SlimDX\bin\Release\SpriteTextRenderer.dll</HintPath>
+      <HintPath>..\Libraries\SpriteTextRenderer\SpriteTextRenderer.dll</HintPath>
     </Reference>
     <Reference Include="SpriteTextRenderer.SlimDX, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\SpriteTextRenderer\SpriteTextRenderer.SlimDX\bin\Release\SpriteTextRenderer.SlimDX.dll</HintPath>
+      <HintPath>..\Libraries\SpriteTextRenderer\SpriteTextRenderer.SlimDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -267,13 +269,6 @@
   <PropertyGroup>
     <TransformOnBuild>true</TransformOnBuild>
   </PropertyGroup>
-  <Import Project="..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets" Condition="Exists('..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Clarius.TransformOnBuild.1.1.12\build\Clarius.TransformOnBuild.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

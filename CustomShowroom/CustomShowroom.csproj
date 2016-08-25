@@ -11,6 +11,8 @@
     <AssemblyName>CustomShowroom</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ActualPlatform>$(Platform)</ActualPlatform>
+    <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -76,11 +78,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+      <HintPath>..\Packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Magick.NET-x86">
-      <HintPath>..\..\..\Temp\magicknet\6.8\Magick.NET-x86.dll</HintPath>
+    <Reference Include="Magick.NET-$(ActualPlatform), Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\Magick.NET-6.8-$(ActualPlatform)\Magick.NET-$(ActualPlatform).dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
