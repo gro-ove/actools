@@ -354,21 +354,23 @@ namespace AcManager.Controls.ViewModels {
         }
         #endregion
 
-        public Game.AssistsProperties GameProperties => new Game.AssistsProperties {
-            IdealLine = IdealLine,
-            AutoBlip = AutoBlip,
-            StabilityControl = StabilityControl,
-            AutoBrake = AutoBrake,
-            AutoShifter = AutoShifter,
-            SlipSteamMultipler = SlipsteamMultipler,
-            AutoClutch = AutoClutch,
-            Abs = Abs,
-            TractionControl = TractionControl,
-            VisualDamage = VisualDamage,
-            Damage = Damage,
-            TyreWearMultipler = TyreWearMultipler,
-            FuelConsumption = FuelConsumption,
-            TyreBlankets = TyreBlankets
-        };
+        public Game.AssistsProperties ToGameProperties() {
+            return new Game.AssistsProperties {
+                IdealLine = IdealLine,
+                AutoBlip = AutoBlip,
+                StabilityControl = StabilityControl,
+                AutoBrake = AutoBrake,
+                AutoShifter = AutoShifter,
+                SlipSteamMultipler = SlipsteamMultipler,
+                AutoClutch = AutoClutch,
+                Abs = Abs,
+                TractionControl = TractionControl,
+                VisualDamage = VisualDamage,
+                Damage = Damage,
+                TyreWearMultipler = TyreWearMultipler,
+                FuelConsumption = FuelConsumption,
+                TyreBlankets = TyreBlankets
+            };
+        }
     }
 }

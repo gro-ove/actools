@@ -4,6 +4,6 @@ using AcTools.Processes;
 
 namespace AcManager.Tools {
     public class DefaultAssistsFactory : IAnyFactory<Game.AssistsProperties> {
-        Game.AssistsProperties IAnyFactory<Game.AssistsProperties>.Create() => AssistsViewModel.Instance.GameProperties;
+        Game.AssistsProperties IAnyFactory<Game.AssistsProperties>.Create() => AssistsViewModel.Instance.ToGameProperties();
     }
 }

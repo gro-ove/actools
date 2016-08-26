@@ -210,13 +210,13 @@ namespace AcManager.Pages.Drive {
                 var displayMode = mode.CandidatesMode ? $"{mode.DisplayName} ({"Random"})" : mode.DisplayName;
                 var opponentsNumber = mode.CandidatesMode ? saved.OpponentsNumber : saved.CarIds?.Length;
                 var description = new[] {
-                    $"[b]Mode:[/b] {displayMode}",
+                    $"Mode: [b]{displayMode}[/b]",
                     mode == BuiltInGridMode.Custom
-                            ? $"[b]Opponents:[/b] {(saved.CarIds?.Length ?? saved.OpponentsNumber ?? 0).ToInvariantString() ?? @"?"}" : null,
-                    mode == BuiltInGridMode.CandidatesManual ? $"[b]Candidates:[/b] {saved.CarIds?.Length.ToInvariantString() ?? @"?"}" : null,
-                    !string.IsNullOrWhiteSpace(saved.FilterValue) ? $"[b]Filter:[/b] “{saved.FilterValue}”" : null,
+                            ? $"Opponents: [b]{(saved.CarIds?.Length ?? saved.OpponentsNumber ?? 0).ToInvariantString() ?? @"?"}[/b]" : null,
+                    mode == BuiltInGridMode.CandidatesManual ? $"Candidates: [b]{saved.CarIds?.Length.ToInvariantString() ?? @"?"}[/b]" : null,
+                    !string.IsNullOrWhiteSpace(saved.FilterValue) ? $"Filter: [b]“{saved.FilterValue}”[/b]" : null,
                     saved.StartingPosition.HasValue && opponentsNumber.HasValue
-                            ? $"[b]Starting position:[/b] {GetDisplayPosition(saved.StartingPosition.Value, opponentsNumber.Value)}" : null,
+                            ? $"Starting position: [b]{GetDisplayPosition(saved.StartingPosition.Value, opponentsNumber.Value)}[/b]" : null,
                 }.NonNull().JoinToString(Environment.NewLine);
                 return new BbCodeBlock { BbCode = description };
             }

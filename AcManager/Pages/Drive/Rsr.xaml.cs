@@ -214,7 +214,7 @@ namespace AcManager.Pages.Drive {
                             TrackConfigurationId = Track.LayoutId,
                             CarSkinId = CarSkin?.Id,
                         },
-                        AssistsProperties = Assists.GameProperties,
+                        AssistsProperties = Assists.ToGameProperties(),
                         ConditionProperties = new Game.ConditionProperties {
                             AmbientTemperature = 26d,
                             RoadTemperature = 32d,

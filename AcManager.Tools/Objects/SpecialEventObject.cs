@@ -7,12 +7,14 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Processes;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class SpecialEventObject : KunosEventObjectBase {
-        public sealed class AiLevelEntry : Displayable {
+        public sealed class AiLevelEntry : Displayable, IWithId<int> {
             private static readonly string[] DisplayNames = {
                "Easy", "Medium", "Hard",  "Alien"
             };
@@ -26,6 +28,8 @@ namespace AcManager.Tools.Objects {
             public int Place { get; }
 
             public int AiLevel { get; }
+
+            public int Id => AiLevel;
         }
 
         private string _guid;
@@ -62,13 +66,14 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _selectedLevel)) return;
                 _selectedLevel = value;
                 OnPropertyChanged();
+                SpecialEventsManager.ProgressStorage.Set(KeySelectedLevel, value.AiLevel);
                 AiLevel = value.AiLevel;
             }
         }
 
         private string KeyTakenPlace => $"{Id}:TakenPlace";
 
-        private string KeyPlayedLastTime => $"{Id}:TakenPlace";
+        private string KeySelectedLevel => $"{Id}:SelectedLevel";
 
         private string _displayDescription;
 
@@ -117,7 +122,8 @@ namespace AcManager.Tools.Objects {
         public override void LoadProgress() {
             TakenPlace = SpecialEventsManager.ProgressStorage.GetInt(KeyTakenPlace, 5);
             if (AiLevels != null) {
-                SelectedLevel = AiLevels.ElementAtOrDefault(2);
+                SelectedLevel = AiLevels.GetByIdOrDefault(SpecialEventsManager.ProgressStorage.GetInt(KeySelectedLevel)) ??
+                        AiLevels.ElementAtOrDefault(1);
             }
         }
 
@@ -139,7 +145,6 @@ namespace AcManager.Tools.Objects {
         private RelayPropertyCommand _goCommand;
 
         public RelayPropertyCommand GoCommand => _goCommand ?? (_goCommand = new RelayPropertyCommand(async o => {
-            SpecialEventsManager.ProgressStorage.Set(KeyPlayedLastTime, DateTime.Now);
             await GameWrapper.StartAsync(new Game.StartProperties {
                 AdditionalPropertieses = {
                     ConditionType.HasValue ? new PlaceConditions {

@@ -60,9 +60,12 @@ namespace FirstFloor.ModernUI {
 
         public virtual void ReplaceEverythingBy([NotNull] IEnumerable<T> range) {
             if (range == null) throw new ArgumentNullException(nameof(range));
-            
+
+            // for cases when range is somehow created from Items
+            var list = range as IList<T> ?? range.ToList();
+
             Items.Clear();
-            foreach (var item in range) {
+            foreach (var item in list) {
                 Items.Add(item);
             }
 

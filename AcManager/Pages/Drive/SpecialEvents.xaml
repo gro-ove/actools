@@ -82,7 +82,7 @@
         </Grid.ColumnDefinitions>
 
         <DockPanel Grid.ColumnSpan="3"
-                Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=520}">
+                Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=540}">
             <Button DockPanel.Dock="Right" Command="{Binding SyncronizeProgressUsingModuleCommand}"
                     ToolTip="Works with private Steam profiles, but UI module should be installed and AC launcher should be running"
                     Content="Sync via Module Starter" Margin="4 0 0 0" />
@@ -356,7 +356,7 @@
                 </c:ModernPopup>
 
                 <Button Command="{Binding Selected.GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
-                        CommandParameter="{Binding GameProperties, Source={x:Static c:AssistsViewModel.Instance}}" Content="{x:Static g:AppStrings.Common_Go}" />
+                        Content="{x:Static g:AppStrings.Common_Go}" />
             </StackPanel>
         </Grid>
     </Grid>

@@ -80,11 +80,12 @@
         <Setter Property="BorderThickness" Value="0" />
 
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Menu}">
-                    <StackPanel ClipToBounds="True" Orientation="Horizontal" IsItemsHost="True" />
+                    <Grid ClipToBounds="True" IsItemsHost="True" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

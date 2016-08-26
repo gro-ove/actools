@@ -163,7 +163,7 @@
                                                     <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
-                                                    <Setter TargetName="Name" Property="FontStyle" Value="Italic" />
+                                                    <Setter TargetName="Name" Property="Opacity" Value="0.5" />
                                                 </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>

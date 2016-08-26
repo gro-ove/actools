@@ -17,7 +17,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls.Helpers {
-    public class ControlsPresets: NotifyPropertyChanged, IPresetsPreviewProvider {
+    public class ControlsPresets: NotifyPropertyChanged, IPresetsPreviewProvider, IHierarchicalItemPreviewProvider {
         private static ControlsPresets _instance;
 
         public static ControlsPresets Instance => _instance ?? (_instance = new ControlsPresets());
@@ -180,7 +180,7 @@ namespace AcManager.Controls.Helpers {
             }
         }
 
-        object IPresetsPreviewProvider.GetPreview(string serializedData) {
+        public object GetPreview(string serializedData) {
             var ini = IniFile.Parse(serializedData);
             var result = new StringBuilder();
 
@@ -201,6 +201,11 @@ namespace AcManager.Controls.Helpers {
             return new BbCodeBlock {
                 BbCode = result.ToString()
             };
+        }
+
+        object IHierarchicalItemPreviewProvider.GetPreview(object item) {
+            var data = (item as ISavedPresetEntry)?.ReadData();
+            return data == null ? null : GetPreview(data);
         }
 
         public HierarchicalGroup Presets { get; } = new HierarchicalGroup();

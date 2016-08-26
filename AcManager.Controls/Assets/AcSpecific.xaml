@@ -10,7 +10,7 @@
     <Brush x:Key="DarkenPanel">#99000000</Brush>
     <Brush x:Key="Completed">GreenYellow</Brush>
 
-    <VisualBrush x:Key="Ultimate">
+    <VisualBrush x:Key="UltimateAnimated">
         <VisualBrush.Visual>
             <Ellipse Fill="Aqua" Width="8" Height="8">
                 <Ellipse.Triggers>
@@ -28,6 +28,31 @@
                     </EventTrigger>
                 </Ellipse.Triggers>
             </Ellipse>
+        </VisualBrush.Visual>
+    </VisualBrush>
+    <VisualBrush x:Key="Ultimate">
+        <VisualBrush.Visual>
+            <Canvas Width="8" Height="8">
+                <Rectangle Fill="Yellow" Width="8" Height="8" />
+                <Rectangle Fill="Green" Margin="0 4 0 0" Width="8" Height="4" />
+                <Path Fill="Yellow" Width="8" Height="8">
+                    <Path.Data>
+                        <PathGeometry>
+                            <PathGeometry.Figures>
+                                <PathFigureCollection>
+                                    <PathFigure StartPoint="0,4">
+                                        <PathFigure.Segments>
+                                            <PathSegmentCollection>
+                                                <ArcSegment Size="8,8" RotationAngle="0" IsLargeArc="False" SweepDirection="CounterClockwise" Point="8,4" />
+                                            </PathSegmentCollection>
+                                        </PathFigure.Segments>
+                                    </PathFigure>
+                                </PathFigureCollection>
+                            </PathGeometry.Figures>
+                        </PathGeometry>
+                    </Path.Data>
+                </Path>
+            </Canvas>
         </VisualBrush.Visual>
     </VisualBrush>
     <Brush x:Key="Gold">Yellow</Brush>
