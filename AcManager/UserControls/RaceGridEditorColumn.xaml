@@ -185,6 +185,18 @@
                 <!--<mui:ModernButton IconData="{StaticResource ListGearIconData}" Command="{Binding SetupCommand, ElementName=This}" ToolTip="Detailed setup"
                         Style="{StaticResource NonTransparent}" />-->
             </StackPanel>
+            
+            <c:ModernPopup x:Name="SelectCarPopup">
+                <Grid Width="400">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="600" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    
+                    <uc:SelectCar SelectedCar="{Binding SelectedCar, ElementName=This}" />
+                    <TextBlock Grid.Row="1" Text="{Binding SelectedCar.DisplayName, ElementName=This}" />
+                </Grid>
+            </c:ModernPopup>
         </Grid>
     </DockPanel>
 </Grid>

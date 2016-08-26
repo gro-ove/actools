@@ -9,16 +9,28 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Annotations;
+using AcManager.Pages.Dialogs;
+using AcManager.Pages.Miscellaneous;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
-using StringBasedFilter;
 
-namespace AcManager.Pages.Dialogs {
-    public partial class SelectAndSetupCarDialog_Brands : INotifyPropertyChanged {
-        public SelectCarDialog MainDialog { get; }
+namespace AcManager.Pages.SelectionLists {
+    public partial class CarBrands : ISelectingPage<AcObjectNew> {
+        private AcObjectNew _selectedItem;
+
+        public AcObjectNew SelectedItem {
+            get { return _selectedItem; }
+            set {
+                if (Equals(value, _selectedItem)) return;
+                _selectedItem = value;
+
+                UpdateSelected(value as CarObject);
+            }
+        }
 
         public class CarBrandInformation : IComparable, IComparable<CarBrandInformation> {
             public string Name { get; set; }
@@ -94,10 +106,10 @@ namespace AcManager.Pages.Dialogs {
             CarsManager.Instance.WrappersList.CollectionReady += WrappersList_CollectionReady;
         }
 
-        private static WeakReference<SelectAndSetupCarDialog_Brands> _instance;
+        private static WeakReference<CarBrands> _instance;
 
         private static void ReplaceBrands(IEnumerable<CarBrandInformation> brands) {
-            SelectAndSetupCarDialog_Brands instance;
+            CarBrands instance;
             _instance.TryGetTarget(out instance);
 
             var selected = (instance?.BrandsListBox.SelectedItem as CarBrandInformation)?.Name;
@@ -133,11 +145,8 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public SelectAndSetupCarDialog_Brands() {
-            _instance = new WeakReference<SelectAndSetupCarDialog_Brands>(this);
-
-            MainDialog = SelectCarDialog.Instance;
-            MainDialog.PropertyChanged += MainDialog_PropertyChanged;
+        public CarBrands() {
+            _instance = new WeakReference<CarBrands>(this);
 
             InitializeComponent();
             DataContext = this;
@@ -149,19 +158,11 @@ namespace AcManager.Pages.Dialogs {
             if (!CarsManager.Instance.IsLoaded) {
                 CarsManager.Instance.EnsureLoadedAsync().Forget();
             }
-
-            UpdateSelected();
         }
 
-        void MainDialog_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(SelectCarDialog.SelectedCar)) {
-                UpdateSelected();
-            }
-        }
-
-        private void UpdateSelected() {
-            if (MainDialog.SelectedCar == null) return;
-            var item = _carBrandsInformationList.FirstOrDefault(x => x.Name == MainDialog.SelectedCar.Brand);
+        private void UpdateSelected(CarObject car) {
+            if (car == null) return;
+            var item = _carBrandsInformationList.FirstOrDefault(x => x.Name == car.Brand);
             if (item == null) return;
             BrandsListBox.SelectedItem = item;
             BrandsListBox.ScrollIntoView(item);

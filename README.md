@@ -1,6 +1,6 @@
 # AcTools (and Content Manager)
 
-Set of utils and apps designed for Assetto Corsa. If you have any interest in them, please, [let me know](https://trello.com/c/w5xT6ssZ/49-contacts). Some obsolete projects are moved [here](https://github.com/gro-ove/actools-utils).
+Set of utils and apps designed for Assetto Corsa. Some obsolete projects are moved [here](https://github.com/gro-ove/actools-utils).
 
 ## Common libraries
 
@@ -43,8 +43,10 @@ Set of utils and apps designed for Assetto Corsa. If you have any interest in th
 
 # Build notes
 
-If you want to rebuild this project, please:
+ - Download Library directory [here](https://drive.google.com/file/d/0B6GfX1zRa8pOMnVwV1dBV1Z4cjQ/view?usp=drivesdk). I didn’t use Nuget for all of references because eigher I needed specific libraries locations (this way, I’m able to use 32-bit libraries for 32-bit build and otherwise) or I slightly modified some of them (for example, now JSON-parser works reads numbers starting with “0” according to JSON specifications). But, if you want, you can collect this folder from scratch, those changes aren’t be very important.
 
- - Take some missing DLLs [here](https://trello.com/c/JoXMYzwx/47-about-avs) (not all of them will be loaded from Nuget package manager);
+ - Take AcTools.Internal from [the unpacked version](https://trello.com/c/w5xT6ssZ/49-contacts) (or make your own compatible version, it mostly contains different API codes, salts and addresses).
 
  - You might need to install DirectX SDK to rebuild *AcTools.Render/Base/Shaders/ShadersTemplate.tt*.
+
+ - Please, feel free to [contact me](https://trello.com/c/w5xT6ssZ/49-contacts) anytime. I don't have any experience it open-source, there might be some things I forgot to mention.

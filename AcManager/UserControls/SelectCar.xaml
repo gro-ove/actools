@@ -1,0 +1,12 @@
+﻿<mui:ModernTab x:Class="AcManager.UserControls.SelectCar" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.UserControls"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        Layout="TabWithTitle" LinksMargin="0 0 0 0" FrameMargin="0 30 0 0" mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml"
+        FrameNavigated="OnFrameNavigated" mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCarUc" SavePolicy="Flexible">
+    <mui:ModernTab.Links>
+        <mui:Link DisplayName="{x:Static g:AppStrings.Select_Brands}" Source="/Pages/SelectionLists/CarBrands.xaml" />
+        <!-- ReSharper disable once Xaml.PathError -->
+        <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}" Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&amp;Filter=enabled+" />
+    </mui:ModernTab.Links>
+</mui:ModernTab>

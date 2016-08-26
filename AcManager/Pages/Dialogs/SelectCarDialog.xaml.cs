@@ -10,6 +10,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -241,15 +242,14 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private AcObjectSelectList.ViewModel _list;
+        private ISelectingPage<AcObjectNew> _list;
 
         private void Tabs_OnFrameNavigated(object sender, NavigationEventArgs e) {
-            /* process AcObjectSelectList: unsubscribe from old, check if there is one */
             if (_list != null) {
                 _list.PropertyChanged -= List_PropertyChanged;
             }
 
-            _list = (((ModernTab)sender).Frame.Content as AcObjectSelectList)?.Model;
+            _list = ((ModernTab)sender).Frame.Content as ISelectingPage<AcObjectNew>;
             if (_list == null) return;
             
             _list.SelectedItem = SelectedCar;

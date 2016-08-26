@@ -558,6 +558,9 @@ fixme:
         - car setup page
 
 todo:
+    - rework selectcardialog
+    - rework selecttrackdialog
+    - disable dragging in content tab
     - replace InvalidateRequerySuggested with proper stuff
     - booking: show notification
 

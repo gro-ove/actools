@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Miscellaneous;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -54,15 +55,14 @@ namespace AcManager.Pages.Dialogs {
             _state = 1 - _state;
         }
 
-        private AcObjectSelectList.ViewModel _list;
+        private ISelectingPage<AcObjectNew> _list;
 
         private void Tabs_OnNavigated(object sender, NavigationEventArgs e) {
-            /* process AcObjectSelectList: unsubscribe from old, check if there is one */
             if (_list != null) {
                 _list.PropertyChanged -= List_PropertyChanged;
             }
 
-            _list = (((ModernTab)sender).Frame.Content as AcObjectSelectList)?.Model;
+            _list = ((ModernTab)sender).Frame.Content as ISelectingPage<AcObjectNew>;
             if (_list == null) return;
 
             _list.SelectedItem = Model.SelectedTrackConfiguration?.MainTrackObject;

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -17,7 +19,7 @@ namespace AcManager.UserControls {
     /// <summary>
     /// Interaction logic for GridEditorColumn.xaml
     /// </summary>
-    public partial class RaceGridEditorColumn {
+    public partial class RaceGridEditorColumn : INotifyPropertyChanged {
         public RaceGridEditorColumn() {
             InputBindings.AddRange(new[] {
                 new InputBinding(new RelayCommand(o => {
@@ -65,15 +67,28 @@ namespace AcManager.UserControls {
         private ICommand _addOpponentCarCommand;
 
         public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new AsyncCommand(async o => {
-            var model = Model;
+            SelectCarPopup.IsOpen = true;
+
+            /*var model = Model;
             if (model == null) return;
 
             var dialog = new SelectCarDialog(CarsManager.Instance.GetDefault());
             await (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ? dialog.ShowAndWaitAsync() : dialog.ShowDialogAsync());
             if (!dialog.IsResultOk || dialog.SelectedCar == null) return;
 
-            model.AddEntry(dialog.SelectedCar);
+            model.AddEntry(dialog.SelectedCar);*/
         }));
+
+        private CarObject _selectedCar;
+
+        public CarObject SelectedCar {
+            get { return _selectedCar; }
+            set {
+                if (Equals(value, _selectedCar)) return;
+                _selectedCar = value;
+                OnPropertyChanged();
+            }
+        }
 
         private ICommand _setupCommand;
 
@@ -118,6 +133,13 @@ namespace AcManager.UserControls {
             }
 
             e.Effects = DragDropEffects.Move;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

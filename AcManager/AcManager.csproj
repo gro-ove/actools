@@ -465,6 +465,9 @@
     <Compile Include="UserControls\RaceGridEditorColumn.xaml.cs">
       <DependentUpon>RaceGridEditorColumn.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\SelectCar.xaml.cs">
+      <DependentUpon>SelectCar.xaml</DependentUpon>
+    </Compile>
     <Page Include="Assets\Livery\Numbers\Light.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -801,7 +804,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Dialogs\SelectCarDialog_Brands.xaml">
+    <Page Include="Pages\SelectionLists\CarBrands.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -959,8 +962,8 @@
     <Compile Include="Pages\Dialogs\SelectCarDialog.xaml.cs">
       <DependentUpon>SelectCarDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\SelectCarDialog_Brands.xaml.cs">
-      <DependentUpon>SelectCarDialog_Brands.xaml</DependentUpon>
+    <Compile Include="Pages\SelectionLists\CarBrands.xaml.cs">
+      <DependentUpon>CarBrands.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\SelectTrackDialog.xaml.cs">
       <DependentUpon>SelectTrackDialog.xaml</DependentUpon>
@@ -1113,6 +1116,10 @@
     <Page Include="UserControls\RaceGridEditorColumn.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\SelectCar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
