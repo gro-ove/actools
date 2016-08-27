@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using AcManager.Pages.SelectionLists;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using FirstFloor.ModernUI;

@@ -222,7 +222,7 @@ namespace AcManager.Pages.Drive {
                 FilterEmpty = loaded.Contains(@"drivers");
                 FilterFull = loaded.Contains(@"full");
                 FilterPassword = loaded.Contains(@"password");
-                FilterMissing = loaded.Contains(@"missing");
+                FilterMissing = loaded.Contains(@"haserrors");
                 FilterBooking = loaded.Contains(@"booking");
             }
 

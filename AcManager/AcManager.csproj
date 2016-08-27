@@ -274,8 +274,8 @@
     <Compile Include="Pages\Dialogs\LiveryIconEditor.xaml.cs">
       <DependentUpon>LiveryIconEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\SelectCategory.cs" />
-    <Compile Include="Pages\Dialogs\SelectCountry.cs" />
+    <Compile Include="Pages\SelectionLists\SelectCategory.cs" />
+    <Compile Include="Pages\SelectionLists\SelectCountry.cs" />
     <Compile Include="Pages\Dialogs\SelectTrackDialog_Countries.xaml.cs">
       <DependentUpon>SelectTrackDialog_Countries.xaml</DependentUpon>
     </Compile>
@@ -410,8 +410,8 @@
     <Compile Include="Pages\Dialogs\CarSkinsDialog.xaml.cs">
       <DependentUpon>CarSkinsDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\SelectCarDialog_Categories.xaml.cs">
-      <DependentUpon>SelectCarDialog_Categories.xaml</DependentUpon>
+    <Compile Include="Pages\SelectionLists\CarCategories.xaml.cs">
+      <DependentUpon>CarCategories.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\SelectTrackDialog_Categories.xaml.cs">
       <DependentUpon>SelectTrackDialog_Categories.xaml</DependentUpon>
@@ -676,7 +676,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Dialogs\SelectCarDialog_Categories.xaml">
+    <Page Include="Pages\SelectionLists\CarCategories.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

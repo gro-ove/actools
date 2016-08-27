@@ -11,6 +11,7 @@ using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
@@ -64,19 +65,19 @@ namespace AcManager.UserControls {
 
         public ICommand SavePresetCommand => Model?.SavePresetCommand;
 
-        private ICommand _addOpponentCarCommand;
+        private RelayCommand _addOpponentCarCommand;
 
-        public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new AsyncCommand(async o => {
-            SelectCarPopup.IsOpen = true;
-
-            /*var model = Model;
+        public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new RelayCommand(o => {
+            var model = Model;
             if (model == null) return;
 
-            var dialog = new SelectCarDialog(CarsManager.Instance.GetDefault());
-            await (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ? dialog.ShowAndWaitAsync() : dialog.ShowDialogAsync());
-            if (!dialog.IsResultOk || dialog.SelectedCar == null) return;
+            model.AddEntry(SelectedCar);
+        }, o => SelectedCar != null));
 
-            model.AddEntry(dialog.SelectedCar);*/
+        private ICommand _closeAddingPopupCommand;
+
+        public ICommand CloseAddingPopupCommand => _closeAddingPopupCommand ?? (_closeAddingPopupCommand = new RelayCommand(o => {
+            SelectCarPopup.IsOpen = false;
         }));
 
         private CarObject _selectedCar;
@@ -87,6 +88,7 @@ namespace AcManager.UserControls {
                 if (Equals(value, _selectedCar)) return;
                 _selectedCar = value;
                 OnPropertyChanged();
+                _addOpponentCarCommand?.OnCanExecuteChanged();
             }
         }
 

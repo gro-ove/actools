@@ -37,11 +37,11 @@ namespace AcManager {
             SystemCultureName = CultureInfo.CurrentUICulture.Name;
 
             var langId = AppArguments.Get(AppFlag.ForceLocale) ?? SettingsHolder.Locale.LocaleName;
-            Logging.Write("[LocaleHelper] Locale: " + langId);
+            Logging.Write("Locale: " + langId);
 
             bool found;
             if (IsSupported(langId)) {
-                Logging.Write("[LocaleHelper] Fully supported already");
+                Logging.Write("Fully supported already");
                 CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(langId);
                 found = true;
             } else {
@@ -52,7 +52,7 @@ namespace AcManager {
                 } else {
                     found = await TryToLoadPackage(langId, package);
                     if (found) {
-                        Logging.Write("[LocaleHelper] Package loaded");
+                        Logging.Write("Package loaded");
                     }
                 }
             }
@@ -61,7 +61,7 @@ namespace AcManager {
                 var locales = FilesStorage.Instance.GetDirectory("Locales");
                 var localeDirectory = Path.Combine(locales, langId);
                 if (Directory.Exists(localeDirectory)) {
-                    Logging.Write("[LocaleHelper] Custom: " + localeDirectory);
+                    Logging.Write("Custom: " + localeDirectory);
                     CustomResourceManager.SetCustomSource(localeDirectory);
                     found = true;
                 }
@@ -98,7 +98,7 @@ namespace AcManager {
                         cancellation: cancellation.Token);
 
                 if (cancellation.IsCancellationRequested) {
-                    Logging.Write("[LocaleHelper] Timeout exceeded");
+                    Logging.Write("Timeout exceeded");
                 }
 
                 return data == null || data.Length == 0 ? null : data;
@@ -111,9 +111,9 @@ namespace AcManager {
                 if (data != null) {
                     try {
                         File.WriteAllBytes(localePackage, data);
-                        Logging.Warning("[LocaleHelper] Locale updated");
+                        Logging.Warning("Locale updated");
                     } catch (Exception e) {
-                        Logging.Warning("[LocaleHelper] Cannot update locale: " + e);
+                        Logging.Warning("Cannot update locale: " + e);
                     }
 
                     using (var memory = new MemoryStream(data))
@@ -124,7 +124,7 @@ namespace AcManager {
                     return true;
                 }
             } catch (Exception e) {
-                Logging.Warning("[LocaleHelper] Cannot try to load locale package: " + e);
+                Logging.Warning("Cannot try to load locale package: " + e);
             }
 
             return false;
@@ -162,15 +162,15 @@ namespace AcManager {
                     try {
                         JustUpdated = true;
                         File.WriteAllBytes(filename, update);
-                        Logging.Write("[LocaleHelper] Locale updated");
+                        Logging.Write("Locale updated");
                     } catch (Exception e) {
-                        Logging.Warning("[LocaleHelper] Cannot update locale: " + e);
+                        Logging.Warning("Cannot update locale: " + e);
                     }
                 }
 
                 SetPackage(assemblies);
             } catch (Exception e) {
-                Logging.Warning("[LocaleHelper] Cannot load locale package: " + e);
+                Logging.Warning("Cannot load locale package: " + e);
             }
         }
     }

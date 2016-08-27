@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
-namespace AcManager.Pages.Dialogs {
-    public partial class SelectAndSetupCarDialog_Categories {
+namespace AcManager.Pages.SelectionLists {
+    public partial class CarCategories {
         public ViewModel Model => (ViewModel) DataContext;
 
-        public SelectAndSetupCarDialog_Categories() {
+        public CarCategories() {
             DataContext = new ViewModel();
             InitializeComponent();
         }

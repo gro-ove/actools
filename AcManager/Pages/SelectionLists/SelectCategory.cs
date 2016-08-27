@@ -7,7 +7,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;
 
-namespace AcManager.Pages.Dialogs {
+namespace AcManager.Pages.SelectionLists {
     public class SelectCategory : Displayable {
         [JsonProperty(@"name")]
         public sealed override string DisplayName { get; set; }

@@ -179,22 +179,27 @@
                     Visibility="{Binding FilteredView.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Margin="0 4 0 0"
                     FontWeight="Bold" IsHitTestVisible="False" />
 
-            <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0 0 4 0">
-                <mui:ModernButton IconData="{StaticResource AddIconData}" Command="{Binding AddOpponentCarCommand, ElementName=This}"
-                        ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}" Style="{StaticResource NonTransparent}" />
+            <StackPanel x:Name="ButtonsPanel" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0 0 4 0">
+                <mui:ModernToggleButton x:Name="AddCarButton" IconData="{StaticResource AddIconData}" ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}"
+                        Style="{StaticResource NonTransparent}"
+                        IsHitTestVisible="{Binding ElementName=SelectCarPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
                 <!--<mui:ModernButton IconData="{StaticResource ListGearIconData}" Command="{Binding SetupCommand, ElementName=This}" ToolTip="Detailed setup"
                         Style="{StaticResource NonTransparent}" />-->
             </StackPanel>
-            
-            <c:ModernPopup x:Name="SelectCarPopup">
-                <Grid Width="400">
+
+            <c:ModernPopup Grid.Row="1" x:Name="SelectCarPopup" PlacementTarget="{Binding ElementName=ButtonsPanel}" Placement="Left" Padding="8"
+                    IsOpen="{Binding IsChecked, ElementName=AddCarButton, Mode=TwoWay}" StaysOpen="False">
+                <Grid Width="320" DataContext="{x:Reference This}">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="600" />
+                        <RowDefinition Height="480" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    
-                    <uc:SelectCar SelectedCar="{Binding SelectedCar, ElementName=This}" />
-                    <TextBlock Grid.Row="1" Text="{Binding SelectedCar.DisplayName, ElementName=This}" />
+
+                    <uc:SelectCar SelectedCar="{Binding SelectedCar}" />
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Command="{Binding AddOpponentCarCommand}" Content="Add" Margin="0 0 4 0" />
+                        <Button Command="{Binding CloseAddingPopupCommand}" Content="Close" />
+                    </StackPanel>
                 </Grid>
             </c:ModernPopup>
         </Grid>

@@ -36,7 +36,7 @@ namespace AcManager.Tools.Managers {
             Value = ValuesStorage.GetString(Key);
             if (Value == null || CheckDirectory(Value)) return;
 
-            Logging.Warning("AC root directory '{0}' is not valid anymore", Value);
+            Logging.Warning($"AC root directory “{Value}” is not valid anymore");
             Value = null;
         }
 
@@ -208,7 +208,7 @@ namespace AcManager.Tools.Managers {
 
                 var installPath = Path.GetDirectoryName(regKey.GetValue("SourceModInstallPath").ToString());
                 searchCandidates.Add(installPath);
-                Logging.Write("- Search candidate: {0}", installPath);
+                Logging.Write($"- Search candidate: {installPath}");
 
                 var steamPath = regKey.GetValue("SteamPath").ToString();
                 var config = File.ReadAllText(Path.Combine(steamPath, @"config", @"config.vdf"));
@@ -218,7 +218,7 @@ namespace AcManager.Tools.Managers {
                     if (match.Groups.Count > 1) {
                         var candidate = Path.Combine(match.Groups[1].Value.Replace(@"\\", @"\"), "SteamApps");
                         searchCandidates.Add(candidate);
-                        Logging.Write("- Search candidate: {0}", candidate);
+                        Logging.Write($"- Search candidate: {candidate}");
                     }
                     match = match.NextMatch();
                 }
@@ -228,10 +228,10 @@ namespace AcManager.Tools.Managers {
                     where searchCandidate != null && Directory.Exists(searchCandidate)
                     select Path.Combine(searchCandidate, @"common", @"assettocorsa")
                 ).FirstOrDefault(Directory.Exists);
-                Logging.Write("- Result: {0}", result);
+                Logging.Write($"- Result: {result}");
                 return result;
-            } catch (Exception exception) {
-                Logging.Write("- Error: {0}", exception);
+            } catch (Exception e) {
+                Logging.Write($"- Error: {e}");
                 return null;
             }
         }

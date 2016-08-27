@@ -55,14 +55,14 @@ namespace AcManager.Pages.Dialogs {
             _state = 1 - _state;
         }
 
-        private ISelectingPage<AcObjectNew> _list;
+        private ISelectedItemPage<AcObjectNew> _list;
 
         private void Tabs_OnNavigated(object sender, NavigationEventArgs e) {
             if (_list != null) {
                 _list.PropertyChanged -= List_PropertyChanged;
             }
 
-            _list = ((ModernTab)sender).Frame.Content as ISelectingPage<AcObjectNew>;
+            _list = ((ModernTab)sender).Frame.Content as ISelectedItemPage<AcObjectNew>;
             if (_list == null) return;
 
             _list.SelectedItem = Model.SelectedTrackConfiguration?.MainTrackObject;

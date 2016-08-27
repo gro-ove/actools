@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using AcManager.Tools.AcObjectsNew;
@@ -10,11 +11,27 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Miscellaneous {
-    public interface ISelectingPage<T> : INotifyPropertyChanged {
+    public interface ISelectedItemPage<T> : INotifyPropertyChanged {
         T SelectedItem { get; set; }
     }
 
-    public partial class AcObjectSelectList : ISelectingPage<AcObjectNew>, ITitleable, IParametrizedUriContent {
+    public interface ISelectedItemsPage<T> : ISelectedItemPage<T> {
+        IEnumerable<T> GetSelectedItems();
+    }
+
+    public class ItemChosenEventArgs<T> : EventArgs {
+        public ItemChosenEventArgs(T chosenItem) {
+            ChosenItem = chosenItem;
+        }
+
+        public T ChosenItem { get; }
+    }
+
+    public interface IChoosingItemPage<T> {
+        event EventHandler<ItemChosenEventArgs<T>> Selected;
+    }
+
+    public partial class AcObjectSelectList : ISelectedItemsPage<AcObjectNew>, IChoosingItemPage<AcObjectNew>, ITitleable, IParametrizedUriContent {
         public string Title { get; set; }
 
         public string Filter { get; private set; }
@@ -42,8 +59,15 @@ namespace AcManager.Pages.Miscellaneous {
                 if (Equals(value, _selectedItem)) return;
                 _selectedItem = value;
                 OnPropertyChanged();
+                Logging.Debug("Here: " + value);
             }
         }
+
+        public IEnumerable<AcObjectNew> GetSelectedItems() {
+            return List.GetSelectedItems();
+        }
+
+        public event EventHandler<ItemChosenEventArgs<AcObjectNew>> Selected;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

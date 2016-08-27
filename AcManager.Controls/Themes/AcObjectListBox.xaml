@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-                    xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI">
+        xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
@@ -13,23 +12,20 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ac:AcObjectListBox">
-                    <Grid HorizontalAlignment="Stretch" Background="{TemplateBinding Background}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <DockPanel Margin="8" HorizontalAlignment="Stretch"
+                    <DockPanel Background="{TemplateBinding Background}">
+                        <DockPanel DockPanel.Dock="Top" Margin="8"
                                 Visibility="{TemplateBinding IsFilteringEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Text="{x:Static ac:ControlsStrings.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
-                            <TextBox Style="{StaticResource TextBoxAsTextBlock}" attached:FocusAdvancement.AdvancesByEnterKey="True"
-                                    attached:WatermarkService.Watermark="*"
+                            <TextBox Style="{StaticResource TextBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True"
+                                    mui:WatermarkService.Watermark="*"
                                     Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource TemplatedParent}}" />
                         </DockPanel>
-                        <ListBox ItemsSource="{TemplateBinding InnerItemsSource}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
-                                VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="1,1"
-                                VirtualizingPanel.CacheLengthUnit="Page" VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True"
-                                SelectedItem="{TemplateBinding SelectedItem}" ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" />
-                    </Grid>
+                        <ListBox x:Name="PART_ListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
+                                VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="1,1" VirtualizingPanel.CacheLengthUnit="Page"
+                                VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True" ItemsSource="{TemplateBinding InnerItemsSource}"
+                                SelectedItem="{TemplateBinding SelectedItem}" ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}"
+                                SelectionMode="{TemplateBinding SelectionMode}" />
+                    </DockPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

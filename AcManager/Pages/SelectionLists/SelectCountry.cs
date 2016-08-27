@@ -5,7 +5,7 @@ using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
-namespace AcManager.Pages.Dialogs {
+namespace AcManager.Pages.SelectionLists {
     public sealed class SelectCountry : Displayable, IComparable, IComparable<SelectCountry> {
         [CanBeNull]
         public string CountryId { get; }

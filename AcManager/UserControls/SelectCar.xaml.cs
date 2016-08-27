@@ -31,23 +31,24 @@ namespace AcManager.UserControls {
             }
         }
 
-        private ISelectingPage<AcObjectNew> _list;
+        private ISelectedItemPage<AcObjectNew> _list;
 
         private void OnFrameNavigated(object sender, NavigationEventArgs e) {
             if (_list != null) {
                 _list.PropertyChanged -= List_PropertyChanged;
             }
             
-            _list = ((ModernTab)sender).Frame.Content as ISelectingPage<AcObjectNew>;
+            _list = ((ModernTab)sender).Frame.Content as ISelectedItemPage<AcObjectNew>;
+            Logging.Debug("[SelectCar] OnFrameNavigated(): " + _list);
             if (_list == null) return;
 
             _list.SelectedItem = SelectedCar;
             _list.PropertyChanged += List_PropertyChanged;
-
-            Logging.Debug("OnFrameNavigated(): " + _list);
+            Logging.Debug("[SelectCar] OnFrameNavigated(): PropertyChanged set");
         }
 
         private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            Logging.Debug("[SelectCar] List_PropertyChanged(): " + e.PropertyName);
             if (e.PropertyName == nameof(_list.SelectedItem)) {
                 SelectedCar = _list.SelectedItem as CarObject;
             }

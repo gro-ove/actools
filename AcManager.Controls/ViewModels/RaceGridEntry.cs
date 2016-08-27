@@ -109,6 +109,8 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public RaceGridEntry([NotNull] CarObject car) {
+            if (car == null) throw new ArgumentNullException(nameof(car));
+
             _car = car;
             _aiLevel = null;
         }

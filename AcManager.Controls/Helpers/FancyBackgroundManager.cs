@@ -92,10 +92,10 @@ namespace AcManager.Controls.Helpers {
                         File.Copy(value, _cachedFilename);
                         value = _cachedFilename;
                     } catch (Exception e) {
-                        Logging.Warning("Can’t copy background image '{0}': {1}", value ?? @"NULL", e);
+                        Logging.Warning($"Can’t copy background image '{value ?? @"NULL"}': {e}");
                     }
                 } else { 
-                    Logging.Warning("Background image '{0}' is missing", value ?? @"NULL");
+                    Logging.Warning($"Background image '{value ?? @"NULL"}' is missing");
                     value = null;
                 }
 

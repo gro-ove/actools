@@ -37,11 +37,11 @@ namespace AcManager.Tools.AcErrors {
 
             if (Category != AcErrorCategory.CarSkin &&
                     (type != AcErrorType.Data_JsonIsMissing || !Equals(args.FirstOrDefault(), @"ui_skin.json"))) {
-                Logging.Write("[AcError] " + Message);
+                Logging.Write(Message);
             }
 
             foreach (var exception in args.OfType<Exception>()) {
-                Logging.Write("[AcError] Exception: " + exception);
+                Logging.Warning(exception);
             }
         }
 
@@ -55,7 +55,7 @@ namespace AcManager.Tools.AcErrors {
                 return result;
             }
 
-            Logging.Warning("Can’t get category for AcErrorType: " + type);
+            Logging.Warning($"Can’t get category for AcErrorType: {type}");
             return AcErrorCategory.Unspecific;
         }
 

@@ -19,7 +19,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Pages.SelectionLists {
-    public partial class CarBrands : ISelectingPage<AcObjectNew> {
+    public partial class CarBrands : ISelectedItemPage<AcObjectNew> {
         private AcObjectNew _selectedItem;
 
         public AcObjectNew SelectedItem {

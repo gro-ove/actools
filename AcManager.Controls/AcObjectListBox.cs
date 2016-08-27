@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Lists;
+using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Controls {
@@ -80,6 +83,19 @@ namespace AcManager.Controls {
         public AcWrapperCollectionView InnerItemsSource {
             get { return (AcWrapperCollectionView)GetValue(InnerItemsSourceProperty); }
             set { SetValue(InnerItemsSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectionModeProperty = DependencyProperty.Register(nameof(SelectionMode), typeof(SelectionMode),
+                typeof(AcObjectListBox), new PropertyMetadata(SelectionMode.Single));
+
+        public SelectionMode SelectionMode {
+            get { return (SelectionMode)GetValue(SelectionModeProperty); }
+            set { SetValue(SelectionModeProperty, value); }
+        }
+
+        [NotNull]
+        public IEnumerable<AcObjectNew> GetSelectedItems() {
+            return (GetTemplateChild(@"PART_ListBox") as ListBox)?.SelectedItems.OfType<AcObjectNew>() ?? new AcObjectNew[0];
         }
 
         public AcObjectListBox() {
