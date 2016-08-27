@@ -158,7 +158,7 @@ namespace AcManager.Tools.Objects {
                     entry.Value = ini["PRESSURE_" + entry.Id].GetIntNullable("VALUE");
                 }
             } catch (Exception e) {
-                Logging.Warning("[CarSetupObject] Can’t read file: " + e);
+                Logging.Warning("Can’t read file: " + e);
                 AddError(AcErrorType.Data_IniIsDamaged, Id);
                 SetHasData(false);
             }
@@ -206,7 +206,7 @@ namespace AcManager.Tools.Objects {
 
                 ini.SaveAs(Location);
             } catch (Exception e) {
-                Logging.Warning("[CarSetupObject] Can’t save file: " + e);
+                Logging.Warning("Can’t save file: " + e);
             }
 
             if (_oldName != Name || _oldTrackId != TrackId) {

@@ -507,7 +507,7 @@ namespace AcManager.Controls.ViewModels {
                 }, cancellation);
             }
 
-            Logging.Error($"[RaceGridViewModel] Not supported mode: {mode.Id} ({mode.GetType().Name})");
+            Logging.Error($"Not supported mode: {mode.Id} ({mode.GetType().Name})");
             return new RaceGridEntry[0];
         }
 

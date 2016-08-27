@@ -124,7 +124,7 @@ document.addEventListener('mousedown', function(e){
             try {
                 _inner.ExecuteJavascript(js);
             } catch (Exception e) {
-                Logging.Warning("[WebBrowserBlock] Execute(): " + e);
+                Logging.Warning("Execute(): " + e);
             }
         }
 
@@ -138,10 +138,10 @@ document.addEventListener('mousedown', function(e){
                     try {
                         _inner.Source = new Uri(url, UriKind.RelativeOrAbsolute);
                     } catch (Exception ex) {
-                        Logging.Write("[WebBrowserBlock] Navigation failed: " + ex);
+                        Logging.Write("Navigation failed: " + ex);
                     }
                 } else {
-                    Logging.Write("[WebBrowserBlock] Navigation failed: " + e);
+                    Logging.Write("Navigation failed: " + e);
                 }
             }
         }

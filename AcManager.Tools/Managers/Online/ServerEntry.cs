@@ -794,7 +794,7 @@ namespace AcManager.Tools.Managers.Online {
                 errorMessage = $"{e.Message}.";
             } catch (Exception e) {
                 errorMessage = string.Format(ToolsStrings.Online_Server_UnhandledError, e.Message);
-                Logging.Warning("[ServerEntry] UpdateInner(): " + e);
+                Logging.Warning("UpdateInner(): " + e);
             } finally {
                 ErrorMessage = errorMessage;
                 if (!string.IsNullOrWhiteSpace(errorMessage)) {

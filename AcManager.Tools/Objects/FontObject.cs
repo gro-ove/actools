@@ -133,7 +133,7 @@ namespace AcManager.Tools.Objects {
                 try {
                     _fontList = File.ReadAllLines(Location).Select(line => double.Parse(line, CultureInfo.InvariantCulture)).ToList();
                 } catch (Exception e) {
-                    Logging.Warning("[FontObject] File damaged: " + e);
+                    Logging.Warning("File damaged: " + e);
                 }
             }
 

@@ -27,7 +27,7 @@ namespace AcManager.Tools.SemiGui {
                     File.Move(backup, destination);
                 }
             } catch (Exception e) {
-                Logging.Warning("[CopyFilterToSystemForOculusHelper] Revert(): " + e);
+                Logging.Warning("Revert(): " + e);
             }
         }
 
@@ -53,7 +53,7 @@ namespace AcManager.Tools.SemiGui {
 
                 FileUtils.Hardlink(source, destination);
             } catch (Exception e) {
-                Logging.Warning("[CopyFilterToSystemForOculusHelper] Set(): " + e);
+                Logging.Warning("Set(): " + e);
             }
 
             return this;

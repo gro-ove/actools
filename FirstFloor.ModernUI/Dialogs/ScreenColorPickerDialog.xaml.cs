@@ -63,7 +63,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 color = Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
             } else {
                 if (!_hasBeenWarned) {
-                    Logging.Warning("[ScreenColorPickerDialog] Unsupported format: " + _screenSource.Format);
+                    Logging.Warning("Unsupported format: " + _screenSource.Format);
                     _hasBeenWarned = true;
                 }
 

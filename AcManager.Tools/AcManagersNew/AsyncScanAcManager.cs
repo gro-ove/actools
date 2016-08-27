@@ -73,7 +73,7 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         public override void ActualScan() {
-            Logging.Warning("[AsyncScanAcManager] Syncronized version of scanning just was called!");
+            Logging.Warning("Syncronized version of scanning just was called!");
 
             _cancellationTokenSource?.Cancel();
             _scanAsyncTask = null;

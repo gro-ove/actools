@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Miscellaneous {
@@ -20,18 +24,20 @@ namespace AcManager.Pages.Miscellaneous {
     }
 
     public class ItemChosenEventArgs<T> : EventArgs {
-        public ItemChosenEventArgs(T chosenItem) {
+        public ItemChosenEventArgs([NotNull] T chosenItem) {
+            if (chosenItem == null) throw new ArgumentNullException(nameof(chosenItem));
             ChosenItem = chosenItem;
         }
 
+        [NotNull]
         public T ChosenItem { get; }
     }
 
-    public interface IChoosingItemPage<T> {
-        event EventHandler<ItemChosenEventArgs<T>> Selected;
+    public interface IChoosingItemControl<T> {
+        event EventHandler<ItemChosenEventArgs<T>> ItemChosen;
     }
 
-    public partial class AcObjectSelectList : ISelectedItemsPage<AcObjectNew>, IChoosingItemPage<AcObjectNew>, ITitleable, IParametrizedUriContent {
+    public partial class AcObjectSelectList : ISelectedItemsPage<AcObjectNew>, IChoosingItemControl<AcObjectNew>, ITitleable, IParametrizedUriContent {
         public string Title { get; set; }
 
         public string Filter { get; private set; }
@@ -59,7 +65,6 @@ namespace AcManager.Pages.Miscellaneous {
                 if (Equals(value, _selectedItem)) return;
                 _selectedItem = value;
                 OnPropertyChanged();
-                Logging.Debug("Here: " + value);
             }
         }
 
@@ -67,13 +72,21 @@ namespace AcManager.Pages.Miscellaneous {
             return List.GetSelectedItems();
         }
 
-        public event EventHandler<ItemChosenEventArgs<AcObjectNew>> Selected;
+        public event EventHandler<ItemChosenEventArgs<AcObjectNew>> ItemChosen;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            var s = (DependencyObject)e.OriginalSource;
+            var l = s.GetParent<ListBoxItem>()?.DataContext as AcObjectNew;
+            if (l != null) {
+                ItemChosen?.Invoke(this, new ItemChosenEventArgs<AcObjectNew>(l));
+            }
         }
     }
 }

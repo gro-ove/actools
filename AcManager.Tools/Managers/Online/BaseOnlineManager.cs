@@ -138,7 +138,7 @@ namespace AcManager.Tools.Managers.Online {
                 UpdateList();
 
                 if (Pinged > 0) {
-                    Logging.Write($"[OnlineManager] Pinging {Pinged} servers: {w.Elapsed.TotalMilliseconds:F2} ms");
+                    Logging.Write($"Pinging {Pinged} servers: {w.Elapsed.TotalMilliseconds:F2} ms");
                 }
             } finally {
                 PingingInProcess = false;

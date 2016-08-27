@@ -92,7 +92,7 @@ namespace AcManager.Tools.Miscellaneous {
                 return VersionFromData(data);
             } catch (Exception e) {
                 LatestError = ToolsStrings.BaseUpdater_CannotDownloadInformation;
-                Logging.Warning("[AppUpdater] Cannot get app/manifest.json: " + e);
+                Logging.Warning("Cannot get app/manifest.json: " + e);
                 return null;
             } finally {
                 IsGetting = false;
@@ -144,7 +144,7 @@ namespace AcManager.Tools.Miscellaneous {
                         preparedVersion = VersionFromData(archive.GetEntry(@"Manifest.json").Open().ReadAsStringAndDispose());
 
                         archive.GetEntry(@"Content Manager.exe").ExtractToFile(UpdateLocation);
-                        Logging.Write($"[AppUpdater] New version {preparedVersion} was extracted to “{UpdateLocation}”");
+                        Logging.Write($"New version {preparedVersion} was extracted to “{UpdateLocation}”");
                     }
                 });
 

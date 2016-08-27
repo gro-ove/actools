@@ -59,7 +59,7 @@ namespace AcManager.Controls.Helpers {
             _awesomiumPath = directoryPath;
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAwesomium;
 
-            Logging.Write("[AwesomiumResolverService] Initialize(): " + directoryPath);
+            Logging.Write("Initialize(): " + directoryPath);
         }
 
         /// <summary>

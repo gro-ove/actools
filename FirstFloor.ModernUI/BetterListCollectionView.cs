@@ -24,7 +24,7 @@ namespace FirstFloor.ModernUI {
             try {
                 OnCollectionChanged(sender, notify);
             } catch (InvalidOperationException ex) {
-                Logging.Warning("[BetterListCollectionView] That exception: " + ex);
+                Logging.Warning("That exception: " + ex);
             }
 
             return true;

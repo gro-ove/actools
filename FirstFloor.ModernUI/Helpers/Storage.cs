@@ -187,7 +187,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             OnPropertyChanged(nameof(Count));
-            Logging.Write($"[ValuesStorage] Loading: {w.Elapsed.TotalMilliseconds:F2} ms");
+            Logging.Write($"Loading: {w.Elapsed.TotalMilliseconds:F2} ms");
         }
 
         private const int ActualVersion = 2;

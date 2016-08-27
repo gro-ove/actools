@@ -94,7 +94,7 @@ namespace AcManager.Tools.Managers.Online {
                                 CreateAndAddEntry(information);
                             } catch (Exception e) {
                                 if (e.Message != ToolsStrings.Common_IdIsTaken) {
-                                    Logging.Warning("[RecentManager] Scan add error: " + e);
+                                    Logging.Warning("Scan add error: " + e);
                                 }
                             }
                         }
@@ -118,7 +118,7 @@ namespace AcManager.Tools.Managers.Online {
             try {
                 CreateAndAddEntry(information);
             } catch (Exception e) {
-                Logging.Warning("[RecentManager] Recent add error: " + e);
+                Logging.Warning("Recent add error: " + e);
             }
 
             AddToRecentList(information.Ip, information.PortC);
@@ -194,7 +194,7 @@ namespace AcManager.Tools.Managers.Online {
 
                         Pinged++;
                     } catch (Exception e) {
-                        Logging.Warning("[RecentManager] Cannot create ServerEntry: " + e);
+                        Logging.Warning("Cannot create ServerEntry: " + e);
                     }
                 }).WhenAll(SettingsHolder.Online.PingConcurrency);
             } finally {

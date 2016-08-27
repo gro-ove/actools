@@ -24,7 +24,7 @@ namespace AcManager.Tools.Managers.Online {
                 try {
                     result.Add(new ServerEntry(this, i, true));
                 } catch (Exception e) {
-                    Logging.Warning("[LanManager] Cannot create ServerEntry: " + e);
+                    Logging.Warning("Cannot create ServerEntry: " + e);
                 }
             });
             
@@ -50,7 +50,7 @@ namespace AcManager.Tools.Managers.Online {
                         }
                         Pinged++;
                     } catch (Exception e) {
-                        Logging.Warning("[LanManager] Cannot create ServerEntry: " + e);
+                        Logging.Warning("Cannot create ServerEntry: " + e);
                     }
                 });
             });

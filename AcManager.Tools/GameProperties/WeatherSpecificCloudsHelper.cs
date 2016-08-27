@@ -26,7 +26,7 @@ namespace AcManager.Tools.GameProperties {
                     Directory.Move(backup, destination);
                 }
             } catch (Exception e) {
-                Logging.Warning("[WeatherSpecificCloudsHelper] Revert(): " + e);
+                Logging.Warning("Revert(): " + e);
             }
         }
 
@@ -52,7 +52,7 @@ namespace AcManager.Tools.GameProperties {
             } catch (Exception e) {
                 // this exception should be catched here so original clouds folder still
                 // will be restored even when copying a new one has been failed
-                Logging.Warning("[WeatherSpecificCloudsHelper] SetOverride(): " + e);
+                Logging.Warning("SetOverride(): " + e);
             }
 
             return true;

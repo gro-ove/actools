@@ -90,7 +90,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     };
                     inline = parser.Parse();
                 } catch (Exception e) {
-                    Logging.Warning("[BBCODEBLOCK] Parsing failed: " + e);
+                    Logging.Warning("Parsing failed: " + e);
                     inline = new Run { Text = bbcode };
                 }
                 Inlines.Add(inline);

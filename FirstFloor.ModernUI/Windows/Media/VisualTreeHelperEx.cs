@@ -163,7 +163,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
         }
 
         [Pure, CanBeNull]
-        public static T GetParent<T>([NotNull] this FrameworkElement dependencyObject) where T : DependencyObject {
+        public static T GetParent<T>([NotNull] this DependencyObject dependencyObject) where T : DependencyObject {
             return dependencyObject.GetParents().OfType<T>().FirstOrDefault();
         }
     }

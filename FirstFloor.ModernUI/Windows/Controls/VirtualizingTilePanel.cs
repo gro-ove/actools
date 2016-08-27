@@ -102,7 +102,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         _itemWidth = itemSize.Width;
                         _itemHeight = itemSize.Height;
                     } catch (Exception e) {
-                        Logging.Write($"[VirtualizingTilePanel] Exception: {e}");
+                        Logging.Write($"Exception: {e}");
                     }
                 }
             }

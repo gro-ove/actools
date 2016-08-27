@@ -32,7 +32,7 @@ namespace FirstFloor.ModernUI {
                             x.Element("value")?.Value
                         }).Where(x => x.Key != null && x.Value != null).ToDictionary(x => x.Key, x => x.Value);
             } catch (Exception e) {
-                Logging.Warning("[CustomResourceManager] GetString(): " + e);
+                Logging.Warning("GetString(): " + e);
                 return null;
             }
         }
@@ -56,7 +56,7 @@ namespace FirstFloor.ModernUI {
 
                 return base.GetString(name, culture);
             } catch (Exception e) {
-                Logging.Warning("[CustomResourceManager] GetString(): " + e);
+                Logging.Warning("GetString(): " + e);
 
                 BasicMode = true;
                 return GetString(name, culture);

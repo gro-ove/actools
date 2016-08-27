@@ -368,7 +368,7 @@ namespace AcManager.Pages.Drive {
                     }
                 } catch (Exception e) {
                     IsWeatherNotSupported = true;
-                    Logging.Warning("[QuickDrive] TryToSetWeatherType(): " + e);
+                    Logging.Warning("TryToSetWeatherType(): " + e);
                 }
             }
 

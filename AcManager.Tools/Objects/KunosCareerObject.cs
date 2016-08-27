@@ -649,7 +649,7 @@ namespace AcManager.Tools.Objects {
                     if (driverEntry != null) {
                         driverEntry.Points = ChampionshipAiPoints[i];
                     } else {
-                        Logging.Warning("[KunosCareerObject] Missing driver entry with ID=" + i);
+                        Logging.Warning("Missing driver entry with ID=" + i);
                     }
                 }
 

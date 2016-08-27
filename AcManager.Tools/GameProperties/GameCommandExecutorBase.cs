@@ -19,7 +19,7 @@ namespace AcManager.Tools.GameProperties {
             if (string.IsNullOrWhiteSpace(command)) return;
 
             command = VariablesReplacement.Process(command, _properties, null);
-            Logging.Write($"[GameCommandExecutorBase] Executing command: “{command}”");
+            Logging.Write($"Executing command: “{command}”");
 
             try {
                 var proc = Process.Start(new ProcessStartInfo {
@@ -53,13 +53,13 @@ namespace AcManager.Tools.GameProperties {
 
         private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) {
             if (!string.IsNullOrWhiteSpace(e.Data)) {
-                Logging.Write("[GameCommandExecutorBase] Output: " + e.Data);
+                Logging.Write("Output: " + e.Data);
             }
         }
 
         private void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e) {
             if (!string.IsNullOrWhiteSpace(e.Data)) {
-                Logging.Write("[GameCommandExecutorBase] Error: " + e.Data);
+                Logging.Write("Error: " + e.Data);
             }
         }
 

@@ -195,7 +195,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <uc:SelectCar SelectedCar="{Binding SelectedCar}" />
+                    <uc:SelectCar SelectedCar="{Binding SelectedCar}" ItemChosen="SelectCar_OnItemChosen" />
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Command="{Binding AddOpponentCarCommand}" Content="Add" Margin="0 0 4 0" />
                         <Button Command="{Binding CloseAddingPopupCommand}" Content="Close" />

@@ -162,7 +162,7 @@ namespace AcManager.Pages.Dialogs {
                     Model.ShapeObject = obj;
                     if (!_quickMode) ValuesStorage.Set(KeyShape, value.Id);
                 } catch (Exception e) {
-                    Logging.Warning("[LiveryIconEditor] Can’t change shape: " + e);
+                    Logging.Warning("Can’t change shape: " + e);
                 }
             }
         }
@@ -186,7 +186,7 @@ namespace AcManager.Pages.Dialogs {
                         Model.NumbersObject = null;
                     }
                 } catch (Exception e) {
-                    Logging.Warning("[LiveryIconEditor] Can’t change numbers: " + e);
+                    Logging.Warning("Can’t change numbers: " + e);
                 }
             }
         }
@@ -207,7 +207,7 @@ namespace AcManager.Pages.Dialogs {
                     OnPropertyChanged(nameof(StyleObject));
                     if (!_quickMode) ValuesStorage.Set(KeyStyle, value.Id);
                 } catch (Exception e) {
-                    Logging.Warning("[LiveryIconEditor] Can’t change style: " + e);
+                    Logging.Warning("Can’t change style: " + e);
                 }
             }
         }
@@ -246,7 +246,7 @@ namespace AcManager.Pages.Dialogs {
                     Model.TertiaryColorValue = colors.Select(x => (System.Drawing.Color?)x).ElementAtOrDefault(2)?.ToColor() ?? Colors.Black;
                 }
             } catch (Exception e) {
-                Logging.Warning("[LiveryIconEditor] Can’t find base colors: " + e);
+                Logging.Warning("Can’t find base colors: " + e);
                 Model.ColorValue = Colors.White;
                 Model.SecondaryColorValue = Colors.Black;
                 Model.TertiaryColorValue = Colors.Black;

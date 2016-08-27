@@ -614,7 +614,7 @@ namespace AcManager.Pages.Drive {
                     } catch (Exception e) {
                         OpponentsCars.Clear();
                         OpponentsCarsError = AppStrings.Drive_CannotFilter;
-                        Logging.Warning("[QuickDrive_Race] UpdateOpponentsCars(): " + e);
+                        Logging.Warning("UpdateOpponentsCars(): " + e);
                     }
 
                     OpponentsCarsLoading = false;

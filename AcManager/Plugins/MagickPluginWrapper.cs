@@ -10,9 +10,9 @@ namespace AcManager.Plugins {
         public void Enable() {
             try {
                 ImageUtils.LoadImageMagickAssembly(PluginsManager.Instance.GetPluginFilename(Id, "Magick.NET-x86.dll"));
-                Logging.Write("[MagickPluginWrapper] Test: " + ImageUtils.TestImageMagick());
+                Logging.Write("Test: " + ImageUtils.TestImageMagick());
             } catch (Exception e) {
-                Logging.Warning("[MagickPluginWrapper] Enable(): " + e);
+                Logging.Warning("Enable(): " + e);
             }
         }
 

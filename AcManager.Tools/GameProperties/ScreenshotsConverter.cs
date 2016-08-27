@@ -23,7 +23,7 @@ namespace AcManager.Tools.GameProperties {
                 return Directory.GetFiles(directory)
                                 .Where(file => file.EndsWith(@".bmp", StringComparison.OrdinalIgnoreCase));
             } catch (Exception e) {
-                Logging.Error("[ScreenshotsConverter] Can’t get files without extension: " + e);
+                Logging.Error("Can’t get files without extension: " + e);
                 return new string[0];
             }
         }
@@ -45,7 +45,7 @@ namespace AcManager.Tools.GameProperties {
                         File.Delete(bitmap);
                     }
                 } catch (Exception e) {
-                    Logging.Error("[ScreenshotsConverter] Can’t rename new: " + e);
+                    Logging.Error("Can’t rename new: " + e);
                 }
 
                 CurrentConversion = null;

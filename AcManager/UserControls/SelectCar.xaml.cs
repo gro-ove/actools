@@ -1,14 +1,16 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
 
 namespace AcManager.UserControls {
-    public partial class SelectCar {
+    public partial class SelectCar : IChoosingItemControl<CarObject> {
         public SelectCar() {
             InitializeComponent();
         }
@@ -22,33 +24,56 @@ namespace AcManager.UserControls {
         }
 
         private static void OnSelectedCarChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((SelectCar)o).OnSelectedCarChanged((CarObject)e.OldValue, (CarObject)e.NewValue);
+            ((SelectCar)o).OnSelectedCarChanged((CarObject)e.NewValue);
         }
 
-        private void OnSelectedCarChanged(CarObject oldValue, CarObject newValue) {
+        private void OnSelectedCarChanged(CarObject newValue) {
             if (_list != null) {
                 _list.SelectedItem = newValue;
             }
         }
 
         private ISelectedItemPage<AcObjectNew> _list;
+        private IChoosingItemControl<AcObjectNew> _choosing;
 
         private void OnFrameNavigated(object sender, NavigationEventArgs e) {
             if (_list != null) {
                 _list.PropertyChanged -= List_PropertyChanged;
             }
-            
-            _list = ((ModernTab)sender).Frame.Content as ISelectedItemPage<AcObjectNew>;
-            Logging.Debug("[SelectCar] OnFrameNavigated(): " + _list);
-            if (_list == null) return;
 
-            _list.SelectedItem = SelectedCar;
-            _list.PropertyChanged += List_PropertyChanged;
-            Logging.Debug("[SelectCar] OnFrameNavigated(): PropertyChanged set");
+            if (_choosing != null) {
+                _choosing.ItemChosen -= Choosing_ItemChosen;
+            }
+
+            var content = ((ModernTab)sender).Frame.Content;
+            _list = content as ISelectedItemPage<AcObjectNew>;
+            _choosing = content as IChoosingItemControl<AcObjectNew>;
+
+            if (_list != null) {
+                _list.SelectedItem = SelectedCar;
+                _list.PropertyChanged += List_PropertyChanged;
+            }
+
+            if (_choosing != null) {
+                _choosing.ItemChosen += Choosing_ItemChosen;
+            }
+        }
+
+        public IEnumerable<CarObject> GetSelectedCars() {
+            var items = _list as ISelectedItemsPage<AcObjectNew>;
+            return items?.GetSelectedItems().OfType<CarObject>() ?? new[] { SelectedCar };
+        }
+
+        public event EventHandler<ItemChosenEventArgs<CarObject>> ItemChosen;
+
+        private void Choosing_ItemChosen(object sender, ItemChosenEventArgs<AcObjectNew> e) {
+            var c = e.ChosenItem as CarObject;
+            if (c != null) {
+                ItemChosen?.Invoke(this, new ItemChosenEventArgs<CarObject>(c));
+            }
         }
 
         private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            Logging.Debug("[SelectCar] List_PropertyChanged(): " + e.PropertyName);
             if (e.PropertyName == nameof(_list.SelectedItem)) {
                 SelectedCar = _list.SelectedItem as CarObject;
             }

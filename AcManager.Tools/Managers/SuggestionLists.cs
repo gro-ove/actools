@@ -43,7 +43,7 @@ namespace AcManager.Tools.Managers {
         static SuggestionLists (){}
 
         public static void RebuildCarBrandsList() {
-            Logging.Write("[SuggestionList] RebuildCarBrandsList()");
+            Logging.Write("RebuildCarBrandsList()");
             CarBrandsList.ReplaceEverythingBy(from c in CarsManager.Instance where c.Enabled select c.Brand);
         }
 

@@ -55,7 +55,7 @@ namespace AcManager.Tools.Starters {
                         GameProcess.Kill();
                     }
                 } catch (Exception e) {
-                    Logging.Warning("[BaseStarter] Process killing exception: " + e);
+                    Logging.Warning("Process killing exception: " + e);
                 }
 
                 GameProcess.Dispose();
@@ -75,7 +75,7 @@ namespace AcManager.Tools.Starters {
         public async Task WaitUntilGameAsync(CancellationToken cancellation) {
             if (GameProcess != null) return;
 
-            Logging.Warning("[BaseStarter] WaitUntilGameAsync(): first stage");
+            Logging.Warning("WaitUntilGameAsync(): first stage");
 
             var nothing = 0;
             for (var i = 0; i < 999; i++) {
@@ -85,13 +85,13 @@ namespace AcManager.Tools.Starters {
                 if (IsAny()) {
                     nothing = 0;
                 } else if (++nothing > 50) {
-                    Logging.Warning("[BaseStarter] WaitUntilGameAsync(): looks like the game is dead");
+                    Logging.Warning("WaitUntilGameAsync(): looks like the game is dead");
                     break;
                 }
 
                 await Task.Delay(1000, cancellation);
                 if (cancellation.IsCancellationRequested) {
-                    Logging.Warning("[BaseStarter] WaitUntilGameAsync(): cancelled");
+                    Logging.Warning("WaitUntilGameAsync(): cancelled");
                     return;
                 }
             }

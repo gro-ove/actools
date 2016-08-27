@@ -67,12 +67,12 @@ namespace AcManager.Tools.Miscellaneous {
 
                 var package = FilesStorage.Instance.GetFilename("Locales", manifest.Id + ".pak");
                 await FileUtils.WriteAllBytesAsync(package, data);
-                Logging.Write("[LocaleUpdater] Locale updated");
+                Logging.Write("Locale updated");
 
                 InstalledVersion = manifest.Version;
                 return true;
             } catch (Exception e) {
-                Logging.Warning("[LocaleUpdater] Cannot update locale: " + e);
+                Logging.Warning("Cannot update locale: " + e);
                 return false;
             }
         }

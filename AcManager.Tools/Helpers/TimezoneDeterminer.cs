@@ -22,10 +22,10 @@ namespace AcManager.Tools.Helpers {
                 CacheStorage.Set(key, result);
                 return result;
             } catch (WebException e) {
-                Logging.Warning("[TimeZoneDeterminer] TryToDetermineAsync(): " + e.Message);
+                Logging.Warning("TryToDetermineAsync(): " + e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("[TimeZoneDeterminer] TryToDetermineAsync(): " + e);
+                Logging.Warning("TryToDetermineAsync(): " + e);
                 CacheStorage.Set(key, "");
                 return null;
             }

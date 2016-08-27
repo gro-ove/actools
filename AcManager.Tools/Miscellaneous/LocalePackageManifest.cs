@@ -33,7 +33,7 @@ namespace AcManager.Tools.Miscellaneous {
                 return JsonConvert.DeserializeObject<LocalePackageManifest>(zip.Entries.First(x => x.FullName == "Manifest.json")
                                                                                .Open().ReadAsBytesAndDispose().ToUtf8String());
             } catch (Exception e) {
-                Logging.Warning("[LocaleHelper] Cannot load manifest: " + e);
+                Logging.Warning("Cannot load manifest: " + e);
                 return null;
             }
         }
@@ -46,7 +46,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return FromArchive(zip);
                 }
             } catch (Exception e) {
-                Logging.Warning("[LocaleHelper] Cannot load manifest: " + e);
+                Logging.Warning("Cannot load manifest: " + e);
                 return null;
             }
         }

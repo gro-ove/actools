@@ -33,10 +33,10 @@ namespace AcManager.Tools.Helpers.Api {
                                                                                      .ToArray();
                 }
             } catch (WebException e) {
-                Logging.Warning($"[SteamWebProvider] TryToGetAchievments(): {requestUri}, {e.Message}");
+                Logging.Warning($"TryToGetAchievments(): {requestUri}, {e.Message}");
                 return null;
             } catch (Exception e) {
-                Logging.Warning($"[SteamWebProvider] TryToGetAchievments(): {requestUri}\n{e}");
+                Logging.Warning($"TryToGetAchievments(): {requestUri}\n{e}");
                 return null;
             }
         }
@@ -61,10 +61,10 @@ namespace AcManager.Tools.Helpers.Api {
                     return (string)(((JArray)((JObject)parsed["response"])["players"]).FirstOrDefault() as JObject)?["personaname"];
                 }
             } catch (WebException e) {
-                Logging.Warning($"[SteamWebProvider] TryToGetUserName(): {requestUri}, {e.Message}");
+                Logging.Warning($"TryToGetUserName(): {requestUri}, {e.Message}");
                 return null;
             } catch (Exception e) {
-                Logging.Warning($"[SteamWebProvider] TryToGetUserName(): {requestUri}\n{e}");
+                Logging.Warning($"TryToGetUserName(): {requestUri}\n{e}");
                 return null;
             }
         }

@@ -80,7 +80,7 @@ namespace AcManager.Tools.AcObjectsNew {
             try {
                 LoadData(IniObject);
             } catch (Exception e) {
-                Logging.Warning("[AcIniObject] LoadIniOrThrow(): " + e);
+                Logging.Warning("LoadIniOrThrow(): " + e);
             }
         }
 

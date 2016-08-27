@@ -564,7 +564,7 @@ namespace AcManager.Tools.Objects {
                 LoadColorCurvesData(ColorCurvesIniObject);
                 HasCurvesData = true;
             } catch (Exception e) {
-                Logging.Warning("[WeatherObject] LoadColorCurvesData(): " + e);
+                Logging.Warning("LoadColorCurvesData(): " + e);
             }
         }
 
@@ -592,7 +592,7 @@ namespace AcManager.Tools.Objects {
             try {
                 LoadExtended(IniObject);
             } catch (Exception e) {
-                Logging.Warning("[WeatherObject] LoadExtended(): " + e);
+                Logging.Warning("LoadExtended(): " + e);
             }
 
             try {

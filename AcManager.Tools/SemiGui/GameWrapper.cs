@@ -127,7 +127,7 @@ namespace AcManager.Tools.SemiGui {
                 PrepareRaceModeRsr(properties);
                 PrepareRaceDriverName(properties);
 
-                Logging.Write("[GameWrapper] Assists: " + properties.AssistsProperties?.GetDescription());
+                Logging.Write("Assists: " + properties.AssistsProperties?.GetDescription());
             }
 
             if (_uiFactory == null) {
@@ -144,7 +144,7 @@ namespace AcManager.Tools.SemiGui {
             }
 
             using (var ui = _uiFactory.Create()) {
-                Logging.Write($"[GameWrapper] Starting game: {properties.GetDescription()}");
+                Logging.Write($"Starting game: {properties.GetDescription()}");
                 ui.Show(properties);
                 
                 try {
@@ -160,7 +160,7 @@ namespace AcManager.Tools.SemiGui {
                         result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
                     }
 
-                    Logging.Write($"[GameWrapper] Result: {result?.GetDescription() ?? @"NONE"}");
+                    Logging.Write($"Result: {result?.GetDescription() ?? @"NONE"}");
                     if (ui.CancellationToken.IsCancellationRequested) {
                         ui.OnError(new UserCancelledException());
                         return null;
@@ -191,7 +191,7 @@ namespace AcManager.Tools.SemiGui {
                     ui.OnError(new UserCancelledException());
                     return null;
                 } catch (Exception e) {
-                    Logging.Warning("[GameWrapper] StartAsync(): " + e);
+                    Logging.Warning("StartAsync(): " + e);
                     ui.OnError(e);
                     return null;
                 }

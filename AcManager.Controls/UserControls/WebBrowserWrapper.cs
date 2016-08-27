@@ -72,11 +72,11 @@ document.addEventListener('mousedown', function(e){
             try {
                 _inner.InvokeScript(@"eval", js);
             } catch (InvalidOperationException e) {
-                Logging.Warning("[WebBrowserBlock] Execute() InvalidOperationException: " + e.Message);
+                Logging.Warning("Execute() InvalidOperationException: " + e.Message);
             } catch (COMException e) {
-                Logging.Warning("[WebBrowserBlock] Execute() COMException: " + e.Message);
+                Logging.Warning("Execute() COMException: " + e.Message);
             } catch (Exception e) {
-                Logging.Warning("[WebBrowserBlock] Execute(): " + e);
+                Logging.Warning("Execute(): " + e);
             }
         }
 
@@ -90,10 +90,10 @@ document.addEventListener('mousedown', function(e){
                     try {
                         _inner.Navigate(url);
                     } catch (Exception ex) {
-                        Logging.Write("[WebBrowserBlock] Navigation failed: " + ex);
+                        Logging.Write("Navigation failed: " + ex);
                     }
                 } else {
-                    Logging.Write("[WebBrowserBlock] Navigation failed: " + e);
+                    Logging.Write("Navigation failed: " + e);
                 }
             }
         }

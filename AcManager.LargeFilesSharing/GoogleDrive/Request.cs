@@ -60,14 +60,14 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                 return result;
             } catch (WebException e) {
                 using (var stream = e.Response.GetResponseStream()) {
-                    Logging.Warning($"[Request] Send('{url}') error: {e}");
+                    Logging.Warning($"Send('{url}') error: {e}");
                     if (stream != null) {
-                        Logging.Warning($"[Request] Send('{url}') response: {new StreamReader(stream, Encoding.UTF8).ReadToEnd()}");
+                        Logging.Warning($"Send('{url}') response: {new StreamReader(stream, Encoding.UTF8).ReadToEnd()}");
                     }
                 }
                 return null;
             } catch (Exception e) {
-                Logging.Warning($"[Request] Send('{url}') error: {e}");
+                Logging.Warning($"Send('{url}') error: {e}");
                 return null;
             }
         }
@@ -152,14 +152,14 @@ namespace AcManager.LargeFilesSharing.GoogleDrive {
                 return JsonConvert.DeserializeObject<T>(result);
             } catch (WebException e) {
                 using (var stream = e.Response.GetResponseStream()) {
-                    Logging.Warning("[GoogleDriveUploader] Prepare() error: " + e);
+                    Logging.Warning("Prepare() error: " + e);
                     if (stream != null) {
-                        Logging.Warning("[GoogleDriveUploader] Prepare() response: " + new StreamReader(stream, Encoding.UTF8).ReadToEnd());
+                        Logging.Warning("Prepare() response: " + new StreamReader(stream, Encoding.UTF8).ReadToEnd());
                     }
                 }
                 return default(T);
             } catch (Exception e) {
-                Logging.Warning("[GoogleDriveUploader] Prepare() error: " + e);
+                Logging.Warning("Prepare() error: " + e);
                 return default(T);
             }
         }

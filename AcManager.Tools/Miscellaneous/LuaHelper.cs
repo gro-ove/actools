@@ -46,7 +46,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 return script;
             } catch (Exception e) {
-                Logging.Warning("[LuaHelper] Can’t initialize: " + e);
+                Logging.Warning("Can’t initialize: " + e);
                 return null;
             }
         }

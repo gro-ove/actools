@@ -77,42 +77,42 @@ namespace AcManager.Tools.Managers {
         }
 
         private void GameWrapper_Finished(object sender, GameFinishedArgs e) {
-            Logging.Write("[KunosCareerManager] Race finished");
+            Logging.Write("Race finished");
 
             var careerProperties = e.StartProperties.GetAdditional<CareerProperties>();
             if (careerProperties == null) {
-                Logging.Write("[KunosCareerManager] Not a career race");
+                Logging.Write("Not a career race");
                 return;
             }
 
-            Logging.Write($"[KunosCareerManager] Career: {careerProperties.CareerId}");
+            Logging.Write($"Career: {careerProperties.CareerId}");
 
             var career = GetById(careerProperties.CareerId);
             var ev = career?.GetEventById(careerProperties.EventId);
             if (ev == null) {
-                Logging.Warning("[KunosCareerManager] Can’t find career or event by ID.");
+                Logging.Warning("Can’t find career or event by ID.");
                 return;
             }
 
             /* just for in case */
             career.EnsureEventsLoaded();
-            Logging.Write($"[KunosCareerManager] Finished: {careerProperties.CareerId}, {careerProperties.EventId}.");
+            Logging.Write($"Finished: {careerProperties.CareerId}, {careerProperties.EventId}.");
 
             switch (career.Type) {
                 case KunosCareerObjectType.SingleEvents:
                     var conditionProperties = e.StartProperties.GetAdditional<PlaceConditions>();
                     if (conditionProperties == null) {
-                        Logging.Warning("[KunosCareerManager] PlaceConditionsProperties are missing.");
+                        Logging.Warning("PlaceConditionsProperties are missing.");
                         return;
                     }
 
                     var takenPlace = conditionProperties.GetTakenPlace(e.Result);
                     if (takenPlace >= ev.TakenPlace) {
-                        Logging.Warning("[KunosCareerManager] Taken place is worse than saved place.");
+                        Logging.Warning("Taken place is worse than saved place.");
                         return;
                     }
 
-                    Logging.Write($"[KunosCareerManager] Taken place is changed from {ev.TakenPlace} to {takenPlace}.");
+                    Logging.Write($"Taken place is changed from {ev.TakenPlace} to {takenPlace}.");
                     ev.TakenPlace = takenPlace;
                     career.SaveProgress(true);
                     if (!career.IsCompleted && CheckIfCareerCompleted(career)) {

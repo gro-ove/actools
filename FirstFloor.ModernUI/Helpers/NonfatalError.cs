@@ -88,7 +88,7 @@ namespace FirstFloor.ModernUI.Helpers {
                         Instance.UpdateUnseen();
                     }
                 } catch(Exception e) {
-                    Logging.Error("[NonfatalError] NotifyInner(): " + e);
+                    Logging.Error("NotifyInner(): " + e);
                 } finally {
                     _active = false;
                     _previous = DateTime.Now;

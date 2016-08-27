@@ -41,7 +41,7 @@ namespace AcManager.Tools.Helpers {
                 _value = forced;
                 _loaded = true;
             } else if (forced != null) {
-                Logging.Warning($"[SteamIdHelper] Invalid forced value: “{forced}”");
+                Logging.Warning($"Invalid forced value: “{forced}”");
             }
 
             if (ValuesStorage.Contains(Key)) {

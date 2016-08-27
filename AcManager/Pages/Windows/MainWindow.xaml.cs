@@ -58,7 +58,7 @@ namespace AcManager.Pages.Windows {
             }
 
             if (_testGameDialog != null) {
-                Logging.Write("[MainWindow] Testing mode");
+                Logging.Write("Testing mode");
                 var ui = new GameDialog();
                 ui.ShowDialogWithoutBlocking();
                 ((IGameUi)ui).OnResult(JsonConvert.DeserializeObject<Game.Result>(FileUtils.ReadAllText(_testGameDialog)), null);
@@ -229,7 +229,7 @@ namespace AcManager.Pages.Windows {
 
             var cancelled = true;
             foreach (var arg in AppArguments.Values) {
-                Logging.Write("[MainWindow] Input: " + arg);
+                Logging.Write("Input: " + arg);
 
                 var result = await _argumentsHandler.ProcessArgument(arg);
                 if (result == ArgumentHandleResult.FailedShow) {
@@ -249,7 +249,7 @@ namespace AcManager.Pages.Windows {
 
         public new void Show() {
             if (_cancelled) {
-                Logging.Write("[MainWindow] Cancelled");
+                Logging.Write("Cancelled");
                 return;
             }
 

@@ -28,7 +28,7 @@ namespace AcManager.Tools.GameProperties {
                 section.Set("FILTER", section.GetNonEmpty("__OGIRINAL_FILTER") ?? @"default");
                 ini.Save();
             } catch (Exception e) {
-                Logging.Warning("[WeatherSpecificPpFilterHelper] Revert(): " + e);
+                Logging.Warning("Revert(): " + e);
             }
         }
 

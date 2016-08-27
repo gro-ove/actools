@@ -37,10 +37,10 @@ namespace AcManager.Tools.Helpers {
                 LocalCache.Add(geoTags, new CachedEntry(DateTime.Now, result));
                 return result;
             } catch (WebException e) {
-                Logging.Warning("[WeatherProvider] TryToGetWeather(): " + e.Message);
+                Logging.Warning("TryToGetWeather(): " + e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("[WeatherProvider] TryToGetWeather(): " + e);
+                Logging.Warning("TryToGetWeather(): " + e);
                 return null;
             }
         }

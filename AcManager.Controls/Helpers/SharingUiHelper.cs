@@ -91,7 +91,7 @@ namespace AcManager.Controls.Helpers {
                     dataTransferManager.DataRequested += OnDataRequested;
                     DataTransferManager.ShowShareUI();
                 } catch (Exception e) {
-                    Logging.Warning("[SharingUiHelper] DataTransferManager exception: " + e);
+                    Logging.Warning("DataTransferManager exception: " + e);
                 }
 #endif
             } catch (Exception e) {

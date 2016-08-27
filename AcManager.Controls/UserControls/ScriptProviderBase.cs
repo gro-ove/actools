@@ -29,7 +29,7 @@ namespace AcManager.Controls.UserControls {
         }
 
         public void Log(string message) {
-            Logging.Write("[ScriptProvider] " + message);
+            Logging.Write("" + message);
         }
 
         public void Alert(string message) {

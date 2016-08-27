@@ -26,9 +26,9 @@ namespace AcManager.Controls.Dialogs {
             _loaded = true;
 
             try {
-                Logging.Write("[VLC] Initialization: " + PluginsManager.Instance.GetPluginDirectory("VLC"));
+                Logging.Write("Initialization: " + PluginsManager.Instance.GetPluginDirectory("VLC"));
                 Player.Initialize(PluginsManager.Instance.GetPluginDirectory("VLC"), @"--ignore-config", @"--no-video-title", @"--no-sub-autodetect-file");
-                Logging.Write("[VLC] Player.BeginStop()");
+                Logging.Write("Player.BeginStop()");
                 Player.BeginStop(Stopped);
             } catch (Exception ex) {
                 NonfatalError.Notify(Controls.ControlsStrings.VideoViewer_CannotPlay, Controls.ControlsStrings.VideoViewer_CannotPlay_Commentary, ex);
@@ -38,9 +38,9 @@ namespace AcManager.Controls.Dialogs {
 
         private void Stopped() {
             try {
-                Logging.Write("[VLC] Player.LoadMedia()");
+                Logging.Write("Player.LoadMedia()");
                 Player.LoadMedia(Filename);
-                Logging.Write("[VLC] Player.Play()");
+                Logging.Write("Player.Play()");
                 Player.Play();
                 Player.StateChanged += Player_StateChanged;
             } catch (Exception e) {
@@ -58,9 +58,9 @@ namespace AcManager.Controls.Dialogs {
         private void VideoViewer_OnClosed(object sender, EventArgs e) {
             try {
                 Player.Dispose();
-                Logging.Write("[VLC] Disposed");
+                Logging.Write("Disposed");
             } catch (Exception ex) {
-                Logging.Write("[VLC] Dispose exception: " + ex);
+                Logging.Write("Dispose exception: " + ex);
             }
         }
 

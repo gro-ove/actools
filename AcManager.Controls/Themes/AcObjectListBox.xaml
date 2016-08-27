@@ -23,8 +23,8 @@
                         <ListBox x:Name="PART_ListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
                                 VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="1,1" VirtualizingPanel.CacheLengthUnit="Page"
                                 VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True" ItemsSource="{TemplateBinding InnerItemsSource}"
-                                SelectedItem="{TemplateBinding SelectedItem}" ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}"
-                                SelectionMode="{TemplateBinding SelectionMode}" />
+                                SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
+                                ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" SelectionMode="{TemplateBinding SelectionMode}" />
                     </DockPanel>
                 </ControlTemplate>
             </Setter.Value>

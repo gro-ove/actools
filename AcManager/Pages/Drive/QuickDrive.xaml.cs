@@ -172,7 +172,7 @@ namespace AcManager.Pages.Drive {
                             break;
 
                         default:
-                            Logging.Warning("[QuickDrive] Not supported mode: " + value);
+                            Logging.Warning("Not supported mode: " + value);
                             SelectedMode = new Uri("/Pages/Drive/QuickDrive_Practice.xaml", UriKind.Relative);
                             break;
                     }

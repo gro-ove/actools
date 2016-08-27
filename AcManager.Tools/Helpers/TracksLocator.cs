@@ -25,7 +25,7 @@ namespace AcManager.Tools.Helpers {
             try {
                 var result = await YahooApiProvider.LocateAsync(address);
                 if (result.LatitudeValue.HasValue && result.LongitudeValue.HasValue) {
-                    Logging.Write($"[QuickDrive] “{address}”, geo tags: ({result})");
+                    Logging.Write($"“{address}”, geo tags: ({result})");
                     CacheStorage.Set(key, new Point(result.LatitudeValue.Value, result.LongitudeValue.Value));
                     return result;
                 }
@@ -33,10 +33,10 @@ namespace AcManager.Tools.Helpers {
                 CacheStorage.Set(key, "");
                 return null;
             } catch (WebException e) {
-                Logging.Warning("[TracksLocator] TryToLocateAsync(): " + e.Message);
+                Logging.Warning("TryToLocateAsync(): " + e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("[TracksLocator] TryToLocateAsync(): " + e);
+                Logging.Warning("TryToLocateAsync(): " + e);
                 CacheStorage.Set(key, "");
                 return null;
             }

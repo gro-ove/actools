@@ -36,7 +36,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         private static void NextServer() {
             InternalUtils.MoveToNextKunosServer();
-            Logging.Warning("[KunosApiProvider] Fallback to: " + (ServerUri ?? @"NULL"));
+            Logging.Warning("Fallback to: " + (ServerUri ?? @"NULL"));
         }
 
         private static HttpRequestCachePolicy _cachePolicy;
@@ -203,7 +203,7 @@ namespace AcManager.Tools.Helpers.Api {
                     watch.Restart();
                     var parsed = JsonConvert.DeserializeObject<ServerInformation[]>(data);
                     var parsingTime = watch.Elapsed;
-                    Logging.Write($"[KunosApiProvider] List (loading/parsing): {loadTime.TotalMilliseconds:F1} ms/{parsingTime.TotalMilliseconds:F1} ms");
+                    Logging.Write($"List (loading/parsing): {loadTime.TotalMilliseconds:F1} ms/{parsingTime.TotalMilliseconds:F1} ms");
                     return parsed;
                 } catch (WebException e) {
                     Logging.Warning($"Cannot get servers list: {requestUri}, {e.Message}");

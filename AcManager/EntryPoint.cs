@@ -213,7 +213,7 @@ namespace AcManager {
                         handler(ReceiveSomeData());
                         window.BringToFront();
                     } catch (Exception e) {
-                        Logging.Warning("[EntryPoint] Can’t handle message: " + e);
+                        Logging.Warning("Can’t handle message: " + e);
                     }
                 }
 
@@ -229,14 +229,14 @@ namespace AcManager {
                 try {
                     hwnd = HwndSource.FromHwnd(new WindowInteropHelper(window).Handle);
                     if (hwnd == null) {
-                        Logging.Warning("[EntryPoint] Can’t add one-instance hook: HwndSource is null");
+                        Logging.Warning("Can’t add one-instance hook: HwndSource is null");
                         return;
                     }
 
                     hwnd.AddHook(hook);
                     window.Unloaded += handlers[1];
                 } catch (Exception e) {
-                    Logging.Warning("[EntryPoint] Can’t add one-instance hook: " + e);
+                    Logging.Warning("Can’t add one-instance hook: " + e);
                     hook = null;
                 }
             };
@@ -248,7 +248,7 @@ namespace AcManager {
                 try {
                     hwnd.RemoveHook(hook);
                 } catch (Exception e) {
-                    Logging.Warning("[EntryPoint] Can’t remove one-instance hook: " + e);
+                    Logging.Warning("Can’t remove one-instance hook: " + e);
                     hook = null;
                 }
             };

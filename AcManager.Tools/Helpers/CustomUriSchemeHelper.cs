@@ -70,9 +70,9 @@ namespace AcManager.Tools.Helpers {
                 ValuesStorage.Set(KeyRegisteredLocation, MainExecutingFile.Location);
                 ValuesStorage.Set(KeyRegisteredVersion, Version);
 
-                Logging.Write("[CustomUriSchemeHelper] Registered!");
+                Logging.Write("Registered!");
             } catch (Exception e) {
-                Logging.Warning("[CustomUriSchemeHelper] Can’t register: " + e);
+                Logging.Warning("Can’t register: " + e);
             }
         }
     }

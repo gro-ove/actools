@@ -196,7 +196,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 return new BitmapEntry(bi, width, height);
             } catch (Exception e) {
-                Logging.Warning("[BetterImage] Loading failed: " + e);
+                Logging.Warning("Loading failed: " + e);
                 return new BitmapEntry();
             }
         }
@@ -265,14 +265,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } catch (FileFormatException e) {
                 // I AM THE GOD OF STUPID WORKAROUNDS, AND I BRING YOU, WORKAROUND!
                 if (attempt++ < 2 && e.InnerException is COMException) {
-                    Logging.Warning("[BetterImage] Recover attempt: " + attempt);
+                    Logging.Warning("Recover attempt: " + attempt);
                     return LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, attempt);
                 }
 
-                Logging.Warning("[BetterImage] Loading failed: " + e);
+                Logging.Warning("Loading failed: " + e);
                 return new BitmapEntry();
             } catch (Exception e) {
-                Logging.Warning("[BetterImage] Loading failed: " + e);
+                Logging.Warning("Loading failed: " + e);
                 return new BitmapEntry();
             }
         }

@@ -146,7 +146,7 @@ namespace AcManager.Tools {
             if (!uri.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.OrdinalIgnoreCase)) return ArgumentHandleResult.FailedShow;
 
             var request = uri.SubstringExt(CustomUriSchemeHelper.UriScheme.Length);
-            Logging.Write("[ArgumentsHandler] URI Request: " + request);
+            Logging.Write("URI Request: " + request);
 
             if (!request.StartsWith(@"//", StringComparison.Ordinal)) {
                 return await ProcessUriRequestObsolete(request);

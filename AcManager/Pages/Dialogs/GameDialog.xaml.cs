@@ -98,7 +98,7 @@ namespace AcManager.Pages.Dialogs {
             var conditions = properties?.GetAdditional<PlaceConditions>();
             var takenPlace = conditions?.GetTakenPlace(result) ?? PlaceConditions.UnremarkablePlace;
 
-            Logging.Write($"[GameDialog] Place conditions: {conditions?.GetDescription()}, result: {result.GetDescription()}");
+            Logging.Write($"Place conditions: {conditions?.GetDescription()}, result: {result.GetDescription()}");
 
             {
                 var extra = result.GetExtraByType<Game.ResultExtraDrift>();
@@ -303,7 +303,7 @@ namespace AcManager.Pages.Dialogs {
                     Model.CurrentState = ViewModel.State.Finished;
                     Model.FinishedData = GetFinishedData(_properties, result);
                 } catch (Exception e) {
-                    Logging.Warning("[GameDialog] IGameUi.OnResult(): " + e);
+                    Logging.Warning("IGameUi.OnResult(): " + e);
 
                     Model.CurrentState = ViewModel.State.Error;
                     Model.ErrorMessage = AppStrings.RaceResult_ResultProcessingError;

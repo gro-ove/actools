@@ -34,7 +34,7 @@ namespace AcManager.Tools.Helpers.Api.Rsr {
                 }
             } catch (Exception e) {
                 if (!cancellation.IsCancellationRequested) {
-                    Logging.Warning($"[RsrApiProvider] Cannot get {eventId}: " + e);
+                    Logging.Warning($"Cannot get {eventId}: " + e);
                 }
 
                 return null;

@@ -9,6 +9,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
+using AcManager.Pages.Miscellaneous;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
@@ -68,11 +70,22 @@ namespace AcManager.UserControls {
         private RelayCommand _addOpponentCarCommand;
 
         public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new RelayCommand(o => {
-            var model = Model;
-            if (model == null) return;
-
-            model.AddEntry(SelectedCar);
+            AddSelected();
         }, o => SelectedCar != null));
+
+        private void AddSelected() {
+            var model = Model;
+            var selectCar = (SelectCarPopup.Content as DependencyObject)?.FindLogicalChild<SelectCar>();
+            if (model == null || selectCar == null) return;
+
+            foreach (var car in selectCar.GetSelectedCars()) {
+                model.AddEntry(car);
+            }
+        }
+
+        private void SelectCar_OnItemChosen(object sender, ItemChosenEventArgs<CarObject> e) {
+            Model?.AddEntry(e.ChosenItem);
+        }
 
         private ICommand _closeAddingPopupCommand;
 
@@ -89,6 +102,7 @@ namespace AcManager.UserControls {
                 _selectedCar = value;
                 OnPropertyChanged();
                 _addOpponentCarCommand?.OnCanExecuteChanged();
+                Logging.Debug(value);
             }
         }
 

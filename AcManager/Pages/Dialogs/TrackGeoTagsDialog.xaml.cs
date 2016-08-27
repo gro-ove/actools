@@ -58,7 +58,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public void Log(string message) {
-                Logging.Write("[SCRIPTPROVIDER] " + message);
+                Logging.Write("" + message);
             }
 
             public void Alert(string message) {

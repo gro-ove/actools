@@ -48,7 +48,7 @@ namespace AcManager.Tools.ContentInstallation {
             } catch (CryptographicException) {
                 return true;
             } catch (Exception e) {
-                Logging.Write("[SharpCompressExtension] HasAnyEncryptedFiles(): " + e);
+                Logging.Write("HasAnyEncryptedFiles(): " + e);
                 return true;
             }
         }

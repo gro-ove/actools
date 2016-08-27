@@ -112,9 +112,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             try {
                 base.Close();
             } catch (InvalidOperationException e) {
-                Logging.Warning("[DpiAwareWindow] Close error: " + e.Message);
+                Logging.Warning("Close error: " + e.Message);
             } catch (Exception e) {
-                Logging.Warning("[DpiAwareWindow] Close error: " + e);
+                Logging.Warning("Close error: " + e);
             }
         }
 
@@ -293,12 +293,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (relScaleX == 1.0 && relScaleY == 1.0) return;
 
             if (!IsFinite(relScaleX)) {
-                Logging.Warning("[DpiAwareWindow] relScaleX is NaN: " + relScaleX + ", " + width + ", " + Width);
+                Logging.Warning("relScaleX is NaN: " + relScaleX + ", " + width + ", " + Width);
                 return;
             }
 
             if (!IsFinite(relScaleY)) {
-                Logging.Warning("[DpiAwareWindow] relScaleY is NaN: " + relScaleY + ", " + width + ", " + Width);
+                Logging.Warning("relScaleY is NaN: " + relScaleY + ", " + width + ", " + Width);
                 return;
             }
 

@@ -64,7 +64,7 @@ namespace AcManager.Tools.Objects {
                 Content = File.ReadAllText(Location);
                 RemoveError(AcErrorType.Data_IniIsMissing);
             } catch (Exception e) {
-                Logging.Write("[PpFilterObject] Can’t load: " + e);
+                Logging.Write("Can’t load: " + e);
                 AddError(AcErrorType.Data_IniIsMissing, Id);
             } finally {
                 Changed = changed;

@@ -29,17 +29,17 @@ namespace AcManager.Tools.Starters {
         public void Enable() {
             if (AcRootDirectory.Instance == null) return;
 
-            Logging.Warning("[StarterPlus] Patch()");
+            Logging.Warning("Patch()");
             if (IsPatched()) return;
 
             if (AcRootDirectory.Instance.Value == null) {
-                Logging.Warning("[StarterPlus] AC Root directory is missing.");
+                Logging.Warning("AC Root directory is missing.");
                 return;
             }
 
             var addon = PluginsManager.Instance.GetById(AddonId);
             if (addon?.IsReady != true) {
-                Logging.Warning("[StarterPlus] Addon is not installed or enabled.");
+                Logging.Warning("Addon is not installed or enabled.");
                 return;
             }
 
@@ -54,7 +54,7 @@ namespace AcManager.Tools.Starters {
 
                     File.Move(launcherFilename, backupFilename);
                 } catch (Exception e) {
-                    Logging.Warning("[StarterPlus] Can’t move original file out of the way: " + e);
+                    Logging.Warning("Can’t move original file out of the way: " + e);
                     return;
                 }
             }
@@ -66,21 +66,21 @@ namespace AcManager.Tools.Starters {
                     archive.GetEntry("AssettoCorsa.exe").ExtractToFile(launcherFilename);
                 }
             } catch (Exception e) {
-                Logging.Warning("[StarterPlus] Can’t extract file: " + e);
-                Logging.Warning("[StarterPlus] Rollback!");
+                Logging.Warning("Can’t extract file: " + e);
+                Logging.Warning("Rollback!");
                 Disable();
                 return;
             }
 
-            Logging.Write("[StarterPlus] Enabled.");
+            Logging.Write("Enabled.");
         }
 
         public void Disable() {
-            Logging.Warning("[StarterPlus] RollBack()");
+            Logging.Warning("RollBack()");
             if (!IsPatched()) return;
 
             if (AcRootDirectory.Instance.Value == null) {
-                Logging.Warning("[StarterPlus] AC Root directory is missing.");
+                Logging.Warning("AC Root directory is missing.");
                 return;
             }
 
@@ -88,7 +88,7 @@ namespace AcManager.Tools.Starters {
             var backupFilename = BackupFilename;
 
             if (!File.Exists(backupFilename)) {
-                Logging.Warning("[StarterPlus] Backup file is missing.");
+                Logging.Warning("Backup file is missing.");
                 return;
             }
 
@@ -96,7 +96,7 @@ namespace AcManager.Tools.Starters {
                 try {
                     File.Delete(launcherFilename);
                 } catch (Exception e) {
-                    Logging.Warning("[StarterPlus] Can’t move modified file out of the way: " + e);
+                    Logging.Warning("Can’t move modified file out of the way: " + e);
                     return;
                 }
             }
@@ -107,11 +107,11 @@ namespace AcManager.Tools.Starters {
                 try {
                     File.Copy(backupFilename, launcherFilename);
                 } catch (Exception e) {
-                    Logging.Warning("[StarterPlus] Can’t move restore original file: " + e);
+                    Logging.Warning("Can’t move restore original file: " + e);
                 }
             }
 
-            Logging.Write("[StarterPlus] Disabled.");
+            Logging.Write("Disabled.");
         }
 
         public bool TryToPrepare() {
@@ -128,7 +128,7 @@ namespace AcManager.Tools.Starters {
             }
 
             File.WriteAllText(FlagFilename, AcsName);
-            Logging.Warning("[StarterPlus] Run(), FlagFilename: " + FlagFilename);
+            Logging.Warning("Run(), FlagFilename: " + FlagFilename);
 
             LauncherProcess = Process.Start(new ProcessStartInfo {
                 FileName = LauncherFilename,
@@ -140,7 +140,7 @@ namespace AcManager.Tools.Starters {
             base.CleanUp();
 
             if (File.Exists(FlagFilename)) {
-                Logging.Warning("[StarterPlus] Flag wasn’t deleted!");
+                Logging.Warning("Flag wasn’t deleted!");
                 File.Delete(FlagFilename);
             }
         }

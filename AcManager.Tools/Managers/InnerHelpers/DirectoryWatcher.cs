@@ -23,7 +23,7 @@ namespace AcManager.Tools.Managers.InnerHelpers {
             var parentDirectory = Path.GetDirectoryName(TargetDirectory);
             if (parentDirectory == null || !Directory.Exists(parentDirectory)) {
                 _failed = true;
-                Logging.Error("[DirectoryWatcher] FAILED DUE TO PARENT DIRECTORY MISSING: " + TargetDirectory);
+                Logging.Error("FAILED DUE TO PARENT DIRECTORY MISSING: " + TargetDirectory);
                 return;
             }
 

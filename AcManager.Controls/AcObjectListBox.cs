@@ -93,11 +93,6 @@ namespace AcManager.Controls {
             set { SetValue(SelectionModeProperty, value); }
         }
 
-        [NotNull]
-        public IEnumerable<AcObjectNew> GetSelectedItems() {
-            return (GetTemplateChild(@"PART_ListBox") as ListBox)?.SelectedItems.OfType<AcObjectNew>() ?? new AcObjectNew[0];
-        }
-
         public AcObjectListBox() {
             Loaded += AcObjectListBox_Loaded;
         }
@@ -210,5 +205,29 @@ namespace AcManager.Controls {
         }
 
         public event EventHandler<AcObjectEventArgs> SelectedAcObjectChanged;
+
+        private ListBox _listBox;
+
+        public override void OnApplyTemplate() {
+            if (_listBox != null) {
+                _listBox.SelectionChanged -= ListBox_SelectionChanged;
+            }
+
+            base.OnApplyTemplate();
+
+            _listBox = GetTemplateChild(@"PART_ListBox") as ListBox;
+            if (_listBox != null) {
+                _listBox.SelectionChanged += ListBox_SelectionChanged;
+            }
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            SelectedItem = _listBox?.SelectedItem as AcObjectNew;
+        }
+
+        [NotNull]
+        public IEnumerable<AcObjectNew> GetSelectedItems() {
+            return _listBox?.SelectedItems.OfType<AcObjectNew>() ?? new AcObjectNew[0];
+        }
     }
 }

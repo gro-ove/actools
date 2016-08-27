@@ -48,7 +48,7 @@ namespace AcManager.Controls.Helpers {
                     ToastWin8Helper.Instance.ShowToast(title, message, icon, click ?? _defaultAction);
                     return;
                 } catch (Exception e) {
-                    Logging.Warning("[Toast] Win8 Toaster is not available: " + e);
+                    Logging.Warning("Win8 Toaster is not available: " + e);
                     _winToasterIsNotAvailable = true;
                 }
             }
@@ -81,7 +81,7 @@ namespace AcManager.Controls.Helpers {
                     notifyIcon.Visible = false;
                 }
             } catch (Exception e) {
-                Logging.Warning("[Toast] ShowFallback(): " + e);
+                Logging.Warning("ShowFallback(): " + e);
             }
         }
     }

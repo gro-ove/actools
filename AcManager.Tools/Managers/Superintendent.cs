@@ -39,7 +39,7 @@ namespace AcManager.Tools.Managers {
                 manager.Rescan();
             }
 
-            Logging.Write($"[Superintendent] Rescanning finished: {_managers.Count} managers, {w.Elapsed.TotalMilliseconds:F2} ms");
+            Logging.Write($"Rescanning finished: {_managers.Count} managers, {w.Elapsed.TotalMilliseconds:F2} ms");
         }
 
         void AcRootDirectory_Changed(object sender, AcRootDirectoryEventArgs e) {

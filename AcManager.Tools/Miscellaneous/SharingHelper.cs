@@ -186,7 +186,7 @@ namespace AcManager.Tools.Miscellaneous {
                 entryType = (SharedEntryType)Enum.Parse(typeof(SharedEntryType), loaded.EntryType);
             } catch (Exception) {
                 NonfatalError.Notify(string.Format(ToolsStrings.SharingHelper_NotSupported, loaded.EntryType), ToolsStrings.SharingHelper_NotSupported_Commentary);
-                Logging.Warning("[SharingHelper] Unsupported entry type: " + loaded.EntryType);
+                Logging.Warning("Unsupported entry type: " + loaded.EntryType);
                 return null;
             }
 
@@ -210,7 +210,7 @@ namespace AcManager.Tools.Miscellaneous {
             try {
                 return new BetterObservableCollection<SharedEntry>(ValuesStorage.GetStringList(Key).Select(SharedEntry.Deserialize));
             } catch (Exception e) {
-                Logging.Warning("[SharingHelper] Can't load history: " + e);
+                Logging.Warning("Can't load history: " + e);
                 return new BetterObservableCollection<SharedEntry>();
             }
         }

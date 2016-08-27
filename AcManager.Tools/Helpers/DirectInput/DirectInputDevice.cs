@@ -89,7 +89,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                     _joystick.SetCooperativeLevel(new WindowInteropHelper(Application.Current.MainWindow).Handle,
                             CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
                 } catch (Exception e) {
-                    Logging.Warning("[DirectInputDevice] Can’t set cooperative level: " + e);
+                    Logging.Warning("Can’t set cooperative level: " + e);
                 }
             }
 
@@ -139,7 +139,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 if (e.Message.Contains("DIERR_UNPLUGGED")) {
                     Unplugged = true;
                 } else if (!Error){
-                    Logging.Warning("[DirectInputDevice] Exception: " + e);
+                    Logging.Warning("Exception: " + e);
                     Error = true;
                 }
             }

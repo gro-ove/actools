@@ -34,7 +34,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 try {
                     source = new Uri(path);
                 } catch (Exception) {
-                    Logging.Warning("[UriToCachedImageConverter] Invalid URI format: " + path);
+                    Logging.Warning("Invalid URI format: " + path);
                     return null;
                 }
             }

@@ -19,7 +19,7 @@ namespace AcManager.Tools.Helpers {
                     Environment.Exit(0);
                 }
             } catch (Exception e) {
-                Logging.Warning("[WindowsHelper] RestartCurrentApplication(): " + e);
+                Logging.Warning("RestartCurrentApplication(): " + e);
             }
         }
 

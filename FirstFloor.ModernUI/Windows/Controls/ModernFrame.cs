@@ -227,7 +227,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void SetNavigationFailedContent(Uri newValue, NavigationType navigationType, Exception e) {
-            Logging.Warning("[FRAME] Navigation failed: " + e?.InnerException);
+            Logging.Warning("Navigation failed: " + e?.InnerException);
 
             // raise failed event
             var failedArgs = new NavigationFailedEventArgs {
