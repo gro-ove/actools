@@ -79,6 +79,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public override void CleanUp() {
+            base.CleanUp();
             IniFile.Write(FileUtils.GetRaceIniFilename(), "AUTOSPAWN", "ACTIVE", "0");
         }
     }

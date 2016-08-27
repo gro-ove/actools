@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
@@ -65,6 +66,7 @@ namespace AcManager.Pages.Miscellaneous {
                 if (Equals(value, _selectedItem)) return;
                 _selectedItem = value;
                 OnPropertyChanged();
+                Logging.Debug(value);
             }
         }
 
@@ -83,7 +85,7 @@ namespace AcManager.Pages.Miscellaneous {
 
         private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e) {
             var s = (DependencyObject)e.OriginalSource;
-            var l = s.GetParent<ListBoxItem>()?.DataContext as AcObjectNew;
+            var l = (s.GetParent<ListBoxItem>()?.DataContext as AcItemWrapper)?.Loaded();
             if (l != null) {
                 ItemChosen?.Invoke(this, new ItemChosenEventArgs<AcObjectNew>(l));
             }

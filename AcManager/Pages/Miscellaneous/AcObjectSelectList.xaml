@@ -4,5 +4,5 @@
         xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         d:DataContext="{d:DesignInstance mi:AcObjectSelectList}">
     <c:AcObjectListBox x:Name="List" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" BasicFilter="{Binding Filter, Mode=OneTime}"
-            ItemsSource="{Binding MainList, Mode=OneTime}" SelectionMode="Extended" MouseDoubleClick="OnMouseDoubleClick" />
+            ItemsSource="{Binding MainList, Mode=OneTime}" SelectionMode="Extended" PreviewMouseDoubleClick="OnMouseDoubleClick" />
 </UserControl>

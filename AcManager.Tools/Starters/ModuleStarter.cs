@@ -148,6 +148,7 @@ namespace AcManager.Tools.Starters {
 
         public override void CleanUp() {
             IniFile.Write(BackdoorFilename, "COMMAND", "CURRENT", "");
+            base.CleanUp();
         }
     }
 }

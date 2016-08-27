@@ -359,6 +359,10 @@
     </Compile>
     <Compile Include="Plugins\AwesomiumPluginWrapper.cs" />
     <Compile Include="Plugins\MagickPluginWrapper.cs" />
+    <Compile Include="QuickSwitches\QuickSwitchCommands.cs" />
+    <Compile Include="QuickSwitches\QuickSwitchesBlock.xaml.cs">
+      <DependentUpon>QuickSwitchesBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools\AcErrors\AcErrorFixer.cs" />
     <Compile Include="Tools\ArgumentHandleResult.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
@@ -1109,6 +1113,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="QuickSwitches\QuickSwitchesBlock.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="QuickSwitches\QuickSwitchesWidgets.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UserControls\AssistsEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1185,9 +1197,7 @@
       <Name>StringBasedFilter</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Properties\BinaryResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

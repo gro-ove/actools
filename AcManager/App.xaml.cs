@@ -11,12 +11,14 @@ using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
+using AcManager.Controls.QuickSwitches;
 using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Plugins;
 using AcManager.Properties;
+using AcManager.QuickSwitches;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -37,6 +39,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows.Controls;
+using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager {
     public partial class App {

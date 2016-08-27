@@ -102,7 +102,6 @@ namespace AcManager.UserControls {
                 _selectedCar = value;
                 OnPropertyChanged();
                 _addOpponentCarCommand?.OnCanExecuteChanged();
-                Logging.Debug(value);
             }
         }
 

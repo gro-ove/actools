@@ -39,7 +39,7 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using DragDropEffects = System.Windows.DragDropEffects;
-using QuickSwitchesBlock = AcManager.Controls.QuickSwitches.QuickSwitchesBlock;
+using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener {
@@ -420,10 +420,19 @@ namespace AcManager.Pages.Windows {
                     var child = GetQuickSwitches().ElementAtOrDefault(k);
                     if (child == null) break;
 
+                    QuickSwitchesNotification.SetValue(TextBlock.ForegroundProperty, child.GetValue(TextBlock.ForegroundProperty));
+
                     var toggle = child as ModernToggleButton;
                     if (toggle != null) {
                         toggle.IsChecked = !toggle.IsChecked;
                         ShowQuickSwitchesPopup(toggle.IconData, $@"{toggle.Content}: {toggle.IsChecked.ToReadableBoolean()}", child.ToolTip);
+                        break;
+                    }
+
+                    var button = child as ModernButton;
+                    if (button != null) {
+                        button.Command?.Execute(null);
+                        ShowQuickSwitchesPopup(button.IconData, button.Content?.ToString(), child.ToolTip);
                         break;
                     }
 

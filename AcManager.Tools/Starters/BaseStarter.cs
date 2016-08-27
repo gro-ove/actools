@@ -9,6 +9,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Starters {
     public abstract class BaseStarter : IAcsPlatformSpecificStarter {
@@ -22,17 +23,19 @@ namespace AcManager.Tools.Starters {
         
         public abstract void Run();
 
+        [CanBeNull]
+        private Process TryToGetGameProcess() {
+            return Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+        }
+
         public void WaitUntilGame() {
             if (GameProcess != null) return;
 
             for (var i = 0; i < 100; i++) {
-                GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                GameProcess = TryToGetGameProcess();
                 if (GameProcess != null) break;
                 Thread.Sleep(500);
             }
-
-            Thread.Sleep(1000);
-            GameProcess = Process.GetProcessesByName(AcsName.ApartFromLast(".exe", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         }
 
         protected void SetAcX86Param() {
@@ -47,6 +50,10 @@ namespace AcManager.Tools.Starters {
             if (LauncherProcess != null) {
                 LauncherProcess.Dispose();
                 LauncherProcess = null;
+            }
+
+            if (GameProcess == null) {
+                GameProcess = TryToGetGameProcess();
             }
 
             if (GameProcess != null) {

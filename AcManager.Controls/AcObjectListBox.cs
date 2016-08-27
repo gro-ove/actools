@@ -222,12 +222,13 @@ namespace AcManager.Controls {
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            SelectedItem = _listBox?.SelectedItem as AcObjectNew;
+            SelectedItem = (_listBox?.SelectedItem as AcItemWrapper)?.Loaded();
         }
 
         [NotNull]
         public IEnumerable<AcObjectNew> GetSelectedItems() {
-            return _listBox?.SelectedItems.OfType<AcObjectNew>() ?? new AcObjectNew[0];
+            return _listBox?.SelectedItems.OfType<AcItemWrapper>().Select(x => x.Loaded()) ??
+                    new AcObjectNew[0];
         }
     }
 }

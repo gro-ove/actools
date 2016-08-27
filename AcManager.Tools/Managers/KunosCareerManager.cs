@@ -85,6 +85,11 @@ namespace AcManager.Tools.Managers {
                 return;
             }
 
+            if (e.Result == null) {
+                Logging.Write("Result=null");
+                return;
+            }
+
             Logging.Write($"Career: {careerProperties.CareerId}");
 
             var career = GetById(careerProperties.CareerId);

@@ -1,17 +1,15 @@
-﻿<DockPanel x:Class="AcManager.Controls.QuickSwitches.QuickSwitchesBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<DockPanel x:Class="AcManager.QuickSwitches.QuickSwitchesBlock" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:Controls="clr-namespace:AcManager.Controls"
-        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Background="{DynamicResource WindowBackground}" Width="320">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Background="{DynamicResource WindowBackground}" Width="320">
     <DockPanel.Resources>
-        <ResourceDictionary Source="QuickSwitchesWidgets.xaml" />
+        <ResourceDictionary Source="/QuickSwitches/QuickSwitchesWidgets.xaml" />
     </DockPanel.Resources>
 
     <Rectangle DockPanel.Dock="Right" HorizontalAlignment="Right" Width="1" Fill="{DynamicResource Accent}" />
 
     <StackPanel Margin="16 8 8 48" VerticalAlignment="Center">
-        <TextBlock Text="{x:Static Controls:ControlsStrings.QuickSwitches_Header}" Style="{StaticResource Heading1}" />
+        <TextBlock Text="{x:Static c:ControlsStrings.QuickSwitches_Header}" Style="{StaticResource Heading1}" />
 
         <ItemsControl x:Name="List">
             <ItemsControl.ItemsPanel>

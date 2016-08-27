@@ -570,6 +570,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _immediateCancel;
+
+            public bool ImmediateCancel {
+                get { return _immediateCancel ?? (_immediateCancel = ValuesStorage.GetBool("Settings.DriveSettings.ImmediateCancel", false)).Value; }
+                set {
+                    if (Equals(value, _immediateCancel)) return;
+                    _immediateCancel = value;
+                    ValuesStorage.Set("Settings.DriveSettings.ImmediateCancel", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _skipPracticeResults;
 
             public bool SkipPracticeResults {

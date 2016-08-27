@@ -18,8 +18,7 @@
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_QuickDrive}" Source="/Pages/Drive/QuickDrive.xaml" />
                 <mui:Link DisplayName="{x:Static g:AppStrings.Main_Career}" Source="/Pages/Drive/KunosCareer.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml"
-                        IsEnabled="False" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Live}">
@@ -106,8 +105,8 @@
                 <DockPanel>
                     <TextBlock x:Name="QuickSwitchesNotificationText" DockPanel.Dock="Bottom" Style="{StaticResource Label}" Margin="0 4 0 0"
                             HorizontalAlignment="Center" />
-                    <Path x:Name="QuickSwitchesNotificationIcon" Width="24" Height="24" Fill="{DynamicResource ButtonText}" Stretch="Uniform"
-                            HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                    <Path x:Name="QuickSwitchesNotificationIcon" Width="24" Height="24" Fill="{Binding Foreground, ElementName=QuickSwitchesNotificationText}"
+                            Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True" />
                 </DockPanel>
             </Border>
         </Popup>

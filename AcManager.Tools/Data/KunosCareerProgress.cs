@@ -161,8 +161,7 @@ namespace AcManager.Tools.Data {
                         Enumerable.Range(1, 99)
                                 .Select(y => $"AI{y}")
                                 .TakeWhile(y => x.Value.ContainsKey(y))
-                                .Select(y => x.Value.GetInt(y, 0)).ToArray()
-,
+                                .Select(y => x.Value.GetInt(y, 0)).ToArray(),
                         x.Value.GetLong("LASTSELECTED", 0)));
 
             _skipSaving = false;

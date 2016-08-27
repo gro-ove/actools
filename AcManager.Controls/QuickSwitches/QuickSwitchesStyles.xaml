@@ -112,6 +112,75 @@
         </Setter>
     </Style>
 
+    <Style TargetType="mui:ModernButton">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="{StaticResource BlockMargin}" />
+        <Setter Property="Width" Value="{StaticResource BlockSize}" />
+        <Setter Property="Height" Value="{StaticResource BlockSize}" />
+        <Setter Property="IconWidth" Value="{StaticResource IconSize}" />
+        <Setter Property="IconHeight" Value="{StaticResource IconSize}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="mui:ModernButton">
+                    <Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderThickness="0" BorderBrush="Transparent">
+                        <DockPanel Margin="{TemplateBinding Padding}">
+                            <TextBlock DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
+                                    TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" FontFamily="{StaticResource FontFamily}"
+                                    FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" HorizontalAlignment="Center"
+                                    DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}" />
+                            <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{TemplateBinding IconWidth}" Height="{TemplateBinding IconHeight}"
+                                    Fill="{TemplateBinding Foreground}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    SnapsToDevicePixels="True">
+                                <Path.RenderTransform>
+                                    <TranslateTransform Y="0" />
+                                </Path.RenderTransform>
+                            </Path>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.12" To="2" FillBehavior="HoldEnd" Storyboard.TargetName="PART_Icon"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:0.12" To="0" FillBehavior="HoldEnd" Storyboard.TargetName="PART_Icon"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ButtonTextHover}" />
+                            <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
+                            <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="qs:QuickSwitchComboBox">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Margin" Value="{StaticResource BlockMargin}" />

@@ -160,9 +160,6 @@
     <Compile Include="ControlsLocalizedDescriptionAttribute.cs" />
     <Compile Include="Presentation\DependencyObjectExtension.cs" />
     <Compile Include="QuickSwitches\QuickSwitchComboBox.cs" />
-    <Compile Include="QuickSwitches\QuickSwitchesBlock.xaml.cs">
-      <DependentUpon>QuickSwitchesBlock.xaml</DependentUpon>
-    </Compile>
     <Compile Include="QuickSwitches\QuickSwitchPresetsControl.cs" />
     <Compile Include="QuickSwitches\QuickSwitchSlider.cs" />
     <Compile Include="ControlsStrings.Designer.cs">
@@ -340,10 +337,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="QuickSwitches\QuickSwitchesWidgets.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Themes\AcObjectBase.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -388,10 +381,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UserControls\AssistsDescription.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="QuickSwitches\QuickSwitchesBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

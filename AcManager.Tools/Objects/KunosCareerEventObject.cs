@@ -94,7 +94,7 @@ namespace AcManager.Tools.Objects {
         public override void LoadProgress() {
             var entry = KunosCareerProgress.Instance.Entries.GetValueOrDefault(KunosCareerId);
             if (entry == null) {
-                TakenPlace = 0;
+                TakenPlace = KunosCareerType == KunosCareerObjectType.SingleEvents ? PlaceConditions.UnremarkablePlace : 0;
                 IsAvailable = KunosCareerType == KunosCareerObjectType.SingleEvents || EventNumber == 0;
                 IsPassed = false;
                 return;
@@ -144,7 +144,7 @@ namespace AcManager.Tools.Objects {
                 if (!ini.ContainsKey(sectionKey) || string.IsNullOrWhiteSpace(ini[sectionKey].GetPossiblyEmpty("DRIVER_NAME"))) {
                     if (opponentsIniFile == null) {
                         var career = KunosCareerManager.Instance.GetById(KunosCareerId);
-                        if (career == null) throw new Exception(string.Format("Can’t find parent career with ID={0}", KunosCareerId));
+                        if (career == null) throw new Exception($"Can’t find parent career with ID={KunosCareerId}");
 
                         opponentsIniFile = new IniFile(career.OpponentsIniFilename);
                         if (opponentsIniFile.IsEmptyOrDamaged()) break;

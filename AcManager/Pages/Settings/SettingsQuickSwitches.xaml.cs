@@ -25,8 +25,6 @@ namespace AcManager.Pages.Settings {
 
             if (_widgets == null) {
                 _widgets = Resources.MergedDictionaries.SelectMany(x => x.Keys.OfType<string>()).Where(x => x.StartsWith(@"Widget")).ToArray();
-                Logging.Write("Widgets: " + _widgets.JoinToString(@", "));
-
                 if (active.Any(x => !_widgets.Contains(x))) {
                     active = active.Where(x => _widgets.Contains(x)).ToArray();
                     SettingsHolder.Drive.QuickSwitchesList = active;

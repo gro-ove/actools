@@ -1,14 +1,14 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsQuickSwitches" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:AcManager="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsQuickSwitches+SettingsQuickSwitchesViewModel}"
         mui:ModernFrame.KeepAlive="False">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/QuickSwitches/QuickSwitchesWidgets.xaml" />
+                <mui:SharedResourceDictionary Source="/QuickSwitches/QuickSwitchesWidgets.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
@@ -44,9 +44,9 @@
     <ScrollViewer>
         <StackPanel Style="{StaticResource SettingsPanel}">
             <CheckBox IsChecked="{Binding Drive.QuickSwitches}">
-                <Label Content="{x:Static AcManager:AppStrings.Settings_QuickSwitches_Enable}" />
+                <Label Content="{x:Static g:AppStrings.Settings_QuickSwitches_Enable}" />
             </CheckBox>
-            <mui:BbCodeBlock Margin="0 0 0 20" TextWrapping="Wrap" BbCode="{x:Static AcManager:AppStrings.Settings_QuickSwitches_Description}" />
+            <mui:BbCodeBlock Margin="0 0 0 20" TextWrapping="Wrap" BbCode="{x:Static g:AppStrings.Settings_QuickSwitches_Description}" />
 
             <Grid>
                 <Grid.RowDefinitions>
@@ -60,9 +60,9 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource Label}" Margin="0 0 0 4"
-                        Text="{x:Static AcManager:AppStrings.Settings_QuickSwitches_AddedLabel}" />
+                        Text="{x:Static g:AppStrings.Settings_QuickSwitches_AddedLabel}" />
                 <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource Label}" Margin="0 0 0 4"
-                        Text="{x:Static AcManager:AppStrings.Settings_QuickSwitches_LibraryLabel}" />
+                        Text="{x:Static g:AppStrings.Settings_QuickSwitches_LibraryLabel}" />
 
                 <ListBox x:Name="AddedItems" Grid.Row="1" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         ItemContainerStyle="{StaticResource ListBoxItem}" Background="Transparent" AllowDrop="True" Drop="List_OnDrop">

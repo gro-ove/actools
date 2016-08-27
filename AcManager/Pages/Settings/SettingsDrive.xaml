@@ -39,6 +39,10 @@
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_StartImmediately}" />
             </CheckBox>
 
+            <!--<CheckBox IsChecked="{Binding Drive.ImmediateCancel}">
+                <Label Content="Terminate loading immediately if Escape is pressed" />
+            </CheckBox>-->
+
             <CheckBox IsChecked="{Binding Drive.SkipPracticeResults}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_SkipPracticeResults}" />
             </CheckBox>

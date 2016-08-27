@@ -5,7 +5,7 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
-namespace AcManager.Controls.QuickSwitches {
+namespace AcManager.QuickSwitches {
     public partial class QuickSwitchesBlock {
         public QuickSwitchesBlock() {
             InitializeComponent();
