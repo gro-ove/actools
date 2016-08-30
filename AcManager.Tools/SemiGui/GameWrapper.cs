@@ -59,14 +59,11 @@ namespace AcManager.Tools.SemiGui {
         }
 
         private static void PrepareRaceModeRsr(Game.StartProperties properties) {
-            if (!SettingsHolder.Live.RsrEnabled) return;
-            if (SettingsHolder.Live.RsrDisableAppAutomatically) {
-                var rsrMode = properties.GetAdditional<RsrMark>() != null;
-                var form = AcSettingsHolder.Forms.Entries.GetByIdOrDefault(RsrMark.FormId);
-                if (form != null) {
-                    form.IsVisible = rsrMode;
-                    AcSettingsHolder.Forms.SaveImmediately();
-                }
+            var rsrMode = properties.GetAdditional<RsrMark>() != null;
+            var form = AcSettingsHolder.Forms.Entries.GetByIdOrDefault(RsrMark.FormId);
+            if (form != null) {
+                form.IsVisible = rsrMode;
+                AcSettingsHolder.Forms.SaveImmediately();
             }
         }
 
@@ -118,13 +115,20 @@ namespace AcManager.Tools.SemiGui {
                 properties.SetAdditional(new WeatherSpecificPpFilterHelper());
             }
 
+            if (SettingsHolder.Drive.WeatherSpecificTyreSmoke) {
+                properties.SetAdditional(new WeatherSpecificTyreSmokeHelper());
+            }
+
+            if (SettingsHolder.Live.RsrEnabled && SettingsHolder.Live.RsrDisableAppAutomatically) {
+                PrepareRaceModeRsr(properties);
+            }
+
             if (raceMode) {
                 if (properties.AssistsProperties == null) {
                     properties.AssistsProperties = _defaultAssistsFactory?.Create();
                 }
 
                 PrepareRaceModeImmediateStart(properties);
-                PrepareRaceModeRsr(properties);
                 PrepareRaceDriverName(properties);
 
                 Logging.Write("Assists: " + properties.AssistsProperties?.GetDescription());

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 
 namespace AcManager.Tools.Helpers {
     public static class MainExecutingFile {
@@ -7,7 +8,7 @@ namespace AcManager.Tools.Helpers {
         private static string _name;
         private static string _directory;
 
-        public static string Location => _location ?? (_location = System.Reflection.Assembly.GetEntryAssembly().Location);
+        public static string Location => _location ?? (_location = Assembly.GetEntryAssembly().Location);
 
         public static string Name => _name ?? (_name = Path.GetFileName(Location));
 

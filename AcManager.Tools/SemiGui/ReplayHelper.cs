@@ -34,7 +34,10 @@ namespace AcManager.Tools.SemiGui {
         public bool IsReplayRenamed {
             get { return _isReplayRenamed; }
             set {
-                if (!IsReplayAvailable || RenamedReplayFilename == null || Equals(_isReplayRenamed, value)) return;
+                if (!IsReplayAvailable || RenamedReplayFilename == null || Equals(_isReplayRenamed, value)) {
+                    Logging.Warning("Cannot change state");
+                    return;
+                }
 
                 try {
                     if (value) {
@@ -52,8 +55,8 @@ namespace AcManager.Tools.SemiGui {
         }
 
         [CanBeNull]
-        private static string GetReplayName(Game.StartProperties startProperties, Game.Result result) {
-            if (startProperties == null || result == null) return null;
+        private static string GetReplayName([CanBeNull] Game.StartProperties startProperties, [CanBeNull] Game.Result result) {
+            if (startProperties == null) return null;
 
             var s = SettingsHolder.Drive.ReplaysNameFormat;
             if (string.IsNullOrEmpty(s)) {

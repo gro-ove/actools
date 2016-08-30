@@ -216,6 +216,14 @@ namespace AcManager.Pages.Drive {
 
             public BaseOnlineManager Manager { get; }
 
+            public bool ShowList => MainList.Count > 0 || SelectedSource != null;
+
+            protected override void FilteredNumberChanged(int oldValue, int newValue) {
+                if (oldValue == 0 || newValue == 0) {
+                    OnPropertyChanged(nameof(ShowList));
+                }
+            }
+
             private void LoadQuickFilter() {
                 var loaded = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, Key);
                 if (loaded == null) return;
@@ -271,6 +279,7 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _selectedSource)) return;
                     _selectedSource = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(ShowList));
                 }
             }
 

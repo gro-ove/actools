@@ -69,13 +69,14 @@ namespace FirstFloor.ModernUI.Helpers {
         private static readonly TimeSpan ErrorsTimeout = TimeSpan.FromSeconds(3);
         private const int ErrorsLimit = 30;
 
-        private static void NotifyInner(NonfatalErrorEntry entry) {
+        private static void NotifyInner(NonfatalErrorEntry entry, bool message) {
             Logging.Warning($"{entry.DisplayName}:\n{entry.Exception}");
             Application.Current.Dispatcher.InvokeAsync(() => {
                 try {
+                    var active = _active;
                     _active = true;
 
-                    if (!_active && DateTime.Now - _previous > ErrorsTimeout) {
+                    if (message && !active && DateTime.Now - _previous > ErrorsTimeout) {
                         ErrorMessage.Show(entry);
                     }
 
@@ -87,7 +88,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     if (entry.Unseen) {
                         Instance.UpdateUnseen();
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     Logging.Error("NotifyInner(): " + e);
                 } finally {
                     _active = false;
@@ -96,13 +97,12 @@ namespace FirstFloor.ModernUI.Helpers {
             });
         }
 
-        private static void NotifyInner(string problemDescription, string solutionCommentary, Exception exception) {
-            NotifyInner(new NonfatalErrorEntry(problemDescription, solutionCommentary, exception));
+        private static void NotifyInner(string problemDescription, string solutionCommentary, Exception exception, bool message) {
+            NotifyInner(new NonfatalErrorEntry(problemDescription, solutionCommentary, exception), message);
         }
 
         /// <summary>
-        /// Notify about some non-fatal exception. User will see some message only if
-        /// some notifier (implemented INonfatalErrorNotifier interface) was registered.
+        /// Notify about some non-fatal exception. User will see some message.
         /// </summary>
         /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
         /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
@@ -112,20 +112,48 @@ namespace FirstFloor.ModernUI.Helpers {
 
             var i = exception as InformativeException;
             if (i != null) {
-                NotifyInner(i.Message, i.SolutionCommentary, i.InnerException);
+                NotifyInner(i.Message, i.SolutionCommentary, i.InnerException, true);
             } else {
-                NotifyInner(problemDescription, solutionCommentary, exception);
+                NotifyInner(problemDescription, solutionCommentary, exception, true);
             }
         }
 
         /// <summary>
-        /// Notify about some non-fatal exception. User will see some message only if
-        /// some notifier (implemented INonfatalErrorNotifier interface) was registered.
+        /// Notify about some non-fatal exception. User will see some message.
         /// </summary>
         /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
         /// <param name="exception">Exception which caused the problem.</param>
         public static void Notify([LocalizationRequired] string problemDescription, Exception exception = null) {
             Notify(problemDescription, null, exception);
+        }
+
+        /// <summary>
+        /// Notify about some non-fatal exception. User will see a new entry in
+        /// errors list.
+        /// </summary>
+        /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
+        /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
+        /// <param name="exception">Exception which caused the problem.</param>
+        public static void NotifyBackground([LocalizationRequired] string problemDescription, [LocalizationRequired] string solutionCommentary,
+                Exception exception = null) {
+            if (exception is UserCancelledException) return;
+
+            var i = exception as InformativeException;
+            if (i != null) {
+                NotifyInner(i.Message, i.SolutionCommentary, i.InnerException, false);
+            } else {
+                NotifyInner(problemDescription, solutionCommentary, exception, false);
+            }
+        }
+
+        /// <summary>
+        /// Notify about some non-fatal exception. User will see a new entry in
+        /// errors list.
+        /// </summary>
+        /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
+        /// <param name="exception">Exception which caused the problem.</param>
+        public static void NotifyBackground([LocalizationRequired] string problemDescription, Exception exception = null) {
+            NotifyBackground(problemDescription, null, exception);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcTools.Processes;
 using StringBasedFilter;
@@ -77,7 +78,8 @@ namespace AcManager.Tools.Filters {
 
         public bool Test(ServerEntry obj, string key, ITestEntry value) {
             if (key == null) {
-                return value.Test(obj.Id) || value.Test(obj.DisplayName);
+                return SettingsHolder.Content.SimpleFiltering && value.Test(obj.TrackId) ||
+                        value.Test(obj.Id) || value.Test(obj.DisplayName);
             }
 
             switch (key) {

@@ -271,7 +271,11 @@ namespace AcManager.Pages.Dialogs {
             Func<string> buttonText = () => replayHelper?.IsReplayRenamed == true ? AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;
 
             var saveReplayButton = CreateExtraDialogButton(buttonText(), () => {
-                if (replayHelper == null) return;
+                if (replayHelper == null) {
+                    Logging.Warning("ReplayHelper=NULL");
+                    return;
+                }
+
                 replayHelper.IsReplayRenamed = !replayHelper.IsReplayRenamed;
             });
             if (replayHelper == null) {

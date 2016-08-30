@@ -11,14 +11,12 @@ using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
-using AcManager.Controls.QuickSwitches;
 using AcManager.Controls.ViewModels;
 using AcManager.Internal;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Plugins;
 using AcManager.Properties;
-using AcManager.QuickSwitches;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -35,14 +33,15 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows.Controls;
-using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
+using StringBasedFilter;
 
 namespace AcManager {
-    public partial class App {
+    public partial class App : FatalErrorMessage.IAppRestartHelper {
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
         public static void CreateAndRun() {
@@ -173,12 +172,25 @@ namespace AcManager {
             BbCodeBlock.ImageClicked += BbCodeBlock_ImageClicked;
 
             AppArguments.Set(AppFlag.LoadImagesInBackground, ref BetterImage.OptionBackgroundLoading);
+            Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
             
             StartupUri = new Uri(!Superintendent.Instance.IsReady || AcRootDirectorySelector.IsReviewNeeded() ?
                     @"Pages/Dialogs/AcRootDirectorySelector.xaml" : @"Pages/Windows/MainWindow.xaml", UriKind.Relative);
 
             InitializeUpdatableStuff();
             BackgroundInitialization();
+
+            FatalErrorMessage.Register(this);
+            ImageUtils.SafeMagickWrapper = fn => {
+                try {
+                    return fn();
+                } catch (OutOfMemoryException e) {
+                    NonfatalError.Notify("Can’t load image using Magick.NET", "Please, try to make image a bit smaller.", e);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t load image using Magick.NET", e);
+                }
+                return null;
+            };
         }
 
         private void PrepareUi() {
@@ -210,6 +222,7 @@ namespace AcManager {
         private async void BackgroundInitialization() {
             await Task.Delay(1500);
             WeatherSpecificCloudsHelper.Revert();
+            WeatherSpecificTyreSmokeHelper.Revert();
             WeatherSpecificPpFilterHelper.Revert();
             CopyFilterToSystemForOculusHelper.Revert();
 
@@ -275,6 +288,10 @@ namespace AcManager {
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {
             Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
+        }
+
+        public void Restart() {
+            WindowsHelper.RestartCurrentApplication();
         }
     }
 }

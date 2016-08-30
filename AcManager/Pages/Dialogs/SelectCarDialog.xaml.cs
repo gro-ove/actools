@@ -243,17 +243,37 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private ISelectedItemPage<AcObjectNew> _list;
+        private IChoosingItemControl<AcObjectNew> _choosing;
 
         private void Tabs_OnFrameNavigated(object sender, NavigationEventArgs e) {
             if (_list != null) {
                 _list.PropertyChanged -= List_PropertyChanged;
             }
 
-            _list = ((ModernTab)sender).Frame.Content as ISelectedItemPage<AcObjectNew>;
-            if (_list == null) return;
-            
-            _list.SelectedItem = SelectedCar;
-            _list.PropertyChanged += List_PropertyChanged;
+            if (_choosing != null) {
+                _choosing.ItemChosen -= Choosing_ItemChosen;
+            }
+
+            var content = ((ModernTab)sender).Frame.Content;
+            _list = content as ISelectedItemPage<AcObjectNew>;
+            _choosing = content as IChoosingItemControl<AcObjectNew>;
+
+            if (_list != null) {
+                _list.SelectedItem = SelectedCar;
+                _list.PropertyChanged += List_PropertyChanged;
+            }
+
+            if (_choosing != null) {
+                _choosing.ItemChosen += Choosing_ItemChosen;
+            }
+        }
+
+        private void Choosing_ItemChosen(object sender, ItemChosenEventArgs<AcObjectNew> e) {
+            var c = e.ChosenItem as CarObject;
+            if (c != null) {
+                SelectedCar = c;
+                CloseWithResult(MessageBoxResult.OK);
+            }
         }
 
         private void List_PropertyChanged(object sender, PropertyChangedEventArgs e) {

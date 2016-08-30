@@ -78,7 +78,8 @@ namespace AcManager.Pages.Drive {
                     ModeProperties = new Game.HotlapProperties {
                         Penalties = Penalties,
                         GhostCar = GhostCar,
-                        GhostCarAdvantage = GhostCarAdvantage
+                        GhostCarAdvantage = GhostCarAdvantage,
+                        RecordGhostCar = SettingsHolder.Drive.AlwaysRecordGhost ? true : (bool?)null
                     }
                 });
             }

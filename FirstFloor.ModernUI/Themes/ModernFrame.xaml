@@ -26,7 +26,7 @@
                             <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="20">
                                     <TextBlock
-                                            Text="{Binding Source={x:Static modernUi:UiStrings.NavigationFailed}, Converter={StaticResource ToUpperConverter}}"
+                                            Text="{Binding Source={x:Static modernUi:UiStrings.NavigationFailed}, Converter={StaticResource ToTitleConverter}}"
                                             Style="{StaticResource Heading1}" />
                                     <TextBlock Text="{Binding Message}" FontWeight="Bold" Foreground="#e51400" Margin="0 0 0 8" TextWrapping="Wrap" />
                                     <TextBlock Text="{x:Static modernUi:UiStrings.Source}" FontWeight="Bold" />

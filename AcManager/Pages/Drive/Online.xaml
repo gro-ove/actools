@@ -34,7 +34,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0" Visibility="{Binding MainList.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=≠0}">
+            <Grid Grid.Column="0" Visibility="{Binding ShowList, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
@@ -141,7 +141,7 @@
                     IsHitTestVisible="False" />
 
             <!--empty-->
-            <StackPanel Visibility="{Binding MainList.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Grid.ColumnSpan="3"
+            <StackPanel Visibility="{Binding ShowList, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" Grid.ColumnSpan="3"
                     Grid.Column="0" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" TextAlignment="Center" />
                 <StackPanel Orientation="Horizontal" Margin="8 16 0 0">

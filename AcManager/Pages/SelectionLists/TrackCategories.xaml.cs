@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Pages.SelectionLists;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
-namespace AcManager.Pages.Dialogs {
+namespace AcManager.Pages.SelectionLists {
     /// <summary>
     /// Interaction logic for SelectTrackDialog_Categories.xaml
     /// </summary>
-    public partial class SelectTrackDialog_Categories {
+    public partial class TrackCategories {
         public ViewModel Model => (ViewModel) DataContext;
 
-        public SelectTrackDialog_Categories() {
+        public TrackCategories() {
             DataContext = new ViewModel();
             InitializeComponent();
         }

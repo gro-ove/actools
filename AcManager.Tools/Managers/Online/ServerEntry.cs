@@ -306,7 +306,6 @@ namespace AcManager.Tools.Managers.Online {
 
                 _wrongPassword = false;
                 OnPropertyChanged(nameof(WrongPassword));
-
                 _joinCommand?.OnCanExecuteChanged();
             }
         }
@@ -327,7 +326,6 @@ namespace AcManager.Tools.Managers.Online {
 
                 _wrongPassword = false;
                 OnPropertyChanged(nameof(WrongPassword));
-
                 _joinCommand?.OnCanExecuteChanged();
             }
         }
@@ -376,6 +374,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _bookingMode)) return;
                 _bookingMode = value;
                 OnPropertyChanged();
+                _joinCommand?.OnCanExecuteChanged();
 
                 if (!value) {
                     DisposeHelper.Dispose(ref _ui);
@@ -648,6 +647,7 @@ namespace AcManager.Tools.Managers.Online {
                 _sessions = value;
                 OnPropertyChanged();
                 CurrentSessionType = Sessions.FirstOrDefault(x => x.IsActive)?.Type;
+                _joinCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -808,7 +808,9 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private void SelectedCarChanged(object sender, EventArgs e) {
-            LimitedStorage.Set(LimitedSpace.OnlineSelectedCar, Id, GetSelectedCar()?.Id);
+            var selectedCar = GetSelectedCar();
+            LimitedStorage.Set(LimitedSpace.OnlineSelectedCar, Id, selectedCar?.Id);
+            IsAvailable = Status == ServerStatus.Ready && selectedCar != null;
         }
 
         private RelayCommand _addToRecentCommand;

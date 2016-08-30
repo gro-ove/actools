@@ -23,10 +23,7 @@ using MessageBox = System.Windows.Forms.MessageBox;
 namespace AcManager {
     [Localizable(false)]
     public class EntryPoint {
-        private static string _applicationDataDirectory;
-
-        public static string ApplicationDataDirectory => _applicationDataDirectory ?? (_applicationDataDirectory =
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager"));
+        public static string ApplicationDataDirectory { get; private set; }
 
         public static string GetLogName(string id) {
 #if DEBUG
@@ -68,7 +65,7 @@ namespace AcManager {
             try {
                 MainReal(a);
             } catch (Exception e) {
-                MessageBox.Show(e.ToString(), "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                UnhandledExceptionHandler(e);
             }
         }
 
@@ -78,10 +75,19 @@ namespace AcManager {
                 SetUnhandledExceptionHandler();
             }
 
-            RenameContentToData();
-
             AppArguments.Initialize(a);
+            var data = AppArguments.Get(AppFlag.StorageLocation);
+            if (!string.IsNullOrWhiteSpace(data)) {
+                ApplicationDataDirectory = Path.GetFullPath(data);
+            } else {
+                var exe = Assembly.GetEntryAssembly().Location;
+                ApplicationDataDirectory = Path.GetFileName(exe).IndexOf("local", StringComparison.OrdinalIgnoreCase) != -1
+                        ? Path.Combine(Path.GetDirectoryName(exe) ?? Path.GetFullPath("."), "Data")
+                        : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager");
+            }
+
             AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
+            RenameContentToData();
 
             var logFilename = AppArguments.GetBool(AppFlag.LogPacked, true) ? GetLogName("Packed Log") : null;
             AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References", logFilename).Handler;
@@ -174,7 +180,6 @@ namespace AcManager {
         private static bool LogError(string text) {
             try {
                 if (!LoggingIsAvailable()) return false;
-
                 Logging.Error(text);
                 return true;
             } catch (Exception) {
@@ -183,14 +188,31 @@ namespace AcManager {
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-            var e = args.ExceptionObject as Exception;
+        private static void UnhandledExceptionFancyHandler(Exception e) {
+            if (!System.Windows.Application.Current.Windows.OfType<Window>().Any(x => x.IsLoaded && x.IsVisible)) {
+                throw new Exception();
+            }
 
+            DpiAwareWindow.OnFatalError(e);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void UnhandledExceptionHandler(Exception e) {
             var text = e?.ToString() ?? @"?";
+
             try {
-                MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } catch (Exception) {
-                // ignored
+                UnhandledExceptionFancyHandler(e);
+                return;
+            } catch (Exception ex) {
+                if (!string.IsNullOrWhiteSpace(ex.Message)) {
+                    MessageBox.Show(ex.ToString(), "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                try {
+                    MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } catch (Exception) {
+                    // ignored
+                }
             }
 
             if (!LogError(text)) {
@@ -203,6 +225,12 @@ namespace AcManager {
             }
 
             Environment.Exit(1);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
+            var e = args.ExceptionObject as Exception;
+            UnhandledExceptionHandler(e);
         }
 
         public static void HandleSecondInstanceMessages(DpiAwareWindow window, Action<IEnumerable<string>> handler) {

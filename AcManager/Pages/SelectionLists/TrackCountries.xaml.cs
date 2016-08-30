@@ -7,17 +7,28 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Annotations;
-using AcManager.Pages.SelectionLists;
+using AcManager.Pages.Miscellaneous;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter;
 
-namespace AcManager.Pages.Dialogs {
-    public partial class SelectTrackDialog_Countries : INotifyPropertyChanged {
-        public SelectTrackDialog.ViewModel MainDialog { get; }
+namespace AcManager.Pages.SelectionLists {
+    public partial class TrackCountries : ISelectedItemPage<AcObjectNew> {
+        private AcObjectNew _selectedItem;
+
+        public AcObjectNew SelectedItem {
+            get { return _selectedItem; }
+            set {
+                if (Equals(value, _selectedItem)) return;
+                _selectedItem = value;
+
+                UpdateSelected(value as TrackObjectBase);
+            }
+        }
 
         public ListCollectionView Countries => _countries;
 
@@ -42,41 +53,35 @@ namespace AcManager.Pages.Dialogs {
         private static void CountriesList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             switch (e.Action) {
                 case NotifyCollectionChangedAction.Add:
-                    _countriesInformationList.AddRange(e.NewItems.Cast<string>().Select(x => new SelectCountry(x)));
+                    if (e.NewItems != null) {
+                        _countriesInformationList.AddRange(e.NewItems.Cast<string>().Select(x => new SelectCountry(x)));
+                        return;
+                    }
                     break;
-
-                default:
-                    _countriesInformationList.ReplaceEverythingBy(
-                        SuggestionLists.CountriesList.Select(x => new SelectCountry(x))
-                    );
-                    break;
+                case NotifyCollectionChangedAction.Move:
+                    return;
             }
+
+            _countriesInformationList.ReplaceEverythingBy(
+                SuggestionLists.CountriesList.Select(x => new SelectCountry(x))
+            );
         }
 
-        public SelectTrackDialog_Countries() {
-            MainDialog = SelectTrackDialog.Instance.Model;
-            MainDialog.PropertyChanged += MainDialog_PropertyChanged;
-
+        public TrackCountries() {
             InitializeComponent();
             DataContext = this;
 
-            TracksManager.Instance.EnsureLoadedAsync().Forget();
             if (_countriesInformationList == null) {
                 InitializeOnce();
             }
 
-            UpdateSelected();
-        }
-
-        void MainDialog_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(SelectTrackDialog.ViewModel.SelectedTrackConfiguration)) {
-                UpdateSelected();
+            if (!TracksManager.Instance.IsLoaded) {
+                TracksManager.Instance.EnsureLoadedAsync().Forget();
             }
         }
 
-        private void UpdateSelected() {
-            if (MainDialog.SelectedTrack == null) return;
-            var item = _countriesInformationList.FirstOrDefault(x => x.DisplayName == MainDialog.SelectedTrack.Country);
+        private void UpdateSelected(TrackObjectBase track) {
+            var item = _countriesInformationList.FirstOrDefault(x => x.DisplayName == track.Country);
             if (item == null) return;
             CountriesListBox.SelectedItem = item;
             CountriesListBox.ScrollIntoView(item);

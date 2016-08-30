@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using ImageMagick;
+using JetBrains.Annotations;
 
 namespace AcTools.Utils {
     public static partial class ImageUtils {
@@ -57,8 +58,15 @@ namespace AcTools.Utils {
             AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static Image LoadFromFileAsImage(string filename) {
+        // Temporary solution?
+        public static Func<Func<object>, object> SafeMagickWrapper { get; set; }
+
+        [CanBeNull, MethodImpl(MethodImplOptions.Synchronized)]
+        public static Image LoadFromFileAsImage(string filename, bool wrapping = true) {
+            if (wrapping && SafeMagickWrapper != null) {
+                return SafeMagickWrapper(() => LoadFromFileAsImage(filename, false)) as Image;
+            }
+            
             using (var image = new MagickImage(filename)) {
                 return image.ToBitmap();
             }
@@ -66,22 +74,37 @@ namespace AcTools.Utils {
 
         private const MagickFormat CommonFormat = MagickFormat.Bmp;
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static byte[] LoadFromFileAsConventionalBuffer(string filename) {
+        [CanBeNull, MethodImpl(MethodImplOptions.Synchronized)]
+        public static byte[] LoadFromFileAsConventionalBuffer(string filename, bool wrapping = true) {
+            if (wrapping && SafeMagickWrapper != null) {
+                return SafeMagickWrapper(() => LoadFromFileAsConventionalBuffer(filename, false)) as byte[];
+            }
+            
             using (var image = new MagickImage(filename)) {
                 return image.ToByteArray(CommonFormat);
             }
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static byte[] LoadAsConventionalBuffer(byte[] data) {
+        [CanBeNull, MethodImpl(MethodImplOptions.Synchronized)]
+        public static byte[] LoadAsConventionalBuffer(byte[] data, bool wrapping = true) {
+            if (wrapping && SafeMagickWrapper != null) {
+                return SafeMagickWrapper(() => LoadAsConventionalBuffer(data, false)) as byte[];
+            }
+            
             using (var image = new MagickImage(data)) {
                 return image.ToByteArray(CommonFormat);
             }
         }
 
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static byte[] LoadAsConventionalBuffer(byte[] data, bool noAlpha, out string formatDescription) {
+        [CanBeNull, MethodImpl(MethodImplOptions.Synchronized)]
+        public static byte[] LoadAsConventionalBuffer(byte[] data, bool noAlpha, out string formatDescription, bool wrapping = true) {
+            if (wrapping && SafeMagickWrapper != null) {
+                string description = null;
+                var result = SafeMagickWrapper(() => LoadAsConventionalBuffer(data, noAlpha, out description, false)) as byte[];
+                formatDescription = description;
+                return result;
+            }
+            
             using (var image = new MagickImage(data)) {
                 formatDescription = image.CompressionMethod.ToString();
 

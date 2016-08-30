@@ -98,7 +98,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
-        public Button CreateExtraStyledDialogButton([Localizable(false)] string styleKey, string content, Action<object> action, Func<object, bool> canExecute = null) {
+        public Button CreateExtraStyledDialogButton([Localizable(false)] string styleKey, string content, Action<object> action,
+                Func<object, bool> canExecute = null) {
             return CreateExtraStyledDialogButton(styleKey, content, new RelayCommand(action, canExecute));
         }
 
@@ -273,6 +274,56 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public object ButtonsRowContent {
             get { return GetValue(ButtonsRowContentProperty); }
             set { SetValue(ButtonsRowContentProperty, value); }
+        }
+    }
+
+    public class FatalErrorMessage : ModernDialog {
+        internal FatalErrorMessage() {
+            DefaultStyleKey = typeof(FatalErrorMessage);
+        }
+
+        public static readonly DependencyProperty MessageProperty = DependencyProperty.Register(nameof(Message), typeof(string),
+                typeof(FatalErrorMessage));
+
+        public string Message {
+            get { return (string)GetValue(MessageProperty); }
+            set { SetValue(MessageProperty, value); }
+        }
+
+        public static readonly DependencyProperty StackTraceProperty = DependencyProperty.Register(nameof(StackTrace), typeof(string),
+                typeof(FatalErrorMessage));
+
+        public string StackTrace {
+            get { return (string)GetValue(StackTraceProperty); }
+            set { SetValue(StackTraceProperty, value); }
+        }
+
+        private ICommand _copyCommand;
+
+        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new RelayCommand(o => {
+            Clipboard.SetText(StackTrace);
+        }));
+
+        private ICommand _restartCommand;
+
+        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new RelayCommand(o => {
+            _restartHelper?.Restart();
+        }));
+
+        private ICommand _exitCommand;
+
+        public ICommand ExitCommand => _exitCommand ?? (_exitCommand = new RelayCommand(o => {
+            Environment.Exit(1);
+        }));
+
+        private static IAppRestartHelper _restartHelper;
+
+        public static void Register(IAppRestartHelper helper) {
+            _restartHelper = helper;
+        }
+
+        public interface IAppRestartHelper {
+            void Restart();
         }
     }
 }

@@ -34,6 +34,10 @@ namespace StringBasedFilter {
     /// Untyped version with variable ITester.
     /// </summary>
     public class Filter : IFilter {
+        // some of users just can’t be bothered to spend a bit of time 
+        // to read how the whole system works, so here you go
+        public static bool OptionSimpleMatching = false;
+
         public static IFilter<T> Create<T>(ITester<T> tester, [Localizable(false)] string filter, bool strictMode = false) {
             return new Filter<T>(tester, filter, strictMode);
         }

@@ -69,7 +69,7 @@ namespace StringBasedFilter.TestEntries {
                     return true;
 
                 default:
-                    return char.IsWhiteSpace(value[i - 1]);
+                    return Filter.OptionSimpleMatching || char.IsWhiteSpace(value[i - 1]);
             }
         }
 

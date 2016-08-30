@@ -4937,11 +4937,11 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Runned.
+        ///   Looks up a localized string similar to Running.
         /// </summary>
-        public static string Main_ServerRunned {
+        public static string Main_ServerRunning {
             get {
-                return ResourceManager.GetString("Main_ServerRunned", resourceCulture);
+                return ResourceManager.GetString("Main_ServerRunning", resourceCulture);
             }
         }
         

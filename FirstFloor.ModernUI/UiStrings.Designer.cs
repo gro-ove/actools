@@ -97,6 +97,24 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://restart]restart[/url] this app or just [url=cmd://exit]close[/url] it..
+        /// </summary>
+        public static string FatalCrashSuggestionsMessage {
+            get {
+                return ResourceManager.GetString("FatalCrashSuggestionsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App just ran into a problem and needs to restart. Please, use “Report an issue” button afterwards if you want to send a report..
+        /// </summary>
+        public static string FatalError_Message {
+            get {
+                return ResourceManager.GetString("FatalError_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
         public static string FiltersLinkAll {

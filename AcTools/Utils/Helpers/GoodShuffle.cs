@@ -54,8 +54,7 @@ namespace AcTools.Utils.Helpers {
             _ignoredItem = default(T);
             _ignoreItem = false;
         }
-
-        [CanBeNull]
+        
         public T GetNext() {
             if (_buffer.Length == 0) return default(T);
 
@@ -72,8 +71,7 @@ namespace AcTools.Utils.Helpers {
         public void RemoveLimit() {
             Limit = int.MaxValue;
         }
-
-        [CanBeNull]
+        
         public T Next => GetNext();
 
         public IEnumerator<T> GetEnumerator() {

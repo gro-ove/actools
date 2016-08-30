@@ -264,7 +264,34 @@
             <Trigger Property="IsActive" Value="True">
                 <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />
             </Trigger>
+            <Trigger Property="FatalError" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="c:ModernWindow">
+                            <Border x:Name="WindowBorder" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}"
+                                    Background="DarkCyan" TextBlock.Foreground="White">
+                                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.LayoutTransform>
+                                            <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"
+                                                    ScaleX="{x:Static c:DpiAwareWindow.OptionScale}" ScaleY="{x:Static c:DpiAwareWindow.OptionScale}" />
+                                        </Grid.LayoutTransform>
+
+                                        <AdornerDecorator>
+                                            <Grid x:Name="LayoutRoot">
+                                                <StackPanel Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock Text="Fatal Error" Style="{StaticResource Heading1}" />
+                                                    <TextBlock Text="App just encountered an unxpected exception and crashed." />
+                                                </StackPanel>
+                                            </Grid>
+                                        </AdornerDecorator>
+                                    </Grid>
+                                </Border>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
         </Style.Triggers>
     </Style>
-
 </ResourceDictionary>

@@ -16,39 +16,6 @@ Here are some of the arguments:
  [b][mono]--enable-race-ini-restoration=false[/mono][/b] — don’t revert changes in [i]race.ini[/i].
 
 You can see the full list [url=""https://github.com/gro-ove/actools/blob/master/AcManager/AppFlag.cs""]here[/url].", false, false),
-            new PieceOfInformation(@"8_-1601734236_1588375622", @"starters", @"Starters", null, @"[b]This part is very important. Please, read it.[/b]
-
-Since Steam version of AC can’t be started only by running [i]acs.exe[/i], CM has to use some weird ways to do the trick. At the moment there are three strange ways to start the game (apart from direct starting by [b]Naive Starter[/b]). All of them had their flaws, that’s why you have to select one which suits you:
-
- • [b]Tricky Starter[/b]
-First one. Uses pretty weird approach, which requires to temporary remove [i]AssettoCorsa.exe[/i] out of the way. On the bright side, this is the only change it does. So:
-  + Steam-friendly: Steam overlay & archievments will work without any problems;
-  + Tested: firstly was implemented in Cars Manager;
-  − Unreliable: using approach could be blocked in any AC update;
-  − Tricky: sadly, doesn’t work without Internet connection;
-  − Incompatible: can’t be used when original launcher is running;
-  − Potentially adverse: if CM will suddenly get killed, you’ll have to restore [i]AssettoCorsa.exe[/i] from [i]AssettoCorsa_backup.exe[/i] manually;
-  − Slow: using approach requires to wait some time at some point;
-  − Limited: can’t specify version (32-bit or 64-bit).
-
- • [b]Starter+[/b]
-Changes original launcher a little.
-  + Steam-friendly: Steam overlay & archievments will work without any problems;
-  + Relieable: even though it changes original launcher, it still works as a launcher
-  − Unreliable: if Kunos will change [i]AssettoCorsa.exe[/i], you won’t get new features until addon will be updated;
-  − Can’t be enabled or disabled while [i]AssettoCorsa.exe[/i] is runned;
-  − Slow: use original laucher, which isn’t very fast.
-
- • [b]SSE Starter (Obsolete)[/b]
-Quite questionable solution. I won’t spread about it too much, just basics:
-  + Compatible: doesn’t mess with [i]AssettoCorsa.exe[/i] at all, can work even if it’s runned;
-  + Tested: surprisingly solid, works without Internet;
-  − Steam-unfriendly: doesn’t work for archievments & stuff.
-  − Obsoletable: you can miss some updates for AC using it.
-  − Not supported: doesn’t work with AC 1.6.
-
- • [b]Naive Starter[/b]
-CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you’re using original Steam version — won’t work at all.", false, false),
             new PieceOfInformation(@"17_-113008927_-924009265", @"iNeedYourHelp", @"Thank you!", null, @"Thank you all for support! It works! :)
 
 [s]Since AC 1.6 SSE stoped working, and other two (Tricky and Starter+) require write-access to root AC folder, which could be unavailable. Also, both of them require the default launcher (AssettoCorsa.exe) to be replaced, and it could cause some troubles.
@@ -66,7 +33,7 @@ Hints:
  [img=""http://i.imgur.com/LzLLjAw.png|355""]Example[/img]
 
 Good luck!", true, false),
-            new PieceOfInformation(@"23_1914836418_-1434887877", null, @"Custom Weather’s Clouds", null, @"Now you can set special clouds for any weather!
+            new PieceOfInformation(@"23_1914836418_-1434887878", null, @"Custom Weather’s Clouds", null, @"Now you can set special clouds for any weather!
 
  [img=""http://i.imgur.com/4HIvuzZ.jpg|240""]Example[/img]
 
@@ -74,7 +41,61 @@ Put them into [i]clouds[/i] folder inside weather’s  folder and CM will replac
 
 Just in case, this behavior could be disabled in Settings/Drive.
 
-Thanks to [url=""http://www.assettocorsa.net/forum/index.php?members/peter-boese.1619/""]@peter boese[/url] for the idea!", false, false),
+Thanks to [url=""http://www.assettocorsa.net/forum/index.php?members/peter-boese.1619/""]@peter boese[/url] for the idea!
+
+[b]UPD:[b] Now it also supports custom PP filters as well. Just put a file named “filter.ini” in a weather’s folder.
+
+Also, at the moment the whole system doesn’t work with online mode (since servers don’t tell which weather they use). I’m trying to find a solution but not sure if it’s possible at all.", false, false),
+            new PieceOfInformation(@"8_-1601734236_1588375622", @"starters", @"Starters", null, @"[b]This part is very important. Please, read it.[/b]
+
+Since Steam version of AC can’t be started only by running [i]acs.exe[/i], CM has to use some weird ways to do the trick. At the moment there are three strange ways to start the game (apart from direct starting by [b]Naive Starter[/b]). All of them had their flaws, that’s why you have to select one which suits you:
+
+ • [b]Official Starter[/b]
+Created after Kunos added official support for custom launchers.
+  + Steam-friendly: Steam overlay & archievments will work without any problems;
+  + Official: according to Kunos, should be the best way to run the game;
+  + Safe: doesn’t mess with [i]AssettoCorsa.exe[/i] or other game files;
+  − Slow: use original laucher, which isn’t very fast;
+  − Incompatible: can’t be used when original launcher is running.
+
+ • [b]UI Module[/b]
+Starts the game through small UI module.
+  + Most Steam-friendly: Steam overlay & archievments will work without any problems, usage time counts as usual;
+  + Fast: game will be runned in about one second;
+  + Safe: doesn’t mess with [i]AssettoCorsa.exe[/i], only adds its harmless UI module;
+  + Compatible: can be used when original launcher is running;
+  − Slow-starting: requires original launcher to be starter first.
+
+ • [b]Tricky Starter[/b]
+First one added. Uses pretty weird approach, which requires to temporary remove [i]AssettoCorsa.exe[/i] out of the way. On the bright side, this is the only change it does. So:
+  + Steam-friendly: Steam overlay & archievments will work without any problems;
+  + Tested: firstly was implemented in Cars Manager;
+  + Fast: although its weirdness, works faster than Official Starter;
+  − Unreliable: using approach could be blocked in any AC update;
+  − Tricky: sadly, doesn’t work without Internet connection;
+  − Incompatible: can’t be used when original launcher is running;
+  − Unsafe: if CM will suddenly get killed, you’ll have to restore [i]AssettoCorsa.exe[/i] from [i]AssettoCorsa_backup.exe[/i] manually;
+  − Limited: can’t specify version (32-bit or 64-bit).
+
+ • [b][s]Starter+ (Obsolete)[/s][/b]
+Changes original launcher a little. Obsoleted and removed since AC 1.8 release.
+  + Steam-friendly: Steam overlay & archievments will work without any problems;
+  + Relieable: even though it changes original launcher, it still works as a launcher;
+  − Unreliable: if Kunos will change [i]AssettoCorsa.exe[/i], you won’t get new features until addon will be updated;
+  − Incompatible: can’t be used when original launcher is running;
+  − Slow: use original laucher, which isn’t very fast;
+  − Obsolete: Useless since Official starter was added.
+
+ • [b][s]SSE Starter (Obsolete)[/s][/b]
+Quite questionable solution. I won’t spread about it too much, just basics:
+  + Compatible: doesn’t mess with [i]AssettoCorsa.exe[/i] at all, can work even if it’s runned;
+  + Tested: surprisingly solid, works without Internet;
+  − Steam-unfriendly: doesn’t save archievments & challenges progress;
+  − Obsoletable: you can miss some updates for AC using it;
+  − Obsolete: doesn’t work with AC 1.6 without fixing [i]acs_x86.exe[/i].
+
+ • [b]Naive Starter[/b]
+CM just starts [i]acs.exe[/i] (or [i]acs_x86.exe[/i]), everything else depends on AC version you use. If you’re using original Steam version — won’t work at all.", false, false),
         }.Where(x => !x.IsHidden).ToArray();
     }
 

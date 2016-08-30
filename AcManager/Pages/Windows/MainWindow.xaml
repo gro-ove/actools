@@ -59,8 +59,8 @@
         <!--server Source="/Pages/Lists/ServerPresetsListPage.xaml" -->
         <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}"
                 Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-presets" />
-        <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerRunned}"
-                Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-runned" />
+        <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerRunning}"
+                Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-running" />
 
         <!--settings-->
         <mui:LinkGroup DisplayName="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings">

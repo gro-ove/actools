@@ -70,12 +70,16 @@
             <!--quick drive-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_QuickDriveHeader}" />
 
-            <CheckBox IsChecked="{Binding Drive.QuickDriveCacheBrands}" ToolTip="In car selection dialog">
-                <Label Content="Cache brands" />
-            </CheckBox>
-
             <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ExpandBounds_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_Drive_ExpandBounds}" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Drive.AlwaysRecordGhost}" ToolTip="Record ghost while hotlapping even if it's hidden">
+                <Label Content="Always record ghost in hotlap mode" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Drive.QuickDriveCacheBrands}" ToolTip="In car selection dialog">
+                <Label Content="Cache brands" />
             </CheckBox>
 
             <DockPanel ToolTip="For local weather"
@@ -139,6 +143,10 @@
 
             <CheckBox IsChecked="{Binding Drive.WeatherSpecificPpFilter}" ToolTip="PP-filter will be switched back later">
                 <Label Content="Use custom weather's PP-filter" />
+            </CheckBox>
+
+            <CheckBox IsChecked="{Binding Drive.WeatherSpecificTyreSmoke}" ToolTip="Particles will be reverted back later">
+                <Label Content="Use custom weather's particles" />
             </CheckBox>
         </StackPanel>
     </ScrollViewer>

@@ -391,8 +391,8 @@ namespace AcTools.Utils {
                     Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
                 }
                 
-                foreach (var newPath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
-                    File.Copy(newPath, Path.Combine(destination, GetRelativePath(newPath, source)), true);
+                foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
+                    File.Copy(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
                 }
             } else {
                 File.Copy(source, destination, true);
@@ -407,11 +407,11 @@ namespace AcTools.Utils {
                     Directory.CreateDirectory(Path.Combine(destination, GetRelativePath(dirPath, source)));
                 }
                 
-                foreach (var newPath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
-                    Hardlink(newPath, Path.Combine(destination, GetRelativePath(newPath, source)), true);
+                foreach (var filePath in Directory.GetFiles(source, "*", SearchOption.AllDirectories)) {
+                    Hardlink(filePath, Path.Combine(destination, GetRelativePath(filePath, source)), true);
                 }
             } else {
-                File.Copy(source, destination, true);
+                Hardlink(source, destination, true);
             }
         }
     }

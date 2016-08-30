@@ -263,10 +263,12 @@
     <Compile Include="Helpers\Loaders\ILoader.cs" />
     <Compile Include="Helpers\Loaders\RaceDepartmentLoader.cs" />
     <Compile Include="Helpers\CustomUriRequest.cs" />
+    <Compile Include="Helpers\MainExecutingFile.cs" />
     <Compile Include="Helpers\SettingEntry.cs" />
     <Compile Include="Helpers\Vdf.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
+    <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Lists\CompositeObservableCollection.cs" />
     <Compile Include="LocalizedDescriptionAttribute.cs" />
     <Compile Include="Managers\CarSetupsDirectories.cs" />
@@ -326,7 +328,6 @@
     <Compile Include="Helpers\Api\Kunos\ServerActualCarInformation.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerActualInformation.cs" />
     <Compile Include="Helpers\BuildInformation.cs" />
-    <Compile Include="Helpers\MainExecutingFile.cs" />
     <Compile Include="Lists\SortedAcWrapperObservableCollection.cs" />
     <Compile Include="Managers\InnerHelpers\DirectoryWatcher.cs" />
     <Compile Include="Helpers\HashAlgorithmExtension.cs" />
@@ -351,7 +352,6 @@
     <Compile Include="Helpers\TracksLocator.cs" />
     <Compile Include="Helpers\Api\GoogleApiProvider.cs" />
     <Compile Include="Helpers\Api\YahooApiProvider.cs" />
-    <Compile Include="Helpers\WindowsHelper.cs" />
     <Compile Include="Lists\AcEnabledOnlyCollection.cs" />
     <Compile Include="Lists\AcWrapperCollectionView.cs" />
     <Compile Include="Lists\AutocompleteValuesList.cs" />

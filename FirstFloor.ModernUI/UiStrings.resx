@@ -261,6 +261,9 @@
   <data name="SuggestionsMessage" xml:space="preserve">
     <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</value>
   </data>
+  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://restart]restart[/url] this app or just [url=cmd://exit]close[/url] it.</value>
+  </data>
   <data name="TexturesFilter" xml:space="preserve">
     <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
   </data>
@@ -572,5 +575,8 @@
   </data>
   <data name="Common_Oops" xml:space="preserve">
     <value>Oops!</value>
+  </data>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>App just ran into a problem and needs to restart. Please, use “Report an issue” button afterwards if you want to send a report.</value>
   </data>
 </root>

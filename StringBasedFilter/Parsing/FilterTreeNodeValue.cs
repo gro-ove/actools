@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using StringBasedFilter.TestEntries;
 using StringBasedFilter.Utils;
@@ -58,11 +59,26 @@ namespace StringBasedFilter.Parsing {
         }
 
         private static ITestEntry CreateTestEntry(string value, bool wholeMatch, bool strictMode) {
+            if (value.Length > 1) {
+                if (value[0] == '"' && value[value.Length - 1] == '"') {
+                    return new StringTestEntry(value.Substring(1, value.Length - 2), wholeMatch, true);
+                }
+
+                if (value[0] == '`' && value[value.Length - 1] == '`') {
+                    try {
+                        var regex = new Regex(value.Substring(1, value.Length - 2), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                        return new RegexTestEntry(regex);
+                    } catch (Exception) {
+                        return new ConstTestEntry(false);
+                    }
+                }
+            } 
+
             if (value.Contains("*") || value.Contains("?")) {
                 return new RegexTestEntry(RegexFromQuery.Create(value, wholeMatch, strictMode));
-            } else {
-                return new StringTestEntry(value, wholeMatch, strictMode);
             }
+
+            return new StringTestEntry(value, wholeMatch, strictMode);
         }
 
         public override string ToString() {

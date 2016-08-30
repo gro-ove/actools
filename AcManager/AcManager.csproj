@@ -276,8 +276,8 @@
     </Compile>
     <Compile Include="Pages\SelectionLists\SelectCategory.cs" />
     <Compile Include="Pages\SelectionLists\SelectCountry.cs" />
-    <Compile Include="Pages\Dialogs\SelectTrackDialog_Countries.xaml.cs">
-      <DependentUpon>SelectTrackDialog_Countries.xaml</DependentUpon>
+    <Compile Include="Pages\SelectionLists\TrackCountries.xaml.cs">
+      <DependentUpon>TrackCountries.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\FindInformationDialog.xaml.cs">
       <DependentUpon>FindInformationDialog.xaml</DependentUpon>
@@ -417,8 +417,8 @@
     <Compile Include="Pages\SelectionLists\CarCategories.xaml.cs">
       <DependentUpon>CarCategories.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Dialogs\SelectTrackDialog_Categories.xaml.cs">
-      <DependentUpon>SelectTrackDialog_Categories.xaml</DependentUpon>
+    <Compile Include="Pages\SelectionLists\TrackCategories.xaml.cs">
+      <DependentUpon>TrackCategories.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\ShowroomCreateDialog.xaml.cs">
       <DependentUpon>ShowroomCreateDialog.xaml</DependentUpon>
@@ -676,7 +676,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Dialogs\SelectTrackDialog_Countries.xaml">
+    <Page Include="Pages\SelectionLists\TrackCountries.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -684,7 +684,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Dialogs\SelectTrackDialog_Categories.xaml">
+    <Page Include="Pages\SelectionLists\TrackCategories.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

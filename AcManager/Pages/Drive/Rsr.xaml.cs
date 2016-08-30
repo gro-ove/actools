@@ -172,6 +172,7 @@ namespace AcManager.Pages.Drive {
                 Car = CarsManager.Instance.GetById(carId);
                 CarSkin = Car?.SelectedSkin;
                 Track = TracksManager.Instance.GetById(trackId);
+                // TODO: Track configuration ID? RSR doesn’t support it yet
 
                 return new Tuple<string, string>(carId, trackId);
             }

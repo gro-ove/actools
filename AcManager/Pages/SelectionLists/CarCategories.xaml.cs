@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;

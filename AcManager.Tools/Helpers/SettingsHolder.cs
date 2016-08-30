@@ -14,6 +14,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using StringBasedFilter;
 
 // ReSharper disable RedundantArgumentDefaultValue
 
@@ -486,7 +487,7 @@ namespace AcManager.Tools.Helpers {
                 OfficialStarterType,
                 TrickyStarterType,
                 UiModuleStarterType,
-                StarterPlusType,
+                // StarterPlusType,
                 SseStarterType,
                 NaiveStarterType
             });
@@ -740,6 +741,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _alwaysRecordGhost;
+
+            public bool AlwaysRecordGhost {
+                get { return _alwaysRecordGhost ?? (_alwaysRecordGhost = ValuesStorage.GetBool("Settings.DriveSettings.AlwaysRecordGhost", false)).Value; }
+                set {
+                    if (Equals(value, _alwaysRecordGhost)) return;
+                    _alwaysRecordGhost = value;
+                    ValuesStorage.Set("Settings.DriveSettings.AlwaysRecordGhost", value);
+                    OnPropertyChanged();
+                }
+            }
+
             public int AiLevelMinimum => QuickDriveExpandBounds ? 30 : 70;
 
             private bool? _kunosCareerUserAiLevel;
@@ -847,6 +860,21 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _weatherSpecificPpFilter)) return;
                     _weatherSpecificPpFilter = value;
                     ValuesStorage.Set("Settings.DriveSettings.WeatherSpecificPpFilter", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _weatherSpecificTyreSmoke;
+
+            public bool WeatherSpecificTyreSmoke {
+                get {
+                    return _weatherSpecificTyreSmoke ??
+                            (_weatherSpecificTyreSmoke = ValuesStorage.GetBool("Settings.DriveSettings.WeatherSpecificTyreSmoke", true)).Value;
+                }
+                set {
+                    if (Equals(value, _weatherSpecificTyreSmoke)) return;
+                    _weatherSpecificTyreSmoke = value;
+                    ValuesStorage.Set("Settings.DriveSettings.WeatherSpecificTyreSmoke", value);
                     OnPropertyChanged();
                 }
             }
@@ -981,6 +1009,19 @@ namespace AcManager.Tools.Helpers {
                     _newContentPeriod = value;
                     ValuesStorage.Set("Settings.ContentSettings.NewContentPeriod", value.TimeSpan);
                     OnPropertyChanged();
+                }
+            }
+
+            private bool? _simpleFiltering;
+
+            public bool SimpleFiltering {
+                get { return _simpleFiltering ?? (_simpleFiltering = ValuesStorage.GetBool("Settings.ContentSettings.SimpleFiltering", true)).Value; }
+                set {
+                    if (Equals(value, _simpleFiltering)) return;
+                    _simpleFiltering = value;
+                    ValuesStorage.Set("Settings.ContentSettings.SimpleFiltering", value);
+                    OnPropertyChanged();
+                    Filter.OptionSimpleMatching = value;
                 }
             }
 

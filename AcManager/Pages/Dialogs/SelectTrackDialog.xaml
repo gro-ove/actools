@@ -61,11 +61,11 @@
             </ListBox>
         </uc:TrackBlock>
         <mui:ModernTab Layout="TabWithTitle" Margin="20 0 0 0" LinksMargin="0 0 0 0" FrameMargin="0 30 0 0" x:Name="Tabs" Width="320" Grid.Column="1"
-                FrameNavigated="Tabs_OnNavigated" mui:ModernFrame.TopSource="/Pages/Dialogs/SelectTrackDialog_Categories.xaml"
+                FrameNavigated="Tabs_OnNavigated" mui:ModernFrame.TopSource="/Pages/SelectionLists/TrackCountries.xaml"
                 mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectTrack" SavePolicy="Flexible">
             <mui:ModernTab.Links>
-                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/Dialogs/SelectTrackDialog_Countries.xaml" />
-                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/Dialogs/SelectTrackDialog_Categories.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Countries}" Source="/Pages/SelectionLists/TrackCountries.xaml" />
+                <mui:Link DisplayName="{x:Static g:AppStrings.Select_Categories}" Source="/Pages/SelectionLists/TrackCategories.xaml" />
                 <!-- ReSharper disable once Xaml.PathError -->
                 <mui:Link DisplayName="{x:Static g:AppStrings.Select_All}" Source="/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&amp;Filter=enabled+" />
             </mui:ModernTab.Links>

@@ -7,6 +7,13 @@
         <Setter Property="FontWeight" Value="UltraLight" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
     </Style>
+    
+    <Style x:Key="Light" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="UltraLight" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
+    </Style>
 
     <Style x:Key="Heading2" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe UI" />
