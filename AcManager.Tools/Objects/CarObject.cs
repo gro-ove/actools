@@ -377,12 +377,12 @@ namespace AcManager.Tools.Objects {
                     SpecsPwRatio,
                     SpecsTopSpeed,
                     SpecsAcceleration
-                }.Where(val => !string.IsNullOrWhiteSpace(val))) {
+                }.Where(val => val?.Length > 0 && char.IsDigit(val[0]))) {
                     if (result.Length > 0) {
                         result.Append(@", ");
                     }
 
-                    result.Append(val);
+                    result.Append(val.Replace(' ', ' '));
                 }
 
                 return result.Length > 0 ? result.ToString() : null;

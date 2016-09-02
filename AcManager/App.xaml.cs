@@ -201,6 +201,8 @@ namespace AcManager {
             } catch (Exception e) {
                 Logging.Warning("Can’t prepare UI: " + e);
             }
+
+            PopupHelper.Initialize();
         }
 
         private async void TestKey() {

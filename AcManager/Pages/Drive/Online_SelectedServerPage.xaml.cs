@@ -86,6 +86,8 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnTick(object sender, EventArgs e) {
+            if (Application.Current.MainWindow?.IsActive != true) return;
+
             Model.Entry.OnTick();
             if (RequiresUpdate()) {
                 Model.Entry.Update(ServerEntry.UpdateMode.Full, true).Forget();

@@ -164,15 +164,20 @@ namespace AcManager.Pages.Drive {
 
                 var carIdMatch = Regex.Match(page, @"\bdata-car=""([\w-]+)""");
                 var trackIdMatch = Regex.Match(page, @"\bdata-track=""([\w-]+)""");
+                var trackLayoutIdMatch = Regex.Match(page, @"\bdata-track-layout=""([\w-]+)""");
                 if (!carIdMatch.Success || !trackIdMatch.Success) return null;
 
                 var carId = carIdMatch.Groups[1].Value;
                 var trackId = trackIdMatch.Groups[1].Value;
+                var trackLayoutId = trackLayoutIdMatch.Success ? trackLayoutIdMatch.Groups[1].Value : null;
+
+                if (trackLayoutId == trackId) {
+                    trackLayoutId = null; // TODO: temporary fix
+                }
 
                 Car = CarsManager.Instance.GetById(carId);
                 CarSkin = Car?.SelectedSkin;
-                Track = TracksManager.Instance.GetById(trackId);
-                // TODO: Track configuration ID? RSR doesn’t support it yet
+                Track = TracksManager.Instance.GetLayoutById(trackId, trackLayoutId);
 
                 return new Tuple<string, string>(carId, trackId);
             }

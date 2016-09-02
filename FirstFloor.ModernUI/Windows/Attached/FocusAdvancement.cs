@@ -22,9 +22,9 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             if (element == null) return;
 
             if ((bool)e.NewValue) {
-                element.KeyDown += Element_KeyDown;
+                element.PreviewKeyDown += Element_KeyDown;
             } else {
-                element.KeyDown -= Element_KeyDown;
+                element.PreviewKeyDown -= Element_KeyDown;
             }
         }
 

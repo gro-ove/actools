@@ -2,10 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
-             xmlns:uc="clr-namespace:AcManager.UserControls"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        Loaded="OnLoaded" Unloaded="OnUnloaded" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded" Unloaded="OnUnloaded"
+        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp"
         d:DataContext="{d:DesignInstance dr:Online_SelectedServerPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -149,12 +148,23 @@
                                 </Grid.ToolTip>
                             </Grid>
                             <ComboBox ItemsSource="{Binding CarsView}" Background="#99333333" Foreground="White" Padding="4" VerticalAlignment="Bottom"
-                                    BorderThickness="0" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="DisplayName">
-                                <ComboBox.ItemContainerStyle>
+                                    BorderThickness="0" IsSynchronizedWithCurrentItem="True">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type t:ServerEntry+CarEntry}">
+                                        <TextBlock Text="{Binding DisplayName}" />
+
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                                                <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                                <!--<ComboBox.ItemContainerStyle>
                                     <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                                         <Setter Property="IsEnabled" Value="{Binding IsAvailable}" />
                                     </Style>
-                                </ComboBox.ItemContainerStyle>
+                                </ComboBox.ItemContainerStyle>-->
                             </ComboBox>
                         </Grid>
 

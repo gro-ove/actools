@@ -188,8 +188,8 @@ namespace AcManager.Pages.Drive {
             }
 
             public override void OnSelectedUpdated(CarObject selectedCar, TrackObjectBase selectedTrack) {
-                RaceGridViewModel.SetPlayerCar(selectedCar);
-                RaceGridViewModel.SetTrack(selectedTrack);
+                RaceGridViewModel.PlayerCar = selectedCar;
+                RaceGridViewModel.PlayerTrack = selectedTrack;
             }
 
             public object GetPreview(object item) {

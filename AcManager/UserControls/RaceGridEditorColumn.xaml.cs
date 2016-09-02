@@ -5,12 +5,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Miscellaneous;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
@@ -26,12 +26,53 @@ namespace AcManager.UserControls {
         public RaceGridEditorColumn() {
             InputBindings.AddRange(new[] {
                 new InputBinding(new RelayCommand(o => {
-                    foreach (var entry in ListBox.SelectedItems.OfType<RaceGridEntry>().ToList()) {
-                        entry.DeleteCommand.Execute(o);
+                    if (SelectCarPopup.IsOpen) {
+                        var model = Model;
+                        var selectCar = (SelectCarPopup.Content as DependencyObject)?.FindLogicalChild<SelectCar>();
+                        if (model == null || selectCar == null) return;
+
+                        foreach (var car in selectCar.GetSelectedCars().ToList()) {
+                            var entry = model.FilteredView.OfType<RaceGridEntry>().LastOrDefault(x => x.Car == car);
+                            if (entry != null) {
+                                model.DeleteEntry(entry);
+                            }
+                        }
+                    } else {
+                        foreach (var entry in ListBox.SelectedItems.OfType<RaceGridEntry>().ToList()) {
+                            entry.DeleteCommand.Execute(o);
+                        }
                     }
                 }), new KeyGesture(Key.Delete)),
+                new InputBinding(new RelayCommand(o => {
+                    if (SelectCarPopup.IsOpen) {
+                        AddOpponentCarCommand.Execute(null);
+                    }
+                }), new KeyGesture(Key.Enter)),
             });
             InitializeComponent();
+            SelectCarPopup.CustomPopupPlacementCallback = CustomPopupPlacementCallback;
+        }
+
+        private const string KeySelectedCar = ".RaceGridEditor:SelectedCar";
+
+        [CanBeNull]
+        private static CarObject LoadSelected() {
+            var saved = ValuesStorage.GetString(KeySelectedCar);
+            Logging.Debug(saved);
+            return saved == null ? null : CarsManager.Instance.GetById(saved);
+        }
+
+        private static CustomPopupPlacement[] CustomPopupPlacementCallback(Size popupSize, Size targetSize, Point offset) {
+            return new [] {
+                new CustomPopupPlacement {
+                    Point = new Point(targetSize.Width - 12, -targetSize.Height - 200),
+                    PrimaryAxis = PopupPrimaryAxis.Vertical
+                },
+                new CustomPopupPlacement {
+                    Point = new Point(-popupSize.Width, -targetSize.Height - 200),
+                    PrimaryAxis = PopupPrimaryAxis.Vertical
+                },
+            };
         }
 
         [CanBeNull]
@@ -98,9 +139,10 @@ namespace AcManager.UserControls {
         public CarObject SelectedCar {
             get { return _selectedCar; }
             set {
-                if (Equals(value, _selectedCar)) return;
+                if (Equals(value, _selectedCar) || value == null) return;
                 _selectedCar = value;
                 OnPropertyChanged();
+                ValuesStorage.Set(KeySelectedCar, value.Id);
                 _addOpponentCarCommand?.OnCanExecuteChanged();
             }
         }
@@ -148,6 +190,12 @@ namespace AcManager.UserControls {
             }
 
             e.Effects = DragDropEffects.Move;
+        }
+
+        private void SelectCarPopup_OnOpened(object sender, EventArgs e) {
+            if (SelectedCar == null) {
+                SelectedCar = LoadSelected() ?? Model?.PlayerCar ?? CarsManager.Instance.GetDefault();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -68,9 +68,31 @@ namespace AcManager.Tools.Managers.Online {
                 }
             }
 
-            public int Total { get; set; }
+            private int _total;
 
-            public int Available { get; set; }
+            public int Total {
+                get { return _total; }
+                set {
+                    if (value == _total) return;
+                    _total = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsAvailable));
+                    OnPropertyChanged(nameof(DisplayName));
+                }
+            }
+
+            private int _available;
+
+            public int Available {
+                get { return _available; }
+                set {
+                    if (value == _available) return;
+                    _available = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsAvailable));
+                    OnPropertyChanged(nameof(DisplayName));
+                }
+            }
 
             public bool IsAvailable => Total == 0 || Available > 0;
 
@@ -753,20 +775,21 @@ namespace AcManager.Tools.Managers.Online {
                         AvailableSkin = x.CarObject.SelectedSkin
                     }).ToList();
                 } else {
-                    cars = (from x in information.Cars
-                            where x.IsEntryList
-                            // if IsEntryList means that car could be selected
-                            group x by x.CarId
-                            into g
-                            let list = g.ToList()
-                            let carObject = carObjects.GetByIdOrDefault(list[0].CarId, StringComparison.OrdinalIgnoreCase)
-                            let availableSkinId = list.FirstOrDefault(y => y.IsConnected == false)?.CarSkinId
-                            select carObject == null ? null : new CarEntry(carObject) {
-                                Total = list.Count,
-                                Available = list.Count(y => !y.IsConnected && y.IsEntryList),
-                                AvailableSkin = availableSkinId == null ? null :
-                                        availableSkinId == string.Empty ? carObject.GetFirstSkinOrNull() : carObject.GetSkinById(availableSkinId)
-                            }).ToList();
+                    cars = information.Cars.Where(x => x.IsEntryList)
+                                      .GroupBy(x => x.CarId)
+                                      .Select(g => {
+                                          var x = g.ToList();
+                                          var car = carObjects.GetByIdOrDefault(x[0].CarId, StringComparison.OrdinalIgnoreCase);
+                                          if (car == null) return null;
+
+                                          var availableSkinId = x.FirstOrDefault(y => y.IsConnected == false)?.CarSkinId;
+                                          return new CarEntry(car) {
+                                              Total = x.Count,
+                                              Available = x.Count(y => !y.IsConnected && y.IsEntryList),
+                                              AvailableSkin = availableSkinId == null ? null : availableSkinId == string.Empty
+                                                      ? car.GetFirstSkinOrNull() : car.GetSkinById(availableSkinId)
+                                          };
+                                      }).ToList();
                 }
 
                 if (cars.Contains(null)) {
@@ -779,16 +802,20 @@ namespace AcManager.Tools.Managers.Online {
                     Cars = new BetterObservableCollection<CarEntry>(cars);
                     CarsView = new ListCollectionView(Cars) { CustomSort = this };
                     CarsView.CurrentChanged += SelectedCarChanged;
-                } else if (Cars.ReplaceIfDifferBy(cars)) {
-                    OnPropertyChanged(nameof(Cars));
                 } else {
-                    changed = false;
+                    // temporary removing listener to avoid losing selected car
+                    CarsView.CurrentChanged -= SelectedCarChanged;
+                    if (Cars.ReplaceIfDifferBy(cars)) {
+                        OnPropertyChanged(nameof(Cars));
+                    } else {
+                        changed = false;
+                    }
+
+                    CarsView.CurrentChanged += SelectedCarChanged;
                 }
 
                 if (changed) {
-                    var selected = LimitedStorage.Get(LimitedSpace.OnlineSelectedCar, Id);
-                    var firstAvailable = (selected == null ? null : Cars.GetByIdOrDefault(selected)) ?? Cars.FirstOrDefault(x => x.IsAvailable);
-                    CarsView.MoveCurrentTo(firstAvailable);
+                    LoadSelectedCar();
                 }
             } catch (InformativeException e) {
                 errorMessage = $"{e.Message}.";
@@ -803,29 +830,42 @@ namespace AcManager.Tools.Managers.Online {
                     Status = ServerStatus.Ready;
                 }
 
-                IsAvailable = Status == ServerStatus.Ready && CarsView?.CurrentItem != null;
+                AvailableUpdate();
             }
+        }
+
+        private void AvailableUpdate() {
+            IsAvailable = Status == ServerStatus.Ready && CarsView?.CurrentItem != null;
+            _joinCommand?.OnCanExecuteChanged();
+        }
+
+        private void LoadSelectedCar() {
+            if (Cars == null || CarsView == null) return;
+
+            var selected = LimitedStorage.Get(LimitedSpace.OnlineSelectedCar, Id);
+            var firstAvailable = (selected == null ? null : Cars.GetByIdOrDefault(selected)) ?? Cars.FirstOrDefault(x => x.IsAvailable);
+            CarsView.MoveCurrentTo(firstAvailable);
         }
 
         private void SelectedCarChanged(object sender, EventArgs e) {
             var selectedCar = GetSelectedCar();
             LimitedStorage.Set(LimitedSpace.OnlineSelectedCar, Id, selectedCar?.Id);
-            IsAvailable = Status == ServerStatus.Ready && selectedCar != null;
+            AvailableUpdate();
         }
 
-        private RelayCommand _addToRecentCommand;
+        private ProperCommand _addToRecentCommand;
 
-        public ICommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new RelayCommand(o => {
+        public ICommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new ProperCommand(o => {
             RecentManager.Instance.AddRecentServer(OriginalInformation);
         }, o => Status == ServerStatus.Ready && RecentManager.Instance.GetWrapperById(Id) == null));
 
-        private AsyncCommand _joinCommand;
+        private ProperAsyncCommand _joinCommand;
 
-        public ICommand JoinCommand => _joinCommand ?? (_joinCommand = new AsyncCommand(Join, JoinAvailable));
+        public ICommand JoinCommand => _joinCommand ?? (_joinCommand = new ProperAsyncCommand(Join, JoinAvailable));
 
-        private AsyncCommand _cancelBookingCommand;
+        private ProperAsyncCommand _cancelBookingCommand;
 
-        public ICommand CancelBookingCommand => _cancelBookingCommand ?? (_cancelBookingCommand = new AsyncCommand(CancelBooking, o => IsBooked));
+        public ICommand CancelBookingCommand => _cancelBookingCommand ?? (_cancelBookingCommand = new ProperAsyncCommand(CancelBooking, () => IsBooked));
 
         [CanBeNull]
         private IBookingUi _ui;
@@ -884,7 +924,7 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private async Task CancelBooking(object o) {
+        private async Task CancelBooking() {
             DisposeHelper.Dispose(ref _ui);
 
             if (!IsBooked) return;
@@ -901,7 +941,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private void ProcessBookingResponse(BookingResult response) {
             if (_ui?.CancellationToken.IsCancellationRequested == true) {
-                CancelBooking(null).Forget();
+                CancelBooking().Forget();
                 return;
             }
 
@@ -989,7 +1029,8 @@ namespace AcManager.Tools.Managers.Online {
 
         private bool JoinAvailable(object o) {
             return IsAvailable && (!PasswordRequired || !WrongPassword && !string.IsNullOrEmpty(Password)) && Status == ServerStatus.Ready
-                    && (!BookingMode || Sessions.FirstOrDefault(x => x.IsActive)?.Type == Game.SessionType.Booking);
+                    && (!BookingMode && (CarsView?.CurrentItem as CarEntry)?.IsAvailable == true ||
+                            Sessions.FirstOrDefault(x => x.IsActive)?.Type == Game.SessionType.Booking);
         }
 
         private ICommand _refreshCommand;

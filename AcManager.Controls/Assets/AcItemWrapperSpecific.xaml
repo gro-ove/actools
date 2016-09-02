@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
-        xmlns:acObjectsNew="clr-namespace:AcManager.Tools.AcObjectsNew;assembly=AcManager.Tools"
-        xmlns:acObjects="clr-namespace:AcManager.Tools.Objects;assembly=AcManager.Tools" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
+                    xmlns:userControls="clr-namespace:AcManager.Controls.UserControls">
     <ResourceDictionary.MergedDictionaries>
         <!--<ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />-->
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -9,15 +8,15 @@
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <DataTemplate x:Key="AcItemWrapperSpecific.ComboBoxItemTemplate" DataType="acManagersNew:AcItemWrapper">
+    <DataTemplate x:Key="AcItemWrapperSpecific.ComboBoxItemTemplate" DataType="{x:Type t:AcItemWrapper}">
         <TextBlock Text="{Binding Value.DisplayName}" />
     </DataTemplate>
 
-    <DataTemplate x:Key="AcItemWrapperSpecific.ListItemTemplate" DataType="{x:Type acManagersNew:AcItemWrapper}">
+    <DataTemplate x:Key="AcItemWrapperSpecific.ListItemTemplate" DataType="{x:Type t:AcItemWrapper}">
         <ContentControl DataContext="{Binding Value}" Content="{Binding}">
             <ContentControl.Resources>
                 <!-- placeholder -->
-                <DataTemplate DataType="{x:Type acObjectsNew:AcPlaceholderNew}">
+                <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
                     <TextBlock Text="{Binding DisplayName}" Margin="10 2 2 2" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis"
                             HorizontalAlignment="Stretch" x:Name="DisplayNameText" />
                     <DataTemplate.Triggers>
@@ -28,7 +27,7 @@
                 </DataTemplate>
 
                 <!-- accommonobject -->
-                <DataTemplate DataType="{x:Type acObjectsNew:AcCommonObject}">
+                <DataTemplate DataType="{x:Type t:AcCommonObject}">
                     <DockPanel HorizontalAlignment="Stretch" mui:Draggable.Enabled="True" Background="Transparent">
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}"
                                 Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon" />
@@ -56,7 +55,7 @@
                 </DataTemplate>
 
                 <!-- carskinobject -->
-                <DataTemplate DataType="{x:Type acObjects:CarSkinObject}">
+                <DataTemplate DataType="{x:Type t:CarSkinObject}">
                     <DockPanel HorizontalAlignment="Stretch">
                         <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="4 0 4 0" Filename="{Binding LiveryImage}" />
                         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" DockPanel.Dock="Right" Fill="{DynamicResource Error}"
@@ -87,20 +86,20 @@
         </ContentControl>
     </DataTemplate>
 
-    <DataTemplate x:Key="CarSkinItemTemplate" DataType="{x:Type acObjects:CarSkinObject}">
+    <DataTemplate x:Key="CarSkinItemTemplate" DataType="{x:Type t:CarSkinObject}">
         <mui:BetterImage ToolTip="{Binding DisplayName}" Width="32" Height="32" Filename="{Binding LiveryImage}" ClearOnChange="True" />
     </DataTemplate>
 
-    <DataTemplate x:Key="AcItemWrapperSpecific.CarSkinItemTemplate" DataType="{x:Type acManagersNew:AcItemWrapper}">
+    <DataTemplate x:Key="AcItemWrapperSpecific.CarSkinItemTemplate" DataType="{x:Type t:AcItemWrapper}">
         <ContentControl Content="{Binding Value}" Width="32" Height="32" Background="Transparent">
             <ContentControl.Resources>
                 <!-- placeholder -->
-                <DataTemplate DataType="{x:Type acObjectsNew:AcPlaceholderNew}">
+                <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
                     <TextBlock Text="{Binding Id}" Style="{StaticResource Label}" />
                 </DataTemplate>
 
                 <!-- accommonobject -->
-                <DataTemplate DataType="{x:Type acObjects:CarSkinObject}">
+                <DataTemplate DataType="{x:Type t:CarSkinObject}">
                     <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True" />
                 </DataTemplate>
             </ContentControl.Resources>

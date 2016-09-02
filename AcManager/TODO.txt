@@ -556,6 +556,7 @@ fixme:
     - RebuildPresetsList() exception
     - track.name, car.name - empty?
         - car setup page
+    - fix popups behavior
 
 todo:
     - rework selectcardialog

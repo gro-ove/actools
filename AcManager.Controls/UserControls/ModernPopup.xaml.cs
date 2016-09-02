@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace AcManager.Controls.UserControls {
@@ -8,7 +10,7 @@ namespace AcManager.Controls.UserControls {
         public ModernPopup() {
             InitializeComponent();
             Root.DataContext = this;
-            CustomPopupPlacementCallback += OnPlacementCallback;    
+            CustomPopupPlacementCallback += OnPlacementCallback;
         }
 
         private static CustomPopupPlacement[] OnPlacementCallback(Size popupSize, Size targetSize, Point offset) {

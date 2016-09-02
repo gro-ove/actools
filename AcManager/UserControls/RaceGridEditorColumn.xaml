@@ -58,150 +58,172 @@
             <mui:BbCodeBlock TextWrapping="Wrap" Margin="8">WIP, [url="https://trello.com/c/zILPYnYX/59-fully-customizable-race"]more information[/url].</mui:BbCodeBlock>
         </Grid>
 
-        <TextBlock DockPanel.Dock="Top" Margin="0 0 0 8" Style="{StaticResource LabelWithPadding}"
-                Text="{Binding Mode.CandidatesMode, Converter={x:Static uc:RaceGridEditorColumn.ModeToLabelConverter}}" />
+        <Grid x:Name="ButtonsPanel" DockPanel.Dock="Top" VerticalAlignment="Bottom" Margin="0 0 0 8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource LabelWithPadding}"
+                    Text="{Binding Mode.CandidatesMode, Converter={x:Static uc:RaceGridEditorColumn.ModeToLabelConverter}}" />
 
-            <DockPanel Margin="0 0 0 8" HorizontalAlignment="Stretch"
-                    Visibility="{Binding Mode.Filterable, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="40" DockPanel.Dock="Left" />
-                <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="*"
-                        Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" IsTextSearchEnabled="True" />
-            </DockPanel>
-
-            <ListBox x:Name="ListBox" ItemsSource="{Binding FilteredView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
-                    VirtualizingPanel.ScrollUnit="Pixel" Grid.Row="1" SelectionMode="Extended" ItemContainerStyle="{StaticResource ListBoxItem}"
-                    Drop="ListBox_Drop" AllowDrop="True">
-                <ListBox.Style>
-                    <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
-                        <Setter Property="ItemTemplate">
-                            <Setter.Value>
-                                <DataTemplate DataType="{x:Type c:RaceGridEntry}">
-                                    <DockPanel mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                        <DockPanel.ContextMenu>
-                                            <ContextMenu DataContext="{Binding Source={x:Reference This}}">
-                                                <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" />
-                                                <Separator />
-                                                <MenuItem Header="Save Preset" Command="{Binding SavePresetCommand}" />
-                                            </ContextMenu>
-                                        </DockPanel.ContextMenu>
-                                        <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
-                                                RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}">
-                                            <Button.Style>
-                                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                                                    <Setter Property="Background" Value="Transparent" />
-                                                    <Setter Property="BorderBrush" Value="Transparent" />
-                                                </Style>
-                                            </Button.Style>
-                                            <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
-                                                    Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
-                                                    VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
-                                        </Button>
-                                        <TextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
-                                                ToolTip="Candidate priority" Style="{StaticResource TextBoxAsTextBlock.Small}" VerticalAlignment="Center"
-                                                Width="20" Padding="0 -1 0 -1" mui:TextBoxAdvancement.SpecialMode="Positive"
-                                                mui:FocusAdvancement.AdvancesByEnterKey="True" />
-                                        <TextBlock Text="{Binding DisplayName}" />
-                                    </DockPanel>
-                                    <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding CandidatePriority}" Value="1">
-                                            <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                        <DataTrigger
-                                                Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}"
-                                                Value="True">
-                                            <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding DataContext.Mode.Id, ElementName=This}" Value="custom">
-                                            <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Mode.CandidatesMode}" Value="False">
-                                <Setter Property="ItemTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate DataType="{x:Type c:RaceGridEntry}">
-                                            <DockPanel x:Name="Panel" mui:ContextMenuAdvancement.PropagateToChildren="True">
-                                                <DockPanel.ContextMenu>
-                                                    <ContextMenu DataContext="{Binding Source={x:Reference This}}">
-                                                        <MenuItem Header="Clone" Command="{Binding CloneSelectedCommand}" />
-                                                        <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" />
-                                                        <Separator />
-                                                        <MenuItem Header="Save Preset" Command="{Binding SavePresetCommand}" />
-                                                    </ContextMenu>
-                                                </DockPanel.ContextMenu>
-                                                <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
-                                                        RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}">
-                                                    <Button.Style>
-                                                        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                                                            <Setter Property="Background" Value="Transparent" />
-                                                            <Setter Property="BorderBrush" Value="Transparent" />
-                                                        </Style>
-                                                    </Button.Style>
-                                                    <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
-                                                            Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
-                                                            VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
-                                                </Button>
-                                                <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"
-                                                        Fill="{DynamicResource Error}" Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon"
-                                                        Margin="2 2 4 0" VerticalAlignment="Center" />
-                                                <TextBlock x:Name="Name" Text="{Binding DisplayName}" />
-                                            </DockPanel>
-                                            <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding ExceedsLimit}" Value="True">
-                                                    <!--<Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextDisabled}" />-->
-                                                    <Setter Property="ToolTip" Value="There is no pit stop for this car" />
-                                                    <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
-                                                    <Setter TargetName="Name" Property="Opacity" Value="0.5" />
-                                                </DataTrigger>
-                                            </DataTemplate.Triggers>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.Style>
-            </ListBox>
-
-            <TextBlock Grid.Row="1" Text="Matching candidates not found" Style="{StaticResource Small}" Foreground="{DynamicResource Error}"
-                    Visibility="{Binding FilteredView.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Margin="0 4 0 0"
-                    FontWeight="Bold" IsHitTestVisible="False" />
-
-            <StackPanel x:Name="ButtonsPanel" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0 0 4 0">
-                <mui:ModernToggleButton x:Name="AddCarButton" IconData="{StaticResource AddIconData}" ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}"
-                        Style="{StaticResource NonTransparent}"
-                        IsHitTestVisible="{Binding ElementName=SelectCarPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
-                <!--<mui:ModernButton IconData="{StaticResource ListGearIconData}" Command="{Binding SetupCommand, ElementName=This}" ToolTip="Detailed setup"
+            <mui:ModernToggleButton x:Name="AddCarButton" Grid.Column="1" IconData="{StaticResource AddIconData}"
+                    ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}" HorizontalAlignment="Right" Margin="0 0 4 0"
+                    Style="{StaticResource NonTransparent}"
+                    IsHitTestVisible="{Binding ElementName=SelectCarPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />
+            <!--<mui:ModernButton IconData="{StaticResource ListGearIconData}" Command="{Binding SetupCommand, ElementName=This}" ToolTip="Detailed setup"
                         Style="{StaticResource NonTransparent}" />-->
-            </StackPanel>
 
-            <c:ModernPopup Grid.Row="1" x:Name="SelectCarPopup" PlacementTarget="{Binding ElementName=ButtonsPanel}" Placement="Left" Padding="8"
-                    IsOpen="{Binding IsChecked, ElementName=AddCarButton, Mode=TwoWay}" StaysOpen="False">
+            <c:ModernPopup Grid.Column="0" Grid.ColumnSpan="2" x:Name="SelectCarPopup" Placement="Custom" Padding="8"
+                    IsOpen="{Binding IsChecked, ElementName=AddCarButton, Mode=TwoWay}" StaysOpen="False" HorizontalAlignment="Right"
+                           Opened="SelectCarPopup_OnOpened">
                 <Grid Width="320" DataContext="{x:Reference This}">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="480" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <uc:SelectCar SelectedCar="{Binding SelectedCar}" ItemChosen="SelectCar_OnItemChosen" />
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Command="{Binding AddOpponentCarCommand}" Content="Add" Margin="0 0 4 0" />
-                        <Button Command="{Binding CloseAddingPopupCommand}" Content="Close" />
+                    <DockPanel Grid.Row="0" Height="90" LastChildFill="False" Margin="0 0 0 8">
+                        <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DockPanel.Dock="Left" Margin="0 0 8 0" Width="160"
+                                Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                            <mui:BetterImage.ToolTip>
+                                <c:CarBlock Car="{Binding SelectedCar}" ShowSkinsAndPreview="False" Width="400" />
+                            </mui:BetterImage.ToolTip>
+                        </mui:BetterImage>
+
+                        <TextBlock Text="{Binding SelectedCar.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding SelectedCar.CarClass, StringFormat='{}Class: {0}'}" Style="{StaticResource Small}" DockPanel.Dock="Top"
+                                Margin="0 0 0 4" />
+                        <TextBlock Text="{Binding SelectedCar.SpecsInfoDisplay}" Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4"
+                                TextWrapping="Wrap" />
+                    </DockPanel>
+
+                    <uc:SelectCar Grid.Row="1" SelectedCar="{Binding SelectedCar}" ItemChosen="SelectCar_OnItemChosen" />
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 8 0 0" HorizontalAlignment="Right">
+                        <Button Command="{Binding AddOpponentCarCommand}" Content="Add" />
+                        <Button Command="{Binding CloseAddingPopupCommand}" Content="Close" Margin="4 0 0 0" />
                     </StackPanel>
                 </Grid>
             </c:ModernPopup>
         </Grid>
+
+        <DockPanel DockPanel.Dock="Top" Margin="0 0 0 8" HorizontalAlignment="Stretch"
+                Visibility="{Binding Mode.Filterable, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="40" DockPanel.Dock="Left" />
+            <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="*"
+                    Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" IsTextSearchEnabled="True" />
+        </DockPanel>
+
+        <TextBlock Text="Matching candidates not found" Style="{StaticResource Small}" Foreground="{DynamicResource Error}"
+                Visibility="{Binding FilteredView.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Margin="0 4 0 0"
+                FontWeight="Bold" IsHitTestVisible="False" />
+
+        <ListBox x:Name="ListBox" ItemsSource="{Binding FilteredView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
+                VirtualizingPanel.ScrollUnit="Pixel" Grid.Row="1" SelectionMode="Extended" ItemContainerStyle="{StaticResource ListBoxItem}" Drop="ListBox_Drop"
+                AllowDrop="True">
+            <ListBox.Style>
+                <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                    <Setter Property="ItemTemplate">
+                        <Setter.Value>
+                            <DataTemplate DataType="{x:Type c:RaceGridEntry}">
+                                <DockPanel mui:ContextMenuAdvancement.PropagateToChildren="True">
+                                    <DockPanel.InputBindings>
+                                        <MouseBinding Command="{Binding DeleteCommand}" Gesture="MiddleClick" />
+                                    </DockPanel.InputBindings>
+                                    <DockPanel.ContextMenu>
+                                        <ContextMenu DataContext="{Binding Source={x:Reference This}}">
+                                            <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" />
+                                            <Separator />
+                                            <MenuItem Header="Save Preset" Command="{Binding SavePresetCommand}" />
+                                        </ContextMenu>
+                                    </DockPanel.ContextMenu>
+                                    <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
+                                            RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}">
+                                        <Button.Style>
+                                            <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                            </Style>
+                                        </Button.Style>
+                                        <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
+                                                Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                                                VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
+                                    </Button>
+                                    <TextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
+                                            ToolTip="Candidate priority" Style="{StaticResource TextBoxAsTextBlock.Small}" VerticalAlignment="Center" Width="20"
+                                            Padding="0 -1 0 -1" mui:TextBoxAdvancement.SpecialMode="Positive" mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                                    <TextBlock Text="{Binding DisplayName}" />
+                                </DockPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding CandidatePriority}" Value="1">
+                                        <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                            Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}"
+                                            Value="True">
+                                        <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding DataContext.Mode.Id, ElementName=This}" Value="custom">
+                                        <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Mode.CandidatesMode}" Value="False">
+                            <Setter Property="ItemTemplate">
+                                <Setter.Value>
+                                    <DataTemplate DataType="{x:Type c:RaceGridEntry}">
+                                        <DockPanel x:Name="Panel" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                                            <DockPanel.InputBindings>
+                                                <MouseBinding Command="{Binding DeleteCommand}" Gesture="MiddleClick" />
+                                            </DockPanel.InputBindings>
+                                            <DockPanel.ContextMenu>
+                                                <ContextMenu DataContext="{Binding Source={x:Reference This}}">
+                                                    <MenuItem Header="Clone" Command="{Binding CloneSelectedCommand}" />
+                                                    <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" />
+                                                    <Separator />
+                                                    <MenuItem Header="Save Preset" Command="{Binding SavePresetCommand}" />
+                                                </ContextMenu>
+                                            </DockPanel.ContextMenu>
+                                            <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center"
+                                                    RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding DeleteCommand}">
+                                                <Button.Style>
+                                                    <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                                    </Style>
+                                                </Button.Style>
+                                                <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
+                                                        Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                                                        VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
+                                            </Button>
+                                            <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"
+                                                    Fill="{DynamicResource Error}" Stretch="Uniform" Visibility="Collapsed" x:Name="ErrorIcon" Margin="2 2 4 0"
+                                                    VerticalAlignment="Center" />
+                                            <TextBlock x:Name="Name" Text="{Binding DisplayName}" />
+                                        </DockPanel>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding ExceedsLimit}" Value="True">
+                                                <!--<Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextDisabled}" />-->
+                                                <Setter Property="ToolTip" Value="There is no pit stop for this car" />
+                                                <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
+                                                <Setter TargetName="Name" Property="Opacity" Value="0.5" />
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Style>
+        </ListBox>
     </DockPanel>
 </Grid>

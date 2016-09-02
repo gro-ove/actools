@@ -6,6 +6,7 @@ using System.Windows;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
 
@@ -28,6 +29,8 @@ namespace AcManager.UserControls {
         }
 
         private void OnSelectedCarChanged(CarObject newValue) {
+            Logging.Debug(newValue);
+            Logging.Debug("list: " + _list);
             if (_list != null) {
                 _list.SelectedItem = newValue;
             }
@@ -48,7 +51,7 @@ namespace AcManager.UserControls {
             var content = ((ModernTab)sender).Frame.Content;
             _list = content as ISelectedItemPage<AcObjectNew>;
             _choosing = content as IChoosingItemControl<AcObjectNew>;
-
+            
             if (_list != null) {
                 _list.SelectedItem = SelectedCar;
                 _list.PropertyChanged += List_PropertyChanged;

@@ -95,7 +95,7 @@
         <Popup Placement="Absolute" HorizontalOffset="{Binding ActualLeft, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
                 VerticalOffset="{Binding ActualTop, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=1}"
                 Height="{Binding ActualHeight, ElementName=Window, Converter={x:Static windows:MainWindow.PopupHeightConverter}}" x:Name="Popup"
-                StaysOpen="False" PopupAnimation="Slide" AllowsTransparency="True" />
+                StaysOpen="False" PopupAnimation="Slide" AllowsTransparency="True" mui:PopupHelper.Register="True" />
         <Popup Placement="Absolute"
                 HorizontalOffset="{Binding ActualRight, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=-140}"
                 VerticalOffset="{Binding ActualBottom, ElementName=Window, Converter={StaticResource SumConverter}, ConverterParameter=-100}" Height="80"

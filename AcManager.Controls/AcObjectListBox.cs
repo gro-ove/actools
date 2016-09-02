@@ -9,6 +9,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Lists;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using StringBasedFilter;
 
@@ -54,10 +55,17 @@ namespace AcManager.Controls {
         }
 
         private void OnSelectedItemChanged(AcObjectNew newValue) {
-            if (InnerItemsSource == null || InnerItemsSource.CurrentItem == newValue) return;
+            if (InnerItemsSource == null) return;
 
-            InnerItemsSource.MoveCurrentToOrNull(newValue);
-            UpdateSelected();
+            if (InnerItemsSource.CurrentItem != newValue) {
+                InnerItemsSource.MoveCurrentToOrNull(newValue);
+                UpdateSelected();
+            }
+
+            if (SelectionMode != SelectionMode.Single && _listBox != null) {
+                _listBox.SelectedItems.Clear();
+                _listBox.SelectedItems.Add(InnerItemsSource.CurrentItem);
+            }
         }
 
         public AcObjectNew SelectedItem {
@@ -217,16 +225,23 @@ namespace AcManager.Controls {
 
             _listBox = GetTemplateChild(@"PART_ListBox") as ListBox;
             if (_listBox != null) {
+                if (SelectionMode != SelectionMode.Single && InnerItemsSource != null) {
+                    _listBox.SelectedItems.Clear();
+                    _listBox.SelectedItems.Add(InnerItemsSource.CurrentItem);
+                }
+
                 _listBox.SelectionChanged += ListBox_SelectionChanged;
             }
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (SelectionMode == SelectionMode.Single) return;
             SelectedItem = (_listBox?.SelectedItem as AcItemWrapper)?.Loaded();
         }
 
         [NotNull]
         public IEnumerable<AcObjectNew> GetSelectedItems() {
+            if (SelectionMode == SelectionMode.Single) return new[] { SelectedItem };
             return _listBox?.SelectedItems.OfType<AcItemWrapper>().Select(x => x.Loaded()) ??
                     new AcObjectNew[0];
         }

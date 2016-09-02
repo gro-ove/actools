@@ -110,7 +110,7 @@ namespace AcTools.Processes {
                 var section = file["GHOST_CAR"];
                 section.Set("RECORDING", recording);
                 section.Set("PLAYING", playing);
-                section.Set("SECONDS_ADVANTAGE", advantage);
+                section.Set("SECONDS_ADVANTAGE", advantage, "0.###");
                 section.Set("LOAD", playing || recording);
                 section.Set("FILE", "");
                 section.Set("ENABLED", false);
@@ -188,7 +188,7 @@ namespace AcTools.Processes {
             public double? GhostCarAdvantage = 0.0;
 
             public override void Set(IniFile file) {
-                SetGhostCar(file, GhostCar, RecordGhostCar ?? GhostCar);
+                SetGhostCar(file, GhostCar, RecordGhostCar ?? GhostCar, GhostCarAdvantage);
                 SetGroove(file);
 
                 base.Set(file);

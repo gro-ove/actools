@@ -557,33 +557,50 @@ namespace AcManager.Controls.ViewModels {
         [CanBeNull]
         private CarObject _playerCar;
 
-        public void SetPlayerCar(CarObject car) {
-            _playerCar = car;
-            if (Mode.AffectedByCar) {
-                RebuildGridAsync().Forget();
-            }
+        [CanBeNull]
+        public CarObject PlayerCar {
+            get { return _playerCar; }
+            set {
+                if (Equals(_playerCar, value)) return;
 
-            if (!Mode.CandidatesMode && StartingPosition > 0) {
-                UpdatePlayerEntry();
+                _playerCar = value;
+                OnPropertyChanged();
+
+                if (Mode.AffectedByCar) {
+                    RebuildGridAsync().Forget();
+                }
+
+                if (!Mode.CandidatesMode && StartingPosition > 0) {
+                    UpdatePlayerEntry();
+                }
             }
         }
 
         [CanBeNull]
         private TrackObjectBase _track;
 
-        public void SetTrack(TrackObjectBase track) {
-            if (_track != null) {
-                _track.PropertyChanged -= Track_OnPropertyChanged;
-            }
 
-            _track = track;
-            if (Mode.AffectedByTrack) {
-                RebuildGridAsync().Forget();
-            }
+        [CanBeNull]
+        public TrackObjectBase PlayerTrack {
+            get { return _track; }
+            set {
+                if (Equals(_track, value)) return;
 
-            if (track != null) {
-                TrackPitsNumber = FlexibleParser.ParseInt(track.SpecsPitboxes, 2);
-                track.PropertyChanged += Track_OnPropertyChanged;
+                if (_track != null) {
+                    _track.PropertyChanged -= Track_OnPropertyChanged;
+                }
+
+                _track = value;
+                OnPropertyChanged();
+                
+                if (Mode.AffectedByTrack) {
+                    RebuildGridAsync().Forget();
+                }
+
+                if (value != null) {
+                    TrackPitsNumber = FlexibleParser.ParseInt(value.SpecsPitboxes, 2);
+                    value.PropertyChanged += Track_OnPropertyChanged;
+                }
             }
         }
 

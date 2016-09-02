@@ -78,7 +78,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Grid MinWidth="20" d:DataContext="{d:DesignInstance presentation:LinkInput}">
+                    <Grid MinWidth="20" d:DataContext="{d:DesignInstance presentation:LinkInput}" Background="Transparent">
+                        <Grid.InputBindings>
+                            <MouseBinding Command="{Binding CloseCommand}" Gesture="MiddleClick" />
+                        </Grid.InputBindings>
+                        
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
