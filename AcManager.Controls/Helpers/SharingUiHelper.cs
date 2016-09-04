@@ -15,6 +15,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Clipboard = System.Windows.Clipboard;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 #if WIN10_SHARE
 using Windows.ApplicationModel.DataTransfer;

@@ -66,6 +66,11 @@ namespace AcManager.Controls.ViewModels {
         public string Name {
             get { return _name; }
             set {
+                if (value != null) {
+                    value = value.Trim();
+                    if (value.Length == 0) value = null;
+                }
+
                 if (Equals(value, _name)) return;
                 _name = value;
                 OnPropertyChanged();
@@ -78,6 +83,11 @@ namespace AcManager.Controls.ViewModels {
         public string Nationality {
             get { return _nationality; }
             set {
+                if (value != null) {
+                    value = value.Trim();
+                    if (value.Length == 0) value = null;
+                }
+
                 if (Equals(value, _nationality)) return;
                 _nationality = value;
                 OnPropertyChanged();

@@ -289,7 +289,7 @@ namespace AcTools.Processes {
                 }
 
                 if (_process.HasExited) {
-                    throw new Exception("Process exited");
+                    throw new ProcessExitedException();
                 }
             }
         }

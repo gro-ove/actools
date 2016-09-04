@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class ProperCommand : ICommand {
@@ -12,11 +13,8 @@ namespace FirstFloor.ModernUI.Presentation {
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
-        public ProperCommand(Action<object> execute, Func<object, bool> canExecute = null) {
-            if (execute == null) {
-                throw new ArgumentNullException(nameof(execute));
-            }
-
+        public ProperCommand([NotNull] Action<object> execute, Func<object, bool> canExecute = null) {
+            if (execute == null) throw new ArgumentNullException(nameof(execute));
             _execute = execute;
             _canExecute = canExecute ?? (o => true);
         }
@@ -26,11 +24,8 @@ namespace FirstFloor.ModernUI.Presentation {
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
-        public ProperCommand(Action execute, Func<bool> canExecute = null) {
-            if (execute == null) {
-                throw new ArgumentNullException(nameof(execute));
-            }
-
+        public ProperCommand([NotNull] Action execute, Func<bool> canExecute = null) {
+            if (execute == null) throw new ArgumentNullException(nameof(execute));
             _execute = o => execute();
             if (canExecute == null) {
                 _canExecute = o => true;
@@ -66,11 +61,8 @@ namespace FirstFloor.ModernUI.Presentation {
         /// <param name="execute"></param>
         /// <param name="canExecute"></param>
         /// <param name="additionalDelay">In milliseconds, optional</param>
-        public ProperAsyncCommand(Func<object, Task> execute, Func<object, bool> canExecute = null, int additionalDelay = 0) {
-            if (execute == null) {
-                throw new ArgumentNullException(nameof(execute));
-            }
-
+        public ProperAsyncCommand([NotNull] Func<object, Task> execute, Func<object, bool> canExecute = null, int additionalDelay = 0) {
+            if (execute == null) throw new ArgumentNullException(nameof(execute));
             _execute = execute;
             _additionalDelay = additionalDelay;
             _canExecute = canExecute ?? (o => true);
@@ -81,10 +73,8 @@ namespace FirstFloor.ModernUI.Presentation {
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
-        public ProperAsyncCommand(Func<Task> execute, Func<bool> canExecute = null) {
-            if (execute == null) {
-                throw new ArgumentNullException(nameof(execute));
-            }
+        public ProperAsyncCommand([NotNull] Func<Task> execute, Func<bool> canExecute = null) {
+            if (execute == null) throw new ArgumentNullException(nameof(execute));
 
             _execute = o => execute();
             if (canExecute == null) {

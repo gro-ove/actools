@@ -45,7 +45,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static void CloseOpened() {
-            foreach (var openPopup in GetOpenPopups()) {
+            foreach (var openPopup in GetOpenPopups().Where(x => !x.StaysOpen)) {
                 openPopup.IsOpen = false;
             }
         }

@@ -17,6 +17,7 @@ using AcTools.Render.Temporary;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Controls.CustomShowroom {
     public enum CustomShowroomMode {

@@ -2,9 +2,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using AcTools.Utils;
 
-namespace AcManager.Controls.Helpers {
+namespace FirstFloor.ModernUI.Windows {
     public enum TaskbarState {
         NoProgress = 0,
         Indeterminate = 0x1,
@@ -34,8 +33,7 @@ namespace AcManager.Controls.Helpers {
         }
 
         public void Set(double value) {
-            value = value.Saturate();
-
+            value = value < 0d ? 0d : value > 1d ? 1d : value;
             if (Equals(value, 0d)) {
                 SetValue(_windowHandle, 0, 1);
             } else {

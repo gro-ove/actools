@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     /// <summary>

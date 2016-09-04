@@ -14,6 +14,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Dialogs {
     public partial class AcErrorSolutionSelector : INotifyPropertyChanged {

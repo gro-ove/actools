@@ -1022,8 +1022,8 @@ namespace AcManager.Tools.Managers.Online {
             });
 
             await GameWrapper.StartAsync(properties);
-            var whatsGoingOn = properties.GetAdditional<AcLogHelper.WhatsGoingOn?>();
-            WrongPassword = whatsGoingOn == AcLogHelper.WhatsGoingOn.OnlineWrongPassword;
+            var whatsGoingOn = properties.GetAdditional<AcLogHelper.WhatsGoingOn>();
+            WrongPassword = whatsGoingOn?.Type == AcLogHelper.WhatsGoingOnType.OnlineWrongPassword;
             if (whatsGoingOn == null) RecentManager.Instance.AddRecentServer(OriginalInformation);
         }
 

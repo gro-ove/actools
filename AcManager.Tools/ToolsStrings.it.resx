@@ -843,18 +843,6 @@
   <data name="Session_TimeAttack" xml:space="preserve">
     <value>Time Attack</value>
   </data>
-  <data name="Progress_Downloading" xml:space="preserve">
-    <value>Caricamento {0}</value>
-  </data>
-  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
-    <value>Caricati {0} di {1}</value>
-  </data>
-  <data name="Progress_Uploading" xml:space="preserve">
-    <value>Uploaded {0}</value>
-  </data>
-  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>Uploaded {0} di {1}</value>
-  </data>
   <data name="Common_UnhandledError_Commentary" xml:space="preserve">
     <value>Qualche errore non gestito occorso.</value>
   </data>

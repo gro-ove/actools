@@ -103,10 +103,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return CreateExtraStyledDialogButton(styleKey, content, new RelayCommand(action, canExecute));
         }
 
-        public Button CreateCloseDialogButton(string content, bool isDefault, bool isCancel, MessageBoxResult result) {
+        public Button CreateCloseDialogButton(string content, bool isDefault, bool isCancel, MessageBoxResult result, Action action = null) {
             return new Button {
                 Content = content,
-                Command = CloseCommand,
+                Command = action == null ? CloseCommand : new CombinedCommand(CloseCommand, new ProperCommand(action)),
                 CommandParameter = result,
                 IsDefault = isDefault,
                 IsCancel = isCancel,
@@ -116,10 +116,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
-        public Button CreateStyledCloseDialogButton(string styleKey, string content, bool isDefault, bool isCancel, MessageBoxResult result) {
+        public Button CreateStyledCloseDialogButton(string styleKey, string content, bool isDefault, bool isCancel, MessageBoxResult result,
+                Action action = null) {
             return new Button {
                 Content = content,
-                Command = CloseCommand,
+                Command = action == null ? CloseCommand : new CombinedCommand(CloseCommand, new ProperCommand(action)),
                 CommandParameter = result,
                 IsDefault = isDefault,
                 IsCancel = isCancel,

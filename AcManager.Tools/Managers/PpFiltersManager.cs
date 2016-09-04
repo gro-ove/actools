@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
@@ -18,6 +19,8 @@ namespace AcManager.Tools.Managers {
         public PpFilterObject GetByAcId(string v) {
             return GetById(v + PpFilterObject.FileExtension);
         }
+
+        public string DefaultFilename => Path.Combine(Directories.EnabledDirectory, "default.ini");
 
         public override string SearchPattern => @"*.ini";
 

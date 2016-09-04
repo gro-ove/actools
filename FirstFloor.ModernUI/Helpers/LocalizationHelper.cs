@@ -119,6 +119,10 @@ namespace FirstFloor.ModernUI.Helpers {
             return Titling.Convert(s);
         }
 
+        public static string ToSentence(this string s) {
+            return s.Length == 0 ? string.Empty : char.IsLetterOrDigit(s[s.Length - 1]) ? $"{s}." : s;
+        }
+
         public static string ToReadableKey(this Keys key) {
             switch (key) {
                 //letters

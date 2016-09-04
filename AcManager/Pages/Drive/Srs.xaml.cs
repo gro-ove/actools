@@ -23,10 +23,12 @@ using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json.Linq;
 using RoutedEventArgs = System.Windows.RoutedEventArgs;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class Srs {

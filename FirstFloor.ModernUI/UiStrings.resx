@@ -579,4 +579,19 @@
   <data name="FatalError_Message" xml:space="preserve">
     <value>App just ran into a problem and needs to restart. Please, use “Report an issue” button afterwards if you want to send a report.</value>
   </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Please wait…</value>
+  </data>
+  <data name="Progress_Downloading" xml:space="preserve">
+    <value>Loaded {0}</value>
+  </data>
+  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
+    <value>Loaded {0} of {1}</value>
+  </data>
+  <data name="Progress_Uploading" xml:space="preserve">
+    <value>Uploaded {0}</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>Uploaded {0} of {1}</value>
+  </data>
 </root>

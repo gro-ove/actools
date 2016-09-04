@@ -116,6 +116,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BinaryResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\AsyncProgressEntry.cs" />
     <Compile Include="Dialogs\ErrorMessage.cs" />
     <Compile Include="Dialogs\NonfatalErrorsDialog.xaml.cs">
       <DependentUpon>NonfatalErrorsDialog.xaml</DependentUpon>
@@ -123,6 +124,12 @@
     <Compile Include="Dialogs\ScreenColorPickerDialog.xaml.cs">
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TaskExtension.cs" />
+    <Compile Include="Dialogs\WaitingDialog.xaml.cs">
+      <DependentUpon>WaitingDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\INonfatalErrorSolution.cs" />
+    <Compile Include="Helpers\NonfatalErrorEntry.cs" />
     <Compile Include="Helpers\PopupHelper.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
     <Compile Include="Windows\DragPopup.cs" />
@@ -315,6 +322,7 @@
     <Compile Include="Windows\Navigation\NavigationFailedEventArgs.cs" />
     <Compile Include="Windows\Navigation\NavigationHelper.cs" />
     <Compile Include="Windows\Navigation\NavigationType.cs" />
+    <Compile Include="Windows\TaskbarProgress.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Assets\Converters.xaml">
@@ -366,6 +374,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\ProperPasswordBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\WaitingDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

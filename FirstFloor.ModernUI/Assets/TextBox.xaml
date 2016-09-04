@@ -111,12 +111,6 @@
         <Setter Property="Padding" Value="-3 -1 -3 -1" />
         <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
         <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
-
-        <!--<Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="Red"/>
-            </Trigger>
-        </Style.Triggers>-->
     </Style>
 
     <Style x:Key="TextBoxAsTextBlock.ReadOnly" TargetType="TextBox" BasedOn="{StaticResource TextBoxAsTextBlock}">

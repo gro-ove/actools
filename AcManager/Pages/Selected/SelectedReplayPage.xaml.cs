@@ -24,6 +24,7 @@ using JetBrains.Annotations;
 using SharpCompress.Common;
 using SharpCompress.Writer;
 using StringBasedFilter;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedReplayPage : ILoadableContent, IParametrizedUriContent {

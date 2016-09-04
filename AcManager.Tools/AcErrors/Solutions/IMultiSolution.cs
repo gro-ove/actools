@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Data;
+using FirstFloor.ModernUI.Dialogs;
 
 namespace AcManager.Tools.AcErrors.Solutions {
     public interface IMultiSolution : ISolution {

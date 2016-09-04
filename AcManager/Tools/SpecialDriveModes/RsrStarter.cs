@@ -5,6 +5,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Rsr;
 using FirstFloor.ModernUI.Helpers;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Tools.SpecialDriveModes {
     public class RsrStarter {

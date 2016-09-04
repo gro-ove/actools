@@ -15,6 +15,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -272,7 +273,7 @@ namespace AcManager.Pages.Dialogs {
 
             var saveReplayButton = CreateExtraDialogButton(buttonText(), () => {
                 if (replayHelper == null) {
-                    Logging.Warning("ReplayHelper=NULL");
+                    Logging.Warning("ReplayHelper=<NULL>");
                     return;
                 }
 
@@ -293,27 +294,34 @@ namespace AcManager.Pages.Dialogs {
                 GameWrapper.StartAsync(_properties).Forget();
             });
 
-            Buttons = new[] {
-                saveReplayButton,
-                tryAgainButton,
-                CloseButton
-            };
+            Button fixButton = null;
 
             if (result == null || !result.IsNotCancelled) {
                 Model.CurrentState = ViewModel.State.Cancelled;
-                Model.ErrorMessage = _properties?.GetAdditional<AcLogHelper.WhatsGoingOn?>()?.GetDescription();
+
+                var whatsGoingOn = _properties?.GetAdditional<AcLogHelper.WhatsGoingOn>();
+                fixButton = this.CreateFixItButton(whatsGoingOn);
+                Model.ErrorMessage = whatsGoingOn?.GetDescription();
             } else {
                 try {
                     Model.CurrentState = ViewModel.State.Finished;
                     Model.FinishedData = GetFinishedData(_properties, result);
                 } catch (Exception e) {
-                    Logging.Warning("IGameUi.OnResult(): " + e);
+                    Logging.Warning(e);
 
                     Model.CurrentState = ViewModel.State.Error;
                     Model.ErrorMessage = AppStrings.RaceResult_ResultProcessingError;
                     Buttons = new[] { CloseButton };
+                    return;
                 }
             }
+
+            Buttons = new[] {
+                fixButton,
+                fixButton == null ? saveReplayButton : null,
+                fixButton == null ? tryAgainButton : null,
+                CloseButton
+            };
         }
 
         void IGameUi.OnError(Exception exception) {

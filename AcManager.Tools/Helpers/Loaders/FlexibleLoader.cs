@@ -7,6 +7,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.Loaders {

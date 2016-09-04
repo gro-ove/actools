@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,6 +71,12 @@ namespace AcManager.Controls.ViewModels {
             [CanBeNull]
             public int[] CandidatePriorities;
 
+            [CanBeNull]
+            public int[] AiLevels;
+
+            [CanBeNull]
+            public string[] Names, Nationalities, SkinIds;
+
             public bool? AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse;
             public int? AiLevel, AiLevelMin, OpponentsNumber, StartingPosition;
         }
@@ -100,7 +107,29 @@ namespace AcManager.Controls.ViewModels {
                         data.CandidatePriorities = NonfilteredList.Select(x => x.CandidatePriority).ToArray();
                     }
                 } else if (Mode == BuiltInGridMode.Custom) {
-                    data.CarIds = NonfilteredList.ApartFrom(_playerEntry).Select(x => x.Car.Id).ToArray();
+                    data.CarIds = NonfilteredList.Where(x => !x.SpecialEntry).Select(x => x.Car.Id).ToArray();
+                }
+
+                if (data.CarIds != null) {
+                    var filtered = NonfilteredList.Where(x => !x.SpecialEntry).ToList();
+                    Logging.Write("filtered: " + filtered.Select(x => x.Car).JoinToString(", "));
+
+                    if (filtered.Any(x => x.AiLevel.HasValue)) {
+                        data.AiLevels = filtered.Select(x => x.AiLevel ?? -1).ToArray();
+                        Logging.Write("ais: " + data.AiLevels.JoinToString(", "));
+                    }
+
+                    if (filtered.Any(x => x.Name != null)) {
+                        data.Names = filtered.Select(x => x.Name).ToArray();
+                    }
+
+                    if (filtered.Any(x => x.Nationality != null)) {
+                        data.Nationalities = filtered.Select(x => x.Nationality).ToArray();
+                    }
+
+                    if (filtered.Any(x => x.CarSkin != null)) {
+                        data.SkinIds = filtered.Select(x => x.CarSkin?.Id).ToArray();
+                    }
                 }
 
                 return data;
@@ -115,16 +144,37 @@ namespace AcManager.Controls.ViewModels {
                 Mode = Modes.HierarchicalGetById<IRaceGridMode>(data.ModeId);
 
                 if (Mode == BuiltInGridMode.Custom) {
-                    NonfilteredList.ReplaceEverythingBy(data.CarIds?.Select(x => CarsManager.Instance.GetById(x)).Select(x => new RaceGridEntry(x)) ??
-                            new RaceGridEntry[0]);
+                    NonfilteredList.ReplaceEverythingBy(data.CarIds?.Select(x => CarsManager.Instance.GetById(x)).Select((x, i) => {
+                        if (x == null) return null;
+
+                        var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
+                        var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
+
+                        return new RaceGridEntry(x) {
+                            AiLevel = aiLevel >= 0 ? aiLevel : (int?)null,
+                            Name = data.Names?.ElementAtOrDefault(i),
+                            Nationality = data.Nationalities?.ElementAtOrDefault(i),
+                            CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
+                        };
+                    }).NonNull() ?? new RaceGridEntry[0]);
                     SetOpponentsNumberInternal(NonfilteredList.Count);
                     UpdateOpponentsNumber();
                 } else {
                     if (Mode == BuiltInGridMode.CandidatesManual && data.CarIds != null) {
                         // TODO: Async?
-                        NonfilteredList.ReplaceEverythingBy(data.CarIds.Select(x => CarsManager.Instance.GetById(x)).Select((x, i) => new RaceGridEntry(x) {
-                            CandidatePriority = data.CandidatePriorities?.ElementAtOr(i, 1) ?? 1
-                        }));
+                        NonfilteredList.ReplaceEverythingBy(data.CarIds.Select(x => CarsManager.Instance.GetById(x)).Select((x, i) => {
+                            if (x == null) return null;
+
+                            var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
+                            var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
+                            return new RaceGridEntry(x) {
+                                CandidatePriority = data.CandidatePriorities?.ElementAtOr(i, 1) ?? 1,
+                                AiLevel = aiLevel >= 0 ? aiLevel : (int?)null,
+                                Name = data.Names?.ElementAtOrDefault(i),
+                                Nationality = data.Nationalities?.ElementAtOrDefault(i),
+                                CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
+                            };
+                        }).NonNull());
                     } else {
                         NonfilteredList.Clear();
                     }
@@ -193,6 +243,26 @@ namespace AcManager.Controls.ViewModels {
                                                                null, // TODO
                                                                out resultFilename)) return;
         }));
+
+        private ICommand _shareCommand;
+
+        public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
+
+        private async Task Share(object o) {
+            await SharingUiHelper.ShareAsync(SharedEntryType.RaceGridPreset,
+                    Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(PresetableKeyValue)), null,
+                    ExportToPresetData());
+        }
+
+        public static void LoadPreset(string presetFilename) {
+            UserPresetsControl.LoadPreset(PresetableKeyValue, presetFilename);
+        }
+
+        public static void LoadSerializedPreset(string serializedPreset) {
+            if (!UserPresetsControl.LoadSerializedPreset(PresetableKeyValue, serializedPreset)) {
+                ValuesStorage.Set(KeySaveable, serializedPreset);
+            }
+        }
         #endregion
 
         #region Non-filtered list
@@ -238,6 +308,8 @@ namespace AcManager.Controls.ViewModels {
                     }
                     break;
             }
+
+            SaveLater();
         }
 
         private void Entry_Deleted(object sender, EventArgs e) {
@@ -958,7 +1030,7 @@ namespace AcManager.Controls.ViewModels {
 
                 final = shuffled.Take(opponentsNumber);
             } else {
-                final = NonfilteredList.ApartFrom(_playerEntry);
+                final = NonfilteredList.Where(x => !x.SpecialEntry);
             }
 
             if (_playerCar != null) {
@@ -966,6 +1038,8 @@ namespace AcManager.Controls.ViewModels {
             }
 
             return final.Take(OpponentsNumberLimited).Select((entry, i) => {
+                Logging.Debug("gen: " + entry.Name);
+
                 var level = entry.AiLevel ?? aiLevels?[i] ?? 100;
                 var name = entry.Name ?? nameNationalities?[i].Name ?? @"AI #" + i;
                 var nationality = entry.Nationality ?? nameNationalities?[i].Nationality ?? @"Italy";

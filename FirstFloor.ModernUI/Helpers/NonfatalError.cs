@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -8,30 +9,6 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
-    public sealed class NonfatalErrorEntry : Displayable {
-        public NonfatalErrorEntry(string problemDescription, string solutionCommentary, Exception exception) {
-            DisplayName = problemDescription;
-            Commentary = solutionCommentary;
-            Exception = exception;
-        }
-
-        private bool _unseen = true;
-
-        public bool Unseen {
-            get { return _unseen; }
-            internal set {
-                if (Equals(value, _unseen)) return;
-                _unseen = value;
-                OnPropertyChanged();
-                NonfatalError.Instance.UpdateUnseen();
-            }
-        }
-
-        public string Commentary { get; }
-
-        public Exception Exception { get; }
-    }
-
     /// <summary>
     /// Shows non-fatal errors to user or displays them somehow else, depends on implementation.
     /// </summary>
@@ -97,8 +74,9 @@ namespace FirstFloor.ModernUI.Helpers {
             });
         }
 
-        private static void NotifyInner(string problemDescription, string solutionCommentary, Exception exception, bool message) {
-            NotifyInner(new NonfatalErrorEntry(problemDescription, solutionCommentary, exception), message);
+        private static void NotifyInner(string problemDescription, string solutionCommentary, Exception exception,
+                [CanBeNull] IEnumerable<INonfatalErrorSolution> solutions, bool message) {
+            NotifyInner(new NonfatalErrorEntry(problemDescription, solutionCommentary, exception, solutions ?? new INonfatalErrorSolution[0]), message);
         }
 
         /// <summary>
@@ -107,14 +85,16 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
         /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
         /// <param name="exception">Exception which caused the problem.</param>
-        public static void Notify([LocalizationRequired] string problemDescription, [LocalizationRequired] string solutionCommentary, Exception exception = null) {
+        /// <param name="solutions">A bunch of possible solutions.</param>
+        public static void Notify([LocalizationRequired] string problemDescription, [LocalizationRequired] string solutionCommentary, Exception exception = null,
+                IEnumerable<INonfatalErrorSolution> solutions = null) {
             if (exception is UserCancelledException) return;
 
             var i = exception as InformativeException;
             if (i != null) {
-                NotifyInner(i.Message, i.SolutionCommentary, i.InnerException, true);
+                NotifyInner(i.Message, i.SolutionCommentary, i.InnerException, solutions, true);
             } else {
-                NotifyInner(problemDescription, solutionCommentary, exception, true);
+                NotifyInner(problemDescription, solutionCommentary, exception, solutions, true);
             }
         }
 
@@ -123,8 +103,10 @@ namespace FirstFloor.ModernUI.Helpers {
         /// </summary>
         /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
         /// <param name="exception">Exception which caused the problem.</param>
-        public static void Notify([LocalizationRequired] string problemDescription, Exception exception = null) {
-            Notify(problemDescription, null, exception);
+        /// <param name="solutions">A bunch of possible solutions.</param>
+        public static void Notify([LocalizationRequired] string problemDescription, Exception exception = null,
+                IEnumerable<INonfatalErrorSolution> solutions = null) {
+            Notify(problemDescription, null, exception, solutions);
         }
 
         /// <summary>
@@ -134,15 +116,16 @@ namespace FirstFloor.ModernUI.Helpers {
         /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
         /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
         /// <param name="exception">Exception which caused the problem.</param>
+        /// <param name="solutions">A bunch of possible solutions.</param>
         public static void NotifyBackground([LocalizationRequired] string problemDescription, [LocalizationRequired] string solutionCommentary,
-                Exception exception = null) {
+                Exception exception = null, IEnumerable<INonfatalErrorSolution> solutions = null) {
             if (exception is UserCancelledException) return;
 
             var i = exception as InformativeException;
             if (i != null) {
-                NotifyInner(i.Message, i.SolutionCommentary, i.InnerException, false);
+                NotifyInner(i.Message, i.SolutionCommentary, i.InnerException, solutions, false);
             } else {
-                NotifyInner(problemDescription, solutionCommentary, exception, false);
+                NotifyInner(problemDescription, solutionCommentary, exception, solutions, false);
             }
         }
 
@@ -152,8 +135,10 @@ namespace FirstFloor.ModernUI.Helpers {
         /// </summary>
         /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
         /// <param name="exception">Exception which caused the problem.</param>
-        public static void NotifyBackground([LocalizationRequired] string problemDescription, Exception exception = null) {
-            NotifyBackground(problemDescription, null, exception);
+        /// <param name="solutions">A bunch of possible solutions.</param>
+        public static void NotifyBackground([LocalizationRequired] string problemDescription, Exception exception = null,
+                IEnumerable<INonfatalErrorSolution> solutions = null) {
+            NotifyBackground(problemDescription, null, exception, solutions);
         }
     }
 }

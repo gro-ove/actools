@@ -23,8 +23,14 @@
                 Visibility="{Binding CurrentState, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static di:GameDialog+ViewModel+State.Cancelled}}">
             <TextBlock Text="{x:Static g:AppStrings.RaceResult_CancelledHeader}" Style="{StaticResource Heading1}"
                     Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}" />
-            <TextBlock Text="{Binding ErrorMessage, StringFormat='{}{0}.'}" Style="{StaticResource Heading1}"
-                    Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+            <StackPanel Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                <DockPanel Margin="0 0 0 4">
+                    <Path Data="{StaticResource AlertIconData}" Width="24" Height="24" Fill="{DynamicResource Error}" Stretch="Uniform"
+                            DockPanel.Dock="Left" Margin="4" />
+                    <TextBlock Text="Game crashed" Style="{StaticResource Heading1}" />
+                </DockPanel>
+                <TextBlock Text="{Binding ErrorMessage, StringFormat='{}{0}.'}" />
+            </StackPanel>
         </StackPanel>
 
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"

@@ -5,6 +5,10 @@ using System.IO;
 using AcTools.DataFile;
 
 namespace AcTools.Processes {
+    public class ProcessExitedException : Exception {
+        public ProcessExitedException() : base("Process exited") {}
+    }
+
     public partial class Showroom {
         public class KunosShotter : BaseIterableShooter {
             private Process _process;
@@ -76,7 +80,7 @@ namespace AcTools.Processes {
                 }
 
                 if (!File.Exists(filename)) {
-                    throw new Exception("Process exited");
+                    throw new ProcessExitedException();
                 }
 
                 File.Move(filename, Path.Combine(OutputDirectory, skinId + ".bmp"));

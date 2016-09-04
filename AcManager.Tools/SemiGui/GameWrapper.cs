@@ -164,7 +164,7 @@ namespace AcManager.Tools.SemiGui {
                         result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), ui.CancellationToken);
                     }
 
-                    Logging.Write($"Result: {result?.GetDescription() ?? @"NONE"}");
+                    Logging.Write($"Result: {result?.GetDescription() ?? @"<NULL>"}");
                     if (ui.CancellationToken.IsCancellationRequested) {
                         ui.OnError(new UserCancelledException());
                         return null;

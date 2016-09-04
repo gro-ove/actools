@@ -407,4 +407,7 @@
   <data name="Common_Oops" xml:space="preserve">
     <value>Ой!</value>
   </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Пожалуйста, подождите…</value>
+  </data>
 </root>

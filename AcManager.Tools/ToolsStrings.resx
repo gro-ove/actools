@@ -257,7 +257,13 @@
     <value>Default PP filter (default.ini) is missing but required</value>
   </data>
   <data name="LogHelper_PpFilterIsMissing" xml:space="preserve">
-    <value>PP filter is missing</value>
+    <value>PP filter “{0}” is missing</value>
+  </data>
+  <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
+    <value>Shader “{0}” is missing (might be removed in some AC update), model needs fixing</value>
+  </data>
+  <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
+    <value>Clouds (content/texture/clouds) might be missing</value>
   </data>
   <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>Unpacked version doesn’t support auto-updating.</value>
@@ -306,6 +312,9 @@
   </data>
   <data name="Shared_QuickDrivePreset" xml:space="preserve">
     <value>Quick Drive preset</value>
+  </data>
+  <data name="Shared_RaceGridPreset" xml:space="preserve">
+    <value>Race grid preset</value>
   </data>
   <data name="Shared_AssistsSetupPreset" xml:space="preserve">
     <value>Assists preset</value>
@@ -860,18 +869,6 @@
   </data>
   <data name="Session_TimeAttack" xml:space="preserve">
     <value>Time Attack</value>
-  </data>
-  <data name="Progress_Downloading" xml:space="preserve">
-    <value>Loaded {0}</value>
-  </data>
-  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
-    <value>Loaded {0} of {1}</value>
-  </data>
-  <data name="Progress_Uploading" xml:space="preserve">
-    <value>Uploaded {0}</value>
-  </data>
-  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>Uploaded {0} of {1}</value>
   </data>
   <data name="Common_UnhandledError_Commentary" xml:space="preserve">
     <value>Some unhandled error happened.</value>

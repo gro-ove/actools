@@ -412,4 +412,16 @@
   <data name="Yes" xml:space="preserve">
     <value>Oui</value>
   </data>
+  <data name="Progress_Downloading" xml:space="preserve">
+    <value>{0} chargé</value>
+  </data>
+  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
+    <value>{0} of {1} chargé</value>
+  </data>
+  <data name="Progress_Uploading" xml:space="preserve">
+    <value>{0} uploadé</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>{0} of {1} uploadé</value>
+  </data>
 </root>

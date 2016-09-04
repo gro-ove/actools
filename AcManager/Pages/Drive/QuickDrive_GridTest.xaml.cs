@@ -18,7 +18,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using Newtonsoft.Json;
-using WaitingDialog = AcManager.Controls.Dialogs.WaitingDialog;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_GridTest : IQuickDriveModeControl {

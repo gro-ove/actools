@@ -97,6 +97,15 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please wait….
+        /// </summary>
+        public static string Common_PleaseWait {
+            get {
+                return ResourceManager.GetString("Common_PleaseWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://restart]restart[/url] this app or just [url=cmd://exit]close[/url] it..
         /// </summary>
         public static string FatalCrashSuggestionsMessage {
@@ -1119,6 +1128,42 @@ namespace FirstFloor.ModernUI {
         public static string PickColorFromScreen {
             get {
                 return ResourceManager.GetString("PickColorFromScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded {0}.
+        /// </summary>
+        public static string Progress_Downloading {
+            get {
+                return ResourceManager.GetString("Progress_Downloading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded {0} of {1}.
+        /// </summary>
+        public static string Progress_Downloading_KnownTotal {
+            get {
+                return ResourceManager.GetString("Progress_Downloading_KnownTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploaded {0}.
+        /// </summary>
+        public static string Progress_Uploading {
+            get {
+                return ResourceManager.GetString("Progress_Uploading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploaded {0} of {1}.
+        /// </summary>
+        public static string Progress_Uploading_KnownTotal {
+            get {
+                return ResourceManager.GetString("Progress_Uploading_KnownTotal", resourceCulture);
             }
         }
         

@@ -435,7 +435,7 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
 
             private async Task Share(object o) {
                 await SharingUiHelper.ShareAsync(SharedEntryType.QuickDrivePreset,
@@ -514,7 +514,7 @@ namespace AcManager.Pages.Drive {
             NavigateToPage();
         }
 
-        private static void NavigateToPage() {
+        public static void NavigateToPage() {
             (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative));
         }
 

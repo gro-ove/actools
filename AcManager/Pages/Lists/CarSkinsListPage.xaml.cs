@@ -17,6 +17,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Converters;
 using StringBasedFilter;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Lists {
     public partial class CarSkinsListPage : IParametrizedUriContent, ILoadableContent {

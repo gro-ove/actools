@@ -5,14 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using AcManager.Controls.Helpers;
-using AcManager.Tools.Data;
-using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.Dialogs {
+namespace FirstFloor.ModernUI.Dialogs {
     public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<Tuple<string, double?>>,
             IProgress<AsyncProgressEntry>, IDisposable, IProgress<double> {
         public static WaitingDialog Create(string reportValue) {
@@ -76,7 +73,7 @@ namespace AcManager.Controls.Dialogs {
 
         public new string Title {
             get { return base.Title; }
-            set { base.Title = value ?? Controls.ControlsStrings.Common_PleaseWait; }
+            set { base.Title = value ?? UiStrings.Common_PleaseWait; }
         }
 
         private CancellationTokenSource _cancellationTokenSource;
@@ -99,7 +96,10 @@ namespace AcManager.Controls.Dialogs {
                 IsCancelled = true;
             }
 
-            DisposeHelper.Dispose(ref _taskbarProgress);
+            if (_taskbarProgress != null) {
+                _taskbarProgress.Dispose();
+                _taskbarProgress = null;
+            }
         }
 
         private bool _loaded;
@@ -203,7 +203,8 @@ namespace AcManager.Controls.Dialogs {
         }
 
         public void Report(int n, int total) {
-            Report(((double)n / total + 0.000001).Saturate());
+            var v = (double)n / total + 0.000001;
+            Report(v < 0d ? 0d : v > 1d ? 1d : v);
         }
 
         public void Report(AsyncProgressEntry value) {
@@ -236,7 +237,11 @@ namespace AcManager.Controls.Dialogs {
 
         void IDisposable.Dispose() {
             _disposed = true;
-            DisposeHelper.Dispose(ref _cancellationTokenSource);
+            if (_cancellationTokenSource != null) {
+                _cancellationTokenSource.Dispose();
+                _cancellationTokenSource = null;
+            }
+
             Dispatcher.Invoke(EnsureClosed);
         }
 

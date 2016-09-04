@@ -31,6 +31,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using SharpCompress.Common;
 using SharpCompress.Reader;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 using ZipArchive = SharpCompress.Archive.Zip.ZipArchive;
 
 namespace AcManager.Tools {
@@ -571,6 +572,29 @@ namespace AcManager.Tools {
                                 throw new InformativeException(AppStrings.Common_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
                             }
 
+                            return ArgumentHandleResult.SuccessfulShow;
+                        default:
+                            return ArgumentHandleResult.Failed;
+                    }
+                }
+
+                case SharedEntryType.RaceGridPreset: {
+                    var result = ShowDialog(shared);
+                    switch (result) {
+                        case Choise.Save:
+                        case Choise.ApplyAndSave:
+                            var filename = FileUtils.EnsureUnique(Path.Combine(
+                                    PresetsManager.Instance.GetDirectory(RaceGridViewModel.PresetableKeyValue), @"Loaded", shared.GetFileName()));
+                            Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
+                            File.WriteAllBytes(filename, data);
+                            if (result == Choise.ApplyAndSave) {
+                                RaceGridViewModel.LoadPreset(filename);
+                                QuickDrive.NavigateToPage();
+                            }
+                            return ArgumentHandleResult.SuccessfulShow;
+                        case Choise.Apply:
+                            RaceGridViewModel.LoadSerializedPreset(data.ToUtf8String());
+                            QuickDrive.NavigateToPage();
                             return ArgumentHandleResult.SuccessfulShow;
                         default:
                             return ArgumentHandleResult.Failed;

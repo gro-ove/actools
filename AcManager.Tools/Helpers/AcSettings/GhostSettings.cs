@@ -73,7 +73,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public int MaxOpacity {
             get { return _maxOpacity; }
             set {
-                value = value.Clamp(0, 100);
+                value = value.Clamp(0, 300);
                 if (Equals(value, _maxOpacity)) return;
                 _maxOpacity = value;
                 OnPropertyChanged();

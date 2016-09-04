@@ -200,9 +200,9 @@
                             x:Name="PART_Menu">
                         <c:LazyMenuItem x:Name="PART_MenuItem" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Style="{StaticResource HierarchicalComboBoxMenuItem}"
-                                Width="{Binding ActualWidth, ElementName=Menu}" ItemsSource="{TemplateBinding InnerItems}"
-                                Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}" Margin="{TemplateBinding InnerMargin}" Padding="{TemplateBinding Padding}">
+                                ItemsSource="{TemplateBinding InnerItems}" Foreground="{TemplateBinding Foreground}" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                Margin="{TemplateBinding InnerMargin}" Padding="{TemplateBinding Padding}">
                             <MenuItem.Header>
                                 <ContentPresenter DataContext="{TemplateBinding SelectedItem}" Content="{TemplateBinding SelectedContent}"
                                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />

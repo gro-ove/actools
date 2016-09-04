@@ -11,6 +11,7 @@ using AcManager.Tools.ContentInstallation;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Dialogs {
     public partial class InstallAdditionalContentDialog : INotifyPropertyChanged {

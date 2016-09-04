@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Helpers;
@@ -176,8 +177,15 @@ namespace AcManager.Controls.Dialogs {
                         Filter = ForceFilterAcId ?? SelectedFilter.AcId,
                         UseBmp = false
                     }));
+
+                    var whatsGoingOn = AcLogHelper.TryToDetermineWhatsGoingOn();
+                    if (whatsGoingOn != null) {
+                        NonfatalError.Notify(whatsGoingOn.GetDescription(), solutions: new[] {
+                            whatsGoingOn
+                        });
+                    }
                 } catch (Exception e) {
-                    NonfatalError.Notify(Controls.ControlsStrings.Showroom_CannotStart, e);
+                    NonfatalError.Notify(ControlsStrings.Showroom_CannotStart, e);
                 }
             }
         }

@@ -10,6 +10,7 @@ using AcManager.Internal;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
 

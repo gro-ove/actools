@@ -21,6 +21,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsLocale {

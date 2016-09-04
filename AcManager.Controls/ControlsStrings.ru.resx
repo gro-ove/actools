@@ -407,9 +407,6 @@
   <data name="Common_Loading" xml:space="preserve">
     <value>Загрузка…</value>
   </data>
-  <data name="Common_PleaseWait" xml:space="preserve">
-    <value>Пожалуйста, подождите…</value>
-  </data>
   <data name="Controls_FilterAxis" xml:space="preserve">
     <value>Фильтрация</value>
   </data>

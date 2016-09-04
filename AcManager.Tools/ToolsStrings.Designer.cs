@@ -2698,6 +2698,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clouds (content/texture/clouds) might be missing.
+        /// </summary>
+        public static string LogHelper_CloudsMightBeMissing {
+            get {
+                return ResourceManager.GetString("LogHelper_CloudsMightBeMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default PP filter (default.ini) is missing but required.
         /// </summary>
         public static string LogHelper_DefaultPpFilterIsMissing {
@@ -2725,11 +2734,20 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PP filter is missing.
+        ///   Looks up a localized string similar to PP filter “{0}” is missing.
         /// </summary>
         public static string LogHelper_PpFilterIsMissing {
             get {
                 return ResourceManager.GetString("LogHelper_PpFilterIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shader “{0}” is missing (might be removed in some AC update), model needs fixing.
+        /// </summary>
+        public static string LogHelper_ShaderIsMissing {
+            get {
+                return ResourceManager.GetString("LogHelper_ShaderIsMissing", resourceCulture);
             }
         }
         
@@ -3160,42 +3178,6 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loaded {0}.
-        /// </summary>
-        public static string Progress_Downloading {
-            get {
-                return ResourceManager.GetString("Progress_Downloading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loaded {0} of {1}.
-        /// </summary>
-        public static string Progress_Downloading_KnownTotal {
-            get {
-                return ResourceManager.GetString("Progress_Downloading_KnownTotal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uploaded {0}.
-        /// </summary>
-        public static string Progress_Uploading {
-            get {
-                return ResourceManager.GetString("Progress_Uploading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uploaded {0} of {1}.
-        /// </summary>
-        public static string Progress_Uploading_KnownTotal {
-            get {
-                return ResourceManager.GetString("Progress_Uploading_KnownTotal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Can’t rename replays.
         /// </summary>
         public static string Replay_CannotRenameReplays {
@@ -3498,6 +3480,15 @@ namespace AcManager.Tools {
         public static string Shared_QuickDrivePreset {
             get {
                 return ResourceManager.GetString("Shared_QuickDrivePreset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Race grid preset.
+        /// </summary>
+        public static string Shared_RaceGridPreset {
+            get {
+                return ResourceManager.GetString("Shared_RaceGridPreset", resourceCulture);
             }
         }
         

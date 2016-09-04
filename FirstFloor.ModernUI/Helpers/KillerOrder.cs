@@ -38,7 +38,9 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public void Dispose() {
-            _sockets?.Remove(this);
+            lock (StaticLock) {
+                _sockets?.Remove(this);
+            }
 
             var disposable = Victim as IDisposable;
             disposable?.Dispose();
@@ -68,44 +70,50 @@ namespace FirstFloor.ModernUI.Helpers {
             var disposable = Victim as IDisposable;
             disposable?.Dispose();
         }
+        
+        private static readonly object StaticLock = new object();
 
         private static List<KillerOrder> _sockets;
         private static DispatcherTimer _timer;
 
         private static void Register(KillerOrder order) {
-            if (_sockets == null) {
-                _sockets = new List<KillerOrder>(2000);
-                _timer = new DispatcherTimer {
-                    Interval = TimeSpan.FromMilliseconds(100d),
-                    IsEnabled = true
-                };
+            lock (StaticLock) {
+                if (_sockets == null) {
+                    _sockets = new List<KillerOrder>(2000);
+                    _timer = new DispatcherTimer {
+                        Interval = TimeSpan.FromMilliseconds(100d),
+                        IsEnabled = true
+                    };
 
-                _timer.Tick += Timer_Tick;
+                    _timer.Tick += Timer_Tick;
+                }
+
+                _sockets.Add(order);
             }
-            
-            _sockets.Add(order);
         }
 
         private static void Timer_Tick(object sender, EventArgs e) {
-            if (_sockets.Count == 0) return;
+            lock (StaticLock) {
+                if (_sockets.Count == 0) return;
 
-            List<KillerOrder> list = null;
-            var now = DateTime.Now;
-            foreach (var pair in _sockets) {
-                if (now > pair.KillAfter) {
-                    if (list == null) {
-                        list = new List<KillerOrder> { pair };
-                    } else {
-                        list.Add(pair);
-                        if (list.Count > 50) break;
+                List<KillerOrder> list = null;
+                var now = DateTime.Now;
+                foreach (var pair in _sockets) {
+                    if (now > pair.KillAfter) {
+                        if (list == null) {
+                            list = new List<KillerOrder> { pair };
+                        } else {
+                            list.Add(pair);
+                            if (list.Count > 50) break;
+                        }
                     }
                 }
-            }
 
-            if (list != null) {
-                foreach (var tuple in list) {
-                    _sockets.Remove(tuple);
-                    tuple.Kill();
+                if (list != null) {
+                    foreach (var tuple in list) {
+                        _sockets.Remove(tuple);
+                        tuple.Kill();
+                    }
                 }
             }
         }

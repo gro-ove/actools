@@ -21,7 +21,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using StringBasedFilter;
 using Prompt = AcManager.Controls.Dialogs.Prompt;
-using WaitingDialog = AcManager.Controls.Dialogs.WaitingDialog;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class Online : ILoadableContent, IParametrizedUriContent {

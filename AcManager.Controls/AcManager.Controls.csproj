@@ -153,7 +153,6 @@
     <Compile Include="Helpers\ControlsPresets.cs" />
     <Compile Include="Helpers\SharingUiHelper.cs" />
     <Compile Include="Helpers\ShellLink.cs" />
-    <Compile Include="Helpers\TaskbarProgress.cs" />
     <Compile Include="Helpers\Toast.cs" />
     <Compile Include="Helpers\ToastWin8Helper.cs" />
     <Compile Include="IPresetsPreviewProvider.cs" />
@@ -206,9 +205,6 @@
     </Compile>
     <Compile Include="Dialogs\ImageViewer.xaml.cs">
       <DependentUpon>ImageViewer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\WaitingDialog.xaml.cs">
-      <DependentUpon>WaitingDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\AppAppearanceManager.cs" />
     <Compile Include="AcToolBar.cs" />
@@ -322,10 +318,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\ImageViewer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\WaitingDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

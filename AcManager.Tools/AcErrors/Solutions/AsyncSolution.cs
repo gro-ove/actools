@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Data;
+using FirstFloor.ModernUI.Dialogs;
 
 namespace AcManager.Tools.AcErrors.Solutions {
     using AsyncAction = Func<IAcError, Task>;

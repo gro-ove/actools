@@ -440,9 +440,6 @@ Entry type: [b]{2}[/b]</value>
   <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
     <value>Make sure VLC addon is installed properly.</value>
   </data>
-  <data name="Common_PleaseWait" xml:space="preserve">
-    <value>Please wait…</value>
-  </data>
   <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
     <value>Texture is missing!</value>
   </data>

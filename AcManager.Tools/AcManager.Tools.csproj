@@ -175,7 +175,6 @@
     <Compile Include="Data\GameSpecific\SessionTypeExtension.cs" />
     <Compile Include="Data\HierarchicalHelper.cs" />
     <Compile Include="Data\KunosCareerProgress.cs" />
-    <Compile Include="Data\AsyncProgressEntry.cs" />
     <Compile Include="Data\KunosCareerProgressEntry.cs" />
     <Compile Include="Data\WeatherDescription.cs" />
     <Compile Include="Data\WeatherType.cs" />

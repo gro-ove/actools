@@ -21,6 +21,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class SpecialEvents : ILoadableContent {

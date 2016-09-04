@@ -27,6 +27,9 @@ namespace AcManager.Tools.Miscellaneous {
         [LocalizedDescription("Shared_QuickDrivePreset")]
         QuickDrivePreset,
 
+        [LocalizedDescription("Shared_RaceGridPreset")]
+        RaceGridPreset,
+
         [LocalizedDescription("Shared_VideoSettingsPreset")]
         VideoSettingsPreset,
 
@@ -120,6 +123,7 @@ namespace AcManager.Tools.Miscellaneous {
                 case SharedEntryType.QuickDrivePreset:
                 case SharedEntryType.VideoSettingsPreset:
                 case SharedEntryType.AssistsSetupPreset:
+                case SharedEntryType.RaceGridPreset:
                     return @".cmpreset";
 
                 case SharedEntryType.Replay:

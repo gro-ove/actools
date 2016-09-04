@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class WatermarkService {
@@ -31,11 +32,11 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             var control = d as Control;
             if (control == null) {
                 var textBlock = d as TextBlock;
-                if (textBlock == null) return;
-
-                textBlock.Loaded += Control_Loaded;
-                DependencyPropertyDescriptor.FromProperty(TextBlock.TextProperty, typeof(TextBlock))
-                    .AddValueChanged(textBlock, Control_TextChanged);
+                if (textBlock != null) {
+                    textBlock.Loaded += Control_Loaded;
+                    DependencyPropertyDescriptor.FromProperty(TextBlock.TextProperty, typeof(TextBlock))
+                                                .AddValueChanged(textBlock, Control_TextChanged);
+                }
                 return;
             }
 
@@ -132,9 +133,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             // layer could be null if control is no longer in the visual tree
             var adorners = layer?.GetAdorners(control);
-            if (adorners == null) {
-                return;
-            }
+            if (adorners == null) return;
 
             foreach (var adorner in adorners.OfType<WatermarkAdorner>()) {
                 adorner.Visibility = Visibility.Hidden;
@@ -143,8 +142,19 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static void ShowWatermark(UIElement control) {
+            var layer = AdornerLayer.GetAdornerLayer(control);
+            if (layer == null) return;
+
             // layer could be null if control is no longer in the visual tree
-            AdornerLayer.GetAdornerLayer(control)?.Add(new WatermarkAdorner(control, GetWatermark(control)));
+            var adorners = layer.GetAdorners(control);
+            if (adorners != null) {
+                foreach (var adorner in adorners.OfType<WatermarkAdorner>()) {
+                    adorner.Visibility = Visibility.Hidden;
+                    layer.Remove(adorner);
+                }
+            }
+
+            layer.Add(new WatermarkAdorner(control, GetWatermark(control)));
         }
 
         private static bool ShouldShowWatermark(UIElement c) {

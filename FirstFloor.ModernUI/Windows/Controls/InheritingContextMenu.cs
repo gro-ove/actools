@@ -7,6 +7,8 @@ using FirstFloor.ModernUI.Windows.Attached;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class InheritingContextMenu : ContextMenu {
+        public static bool OptionInsertInFront = false;
+
         private static readonly object TemporaryMark = new object();
         private static WeakReference<InheritingContextMenu> _previouslyOpened;
 
@@ -54,17 +56,32 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 menu.Items.Clear();
             }
 
-            var i = 0;
-            foreach (var group in _items) {
-                var any = false;
-                foreach (var item in group) {
-                    Items.Insert(i++, item);
-                    item.Tag = TemporaryMark;
-                    any = true;
-                }
+            if (OptionInsertInFront) {
+                var i = 0;
+                foreach (var group in _items) {
+                    var any = false;
+                    foreach (var item in group) {
+                        Items.Insert(i++, item);
+                        item.Tag = TemporaryMark;
+                        any = true;
+                    }
 
-                if (any) {
-                    Items.Insert(i++, new Separator { Tag = TemporaryMark });
+                    if (any) {
+                        Items.Insert(i++, new Separator { Tag = TemporaryMark });
+                    }
+                }
+            } else {
+                foreach (var group in _items) {
+                    var any = false;
+                    foreach (var item in group) {
+                        if (!any) {
+                            Items.Add(new Separator { Tag = TemporaryMark });
+                        }
+
+                        Items.Add(item);
+                        item.Tag = TemporaryMark;
+                        any = true;
+                    }
                 }
             }
 

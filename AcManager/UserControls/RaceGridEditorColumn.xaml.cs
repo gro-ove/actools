@@ -8,13 +8,16 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Miscellaneous;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
@@ -51,6 +54,7 @@ namespace AcManager.UserControls {
             });
             InitializeComponent();
             SelectCarPopup.CustomPopupPlacementCallback = CustomPopupPlacementCallback;
+            DetailsPopup.CustomPopupPlacementCallback = CustomPopupPlacementCallback;
         }
 
         private const string KeySelectedCar = ".RaceGridEditor:SelectedCar";
@@ -130,8 +134,9 @@ namespace AcManager.UserControls {
 
         private ICommand _closeAddingPopupCommand;
 
-        public ICommand CloseAddingPopupCommand => _closeAddingPopupCommand ?? (_closeAddingPopupCommand = new RelayCommand(o => {
+        public ICommand ClosePopupsCommand => _closeAddingPopupCommand ?? (_closeAddingPopupCommand = new ProperCommand(o => {
             SelectCarPopup.IsOpen = false;
+            DetailsPopup.IsOpen = false;
         }));
 
         private CarObject _selectedCar;
@@ -196,6 +201,44 @@ namespace AcManager.UserControls {
             if (SelectedCar == null) {
                 SelectedCar = LoadSelected() ?? Model?.PlayerCar ?? CarsManager.Instance.GetDefault();
             }
+        }
+
+        private void OpponentSkin_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            var entry = (sender as FrameworkElement)?.DataContext as RaceGridEntry;
+            if (entry?.SpecialEntry != false) return;
+
+            var dataGrid = (DetailsPopup.Content as FrameworkElement)?.FindVisualChild<DataGrid>();
+            if (dataGrid != null) {
+                dataGrid.SelectedItem = entry;
+            }
+
+            DetailsPopup.StaysOpen = true;
+
+            var control = new CarBlock {
+                Car = entry.Car,
+                SelectedSkin = entry.CarSkin ?? entry.Car.SelectedSkin,
+                SelectSkin = true,
+                OpenShowroom = true
+            };
+
+            var dialog = new ModernDialog {
+                Content = control,
+                Width = 640,
+                Height = 720,
+                MaxWidth = 640,
+                MaxHeight = 720,
+                SizeToContent = SizeToContent.Manual,
+                Title = entry.Car.DisplayName
+            };
+
+            dialog.Buttons = new[] { dialog.OkButton, dialog.CancelButton };
+            dialog.ShowDialog();
+
+            if (dialog.IsResultOk) {
+                entry.CarSkin = control.SelectedSkin;
+            }
+
+            DetailsPopup.StaysOpen = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
