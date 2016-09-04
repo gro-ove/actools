@@ -56,7 +56,6 @@ Temporary Items
 */bin
 */Publish
 *.dll
-*.zip
 
 *.fx.o
 
@@ -93,3 +92,4 @@ AcManager.Tools/Helpers/Api/CmHelpersProvider_Consts.cs
 
 # Libraries
 Libraries/*
+Libraries.zip
