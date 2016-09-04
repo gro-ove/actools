@@ -1512,6 +1512,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Content Manager Updated.
+        /// </summary>
+        public static string App_AppUpdated {
+            get {
+                return ResourceManager.GetString("App_AppUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to see recent changes.
+        /// </summary>
+        public static string App_AppUpdated_Details {
+            get {
+                return ResourceManager.GetString("App_AppUpdated_Details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data Updated.
         /// </summary>
         public static string App_DataUpdated {

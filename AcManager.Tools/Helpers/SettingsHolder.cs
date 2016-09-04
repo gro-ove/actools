@@ -329,6 +329,21 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _showDetailedChangelog;
+
+            public bool ShowDetailedChangelog {
+                get {
+                    return _showDetailedChangelog ??
+                            (_showDetailedChangelog = ValuesStorage.GetBool("Settings.CommonSettings.ShowDetailedChangelog", true)).Value;
+                }
+                set {
+                    if (Equals(value, _showDetailedChangelog)) return;
+                    _showDetailedChangelog = value;
+                    ValuesStorage.Set("Settings.CommonSettings.ShowDetailedChangelog", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _developerMode;
 
             public bool DeveloperMode {

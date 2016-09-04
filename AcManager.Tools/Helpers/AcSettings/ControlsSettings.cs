@@ -9,7 +9,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers.AcSettingsControls;
 using AcManager.Tools.Helpers.DirectInput;
-using AcManager.Tools.Lists;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -128,7 +127,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private readonly List<PlaceholderInputDevice> _placeholderDevices = new List<PlaceholderInputDevice>(1);
 
-        private PlaceholderInputDevice GetPlaceholderDevice(string id, string displayName, int iniId) {
+        private PlaceholderInputDevice GetPlaceholderDevice([CanBeNull] string id, string displayName, int iniId) {
             var placeholder = _placeholderDevices.GetByIdOrDefault(id);
             if (placeholder == null) {
                 placeholder = new PlaceholderInputDevice(id, displayName, iniId);
@@ -830,7 +829,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             var devices = section.Keys.Where(x => x.StartsWith(@"CON")).Select(x => new {
                 Id = section.GetNonEmpty($"PGUID{x.Substring(3)}"),
                 Name = section.GetNonEmpty(x)
-            }).TakeWhile(x => x.Id != null && x.Name != null).Select((x, i) => {
+            }).TakeWhile(x => x.Name != null).Select((x, i) => {
                 var device = Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name) ?? Devices.GetByIdOrDefault(x.Id);
                 if (device == null) {
                     return (IDirectInputDevice)GetPlaceholderDevice(x.Id, x.Name, i);

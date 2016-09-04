@@ -113,8 +113,8 @@ namespace AcManager.Pages.Dialogs {
 
                 SelectedObject.Description = Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ? (
                         Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) ?
-                                SelectedText + Environment.NewLine.Repeat(2) + SelectedObject.Description :
-                                SelectedObject.Description + Environment.NewLine.Repeat(2) + SelectedText
+                                SelectedText + Environment.NewLine.RepeatString(2) + SelectedObject.Description :
+                                SelectedObject.Description + Environment.NewLine.RepeatString(2) + SelectedText
                         ).Trim() : SelectedText;
             }
 

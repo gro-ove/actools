@@ -23,12 +23,13 @@ namespace AcManager.Tools.Helpers.DirectInput {
     }
 
     public class PlaceholderInputDevice : IDirectInputDevice {
-        public PlaceholderInputDevice(string id, string displayName, int iniId) {
+        public PlaceholderInputDevice([CanBeNull] string id, string displayName, int iniId) {
             Id = id;
-            DisplayName = displayName + " (!)";
+            DisplayName = displayName;
             IniId = iniId;
         }
 
+        [CanBeNull]
         public string Id { get; }
 
         public string DisplayName { get; }

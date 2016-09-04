@@ -122,6 +122,9 @@
 
 {0}</value>
   </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>Content Manager Updated</value>
+  </data>
   <data name="App_DataUpdated" xml:space="preserve">
     <value>Data Updated</value>
   </data>
@@ -130,6 +133,9 @@
   </data>
   <data name="App_NewVersion" xml:space="preserve">
     <value>New Version</value>
+  </data>
+  <data name="App_AppUpdated_Details" xml:space="preserve">
+    <value>Click to see recent changes</value>
   </data>
   <data name="App_DataUpdated_Details" xml:space="preserve">
     <value>Current version: {0}</value>

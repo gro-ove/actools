@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -7,7 +6,6 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -39,17 +37,23 @@ namespace AcManager.Pages.About {
         }
 
         public class ViewModel : NotifyPropertyChanged {
-            private RelayCommand _moreInformationCommand;
+            private ICommand _moreInformationCommand;
 
-            public RelayCommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new RelayCommand(o => {
-                Process.Start("http://acstuff.ru/app");
+            public ICommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new ProperCommand(o => {
+                WindowsHelper.ViewInBrowser("http://acstuff.ru/app");
+            }));
+
+            private ICommand _recentChangesCommand;
+
+            public ICommand RecentChangesCommand => _recentChangesCommand ?? (_recentChangesCommand = new ProperCommand(o => {
+                WindowsHelper.ViewInBrowser("http://acstuff.ru/f/d/10-content-manager-detailed-changelog");
             }));
 
             private const string KeyLogsSentTime = "GeneralViewModel.KeyLogsSentTime";
 
-            private AsyncCommand _sendLogsCommand;
+            private ICommand _sendLogsCommand;
 
-            public AsyncCommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new AsyncCommand(async o => {
+            public ICommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new ProperAsyncCommand(async o => {
                 try {
                     var message = Prompt.Show(
                             AppStrings.About_ReportAnIssue_Prompt,

@@ -124,6 +124,8 @@
     <Compile Include="Dialogs\ScreenColorPickerDialog.xaml.cs">
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\ProperAsyncCommand.cs" />
+    <Compile Include="Presentation\ProperCommand.cs" />
     <Compile Include="TaskExtension.cs" />
     <Compile Include="Dialogs\WaitingDialog.xaml.cs">
       <DependentUpon>WaitingDialog.xaml</DependentUpon>

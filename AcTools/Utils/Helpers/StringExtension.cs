@@ -32,6 +32,25 @@ namespace AcTools.Utils.Helpers {
             return currentVersion.CompareAsVersionTo(checkableVersion) > 0;
         }
 
+        [Pure, ContractAnnotation("s:null=>null")]
+        public static string RepeatString([CanBeNull] this string s, int number) {
+            if (s == null) return null;
+            switch (number) {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return s;
+                case 2:
+                    return s + s;
+                default:
+                    var b = new StringBuilder();
+                    for (var i = 0; i < number; i++) {
+                        b.Append(s);
+                    }
+                    return b.ToString();
+            }
+        }
+
         [Pure]
         public static bool IsVersionOlderThan([CanBeNull] this string currentVersion, [CanBeNull] string checkableVersion) {
             return currentVersion.CompareAsVersionTo(checkableVersion) < 0;

@@ -54,11 +54,11 @@ namespace AcTools.Utils.Helpers {
             if (IsEmptyOrInvalid) return;
 
             if (Latitude.ToLower().Contains("s")) {
-                LatitudeValue *= -1d;
+                LatitudeValue = -Math.Abs(LatitudeValue ?? 0d);
             }
 
             if (Longitude.ToLower().Contains("w")) {
-                LongitudeValue *= -1d;
+                LongitudeValue = -Math.Abs(LongitudeValue ?? 0d);
             }
         }
 
@@ -66,14 +66,14 @@ namespace AcTools.Utils.Helpers {
             LatitudeValue = lat;
             LongitudeValue = lng;
 
-            Latitude = $"{lat:F4}° {(lat < 0d ? "S" : "N")}";
-            Longitude = $"{lng:F4}° {(lng < 0d ? "W" : "E")}";
+            Latitude = $"{Math.Abs(lat):F4}° {(lat < 0d ? "S" : "N")}";
+            Longitude = $"{Math.Abs(lng):F4}° {(lng < 0d ? "W" : "E")}";
         }
 
         public override string ToString() => IsEmptyOrInvalid ? "" : Latitude + ", " + Longitude;
 
-        public static string ToLat(double lat) => $"{lat:F4}° {(lat < 0 ? "S" : "N")}";
+        public static string ToLat(double lat) => $"{Math.Abs(lat):F4}° {(lat < 0 ? "S" : "N")}";
 
-        public static string ToLng(double lng) => $"{lng:F4}° {(lng < 0 ? "W" : "E")}";
+        public static string ToLng(double lng) => $"{Math.Abs(lng):F4}° {(lng < 0 ? "W" : "E")}";
     }
 }

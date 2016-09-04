@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -25,6 +26,13 @@ namespace AcManager.Tools.Miscellaneous {
 
         public static void Initialize() {
             Debug.Assert(Instance == null);
+
+            PreviousVersion = ValuesStorage.GetString(KeyPreviousVersion);
+            if (PreviousVersion != BuildInformation.AppVersion) {
+                JustUpdated = true;
+                ValuesStorage.Set(KeyPreviousVersion, BuildInformation.AppVersion);
+            }
+
             Instance = new AppUpdater();
         }
 
@@ -268,6 +276,16 @@ namespace AcManager.Tools.Miscellaneous {
             File.Copy(MainExecutingFile.Location, originalFilename);
             ProcessExtension.Start(originalFilename, Environment.GetCommandLineArgs().Skip(1));
             Environment.Exit(0);
+        }
+
+        private const string KeyPreviousVersion = "AppUpdater:PreviousVersion";
+
+        public static bool JustUpdated { get; private set; }
+
+        public static string PreviousVersion { get; private set; }
+
+        public static IEnumerable<ChangelogEntry> LoadChangelog() {
+            return InternalUtils.LoadChangelog(CmApiProvider.UserAgent);
         }
     }
 }

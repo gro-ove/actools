@@ -15,6 +15,8 @@ namespace AcManager.Tools.Helpers.Api {
         public static async Task<TimeZoneInfo> DetermineTimeZoneAsync(GeoTagsEntry geoTags) {
             var requestUri = string.Format(RequestTimeZoneUri, geoTags.LatitudeValue, geoTags.LongitudeValue,
                                            DateTime.Now.ToUnixTimestamp());
+            Logging.Debug(requestUri);
+
             using (var order = KillerOrder.Create(new WebClient(), 5000)) {
                 var data = await order.Victim.DownloadStringTaskAsync(requestUri);
                 var doc = XDocument.Parse(data);

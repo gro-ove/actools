@@ -21,7 +21,8 @@
                 </DockPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
-                    <Button Command="{Binding MoreInformationCommand}" Margin="0 0 4 0" Content="{x:Static g:AppStrings.About_MoreInformation}" />
+                    <!--<Button Command="{Binding MoreInformationCommand}" Margin="0 0 4 0" Content="{x:Static g:AppStrings.About_MoreInformation}" />-->
+                    <Button Command="{Binding RecentChangesCommand}" Margin="0 0 4 0" Content="Recent changes" />
                     <Button Command="{Binding SendLogsCommand}" Content="{x:Static g:AppStrings.About_ReportAnIssue}" />
                 </StackPanel>
 

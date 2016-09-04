@@ -66,6 +66,10 @@
             <TextBlock Text="{Binding AppUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"
                     Visibility="{Binding AppUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
+            <CheckBox IsChecked="{Binding Common.ShowDetailedChangelog}" ToolTip="Show notification with recent changes after update">
+                <Label Content="Recent changes notification" />
+            </CheckBox>
+
             <!--content version-->
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_ContentVersionLabel}" />

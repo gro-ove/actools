@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -34,10 +35,14 @@ using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager {
@@ -253,7 +258,28 @@ namespace AcManager {
 
             AppUpdater.Initialize();
             AppUpdater.Instance.Updated += AppUpdater_Updated;
-            
+
+            if (AppUpdater.JustUpdated && SettingsHolder.Common.ShowDetailedChangelog) {
+                Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
+                    try {
+                        List<ChangelogEntry> changelog;
+                        using (var waiting = new WaitingDialog()) {
+                            waiting.Report(ControlsStrings.Common_Loading);
+                            changelog = AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList();
+                        }
+
+                        ModernDialog.ShowMessage(changelog.Any()
+                                ? changelog.Select(x => $"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
+                                           .JoinToString(Environment.NewLine.RepeatString(2))
+                                : "Nothing to display.", "Recent Changes", MessageBoxButton.OK);
+                    } catch (WebException e) {
+                        NonfatalError.Notify("Can’t show changelog", ToolsStrings.Common_MakeSureInternetWorks, e);
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Can’t display changelog", e);
+                    }
+                });
+            }
+
             if (LocaleHelper.JustUpdated) {
                 Toast.Show(AppStrings.App_LocaleUpdated, string.Format(AppStrings.App_DataUpdated_Details, LocaleHelper.LoadedVersion));
             }
