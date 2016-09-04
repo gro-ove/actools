@@ -36,13 +36,10 @@ using AcManager.Tools.Starters;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows.Controls;
-using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager {
@@ -227,6 +224,28 @@ namespace AcManager {
         }
 
         private async void BackgroundInitialization() {
+            await Task.Delay(1000);
+            if (AppUpdater.JustUpdated && SettingsHolder.Common.ShowDetailedChangelog) {
+                List<ChangelogEntry> changelog;
+                try {
+                    changelog = await Task.Run(() => AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList());
+                } catch (WebException e) {
+                    NonfatalError.NotifyBackground("Can’t load changelog", ToolsStrings.Common_MakeSureInternetWorks, e);
+                    return;
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t load changelog", e);
+                    return;
+                }
+
+                Logging.Debug("Changelog entries: " + changelog.Count);
+                if (changelog.Any()) {
+                    Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
+                        ModernDialog.ShowMessage(changelog.Select(x => $"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
+                                                          .JoinToString(Environment.NewLine.RepeatString(2)), "Recent Changes", MessageBoxButton.OK);
+                    });
+                }
+            }
+
             await Task.Delay(1500);
             WeatherSpecificCloudsHelper.Revert();
             WeatherSpecificTyreSmokeHelper.Revert();
@@ -258,27 +277,6 @@ namespace AcManager {
 
             AppUpdater.Initialize();
             AppUpdater.Instance.Updated += AppUpdater_Updated;
-
-            if (AppUpdater.JustUpdated && SettingsHolder.Common.ShowDetailedChangelog) {
-                Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
-                    try {
-                        List<ChangelogEntry> changelog;
-                        using (var waiting = new WaitingDialog()) {
-                            waiting.Report(ControlsStrings.Common_Loading);
-                            changelog = AppUpdater.LoadChangelog().Where(x => x.Version.IsVersionNewerThan(AppUpdater.PreviousVersion)).ToList();
-                        }
-
-                        ModernDialog.ShowMessage(changelog.Any()
-                                ? changelog.Select(x => $"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
-                                           .JoinToString(Environment.NewLine.RepeatString(2))
-                                : "Nothing to display.", "Recent Changes", MessageBoxButton.OK);
-                    } catch (WebException e) {
-                        NonfatalError.Notify("Can’t show changelog", ToolsStrings.Common_MakeSureInternetWorks, e);
-                    } catch (Exception e) {
-                        NonfatalError.Notify("Can’t display changelog", e);
-                    }
-                });
-            }
 
             if (LocaleHelper.JustUpdated) {
                 Toast.Show(AppStrings.App_LocaleUpdated, string.Format(AppStrings.App_DataUpdated_Details, LocaleHelper.LoadedVersion));

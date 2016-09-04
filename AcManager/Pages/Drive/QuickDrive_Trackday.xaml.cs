@@ -57,7 +57,7 @@ namespace AcManager.Pages.Drive {
                 SelectedGridType = GridType.SameCar;
                 OpponentsCarsFilter = string.Empty;
 
-                JumpStartPenalty = false;
+                JumpStartPenalty = Game.JumpStartPenaltyType.None;
                 LapsNumber = 1;
                 StartingPosition = 1;
             }
@@ -74,7 +74,7 @@ namespace AcManager.Pages.Drive {
                 return new Game.TrackdayProperties {
                     AiLevel = AiLevelFixed ? AiLevel : 100,
                     Penalties = Penalties,
-                    JumpStartPenalty = false,
+                    JumpStartPenalty = Game.JumpStartPenaltyType.None,
                     StartingPosition = StartingPosition == 0 ? MathUtils.Random(1, OpponentsNumber + 2) : StartingPosition,
                     RaceLaps = LapsNumber,
                     BotCars = botCars

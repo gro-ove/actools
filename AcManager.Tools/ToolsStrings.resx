@@ -1506,4 +1506,19 @@
   <data name="Drive_GridType" xml:space="preserve">
     <value>Grid type:</value>
   </data>
+  <data name="AssistState_Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="AssistState_Factory" xml:space="preserve">
+    <value>Factory</value>
+  </data>
+  <data name="AssistState_On" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="JumpStartPenalty_Pits" xml:space="preserve">
+    <value>Pits</value>
+  </data>
+  <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
+    <value>Drive-Through</value>
+  </data>
 </root>

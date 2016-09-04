@@ -54,25 +54,11 @@
                 <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevelMin}" />
             </StackPanel>
 
-            <Grid Grid.Row="2" Grid.Column="0" Grid.RowSpan="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0">
-                    <CheckBox Margin="8 0 0 0" IsChecked="{Binding AiLevelFixed}">
-                        <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
-                    </CheckBox>
-                </StackPanel>
-
-                <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1">
-                    <CheckBox Margin="8 0 0 0" IsChecked="{Binding Penalties}">
-                        <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
-                    </CheckBox>
-                </StackPanel>
-            </Grid>
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">
+                <CheckBox Margin="8 8 0 0" IsChecked="{Binding AiLevelFixed}">
+                    <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
+                </CheckBox>
+            </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
                 <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
@@ -88,6 +74,12 @@
                         Postfix="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}">
                 </mui:ValueLabel>
                 <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="{StaticResource ElementMargin}">
+                <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static g:AppStrings.Drive_JumpStartPenalty}" Margin="0 0 0 4" />
+                <ComboBox Margin="4 0 4 0" ItemsSource="{Binding JumpStartPenaltyTypes}" SelectedItem="{Binding JumpStartPenalty}"
+                        mui:ComboBoxAdvancement.DisplayConverter="{x:Static drive:QuickDrive_Race+ViewModel.JumpStartPenaltyTypeToStringConverter}" />
             </StackPanel>
         </Grid>
 

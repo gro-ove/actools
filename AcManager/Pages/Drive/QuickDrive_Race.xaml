@@ -44,7 +44,7 @@
                 <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevel}" />
             </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0"
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0" Background="Transparent"
                     IsEnabled="{Binding AiLevelFixed, Converter={StaticResource InvertBooleanConverter}}">
                 <StackPanel.ContextMenu>
                     <ContextMenu>
@@ -61,31 +61,23 @@
                 <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevelMin}" />
             </StackPanel>
 
-            <Grid Grid.Row="3" Grid.Column="0" Grid.RowSpan="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+            <StackPanel Grid.Row="3" Grid.Column="0" Margin="{StaticResource ElementMargin}">
+                <CheckBox Margin="8 8 0 0" IsChecked="{Binding AiLevelFixed}">
+                    <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
+                </CheckBox>
+            </StackPanel>
 
-                <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0">
-                    <CheckBox Margin="8 0 0 0" IsChecked="{Binding AiLevelFixed}">
-                        <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
-                    </CheckBox>
-                </StackPanel>
+            <StackPanel Grid.Row="4" Grid.Column="0" Margin="{StaticResource ElementMargin}">
+                <CheckBox Margin="8 8 0 0" IsChecked="{Binding Penalties}">
+                    <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
+                </CheckBox>
+            </StackPanel>
 
-                <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1">
-                    <CheckBox Margin="8 0 0 0" IsChecked="{Binding Penalties}">
-                        <Label Content="{x:Static g:AppStrings.Drive_Penalties}" />
-                    </CheckBox>
-                </StackPanel>
-
-                <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2">
-                    <CheckBox Margin="8 0 0 0" IsChecked="{Binding JumpStartPenalty}">
-                        <Label Content="{x:Static g:AppStrings.Drive_JumpStartPenalty}" />
-                    </CheckBox>
-                </StackPanel>
-            </Grid>
+            <StackPanel Grid.Row="3" Grid.Column="1" Margin="{StaticResource ElementMargin}">
+                <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static g:AppStrings.Drive_JumpStartPenalty}" Margin="0 0 0 4" />
+                <ComboBox Margin="4 0 4 0" ItemsSource="{Binding JumpStartPenaltyTypes}" SelectedItem="{Binding JumpStartPenalty}"
+                        mui:ComboBoxAdvancement.DisplayConverter="{x:Static drive:QuickDrive_Race+ViewModel.JumpStartPenaltyTypeToStringConverter}" />
+            </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
                 <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />

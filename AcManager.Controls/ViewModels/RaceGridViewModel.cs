@@ -335,14 +335,14 @@ namespace AcManager.Controls.ViewModels {
                 FilteredView.CustomSort = value.CandidatesMode ? this : null;
                 if (_saveable.IsLoading) return;
 
-                if (!value.CandidatesMode == previousMode?.CandidatesMode) {
+                if (value == BuiltInGridMode.SameCar) {
+                    NonfilteredList.ReplaceEverythingBy(_playerCar == null ? new RaceGridEntry[0] : new[] { new RaceGridEntry(_playerCar) });
+                } else if (value != BuiltInGridMode.CandidatesManual && value.CandidatesMode) {
+                    RebuildGridAsync().Forget();
+                } else if (!value.CandidatesMode == previousMode?.CandidatesMode) {
                     NonfilteredList.ReplaceEverythingBy(value.CandidatesMode
                             ? CombinePriorities(NonfilteredList.ApartFrom(_playerEntry))
                             : _modeKeepOrder ? FlattenPriorities(NonfilteredList) : FlattenPriorities(NonfilteredList).Sort(Compare));
-                }
-
-                if (value.CandidatesMode) {
-                    RebuildGridAsync().Forget();
                 }
 
                 UpdateViewFilter();
@@ -372,8 +372,9 @@ namespace AcManager.Controls.ViewModels {
                 var pos = StartingPosition - 1;
 
                 if (index == -1) {
-                    if (pos >= 0) {
-                        // TODO: add protection
+                    if (pos > NonfilteredList.Count) {
+                        NonfilteredList.Add(_playerEntry);
+                    } else if (pos >= 0) {
                         NonfilteredList.Insert(pos, _playerEntry);
                     }
                 } else {

@@ -9,7 +9,6 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Lists;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using StringBasedFilter;
 
@@ -63,8 +62,10 @@ namespace AcManager.Controls {
             }
 
             if (SelectionMode != SelectionMode.Single && _listBox != null) {
+                _ignoreSelectionChange = true;
                 _listBox.SelectedItems.Clear();
                 _listBox.SelectedItems.Add(InnerItemsSource.CurrentItem);
+                _ignoreSelectionChange = false;
             }
         }
 
@@ -234,8 +235,10 @@ namespace AcManager.Controls {
             }
         }
 
+        private bool _ignoreSelectionChange;
+
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (SelectionMode == SelectionMode.Single) return;
+            if (_ignoreSelectionChange || SelectionMode == SelectionMode.Single) return;
             SelectedItem = (_listBox?.SelectedItem as AcItemWrapper)?.Loaded();
         }
 

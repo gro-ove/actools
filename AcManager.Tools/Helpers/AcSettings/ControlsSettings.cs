@@ -155,7 +155,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 foreach (var entry in WheelAxleEntries) {
                     if (entry.Input == null) continue;
                     if (entry.Input.Device is PlaceholderInputDevice) {
-                        var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id);
+                        var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id) ??
+                                newDevices.FirstOrDefault(x => x.DisplayName == entry.Input.Device.DisplayName);
                         if (replacement != null) {
                             entry.Input = replacement.GetAxle(entry.Input.Id);
                         }

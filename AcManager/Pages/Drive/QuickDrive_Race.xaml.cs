@@ -2,11 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.AcObjectsNew;
@@ -20,6 +23,7 @@ using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -27,7 +31,6 @@ using JetBrains.Annotations;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using StringBasedFilter;
-using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Race : IQuickDriveModeControl {
@@ -71,9 +74,37 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private bool _jumpStartPenalty;
+            public Game.JumpStartPenaltyType[] JumpStartPenaltyTypes { get; } = {
+                Game.JumpStartPenaltyType.None,
+                Game.JumpStartPenaltyType.Pits,
+                Game.JumpStartPenaltyType.DriveThrough
+            };
 
-            public bool JumpStartPenalty {
+            [ValueConversion(typeof(Game.JumpStartPenaltyType), typeof(string))]
+            private class InnerJumpStartPenaltyTypeToStringConverter : IValueConverter {
+                public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                    switch (value as Game.JumpStartPenaltyType?) {
+                        case Game.JumpStartPenaltyType.None:
+                            return ToolsStrings.Common_None;
+                        case Game.JumpStartPenaltyType.Pits:
+                            return ToolsStrings.JumpStartPenalty_Pits;
+                        case Game.JumpStartPenaltyType.DriveThrough:
+                            return ToolsStrings.JumpStartPenalty_DriveThrough;
+                        default:
+                            return null;
+                    }
+                }
+
+                public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+                    throw new NotSupportedException();
+                }
+            }
+
+            public static IValueConverter JumpStartPenaltyTypeToStringConverter { get; } = new InnerJumpStartPenaltyTypeToStringConverter();
+
+            private Game.JumpStartPenaltyType _jumpStartPenalty;
+
+            public Game.JumpStartPenaltyType JumpStartPenalty {
                 get { return _jumpStartPenalty; }
                 set {
                     if (Equals(value, _jumpStartPenalty)) return;
@@ -289,8 +320,9 @@ namespace AcManager.Pages.Drive {
             public int OpponentsNumberLimit => TrackPitsNumber - 1;
 
             protected class SaveableData {
-                public bool? Penalties, AiLevelFixed, AiLevelArrangeRandomly, JumpStartPenalty, AiLevelArrangeReverse;
+                public bool? Penalties, AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse;
                 public int? AiLevel, AiLevelMin, LapsNumber, OpponentsNumber, StartingPosition;
+                public Game.JumpStartPenaltyType? JumpStartPenalty;
                 public string GridTypeId, OpponentsCarsFilter;
                 public string[] ManualList;
             }
@@ -313,7 +345,7 @@ namespace AcManager.Pages.Drive {
 
             protected virtual void Load(SaveableData o) {
                 Penalties = o.Penalties ?? true;
-                JumpStartPenalty = o.JumpStartPenalty ?? false;
+                JumpStartPenalty = o.JumpStartPenalty ?? Game.JumpStartPenaltyType.None;
                 AiLevelFixed = o.AiLevelFixed ?? true;
                 AiLevelArrangeRandomly = o.AiLevelArrangeRandomly ?? true;
                 AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? false;
@@ -332,7 +364,7 @@ namespace AcManager.Pages.Drive {
 
             protected virtual void Reset() {
                 Penalties = true;
-                JumpStartPenalty = false;
+                JumpStartPenalty = Game.JumpStartPenaltyType.None;
                 AiLevelFixed = true;
                 AiLevelArrangeRandomly = true;
                 AiLevelArrangeReverse = false;

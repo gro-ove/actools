@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -12,6 +13,7 @@ using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Miscellaneous;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -203,7 +205,7 @@ namespace AcManager.UserControls {
             }
         }
 
-        private void OpponentSkin_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OpponentSkin_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             var entry = (sender as FrameworkElement)?.DataContext as RaceGridEntry;
             if (entry?.SpecialEntry != false) return;
 

@@ -57,13 +57,20 @@
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <DockPanel PreviewMouseLeftButtonDown="OpponentSkin_OnPreviewMouseLeftButtonDown" Background="Transparent">
+                <DockPanel MouseLeftButtonUp="OpponentSkin_OnMouseLeftButtonDown" Background="Transparent">
                     <mui:BetterImage x:Name="Livery" Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" DockPanel.Dock="Left" />
+                    <Button x:Name="RandomButton" DockPanel.Dock="Right" Width="16" Height="16" Margin="4 0 0 0" VerticalAlignment="Center"
+                            RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding RandomSkinCommand}">
+                        <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
+                                Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" VerticalAlignment="Center"
+                                HorizontalAlignment="Center" StrokeThickness="1" />
+                    </Button>
                     <TextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}" mui:WatermarkService.Watermark="Random" VerticalAlignment="Center" />
                 </DockPanel>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding CarSkin}" Value="{x:Null}">
                         <Setter TargetName="Livery" Property="Visibility" Value="Collapsed" />
+                        <Setter TargetName="RandomButton" Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />

@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
+using AcTools.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
@@ -23,10 +26,22 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             Input = AcSettingsHolder.Controls.GetKeyboardInputButton(section.GetInt("KEY", -1));
         }
 
+        [DllImport(@"user32.dll")]
+        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        // FOR GOD’S SAKE KUNOS!
+        private static bool CheckValue(int value) {
+            try {
+                return Convert.ToChar(MapVirtualKey((uint)value, 2U)) != 0;
+            } catch (Exception) {
+                return false;
+            }
+        }
+
         public override void Save(IniFile ini) {
             var section = ini[Id];
             section.SetCommentary("KEY", Input?.DisplayName);
-            section.Set("KEY", Input == null ? @"-1" : @"0x" + Input?.Id.ToString(@"X"));
+            section.Set("KEY", Input == null || !CheckValue(Input.Id) ? @"-1" : @"0x" + Input.Id.ToString(@"X"));
         }
     }
 

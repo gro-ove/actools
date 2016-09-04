@@ -46,7 +46,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 case nameof(SettingsHolder.Common.UpdateToNontestedVersions):
                     if (!SettingsHolder.Common.UpdateToNontestedVersions || UpdatePeriod == TimeSpan.Zero) return;
-                    RestartPeriodicCheck();
+                    CheckAndUpdateIfNeeded().Forget();
                     break;
             }
         }

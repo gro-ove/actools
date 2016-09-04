@@ -60,6 +60,12 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
+        private ICommand _randomSkinCommand;
+
+        public ICommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand = new ProperCommand(o => {
+            CarSkin = null;
+        }));
+
         private string _name;
 
         [CanBeNull]
@@ -152,9 +158,8 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public bool Same(RaceGridEntry other) {
-            // TODO: If later candidates will become customizable, check more
-            return GetType().Name == other.GetType().Name && Car == other.Car && 
-                    CarSkin == other.CarSkin;
+            return GetType().Name == other.GetType().Name && Car == other.Car &&
+                    CarSkin == other.CarSkin && Name == other.Name && Nationality == other.Nationality && AiLevel == other.AiLevel;
         }
     }
 }

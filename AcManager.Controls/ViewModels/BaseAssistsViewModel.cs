@@ -1,4 +1,7 @@
 using System;
+using System.Globalization;
+using System.Windows.Data;
+using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -22,8 +25,29 @@ namespace AcManager.Controls.ViewModels {
             AssistState.On
         };
 
-        #region Properties
+        [ValueConversion(typeof(AssistState), typeof(string))]
+        private class InnerAssistStateToStringConverter : IValueConverter {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                switch (value as AssistState?) {
+                    case AssistState.Off:
+                        return ToolsStrings.AssistState_Off;
+                    case AssistState.Factory:
+                        return ToolsStrings.AssistState_Factory;
+                    case AssistState.On:
+                        return ToolsStrings.AssistState_On;
+                    default:
+                        return null;
+                }
+            }
 
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+                throw new NotSupportedException();
+            }
+        }
+
+        public static IValueConverter AssistStateToStringConverter { get; } = new InnerAssistStateToStringConverter();
+
+        #region Properties
         private bool _idealLine;
 
         public bool IdealLine {
@@ -68,10 +92,7 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel StabilityControlRealismLevel => StabilityControl > 20d ? RealismLevel.NonRealistic :
-                StabilityControl > 10d ? RealismLevel.NotQuiteRealistic :
-                        StabilityControl > 0d ? RealismLevel.QuiteRealistic :
-                                RealismLevel.Realistic;
+        public RealismLevel StabilityControlRealismLevel => StabilityControl > 20d ? RealismLevel.NonRealistic : StabilityControl > 10d ? RealismLevel.NotQuiteRealistic : StabilityControl > 0d ? RealismLevel.QuiteRealistic : RealismLevel.Realistic;
 
         private bool _autoBrake;
 
@@ -117,8 +138,7 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel SlipsteamMultiplerRealismLevel => SlipsteamMultipler > 5 ? RealismLevel.NonRealistic :
-                !Equals(SlipsteamMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
+        public RealismLevel SlipsteamMultiplerRealismLevel => SlipsteamMultipler > 5 ? RealismLevel.NonRealistic : !Equals(SlipsteamMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
         private bool _autoClutch;
 
@@ -148,8 +168,7 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel AbsRealismLevel => Abs == AssistState.Factory ? RealismLevel.Realistic :
-                Abs == AssistState.Off ? RealismLevel.QuiteRealistic : RealismLevel.NotQuiteRealistic;
+        public RealismLevel AbsRealismLevel => Abs == AssistState.Factory ? RealismLevel.Realistic : Abs == AssistState.Off ? RealismLevel.QuiteRealistic : RealismLevel.NotQuiteRealistic;
 
         private AssistState _tractionControl = AssistState.Factory;
 
@@ -164,8 +183,7 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel TractionControlRealismLevel => TractionControl == AssistState.Factory ? RealismLevel.Realistic :
-                TractionControl == AssistState.Off ? RealismLevel.QuiteRealistic : RealismLevel.NonRealistic;
+        public RealismLevel TractionControlRealismLevel => TractionControl == AssistState.Factory ? RealismLevel.Realistic : TractionControl == AssistState.Off ? RealismLevel.QuiteRealistic : RealismLevel.NonRealistic;
 
         private bool _visualDamage = true;
 
@@ -197,10 +215,7 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel DamageRealismLevel => Damage < 20d ? RealismLevel.NonRealistic :
-                Damage < 50d ? RealismLevel.NotQuiteRealistic :
-                        Damage < 100d ? RealismLevel.QuiteRealistic :
-                                RealismLevel.Realistic;
+        public RealismLevel DamageRealismLevel => Damage < 20d ? RealismLevel.NonRealistic : Damage < 50d ? RealismLevel.NotQuiteRealistic : Damage < 100d ? RealismLevel.QuiteRealistic : RealismLevel.Realistic;
 
         private double _tyreWearMultipler = 1d;
 
@@ -216,8 +231,7 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        public RealismLevel TyreWearMultiplerRealismLevel => TyreWearMultipler > 5 ? RealismLevel.NonRealistic :
-                !Equals(TyreWearMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
+        public RealismLevel TyreWearMultiplerRealismLevel => TyreWearMultipler > 5 ? RealismLevel.NonRealistic : !Equals(TyreWearMultipler, 1d) ? RealismLevel.NotQuiteRealistic : RealismLevel.Realistic;
 
         private bool _fuelConsumption = true;
 
@@ -249,7 +263,6 @@ namespace AcManager.Controls.ViewModels {
 
         /* totally legit stuff */
         public RealismLevel TyreBlanketsRealismLevel => RealismLevel.Realistic;
-
         #endregion
 
         #region Saveable
@@ -283,20 +296,7 @@ namespace AcManager.Controls.ViewModels {
         /// <param name="fixedMode">Prevent saving</param>
         protected BaseAssistsViewModel(string key, bool fixedMode) {
             Saveable = new SaveHelper<SaveableData>(key ?? DefaultKey, () => fixedMode ? null : new SaveableData {
-                IdealLine = IdealLine,
-                AutoBlip = AutoBlip,
-                StabilityControl = StabilityControl,
-                AutoBrake = AutoBrake,
-                AutoShifter = AutoShifter,
-                SlipSteam = SlipsteamMultipler,
-                AutoClutch = AutoClutch,
-                Abs = Abs,
-                TractionControl = TractionControl,
-                VisualDamage = VisualDamage,
-                Damage = Damage,
-                TyreWear = TyreWearMultipler,
-                FuelConsumption = FuelConsumption,
-                TyreBlankets = TyreBlankets
+                IdealLine = IdealLine, AutoBlip = AutoBlip, StabilityControl = StabilityControl, AutoBrake = AutoBrake, AutoShifter = AutoShifter, SlipSteam = SlipsteamMultipler, AutoClutch = AutoClutch, Abs = Abs, TractionControl = TractionControl, VisualDamage = VisualDamage, Damage = Damage, TyreWear = TyreWearMultipler, FuelConsumption = FuelConsumption, TyreBlankets = TyreBlankets
             }, o => {
                 IdealLine = o.IdealLine;
                 AutoBlip = o.AutoBlip;
@@ -356,20 +356,7 @@ namespace AcManager.Controls.ViewModels {
 
         public Game.AssistsProperties ToGameProperties() {
             return new Game.AssistsProperties {
-                IdealLine = IdealLine,
-                AutoBlip = AutoBlip,
-                StabilityControl = StabilityControl,
-                AutoBrake = AutoBrake,
-                AutoShifter = AutoShifter,
-                SlipSteamMultipler = SlipsteamMultipler,
-                AutoClutch = AutoClutch,
-                Abs = Abs,
-                TractionControl = TractionControl,
-                VisualDamage = VisualDamage,
-                Damage = Damage,
-                TyreWearMultipler = TyreWearMultipler,
-                FuelConsumption = FuelConsumption,
-                TyreBlankets = TyreBlankets
+                IdealLine = IdealLine, AutoBlip = AutoBlip, StabilityControl = StabilityControl, AutoBrake = AutoBrake, AutoShifter = AutoShifter, SlipSteamMultipler = SlipsteamMultipler, AutoClutch = AutoClutch, Abs = Abs, TractionControl = TractionControl, VisualDamage = VisualDamage, Damage = Damage, TyreWearMultipler = TyreWearMultipler, FuelConsumption = FuelConsumption, TyreBlankets = TyreBlankets
             };
         }
     }

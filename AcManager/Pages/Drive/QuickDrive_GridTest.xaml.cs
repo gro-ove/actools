@@ -64,9 +64,9 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private bool _jumpStartPenalty;
+            private Game.JumpStartPenaltyType _jumpStartPenalty;
 
-            public bool JumpStartPenalty {
+            public Game.JumpStartPenaltyType JumpStartPenalty {
                 get { return _jumpStartPenalty; }
                 set {
                     if (Equals(value, _jumpStartPenalty)) return;

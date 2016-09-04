@@ -32,6 +32,12 @@ namespace AcTools.Processes {
             Drift = 6
         }
 
+        public enum JumpStartPenaltyType {
+            None = 0,
+            Pits = 1,
+            DriveThrough = 2
+        }
+
         public class StartType {
             public string Value { get; }
             public string Name { get; }
@@ -90,7 +96,7 @@ namespace AcTools.Processes {
         public abstract class BaseModeProperties : RaceIniProperties {
             public bool? Penalties = true;
             public bool? FixedSetup = false;
-            public bool? JumpStartPenalty = false;
+            public JumpStartPenaltyType? JumpStartPenalty = JumpStartPenaltyType.None;
 
             /// <summary>
             /// Session duration in minutes.

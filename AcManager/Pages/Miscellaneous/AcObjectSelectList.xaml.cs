@@ -65,8 +65,10 @@ namespace AcManager.Pages.Miscellaneous {
             set {
                 if (Equals(value, _selectedItem)) return;
                 _selectedItem = value;
+                if (value == null) {
+                    Logging.Debug(value);
+                }
                 OnPropertyChanged();
-                Logging.Debug(value);
             }
         }
 

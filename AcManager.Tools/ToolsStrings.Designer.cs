@@ -1402,6 +1402,33 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Factory.
+        /// </summary>
+        public static string AssistState_Factory {
+            get {
+                return ResourceManager.GetString("AssistState_Factory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string AssistState_Off {
+            get {
+                return ResourceManager.GetString("AssistState_Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On.
+        /// </summary>
+        public static string AssistState_On {
+            get {
+                return ResourceManager.GetString("AssistState_On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t download information about latest version..
         /// </summary>
         public static string BaseUpdater_CannotDownloadInformation {
@@ -2631,6 +2658,24 @@ namespace AcManager.Tools {
         public static string JumpStart_TeleportToPit {
             get {
                 return ResourceManager.GetString("JumpStart_TeleportToPit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drive-Through.
+        /// </summary>
+        public static string JumpStartPenalty_DriveThrough {
+            get {
+                return ResourceManager.GetString("JumpStartPenalty_DriveThrough", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pits.
+        /// </summary>
+        public static string JumpStartPenalty_Pits {
+            get {
+                return ResourceManager.GetString("JumpStartPenalty_Pits", resourceCulture);
             }
         }
         
