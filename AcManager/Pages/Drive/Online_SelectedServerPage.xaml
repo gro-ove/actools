@@ -302,9 +302,17 @@
                         IsOpen="{Binding IsChecked, ElementName=AssistsButton, Mode=TwoWay}" Padding="16 12 16 16">
                     <uc:AssistsEditor DataContext="{x:Static c:AssistsViewModel.Instance}" />
                 </c:ModernPopup>
-                <Button Content="{x:Static g:AppStrings.Toolbar_Join}" Command="{Binding JoinCommand}"
-                        ToolTip="{x:Static g:AppStrings.Toolbar_Join_OnlineTooltip}" Style="{StaticResource Go.ToolBarButton}"
-                        Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                <Button Content="{x:Static g:AppStrings.Toolbar_Join}" Command="{Binding JoinCommand}" Style="{StaticResource Go.ToolBarButton}"
+                        Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                    <Button.ToolTip>
+                        <Grid>
+                            <TextBlock Text="{x:Static g:AppStrings.Toolbar_Join_OnlineTooltip}"
+                                    Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBlock Text="{Binding NonAvailableReason, StringFormat='{}{0} (Gtrl+G, Ctrl+Alt+G to connect anyway)'}"
+                                    Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                        </Grid>
+                    </Button.ToolTip>
+                </Button>
                 <Button Content="Cancel Booking" Command="{Binding CancelBookingCommand}"
                         Visibility="{Binding IsBooked, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </ToolBar>

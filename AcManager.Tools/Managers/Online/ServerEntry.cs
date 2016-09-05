@@ -563,6 +563,17 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private string _field;
+
+        public string Field {
+            get { return _field; }
+            set {
+                if (Equals(value, _field)) return;
+                _field = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _trackId;
 
         public string TrackId {
@@ -747,8 +758,9 @@ namespace AcManager.Tools.Managers.Online {
                                                          CarSkinId = x.CarSkinId
                                                      })) {
                     OnPropertyChanged(nameof(CurrentDrivers));
-                    CurrentDriversCount = CurrentDrivers.Count;
                 }
+
+                CurrentDriversCount = information.Cars.Count(x => x.IsConnected || !string.IsNullOrEmpty(x.DriverName));
 
                 List<CarObject> carObjects;
                 if (CarsOrTheirIds.Select(x => x.CarObjectWrapper).Any(x => x?.IsLoaded == false)) {
@@ -834,9 +846,41 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private string _nonAvailableReason;
+
+        public string NonAvailableReason {
+            get { return _nonAvailableReason; }
+            set {
+                if (Equals(value, _nonAvailableReason)) return;
+                _nonAvailableReason = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string GetNonAvailableReason() {
+            if (Status != ServerStatus.Ready) return "CM isn’t ready";
+
+            var currentItem = CarsView?.CurrentItem as CarEntry;
+            if (currentItem == null) return "Car isn’t selected";
+
+            if (PasswordRequired) {
+                if (WrongPassword) return "Password is invalid";
+                if (string.IsNullOrEmpty(Password)) return "Password is required";
+            }
+
+            if (BookingMode) {
+                var currentSession = Sessions.FirstOrDefault(x => x.IsActive);
+                if (currentSession?.Type != Game.SessionType.Booking) return "Wait for the next booking";
+            } else {
+                if (!currentItem.IsAvailable) return "Selected car isn’t available";
+            }
+
+            return null;
+        }
+
         private void AvailableUpdate() {
-            IsAvailable = Status == ServerStatus.Ready && CarsView?.CurrentItem != null;
-            _joinCommand?.OnCanExecuteChanged();
+            NonAvailableReason = GetNonAvailableReason();
+            IsAvailable = NonAvailableReason == null;
         }
 
         private void LoadSelectedCar() {
@@ -861,7 +905,8 @@ namespace AcManager.Tools.Managers.Online {
 
         private ProperAsyncCommand _joinCommand;
 
-        public ICommand JoinCommand => _joinCommand ?? (_joinCommand = new ProperAsyncCommand(Join, JoinAvailable));
+        public ICommand JoinCommand => _joinCommand ?? (_joinCommand = new ProperAsyncCommand(Join,
+                o => ReferenceEquals(o, ForceJoin) || IsAvailable));
 
         private ProperAsyncCommand _cancelBookingCommand;
 
@@ -870,7 +915,8 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         private IBookingUi _ui;
 
-        public static readonly object ForceRun = new object();
+        public static readonly object ActualJoin = new object();
+        public static readonly object ForceJoin = new object();
 
         [CanBeNull]
         public CarObject GetSelectedCar() {
@@ -990,7 +1036,7 @@ namespace AcManager.Tools.Managers.Online {
             var carId = carEntry.CarObject.Id;
             var correctId = CarIds.FirstOrDefault(x => string.Equals(x, carId, StringComparison.OrdinalIgnoreCase));
 
-            if (BookingMode && !ReferenceEquals(o, ForceRun)) {
+            if (BookingMode && !ReferenceEquals(o, ActualJoin) && !ReferenceEquals(o, ForceJoin)) {
                 if (_factory == null) {
                     Logging.Error("Booking: UI factory is missing");
                     return;
@@ -1025,12 +1071,6 @@ namespace AcManager.Tools.Managers.Online {
             var whatsGoingOn = properties.GetAdditional<AcLogHelper.WhatsGoingOn>();
             WrongPassword = whatsGoingOn?.Type == AcLogHelper.WhatsGoingOnType.OnlineWrongPassword;
             if (whatsGoingOn == null) RecentManager.Instance.AddRecentServer(OriginalInformation);
-        }
-
-        private bool JoinAvailable(object o) {
-            return IsAvailable && (!PasswordRequired || !WrongPassword && !string.IsNullOrEmpty(Password)) && Status == ServerStatus.Ready
-                    && (!BookingMode && (CarsView?.CurrentItem as CarEntry)?.IsAvailable == true ||
-                            Sessions.FirstOrDefault(x => x.IsActive)?.Type == Game.SessionType.Booking);
         }
 
         private ICommand _refreshCommand;

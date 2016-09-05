@@ -55,6 +55,9 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.Entry.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
                 new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(Model.Entry.CancelBookingCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(Model.Entry.JoinCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)) {
+                    CommandParameter = ServerEntry.ForceJoin
+                }
             });
         }
 

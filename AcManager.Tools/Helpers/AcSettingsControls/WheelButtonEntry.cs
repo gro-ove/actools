@@ -9,12 +9,15 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {
             var section = ini[Id];
-            Input = devices.ElementAtOrDefault(section.GetInt("JOY", -1))?.GetButton(section.GetInt("BUTTON", -1));
+
+            var deviceId = section.GetInt("JOY", -1);
+            var device = devices.FirstOrDefault(x => x.OriginalIniId == deviceId);
+            Input = device?.GetButton(section.GetInt("BUTTON", -1));
         }
 
         public override void Save(IniFile ini) {
             var section = ini[Id];
-            section.Set("JOY", Input?.Device.IniId ?? -1);
+            section.Set("JOY", Input?.Device.Index ?? -1);
             section.Set("BUTTON", Input?.Id ?? -1);
         }
 

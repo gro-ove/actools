@@ -13,7 +13,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
     public interface IDirectInputDevice : IWithId {
         string DisplayName { get; }
 
-        int IniId { get; set; }
+        int Index { get; }
+
+        int OriginalIniId { get; set; }
 
         [CanBeNull]
         DirectInputAxle GetAxle(int id);
@@ -23,10 +25,11 @@ namespace AcManager.Tools.Helpers.DirectInput {
     }
 
     public class PlaceholderInputDevice : IDirectInputDevice {
-        public PlaceholderInputDevice([CanBeNull] string id, string displayName, int iniId) {
+        public PlaceholderInputDevice([CanBeNull] string id, string displayName, int index) {
             Id = id;
             DisplayName = displayName;
-            IniId = iniId;
+            Index = index;
+            OriginalIniId = index;
         }
 
         [CanBeNull]
@@ -34,7 +37,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public string DisplayName { get; }
 
-        public int IniId { get; set; }
+        public int Index { get; set; }
+
+        public int OriginalIniId { get; set; }
 
         private readonly Dictionary<int, DirectInputAxle> _axles = new Dictionary<int, DirectInputAxle>(); 
         private readonly Dictionary<int, DirectInputButton> _buttons = new Dictionary<int, DirectInputButton>(); 
@@ -52,6 +57,10 @@ namespace AcManager.Tools.Helpers.DirectInput {
             result = new DirectInputButton(this, id);
             return _buttons[id] = result;
         }
+
+        public override string ToString() {
+            return $"PlaceholderInputDevice({Id}:{DisplayName}, Ini={Index})";
+        }
     }
 
     public sealed class DirectInputDevice : Displayable, IDirectInputDevice, IDisposable {
@@ -60,7 +69,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public string Id { get; }
 
-        public int IniId { get; set; }
+        public int Index { get; }
+
+        public int OriginalIniId { get; set; }
 
         public DirectInputAxle GetAxle(int id) {
             return Axles.ElementAtOrDefault(id);
@@ -77,12 +88,16 @@ namespace AcManager.Tools.Helpers.DirectInput {
         private Joystick _joystick;
         private readonly int _buttonsCount;
 
-        private DirectInputDevice([NotNull] SlimDX.DirectInput.DirectInput directInput, [NotNull] DeviceInstance device, int iniId) {
+        public override string ToString() {
+            return $"DirectInputDevice({Id}:{DisplayName}, Ini={Index})";
+        }
+
+        private DirectInputDevice([NotNull] SlimDX.DirectInput.DirectInput directInput, [NotNull] DeviceInstance device, int index) {
             Device = device;
             DisplayName = device.InstanceName;
 
             Id = device.ProductGuid.ToString().ToUpperInvariant();
-            IniId = iniId;
+            Index = index;
 
             _joystick = new Joystick(directInput, Device.InstanceGuid);
             if (Application.Current.MainWindow != null) {
@@ -136,10 +151,10 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 }) {
                     Axles[i++].Value = source / 65535d;
                 }
+            } catch (DirectInputException e) when(e.Message.Contains(@"DIERR_UNPLUGGED")) {
+                Unplugged = true;
             } catch (DirectInputException e) {
-                if (e.Message.Contains("DIERR_UNPLUGGED")) {
-                    Unplugged = true;
-                } else if (!Error){
+                if (!Error){
                     Logging.Warning("Exception: " + e);
                     Error = true;
                 }

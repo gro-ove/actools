@@ -181,7 +181,10 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {
             var section = ini[Id];
 
-            Input = devices.ElementAtOrDefault(section.GetInt("JOY", -1))?.GetAxle(section.GetInt("AXLE", -1));
+            var deviceId = section.GetInt("JOY", -1);
+            var device = devices.FirstOrDefault(x => x.OriginalIniId == deviceId);
+            Input = device?.GetAxle(section.GetInt("AXLE", -1));
+
             if (RangeMode) {
                 if (GammaMode) {
                     Gamma = section.GetDouble("GAMMA", 1d);
@@ -216,7 +219,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public override void Save(IniFile ini) {
             var section = ini[Id];
-            section.Set("JOY", Input?.Device.IniId ?? -1);
+            section.Set("JOY", Input?.Device.Index ?? -1);
             section.Set("AXLE", Input?.Id ?? -1);
 
             if (RangeMode) {

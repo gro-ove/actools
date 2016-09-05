@@ -118,7 +118,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             Buttons = new[] {
-                CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go, o => ServerEntry?.JoinCommand.Execute(ServerEntry.ForceRun), o => Ready),
+                CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go, o => ServerEntry?.JoinCommand.Execute(ServerEntry.ActualJoin), o => Ready),
                 CancelButton
             };
         }

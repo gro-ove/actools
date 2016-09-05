@@ -132,13 +132,28 @@ namespace AcManager.Tools.Helpers.AcSettings {
             if (placeholder == null) {
                 placeholder = new PlaceholderInputDevice(id, displayName, iniId);
                 _placeholderDevices.Add(placeholder);
+                Logging.Debug($"new placeholder: {placeholder}");
             }
 
             return placeholder;
         }
 
         private PlaceholderInputDevice GetPlaceholderDevice(DirectInputDevice device) {
-            return GetPlaceholderDevice(device.Id, device.DisplayName, device.IniId);
+            return GetPlaceholderDevice(device.Id, device.DisplayName, device.Index);
+        }
+
+        private void UpdatePlaceholders() {
+            foreach (var source in _placeholderDevices.Where(x => Entries.OfType<IDirectInputEntry>().All(y => y.Device != x)).ToList()) {
+                Logging.Debug($"remove unused placeholder: {source}");
+                _placeholderDevices.Remove(source);
+            }
+
+            var next = Devices.Count;
+            foreach (var placeholder in _placeholderDevices) {
+                if (Devices.Any(x => x.Index == placeholder.Index)) {
+                    placeholder.Index = next++;
+                }
+            }
         }
 
         private void RescanDevices() {
@@ -168,7 +183,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 foreach (var entry in WheelButtonEntries.Select(x => x.WheelButton).Union(WheelHShifterButtonEntries)) {
                     if (entry.Input == null) continue;
                     if (entry.Input.Device is PlaceholderInputDevice) {
-                        var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id);
+                        var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id) ??
+                                newDevices.FirstOrDefault(x => x.DisplayName == entry.Input.Device.DisplayName);
                         if (replacement != null) {
                             entry.Input = replacement.GetButton(entry.Input.Id);
                         }
@@ -190,8 +206,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 }
 
                 Devices.ReplaceEverythingBy(newDevices);
+                UpdatePlaceholders();
+
+                Logging.Debug($"devices: [{Devices.JoinToString(", ")}]");
+                Logging.Debug($"fictional: [{_placeholderDevices.JoinToString(", ")}]");
 
                 foreach (var device in Devices) {
+                    ProductGuids[device.DisplayName] = device.Id;
+
                     foreach (var button in device.Buttons) {
                         button.PropertyChanged += DeviceButtonEventHandler;
                     }
@@ -816,6 +838,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("UNDERSTEER", WheelFfbEnhancedUndersteer);
         }
 
+        private static readonly Dictionary<string, string> ProductGuids = new Dictionary<string, string>();
+
         protected override void LoadFromIni() {
             if (Devices.Count == 0) {
                 // RescanDevices();
@@ -828,15 +852,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             var section = Ini["CONTROLLERS"];
             var devices = section.Keys.Where(x => x.StartsWith(@"CON")).Select(x => new {
-                Id = section.GetNonEmpty($"PGUID{x.Substring(3)}"),
+                IniId = FlexibleParser.TryParseInt(x.Substring(3)),
                 Name = section.GetNonEmpty(x)
-            }).TakeWhile(x => x.Name != null).Select((x, i) => {
-                var device = Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name) ?? Devices.GetByIdOrDefault(x.Id);
-                if (device == null) {
-                    return (IDirectInputDevice)GetPlaceholderDevice(x.Id, x.Name, i);
+            }).TakeWhile(x => x.Name != null && x.IniId.HasValue).Select(x => {
+                var id = section.GetNonEmpty($"PGUID{x.IniId}");
+                if (id != null) {
+                    ProductGuids[x.Name] = id;
                 }
 
-                device.IniId = i;
+                var device = Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name) ?? Devices.GetByIdOrDefault(id);
+                if (device == null) {
+                    return (IDirectInputDevice)GetPlaceholderDevice(id, x.Name, x.IniId.Value);
+                }
+
+                device.OriginalIniId = x.IniId.Value;
                 return device;
             }).ToList();
 
@@ -871,15 +900,15 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     }
                 };
 
-                foreach (var entry in WheelAxleEntries.Where(x => x.Input != null)) {
+                foreach (var entry in WheelAxleEntries.Where(x => x.Input?.Device == device)) {
                     ini[entry.Id].Set("AXLE", entry.Input?.Id);
                 }
 
-                foreach (var entry in WheelButtonEntries.Select(x => x.WheelButton).Where(x => x.Input != null)) {
+                foreach (var entry in WheelButtonEntries.Select(x => x.WheelButton).Where(x => x.Input?.Device == device)) {
                     ini[entry.Id].Set("BUTTON", entry.Input?.Id);
                 }
 
-                foreach (var entry in WheelHShifterButtonEntries.Where(x => x.Input != null)) {
+                foreach (var entry in WheelHShifterButtonEntries.Where(x => x.Input?.Device == device)) {
                     ini["SHIFTER"].Set(entry.Id, entry.Input?.Id);
                 }
 
@@ -891,23 +920,27 @@ namespace AcManager.Tools.Helpers.AcSettings {
 #if DEBUG
             var sw = Stopwatch.StartNew();
 #endif
-
+            
             Ini["HEADER"].Set("INPUT_METHOD", InputMethod);
-            Ini["ADVANCED"].Set("COMBINE_WITH_KEYBOARD_CONTROL", CombineWithKeyboardInput);
-            Ini["SHIFTER"].Set("ACTIVE", WheelUseHShifter);
-            Ini["SHIFTER"].Set("JOY", WheelHShifterButtonEntries.FirstOrDefault(x => x.Input != null)?.Input?.Device.IniId);
-            Ini["STEER"].Set("DEBOUNCING_MS", DebouncingInterval);
 
+            Logging.Write($"devices: [{Devices.JoinToString(", ")}]");
+            Logging.Write($"fictional: [{_placeholderDevices.JoinToString(", ")}]");
+
+            UpdatePlaceholders();
             Ini["CONTROLLERS"] = Devices
                     .Select(x => (IDirectInputDevice)x)
                     .Union(_placeholderDevices)
-                    .Where(x => Entries.OfType<IDirectInputEntry>().Any(y => y.Device == x))
+                    // .Where(x => Entries.OfType<IDirectInputEntry>().Any(y => y.Device == x))
                     .Aggregate(new IniFileSection(), (s, d, i) => {
-                        s.Set("CON" + i, d.DisplayName);
-                        s.Set("PGUID" + i, d.Id);
-                        d.IniId = i;
+                        s.Set("CON" + d.Index, d.DisplayName);
+                        s.Set("PGUID" + d.Index, d.Id ?? ProductGuids.GetValueOrDefault(d.DisplayName));
                         return s;
                     });
+
+            Ini["ADVANCED"].Set("COMBINE_WITH_KEYBOARD_CONTROL", CombineWithKeyboardInput);
+            Ini["SHIFTER"].Set("ACTIVE", WheelUseHShifter);
+            Ini["SHIFTER"].Set("JOY", WheelHShifterButtonEntries.FirstOrDefault(x => x.Input != null)?.Input?.Device.Index);
+            Ini["STEER"].Set("DEBOUNCING_MS", DebouncingInterval);
 
             foreach (var entry in Entries) {
                 entry.Save(Ini);
