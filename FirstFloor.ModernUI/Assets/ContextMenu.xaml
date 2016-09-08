@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
     <Style x:Key="{x:Type ContextMenu}" TargetType="{x:Type ContextMenu}">
         <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}" />
         <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
@@ -19,14 +19,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ContextMenu}">
-                    <Grid Margin="4">
+                    <c:Cell Margin="4">
                         <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                         <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
 
                         <Border x:Name="ContextMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
                                 BorderThickness="1" Margin="0 -1 0 0">
                             <ScrollViewer x:Name="ContextMenuScrollViewer">
-                                <Grid RenderOptions.ClearTypeHint="Enabled">
+                                <c:Cell RenderOptions.ClearTypeHint="Enabled">
                                     <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
                                         <Rectangle x:Name="OpaqueRect" Height="{Binding ElementName=ContextMenuBorder,Path=ActualHeight}"
                                                 Width="{Binding ElementName=ContextMenuBorder,Path=ActualWidth}"
@@ -34,23 +34,23 @@
                                     </Canvas>
                                     <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                </Grid>
+                                </c:Cell>
                             </ScrollViewer>
                         </Border>
-                    </Grid>
+                    </c:Cell>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style x:Key="{x:Type controls:InheritingContextMenu}" TargetType="{x:Type controls:InheritingContextMenu}" BasedOn="{StaticResource {x:Type ContextMenu}}" />
+    <Style x:Key="{x:Type c:InheritingContextMenu}" TargetType="{x:Type c:InheritingContextMenu}" BasedOn="{StaticResource {x:Type ContextMenu}}" />
 
-    <controls:InheritingContextMenu x:Key="TextBoxContextMenu">
+    <c:InheritingContextMenu x:Key="TextBoxContextMenu">
         <MenuItem Command="ApplicationCommands.Cut" />
         <MenuItem Command="ApplicationCommands.Copy" />
         <MenuItem Command="ApplicationCommands.Paste" />
         <MenuItem Command="ApplicationCommands.Delete" />
         <Separator />
         <MenuItem Command="ApplicationCommands.SelectAll" />
-    </controls:InheritingContextMenu>
+    </c:InheritingContextMenu>
 </ResourceDictionary>

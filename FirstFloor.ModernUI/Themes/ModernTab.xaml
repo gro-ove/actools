@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
+        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -40,15 +40,15 @@
         <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" />
     </DataTemplate>
 
-    <Style TargetType="controls:ModernTab">
+    <Style TargetType="c:ModernTab">
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="LinksHorizontalAlignment" Value="Right" />
         <Setter Property="LinksMargin" Value="{DynamicResource HeaderMargin}" />
         <Setter Property="FrameMargin" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="controls:ModernTab">
-                    <Grid>
+                <ControlTemplate TargetType="c:ModernTab">
+                    <c:Cell>
                         <!-- link list -->
                         <ListBox x:Name="PART_LinkList" ItemsSource="{TemplateBinding Links}" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                 ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="Both"
@@ -57,10 +57,10 @@
                                 HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}" VerticalAlignment="Top" Margin="{TemplateBinding LinksMargin}" />
 
                         <!-- content -->
-                        <controls:ModernFrame x:Name="PART_Frame"
+                        <c:ModernFrame x:Name="PART_Frame"
                                 Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                 ContentLoader="{TemplateBinding ContentLoader}" Margin="{TemplateBinding FrameMargin}" />
-                    </Grid>
+                    </c:Cell>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -70,8 +70,8 @@
                 <Trigger.Setters>
                     <Setter Property="Template">
                         <Setter.Value>
-                            <ControlTemplate TargetType="controls:ModernTab">
-                                <Grid>
+                            <ControlTemplate TargetType="c:ModernTab">
+                                <c:Cell>
                                     <Grid HorizontalAlignment="{TemplateBinding LinksHorizontalAlignment}" VerticalAlignment="Top"
                                             Margin="{TemplateBinding LinksMargin}">
                                         <Grid.ColumnDefinitions>
@@ -104,10 +104,10 @@
                                     </Grid>
 
                                     <!-- content -->
-                                    <controls:ModernFrame x:Name="PART_Frame"
+                                    <c:ModernFrame x:Name="PART_Frame"
                                             Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                             ContentLoader="{TemplateBinding ContentLoader}" Margin="{TemplateBinding FrameMargin}" />
-                                </Grid>
+                                </c:Cell>
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
@@ -118,7 +118,7 @@
                 <Trigger.Setters>
                     <Setter Property="Template">
                         <Setter.Value>
-                            <ControlTemplate TargetType="controls:ModernTab">
+                            <ControlTemplate TargetType="c:ModernTab">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition MinWidth="50" MaxWidth="400" />
@@ -153,7 +153,7 @@
                                                                 <DataTrigger Binding="{Binding IsEnabled}" Value="False">
                                                                     <Setter Property="IsEnabled" Value="False" />
                                                                     <Setter Property="Foreground" Value="{DynamicResource MenuTextDisabled}" />
-                                                                    <Setter Property="attached:LimitedService.Limited" Value="True" />
+                                                                    <Setter Property="a:LimitedService.Limited" Value="True" />
                                                                 </DataTrigger>
                                                             </ControlTemplate.Triggers>
                                                         </ControlTemplate>
@@ -170,10 +170,10 @@
                                     </ListBox>
 
                                     <!-- seperator -->
-                                    <controls:ModernTabSplitter Grid.Column="1" />
+                                    <c:ModernTabSplitter Grid.Column="1" />
 
                                     <!-- content -->
-                                    <controls:ModernFrame Grid.Column="2" x:Name="PART_Frame"
+                                    <c:ModernFrame Grid.Column="2" x:Name="PART_Frame"
                                             Source="{Binding SelectedSource, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                             ContentLoader="{TemplateBinding ContentLoader}" Margin="32 0 0 0" />
                                 </Grid>

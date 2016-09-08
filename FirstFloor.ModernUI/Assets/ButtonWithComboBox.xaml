@@ -24,7 +24,7 @@
                     <Border x:Name="Chrome" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                             VerticalAlignment="Stretch">
-                        <Grid VerticalAlignment="Stretch">
+                        <c:Cell VerticalAlignment="Stretch">
                             <Path x:Name="Arrow" Fill="{TemplateBinding Foreground}" VerticalAlignment="Bottom" Margin="2 3 2 3"
                                     Data="M -0.5 3 L 5.5 3 L 2.5 6 Z" />
                             <ContentPresenter />
@@ -34,13 +34,13 @@
                                 <Border x:Name="SubMenuBorder" BorderBrush="{DynamicResource WindowBorderActive}"
                                         Background="{DynamicResource WindowBackground}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                         BorderThickness="1" Padding="0">
-                                    <Grid x:Name="SubMenu" Grid.IsSharedSizeScope="True">
+                                    <c:Cell x:Name="SubMenu">
                                         <!-- StackPanel holds children of the menu. This is set by IsItemsHost=True -->
                                         <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Continue" />
-                                    </Grid>
+                                    </c:Cell>
                                 </Border>
                             </Popup>
-                        </Grid>
+                        </c:Cell>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">

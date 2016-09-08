@@ -1,4 +1,5 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
 
     <Style TargetType="Calendar">
         <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
@@ -31,7 +32,7 @@
                                     HorizontalAlignment="Center" Text="{Binding}" Margin="0 6 0 6" VerticalAlignment="Center" />
                         </DataTemplate>
                     </ControlTemplate.Resources>
-                    <Grid x:Name="PART_Root">
+                    <c:Cell x:Name="PART_Root">
                         <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
                                 Background="{TemplateBinding Background}">
                             <Grid>
@@ -94,7 +95,7 @@
                                 </Grid>
                             </Grid>
                         </Border>
-                    </Grid>
+                    </c:Cell>
                     <ControlTemplate.Triggers>
                         <DataTrigger Value="Year">
                             <DataTrigger.Binding>

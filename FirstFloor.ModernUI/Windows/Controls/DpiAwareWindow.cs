@@ -3,7 +3,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -372,17 +371,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(IsDimmedProperty, value); }
         }
 
-        public static readonly DependencyProperty FatalErrorProperty = DependencyProperty.Register(nameof(FatalError), typeof(bool),
-                typeof(DpiAwareWindow));
-
-        public bool FatalError {
-            get { return (bool)GetValue(FatalErrorProperty); }
-            set { SetValue(FatalErrorProperty, value); }
-        }
-
         public static void OnFatalError(Exception e) {
             foreach (var result in Application.Current.Windows.OfType<DpiAwareWindow>()) {
-                // result.FatalError = true;
                 result.IsDimmed = true;
             }
 
