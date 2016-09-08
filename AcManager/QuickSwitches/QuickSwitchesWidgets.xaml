@@ -2,7 +2,6 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls"
         xmlns:q="clr-namespace:AcManager.QuickSwitches" xmlns:g="clr-namespace:AcManager">
     <ResourceDictionary.MergedDictionaries>
-        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/MenuAsComboBox.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/QuickSwitches/QuickSwitchesStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 

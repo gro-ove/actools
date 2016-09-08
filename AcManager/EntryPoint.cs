@@ -204,9 +204,7 @@ namespace AcManager {
                 UnhandledExceptionFancyHandler(e);
                 return;
             } catch (Exception ex) {
-                if (!string.IsNullOrWhiteSpace(ex.Message)) {
-                    MessageBox.Show(ex.ToString(), "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                LogError(ex.Message);
 
                 try {
                     MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -229,8 +227,10 @@ namespace AcManager {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-            var e = args.ExceptionObject as Exception;
-            UnhandledExceptionHandler(e);
+            System.Windows.Application.Current.Dispatcher.Invoke(() => {
+                var e = args.ExceptionObject as Exception;
+                UnhandledExceptionHandler(e);
+            });
         }
 
         public static void HandleSecondInstanceMessages(DpiAwareWindow window, Action<IEnumerable<string>> handler) {

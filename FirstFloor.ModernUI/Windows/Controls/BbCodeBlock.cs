@@ -7,7 +7,6 @@ using System.Windows.Navigation;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls.BbCode;
 using FirstFloor.ModernUI.Windows.Navigation;
-using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>

@@ -5,6 +5,11 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Filter for ignoring specific in-game controls. Example: --ignore-controls=g27.
+        /// </summary>
+        IgnoreControls,
+
+        /// <summary>
         /// Load images without blocking main UI thread. Enabled by default, but could cause
         /// some problems. In this case, try to disable it.
         /// Example: --load-images-in-background=no.

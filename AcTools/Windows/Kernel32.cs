@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
+using Microsoft.Win32.SafeHandles;
+
 // ReSharper disable InconsistentNaming
 
 namespace AcTools.Windows {
@@ -63,17 +66,40 @@ namespace AcTools.Windows {
             DupHandle = 0x00000040,
             SetInformation = 0x00000200,
             QueryInformation = 0x00000400,
+            QueryLimitedInformation = 0x00001000,
             Synchronize = 0x00100000
         }
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr OpenProcess(ProcessAccessFlags dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, int dwProcessId);
 
+        public const int STILL_ACTIVE = 0x00000103;
+
+        [DllImport("kernel32.dll")]
+        public static extern bool GetExitCodeProcess(IntPtr processHandle, out int exitCode);
+
+
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, uint nSize, out int lpNumberOfBytesWritten);
 
         [DllImport("kernel32.dll")]
-        public static extern Int32 CloseHandle(IntPtr hProcess);
+        public static extern int CloseHandle(IntPtr hProcess);
+
+        [DllImport("kernel32.dll")]
+        [ResourceExposure(ResourceScope.Process)]
+        public static extern int GetCurrentProcessId();
+
+        [DllImport("kernel32.dll")]
+        [ResourceExposure(ResourceScope.Process)]
+        public static extern IntPtr GetCurrentProcess();
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, SetLastError = true, BestFitMapping = false)]
+        [ResourceExposure(ResourceScope.Machine)]
+        public static extern bool DuplicateHandle(HandleRef hSourceProcessHandle, IntPtr hSourceHandle, HandleRef hTargetProcess,
+                out SafeWaitHandle targetHandle, int dwDesiredAccess, bool bInheritHandle, int dwOptions);
+
+        public const int DUPLICATE_CLOSE_SOURCE = 1;
+        public const int DUPLICATE_SAME_ACCESS = 2;
         #endregion
     }
 }

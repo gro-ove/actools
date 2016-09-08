@@ -4,7 +4,6 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ButtonWithComboBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-        <ResourceDictionary Source="/AcManager.Controls;component/Assets/MenuAsComboBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="ac:UserPresetsControl">

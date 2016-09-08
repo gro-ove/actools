@@ -78,9 +78,9 @@ namespace AcTools.DataFile {
                         }
                     }
 
-                    if (invalidName) continue;
-
-                    currentSection[line.Substring(0, at)] = line.Substring(at + 1);
+                    if (!invalidName) {
+                        currentSection.SetDirect(line.Substring(0, at), line.Substring(at + 1));
+                    }
                 }
             }
         }

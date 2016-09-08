@@ -199,8 +199,9 @@ namespace AcManager {
                     Log("error: " + e);
                     return null;
                 }
-
-                for (var i = 0; i < 20; i++) {
+                
+                int i;
+                for (i = 1; i < 50; i++) {
                     try {
                         result = Assembly.LoadFrom(filename);
                     } catch (FileLoadException) {
@@ -208,6 +209,10 @@ namespace AcManager {
                         Log("fileloadexception! next attempt in 250 ms");
                         Thread.Sleep(250);
                     }
+                }
+
+                if (i > 1) {
+                    Log($"{i+1} attempt is successfull");
                 }
 
                 if (result == null) {

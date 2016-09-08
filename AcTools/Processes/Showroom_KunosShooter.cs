@@ -3,6 +3,7 @@ using AcTools.Utils;
 using System.Diagnostics;
 using System.IO;
 using AcTools.DataFile;
+using AcTools.Utils.Helpers;
 
 namespace AcTools.Processes {
     public class ProcessExitedException : Exception {
@@ -97,7 +98,7 @@ namespace AcTools.Processes {
             public override void Dispose() {
                 base.Dispose();
 
-                if (_process != null && !_process.HasExited) {
+                if (_process != null && !_process.HasExitedSafe()) {
                     _process.Kill();
                     _process = null;
                 }

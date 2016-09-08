@@ -87,7 +87,7 @@ namespace AcTools.Processes {
         }
 
         public void CleanUp() {
-            if (_gameProcess != null && !_gameProcess.HasExited) {
+            if (_gameProcess != null && !_gameProcess.HasExitedSafe()) {
                 try {
                     _gameProcess.Kill();
                 } catch (Exception) {
@@ -151,7 +151,7 @@ namespace AcTools.Processes {
         }
 
         public async Task CleanUpAsync(CancellationToken cancellation) {
-            if (_gameProcess != null && !_gameProcess.HasExited) {
+            if (_gameProcess != null && !_gameProcess.HasExitedSafe()) {
                 try {
                     _gameProcess.Kill();
                 } catch (Exception) {

@@ -539,6 +539,13 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
+        public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, IEnumerable<T> additionalItems) {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            var list = additionalItems.ToListIfItsNot();
+            return source.Where(x => !list.Contains(x));
+        }
+
+        [Pure]
         public static int Count<T>([NotNull] this IEnumerable<T> source, T item) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             return source.Count(x => Equals(x, item));

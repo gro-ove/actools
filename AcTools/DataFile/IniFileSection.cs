@@ -46,6 +46,10 @@ namespace AcTools.DataFile {
                 }
             }
         }
+
+        internal void SetDirect(string key, string value) {
+            Set(key, value);
+        }
         
         [CanBeNull, Pure, Localizable(false)]
         public string GetPossiblyEmpty([NotNull, LocalizationRequired(false)] string key) {

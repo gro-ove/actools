@@ -1,4 +1,3 @@
-using System;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 
@@ -40,6 +39,10 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
             Delta = value - RoundedValue;
             RoundedValue = value;
+        }
+
+        public override string ToString() {
+            return $"DirectInputAxle({Device.DisplayName}, {ShortName})";
         }
     }
 }

@@ -16,13 +16,13 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             var section = ini["SHIFTER"];
 
             var deviceId = section.GetInt("JOY", -1);
-            var device = devices.FirstOrDefault(x => x.OriginalIniId == deviceId);
+            var device = devices.FirstOrDefault(x => x.OriginalIniIds.Contains(deviceId));
             Input = device?.GetButton(section.GetInt(Id, -1));
         }
 
         public override void Save(IniFile ini) {
             var section = ini["SHIFTER"];
-            section.Set("JOY", Input?.Device.Index ?? -1);
+            section.Set("JOY", Input?.Device.Index);
             section.Set(Id, Input?.Id ?? -1);
         }
     }

@@ -195,7 +195,7 @@ namespace AcManager.Tools.SemiGui {
                     ui.OnError(new UserCancelledException());
                     return null;
                 } catch (Exception e) {
-                    Logging.Warning("StartAsync(): " + e);
+                    Logging.Warning(e);
                     ui.OnError(e);
                     return null;
                 }

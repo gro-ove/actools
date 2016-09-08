@@ -24,6 +24,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
@@ -118,6 +119,11 @@ namespace AcManager {
                 } catch (Exception e) {
                     Logging.Warning("cannot disable emulation mode: " + e);
                 }
+            }
+
+            var ignoreControls = AppArguments.Get(AppFlag.IgnoreControls);
+            if (!string.IsNullOrWhiteSpace(ignoreControls)) {
+                ControlsSettings.OptionIgnoreControlsFilter = Filter.Create(new StringTester(), ignoreControls);
             }
 
             FancyBackgroundManager.Initialize();

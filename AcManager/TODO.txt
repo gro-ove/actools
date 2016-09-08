@@ -559,6 +559,8 @@ fixme:
     - fix popups behavior
 
 todo:
+    - high CPU priority for acs.exe
+
     - rework selectcardialog
     - rework selecttrackdialog
     - disable dragging in content tab

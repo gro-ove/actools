@@ -58,7 +58,7 @@ namespace AcManager.Tools.Starters {
 
             if (GameProcess != null) {
                 try {
-                    if (!GameProcess.HasExited) {
+                    if (!GameProcess.HasExitedSafe()) {
                         GameProcess.Kill();
                     }
                 } catch (Exception e) {

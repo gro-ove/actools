@@ -3,6 +3,7 @@ using System.Linq;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
@@ -182,8 +183,9 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             var section = ini[Id];
 
             var deviceId = section.GetInt("JOY", -1);
-            var device = devices.FirstOrDefault(x => x.OriginalIniId == deviceId);
+            var device = devices.FirstOrDefault(x => x.OriginalIniIds.Contains(deviceId));
             Input = device?.GetAxle(section.GetInt("AXLE", -1));
+            Logging.Write($"device: {device}, input: {Input}");
 
             if (RangeMode) {
                 if (GammaMode) {
@@ -219,7 +221,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public override void Save(IniFile ini) {
             var section = ini[Id];
-            section.Set("JOY", Input?.Device.Index ?? -1);
+            section.Set("JOY", Input?.Device.Index);
             section.Set("AXLE", Input?.Id ?? -1);
 
             if (RangeMode) {

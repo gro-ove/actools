@@ -31,33 +31,35 @@
                 </ContextMenu>
             </DockPanel.ContextMenu>
 
-            <Grid DockPanel.Dock="Bottom" Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Rectangle Fill="{DynamicResource ButtonBackground}" />
-                <Rectangle Fill="{DynamicResource Accent}" Height="4" Margin="2"
-                        Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Rectangle.RenderTransform>
-                        <ScaleTransform ScaleY="1" ScaleX="{Binding Value}" />
-                    </Rectangle.RenderTransform>
-                </Rectangle>
-            </Grid>
-
-            <Grid DockPanel.Dock="Bottom" Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-                <Rectangle Margin="2 0 10 0" x:Name="Helper" />
-                <Rectangle Fill="{DynamicResource ButtonBackground}" />
-                <Rectangle Fill="{DynamicResource Accent}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left"
-                        Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                    <Rectangle.RenderTransform>
-                        <TranslateTransform Y="0">
-                            <TranslateTransform.X>
-                                <MultiBinding Converter="{StaticResource MultiMultiplyConverter}">
-                                    <Binding Path="Value" />
-                                    <Binding ElementName="Helper" Path="ActualWidth" />
-                                </MultiBinding>
-                            </TranslateTransform.X>
-                        </TranslateTransform>
-                    </Rectangle.RenderTransform>
-                </Rectangle>
-            </Grid>
+            <mui:BooleanSwitch DockPanel.Dock="Bottom" Value="{Binding RangeMode}"
+                    Visibility="{Binding Input.Device.IsVirtual, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                <mui:Cell mui:BooleanSwitch.When="True">
+                    <Rectangle Fill="{DynamicResource ButtonBackground}" />
+                    <Rectangle Fill="{DynamicResource Accent}" Height="4" Margin="2"
+                            Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                        <Rectangle.RenderTransform>
+                            <ScaleTransform ScaleY="1" ScaleX="{Binding Value}" />
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                </mui:Cell>
+                <mui:Cell mui:BooleanSwitch.When="False">
+                    <Rectangle Margin="2 0 10 0" x:Name="Helper" />
+                    <Rectangle Fill="{DynamicResource ButtonBackground}" />
+                    <Rectangle Fill="{DynamicResource Accent}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left"
+                            Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                        <Rectangle.RenderTransform>
+                            <TranslateTransform Y="0">
+                                <TranslateTransform.X>
+                                    <MultiBinding Converter="{StaticResource MultiMultiplyConverter}">
+                                        <Binding Path="Value" />
+                                        <Binding ElementName="Helper" Path="ActualWidth" />
+                                    </MultiBinding>
+                                </TranslateTransform.X>
+                            </TranslateTransform>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                </mui:Cell>
+            </mui:BooleanSwitch>
 
             <DockPanel Margin="0 0 0 4" VerticalAlignment="Top" Width="200" DockPanel.Dock="Left">
                 <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading1}" Margin="0 -8 0 2" DockPanel.Dock="Top" />
@@ -67,7 +69,8 @@
                     <Grid HorizontalAlignment="Left">
                         <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                             <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
-                                    TextTrimming="CharacterEllipsis" />
+                                    TextTrimming="CharacterEllipsis"
+                                    FontStyle="{Binding Input.Device.IsVirtual, Converter={StaticResource BooleanToFontStyleConverter}}" />
                             <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0"
                                     x:Name="ProviderName" TextTrimming="CharacterEllipsis" />
                             <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
@@ -86,44 +89,48 @@
                     <Label Content="{x:Static c:ControlsStrings.Controls_InvertAxis}" />
                 </CheckBox>
 
-                <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
-                        Margin="0 0 0 4">
-                    <mui:ValueLabel Value="{Binding DegressOfRotation}" Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegressLabel}" />
-                    <Slider Minimum="40" Maximum="1180" Value="{Binding DegressOfRotation}" TickFrequency="20" TickPlacement="None" IsSnapToTickEnabled="True" />
-                </DockPanel>
-
-                <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                    <mui:ValueLabel Value="{Binding RangeFrom}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeFromAxis}" />
-                    <Slider Minimum="0" Maximum="100" Value="{Binding RangeFrom}" />
-                </DockPanel>
-
-                <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                    <mui:ValueLabel Value="{Binding RangeTo}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeToAxis}" />
-                    <Slider Minimum="0" Maximum="100" Value="{Binding RangeTo}" />
-                </DockPanel>
-
-                <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
-                    <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
-                    <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
-                </DockPanel>
-
-                <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
-                        Margin="0 0 0 4">
-                    <mui:ValueLabel Value="{Binding Filter}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120" DockPanel.Dock="Left"
-                            Content="{x:Static c:ControlsStrings.Controls_FilterAxis}" />
-                    <Slider Minimum="0" Maximum="100" Value="{Binding Filter}" />
-                </DockPanel>
-
-                <DockPanel Visibility="{Binding RangeMode, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
-                        Margin="0 0 0 4">
-                    <mui:ValueLabel Value="{Binding SpeedSensitivity}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
-                            DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_SpeedSensitivity}" />
-                    <Slider Minimum="0" Maximum="100" Value="{Binding SpeedSensitivity}" />
-                </DockPanel>
+                <mui:BooleanSwitch Value="{Binding RangeMode}">
+                    <StackPanel mui:BooleanSwitch.When="True">
+                        <DockPanel Margin="0 0 0 4">
+                            <mui:ValueLabel Value="{Binding RangeFrom}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeFromAxis}" />
+                            <Slider Minimum="0" Maximum="100" Value="{Binding RangeFrom}" />
+                        </DockPanel>
+                        <DockPanel Margin="0 0 0 4">
+                            <mui:ValueLabel Value="{Binding RangeTo}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_RangeToAxis}" />
+                            <Slider Minimum="0" Maximum="100" Value="{Binding RangeTo}" />
+                        </DockPanel>
+                        <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
+                            <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0" Width="120"
+                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
+                            <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
+                        </DockPanel>
+                    </StackPanel>
+                    <StackPanel mui:BooleanSwitch.When="False">
+                        <DockPanel Margin="0 0 0 4">
+                            <mui:ValueLabel Value="{Binding DegressOfRotation}" Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0" Width="120"
+                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegressLabel}" />
+                            <Slider Minimum="40" Maximum="1180" Value="{Binding DegressOfRotation}" TickFrequency="20" TickPlacement="None"
+                                    IsSnapToTickEnabled="True" />
+                        </DockPanel>
+                        <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
+                            <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" Mode="Number" VerticalAlignment="Center" Padding="0" Width="120"
+                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_GammaAxis}" />
+                            <Slider Minimum="1" Maximum="5" Value="{Binding Gamma}" />
+                        </DockPanel>
+                        <DockPanel Margin="0 0 0 4">
+                            <mui:ValueLabel Value="{Binding Filter}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_FilterAxis}" />
+                            <Slider Minimum="0" Maximum="100" Value="{Binding Filter}" />
+                        </DockPanel>
+                        <DockPanel Margin="0 0 0 4">
+                            <mui:ValueLabel Value="{Binding SpeedSensitivity}" Mode="Integer" Postfix="%" VerticalAlignment="Center" Padding="0" Width="120"
+                                    DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_SpeedSensitivity}" />
+                            <Slider Minimum="0" Maximum="100" Value="{Binding SpeedSensitivity}" />
+                        </DockPanel>
+                    </StackPanel>
+                </mui:BooleanSwitch>
             </StackPanel>
         </DockPanel>
     </DataTemplate>
@@ -154,10 +161,11 @@
                     </ContextMenu>
                 </Button.ContextMenu>
 
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+                <mui:Cell HorizontalAlignment="Stretch">
+                    <mui:Cell Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                         <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
-                                TextTrimming="CharacterEllipsis" />
+                                TextTrimming="CharacterEllipsis"
+                                FontStyle="{Binding Input.Device.IsVirtual, Converter={StaticResource BooleanToFontStyleConverter}}" />
                         <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0"
                                 TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
@@ -165,11 +173,11 @@
                                 Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
-                    </Grid>
+                    </mui:Cell>
                     <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                             VerticalAlignment="Center" FontWeight="Normal"
                             Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
-                </Grid>
+                </mui:Cell>
             </Button>
 
             <Button Grid.Column="2" ToolTip="{x:Static c:ControlsStrings.Controls_KeyboardButton}" Margin="4 0 0 0"
@@ -182,8 +190,8 @@
                     </ContextMenu>
                 </Button.ContextMenu>
 
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+                <mui:Cell HorizontalAlignment="Stretch">
+                    <mui:Cell Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                         <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
                                 TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
@@ -191,11 +199,11 @@
                                 Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
-                    </Grid>
+                    </mui:Cell>
                     <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                             VerticalAlignment="Center" FontWeight="Normal"
                             Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
-                </Grid>
+                </mui:Cell>
             </Button>
         </Grid>
     </DataTemplate>
@@ -212,8 +220,8 @@
                     TextAlignment="Right" />
             <Button Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
                     Style="{StaticResource WaitingButton}">
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+                <mui:Cell HorizontalAlignment="Stretch">
+                    <mui:Cell Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                         <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                                 TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
@@ -221,11 +229,11 @@
                                 Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
-                    </Grid>
+                    </mui:Cell>
                     <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                             VerticalAlignment="Center" FontWeight="Normal"
                             Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
-                </Grid>
+                </mui:Cell>
             </Button>
         </DockPanel>
     </DataTemplate>
@@ -242,8 +250,8 @@
                     TextAlignment="Left" />
             <Button Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
                     Style="{StaticResource WaitingButton}" Margin="0 0 8 0">
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+                <mui:Cell HorizontalAlignment="Stretch">
+                    <mui:Cell Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                         <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                                 TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5"
@@ -251,11 +259,11 @@
                                 Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
                         <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
                                 Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
-                    </Grid>
+                    </mui:Cell>
                     <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
                             VerticalAlignment="Center" FontWeight="Normal"
                             Visibility="{Binding Waiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
-                </Grid>
+                </mui:Cell>
             </Button>
         </DockPanel>
     </DataTemplate>

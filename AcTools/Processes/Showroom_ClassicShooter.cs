@@ -108,7 +108,7 @@ namespace AcTools.Processes {
             public override void Dispose() {
                 base.Dispose();
 
-                if (_process != null && !_process.HasExited) {
+                if (_process != null && !_process.HasExitedSafe()) {
                     _process.Kill();
                     _process = null;
                 }
@@ -288,7 +288,7 @@ namespace AcTools.Processes {
                     throw new ShotingCancelledException();
                 }
 
-                if (_process.HasExited) {
+                if (_process.HasExitedSafe()) {
                     throw new ProcessExitedException();
                 }
             }

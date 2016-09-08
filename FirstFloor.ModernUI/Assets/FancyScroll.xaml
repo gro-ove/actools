@@ -1,4 +1,5 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:system="clr-namespace:System;assembly=mscorlib">
     <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="IsTabStop" Value="False" />
@@ -31,6 +32,9 @@
         </Setter>
     </Style>
 
+    <system:Double x:Key="FancyScrollBar.Width">4</system:Double>
+    <system:Double x:Key="FancyScrollBar.MouseOverWidth">8</system:Double>
+
     <Style x:Key="FancyScrollBarVertical" TargetType="{x:Type ScrollBar}">
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
         <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
@@ -57,7 +61,7 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="1" x:Name="PART_Thumb" />
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb" />
                             </Track.Thumb>
                         </Track>
                         <RepeatButton x:Name="PART_LineDownButton" Height="0" Width="0" Command="{x:Static ScrollBar.LineDownCommand}"
@@ -68,16 +72,16 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Width" To="8" BeginTime="0:0:0.12"
-                                                Duration="0:0:0.08" />
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Width"
+                                                To="{StaticResource FancyScrollBar.MouseOverWidth}" BeginTime="0:0:0.12" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Width" To="1" BeginTime="0:0:0.86"
-                                                Duration="0:0:0.08" />
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Width"
+                                                To="{StaticResource FancyScrollBar.Width}" BeginTime="0:0:0.86" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
@@ -104,7 +108,8 @@
                         <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0" Background="Transparent" Grid.Column="1" />
                         <RepeatButton Grid.Column="0" Height="0" Width="0" x:Name="PART_LineLeftButton" Command="{x:Static ScrollBar.LineUpCommand}"
                                 IsEnabled="{TemplateBinding IsMouseOver}" />
-                        <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Column="1" VerticalAlignment="Bottom">
+                        <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Column="1"
+                                VerticalAlignment="Bottom">
                             <Track.DecreaseRepeatButton>
                                 <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Background="Transparent" BorderBrush="Transparent"
                                         BorderThickness="0" />
@@ -114,7 +119,7 @@
                                         BorderThickness="0" />
                             </Track.IncreaseRepeatButton>
                             <Track.Thumb>
-                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Height="1" x:Name="PART_Thumb" />
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Height="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb" />
                             </Track.Thumb>
                         </Track>
                         <RepeatButton x:Name="PART_LineRightButton" Height="0" Width="0" Command="{x:Static ScrollBar.LineRightCommand}"
@@ -125,16 +130,16 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Height" To="8" BeginTime="0:0:0.12"
-                                                Duration="0:0:0.08" />
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Height"
+                                                To="{StaticResource FancyScrollBar.MouseOverWidth}" BeginTime="0:0:0.12" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Height" To="1" BeginTime="0:0:0.86"
-                                                Duration="0:0:0.08" />
+                                        <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="Height"
+                                                To="{StaticResource FancyScrollBar.Width}" BeginTime="0:0:0.86" Duration="0:0:0.08" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>

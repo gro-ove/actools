@@ -8,7 +8,7 @@ namespace StringBasedFilter {
     /// <summary>
     /// Typed version with fixed ITester.
     /// </summary>
-    public class Filter<T> : Filter, IFilter<T> {
+    internal class Filter<T> : Filter, IFilter<T> {
         private readonly ITester<T> _tester;
 
         public Filter(ITester<T> tester, string filter, bool strictMode) : base(filter, strictMode) {

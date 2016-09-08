@@ -11,11 +11,15 @@ using SlimDX.DirectInput;
 
 namespace AcManager.Tools.Helpers.DirectInput {
     public interface IDirectInputDevice : IWithId {
+        bool IsVirtual { get; }
+
         string DisplayName { get; }
 
         int Index { get; }
 
-        int OriginalIniId { get; set; }
+        IList<int> OriginalIniIds { get; }
+
+        bool Same(IDirectInputDevice other);
 
         [CanBeNull]
         DirectInputAxle GetAxle(int id);
@@ -29,20 +33,26 @@ namespace AcManager.Tools.Helpers.DirectInput {
             Id = id;
             DisplayName = displayName;
             Index = index;
-            OriginalIniId = index;
+            OriginalIniIds = new List<int> { index };
         }
 
         [CanBeNull]
         public string Id { get; }
 
+        public bool IsVirtual => true;
+
         public string DisplayName { get; }
 
         public int Index { get; set; }
 
-        public int OriginalIniId { get; set; }
+        public IList<int> OriginalIniIds { get; }
 
         private readonly Dictionary<int, DirectInputAxle> _axles = new Dictionary<int, DirectInputAxle>(); 
-        private readonly Dictionary<int, DirectInputButton> _buttons = new Dictionary<int, DirectInputButton>(); 
+        private readonly Dictionary<int, DirectInputButton> _buttons = new Dictionary<int, DirectInputButton>();
+
+        public bool Same(IDirectInputDevice other) {
+            return other != null && (Id == other.Id || DisplayName == other.DisplayName);
+        }
 
         public DirectInputAxle GetAxle(int id) {
             DirectInputAxle result;
@@ -69,9 +79,19 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public string Id { get; }
 
+        public bool IsVirtual => false;
+
         public int Index { get; }
 
-        public int OriginalIniId { get; set; }
+        public IList<int> OriginalIniIds { get; }
+
+        public bool Same(IDirectInputDevice other) {
+            return other != null && (Id == other.Id || DisplayName == other.DisplayName);
+        }
+
+        public bool Same(DeviceInstance other) {
+            return other != null && (Id == GuidToString(other.ProductGuid) || DisplayName == other.InstanceName);
+        }
 
         public DirectInputAxle GetAxle(int id) {
             return Axles.ElementAtOrDefault(id);
@@ -92,12 +112,17 @@ namespace AcManager.Tools.Helpers.DirectInput {
             return $"DirectInputDevice({Id}:{DisplayName}, Ini={Index})";
         }
 
+        private static string GuidToString(Guid guid) {
+            return guid.ToString().ToUpperInvariant();
+        }
+
         private DirectInputDevice([NotNull] SlimDX.DirectInput.DirectInput directInput, [NotNull] DeviceInstance device, int index) {
             Device = device;
             DisplayName = device.InstanceName;
 
-            Id = device.ProductGuid.ToString().ToUpperInvariant();
+            Id = GuidToString(device.ProductGuid);
             Index = index;
+            OriginalIniIds = new List<int>();
 
             _joystick = new Joystick(directInput, Device.InstanceGuid);
             if (Application.Current.MainWindow != null) {

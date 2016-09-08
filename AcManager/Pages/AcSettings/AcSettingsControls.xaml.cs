@@ -117,7 +117,7 @@ namespace AcManager.Pages.AcSettings {
             public SystemSettings System => AcSettingsHolder.System;
         }
 
-        private void AcSettingsControls_OnSizeChanged(object sender, SizeChangedEventArgs e) {
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             ResizingStuff();
         }
 
@@ -148,21 +148,21 @@ namespace AcManager.Pages.AcSettings {
 
         private bool _loaded;
 
-        private void AcSettingsControls_OnLoaded(object sender, RoutedEventArgs e) {
+        private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;
 
             AcSettingsHolder.Controls.Used++;
         }
 
-        private void AcSettingsControls_OnUnloaded(object sender, RoutedEventArgs e) {
+        private void OnUnloaded(object sender, RoutedEventArgs e) {
             if (!_loaded) return;
             _loaded = false;
 
             AcSettingsHolder.Controls.Used--;
         }
 
-        private void AcSettingsControls_OnPreviewKeyDown(object sender, KeyEventArgs e) {
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
             switch (e.Key) {
                 case Key.Escape:
                 case Key.Back:

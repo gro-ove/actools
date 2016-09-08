@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
+        xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -122,7 +121,7 @@
                             <ControlTemplate TargetType="controls:ModernTab">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition MinWidth="50" MaxWidth="400" />
                                         <ColumnDefinition Width="9" />
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
@@ -165,14 +164,13 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" Margin="10 2 2 2"
-                                                        FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" Width="200" />
+                                                        FontSize="{DynamicResource SmallFontSize}" />
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                     </ListBox>
 
                                     <!-- seperator -->
-                                    <Rectangle Grid.Column="1" Fill="{DynamicResource SeparatorBackground}" Width="1" HorizontalAlignment="Center"
-                                            VerticalAlignment="Stretch" />
+                                    <controls:ModernTabSplitter Grid.Column="1" />
 
                                     <!-- content -->
                                     <controls:ModernFrame Grid.Column="2" x:Name="PART_Frame"

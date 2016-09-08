@@ -18,10 +18,13 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using SlimDX.DirectInput;
+using StringBasedFilter;
 using Key = System.Windows.Input.Key;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class ControlsSettings : IniSettings, IDisposable {
+        public static IFilter<string> OptionIgnoreControlsFilter;
+
         public const string SubBuiltInPresets = "presets";
         public const string SubUserPresets = "savedsetups";
         public const string PresetExtension = ".ini";
@@ -43,7 +46,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 PresetsDirectory = Path.Combine(FileUtils.GetDocumentsCfgDirectory(), "controllers");
                 UserPresetsDirectory = Path.Combine(PresetsDirectory, SubUserPresets);
 
-                _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
+                _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16.67) };
             } catch (Exception e) {
                 Logging.Warning("ControlsSettings exception: " + e);
             }
@@ -128,11 +131,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private readonly List<PlaceholderInputDevice> _placeholderDevices = new List<PlaceholderInputDevice>(1);
 
         private PlaceholderInputDevice GetPlaceholderDevice([CanBeNull] string id, string displayName, int iniId) {
-            var placeholder = _placeholderDevices.GetByIdOrDefault(id);
+            var placeholder = _placeholderDevices.FirstOrDefault(y => y.DisplayName == displayName) ?? _placeholderDevices.GetByIdOrDefault(id);
             if (placeholder == null) {
                 placeholder = new PlaceholderInputDevice(id, displayName, iniId);
                 _placeholderDevices.Add(placeholder);
-                Logging.Debug($"new placeholder: {placeholder}");
+            } else {
+                placeholder.OriginalIniIds.Add(iniId);
             }
 
             return placeholder;
@@ -144,7 +148,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private void UpdatePlaceholders() {
             foreach (var source in _placeholderDevices.Where(x => Entries.OfType<IDirectInputEntry>().All(y => y.Device != x)).ToList()) {
-                Logging.Debug($"remove unused placeholder: {source}");
                 _placeholderDevices.Remove(source);
             }
 
@@ -164,36 +167,35 @@ namespace AcManager.Tools.Helpers.AcSettings {
             _skip = true;
 
             try {
-                var newDevices = devices.Select((x, i) => DirectInputDevice.Create(_directInput, x, i)).NonNull().ToList();
+                var newDevices = devices.Select((x, i) => Devices.FirstOrDefault(y => y.Same(x)) ??
+                        DirectInputDevice.Create(_directInput, x, i)).NonNull().ToList();
                 _devicesFootprint = GetFootprint(newDevices.Select(x => x.Device));
 
-                foreach (var entry in WheelAxleEntries) {
-                    if (entry.Input == null) continue;
-                    if (entry.Input.Device is PlaceholderInputDevice) {
-                        var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id) ??
-                                newDevices.FirstOrDefault(x => x.DisplayName == entry.Input.Device.DisplayName);
+                foreach (var entry in Entries.OfType<BaseEntry<DirectInputAxle>>()) {
+                    var current = entry.Input?.Device;
+                    if (current is PlaceholderInputDevice) {
+                        var replacement = newDevices.FirstOrDefault(x => x.Same(current));
                         if (replacement != null) {
                             entry.Input = replacement.GetAxle(entry.Input.Id);
                         }
-                    } else if (entry.Input.Device is DirectInputDevice && !newDevices.Contains(entry.Input.Device)) {
-                        entry.Input = GetPlaceholderDevice((DirectInputDevice)entry.Input.Device).GetAxle(entry.Input.Id);
+                    } else if (current is DirectInputDevice && !newDevices.Contains(current)) {
+                        entry.Input = GetPlaceholderDevice((DirectInputDevice)current).GetAxle(entry.Input.Id);
                     }
                 }
 
-                foreach (var entry in WheelButtonEntries.Select(x => x.WheelButton).Union(WheelHShifterButtonEntries)) {
-                    if (entry.Input == null) continue;
-                    if (entry.Input.Device is PlaceholderInputDevice) {
-                        var replacement = newDevices.GetByIdOrDefault(entry.Input.Device.Id) ??
-                                newDevices.FirstOrDefault(x => x.DisplayName == entry.Input.Device.DisplayName);
+                foreach (var entry in Entries.OfType<BaseEntry<DirectInputButton>>()) {
+                    var current = entry.Input?.Device;
+                    if (current is PlaceholderInputDevice) {
+                        var replacement = newDevices.FirstOrDefault(x => x.Same(current));
                         if (replacement != null) {
                             entry.Input = replacement.GetButton(entry.Input.Id);
                         }
-                    } else if (entry.Input.Device is DirectInputDevice && !newDevices.Contains(entry.Input.Device)) {
-                        entry.Input = GetPlaceholderDevice((DirectInputDevice)entry.Input.Device).GetButton(entry.Input.Id);
+                    } else if (current is DirectInputDevice && !newDevices.Contains(current)) {
+                        entry.Input = GetPlaceholderDevice((DirectInputDevice)current).GetButton(entry.Input.Id);
                     }
                 }
 
-                foreach (var device in Devices) {
+                foreach (var device in Devices.ApartFrom(newDevices)) {
                     foreach (var button in device.Buttons) {
                         button.PropertyChanged -= DeviceButtonEventHandler;
                     }
@@ -208,10 +210,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 Devices.ReplaceEverythingBy(newDevices);
                 UpdatePlaceholders();
 
-                Logging.Debug($"devices: [{Devices.JoinToString(", ")}]");
-                Logging.Debug($"fictional: [{_placeholderDevices.JoinToString(", ")}]");
-
-                foreach (var device in Devices) {
+                foreach (var device in newDevices) {
                     ProductGuids[device.DisplayName] = device.Id;
 
                     foreach (var button in device.Buttons) {
@@ -418,7 +417,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             new WheelAxleEntry("THROTTLE", ToolsStrings.Controls_Throttle),
             new WheelAxleEntry("BRAKES", ToolsStrings.Controls_Brakes, gammaMode: true),
             new WheelAxleEntry("CLUTCH", ToolsStrings.Controls_Clutch),
-            new WheelAxleEntry("HANDBRAKE", ToolsStrings.Controls_Handbrake)
+            new WheelAxleEntry(HandbrakeId, ToolsStrings.Controls_Handbrake)
         };
 
         private bool _combineWithKeyboardInput;
@@ -494,7 +493,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public WheelButtonCombined[] WheelCarButtonEntries { get; } = {
             new WheelButtonCombined("KERS", ToolsStrings.Controls_Kers),
             new WheelButtonCombined("DRS", ToolsStrings.Controls_Drs),
-            new WheelButtonCombined("HANDBRAKE", ToolsStrings.Controls_Handbrake),
+            new WheelButtonCombined(HandbrakeId, ToolsStrings.Controls_Handbrake),
             new WheelButtonCombined("ACTION_HEADLIGHTS", ToolsStrings.Controls_Headlights),
             new WheelButtonCombined("ACTION_HEADLIGHTS_FLASH", ToolsStrings.Controls_FlashHeadlights),
             new WheelButtonCombined("ACTION_HORN", ToolsStrings.Controls_Horn),
@@ -733,6 +732,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Main
+        private const string HandbrakeId = "HANDBRAKE";
+
         private IEnumerable<IEntry> Entries
             => WheelAxleEntries
                     .Select(x => (IEntry)x)
@@ -745,11 +746,30 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private void EntryPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (_skip) return;
-            if (e.PropertyName == nameof(WheelHShifterButtonEntry.Input) && sender is WheelHShifterButtonEntry) {
-                UpdateWheelHShifterDevice();
-            } else if (e.PropertyName != nameof(WheelAxleEntry.Value)) {
-                Save();
+
+            switch (e.PropertyName) {
+                case nameof(BaseEntry<IInputProvider>.Input):
+                    var senderEntry = sender as IDirectInputEntry;
+                    if (senderEntry?.Id == HandbrakeId) {
+                        try {
+                            _skip = true;
+                            foreach (var entry in Entries.OfType<IDirectInputEntry>().Where(x => x.Id == HandbrakeId && x.Device?.Same(senderEntry.Device) != true)) {
+                                entry.Clear();
+                            }
+                        } finally {
+                            _skip = false;
+                        }
+                    }
+
+                    if (sender is WheelHShifterButtonEntry) {
+                        UpdateWheelHShifterDevice();
+                    }
+                    break;
+                case nameof(WheelAxleEntry.Value):
+                    return;
             }
+
+            Save();
         }
 
         private RelayCommand _toggleWaitingCommand;
@@ -850,6 +870,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             WheelUseHShifter = Ini["SHIFTER"].GetBool("ACTIVE", false);
             DebouncingInterval = Ini["STEER"].GetInt("DEBOUNCING_MS", 50);
 
+            foreach (var device in Devices.OfType<IDirectInputDevice>().Union(_placeholderDevices)) {
+                device.OriginalIniIds.Clear();
+            }
+
             var section = Ini["CONTROLLERS"];
             var devices = section.Keys.Where(x => x.StartsWith(@"CON")).Select(x => new {
                 IniId = FlexibleParser.TryParseInt(x.Substring(3)),
@@ -861,12 +885,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 }
 
                 var device = Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name) ?? Devices.GetByIdOrDefault(id);
-                if (device == null) {
-                    return (IDirectInputDevice)GetPlaceholderDevice(id, x.Name, x.IniId.Value);
+                if (device != null) {
+                    device.OriginalIniIds.Add(x.IniId.Value);
+                    return device;
                 }
 
-                device.OriginalIniId = x.IniId.Value;
-                return device;
+                return (IDirectInputDevice)GetPlaceholderDevice(id, x.Name, x.IniId.Value);
             }).ToList();
 
             foreach (var entry in Entries) {
@@ -920,17 +944,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
 #if DEBUG
             var sw = Stopwatch.StartNew();
 #endif
-            
             Ini["HEADER"].Set("INPUT_METHOD", InputMethod);
-
-            Logging.Write($"devices: [{Devices.JoinToString(", ")}]");
-            Logging.Write($"fictional: [{_placeholderDevices.JoinToString(", ")}]");
 
             UpdatePlaceholders();
             Ini["CONTROLLERS"] = Devices
                     .Select(x => (IDirectInputDevice)x)
                     .Union(_placeholderDevices)
-                    // .Where(x => Entries.OfType<IDirectInputEntry>().Any(y => y.Device == x))
                     .Aggregate(new IniFileSection(), (s, d, i) => {
                         s.Set("CON" + d.Index, d.DisplayName);
                         s.Set("PGUID" + d.Index, d.Id ?? ProductGuids.GetValueOrDefault(d.DisplayName));
@@ -941,6 +960,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Ini["SHIFTER"].Set("ACTIVE", WheelUseHShifter);
             Ini["SHIFTER"].Set("JOY", WheelHShifterButtonEntries.FirstOrDefault(x => x.Input != null)?.Input?.Device.Index);
             Ini["STEER"].Set("DEBOUNCING_MS", DebouncingInterval);
+
+            foreach (var entry in Entries.OfType<IDirectInputEntry>()) {
+                Ini[entry.Id]["JOY"] = -1;
+            }
 
             foreach (var entry in Entries) {
                 entry.Save(Ini);

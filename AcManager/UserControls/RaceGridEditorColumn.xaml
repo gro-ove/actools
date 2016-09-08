@@ -15,7 +15,6 @@
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSpecific.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
                 <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/MenuAsComboBox.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="NonTransparent" TargetType="mui:ModernButton" BasedOn="{StaticResource {x:Type mui:ModernButton}}">
