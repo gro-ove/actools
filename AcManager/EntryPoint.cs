@@ -200,6 +200,15 @@ namespace AcManager {
         private static void UnhandledExceptionHandler(Exception e) {
             var text = e?.ToString() ?? @"?";
 
+            if (!LogError(text)) {
+                try {
+                    var logFilename = $"{AppDomain.CurrentDomain.BaseDirectory}/content_manager_crash_{DateTime.Now.Ticks}.txt";
+                    File.WriteAllText(logFilename, text);
+                } catch (Exception) {
+                    // ignored
+                }
+            }
+
             try {
                 UnhandledExceptionFancyHandler(e);
                 return;
@@ -208,15 +217,6 @@ namespace AcManager {
 
                 try {
                     MessageBox.Show(text, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } catch (Exception) {
-                    // ignored
-                }
-            }
-
-            if (!LogError(text)) {
-                try {
-                    var logFilename = $"{AppDomain.CurrentDomain.BaseDirectory}/content_manager_crash_{DateTime.Now.Ticks}.txt";
-                    File.WriteAllText(logFilename, text);
                 } catch (Exception) {
                     // ignored
                 }

@@ -1,4 +1,4 @@
-﻿<Grid x:Class="AcManager.UserControls.RaceGridEditorColumn" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<mui:Cell x:Class="AcManager.UserControls.RaceGridEditorColumn" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
         xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
@@ -44,20 +44,19 @@
 
             <Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource FlatListBoxItem}">
                 <EventSetter Event="PreviewMouseDoubleClick" Handler="Item_OnPreviewDoubleClick" />
-                <Setter Property="mui:Draggable.Enabled" Value="True" />
-                <Setter Property="AllowDrop" Value="True" />
             </Style>
 
             <DataTemplate x:Key="Detailed.CarDataTemplate" DataType="{x:Type c:RaceGridEntry}">
                 <StackPanel Orientation="Horizontal">
-                    <mui:BetterImage Filename="{Binding Car.BrandBadge}" Width="16" Height="16" Margin="0 0 4 0" />
+                    <mui:BetterImage Filename="{Binding Car.BrandBadge}" Width="16" Height="16" Margin="0 0 4 0" ClearOnChange="True" />
                     <TextBlock Text="{Binding Car.DisplayName}" VerticalAlignment="Center" />
                 </StackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type c:RaceGridEntry}">
                 <DockPanel MouseLeftButtonUp="OpponentSkin_OnMouseLeftButtonDown" Background="Transparent">
-                    <mui:BetterImage x:Name="Livery" Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" DockPanel.Dock="Left" />
+                    <mui:BetterImage x:Name="Livery" Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" DockPanel.Dock="Left"
+                            ClearOnChange="True" />
                     <Button x:Name="RandomButton" DockPanel.Dock="Right" Width="16" Height="16" Margin="4 0 0 0" VerticalAlignment="Center"
                             RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding RandomSkinCommand}">
                         <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
@@ -78,7 +77,8 @@
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.NameDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <TextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" mui:WatermarkService.Watermark="Random" />
+                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Random"
+                        Style="{StaticResource Borderless.White}" />
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="mui:WatermarkService.Watermark"
@@ -89,19 +89,19 @@
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.NationalityDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <TextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" mui:WatermarkService.Watermark="Random" />
+                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Random"
+                        Style="{StaticResource Borderless.White}" />
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
-                        <Setter TargetName="TextBox" Property="mui:WatermarkService.Watermark"
-                                Value="{Binding PlayerNationality, Source={x:Static t:SettingsHolder.Drive}}" />
+                        <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerNationality, Source={x:Static t:SettingsHolder.Drive}}" />
                         <Setter TargetName="TextBox" Property="IsEnabled" Value="False" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.AiDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <TextBox x:Name="TextBox" Text="{Binding AiLevel, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" mui:WatermarkService.Watermark="Auto"
-                        mui:TextBoxAdvancement.MinValue="50" mui:TextBoxAdvancement.MaxValue="100" mui:TextBoxAdvancement.SpecialMode="Integer" />
+                <mui:BetterTextBox x:Name="TextBox" Text="{Binding AiLevel, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Auto" Minimum="50"
+                        Maximum="100" Mode="Integer" Style="{StaticResource Borderless.White}" />
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
                         <Setter TargetName="TextBox" Property="Visibility" Value="Collapsed" />
@@ -111,8 +111,47 @@
         </ResourceDictionary>
     </FrameworkElement.Resources>
 
-    <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center"
-            Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    <!--both at the same time-->
+    <!--<Grid Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="80" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        
+        <mui:ModernProgressRing Grid.Row="1" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+        <StackPanel Grid.Row="2" DataContext="{x:Static t:CarsManager.Instance}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="8"
+                Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <ProgressBar Maximum="{Binding WrappersList.Count}" Value="{Binding LoadedCount}" Margin="0 0 0 8" />
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Loaded {1} out of {0}">
+                        <Binding Path="WrappersList.Count" />
+                        <Binding Path="LoadedCount" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </StackPanel>
+    </Grid>-->
+
+    <!--either ring or bar-->
+    <mui:Cell Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <mui:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center"
+                Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static t:CarsManager.Instance}}" />
+        <StackPanel DataContext="{x:Static t:CarsManager.Instance}" VerticalAlignment="Center"
+                Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <ProgressBar Maximum="{Binding WrappersList.Count}" Value="{Binding LoadedCount}" Margin="8 0 8 8" Height="4" />
+            <TextBlock TextAlignment="Center" Style="{StaticResource Small}">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Loaded {1} out of {0}">
+                        <Binding Path="WrappersList.Count" />
+                        <Binding Path="LoadedCount" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </StackPanel>
+    </mui:Cell>
 
     <DockPanel Grid.Column="1" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
         <Grid DockPanel.Dock="Top" Margin="0 0 0 8">
@@ -179,13 +218,8 @@
                         <RowDefinition Height="400" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.Row="0" ItemsSource="{Binding DataContext.NonfilteredList}" Style="{StaticResource DataGrid.ReadOnly}"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" IsReadOnly="False"
-                            EnableRowVirtualization="True" EnableColumnVirtualization="True" VerticalScrollBarVisibility="Visible"
-                            VirtualizingStackPanel.VirtualizationMode="Recycling" VirtualizingStackPanel.IsVirtualizing="True"
-                            VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingStackPanel.ScrollUnit="Pixel"
-                            VirtualizingStackPanel.CacheLengthUnit="Item" VirtualizingStackPanel.CacheLength="1,1" CanUserResizeColumns="False"
-                            CanUserResizeRows="False" CanUserReorderColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" Height="480">
+                    <DataGrid Grid.Row="0" ItemsSource="{Binding DataContext.NonfilteredList}" Style="{StaticResource DataGrid.Lite}"
+                            mui:Draggable.Enabled="True" Drop="ItemsControl_OnDrop">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width="*" Header="Car" SortMemberPath="Car" CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
                             <DataGridTemplateColumn Width="120" Header="Skin" SortMemberPath="CarSkin" CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
@@ -208,11 +242,10 @@
             </c:ModernPopup>
         </Grid>
 
-        <DockPanel DockPanel.Dock="Top" Margin="0 0 0 8" HorizontalAlignment="Stretch"
-                Visibility="{Binding Mode.Filterable, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <DockPanel DockPanel.Dock="Top" Margin="0 0 0 8" Visibility="{Binding Mode.Filterable, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="40" DockPanel.Dock="Left" />
-            <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="*"
-                    Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" IsTextSearchEnabled="True" />
+            <mui:HistoricalTextBox Style="{StaticResource ComboBoxAsTextBlock}" mui:WatermarkService.Watermark="*"
+                    Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" SaveKey="RaceGridEditorColumn:FiltersHistory" />
         </DockPanel>
 
         <TextBlock Text="Matching candidates not found" Style="{StaticResource Small}" Foreground="{DynamicResource Error}"
@@ -221,8 +254,8 @@
 
         <ListBox x:Name="ListBox" ItemsSource="{Binding FilteredView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
-                VirtualizingPanel.ScrollUnit="Pixel" SelectionMode="Extended" ItemContainerStyle="{StaticResource ListBoxItem}" Drop="ListBox_Drop"
-                AllowDrop="True" mui:ContextMenuAdvancement.PropagateToChildren="True" Background="Transparent">
+                VirtualizingPanel.ScrollUnit="Pixel" SelectionMode="Extended" ItemContainerStyle="{StaticResource ListBoxItem}" Drop="ItemsControl_OnDrop"
+                Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True" mui:Draggable.Enabled="True">
             <ListBox.ContextMenu>
                 <ContextMenu DataContext="{x:Reference This}">
                     <MenuItem Header="Save Race Grid As Preset" Command="{Binding SavePresetCommand}" />
@@ -327,4 +360,4 @@
             </ListBox.Style>
         </ListBox>
     </DockPanel>
-</Grid>
+</mui:Cell>

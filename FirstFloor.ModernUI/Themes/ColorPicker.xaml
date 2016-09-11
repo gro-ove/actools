@@ -210,12 +210,9 @@
                                 <RadioButton Grid.Column="0" Grid.Row="3" GroupName="Brightness"
                                         IsChecked="{Binding Mode, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static c:ColorPickingMode.Brightness}}" />
 
-                                <c:ValueLabel Grid.Column="1" Grid.Row="4" Content="R"
-                                        Value="{Binding Red, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <c:ValueLabel Grid.Column="1" Grid.Row="5" Content="G"
-                                        Value="{Binding Green, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <c:ValueLabel Grid.Column="1" Grid.Row="6" Content="B"
-                                        Value="{Binding Blue, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <c:ValueLabel Grid.Column="1" Grid.Row="4" Content="R" Value="{Binding Red, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <c:ValueLabel Grid.Column="1" Grid.Row="5" Content="G" Value="{Binding Green, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <c:ValueLabel Grid.Column="1" Grid.Row="6" Content="B" Value="{Binding Blue, RelativeSource={RelativeSource TemplatedParent}}" />
 
                                 <c:ValueLabel Grid.Column="1" Grid.Row="1" Content="H" Postfix="°"
                                         Value="{Binding Hue, RelativeSource={RelativeSource TemplatedParent}}" />
@@ -249,8 +246,7 @@
                             <Setter TargetName="PART_Slider" Property="Value" Value="{Binding Saturation, RelativeSource={RelativeSource TemplatedParent}}" />
                             <Setter TargetName="PART_Palette" Property="Effect">
                                 <Setter.Value>
-                                    <e:ColorPickerSaturationPaletteEffect
-                                            Saturation="{Binding Saturation, RelativeSource={RelativeSource TemplatedParent}}" />
+                                    <e:ColorPickerSaturationPaletteEffect Saturation="{Binding Saturation, RelativeSource={RelativeSource TemplatedParent}}" />
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="PART_SliderBackground" Property="Effect">
@@ -265,8 +261,7 @@
                             <Setter TargetName="PART_Slider" Property="Value" Value="{Binding Brightness, RelativeSource={RelativeSource TemplatedParent}}" />
                             <Setter TargetName="PART_Palette" Property="Effect">
                                 <Setter.Value>
-                                    <e:ColorPickerBrightnessPaletteEffect
-                                            Brightness="{Binding Brightness, RelativeSource={RelativeSource TemplatedParent}}" />
+                                    <e:ColorPickerBrightnessPaletteEffect Brightness="{Binding Brightness, RelativeSource={RelativeSource TemplatedParent}}" />
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="PART_SliderBackground" Property="Effect">
@@ -336,9 +331,9 @@
             <Setter.Value>
                 <ControlTemplate TargetType="c:ColorPicker">
                     <c:Cell>
-                        <TextBox x:Name="PART_TextBox"
+                        <c:BetterTextBox x:Name="PART_TextBox"
                                 Text="{Binding DisplayColor, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
-                                Padding="{TemplateBinding Padding}" a:WatermarkService.Watermark="{x:Static mui:UiStrings.SelectColor}" />
+                                Padding="{TemplateBinding Padding}" Placeholder="{x:Static mui:UiStrings.SelectColor}" />
                         <ToggleButton x:Name="PART_Button" HorizontalAlignment="Right" Margin="3 2 5 0"
                                 Background="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static c:ColorPicker.ColorToBrushConverter}}"
                                 Style="{StaticResource ColorPickerToggleButton}"

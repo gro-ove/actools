@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Windows.Input;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 using FirstFloor.ModernUI.Presentation;
@@ -34,18 +35,17 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             get { return _input; }
             set {
                 if (Equals(value, _input)) {
-                    if (Waiting) {
-                        Waiting = false;
-                    }
-
+                    if (Waiting) Waiting = false;
                     return;
                 }
 
                 OnInputChanged(_input, value);
+
                 _input = value;
                 Waiting = false;
                 OnPropertyChanged();
-                ClearCommand.OnCanExecuteChanged();
+
+                _clearCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -60,9 +60,9 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             Input = null;
         }
 
-        private RelayCommand _clearCommand;
+        private ProperCommand _clearCommand;
 
-        public RelayCommand ClearCommand => _clearCommand ?? (_clearCommand = new RelayCommand(o => {
+        public ICommand ClearCommand => _clearCommand ?? (_clearCommand = new ProperCommand(o => {
             Clear();
         }, o => Input != null));
     }

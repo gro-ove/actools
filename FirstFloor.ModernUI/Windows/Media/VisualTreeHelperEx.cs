@@ -166,5 +166,11 @@ namespace FirstFloor.ModernUI.Windows.Media {
         public static T GetParent<T>([NotNull] this DependencyObject dependencyObject) where T : DependencyObject {
             return dependencyObject.GetParents().OfType<T>().FirstOrDefault();
         }
+
+        [Pure, CanBeNull]
+        public static T GetFromPoint<T>(this UIElement reference, Point point) where T : DependencyObject {
+            var element = reference.InputHitTest(point) as DependencyObject;
+            return element == null ? null : element as T ?? GetParent<T>(element);
+        }
     }
 }

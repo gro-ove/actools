@@ -29,8 +29,6 @@ namespace AcManager.UserControls {
         }
 
         private void OnSelectedCarChanged(CarObject newValue) {
-            Logging.Debug(newValue);
-            Logging.Debug("list: " + _list);
             if (_list != null) {
                 _list.SelectedItem = newValue;
             }

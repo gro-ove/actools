@@ -27,11 +27,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(ValueProperty, value); }
         }
 
-        public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(TextBoxAdvancement.SpecialMode),
-                typeof(ValueLabel), new PropertyMetadata(TextBoxAdvancement.SpecialMode.Integer));
+        public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(SpecialMode),
+                typeof(ValueLabel), new PropertyMetadata(SpecialMode.Integer));
 
-        public TextBoxAdvancement.SpecialMode Mode {
-            get { return (TextBoxAdvancement.SpecialMode)GetValue(ModeProperty); }
+        public SpecialMode Mode {
+            get { return (SpecialMode)GetValue(ModeProperty); }
             set { SetValue(ModeProperty, value); }
         }
 

@@ -1,7 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsDev" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+             xmlns:t="http://acstuff.ru/app/tools"
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
         FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsDev+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -12,22 +14,94 @@
     </UserControl.Resources>
 
     <ScrollViewer>
-        <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
-            <DockPanel>
-                <Label Content="User-entered years:" />
-                <Button Command="{Binding SendYearsCommand}" Content="Send" ToolTip="Please, help us extend database with years" />
-            </DockPanel>
+        <StackPanel>
+            <!--controls test-->
+            <StackPanel Margin="0 0 0 20">
+                <StackPanel.Resources>
+                    <Style TargetType="DockPanel">
+                        <Setter Property="Height" Value="24"/>
+                        <Setter Property="Margin" Value="0 0 0 4"/>
+                    </Style>
+                </StackPanel.Resources>
+                <TextBlock Text="Controls Test:" Style="{StaticResource Heading2}" />
+
+                <DockPanel>
+                    <Label Content="Previous, placeholder:" Width="200" DockPanel.Dock="Left" />
+                    <TextBox mui:WatermarkService.Watermark="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="Previous, b., p.:" Width="200" DockPanel.Dock="Left" />
+                    <TextBox Style="{StaticResource TextBoxAsTextBlock}" mui:WatermarkService.Watermark="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="New:" Width="200" DockPanel.Dock="Left" />
+                    <mui:BetterTextBox Text="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="New, placeholder:" Width="200" DockPanel.Dock="Left" />
+                    <mui:BetterTextBox Placeholder="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="Text:" Width="200" DockPanel.Dock="Left" />
+                    <TextBlock Text="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="New, borderless:" Width="200" DockPanel.Dock="Left" />
+                    <mui:BetterTextBox Style="{StaticResource Borderless}" Text="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="New, b., p.:" Width="200" DockPanel.Dock="Left" />
+                    <mui:BetterTextBox Style="{StaticResource Borderless}" Placeholder="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="New CB:" Width="200" DockPanel.Dock="Left" />
+                    <mui:BetterComboBox IsEditable="True" ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}"
+                            Text="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="New CB, placeholder:" Width="200" DockPanel.Dock="Left" />
+                    <mui:BetterComboBox Placeholder="Placeholder" IsEditable="True"
+                            ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="New CB, borderless:" Width="200" DockPanel.Dock="Left" />
+                    <mui:BetterComboBox Style="{StaticResource BetterComboBox.Borderless}"
+                            ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" Text="Placeholder" />
+                </DockPanel>
+
+                <DockPanel>
+                    <Label Content="New CB, b., p.:" Width="200" DockPanel.Dock="Left" />
+                    <mui:BetterComboBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="Placeholder"
+                            ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" />
+                </DockPanel>
+            </StackPanel>
             
-            <StackPanel>
-                <TextBlock Text="Internal Stuff:" Style="{StaticResource SettingsPanel.Heading2}" />
+            <StackPanel x:Name="Panel" Style="{StaticResource SettingsPanel}">
                 <DockPanel>
-                    <Label Content="Magick.NET:" />
-                    <Button Command="{Binding MagickNetMemoryLeakingCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
+                    <Label Content="User-entered years:" />
+                    <Button Command="{Binding SendYearsCommand}" Content="Send" ToolTip="Please, help us extend database with years" />
                 </DockPanel>
-                <DockPanel>
-                    <Label Content="DH:" />
-                    <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
-                </DockPanel>
+
+                <StackPanel>
+                    <TextBlock Text="Internal Stuff:" Style="{StaticResource SettingsPanel.Heading2}" />
+                    <DockPanel>
+                        <Label Content="Magick.NET:" />
+                        <Button Command="{Binding MagickNetMemoryLeakingCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
+                    </DockPanel>
+                    <DockPanel>
+                        <Label Content="DH:" />
+                        <Button Command="{Binding DecryptHelperCommand}" Content="{x:Static g:AppStrings.Common_Test}" />
+                    </DockPanel>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

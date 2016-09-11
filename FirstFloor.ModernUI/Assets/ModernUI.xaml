@@ -32,6 +32,8 @@
         <ResourceDictionary Source="Marks.xaml" />
         <ResourceDictionary Source="ProperPasswordBox.xaml" />
         <ResourceDictionary Source="Watermark.xaml" />
+
+        <ResourceDictionary Source="BetterTextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <!-- default accent colors and brushes -->

@@ -27,7 +27,7 @@ namespace AcManager.UserControls {
     public partial class RaceGridEditorColumn : INotifyPropertyChanged {
         public RaceGridEditorColumn() {
             InputBindings.AddRange(new[] {
-                new InputBinding(new RelayCommand(o => {
+                new InputBinding(new ProperCommand(o => {
                     if (SelectCarPopup.IsOpen) {
                         var model = Model;
                         var selectCar = (SelectCarPopup.Content as DependencyObject)?.FindLogicalChild<SelectCar>();
@@ -39,13 +39,20 @@ namespace AcManager.UserControls {
                                 model.DeleteEntry(entry);
                             }
                         }
+                    } else if (DetailsPopup.IsOpen) {
+                        var dataGrid = (DetailsPopup.Content as FrameworkElement)?.FindVisualChild<DataGrid>();
+                        if (dataGrid == null) return;
+
+                        foreach (var entry in dataGrid.SelectedItems.OfType<RaceGridEntry>().ToList()) {
+                            entry.DeleteCommand.Execute(o);
+                        }
                     } else {
                         foreach (var entry in ListBox.SelectedItems.OfType<RaceGridEntry>().ToList()) {
                             entry.DeleteCommand.Execute(o);
                         }
                     }
                 }), new KeyGesture(Key.Delete)),
-                new InputBinding(new RelayCommand(o => {
+                new InputBinding(new ProperCommand(o => {
                     if (SelectCarPopup.IsOpen) {
                         AddOpponentCarCommand.Execute(null);
                     }
@@ -61,7 +68,6 @@ namespace AcManager.UserControls {
         [CanBeNull]
         private static CarObject LoadSelected() {
             var saved = ValuesStorage.GetString(KeySelectedCar);
-            Logging.Debug(saved);
             return saved == null ? null : CarsManager.Instance.GetById(saved);
         }
 
@@ -83,7 +89,7 @@ namespace AcManager.UserControls {
 
         private ICommand _cloneSelectedCommand;
 
-        public ICommand CloneSelectedCommand => _cloneSelectedCommand ?? (_cloneSelectedCommand = new RelayCommand(o => {
+        public ICommand CloneSelectedCommand => _cloneSelectedCommand ?? (_cloneSelectedCommand = new ProperCommand(o => {
             var items = ListBox.SelectedItems.OfType<RaceGridEntry>().Select(x => x.Clone()).ToList();
             if (items.Count == 0 || Model == null) return;
 
@@ -100,7 +106,7 @@ namespace AcManager.UserControls {
 
         private ICommand _deleteSelectedCommand;
 
-        public ICommand DeleteSelectedCommand => _deleteSelectedCommand ?? (_deleteSelectedCommand = new RelayCommand(o => {
+        public ICommand DeleteSelectedCommand => _deleteSelectedCommand ?? (_deleteSelectedCommand = new ProperCommand(o => {
             var items = ListBox.SelectedItems.OfType<RaceGridEntry>().ToList();
             if (items.Count == 0 || Model == null) return;
             
@@ -175,9 +181,7 @@ namespace AcManager.UserControls {
 
         private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {}
 
-        private void ListBox_Drop(object sender, DragEventArgs e) {
-            var destination = (ListBox)sender;
-            
+        private void ItemsControl_OnDrop(object sender, DragEventArgs e) {
             var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
             var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
 
@@ -185,8 +189,8 @@ namespace AcManager.UserControls {
                 e.Effects = DragDropEffects.None;
                 return;
             }
-            
-            var newIndex = destination.GetMouseItemIndex();
+
+            var newIndex = ((ItemsControl)sender).GetMouseItemIndex();
             if (raceGridEntry != null) {
                 Model.InsertEntry(newIndex, raceGridEntry);
             } else {

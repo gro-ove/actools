@@ -5,6 +5,8 @@ using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
+    // temporary
+    // todo: replace by BetterTextBox
     public static class FocusAdvancement {
         public static bool GetAdvancesByEnterKey(DependencyObject obj) {
             return (bool)obj.GetValue(AdvancesByEnterKeyProperty);

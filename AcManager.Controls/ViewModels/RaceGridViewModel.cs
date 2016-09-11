@@ -112,11 +112,9 @@ namespace AcManager.Controls.ViewModels {
 
                 if (data.CarIds != null) {
                     var filtered = NonfilteredList.Where(x => !x.SpecialEntry).ToList();
-                    Logging.Write("filtered: " + filtered.Select(x => x.Car).JoinToString(", "));
 
                     if (filtered.Any(x => x.AiLevel.HasValue)) {
                         data.AiLevels = filtered.Select(x => x.AiLevel ?? -1).ToArray();
-                        Logging.Write("ais: " + data.AiLevels.JoinToString(", "));
                     }
 
                     if (filtered.Any(x => x.Name != null)) {
@@ -141,25 +139,15 @@ namespace AcManager.Controls.ViewModels {
                 AiLevelMin = data.AiLevelMin ?? 85;
 
                 FilterValue = data.FilterValue;
-                Mode = Modes.HierarchicalGetById<IRaceGridMode>(data.ModeId);
-
-                if (Mode == BuiltInGridMode.Custom) {
-                    NonfilteredList.ReplaceEverythingBy(data.CarIds?.Select(x => CarsManager.Instance.GetById(x)).Select((x, i) => {
-                        if (x == null) return null;
-
-                        var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
-                        var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
-
-                        return new RaceGridEntry(x) {
-                            AiLevel = aiLevel >= 0 ? aiLevel : (int?)null,
-                            Name = data.Names?.ElementAtOrDefault(i),
-                            Nationality = data.Nationalities?.ElementAtOrDefault(i),
-                            CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
-                        };
-                    }).NonNull() ?? new RaceGridEntry[0]);
-                    SetOpponentsNumberInternal(NonfilteredList.Count);
-                    UpdateOpponentsNumber();
+                var mode = Modes.HierarchicalGetByIdOrDefault<IRaceGridMode>(data.ModeId);
+                if (mode == null) {
+                    NonfatalError.NotifyBackground("Racing grid mode is missing", $"Can’t find racing grid mode with ID “{data.ModeId}”");
+                    Mode = BuiltInGridMode.SameCar;
                 } else {
+                    Mode = mode;
+                }
+
+                if (Mode.CandidatesMode) {
                     if (Mode == BuiltInGridMode.CandidatesManual && data.CarIds != null) {
                         // TODO: Async?
                         NonfilteredList.ReplaceEverythingBy(data.CarIds.Select(x => CarsManager.Instance.GetById(x)).Select((x, i) => {
@@ -181,6 +169,26 @@ namespace AcManager.Controls.ViewModels {
 
                     SetOpponentsNumberInternal(data.OpponentsNumber ?? 7);
                     UpdateViewFilter();
+
+                    if (Mode != BuiltInGridMode.CandidatesManual && Mode != BuiltInGridMode.SameCar) {
+                        RebuildGridAsync().Forget();
+                    }
+                } else {
+                    NonfilteredList.ReplaceEverythingBy(data.CarIds?.Select(x => CarsManager.Instance.GetById(x)).Select((x, i) => {
+                        if (x == null) return null;
+
+                        var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
+                        var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
+
+                        return new RaceGridEntry(x) {
+                            AiLevel = aiLevel >= 0 ? aiLevel : (int?)null,
+                            Name = data.Names?.ElementAtOrDefault(i),
+                            Nationality = data.Nationalities?.ElementAtOrDefault(i),
+                            CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
+                        };
+                    }).NonNull() ?? new RaceGridEntry[0]);
+                    SetOpponentsNumberInternal(NonfilteredList.Count);
+                    UpdateOpponentsNumber();
                 }
 
                 StartingPosition = data.StartingPosition ?? 7;
@@ -334,7 +342,7 @@ namespace AcManager.Controls.ViewModels {
 
                 FilteredView.CustomSort = value.CandidatesMode ? this : null;
                 if (_saveable.IsLoading) return;
-
+                
                 if (value == BuiltInGridMode.SameCar) {
                     NonfilteredList.ReplaceEverythingBy(_playerCar == null ? new RaceGridEntry[0] : new[] { new RaceGridEntry(_playerCar) });
                 } else if (value != BuiltInGridMode.CandidatesManual && value.CandidatesMode) {
@@ -455,6 +463,8 @@ namespace AcManager.Controls.ViewModels {
 
             var dataAdded = false;
             foreach (var entry in FilesStorage.Instance.GetContentDirectory(ContentCategory.GridTypes)) {
+                CandidatesGridMode.SetNamespace(entry.Name);
+
                 var list = JsonConvert.DeserializeObject<List<CandidatesGridMode>>(FileUtils.ReadAllText(entry.Filename));
                 if (list.Any() && !dataAdded) {
                     items.Add(new Separator());
@@ -605,7 +615,6 @@ namespace AcManager.Controls.ViewModels {
 
                 if (_saveable.IsLoading) return;
                 UpdateViewFilter();
-
                 SaveLater();
             }
         }

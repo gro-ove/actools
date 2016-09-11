@@ -1,5 +1,7 @@
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 using AcManager.Tools;
+using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -51,33 +53,43 @@ namespace AcManager.Controls.ViewModels {
         }
     }
 
-    public class CandidatesGridMode : Displayable, IRaceGridMode {
+    public sealed class CandidatesGridMode : Displayable, IRaceGridMode {
         public bool CandidatesMode => true;
 
         public bool Filterable => true;
-
-        [JsonProperty(PropertyName = @"id")]
-        public string Id { get; protected set; }
-
-        [JsonProperty(PropertyName = @"name")]
-        public override string DisplayName { get; set; }
+        
+        public string Id { get; }
 
         [JsonProperty(PropertyName = @"filter")]
-        public string Filter { get; protected set; }
+        public string Filter { get; internal set; }
 
         [JsonProperty(PropertyName = @"script")]
-        public string Script { get; protected set; }
+        public string Script { get; internal set; }
 
         [JsonProperty(PropertyName = @"test")]
-        public bool Test { get; protected set; }
+        public bool Test { get; internal set; }
 
         [JsonProperty(PropertyName = @"affectedByTrack")]
-        public bool AffectedByTrack { get; protected set; }
+        public bool AffectedByTrack { get; internal set; }
 
         [DefaultValue(true), JsonProperty(PropertyName = @"affectedByCar", DefaultValueHandling = DefaultValueHandling.Populate)]
-        public bool AffectedByCar { get; protected set; }
+        public bool AffectedByCar { get; internal set; }
+
+        private static string _namespace;
+
+        internal static void SetNamespace(string space) {
+            _namespace = space == null ? null : IdFromName(space);
+        }
+
+        [NotNull]
+        private static string IdFromName([NotNull] string name) {
+            return Regex.Replace(name, @"[/\\]+", "_").ToLowerInvariant();
+        }
 
         [JsonConstructor, UsedImplicitly]
-        private CandidatesGridMode() {}
+        private CandidatesGridMode(string id = null, string name = null) {
+            Id = id ?? (_namespace ?? @".") + @"/" + IdFromName(name ?? @".");
+            DisplayName = name;
+        }
     }
 }

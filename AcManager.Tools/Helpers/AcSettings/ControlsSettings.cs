@@ -58,6 +58,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 entry.PropertyChanged += EntryPropertyChanged;
             }
 
+            // TODO: double "already used as" message
+
             UpdateWheelHShifterDevice();
 
             _timer.IsEnabled = true;
@@ -227,7 +229,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        private DateTime _lastAssignment;
+
         private void AssignInput<T>(T provider) where T : class, IInputProvider {
+            if (DateTime.Now - _lastAssignment < TimeSpan.FromSeconds(2)) return;
+
             var waiting = GetWaiting() as BaseEntry<T>;
             if (waiting == null) return;
 
@@ -238,7 +244,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider).ToList();
             if (existing.Any()) {
-                var solution = ConflictResolver?.Resolve(provider.DisplayName, existing.Select(x => x.DisplayName));
+                var solution = ConflictResolver?.Resolve(provider.DisplayName, existing.Select(x => x.DisplayName))
+                        ?? AcControlsConflictSolution.ClearPrevious;
+                _lastAssignment = DateTime.Now;
+
                 switch (solution) {
                     case AcControlsConflictSolution.Cancel:
                         return;

@@ -47,6 +47,7 @@ namespace AcManager.Tools.AcManagersNew {
             protected set {
                 if (value == _isLoaded) return;
                 _isLoaded = value;
+                LoadedCount = WrappersList.Count;
                 OnPropertyChanged();
             }
         }
@@ -90,6 +91,7 @@ namespace AcManager.Tools.AcManagersNew {
         public IEnumerable<T> LoadedOnly => WrappersList.Select(x => x.Value).OfType<T>();
 
         [NotNull]
+        // [Obsolete]?
         public IEnumerable<T> EnabledOnly => _enabledOnlyList ?? WrappersList.Select(x => x.Value).Where(x => x.Enabled).OfType<T>();
 
         private AcEnabledOnlyCollection<T> _enabledOnlyList;
@@ -211,16 +213,33 @@ namespace AcManager.Tools.AcManagersNew {
             LoadingReset = true;
         }
 
+        private int _loadedCount;
+
+        public int LoadedCount {
+            get { return _loadedCount; }
+            set {
+                if (Equals(value, _loadedCount)) return;
+                _loadedCount = value;
+                OnPropertyChanged();
+            }
+        }
+
         protected virtual async Task LoadAsync() {
             var start = Stopwatch.StartNew();
 
             LoadingReset = false;
-            await WrappersList.Where(x => !x.IsLoaded).Select(async x => {
-                var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
-                if (x.IsLoaded) return;
+            await WrappersList.Select(async x => {
+                try {
+                    if (x.IsLoaded) return;
 
-                x.Value = loaded;
-                loaded.PastLoad();
+                    var loaded = await Task.Run(() => CreateAndLoadAcObject(x.Value.Id, x.Value.Enabled, false));
+                    if (x.IsLoaded) return;
+
+                    x.Value = loaded;
+                    loaded.PastLoad();
+                } finally {
+                    LoadedCount++;
+                }
             }).WhenAll(SettingsHolder.Content.LoadingConcurrency);
 
             IsLoaded = true;

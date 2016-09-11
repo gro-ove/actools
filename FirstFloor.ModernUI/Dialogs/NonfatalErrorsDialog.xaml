@@ -21,9 +21,9 @@
                     <Ellipse Width="4" Height="4" Fill="{DynamicResource Go}" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="4 0 8 0"
                             Visibility="{Binding Unseen, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
                     <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" DockPanel.Dock="Top" />
-                    <TextBlock FontFamily="Consolas" Text="{Binding Exception.Message}" Margin="4 4 0 0" DockPanel.Dock="Top"
+                    <TextBlock FontFamily="Consolas" Text="{Binding Exception.Message}" Margin="0 4 0 0" DockPanel.Dock="Top"
                             Visibility="{Binding Exception, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-                    <TextBlock Style="{StaticResource Small}" Text="{Binding Commentary}" Margin="4 4 0 0"
+                    <TextBlock Style="{StaticResource Small}" Text="{Binding Commentary}" Margin="0 4 0 0"
                             Visibility="{Binding Commentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                 </DockPanel>
             </DataTemplate>

@@ -161,8 +161,11 @@
     <Compile Include="Helpers\NonfatalErrorEntry.cs" />
     <Compile Include="Helpers\PopupHelper.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
+    <Compile Include="Windows\Controls\AdornedControl.cs" />
     <Compile Include="Windows\Controls\BaseSwitch.cs" />
+    <Compile Include="Windows\Controls\BetterTextBox.cs" />
     <Compile Include="Windows\Controls\Cell.cs" />
+    <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
     <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
@@ -410,6 +413,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\WaitingDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Assets\BetterTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\HistoricalTextBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

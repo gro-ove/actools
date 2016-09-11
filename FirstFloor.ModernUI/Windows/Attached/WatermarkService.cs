@@ -6,10 +6,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
+    // temporary
+    // todo: replace by BetterTextBox
+    [Obsolete]
     public static class WatermarkService {
+        [Obsolete]
         public static readonly DependencyProperty WatermarkProperty;
         private static readonly IDictionary<object, ItemsControl> ItemsControls = new Dictionary<object, ItemsControl>();
 
@@ -18,16 +21,18 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 new FrameworkPropertyMetadata(null, OnWatermarkChanged));
         }
 
+        [Obsolete]
         public static object GetWatermark(DependencyObject d) {
             return d.GetValue(WatermarkProperty);
         }
 
+        [Obsolete]
         public static void SetWatermark(DependencyObject d, object value) {
             d.SetValue(WatermarkProperty, value);
         }
 
         private static void OnWatermarkChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            // TODO: dynamic change?
+            // return;
 
             var control = d as Control;
             if (control == null) {

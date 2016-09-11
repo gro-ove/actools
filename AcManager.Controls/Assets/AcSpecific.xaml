@@ -4,6 +4,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/DataGrid.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -79,16 +80,8 @@
             SingleEventsIconData="{StaticResource ListCheckIconData}" />
 
     <!--datagrid specific-->
-    <Style x:Key="DataGrid.ReadOnly" TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+    <Style x:Key="DataGrid.ReadOnly" TargetType="DataGrid" BasedOn="{StaticResource DataGrid.Lite}">
         <Setter Property="IsReadOnly" Value="True" />
-        <Setter Property="AutoGenerateColumns" Value="False" />
-        <Setter Property="SelectionUnit" Value="FullRow" />
-        <Setter Property="SelectionMode" Value="Single" />
-        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
-        <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
-        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
-        <Setter Property="MinRowHeight" Value="24" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <DataTemplate x:Key="DataGridCell.DriverName" DataType="{x:Type t:KunosCareerObject+ChampionshipDriverEntry}">

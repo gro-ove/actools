@@ -560,6 +560,7 @@ fixme:
 
 todo:
     - high CPU priority for acs.exe
+    - Ctrl+L as F6
 
     - rework selectcardialog
     - rework selecttrackdialog

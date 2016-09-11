@@ -25,8 +25,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 new InputBinding(new RelayCommand(CloseTab), new KeyGesture(Key.F4, ModifierKeys.Control)),
                 new InputBinding(new RelayCommand(RestoreTab), new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(new RelayCommand(FocusCurrentTab), new KeyGesture(Key.F6)),
+                new InputBinding(new RelayCommand(FocusCurrentTab), new KeyGesture(Key.L, ModifierKeys.Control)),
                 new InputBinding(new RelayCommand(NextTab), new KeyGesture(Key.Tab, ModifierKeys.Control)),
-                new InputBinding(new RelayCommand(PreviousTab), new KeyGesture(Key.Tab, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(new RelayCommand(PreviousTab), new KeyGesture(Key.Tab, ModifierKeys.Control | ModifierKeys.Shift))
             });
 
             foreach (var i in Enumerable.Range(0, 9)) {

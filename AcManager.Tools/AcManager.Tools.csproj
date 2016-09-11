@@ -233,6 +233,7 @@
     <Compile Include="Helpers\AcSettingsControls\IDirectInputEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\IEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\KeyboardButtonEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\KeyboardSpecificButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelHShifterButtonEntry.cs" />
     <Compile Include="Helpers\AcSettings\AcFormEntry.cs" />
