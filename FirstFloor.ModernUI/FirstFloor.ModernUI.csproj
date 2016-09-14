@@ -167,6 +167,7 @@
     <Compile Include="Windows\Controls\Cell.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
+    <Compile Include="Windows\Controls\PlaceholderTextBlock.cs" />
     <Compile Include="Windows\DragPopup.cs" />
     <Compile Include="Windows\DragPreview.cs" />
     <Compile Include="Effects\ColorPickerBluePaletteEffect.cs" />

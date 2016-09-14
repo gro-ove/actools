@@ -244,6 +244,12 @@ namespace AcManager.UserControls {
             DetailsPopup.StaysOpen = false;
         }
 
+        private void OpponentSkinCell_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            if (e.ClickCount == 2) {
+                OpponentSkin_OnMouseLeftButtonDown(sender, e);
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

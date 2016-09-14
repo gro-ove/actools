@@ -31,7 +31,7 @@ namespace AcManager.Controls.Dialogs {
                 Logging.Write("Player.BeginStop()");
                 Player.BeginStop(Stopped);
             } catch (Exception ex) {
-                NonfatalError.Notify(Controls.ControlsStrings.VideoViewer_CannotPlay, Controls.ControlsStrings.VideoViewer_CannotPlay_Commentary, ex);
+                NonfatalError.NotifyBackground(ControlsStrings.VideoViewer_CannotPlay, ControlsStrings.VideoViewer_CannotPlay_Commentary, ex);
                 Close();
             }
         }
@@ -44,7 +44,7 @@ namespace AcManager.Controls.Dialogs {
                 Player.Play();
                 Player.StateChanged += Player_StateChanged;
             } catch (Exception e) {
-                NonfatalError.Notify(Controls.ControlsStrings.VideoViewer_CannotPlay, Controls.ControlsStrings.VideoViewer_CannotPlay_Commentary, e);
+                NonfatalError.NotifyBackground(ControlsStrings.VideoViewer_CannotPlay, ControlsStrings.VideoViewer_CannotPlay_Commentary, e);
                 Close();
             }
         }

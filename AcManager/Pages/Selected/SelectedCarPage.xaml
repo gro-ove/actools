@@ -1,16 +1,9 @@
-﻿<selected:SelectedAcJsonObjectPage x:Class="AcManager.Pages.Selected.SelectedCarPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<sel:SelectedAcJsonObjectPage x:Class="AcManager.Pages.Selected.SelectedCarPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-        xmlns:acManagersNew="clr-namespace:AcManager.Tools.AcManagersNew;assembly=AcManager.Tools"
-        xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
-        xmlns:helpers="clr-namespace:AcManager.Tools.Helpers;assembly=AcManager.Tools"
-        xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools"
-        xmlns:customShowroom="clr-namespace:AcManager.Controls.CustomShowroom;assembly=AcManager.Controls"
-        xmlns:t="clr-namespace:AcManager.Tools;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager"
-        xmlns:userControls="clr-namespace:AcManager.Controls.UserControls;assembly=AcManager.Controls" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
-        d:DataContext="{d:DesignInstance selected:SelectedCarPage+ViewModel}">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        d:DataContext="{d:DesignInstance sel:SelectedCarPage+ViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -47,10 +40,10 @@
                     <MenuItem Header="{x:Static g:AppStrings.Toolbar_CustomShowroom}">
                         <MenuItem x:Name="LiteCustomShowroomMenuItem" Header="{x:Static g:AppStrings.Toolbar_CustomShowroom_Lite}"
                                 ToolTip="{x:Static g:AppStrings.Toolbar_CustomShowroom_Lite_Tooltip}" Command="{Binding OpenInCustomShowroomCommand}"
-                                CommandParameter="{x:Static customShowroom:CustomShowroomMode.Lite}" />
+                                CommandParameter="{x:Static c:CustomShowroomMode.Lite}" />
                         <MenuItem x:Name="FancyCustomShowroomMenuItem" Header="{x:Static g:AppStrings.Toolbar_CustomShowroom_Fancy}"
                                 ToolTip="{x:Static g:AppStrings.Toolbar_CustomShowroom_Fancy_Tooltip}" Command="{Binding OpenInCustomShowroomCommand}"
-                                CommandParameter="{x:Static customShowroom:CustomShowroomMode.Fancy}" />
+                                CommandParameter="{x:Static c:CustomShowroomMode.Fancy}" />
                     </MenuItem>
                 </mui:ButtonWithComboBox>
                 <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
@@ -104,10 +97,10 @@
             <ToolBar Band="1" BandIndex="1">
                 <Button Content="{x:Static g:AppStrings.Toolbar_PackData}" Command="{Binding PackDataCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_PackData_Tooltip}"
-                        Visibility="{Binding DeveloperMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_UnpackData}" Command="{Binding ReadDataCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_UnpackData_Tooltip}"
-                        Visibility="{Binding MsMode, Source={x:Static helpers:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="{x:Static g:AppStrings.Toolbar_ReplaceSound}" Command="{Binding ReplaceSoundCommand}"
                         ToolTip="{x:Static g:AppStrings.Toolbar_ReplaceSound_Tooltip}" />
             </ToolBar>
@@ -122,7 +115,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- preview of selected skin -->
-                <Grid x:Name="SelectedSkinPreview">
+                <mui:Cell x:Name="SelectedSkinPreview">
                     <mui:BetterImage x:Name="SelectedSkinPreviewImage" DataContext="{Binding SelectedObject.SelectedSkin}" Filename="{Binding PreviewImage}"
                             PreviewMouseLeftButtonDown="SelectedSkinPreview_MouseDown" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" MinHeight="160"
                             MaxHeight="575" MaxWidth="1022"
@@ -130,7 +123,7 @@
                     <mui:BetterImage Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Width="64" Height="64" MouseDown="UpgradeIcon_MouseDown"
                             Filename="{Binding SelectedObject.UpgradeIcon}"
                             Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                </Grid>
+                </mui:Cell>
 
                 <!-- skins list -->
                 <ListBox ItemsSource="{Binding SelectedObject.SkinsEnabledWrappersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -144,7 +137,7 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type acManagersNew:AcItemWrapper}">
+                        <DataTemplate DataType="{x:Type t:AcItemWrapper}">
                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                             <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32"
                                     ClearOnChange="True" PreviewMouseRightButtonUp="SelectedSkinPreview_MouseUp" />
@@ -156,8 +149,8 @@
             <!-- data section -->
             <StackPanel Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <!-- tags -->
-                <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" SuggestionsSource="{x:Static managers:SuggestionLists.CarTagsListView}"
-                        attached:ContextMenuAdvancement.PropagateToChildren="True">
+                <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" SuggestionsSource="{x:Static t:SuggestionLists.CarTagsListView}"
+                        mui:ContextMenuAdvancement.PropagateToChildren="True">
                     <mui:TagsList.ItemContextMenu>
                         <mui:InheritingContextMenu>
                             <MenuItem Header="{x:Static g:AppStrings.Filter_ByTag}" Command="{Binding Data.FilterTagCommand, Source={StaticResource Model}}"
@@ -188,7 +181,7 @@
                     </Grid.RowDefinitions>
 
                     <!-- first row -->
-                    <DockPanel Grid.Row="0" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                    <DockPanel Grid.Row="0" Grid.Column="0" mui:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="{x:Static g:AppStrings.Filter_ByBrand}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
@@ -196,11 +189,11 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}" />
-                        <ComboBox Text="{Binding SelectedObject.Brand, UpdateSourceTrigger=LostFocus}"
-                                ItemsSource="{x:Static managers:SuggestionLists.CarBrandsListView}" />
+                        <mui:BetterComboBox Text="{Binding SelectedObject.Brand, UpdateSourceTrigger=LostFocus}"
+                                ItemsSource="{x:Static t:SuggestionLists.CarBrandsListView}" />
                     </DockPanel>
 
-                    <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                    <DockPanel Grid.Row="0" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}"
@@ -208,12 +201,12 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" />
-                        <ComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
-                                ItemsSource="{x:Static managers:SuggestionLists.CountriesListView}" />
+                        <mui:BetterComboBox Text="{Binding SelectedObject.Country, UpdateSourceTrigger=LostFocus}"
+                                ItemsSource="{x:Static t:SuggestionLists.CountriesListView}" />
                     </DockPanel>
 
                     <!-- second row -->
-                    <DockPanel Grid.Row="1" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                    <DockPanel Grid.Row="1" Grid.Column="0" mui:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="{x:Static g:AppStrings.Filter_ByClass}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
@@ -223,11 +216,11 @@
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarClassLabel}">
                             <TextBlock.ToolTip>Car class (such as “race” or “street”) in lowercase</TextBlock.ToolTip>
                         </TextBlock>
-                        <ComboBox Text="{Binding SelectedObject.CarClass, UpdateSourceTrigger=LostFocus}"
-                                ItemsSource="{x:Static managers:SuggestionLists.CarClassesListView}" />
+                        <mui:BetterComboBox Text="{Binding SelectedObject.CarClass, UpdateSourceTrigger=LostFocus}"
+                                ItemsSource="{x:Static t:SuggestionLists.CarClassesListView}" />
                     </DockPanel>
 
-                    <DockPanel Grid.Row="1" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
+                    <DockPanel Grid.Row="1" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
                         <DockPanel.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="{x:Static g:AppStrings.Filter_ByYear}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
@@ -237,8 +230,7 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_YearLabel_CarTooltip}" />
-                        <TextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" attached:TextBoxAdvancement.SpecialMode="Integer"
-                                attached:WatermarkService.Watermark="?" />
+                        <mui:BetterTextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" Mode="Integer" Minimum="1900" Maximum="2100" />
                     </DockPanel>
 
                     <!-- third row -->
@@ -248,15 +240,14 @@
                                     Visibility="{Binding SelectedObject.Parent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                                 <StackPanel Margin="4 8">
                                     <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedObject.Parent.DisplayName}" Margin="0 0 0 4" />
-                                    <userControls:CarBlock Car="{Binding SelectedObject.Parent}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512"
-                                            MaxHeight="320" />
+                                    <c:CarBlock Car="{Binding SelectedObject.Parent}" ShowSkinsAndPreview="False" SelectSkin="False" Width="512" MaxHeight="320" />
                                 </StackPanel>
                             </ToolTip>
                         </DockPanel.ToolTip>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarParentLabel}"
                                 ToolTip="{x:Static c:ControlsStrings.AcObject_CarParentLabel_Tooltip}" />
                         <mui:BbCodeBlock Text="{Binding SelectedObject.ParentDisplayName}"
-                                attached:WatermarkService.Watermark="{x:Static t:ToolsStrings.Common_None}" MouseDown="ParentBlock_OnMouseDown" />
+                                mui:WatermarkService.Watermark="{x:Static t:ToolsStrings.Common_None}" MouseDown="ParentBlock_OnMouseDown" />
                     </DockPanel>
 
                     <DockPanel Grid.Row="2" Grid.Column="1">
@@ -267,7 +258,7 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
-                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" attached:WatermarkService.Watermark="?"
+                        <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" mui:WatermarkService.Watermark="?"
                                 MouseUp="VersionInfoBlock_OnMouse" />
                     </DockPanel>
 
@@ -290,7 +281,7 @@
                             </ContextMenu>
                         </DockPanel.ContextMenu>
                         <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" />
-                        <mui:BbCodeBlock Text="{Binding SelectedObject.SpecsInfoDisplay}" attached:WatermarkService.Watermark="?"
+                        <mui:BbCodeBlock Text="{Binding SelectedObject.SpecsInfoDisplay}" mui:WatermarkService.Watermark="?"
                                 MouseDown="SpecsInfoBlock_OnMouseDown" />
                     </DockPanel>
                 </Grid>
@@ -300,4 +291,5 @@
             </StackPanel>
         </StackPanel>
     </c:AcObjectBase>
-</selected:SelectedAcJsonObjectPage>
+</sel:SelectedAcJsonObjectPage>
+

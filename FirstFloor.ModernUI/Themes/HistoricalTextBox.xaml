@@ -3,13 +3,37 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/MenuItem.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type c:HistoricalTextBox}" BasedOn="{StaticResource {x:Type c:BetterComboBox}}">
-        <Setter Property="IsEditable" Value="True" />
-        <Setter Property="IsTextSearchEnabled" Value="True" />
-        <Setter Property="a:FocusAdvancement.AdvancesByEnterKey" Value="True" />
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <DockPanel x:Name="Panel" Background="Transparent">
+                        <DockPanel.InputBindings>
+                            <MouseBinding Gesture="MiddleClick" CommandParameter="{Binding}"
+                                    Command="{Binding DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c:HistoricalTextBox}}}" />
+                        </DockPanel.InputBindings>
+                        <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 0 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased"
+                                Padding="2" CommandParameter="{Binding}"
+                                Command="{Binding DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type c:HistoricalTextBox}}}">
+                            <Button.Style>
+                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                </Style>
+                            </Button.Style>
+                            <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
+                                    Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                                    VerticalAlignment="Center" HorizontalAlignment="Center" StrokeThickness="1" />
+                        </Button>
+                        <TextBlock Text="{Binding}" />
+                    </DockPanel>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>

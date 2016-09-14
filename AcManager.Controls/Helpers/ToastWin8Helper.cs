@@ -66,8 +66,16 @@ namespace AcManager.Controls.Helpers {
             }
 
             var content = new XmlDocument();
-            content.LoadXml("<toast><visual><binding template=\"ToastImageAndText02\"><image id=\"1\" src=\"file://" +
-                    tempIcon + "\"/><text id=\"1\">" + title + "</text><text id=\"2\">" + message + "</text></binding></visual></toast>");
+            content.LoadXml($@"
+<toast>
+    <visual>
+        <binding template=""ToastImageAndText02"">
+            <image id=""1"" src=""file://{tempIcon}""/>
+            <text id=""1"">{title}</text>
+            <text id=""2"">{message}</text>
+        </binding>
+    </visual>
+</toast>");
             var notification = new ToastNotification(content);
             if (click != null) {
                 notification.Activated += (sender, args) => {

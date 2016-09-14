@@ -1,48 +1,48 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached"
+        xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <controls:TagsListDataTemplateSelector x:Key="TagsListDataTemplateSelector">
-        <controls:TagsListDataTemplateSelector.TagDataTemplate>
+    <c:TagsListDataTemplateSelector x:Key="TagsListDataTemplateSelector">
+        <c:TagsListDataTemplateSelector.TagDataTemplate>
             <DataTemplate>
                 <StackPanel Orientation="Horizontal" Background="{DynamicResource ButtonBackground}" Margin="0 0 4 4"
-                        ContextMenu="{Binding ItemContextMenu, RelativeSource={RelativeSource AncestorType={x:Type controls:TagsList}, Mode=FindAncestor}}"
-                        attached:ContextMenuAdvancement.PropagateToChildren="True">
-                    <TextBox x:Name="PART_TextBox" Style="{StaticResource TextBoxAsTextBlock}" Margin="8 2 2 2" Text="{Binding Mode=OneWay}"
-                            Foreground="{DynamicResource ButtonText}" attached:FocusAdvancement.AdvancesByEnterKey="True">
+                        ContextMenu="{Binding ItemContextMenu, RelativeSource={RelativeSource AncestorType={x:Type c:TagsList}, Mode=FindAncestor}}"
+                        a:ContextMenuAdvancement.PropagateToChildren="True">
+                    <c:BetterTextBox x:Name="PART_TextBox" Style="{StaticResource Borderless}" Margin="8 2 2 2" Text="{Binding Mode=OneWay}"
+                            Foreground="{DynamicResource ButtonText}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="LostFocus">
                                 <i:InvokeCommandAction
-                                        Command="{Binding ChangeCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:TagsList}, Mode=FindAncestor}}"
+                                        Command="{Binding ChangeCommand, RelativeSource={RelativeSource AncestorType={x:Type c:TagsList}, Mode=FindAncestor}}"
                                         CommandParameter="{Binding ElementName=PART_TextBox}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </TextBox>
+                    </c:BetterTextBox>
                     <Button Margin="0 0 4 0" Padding="2 0 2 0" Focusable="False"
-                            Command="{Binding CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type controls:TagsList}, Mode=FindAncestor}}"
+                            Command="{Binding CloseCommand, RelativeSource={RelativeSource AncestorType={x:Type c:TagsList}, Mode=FindAncestor}}"
                             CommandParameter="{Binding}" Content="×" />
                 </StackPanel>
             </DataTemplate>
-        </controls:TagsListDataTemplateSelector.TagDataTemplate>
-        <controls:TagsListDataTemplateSelector.NewTagDataTemplate>
+        </c:TagsListDataTemplateSelector.TagDataTemplate>
+        <c:TagsListDataTemplateSelector.NewTagDataTemplate>
             <DataTemplate>
                 <ContentPresenter Content="{Binding}" />
             </DataTemplate>
-        </controls:TagsListDataTemplateSelector.NewTagDataTemplate>
-    </controls:TagsListDataTemplateSelector>
+        </c:TagsListDataTemplateSelector.NewTagDataTemplate>
+    </c:TagsListDataTemplateSelector>
 
-    <Style TargetType="controls:TagsList">
+    <Style TargetType="c:TagsList">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Padding" Value="0" />
 
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="controls:TagsList">
+                <ControlTemplate TargetType="c:TagsList">
                     <Border Background="Transparent">
                         <ItemsControl ItemTemplateSelector="{StaticResource TagsListDataTemplateSelector}">
                             <ItemsControl.Resources>
@@ -51,9 +51,8 @@
                             <ItemsControl.ItemsSource>
                                 <CompositeCollection>
                                     <CollectionContainer Collection="{Binding Source={StaticResource TagsCollection}}" />
-                                    <ComboBox ItemsSource="{Binding SuggestionsSource, RelativeSource={RelativeSource TemplatedParent}}" MinWidth="100"
-                                            Background="Transparent" BorderThickness="0" x:Name="PART_NewTagTextBox" IsTextSearchEnabled="True"
-                                            IsEditable="True" attached:FocusAdvancement.AdvancesByEnterKey="True" />
+                                    <c:BetterComboBox x:Name="PART_NewTagTextBox" MinWidth="100" Style="{StaticResource BetterComboBox.Borderless}"
+                                            ItemsSource="{Binding SuggestionsSource, RelativeSource={RelativeSource TemplatedParent}}" />
                                 </CompositeCollection>
                             </ItemsControl.ItemsSource>
                             <ItemsControl.ItemsPanel>
@@ -71,7 +70,7 @@
             <Trigger Property="IsReadOnly" Value="True">
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="controls:TagsList">
+                        <ControlTemplate TargetType="c:TagsList">
                             <Border Background="Transparent">
                                 <ItemsControl ItemsSource="{TemplateBinding ItemsSource}">
                                     <ItemsControl.ItemsPanel>

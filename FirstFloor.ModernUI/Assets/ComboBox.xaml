@@ -11,7 +11,7 @@
                 Value="{Binding HorizontalContentAlignment,RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
         <Setter Property="VerticalContentAlignment"
                 Value="{Binding VerticalContentAlignment,RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />-->
-        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Padding" Value="7 2 8 2" />
         <Setter Property="BorderThickness" Value="0" />
@@ -127,10 +127,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}">
-        <Setter Property="Foreground" Value="{DynamicResource InputText}" />
-        <Setter Property="Background" Value="{DynamicResource InputBackground}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
+    <Style x:Key="ComboBox.CommonBase" TargetType="{x:Type ComboBox}">
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
@@ -139,6 +136,12 @@
         <Setter Property="ScrollViewer.PanningMode" Value="Both" />
         <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    </Style>
+
+    <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource ComboBox.CommonBase}">
+        <Setter Property="Foreground" Value="{DynamicResource InputText}" />
+        <Setter Property="Background" Value="{DynamicResource InputBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBox}">

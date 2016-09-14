@@ -16,7 +16,7 @@
     <ScrollViewer>
         <StackPanel>
             <!--controls test-->
-            <StackPanel Margin="0 0 0 20">
+            <StackPanel Margin="0 0 0 20" TextBlock.Foreground="Cyan">
                 <StackPanel.Resources>
                     <Style TargetType="DockPanel">
                         <Setter Property="Height" Value="24"/>
@@ -27,11 +27,13 @@
 
                 <DockPanel>
                     <Label Content="Previous, placeholder:" Width="200" DockPanel.Dock="Left" />
+                    <!-- ReSharper disable once ObsoleteElement -->
                     <TextBox mui:WatermarkService.Watermark="Placeholder" />
                 </DockPanel>
 
                 <DockPanel>
                     <Label Content="Previous, b., p.:" Width="200" DockPanel.Dock="Left" />
+                    <!-- ReSharper disable once ObsoleteElement -->
                     <TextBox Style="{StaticResource TextBoxAsTextBlock}" mui:WatermarkService.Watermark="Placeholder" />
                 </DockPanel>
 

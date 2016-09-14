@@ -403,7 +403,7 @@
         <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True" />
         <Setter Property="VirtualizingStackPanel.IsVirtualizingWhenGrouping" Value="True" />
         <Setter Property="VirtualizingStackPanel.ScrollUnit" Value="Pixel" />
-        <Setter Property="VirtualizingStackPanel.CacheLengthUnit" Value="Item" />
+        <Setter Property="VirtualizingStackPanel.CacheLengthUnit" Value="Page" />
         <Setter Property="VirtualizingStackPanel.CacheLength" Value="1,1" />
 
         <!--scrolling-->

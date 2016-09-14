@@ -21,6 +21,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public BetterComboBox() {
             DefaultStyleKey = typeof(BetterComboBox);
+            PreviewMouseWheel += ComboBox_PreviewMouseWheel;
+        }
+        
+        public static readonly DependencyProperty TrimProperty = DependencyProperty.Register(nameof(Trim), typeof(bool),
+                typeof(BetterComboBox), new PropertyMetadata(true));
+
+        public bool Trim {
+            get { return (bool)GetValue(TrimProperty); }
+            set { SetValue(TrimProperty, value); }
         }
 
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string),
@@ -31,18 +40,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(PlaceholderProperty, value); }
         }
 
+        private void ComboBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+            if (IsDropDownOpen) return;
+
+            e.Handled = true;
+            (Parent as UIElement)?.RaiseEvent(new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta) {
+                RoutedEvent = MouseWheelEvent,
+                Source = sender
+            });
+        }
+
         protected override void OnPreviewKeyDown(KeyEventArgs e) {
             switch (e.Key) {
                 case Key.Escape:
-                    if (FocusAdvancement.RemoveFocus(this)) {
-                        e.Handled = true;
-                    }
+                    e.Handled = FocusAdvancement.RemoveFocus(this);
                     break;
 
                 case Key.Enter:
-                    if (FocusAdvancement.MoveFocus(this)) {
-                        e.Handled = true;
-                    }
+                    e.Handled = FocusAdvancement.MoveFocus(this);
                     break;
             }
 
@@ -55,6 +70,39 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public class BetterTextBox : TextBox {
         public BetterTextBox() {
             DefaultStyleKey = typeof(BetterTextBox);
+        }
+
+        protected override void OnTextChanged(TextChangedEventArgs e) {
+            base.OnTextChanged(e);
+
+            if (Trim) {
+                TrimText();
+            }
+        }
+
+        public static readonly DependencyProperty TrimProperty = DependencyProperty.Register(nameof(Trim), typeof(bool),
+                typeof(BetterTextBox), new PropertyMetadata(true, OnTrimChanged));
+
+        public bool Trim {
+            get { return (bool)GetValue(TrimProperty); }
+            set { SetValue(TrimProperty, value); }
+        }
+
+        private static void OnTrimChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((BetterTextBox)o).OnTrimChanged((bool)e.NewValue);
+        }
+
+        private void OnTrimChanged(bool newValue) {
+            if (newValue) {
+                TrimText();
+            }
+        }
+
+        private void TrimText() {
+            var text = Text;
+            if (text?.Length > 0 && (char.IsWhiteSpace(text[0]) || char.IsWhiteSpace(text[text.Length - 1]))) {
+                Text = text.Trim();
+            }
         }
 
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string),
@@ -72,15 +120,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (AcceptsReturn) {
                 switch (e.Key) {
                     case Key.Escape:
-                        if (FocusAdvancement.RemoveFocus(this)) {
-                            e.Handled = true;
-                        }
+                        e.Handled = FocusAdvancement.RemoveFocus(this);
                         break;
 
                     case Key.Enter:
-                        if (FocusAdvancement.MoveFocus(this)) {
-                            e.Handled = true;
-                        }
+                        e.Handled = FocusAdvancement.MoveFocus(this);
                         break;
 
                     case Key.Up:
@@ -120,7 +164,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(MaximumProperty, value); }
         }
 
-        public static void SetTextBoxText(TextBox textBox, string text) {
+        internal static void SetTextBoxText(TextBox textBox, string text) {
             var selectionStart = textBox.SelectionStart;
             var selectionLength = textBox.SelectionLength;
             textBox.Text = text;
@@ -128,7 +172,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             textBox.SelectionLength = selectionLength;
         }
 
-        public static string ProcessText(SpecialMode mode, string text, double delta, double minValue, double maxValue) {
+        internal static string ProcessText(SpecialMode mode, string text, double delta, double minValue, double maxValue) {
             switch (mode) {
                 case SpecialMode.Number: {
                         double value;

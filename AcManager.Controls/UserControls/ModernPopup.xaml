@@ -8,8 +8,10 @@
         <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
         <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
         <Border Background="{DynamicResource PopupBackground}" Padding="{Binding Padding}">
-            <ContentPresenter Content="{Binding Content}" TextBlock.FontStyle="Normal" TextBlock.FontWeight="Normal"
-                    TextOptions.TextFormattingMode="{DynamicResource FormattingMode}" />
+            <AdornerDecorator>
+                <ContentPresenter Content="{Binding Content}" TextBlock.FontStyle="Normal" TextBlock.FontWeight="Normal"
+                        TextOptions.TextFormattingMode="{DynamicResource FormattingMode}" />
+            </AdornerDecorator>
         </Border>
         <Border BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" />
     </mui:Cell>

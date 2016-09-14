@@ -54,18 +54,32 @@
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <DockPanel MouseLeftButtonUp="OpponentSkin_OnMouseLeftButtonDown" Background="Transparent">
+                <DockPanel PreviewMouseLeftButtonDown="OpponentSkinCell_OnPreviewMouseLeftButtonDown" Background="Transparent">
+                    <DockPanel.InputBindings>
+                        <MouseBinding Command="{Binding RandomSkinCommand}" Gesture="MiddleClick" />
+                    </DockPanel.InputBindings>
                     <mui:BetterImage x:Name="Livery" Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" DockPanel.Dock="Left"
                             ClearOnChange="True" />
                     <Button x:Name="RandomButton" DockPanel.Dock="Right" Width="16" Height="16" Margin="4 0 0 0" VerticalAlignment="Center"
-                            RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding RandomSkinCommand}">
+                            RenderOptions.EdgeMode="Aliased" Padding="2" Command="{Binding RandomSkinCommand}" Visibility="Collapsed">
                         <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
                                 Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" VerticalAlignment="Center"
                                 HorizontalAlignment="Center" StrokeThickness="1" />
                     </Button>
-                    <TextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}" mui:WatermarkService.Watermark="Random" VerticalAlignment="Center" />
+                    <Button x:Name="SetButton" PreviewMouseLeftButtonUp="OpponentSkin_OnMouseLeftButtonDown" DockPanel.Dock="Right" Width="16" Height="16"
+                            Margin="4 0 0 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased" Padding="2" Visibility="Collapsed">
+                        <Border Width="9" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center" ClipToBounds="True">
+                            <Path Data="M4.4,0 L4.4,10 M0,4.4 L9,4.4 Z" Stretch="Fill"
+                                    Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1" />
+                        </Border>
+                    </Button>
+                    <mui:PlaceholderTextBlock x:Name="TextBox" Text="{Binding CarSkin.DisplayName}" Placeholder="Random" />
                 </DockPanel>
                 <DataTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="SetButton" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="RandomButton" Property="Visibility" Value="Visible" />
+                    </Trigger>
                     <DataTrigger Binding="{Binding CarSkin}" Value="{x:Null}">
                         <Setter TargetName="Livery" Property="Visibility" Value="Collapsed" />
                         <Setter TargetName="RandomButton" Property="Visibility" Value="Collapsed" />
@@ -77,12 +91,13 @@
             </DataTemplate>
 
             <DataTemplate x:Key="Detailed.NameDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-                <mui:BetterTextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Random"
-                        Style="{StaticResource Borderless.White}" />
+                <mui:Cell>
+                    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="Random"
+                            Style="{StaticResource Borderless.White}" />
+                </mui:Cell>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
-                        <Setter TargetName="TextBox" Property="mui:WatermarkService.Watermark"
-                                Value="{Binding PlayerName, Source={x:Static t:SettingsHolder.Drive}}" />
+                        <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerName, Source={x:Static t:SettingsHolder.Drive}}" />
                         <Setter TargetName="TextBox" Property="IsEnabled" Value="False" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
@@ -153,7 +168,7 @@
         </StackPanel>
     </mui:Cell>
 
-    <DockPanel Grid.Column="1" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+    <DockPanel Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
         <Grid DockPanel.Dock="Top" Margin="0 0 0 8">
             <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
             <mui:BbCodeBlock TextWrapping="Wrap" Margin="8">WIP, [url="https://trello.com/c/zILPYnYX/59-fully-customizable-race"]more information[/url].</mui:BbCodeBlock>
@@ -218,8 +233,8 @@
                         <RowDefinition Height="400" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.Row="0" ItemsSource="{Binding DataContext.NonfilteredList}" Style="{StaticResource DataGrid.Lite}"
-                            mui:Draggable.Enabled="True" Drop="ItemsControl_OnDrop">
+                    <DataGrid Grid.Row="0" ItemsSource="{Binding DataContext.FilteredView}" Style="{StaticResource DataGrid.Lite}" mui:Draggable.Enabled="True"
+                            Drop="ItemsControl_OnDrop" MinRowHeight="20">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width="*" Header="Car" SortMemberPath="Car" CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
                             <DataGridTemplateColumn Width="120" Header="Skin" SortMemberPath="CarSkin" CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
@@ -244,7 +259,7 @@
 
         <DockPanel DockPanel.Dock="Top" Margin="0 0 0 8" Visibility="{Binding Mode.Filterable, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="40" DockPanel.Dock="Left" />
-            <mui:HistoricalTextBox Style="{StaticResource ComboBoxAsTextBlock}" mui:WatermarkService.Watermark="*"
+            <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
                     Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" SaveKey="RaceGridEditorColumn:FiltersHistory" />
         </DockPanel>
 
@@ -314,7 +329,7 @@
                             <Setter Property="ItemTemplate">
                                 <Setter.Value>
                                     <DataTemplate DataType="{x:Type c:RaceGridEntry}">
-                                        <DockPanel x:Name="Panel" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                                        <DockPanel x:Name="Panel" mui:ContextMenuAdvancement.PropagateToChildren="True" Background="Transparent">
                                             <DockPanel.InputBindings>
                                                 <MouseBinding Command="{Binding DeleteCommand}" Gesture="MiddleClick" />
                                             </DockPanel.InputBindings>

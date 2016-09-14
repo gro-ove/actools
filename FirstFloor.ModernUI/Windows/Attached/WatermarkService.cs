@@ -12,7 +12,6 @@ namespace FirstFloor.ModernUI.Windows.Attached {
     // todo: replace by BetterTextBox
     [Obsolete]
     public static class WatermarkService {
-        [Obsolete]
         public static readonly DependencyProperty WatermarkProperty;
         private static readonly IDictionary<object, ItemsControl> ItemsControls = new Dictionary<object, ItemsControl>();
 
@@ -20,13 +19,11 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             WatermarkProperty = DependencyProperty.RegisterAttached("Watermark", typeof(object), typeof(WatermarkService), 
                 new FrameworkPropertyMetadata(null, OnWatermarkChanged));
         }
-
-        [Obsolete]
+        
         public static object GetWatermark(DependencyObject d) {
             return d.GetValue(WatermarkProperty);
         }
-
-        [Obsolete]
+        
         public static void SetWatermark(DependencyObject d, object value) {
             d.SetValue(WatermarkProperty, value);
         }

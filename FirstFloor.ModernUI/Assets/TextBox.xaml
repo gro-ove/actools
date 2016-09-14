@@ -4,14 +4,9 @@
         <ResourceDictionary Source="ContextMenu.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style x:Key="{x:Type TextBoxBase}" TargetType="{x:Type TextBoxBase}" BasedOn="{x:Null}">
-        <!--<Setter Property="attached:ContextMenuAdvancement.ContextMenu" Value="{StaticResource TextBoxContextMenu}" />-->
+    <Style x:Key="TextBoxBase.CommonBase" TargetType="{x:Type TextBoxBase}" BasedOn="{x:Null}">
         <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
-
         <Setter Property="CaretBrush" Value="{DynamicResource InputText}" />
-        <Setter Property="Foreground" Value="{DynamicResource InputText}" />
-        <Setter Property="Background" Value="{DynamicResource InputBackground}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="2 1 1 1" />
         <Setter Property="AllowDrop" Value="True" />
@@ -57,6 +52,11 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type TextBoxBase}" TargetType="{x:Type TextBoxBase}" BasedOn="{StaticResource TextBoxBase.CommonBase}">
+        <Setter Property="Background" Value="{DynamicResource InputBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource InputBorder}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBoxBase}">
@@ -91,8 +91,13 @@
         </Setter>
     </Style>
 
-    <Style BasedOn="{StaticResource {x:Type TextBoxBase}}" TargetType="{x:Type TextBox}" />
-    <Style BasedOn="{StaticResource {x:Type TextBoxBase}}" TargetType="{x:Type RichTextBox}" />
+    <Style BasedOn="{StaticResource {x:Type TextBoxBase}}" TargetType="{x:Type TextBox}">
+        <Setter Property="Foreground" Value="{DynamicResource InputText}" />
+    </Style>
+    
+    <Style BasedOn="{StaticResource {x:Type TextBoxBase}}" TargetType="{x:Type RichTextBox}">
+        <Setter Property="Foreground" Value="{DynamicResource InputText}" />
+    </Style>
 
     <!-- text-in-datagrid styles-->
     <Style x:Key="DataGridTextStyle" TargetType="TextBlock">

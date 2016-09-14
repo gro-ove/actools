@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -36,7 +35,7 @@ namespace AcManager.Controls.Dialogs {
 
                 element = passwordBox;
             } else if (suggestions != null) {
-                var comboBox = new ComboBox {
+                var comboBox = new BetterComboBox {
                     IsEditable = true,
                     IsTextSearchEnabled = true,
                     ItemsSource = suggestions.ToList()
@@ -55,9 +54,13 @@ namespace AcManager.Controls.Dialogs {
                     comboBox.Focus();
                 }
 
+                if (watermark != null) {
+                    comboBox.Placeholder = watermark;
+                }
+
                 element = comboBox;
             } else {
-                var textBox = new TextBox();
+                var textBox = new BetterTextBox();
                 textBox.SetBinding(TextBox.TextProperty, new Binding {
                     Source = DataContext,
                     Path = new PropertyPath(nameof(ViewModel.Text)),
@@ -75,15 +78,16 @@ namespace AcManager.Controls.Dialogs {
                     textBox.Width = 480;
                 }
 
+                if (watermark != null) {
+                    textBox.Placeholder = watermark;
+                }
+
                 textBox.Focus();
                 textBox.SelectAll();
-
                 element = textBox;
             }
 
             Panel.Children.Add(element);
-            element.SetValue(FocusAdvancement.AdvancesByEnterKeyProperty, true);
-            if (watermark != null) element.SetValue(WatermarkService.WatermarkProperty, watermark);
             if (toolTip != null) element.SetValue(ToolTipProperty, toolTip);
 
             Closing += (sender, args) => {

@@ -1,10 +1,12 @@
+using System;
 using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public enum AdornerPlacement {
@@ -15,29 +17,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public class FrameworkElementAdorner : Adorner {
         // The framework element that is the adorner. 
         private readonly FrameworkElement _child;
-        
+
         // Placement of the child.
         private readonly AdornerPlacement _horizontalAdornerPlacement = AdornerPlacement.Inside;
         private readonly AdornerPlacement _verticalAdornerPlacement = AdornerPlacement.Inside;
-        
+
         // Offset of the child.
         private readonly double _offsetX;
         private readonly double _offsetY;
-        
+
         // Position of the child (when not set to NaN).
 
-        public FrameworkElementAdorner(FrameworkElement adornerChildElement, FrameworkElement adornedElement)
-                : base(adornedElement) {
+        public FrameworkElementAdorner(FrameworkElement adornerChildElement, UIElement adornedElement) : base(adornedElement) {
             _child = adornerChildElement;
 
             AddLogicalChild(adornerChildElement);
             AddVisualChild(adornerChildElement);
         }
 
-        public FrameworkElementAdorner(FrameworkElement adornerChildElement, FrameworkElement adornedElement,
-                AdornerPlacement horizontalAdornerPlacement, AdornerPlacement verticalAdornerPlacement,
-                double offsetX, double offsetY)
-                : base(adornedElement) {
+        public FrameworkElementAdorner(FrameworkElement adornerChildElement, FrameworkElement adornedElement, AdornerPlacement horizontalAdornerPlacement,
+                AdornerPlacement verticalAdornerPlacement, double offsetX, double offsetY) : base(adornedElement) {
             _child = adornerChildElement;
             _horizontalAdornerPlacement = horizontalAdornerPlacement;
             _verticalAdornerPlacement = verticalAdornerPlacement;
@@ -56,7 +55,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void adornedElement_SizeChanged(object sender, SizeChangedEventArgs e) {
             InvalidateMeasure();
         }
-        
+
         // Position of the child (when not set to NaN).
         public double PositionX { get; set; } = double.NaN;
 
@@ -72,13 +71,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         private double DetermineX() {
             switch (_child.HorizontalAlignment) {
-                case HorizontalAlignment.Left: {
+                case HorizontalAlignment.Left:
                     if (_horizontalAdornerPlacement == AdornerPlacement.Outside) {
                         return -_child.DesiredSize.Width + _offsetX;
                     }
                     return _offsetX;
-                }
-                case HorizontalAlignment.Right: {
+                case HorizontalAlignment.Right:
                     if (_horizontalAdornerPlacement == AdornerPlacement.Outside) {
                         var adornedWidth = AdornedElement.ActualWidth;
                         return adornedWidth + _offsetX;
@@ -88,16 +86,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         var x = adornedWidth - adornerWidth;
                         return x + _offsetX;
                     }
-                }
                 case HorizontalAlignment.Center: {
                     var adornerWidth = _child.DesiredSize.Width;
                     var adornedWidth = AdornedElement.ActualWidth;
-                    var x = (adornedWidth / 2) - (adornerWidth / 2);
+                    var x = adornedWidth / 2 - adornerWidth / 2;
                     return x + _offsetX;
                 }
-                case HorizontalAlignment.Stretch: {
+                case HorizontalAlignment.Stretch:
                     return 0.0;
-                }
             }
 
             return 0.0;
@@ -124,11 +120,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         return x + _offsetY;
                     }
                 case VerticalAlignment.Center: {
-                    var adornerHeight = _child.DesiredSize.Height;
-                    var adornedHeight = AdornedElement.ActualHeight;
-                    var x = (adornedHeight / 2) - (adornerHeight / 2);
-                    return x + _offsetY;
-                }
+                        var adornerHeight = _child.DesiredSize.Height;
+                        var adornedHeight = AdornedElement.ActualHeight;
+                        var x = adornedHeight / 2 - adornerHeight / 2;
+                        return x + _offsetY;
+                    }
                 case VerticalAlignment.Stretch:
                     return 0d;
                 default:
@@ -210,27 +206,38 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public new FrameworkElement AdornedElement => (FrameworkElement)base.AdornedElement;
     }
-
-    [ContentProperty(nameof(AdornerContent))]
+    
     public class AdornedControl : ContentControl {
         #region Dependency Properties
-        public static readonly DependencyProperty IsAdornerVisibleProperty = DependencyProperty.Register("IsAdornerVisible", typeof(bool), typeof(AdornedControl), new FrameworkPropertyMetadata(IsAdornerVisible_PropertyChanged));
+        public static readonly DependencyProperty IsAdornerVisibleProperty = DependencyProperty.Register(nameof(IsAdornerVisible), typeof(bool),
+                typeof(AdornedControl), new FrameworkPropertyMetadata(IsAdornerVisible_PropertyChanged));
 
-        public static readonly DependencyProperty AdornerContentProperty = DependencyProperty.Register("AdornerContent", typeof(FrameworkElement), typeof(AdornedControl), new FrameworkPropertyMetadata(AdornerContent_PropertyChanged));
+        public static readonly DependencyProperty AdornerContentProperty = DependencyProperty.Register(nameof(AdornerContent), typeof(FrameworkElement),
+                typeof(AdornedControl), new FrameworkPropertyMetadata(AdornerContent_PropertyChanged));
 
-        public static readonly DependencyProperty HorizontalAdornerPlacementProperty = DependencyProperty.Register("HorizontalAdornerPlacement", typeof(AdornerPlacement), typeof(AdornedControl), new FrameworkPropertyMetadata(AdornerPlacement.Inside));
+        public static readonly DependencyProperty HorizontalAdornerPlacementProperty = DependencyProperty.Register(nameof(HorizontalAdornerPlacement),
+                typeof(AdornerPlacement), typeof(AdornedControl), new FrameworkPropertyMetadata(AdornerPlacement.Inside));
 
-        public static readonly DependencyProperty VerticalAdornerPlacementProperty = DependencyProperty.Register("VerticalAdornerPlacement", typeof(AdornerPlacement), typeof(AdornedControl), new FrameworkPropertyMetadata(AdornerPlacement.Inside));
+        public static readonly DependencyProperty VerticalAdornerPlacementProperty = DependencyProperty.Register(nameof(VerticalAdornerPlacement),
+                typeof(AdornerPlacement), typeof(AdornedControl), new FrameworkPropertyMetadata(AdornerPlacement.Inside));
 
-        public static readonly DependencyProperty AdornerOffsetXProperty = DependencyProperty.Register("AdornerOffsetX", typeof(double), typeof(AdornedControl));
+        public static readonly DependencyProperty AdornerOffsetXProperty = DependencyProperty.Register(nameof(AdornerOffsetX), typeof(double),
+                typeof(AdornedControl));
 
-        public static readonly DependencyProperty AdornerOffsetYProperty = DependencyProperty.Register("AdornerOffsetY", typeof(double), typeof(AdornedControl));
+        public static readonly DependencyProperty AdornerOffsetYProperty = DependencyProperty.Register(nameof(AdornerOffsetY), typeof(double),
+                typeof(AdornedControl));
+
+        public static readonly DependencyProperty OrderProperty = DependencyProperty.Register(nameof(Order), typeof(int),
+                typeof(AdornedControl), new PropertyMetadata(OnOrderChanged));
+
+        public static readonly DependencyProperty AvoidUsingScrollContentPresenterProperty =
+                DependencyProperty.Register(nameof(AvoidUsingScrollContentPresenter), typeof(bool), typeof(AdornedControl), new FrameworkPropertyMetadata(true));
         #endregion Dependency Properties
 
         #region Commands
-        public static readonly RoutedCommand ShowAdornerCommand = new RoutedCommand("ShowAdorner", typeof(AdornedControl));
+        public static readonly RoutedCommand ShowAdornerCommand = new RoutedCommand(nameof(ShowAdorner), typeof(AdornedControl));
 
-        public static readonly RoutedCommand HideAdornerCommand = new RoutedCommand("HideAdorner", typeof(AdornedControl));
+        public static readonly RoutedCommand HideAdornerCommand = new RoutedCommand(nameof(HideAdorner), typeof(AdornedControl));
         #endregion Commands
 
         public AdornedControl() {
@@ -317,6 +324,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set { SetValue(AdornerOffsetYProperty, value); }
         }
 
+        /// <summary>
+        /// Skip ScrollContentPresenter and connect only to AdornerDecorator.
+        /// </summary>
+        public bool AvoidUsingScrollContentPresenter {
+            get { return (bool)GetValue(AvoidUsingScrollContentPresenterProperty); }
+            set { SetValue(AvoidUsingScrollContentPresenterProperty, value); }
+        }
+
+        /// <summary>
+        /// Adorner’s order.
+        /// </summary>
+        public int Order {
+            get { return (int)GetValue(OrderProperty); }
+            set { SetValue(OrderProperty, value); }
+        }
+
         #region Private Data Members
         private static readonly CommandBinding ShowAdornerCommandBinding = new CommandBinding(ShowAdornerCommand, ShowAdornerCommand_Executed);
 
@@ -371,6 +394,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         /// <summary>
+        /// Event raised when the value of Order has changed.
+        /// </summary>
+        private static void OnOrderChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((AdornedControl)o).UpdateOrder();
+        }
+
+        /// <summary>
         /// Internal method to show or hide the adorner based on the value of IsAdornerVisible.
         /// </summary>
         private void ShowOrHideAdornerInternal() {
@@ -379,6 +409,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } else {
                 HideAdornerInternal();
             }
+        }
+
+        public static AdornerLayer GetAdornerLayer(Visual visual) {
+            if (visual == null) throw new ArgumentNullException(nameof(visual));
+            return visual.GetParent<AdornerDecorator>()?.AdornerLayer;
         }
 
         /// <summary>
@@ -390,7 +425,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (AdornerContent != null) {
                 if (_adornerLayer == null) {
-                    _adornerLayer = AdornerLayer.GetAdornerLayer(this);
+                    _adornerLayer = AvoidUsingScrollContentPresenter ? GetAdornerLayer(this) : AdornerLayer.GetAdornerLayer(this);
                 }
 
                 if (_adornerLayer != null) {
@@ -399,6 +434,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     UpdateAdornerDataContext();
                 }
+
+                UpdateOrder();
             }
         }
 
@@ -408,7 +445,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void HideAdornerInternal() {
             // Not already adorned.
             if (_adornerLayer == null || _adorner == null) return;
-            
+
             _adornerLayer.Remove(_adorner);
             _adorner.DisconnectChild();
 
@@ -419,6 +456,27 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public override void OnApplyTemplate() {
             base.OnApplyTemplate();
             ShowOrHideAdornerInternal();
+        }
+
+        /// <summary>
+        /// Used to avoid logs flooding.
+        /// </summary>
+        private static bool _reported;
+
+        /// <summary>
+        /// Update adorner’s order.
+        /// </summary>
+        private void UpdateOrder() {
+            if (_adornerLayer == null || _adorner == null) return;
+            try {
+                _adornerLayer.GetType().GetMethod("SetAdornerZOrder", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                             .Invoke(_adornerLayer, new object[] { _adorner, Order });
+            } catch (Exception e) {
+                if (!_reported) {
+                    Logging.Error(e);
+                    _reported = true;
+                }
+            }
         }
         #endregion
     }

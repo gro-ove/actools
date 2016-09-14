@@ -3,7 +3,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class HistoricalTextBox : BetterComboBox {
@@ -18,6 +20,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             AddHandler(TextBoxBase.TextChangedEvent, new RoutedEventHandler(OnTextChanged));
             ItemsSource = _filtersHistory;
         }
+
+        protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
+            Text = e.AddedItems.Count == 0 ? "" : e.AddedItems[0]?.ToString() ?? "";
+        }
+
+        private ICommand _deleteCommand;
+
+        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new ProperCommand(o => {
+            if (_filtersHistory.Remove(o as string)) {
+                var saveKey = SaveKey;
+                if (saveKey != null) {
+                    ValuesStorage.Set(saveKey, _filtersHistory);
+                }
+            }
+        }));
 
         private void OnTextChanged(object sender, RoutedEventArgs e) {
             if (!_initialized) {

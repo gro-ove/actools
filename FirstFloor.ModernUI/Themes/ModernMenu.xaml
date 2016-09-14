@@ -6,6 +6,7 @@
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="ModernSubMenuItemBase" TargetType="ListBoxItem">
@@ -17,6 +18,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Height" Value="20" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource SubMenuTextHover}" />
@@ -42,7 +44,7 @@
                 <ControlTemplate TargetType="ListBoxItem">
                     <c:Cell SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" MinWidth="20" d:DataContext="{d:DesignInstance pr:Link}">
                         <TextBlock x:Name="NameTextBox" Text="{Binding DisplayName, Converter={StaticResource ToUpperSpecialConverter}}" TextAlignment="Center"
-                                attached:FocusAdvancement.AdvancesByEnterKey="True" Margin="2" />
+                                Margin="2" />
                         <TextBlock Text="{Binding DisplayName, Converter={StaticResource ToUpperConverter}}" FontWeight="Bold" Visibility="Hidden" Margin="2" />
                         <Ellipse Width="4" Height="4" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0 -6 -1 0"
                                 IsHitTestVisible="False" Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -57,8 +59,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
                     <c:Cell MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInputEmpty}">
-                        <TextBox x:Name="NameTextBox" Style="{StaticResource TextBoxAsTextBlock.Padding}" Text="{Binding DisplayName}" TextAlignment="Center"
-                                attached:FocusAdvancement.AdvancesByEnterKey="True" Margin="0" Foreground="{TemplateBinding Foreground}" />
+                        <c:BetterTextBox x:Name="NameTextBox" Style="{StaticResource Borderless}" Text="{Binding DisplayName}" TextAlignment="Center" Margin="2"
+                                Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" />
                         <Path x:Name="Icon" Width="12" Height="12" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
                                 Data="F1 M 42.5,22C 49.4036,22 55,27.5964 55,34.5C 55,41.4036 49.4036,47 42.5,47C 40.1356,47 37.9245,46.3435 36,45.2426L 26.9749,54.2678C 25.8033,55.4393 23.9038,55.4393 22.7322,54.2678C 21.5607,53.0962 21.5607,51.1967 22.7322,50.0251L 31.7971,40.961C 30.6565,39.0755 30,36.8644 30,34.5C 30,27.5964 35.5964,22 42.5,22 Z M 42.5,26C 37.8056,26 34,29.8056 34,34.5C 34,39.1944 37.8056,43 42.5,43C 47.1944,43 51,39.1944 51,34.5C 51,29.8056 47.1944,26 42.5,26 Z"
                                 Fill="{TemplateBinding Foreground}" IsHitTestVisible="False" />
@@ -77,21 +79,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Grid MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInput}" Background="Transparent">
-                        <Grid.InputBindings>
+                    <DockPanel MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInput}" Background="Transparent">
+                        <DockPanel.InputBindings>
                             <MouseBinding Command="{Binding CloseCommand}" Gesture="MiddleClick" />
-                        </Grid.InputBindings>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                        </DockPanel.InputBindings>
 
-                        <TextBox Grid.Column="0" x:Name="NameTextBox" IsEnabled="False" Style="{StaticResource TextBoxAsTextBlock.Padding}"
-                                Text="{Binding DisplayName}" TextAlignment="Center" attached:FocusAdvancement.AdvancesByEnterKey="True" Margin="0"
-                                Foreground="{TemplateBinding Foreground}" />
-                        <TextBlock Grid.Column="0" Text="{Binding DisplayName}" FontWeight="Bold" Visibility="Hidden" Margin="2" />
-
-                        <Button Focusable="False" x:Name="CloseButton" Grid.Column="1" Margin="0 0 -4 0" Command="{Binding CloseCommand}">
+                        <Button Focusable="False" x:Name="CloseButton" DockPanel.Dock="Right" Margin="0 0 -4 0" Command="{Binding CloseCommand}">
                             <Border Background="Transparent">
                                 <Path Data="M0,0 L5,5 M5,0 L0,5 Z" Width="6" Height="6" Margin="4 0" VerticalAlignment="Center" HorizontalAlignment="Center"
                                         Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
@@ -118,7 +111,13 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                    </Grid>
+
+                        <c:Cell>
+                            <c:BetterTextBox x:Name="NameTextBox" IsEnabled="False" Style="{StaticResource Borderless}" Text="{Binding DisplayName}"
+                                    HorizontalAlignment="Center" Margin="2" Foreground="{TemplateBinding Foreground}" />
+                            <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" Visibility="Hidden" Margin="2" />
+                        </c:Cell>
+                    </DockPanel>
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">

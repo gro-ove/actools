@@ -3,6 +3,7 @@
     <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="MinHeight" Value="40" />
         <Setter Property="Foreground" Value="{DynamicResource ScrollBarThumb}" />
         <Setter Property="Template">
             <Setter.Value>

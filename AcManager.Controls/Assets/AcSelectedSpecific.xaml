@@ -3,6 +3,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ComboBox.xaml" />
         <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -12,9 +13,12 @@
 
         <Style.Resources>
             <Style TargetType="{x:Type DockPanel}">
+                <Setter Property="Height" Value="20" />
                 <Style.Resources>
                     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource LabelWithPadding}">
+                        <Setter Property="VerticalAlignment" Value="Bottom" />
                         <Setter Property="Width" Value="80" />
+                        <Setter Property="Margin" Value="0 0 0 1" />
                         <Setter Property="DockPanel.Dock" Value="Left" />
                     </Style>
 
@@ -33,6 +37,18 @@
                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxAsTextBlock}">
                         <Setter Property="attached:FocusAdvancement.AdvancesByEnterKey" Value="True" />
                         <Setter Property="attached:WatermarkService.Watermark" Value="?" />
+                    </Style>
+
+                    <Style TargetType="{x:Type mui:BetterComboBox}" BasedOn="{StaticResource BetterComboBox.Borderless}">
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Placeholder" Value="?" />
+                    </Style>
+
+                    <Style TargetType="{x:Type mui:BetterTextBox}" BasedOn="{StaticResource Borderless}">
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Placeholder" Value="?" />
                     </Style>
                 </Style.Resources>
             </Style>

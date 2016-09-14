@@ -286,6 +286,10 @@ namespace AcManager.Pages.Windows {
             FancyBackgroundManager.Instance.AddListener(this);
             AboutHelper.Instance.PropertyChanged += About_PropertyChanged;
             UpdateAboutIsNew();
+            
+            // MediaElement.Source = new Uri(@"C:\Users\Carrot\Desktop\Temp\1\rain.wmv", UriKind.RelativeOrAbsolute);
+            // VideoElement.Static = @"https://storage.ape.yandex.net/get/TableauBackgrounds/2319aea3fe3682d8f887bfc5f0cfd9e4.jpg";
+            // VideoElement.Source = @"https://storage.ape.yandex.net/get/TableauBackgrounds/c106cc40bb124e3530fdc3c61e220b3d.webm";
         }
 
         private void UpdateAboutIsNew() {

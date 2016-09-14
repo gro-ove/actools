@@ -121,6 +121,8 @@ namespace AcTools.Render.Kn5Specific.Utils {
                         var b = bytes;
                         bytes = await Task.Run(() => ImageUtils.LoadAsConventionalBuffer(b));
                     }
+
+                    break;
                 } catch (Exception e) {
                     Logging.Warning("UpdateOverrideLater(): " + e);
                 }

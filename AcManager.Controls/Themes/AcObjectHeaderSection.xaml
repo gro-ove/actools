@@ -9,9 +9,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ac:AcObjectHeaderSection">
-                    <TextBox x:Name="DisplayName" Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
-                            mui:FocusAdvancement.AdvancesByEnterKey="True" Style="{StaticResource TextBoxAsTextBlock.Heading2}"
-                            FontStyle="{Binding AcObject.Changed, Converter={StaticResource BooleanToFontStyleConverter}, RelativeSource={RelativeSource TemplatedParent}}" />
+                    <mui:BetterTextBox Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
+                            FontStyle="{Binding AcObject.Changed, Converter={StaticResource BooleanToFontStyleConverter}, RelativeSource={RelativeSource TemplatedParent}}"
+                            Style="{StaticResource Borderless.Heading2}" Placeholder="Name" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -21,13 +21,11 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="ac:AcObjectHeaderSection">
                             <StackPanel Orientation="Horizontal">
-                                <Border x:Name="PART_IconImage" Width="24" Height="24" Margin="0 0 4 0" Background="Transparent">
-                                    <Image RenderOptions.BitmapScalingMode="HighQuality"
-                                            Source="{Binding IconSource, RelativeSource={RelativeSource TemplatedParent}}" />
-                                </Border>
-                                <TextBox Style="{StaticResource TextBoxAsTextBlock.Heading2}" Padding="1 0 1 0" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                        Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
-                                        FontStyle="{Binding AcObject.Changed, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToFontStyleConverter}}" />
+                                <mui:BetterImage x:Name="PART_IconImage" RenderOptions.BitmapScalingMode="HighQuality" Width="24" Height="24" Margin="0 0 4 0"
+                                        Source="{Binding IconSource, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <mui:BetterTextBox Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
+                                        FontStyle="{Binding AcObject.Changed, Converter={StaticResource BooleanToFontStyleConverter}, RelativeSource={RelativeSource TemplatedParent}}"
+                                        Style="{StaticResource Borderless.Heading2}" Placeholder="Name" />
                             </StackPanel>
                         </ControlTemplate>
                     </Setter.Value>
@@ -44,9 +42,9 @@
                             <StackPanel Orientation="Horizontal">
                                 <mui:BetterImage x:Name="PART_IconImage" RenderOptions.BitmapScalingMode="HighQuality" Width="24" Height="24" Margin="0 0 4 0"
                                         Filename="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <TextBox Style="{StaticResource TextBoxAsTextBlock.Heading2}" Padding="1 0 1 0" mui:FocusAdvancement.AdvancesByEnterKey="True"
-                                        Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
-                                        FontStyle="{Binding AcObject.Changed, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToFontStyleConverter}}" />
+                                <mui:BetterTextBox Text="{Binding AcObject.NameEditable, RelativeSource={RelativeSource TemplatedParent}}"
+                                        FontStyle="{Binding AcObject.Changed, Converter={StaticResource BooleanToFontStyleConverter}, RelativeSource={RelativeSource TemplatedParent}}"
+                                        Style="{StaticResource Borderless.Heading2}" Placeholder="Name" />
                             </StackPanel>
                         </ControlTemplate>
                     </Setter.Value>
