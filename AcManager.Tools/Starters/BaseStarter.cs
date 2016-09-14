@@ -17,7 +17,7 @@ namespace AcManager.Tools.Starters {
 
         protected Process LauncherProcess, GameProcess;
 
-        protected string AcsName => Use32Version ? "acs_x86.exe" : "acs.exe";
+        protected virtual string AcsName => Use32Version ? "acs_x86.exe" : "acs.exe";
 
         protected string AcsFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, AcsName);
         

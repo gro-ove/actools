@@ -61,7 +61,7 @@ namespace AcManager.Controls.ViewModels {
             _saveable.FromSerializedString(data);
         }
 
-        public class SaveableData {
+        public class SaveableData : IStringSerializable {
             public string ModeId;
             public string FilterValue;
 
@@ -79,10 +79,52 @@ namespace AcManager.Controls.ViewModels {
 
             public bool? AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse;
             public int? AiLevel, AiLevelMin, OpponentsNumber, StartingPosition;
+
+            string IStringSerializable.Serialize() {
+                var s = new StringWriter();
+                var w = new JsonTextWriter(s);
+                
+                w.WriteStartObject();
+                w.Write("ModeId", ModeId);
+                w.Write("FilterValue", FilterValue);
+
+                w.Write("CarIds", CarIds);
+                w.Write("CandidatePriorities", CandidatePriorities);
+                w.Write("AiLevels", AiLevels);
+
+                w.Write("Names", Names);
+                w.Write("Nationalities", Nationalities);
+                w.Write("SkinIds", SkinIds);
+
+                w.Write("AiLevelFixed", AiLevelFixed);
+                w.Write("AiLevelArrangeRandomly", AiLevelArrangeRandomly);
+                w.Write("AiLevelArrangeReverse", AiLevelArrangeReverse);
+                w.Write("AiLevel", AiLevel);
+                w.Write("AiLevelMin", AiLevelMin);
+                w.Write("OpponentsNumber", OpponentsNumber);
+                w.Write("StartingPosition", StartingPosition);
+                w.WriteEndObject();
+
+                return s.ToString();
+            }
         }
         #endregion
 
-        public RaceGridViewModel() {
+        private bool _ignoreStartingPosition;
+
+        public bool IgnoreStartingPosition {
+            get { return _ignoreStartingPosition; }
+            set {
+                if (Equals(value, _ignoreStartingPosition)) return;
+                _ignoreStartingPosition = value;
+                OnPropertyChanged();
+                UpdatePlayerEntry();
+            }
+        }
+
+        public RaceGridViewModel(bool ignoreStartingPosition = false) {
+            IgnoreStartingPosition = ignoreStartingPosition;
+
             _saveable = new SaveHelper<SaveableData>(KeySaveable, () => {
                 var data = new SaveableData {
                     ModeId = Mode.Id,
@@ -139,6 +181,8 @@ namespace AcManager.Controls.ViewModels {
                 AiLevelMin = data.AiLevelMin ?? 85;
 
                 FilterValue = data.FilterValue;
+                ErrorMessage = null;
+
                 var mode = Modes.HierarchicalGetByIdOrDefault<IRaceGridMode>(data.ModeId);
                 if (mode == null) {
                     NonfatalError.NotifyBackground("Racing grid mode is missing", $"Can’t find racing grid mode with ID “{data.ModeId}”");
@@ -168,11 +212,6 @@ namespace AcManager.Controls.ViewModels {
                     }
 
                     SetOpponentsNumberInternal(data.OpponentsNumber ?? 7);
-                    UpdateViewFilter();
-
-                    if (Mode != BuiltInGridMode.CandidatesManual && Mode != BuiltInGridMode.SameCar) {
-                        RebuildGridAsync().Forget();
-                    }
                 } else {
                     NonfilteredList.ReplaceEverythingBy(data.CarIds?.Select(x => CarsManager.Instance.GetById(x)).Select((x, i) => {
                         if (x == null) return null;
@@ -187,24 +226,13 @@ namespace AcManager.Controls.ViewModels {
                             CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
                         };
                     }).NonNull() ?? new RaceGridEntry[0]);
-                    SetOpponentsNumberInternal(NonfilteredList.Count);
-                    UpdateOpponentsNumber();
                 }
 
+                Logging.Error(data.StartingPosition);
                 StartingPosition = data.StartingPosition ?? 7;
-                UpdatePlayerEntry();
-            }, () => {
-                AiLevelFixed = false;
-                AiLevelArrangeRandomly = false;
-                AiLevelArrangeReverse = false;
-                AiLevel = 95;
-                AiLevelMin = 85;
-
-                FilterValue = "";
-                Mode = BuiltInGridMode.SameCar;
-                SetOpponentsNumberInternal(7);
-                StartingPosition = 7;
-            });
+                FinishLoading();
+                Logging.Error(data.StartingPosition);
+            }, Reset);
 
             _presetsHelper = new PresetsMenuHelper();
 
@@ -223,8 +251,37 @@ namespace AcManager.Controls.ViewModels {
             NonfilteredList.CollectionChanged += OnCollectionChanged;
             FilteredView = new BetterListCollectionView(NonfilteredList) { CustomSort = this };
 
-            _saveable.Initialize();
+            // _saveable.Initialize();
             FilesStorage.Instance.Watcher(ContentCategory.GridTypes).Update += OnGridTypesUpdate;
+        }
+
+        public void FinishLoading() {
+            if (Mode.CandidatesMode) {
+                UpdateViewFilter();
+
+                if (Mode != BuiltInGridMode.CandidatesManual && Mode != BuiltInGridMode.SameCar) {
+                    RebuildGridAsync().Forget();
+                }
+            } else {
+                SetOpponentsNumberInternal(NonfilteredList.Count);
+                UpdateOpponentsNumber();
+            }
+            
+            UpdatePlayerEntry();
+        }
+
+        public void Reset() {
+            AiLevelFixed = false;
+            AiLevelArrangeRandomly = false;
+            AiLevelArrangeReverse = false;
+            AiLevel = 95;
+            AiLevelMin = 85;
+
+            FilterValue = "";
+            ErrorMessage = null;
+            Mode = BuiltInGridMode.SameCar;
+            SetOpponentsNumberInternal(7);
+            StartingPosition = 7;
         }
 
         #region FS watching
@@ -233,7 +290,6 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public void Dispose() {
-            Logging.Debug("Dispose()");
             FilesStorage.Instance.Watcher(ContentCategory.GridTypes).Update -= OnGridTypesUpdate;
             _presetsHelper.Dispose();
         }
@@ -266,7 +322,7 @@ namespace AcManager.Controls.ViewModels {
             UserPresetsControl.LoadPreset(PresetableKeyValue, presetFilename);
         }
 
-        public static void LoadSerializedPreset(string serializedPreset) {
+        public static void LoadSerializedPreset([NotNull] string serializedPreset) {
             if (!UserPresetsControl.LoadSerializedPreset(PresetableKeyValue, serializedPreset)) {
                 ValuesStorage.Set(KeySaveable, serializedPreset);
             }
@@ -325,6 +381,12 @@ namespace AcManager.Controls.ViewModels {
         }
         #endregion
 
+        #region External loading (for compatibility)
+        protected bool InnerIsLoading => ExternalIsLoading || _saveable.IsLoading;
+
+        public bool ExternalIsLoading { private get; set; }
+        #endregion
+
         #region Active mode
         private IRaceGridMode _mode;
         private bool _modeKeepOrder;
@@ -340,8 +402,9 @@ namespace AcManager.Controls.ViewModels {
                 OnPropertyChanged();
                 SaveLater();
 
+                ErrorMessage = null;
                 FilteredView.CustomSort = value.CandidatesMode ? this : null;
-                if (_saveable.IsLoading) return;
+                if (InnerIsLoading) return;
                 
                 if (value == BuiltInGridMode.SameCar) {
                     NonfilteredList.ReplaceEverythingBy(_playerCar == null ? new RaceGridEntry[0] : new[] { new RaceGridEntry(_playerCar) });
@@ -370,7 +433,7 @@ namespace AcManager.Controls.ViewModels {
                     _playerEntry = null;
                 }
 
-                if (Mode != BuiltInGridMode.Custom) return;
+                if (Mode != BuiltInGridMode.Custom || IgnoreStartingPosition) return;
                 _playerEntry = _playerCar == null ? null : new RaceGridPlayerEntry(_playerCar);
             }
 
@@ -497,24 +560,50 @@ namespace AcManager.Controls.ViewModels {
         }
 
         private async Task RebuildGridAsyncInner() {
-            Logging.Debug("RebuildGridAsync(): start");
             try {
-                var mode = Mode;
                 await Task.Delay(50);
 
                 OnPropertyChanged(nameof(IsBusy));
+                ErrorMessage = null;
 
-                var candidates = await FindCandidates();
-                if (candidates == null || mode != Mode) return;
+                while (true) {
+                    var mode = Mode;
+                    var candidates = await FindCandidates();
+                    if (mode != Mode) continue;
+                    if (candidates == null) {
+                        Logging.Warning("candidates=null");
+                        return;
+                    }
 
-                NonfilteredList.ReplaceEverythingBy(candidates);
-                Logging.Debug("RebuildGridAsync(): list updated");
+                    Logging.Debug(candidates.JoinToString(", "));
+                    NonfilteredList.ReplaceEverythingBy(candidates);
+                    break;
+                }
+            } catch (SyntaxErrorException e) {
+                ErrorMessage = "Syntax error: " + e.Message;
+                NonfatalError.Notify("Can’t update race grid", e);
+            } catch (ScriptRuntimeException e) {
+                ErrorMessage = e.Message;
+            } catch (InformativeException e) when (e.SolutionCommentary == null) {
+                ErrorMessage = e.Message;
             } catch (Exception e) {
+                ErrorMessage = e.Message;
                 NonfatalError.Notify("Can’t update race grid", e);
             } finally {
                 _rebuildingTask = null;
                 OnPropertyChanged(nameof(IsBusy));
                 Logging.Debug("RebuildGridAsync(): finished");
+            }
+        }
+
+        private string _errorMessage;
+
+        public string ErrorMessage {
+            get { return _errorMessage; }
+            set {
+                if (Equals(value, _errorMessage)) return;
+                _errorMessage = value;
+                OnPropertyChanged();
             }
         }
 
@@ -567,7 +656,7 @@ namespace AcManager.Controls.ViewModels {
 
                     if (!string.IsNullOrWhiteSpace(candidatesMode.Script)) {
                         var state = LuaHelper.GetExtended();
-                        if (state == null) throw new Exception("Can’t initialize Lua");
+                        if (state == null) throw new InformativeException("Can’t initialize Lua");
 
                         if (mode.AffectedByCar) {
                             state.Globals[@"selected"] = _playerCar;
@@ -577,11 +666,11 @@ namespace AcManager.Controls.ViewModels {
                             state.Globals[@"track"] = _track;
                         }
 
-                        var result = state.DoString(PrepareScript(candidatesMode.Script)); // TODO: errors handling
+                        var result = state.DoString(PrepareScript(candidatesMode.Script));
                         if (result.Type == DataType.Boolean && !result.Boolean) return new RaceGridEntry[0];
 
                         var fn = result.Function;
-                        if (fn == null) throw new InformativeException("AppStrings.Drive_InvalidScript", "Script should return filtering function");
+                        if (fn == null) throw new InformativeException("Script should return filtering function");
 
                         carsEnumerable = carsEnumerable.Where(x => fn.Call(x).Boolean);
                     }
@@ -613,7 +702,7 @@ namespace AcManager.Controls.ViewModels {
                 _filterValue = value;
                 OnPropertyChanged();
 
-                if (_saveable.IsLoading) return;
+                if (InnerIsLoading) return;
                 UpdateViewFilter();
                 SaveLater();
             }
@@ -814,7 +903,7 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private const string KeyAiLevelInDriverName = "QuickDrive_GridTest.AiLevelInDriverName";
+        private const string KeyAiLevelInDriverName = "RaceGrid.AiLevelInDriverName";
 
         private bool _aiLevelInDriverName = ValuesStorage.GetBool(KeyAiLevelInDriverName);
 
@@ -925,7 +1014,7 @@ namespace AcManager.Controls.ViewModels {
             OnPropertyChanged(nameof(OpponentsNumberLimited));
             OnPropertyChanged(nameof(StartingPositionLimit));
 
-            if (last || _startingPosition > StartingPositionLimit) {
+            if (last && StartingPositionLimit > 0 /*|| _startingPosition > StartingPositionLimit*/) {
                 StartingPositionLimited = StartingPositionLimit;
             } else {
                 OnPropertyChanged(nameof(StartingPositionLimited));
@@ -961,7 +1050,7 @@ namespace AcManager.Controls.ViewModels {
                 OnPropertyChanged(nameof(StartingPositionLimited));
                 SaveLater();
 
-                if (!_saveable.IsLoading) {
+                if (!InnerIsLoading) {
                     UpdatePlayerEntry();
                 }
             }
@@ -1048,8 +1137,6 @@ namespace AcManager.Controls.ViewModels {
             }
 
             return final.Take(OpponentsNumberLimited).Select((entry, i) => {
-                Logging.Debug("gen: " + entry.Name);
-
                 var level = entry.AiLevel ?? aiLevels?[i] ?? 100;
                 var name = entry.Name ?? nameNationalities?[i].Name ?? @"AI #" + i;
                 var nationality = entry.Nationality ?? nameNationalities?[i].Nationality ?? @"Italy";

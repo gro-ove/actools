@@ -21,8 +21,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             ItemsSource = _filtersHistory;
         }
 
+        protected override void OnDropDownOpened(EventArgs e) {
+            SelectedItem = null;
+            base.OnDropDownOpened(e);
+        }
+
         protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
-            Text = e.AddedItems.Count == 0 ? "" : e.AddedItems[0]?.ToString() ?? "";
+            if (e.AddedItems.Count > 0) {
+                Text = e.AddedItems[0]?.ToString() ?? "";
+            }
         }
 
         private ICommand _deleteCommand;

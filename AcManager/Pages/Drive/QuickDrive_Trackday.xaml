@@ -2,7 +2,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-        xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+        xmlns:t="http://acstuff.ru/app/tools"
+        xmlns:uc="clr-namespace:AcManager.UserControls"
+        mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance drive:QuickDrive_Weekend+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -33,91 +35,51 @@
             </Grid.RowDefinitions>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
-                <mui:ValueLabel Value="{Binding AiLevel}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
-                <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevel}" />
+                <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevel}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" />
+                <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevel}" />
             </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0"
-                    IsEnabled="{Binding AiLevelFixed, Converter={StaticResource InvertBooleanConverter}}">
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0" Background="Transparent"
+                    IsEnabled="{Binding RaceGridViewModel.AiLevelFixed, Converter={StaticResource InvertBooleanConverter}}">
                 <StackPanel.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeRandomly}" IsCheckable="True"
-                                IsChecked="{Binding AiLevelArrangeRandomly, Mode=TwoWay}" />
+                                IsChecked="{Binding RaceGridViewModel.AiLevelArrangeRandomly, Mode=TwoWay}" />
                         <MenuItem Header="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder}" IsCheckable="True"
-                                ToolTip="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder_Tooltip}" IsChecked="{Binding AiLevelArrangeReverse, Mode=TwoWay}" />
+                                ToolTip="{x:Static g:AppStrings.Drive_ArrangeInReverseOrder_Tooltip}"
+                                IsChecked="{Binding RaceGridViewModel.AiLevelArrangeReverse, Mode=TwoWay}" />
                         <Separator />
                         <MenuItem Header="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" IsCheckable="True"
-                                IsChecked="{Binding AiLevelInDriverName, Mode=TwoWay}" />
+                                IsChecked="{Binding RaceGridViewModel.AiLevelInDriverName, Mode=TwoWay}" />
                     </ContextMenu>
                 </StackPanel.ContextMenu>
-                <mui:ValueLabel Value="{Binding AiLevelMin}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrengthMin}" />
-                <Slider Minimum="{Binding AiLevelMinimumLimited}" Maximum="100" Value="{Binding AiLevelMin}" />
+                <mui:ValueLabel Value="{Binding RaceGridViewModel.AiLevelMin}" Postfix='%' Content="{x:Static g:AppStrings.Drive_OpponentsStrengthMin}" />
+                <Slider Minimum="{Binding RaceGridViewModel.AiLevelMinimumLimited}" Maximum="100" Value="{Binding RaceGridViewModel.AiLevelMin}" />
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">
-                <CheckBox Margin="8 8 0 0" IsChecked="{Binding AiLevelFixed}">
+                <CheckBox Margin="8 0 0 0" IsChecked="{Binding RaceGridViewModel.AiLevelFixed}">
                     <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
                 </CheckBox>
             </StackPanel>
 
             <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
                 <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static t:ToolsStrings.Drive_GridType}" Margin="0 0 0 4" />
-                <ComboBox Margin="4 0 4 0" ItemsSource="{Binding GridTypes}" SelectedItem="{Binding SelectedGridType}" DisplayMemberPath="DisplayName" />
+                <mui:HierarchicalComboBox Margin="4 0 4 0" ItemsSource="{Binding RaceGridViewModel.Modes}" SelectedItem="{Binding RaceGridViewModel.Mode}"
+                        FixedMode="False" PreviewProvider="{Binding}" />
             </StackPanel>
 
-            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
+            <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding RaceGridViewModel.Mode.CandidatesMode}">
                 <StackPanel.ToolTip>
-                    <ToolTip Content="{Binding TrackPitsNumber}" ContentStringFormat="{x:Static g:AppStrings.Drive_OpponentsMaximumLimitation_Tooltip}" />
+                    <ToolTip Content="{Binding RaceGridViewModel.TrackPitsNumber}"
+                            ContentStringFormat="{x:Static g:AppStrings.Drive_OpponentsMaximumLimitation_Tooltip}" />
                 </StackPanel.ToolTip>
-
-                <mui:ValueLabel Value="{Binding OpponentsNumber}"
-                        Postfix="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}">
-                </mui:ValueLabel>
-                <Slider Minimum="1" Maximum="{Binding OpponentsNumberLimit}" Value="{Binding OpponentsNumber}" />
-            </StackPanel>
-
-            <StackPanel Grid.Row="2" Grid.Column="1" Margin="{StaticResource ElementMargin}">
-                <TextBlock Style="{StaticResource LabelWithPadding}" Text="{x:Static g:AppStrings.Drive_JumpStartPenalty}" Margin="0 0 0 4" />
-                <ComboBox Margin="4 0 4 0" ItemsSource="{Binding JumpStartPenaltyTypes}" SelectedItem="{Binding JumpStartPenalty}"
-                        mui:ComboBoxAdvancement.DisplayConverter="{x:Static drive:QuickDrive_Race+ViewModel.JumpStartPenaltyTypeToStringConverter}" />
+                <mui:ValueLabel Value="{Binding RaceGridViewModel.OpponentsNumberLimited}"
+                        Postfix="{Binding RaceGridViewModel.OpponentsNumberLimited, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}" />
+                <Slider Minimum="1" Maximum="{Binding RaceGridViewModel.OpponentsNumberLimit}" Value="{Binding RaceGridViewModel.OpponentsNumberLimited}" />
             </StackPanel>
         </Grid>
 
-        <mui:ModernProgressRing Grid.Column="1" Margin="8" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center"
-                Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <DockPanel Grid.Column="1"
-                Visibility="{Binding OpponentsCarsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-            <TextBlock DockPanel.Dock="Top" Style="{StaticResource LabelWithPadding}" Margin="0 0 0 8"
-                    Text="{x:Static g:AppStrings.Drive_ListOfPossibleOpponentsLabel}"
-                    ToolTip="{Binding OpponentsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_ListOfPossibleOpponents_Tooltip}}" />
-
-            <TextBlock Style="{StaticResource Small}" Foreground="{DynamicResource Error}" Text="{Binding OpponentsCarsError}"
-                    Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-            <Grid Visibility="{Binding OpponentsCarsError, Converter={StaticResource NullToVisibilityConverter}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <DockPanel Margin="0 0 0 8" HorizontalAlignment="Stretch"
-                        Visibility="{Binding SelectedGridType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠same_car'}">
-                    <TextBlock Text="{x:Static c:ControlsStrings.Common_FilterLabel}" Width="60" DockPanel.Dock="Left" />
-                    <ComboBox Style="{StaticResource ComboBoxAsTextBlock}" mui:FocusAdvancement.AdvancesByEnterKey="True" mui:WatermarkService.Watermark="*"
-                            Text="{Binding OpponentsCarsFilter, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" IsTextSearchEnabled="True"
-                            ItemsSource="{Binding OpponentsCarsFilterHistory}" LostFocus="OpponentsCarsFilterTextBox_OnLostFocus" />
-                </DockPanel>
-
-                <ListBox x:Name="ListBox" ItemsSource="{Binding OpponentsCarsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
-                        VirtualizingPanel.ScrollUnit="Pixel" Grid.Row="1" SelectionMode="Extended" />
-
-                <StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0 0 4 0">
-                    <mui:ModernButton IconData="{StaticResource AddIconData}" Command="{Binding AddOpponentCarCommand}"
-                            ToolTip="{x:Static t:ToolsStrings.Drive_GridAdd_Tooltip}" />
-                    <mui:ModernButton IconData="{StaticResource RemoveIconData}" Command="{Binding RemoveOpponentCarCommand}"
-                            CommandParameter="{Binding ElementName=ListBox}" ToolTip="{x:Static t:ToolsStrings.Drive_GridRemove_Tooltip}" />
-                </StackPanel>
-            </Grid>
-        </DockPanel>
+        <uc:RaceGridEditorColumn Grid.Column="1" DataContext="{Binding RaceGridViewModel}" />
     </Grid>
 </UserControl>

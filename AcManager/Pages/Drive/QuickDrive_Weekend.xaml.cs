@@ -36,6 +36,8 @@ namespace AcManager.Pages.Drive {
         public ViewModel ActualModel => (ViewModel)DataContext;
 
         public class ViewModel : QuickDrive_Race.ViewModel {
+            protected override bool IgnoreStartingPosition => true;
+
             private int _practiceDuration;
 
             public int PracticeDuration {
@@ -65,6 +67,10 @@ namespace AcManager.Pages.Drive {
             private new class SaveableData : QuickDrive_Race.ViewModel.SaveableData {
                 public int? PracticeLength, QualificationLength;
             }
+            
+            protected new class OldSaveableData : QuickDrive_Race.ViewModel.OldSaveableData {
+                public int? PracticeLength, QualificationLength;
+            }
 
             protected override void Save(QuickDrive_Race.ViewModel.SaveableData result) {
                 base.Save(result);
@@ -82,6 +88,14 @@ namespace AcManager.Pages.Drive {
                 QualificationDuration = r.QualificationLength ?? 30;
             }
 
+            protected override void Load(QuickDrive_Race.ViewModel.OldSaveableData o) {
+                base.Load(o);
+
+                var r = (OldSaveableData)o;
+                PracticeDuration = r.PracticeLength ?? 15;
+                QualificationDuration = r.QualificationLength ?? 30;
+            }
+
             protected override void Reset() {
                 base.Reset();
                 PracticeDuration = 15;
@@ -94,14 +108,16 @@ namespace AcManager.Pages.Drive {
                     Save(r);
                     return r;
                 }, Load, Reset);
+                Saveable.RegisterUpgrade<OldSaveableData>(QuickDrive_Race.ViewModel.OldSaveableData.Test, Load);
             }
 
             protected override Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
                 return new Game.WeekendProperties {
-                    AiLevel = AiLevelFixed ? AiLevel : 100,
+                    AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,
                     Penalties = Penalties,
                     JumpStartPenalty = JumpStartPenalty,
-                    StartingPosition = StartingPosition == 0 ? MathUtils.Random(1, OpponentsNumber + 2) : StartingPosition,
+                    StartingPosition = RaceGridViewModel.StartingPosition == 0
+                            ? MathUtils.Random(1, RaceGridViewModel.OpponentsNumber + 2) : RaceGridViewModel.StartingPosition,
                     RaceLaps = LapsNumber,
                     BotCars = botCars,
                     PracticeDuration = PracticeDuration,
@@ -143,10 +159,6 @@ namespace AcManager.Pages.Drive {
                 if (value == null) return null;
                 return value as string == AppStrings.Drive_SkipSession ? 0 : value.AsInt();
             }
-        }
-
-        private void OpponentsCarsFilterTextBox_OnLostFocus(object sender, RoutedEventArgs e) {
-            ((ViewModel)Model).AddOpponentsCarsFilter();
         }
     }
 }

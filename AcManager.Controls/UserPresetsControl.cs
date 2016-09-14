@@ -69,7 +69,7 @@ namespace AcManager.Controls {
             return true;
         }
 
-        public static bool LoadSerializedPreset(string key, string serialized) {
+        public static bool LoadSerializedPreset([NotNull] string key, [NotNull] string serialized) {
             ValuesStorage.Remove("__userpresets_p_" + key);
             ValuesStorage.Set("__userpresets_c_" + key, false);
 
@@ -360,13 +360,13 @@ namespace AcManager.Controls {
 
         public override void OnApplyTemplate() {
             if (_comboBox != null) {
-                _comboBox.SelectionChanged -= ComboBox_SelectionChanged;
+                _comboBox.ItemSelected -= ComboBox_SelectionChanged;
                 _comboBox.PreviewProvider = null;
             }
 
             _comboBox = GetTemplateChild(@"PART_ComboBox") as HierarchicalComboBox;
             if (_comboBox != null) {
-                _comboBox.SelectionChanged += ComboBox_SelectionChanged;
+                _comboBox.ItemSelected += ComboBox_SelectionChanged;
                 _comboBox.PreviewProvider = this;
             }
 

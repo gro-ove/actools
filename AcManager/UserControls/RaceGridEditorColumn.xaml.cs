@@ -177,7 +177,7 @@ namespace AcManager.UserControls {
             }
         }
 
-        public static IValueConverter ModeToLabelConverter = new InnerModeToLabelConverter();
+        public static readonly IValueConverter ModeToLabelConverter = new InnerModeToLabelConverter();
 
         private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {}
 

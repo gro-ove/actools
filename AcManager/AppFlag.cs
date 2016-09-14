@@ -223,5 +223,10 @@ namespace AcManager {
         /// Example: --nfs-porsche-tribute.
         /// </summary>
         NfsPorscheTribute,
+
+        /// <summary>
+        /// Specific executable for SSE starter. Example: --sse-name=acs_x86_sse.exe.
+        /// </summary>
+        SseName
     }
 }

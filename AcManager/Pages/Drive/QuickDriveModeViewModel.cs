@@ -5,6 +5,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Drive {
     public abstract class QuickDriveModeViewModel : NotifyPropertyChanged {
@@ -33,7 +34,7 @@ namespace AcManager.Pages.Drive {
             return Saveable.ToSerializedString();
         }
 
-        public void FromSerializedString(string data) {
+        public void FromSerializedString([NotNull] string data) {
             Saveable.FromSerializedString(data);
         }
     }

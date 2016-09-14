@@ -26,6 +26,8 @@ using Newtonsoft.Json;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive : ILoadableContent {
+        public static bool OptionTestMode = false;
+
         public static double TimeMinimum { get; } = 8d * 60 * 60;
 
         public static double TimeMaximum { get; } = 18d * 60 * 60;
@@ -60,9 +62,9 @@ namespace AcManager.Pages.Drive {
             _selectNextCarSkinId = null;
             _selectNextTrack = null;
             
-            if (SettingsHolder.Common.UpdateToNontestedVersions || SettingsHolder.Common.DeveloperMode) {
+            if (OptionTestMode) {
                 ModeTab.Links.Add(new Link {
-                    DisplayName = "New Grids (Temporary)",
+                    DisplayName = "Test",
                     IsNew = true,
                     Source = new Uri("/Pages/Drive/QuickDrive_GridTest.xaml", UriKind.Relative)
                 });
@@ -330,7 +332,7 @@ namespace AcManager.Pages.Drive {
                 });
 
                 if (string.IsNullOrEmpty(serializedPreset)) {
-                    _saveable.Initialize();
+                    _saveable.LoadOrReset();
                 } else {
                     _saveable.Reset();
 

@@ -188,7 +188,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public HierarchicalItemsView([NotNull] HierarchicalComboBox parent, [CanBeNull] IList source, bool lazy = true)
-                : this(o => parent.SelectedItem = o, source, lazy) {
+                : this(parent.ItemChosen, source, lazy) {
             Parent = parent;
         }
 
@@ -354,6 +354,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public event EventHandler<SelectedItemChangedEventArgs> SelectionChanged;
 
+        public event EventHandler<SelectedItemChangedEventArgs> ItemSelected;
+
         public static readonly DependencyProperty SelectedContentProperty = DependencyProperty.Register(nameof(SelectedContent), typeof(object),
                 typeof(HierarchicalComboBox));
 
@@ -427,6 +429,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnSelectedItemChanged(object oldValue, object newValue) {
             SelectionChanged?.Invoke(this, new SelectedItemChangedEventArgs(oldValue, newValue));
+        }
+
+        internal void ItemChosen(object item) {
+            var oldValue = SelectedItem;
+            SelectedItem = item;
+            ItemSelected?.Invoke(this, new SelectedItemChangedEventArgs(oldValue, item));
         }
 
         public object SelectedItem {

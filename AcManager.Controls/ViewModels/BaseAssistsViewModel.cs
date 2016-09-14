@@ -6,6 +6,7 @@ using AcManager.Tools.Helpers;
 using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.ViewModels {
     /// <summary>
@@ -346,7 +347,7 @@ namespace AcManager.Controls.ViewModels {
         /// </summary>
         /// <param name="serializedData"></param>
         /// <returns></returns>
-        public static BaseAssistsViewModel CreateFixed(string serializedData) {
+        public static BaseAssistsViewModel CreateFixed([NotNull] string serializedData) {
             var result = new BaseAssistsViewModel(DefaultKey, true);
             result.Saveable.Reset();
             result.Saveable.FromSerializedString(serializedData);

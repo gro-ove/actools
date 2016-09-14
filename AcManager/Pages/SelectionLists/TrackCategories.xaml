@@ -4,7 +4,7 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:selectionLists="clr-namespace:AcManager.Pages.SelectionLists"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        d:DataContext="{d:DesignInstance l:TrackCategories+ViewModel}">
+        d:DataContext="{d:DesignInstance selectionLists:TrackCategories+ViewModel}">
     <ListBox ItemsSource="{Binding Categories}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True"
             VirtualizingPanel.VirtualizationMode="Recycling" x:Name="CategoriesListBox" PreviewKeyDown="CategoriesListBox_OnPreviewKeyDown">
         <ListBox.ItemsPanel>

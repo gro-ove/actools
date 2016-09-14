@@ -41,6 +41,8 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows.Controls;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using StringBasedFilter;
 
 namespace AcManager {
@@ -121,9 +123,20 @@ namespace AcManager {
                 }
             }
 
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings {
+                Formatting = Formatting.None,
+                NullValueHandling = NullValueHandling.Ignore,
+                Culture = CultureInfo.InvariantCulture
+            };
+
             var ignoreControls = AppArguments.Get(AppFlag.IgnoreControls);
             if (!string.IsNullOrWhiteSpace(ignoreControls)) {
                 ControlsSettings.OptionIgnoreControlsFilter = Filter.Create(new StringTester(), ignoreControls);
+            }
+
+            var sseStart = AppArguments.Get(AppFlag.SseName);
+            if (!string.IsNullOrWhiteSpace(sseStart)) {
+                SseStarter.OptionStartName = sseStart;
             }
 
             FancyBackgroundManager.Initialize();

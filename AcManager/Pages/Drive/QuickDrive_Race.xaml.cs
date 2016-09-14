@@ -1,36 +1,27 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using AcManager.Controls.ViewModels;
-using AcManager.Pages.Dialogs;
 using AcManager.Tools;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
-using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Miscellaneous;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
-using MoonSharp.Interpreter;
 using Newtonsoft.Json;
-using StringBasedFilter;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Race : IQuickDriveModeControl {
@@ -61,19 +52,8 @@ namespace AcManager.Pages.Drive {
 
         public ViewModel ActualModel => (ViewModel)DataContext;
 
-        public class ViewModel : QuickDriveModeViewModel, IComparer {
-            private bool _penalties;
-
-            public bool Penalties {
-                get { return _penalties; }
-                set {
-                    if (value == _penalties) return;
-                    _penalties = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
-            }
-
+        public class ViewModel : QuickDriveModeViewModel, IHierarchicalItemPreviewProvider {
+            #region Jump start penalties
             public Game.JumpStartPenaltyType[] JumpStartPenaltyTypes { get; } = {
                 Game.JumpStartPenaltyType.None,
                 Game.JumpStartPenaltyType.Pits,
@@ -112,14 +92,24 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged();
                 }
             }
+            #endregion
+
+            #region Common properties
+            private bool _penalties;
+
+            public bool Penalties {
+                get { return _penalties; }
+                set {
+                    if (value == _penalties) return;
+                    _penalties = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
 
             public int LapsNumberMaximum => SettingsHolder.Drive.QuickDriveExpandBounds ? 999 : 40;
 
             public int LapsNumberMaximumLimited => Math.Min(LapsNumberMaximum, 50);
-
-            public int AiLevelMinimum => SettingsHolder.Drive.AiLevelMinimum;
-
-            public int AiLevelMinimumLimited => Math.Max(AiLevelMinimum, 50);
 
             private int _lapsNumber;
 
@@ -132,249 +122,115 @@ namespace AcManager.Pages.Drive {
                     SaveLater();
                 }
             }
+            #endregion
 
-            private int _opponentsNumber;
-            private int _unclampedOpponentsNumber;
-            private int? _unclampedStartingPosition;
+            public RaceGridViewModel RaceGridViewModel { get; }
 
-            public int OpponentsNumber {
-                get { return _opponentsNumber; }
-                set {
-                    if (Equals(value, _opponentsNumber)) return;
-
-                    _unclampedOpponentsNumber = value;
-                    _opponentsNumber = value.Clamp(1, OpponentsNumberLimit);
-
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(StartingPositionLimit));
-
-                    if (_unclampedStartingPosition.HasValue && _unclampedStartingPosition != StartingPosition) {
-                        StartingPosition = _unclampedStartingPosition.Value;
-                    }
-
-                    if (_last || StartingPosition > StartingPositionLimit) {
-                        _innerChange = true;
-                        StartingPosition = StartingPositionLimit;
-                        _innerChange = false;
-                    } else if (StartingPosition == StartingPositionLimit && StartingPositionLimit != 0) {
-                        _last = true;
-                        OnPropertyChanged(nameof(DisplayStartingPosition));
-                    }
-
-                    SaveLater();
-                }
-            }
-
-            private int _aiLevel;
-
-            public int AiLevel {
-                get { return _aiLevel; }
-                set {
-                    value = value.Clamp(AiLevelMinimum, 100);
-                    if (Equals(value, _aiLevel)) return;
-                    _aiLevel = value;
-                    OnPropertyChanged();
-                    SaveLater();
-
-                    if (!AiLevelFixed && value >= AiLevelMin) return;
-                    _aiLevelMin = value;
-                    OnPropertyChanged(nameof(AiLevelMin));
-                }
-            }
-
-            private int _aiLevelMin;
-
-            public int AiLevelMin {
-                get { return _aiLevelMin; }
-                set {
-                    if (AiLevelFixed) return;
-
-                    value = value.Clamp(AiLevelMinimum, 100);
-                    if (Equals(value, _aiLevelMin)) return;
-                    _aiLevelMin = value;
-                    OnPropertyChanged();
-                    SaveLater();
-
-                    if (value > AiLevel) {
-                        _aiLevel = value;
-                        OnPropertyChanged(nameof(AiLevel));
-                    }
-                }
-            }
-
-            private bool _aiLevelFixed;
-
-            public bool AiLevelFixed {
-                get { return _aiLevelFixed; }
-                set {
-                    if (Equals(value, _aiLevelFixed)) return;
-                    _aiLevelFixed = value;
-                    OnPropertyChanged();
-                    SaveLater();
-
-                    if (value && _aiLevelMin != _aiLevel) {
-                        _aiLevelMin = _aiLevel;
-                        OnPropertyChanged(nameof(AiLevelMin));
-                        OnPropertyChanged(nameof(AiLevelInDriverName));
-                    }
-                }
-            }
-
-            private bool _aiLevelArrangeRandomly;
-
-            public bool AiLevelArrangeRandomly {
-                get { return _aiLevelArrangeRandomly; }
-                set {
-                    if (Equals(value, _aiLevelArrangeRandomly)) return;
-                    _aiLevelArrangeRandomly = value;
-                    OnPropertyChanged();
-                    SaveLater();
-
-                    if (value) {
-                        AiLevelArrangeReverse = false;
-                    }
-                }
-            }
-
-            private bool _aiLevelArrangeReverse;
-
-            public bool AiLevelArrangeReverse {
-                get { return _aiLevelArrangeReverse; }
-                set {
-                    if (Equals(value, _aiLevelArrangeReverse)) return;
-                    _aiLevelArrangeReverse = value;
-                    OnPropertyChanged();
-                    SaveLater();
-
-                    if (value) {
-                        AiLevelArrangeRandomly = false;
-                    }
-                }
-            }
-
-            private const string KeyAiLevelInDriverName = "QuickDrive_Race.AiLevelInDriverName";
-
-            private bool _aiLevelInDriverName = ValuesStorage.GetBool(KeyAiLevelInDriverName);
-
-            public bool AiLevelInDriverName {
-                get { return _aiLevelInDriverName && !AiLevelFixed; }
-                set {
-                    if (Equals(value, _aiLevelInDriverName)) return;
-                    _aiLevelInDriverName = value;
-                    OnPropertyChanged();
-                    ValuesStorage.Set(KeyAiLevelInDriverName, value);
-                }
-            }
-
-            private bool _last;
-            private int _startingPosition;
-            private bool _innerChange;
-
-            public int StartingPosition {
-                get { return _startingPosition; }
-                set {
-                    if (!_innerChange) {
-                        _unclampedStartingPosition = Math.Max(value, 0);
-                    }
-
-                    value = value.Clamp(0, StartingPositionLimit);
-                    if (Equals(value, _startingPosition)) return;
-
-                    _startingPosition = value;
-                    _last = value == StartingPositionLimit && StartingPositionLimit != 0;
-
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayStartingPosition));
-                    SaveLater();
-                }
-            }
-
-            public string DisplayStartingPosition {
-                get {
-                    return StartingPosition == 0 ? AppStrings.Drive_Ordinal_Random
-                            : _last ? AppStrings.Drive_Ordinal_Last : StartingPosition.ToOrdinalShort(AppStrings.Drive_Ordinal_Parameter);
-                }
-                set { StartingPosition = FlexibleParser.TryParseInt(value) ?? StartingPosition; }
-            }
-
-            public int StartingPositionLimit => OpponentsNumber + 1;
-
-            private int _trackPitsNumber;
-
-            public int TrackPitsNumber {
-                get { return _trackPitsNumber; }
-                set {
-                    if (Equals(value, _trackPitsNumber)) return;
-                    _trackPitsNumber = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(OpponentsNumberLimit));
-
-                    if (_unclampedOpponentsNumber != _opponentsNumber) {
-                        OpponentsNumber = _unclampedOpponentsNumber;
-                    } else if (OpponentsNumber > OpponentsNumberLimit) {
-                        OpponentsNumber = OpponentsNumberLimit;
-                    }
-                }
-            }
-
-            public int OpponentsNumberLimit => TrackPitsNumber - 1;
-
-            protected class SaveableData {
+            protected class OldSaveableData {
                 public bool? Penalties, AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse;
                 public int? AiLevel, AiLevelMin, LapsNumber, OpponentsNumber, StartingPosition;
                 public Game.JumpStartPenaltyType? JumpStartPenalty;
+
+                [CanBeNull]
                 public string GridTypeId, OpponentsCarsFilter;
+
+                [CanBeNull]
                 public string[] ManualList;
+
+                public static bool Test(string serialized) {
+                    Logging.Debug(serialized);
+                    return !serialized.Contains(@"""Version"":");
+                }
+            }
+
+            [Localizable(false)]
+            protected class SaveableData {
+                public int Version => 2;
+                
+                public bool? Penalties;
+                public Game.JumpStartPenaltyType? JumpStartPenalty;
+                public int? LapsNumber;
+
+                [CanBeNull]
+                public string RaceGridSerialized;
             }
 
             protected virtual void Save(SaveableData result) {
                 result.Penalties = Penalties;
                 result.JumpStartPenalty = JumpStartPenalty;
-                result.AiLevelFixed = AiLevelFixed;
-                result.AiLevelArrangeRandomly = AiLevelArrangeRandomly;
-                result.AiLevelArrangeReverse = AiLevelArrangeReverse;
-                result.AiLevel = AiLevel;
-                result.AiLevelMin = AiLevelMin;
                 result.LapsNumber = LapsNumber;
-                result.OpponentsNumber = OpponentsNumber;
-                result.StartingPosition = StartingPosition;
-                result.GridTypeId = SelectedGridType?.Id;
-                result.OpponentsCarsFilter = OpponentsCarsFilter;
-                result.ManualList = _opponentsCarsIds ?? (SelectedGridType == GridType.Manual ? OpponentsCars.Select(x => x.Id).ToArray() : null);
+                result.RaceGridSerialized = RaceGridViewModel.ExportToPresetData();
+            }
+
+            protected virtual void Load(OldSaveableData o) {
+                Penalties = o.Penalties ?? true;
+                JumpStartPenalty = o.JumpStartPenalty ?? Game.JumpStartPenaltyType.None;
+                LapsNumber = o.LapsNumber ?? 2;
+
+                try {
+                    RaceGridViewModel.ExternalIsLoading = true;
+                    switch (o.GridTypeId) {
+                        case "same_car":
+                            RaceGridViewModel.Mode = BuiltInGridMode.SameCar;
+                            RaceGridViewModel.FilterValue = null;
+                            break;
+
+                        case "same_group":
+                            RaceGridViewModel.Mode = BuiltInGridMode.CandidatesSameGroup;
+                            RaceGridViewModel.FilterValue = null;
+                            break;
+
+                        case "manual":
+                            RaceGridViewModel.Mode = BuiltInGridMode.CandidatesFiltered;
+                            RaceGridViewModel.FilterValue = null;
+                            RaceGridViewModel.NonfilteredList.ReplaceEverythingBy(
+                                    o.ManualList?.Select(x => CarsManager.Instance.GetById(x)).NonNull().Select(x => new RaceGridEntry(x)) ??
+                                            new RaceGridEntry[0]);
+                            break;
+
+                        case "filtered_by_":
+                            RaceGridViewModel.Mode = BuiltInGridMode.CandidatesManual;
+                            RaceGridViewModel.FilterValue = o.OpponentsCarsFilter;
+                            break;
+
+                        default:
+                            RaceGridViewModel.Mode = RaceGridViewModel.Modes.HierarchicalGetByIdOrDefault<IRaceGridMode>(o.GridTypeId) ??
+                                    BuiltInGridMode.SameCar;
+                            RaceGridViewModel.FilterValue = o.OpponentsCarsFilter;
+                            break;
+                    }
+
+                    RaceGridViewModel.AiLevelFixed = o.AiLevelFixed ?? true;
+                    RaceGridViewModel.AiLevelArrangeRandomly = o.AiLevelArrangeRandomly ?? true;
+                    RaceGridViewModel.AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? true;
+                    RaceGridViewModel.AiLevel = o.AiLevel ?? 92;
+                    RaceGridViewModel.AiLevelMin = o.AiLevelMin ?? 92;
+                    RaceGridViewModel.OpponentsNumber = o.OpponentsNumber ?? 3;
+                    RaceGridViewModel.StartingPosition = o.StartingPosition ?? 4;
+                    RaceGridViewModel.FinishLoading();
+                } finally {
+                    RaceGridViewModel.ExternalIsLoading = false;
+                }
             }
 
             protected virtual void Load(SaveableData o) {
                 Penalties = o.Penalties ?? true;
                 JumpStartPenalty = o.JumpStartPenalty ?? Game.JumpStartPenaltyType.None;
-                AiLevelFixed = o.AiLevelFixed ?? true;
-                AiLevelArrangeRandomly = o.AiLevelArrangeRandomly ?? true;
-                AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? false;
-                AiLevel = o.AiLevel ?? 92;
-                AiLevelMin = o.AiLevelMin ?? 92;
                 LapsNumber = o.LapsNumber ?? 2;
-                OpponentsNumber = o.OpponentsNumber ?? 3;
-                StartingPosition = o.StartingPosition ?? 4;
 
-                UpdateGridTypes();
-                SelectedGridType = GridTypes.GetByIdOrDefault(o.GridTypeId) ?? GridType.SameCar;
-
-                _opponentsCarsIds = SelectedGridType == GridType.Manual ? o.ManualList : null;
-                OpponentsCarsFilter = o.OpponentsCarsFilter;
+                if (o.RaceGridSerialized != null) {
+                    RaceGridViewModel.ImportFromPresetData(o.RaceGridSerialized);
+                } else {
+                    Logging.Warning("Race grid data missing");
+                    RaceGridViewModel.Reset();
+                }
             }
 
             protected virtual void Reset() {
                 Penalties = true;
                 JumpStartPenalty = Game.JumpStartPenaltyType.None;
-                AiLevelFixed = true;
-                AiLevelArrangeRandomly = true;
-                AiLevelArrangeReverse = false;
-                AiLevel = 92;
-                AiLevelMin = 92;
                 LapsNumber = 2;
-                OpponentsNumber = 3;
-                StartingPosition = 4;
-                SelectedGridType = GridType.SameCar;
-                OpponentsCarsFilter = string.Empty;
+                RaceGridViewModel.Reset();
             }
 
             /// <summary>
@@ -386,11 +242,18 @@ namespace AcManager.Pages.Drive {
                     Save(r);
                     return r;
                 }, Load, Reset);
+                Saveable.RegisterUpgrade<OldSaveableData>(OldSaveableData.Test, Load);
             }
 
+            /// <summary>
+            /// Will be called in constuctor!
+            /// </summary>
+            protected virtual bool IgnoreStartingPosition => false;
+
             public ViewModel(bool initialize = true) {
-                OpponentsCars = new BetterObservableCollection<CarObject>();
-                OpponentsCarsView = new BetterListCollectionView(OpponentsCars) { CustomSort = this };
+                // ReSharper disable once VirtualMemberCallInConstructor
+                RaceGridViewModel = new RaceGridViewModel(IgnoreStartingPosition);
+                RaceGridViewModel.Changed += RaceGridViewModel_Changed;
 
                 // ReSharper disable once VirtualMemberCallInContructor
                 InitializeSaveable();
@@ -402,257 +265,17 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public class GridType : IWithId {
-                public static readonly GridType SameCar = new GridType(ToolsStrings.Drive_Grid_SameCar);
-                public static readonly GridType SameGroup = new GridType(ToolsStrings.Drive_Grid_SameGroup);
-                public static readonly GridType FilteredBy = new GridType(ToolsStrings.Drive_Grid_FilteredBy);
-                public static readonly GridType Manual = new GridType(ToolsStrings.Drive_Grid_Manual);
-
-                [JsonProperty(PropertyName = @"id")]
-                private string _id;
-
-                public string Id => _id ?? (_id = AcStringValues.IdFromName(DisplayName));
-
-                [JsonProperty(PropertyName = @"name")]
-                private readonly string _displayName;
-
-                public string DisplayName => _displayName;
-
-                [JsonProperty(PropertyName = @"filter")]
-                private readonly string _filter;
-
-                public string Filter => _filter;
-
-                [JsonProperty(PropertyName = @"script")]
-                private readonly string _script;
-
-                public string Script => _script;
-
-                [JsonProperty(PropertyName = @"test")]
-                private readonly bool _test;
-
-                public bool Test => _test;
-
-                public override string ToString() => Id;
-
-                [JsonConstructor]
-                // ReSharper disable once UnusedMember.Local
-                private GridType() { }
-
-                private GridType(string displayName) {
-                    _displayName = displayName;
-                    _filter = "";
-                    _script = "";
-                    _test = false;
-                }
-            }
-
-            public BetterObservableCollection<GridType> GridTypes { get; } = new BetterObservableCollection<GridType> {
-                GridType.SameCar,
-                GridType.SameGroup
-            };
-
-            public void UpdateGridTypes() {
-                var selectedId = SelectedGridType?.Id;
-                GridTypes.ReplaceEverythingBy(new[] { GridType.SameCar, GridType.SameGroup }
-                        .Union(FilesStorage.Instance.LoadJsonContentFile<GridType[]>(ContentCategory.GridTypes, "GridTypes.json") ?? new GridType[] { })
-                        .Union(new[] { GridType.FilteredBy, GridType.Manual }));
-                SelectedGridType = GridTypes.GetByIdOrDefault(selectedId) ?? GridTypes.FirstOrDefault();
+            private void RaceGridViewModel_Changed(object sender, EventArgs e) {
+                SaveLater();
             }
 
             public void Load() {
-                FilesStorage.Instance.Watcher(ContentCategory.GridTypes).Update += QuickDrive_RaceViewModel_Update;
-                UpdateGridTypes();
             }
 
             public void Unload() {
-                FilesStorage.Instance.Watcher(ContentCategory.GridTypes).Update -= QuickDrive_RaceViewModel_Update;
+                RaceGridViewModel.Dispose();
             }
 
-            private void QuickDrive_RaceViewModel_Update(object sender, EventArgs e) {
-                UpdateGridTypes();
-            }
-
-            [CanBeNull]
-            public GridType SelectedGridType {
-                get { return _selectedGridType; }
-                set {
-                    if (Equals(value, _selectedGridType)) return;
-                    _selectedGridType = value;
-                    OnPropertyChanged();
-                    SaveLater();
-
-                    UpdateOpponentsCars().Forget();
-                }
-            }
-
-            private CarObject _selectedCar;
-
-            [CanBeNull]
-            public CarObject SelectedCar {
-                get { return _selectedCar; }
-                set {
-                    if (Equals(value, _selectedCar)) return;
-                    _selectedCar = value;
-                    OnPropertyChanged();
-                    UpdateOpponentsCars().Forget();
-                }
-            }
-
-            private bool _opponentsCarsLoading;
-
-            public bool OpponentsCarsLoading {
-                get { return _opponentsCarsLoading; }
-                set {
-                    if (Equals(value, _opponentsCarsLoading)) return;
-                    _opponentsCarsLoading = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private string _opponentsCarsError;
-
-            public string OpponentsCarsError {
-                get { return _opponentsCarsError; }
-                set {
-                    if (Equals(value, _opponentsCarsError)) return;
-                    _opponentsCarsError = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            public BetterObservableCollection<CarObject> OpponentsCars { get; }
-
-            private string[] _opponentsCarsIds;
-
-            public BetterListCollectionView OpponentsCarsView { get; }
-
-            private string _opponentsCarsFilter;
-
-            public string OpponentsCarsFilter {
-                get { return _opponentsCarsFilter; }
-                set {
-                    value = value?.Trim();
-                    if (Equals(value, _opponentsCarsFilter)) return;
-                    _opponentsCarsFilter = value;
-                    OnPropertyChanged();
-
-                    using (OpponentsCarsView.DeferRefresh()) {
-                        if (string.IsNullOrEmpty(value)) {
-                            OpponentsCarsView.Filter = null;
-                        } else {
-                            var filter = Filter.Create(CarObjectTester.Instance, value);
-                            OpponentsCarsView.Filter = o => o is CarObject && filter.Test((CarObject)o);
-                        }
-                    }
-
-                    SaveLater();
-                }
-            }
-
-            public void AddOpponentsCarsFilter() {
-                if (string.IsNullOrEmpty(OpponentsCarsFilter)) return;
-                OpponentsCarsFilterHistory.ReplaceEverythingBy(OpponentsCarsFilterHistory.Where(x =>
-                        !string.Equals(x, OpponentsCarsFilter, StringComparison.OrdinalIgnoreCase)).Take(10).Prepend(OpponentsCarsFilter));
-            }
-
-            private const string KeyOpponentsCarsFilterHistory = "QuickDrive_Race.OpponentsCarsFilterHistory";
-
-            private static BetterObservableCollection<string> _opponentsCarsFilterHistory;
-
-            public BetterObservableCollection<string> OpponentsCarsFilterHistory {
-                get {
-                    if (_opponentsCarsFilterHistory != null) return _opponentsCarsFilterHistory;
-
-                    _opponentsCarsFilterHistory = new BetterObservableCollection<string>(ValuesStorage.GetStringList(KeyOpponentsCarsFilterHistory));
-                    _opponentsCarsFilterHistory.CollectionChanged += OpponentsCarsFilterHistory_CollectionChanged;
-                    return _opponentsCarsFilterHistory;
-                }
-            }
-
-            private void OpponentsCarsFilterHistory_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
-                ValuesStorage.Set(KeyOpponentsCarsFilterHistory, _opponentsCarsFilterHistory);
-            }
-
-            private RelayCommand _addOpponentCarCommand;
-
-            public RelayCommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new RelayCommand(o => {
-                SelectedGridType = GridType.Manual;
-
-                var dialog = new SelectCarDialog(CarsManager.Instance.GetDefault());
-                dialog.ShowDialog();
-                if (!dialog.IsResultOk || dialog.SelectedCar == null) return;
-
-                OpponentsCars.Add(dialog.SelectedCar);
-                SaveLater();
-            }));
-
-            private RelayCommand _removeOpponentCarCommand;
-
-            public RelayCommand RemoveOpponentCarCommand => _removeOpponentCarCommand ?? (_removeOpponentCarCommand = new RelayCommand(o => {
-                SelectedGridType = GridType.Manual;
-
-                var listBox = o as ListBox;
-                if (listBox == null) return;
-
-                var selected = listBox.SelectedItems.OfType<CarObject>().ToList();
-                foreach (var selectedOpponentsCar in selected) {
-                    OpponentsCars.Remove(selectedOpponentsCar);
-                }
-
-                listBox.SelectedItems.Clear();
-                SaveLater();
-            }, o => {
-                var listBox = o as ListBox;
-                return listBox?.SelectedItems != null;
-            }));
-
-            private async Task UpdateOpponentsCars() {
-                if (SelectedGridType == GridType.Manual) {
-                    OpponentsCarsLoading = true;
-
-                    if (!CarsManager.Instance.IsLoaded) {
-                        await CarsManager.Instance.EnsureLoadedAsync();
-                    }
-
-                    if (_opponentsCarsIds != null) {
-                        OpponentsCars.ReplaceEverythingBy(from id in _opponentsCarsIds
-                                                          let car = CarsManager.Instance.GetById(id)
-                                                          where car != null
-                                                          select car);
-                        _opponentsCarsIds = null;
-                    }
-
-                    OpponentsCarsLoading = false;
-                    return;
-                }
-
-                _opponentsCarsIds = null;
-
-                if (SelectedCar == null || _selectedTrack == null) {
-                    OpponentsCars.Clear();
-                } else if (SelectedGridType == null || SelectedGridType == GridType.SameCar) {
-                    OpponentsCars.ReplaceEverythingBy(new[] { SelectedCar });
-                } else {
-                    OpponentsCarsLoading = true;
-
-                    if (!CarsManager.Instance.IsLoaded) {
-                        await CarsManager.Instance.EnsureLoadedAsync();
-                    }
-
-                    try {
-                        OpponentsCars.ReplaceEverythingBy(await FindAppropriateCars(SelectedCar, _selectedTrack, SelectedGridType, false));
-                        OpponentsCarsError = null;
-                    } catch (Exception e) {
-                        OpponentsCars.Clear();
-                        OpponentsCarsError = AppStrings.Drive_CannotFilter;
-                        Logging.Warning("UpdateOpponentsCars(): " + e);
-                    }
-
-                    OpponentsCarsLoading = false;
-                }
-            }
-            
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties) {
                 var selectedCar = CarsManager.Instance.GetById(basicProperties.CarId);
@@ -660,64 +283,32 @@ namespace AcManager.Pages.Drive {
 
                 IEnumerable<Game.AiCar> botCars;
 
-                using (var waiting = new WaitingDialog()) {
-                    if (selectedCar == null || !selectedCar.Enabled) {
-                        ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SelectNonDisabled, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
-                        return;
-                    }
-
-                    if (selectedTrack == null) {
-                        ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SelectTrack, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
-                        return;
-                    }
-
-                    if (OpponentsNumber < 1) {
-                        ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SetOpponent, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
-                        return;
-                    }
-
-                    CarObject[] cars;
-                    var cancellation = waiting.CancellationToken;
-
-                    if (SelectedGridType == null || SelectedGridType == GridType.SameCar) {
-                        cars = new[] { selectedCar };
-                    } else {
-                        if (!CarsManager.Instance.IsLoaded) {
-                            waiting.Report(ToolsStrings.Drive_GridBuilding);
-                            await CarsManager.Instance.EnsureLoadedAsync();
-                            if (cancellation.IsCancellationRequested) return;
-                        }
-
-                        try {
-                            waiting.Report(AppStrings.Drive_AiFiltering);
-                            cars = await FindAppropriateCars(selectedCar, selectedTrack, SelectedGridType, true, cancellation);
-                            if (cancellation.IsCancellationRequested) return;
-
-                            Logging.Write("Appropriate cars: " + cars.JoinToString(@", "));
-                            if (SelectedGridType.Test) return;
-                        } catch (Exception e) {
-                            NonfatalError.Notify(AppStrings.Drive_CannotFilter, AppStrings.Drive_CannotFilter_Commentary, e);
+                try {
+                    using (var waiting = new WaitingDialog()) {
+                        if (selectedCar == null || !selectedCar.Enabled) {
+                            ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SelectNonDisabled, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
                             return;
                         }
 
-                        if (cars.Length == 0) {
-                            ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_CannotFindAnyCar, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
+                        if (selectedTrack == null) {
+                            ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SelectTrack, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
+                            return;
+                        }
+
+                        botCars = await RaceGridViewModel.GenerateGameEntries(waiting.CancellationToken);
+                        if (waiting.CancellationToken.IsCancellationRequested) return;
+
+                        if (botCars == null || !botCars.Any()) {
+                            ModernDialog.ShowMessage(AppStrings.Drive_CannotStart_SetOpponent, AppStrings.Drive_CannotStart_Title, MessageBoxButton.OK);
                             return;
                         }
                     }
-
-                    waiting.Report(AppStrings.Drive_AiCarsLoading);
-                    botCars = await GenerateAiCars(selectedCar, selectedTrack, OpponentsNumber, cars);
-                    if (cancellation.IsCancellationRequested) return;
+                } catch (TaskCanceledException) {
+                    return;
                 }
 
                 await StartAsync(new Game.StartProperties {
-                    BasicProperties = new Game.BasicProperties {
-                        CarId = selectedCar.Id,
-                        CarSkinId = selectedCar.SelectedSkin?.Id,
-                        TrackId = selectedTrack.Id,
-                        TrackConfigurationId = selectedTrack.LayoutId
-                    },
+                    BasicProperties = basicProperties,
                     AssistsProperties = assistsProperties,
                     ConditionProperties = conditionProperties,
                     TrackProperties = trackProperties,
@@ -727,178 +318,66 @@ namespace AcManager.Pages.Drive {
 
             protected virtual Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
                 return new Game.RaceProperties {
-                    AiLevel = AiLevelFixed ? AiLevel : 100,
+                    AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,
                     Penalties = Penalties,
                     JumpStartPenalty = JumpStartPenalty,
-                    StartingPosition = StartingPosition == 0 ? MathUtils.Random(1, OpponentsNumber + 2) : StartingPosition,
+                    StartingPosition = RaceGridViewModel.StartingPosition == 0
+                            ? MathUtils.Random(1, RaceGridViewModel.OpponentsNumber + 2) : RaceGridViewModel.StartingPosition,
                     RaceLaps = LapsNumber,
                     BotCars = botCars
                 };
             }
 
-            private static string PrepareScript(string script) {
-                script = script.Trim();
-                if (script.Contains('\n')) return script;
-                
-                script = $"return function(tested)\nreturn {script}\nend";
-                Logging.Write(script);
-                return script;
-            }
-
-            private async Task<CarObject[]> FindAppropriateCars([NotNull] CarObject car, [NotNull] TrackObjectBase track, [NotNull] GridType type, 
-                    bool useUserFilter, CancellationToken cancellation = default(CancellationToken)) {
-                if (car == null) throw new ArgumentNullException(nameof(car));
-                if (track == null) throw new ArgumentNullException(nameof(track));
-                if (type == null) throw new ArgumentNullException(nameof(type));
-
-                if (type == GridType.FilteredBy && !useUserFilter) {
-                    return CarsManager.Instance.EnabledOnly.ToArray();
-                }
-
-                await Task.Delay(200, cancellation);
-                return await Task.Run(() => {
-                    IEnumerable<CarObject> carsEnumerable;
-
-                    if (type == GridType.SameGroup) {
-                        var parent = car.Parent ?? car;
-                        carsEnumerable = parent.Children.Prepend(parent);
-                    } else if (type == GridType.Manual) {
-                        carsEnumerable = OpponentsCars;
-                    } else {
-                        carsEnumerable = CarsManager.Instance.EnabledOnly;
-                    }
-
-                    carsEnumerable = carsEnumerable.Where(x => x.Enabled);
-
-                    if (!string.IsNullOrWhiteSpace(type.Filter)) {
-                        var filter = Filter.Create(CarObjectTester.Instance, type.Filter);
-                        carsEnumerable = carsEnumerable.Where(filter.Test);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(type.Script)) {
-                        var state = LuaHelper.GetExtended();
-                        if (state == null) throw new Exception(AppStrings.Drive_CannotInitializeLua);
-
-                        state.Globals[@"selected"] = car;
-                        state.Globals[@"track"] = track;
-
-                        var result = state.DoString(PrepareScript(type.Script));
-                        if (result.Type == DataType.Boolean && !result.Boolean) return new CarObject[0];
-
-                        var fn = result.Function;
-                        if (fn == null) throw new Exception(AppStrings.Drive_InvalidScript);
-
-                        carsEnumerable = carsEnumerable.Where(x => fn.Call(x).Boolean);
-                    }
-
-                    if (useUserFilter && !string.IsNullOrEmpty(OpponentsCarsFilter)) {
-                        var filter = Filter.Create(CarObjectTester.Instance, OpponentsCarsFilter);
-                        carsEnumerable = carsEnumerable.Where(filter.Test);
-                    }
-
-                    return carsEnumerable.ToArray();
-                }, cancellation);
-            }
-
-            private async Task<IEnumerable<Game.AiCar>> GenerateAiCars(CarObject selectedCar, AcJsonObjectNew selectedTrack, int opponentsNumber, params CarObject[] opponentsCars) {
-                NameNationality[] nameNationalities;
-                var trackCountry = selectedTrack.Country == null
-                        ? null : DataProvider.Instance.Countries.GetValueOrDefault(selectedTrack.Country.Trim().ToLower()) ?? @"Italy";
-
-                if (opponentsNumber == 7 && AppArguments.GetBool(AppFlag.NfsPorscheTribute)) {
-                    nameNationalities = new[] {
-                        new NameNationality { Name = @"Dylan", Nationality = @"Wales" },
-                        new NameNationality { Name = @"Parise", Nationality = @"Italy" },
-                        new NameNationality { Name = @"Steele", Nationality = @"United States" },
-                        new NameNationality { Name = @"Wingnut", Nationality = @"England" },
-                        new NameNationality { Name = @"Leadfoot", Nationality = trackCountry },
-                        new NameNationality { Name = @"Amazon", Nationality = trackCountry },
-                        new NameNationality { Name = @"Backlash", Nationality = @"United States" }
-                    };
-                } else if (DataProvider.Instance.NationalitiesAndNames.Any()) {
-                    nameNationalities = GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList).Take(opponentsNumber).ToArray();
-                } else {
-                    nameNationalities = null;
-                }
-
-                foreach (var car in opponentsCars) {
-                    await car.SkinsManager.EnsureLoadedAsync();
-                }
-
-                var opponentsCarsEntries = (from x in opponentsCars
-                                            select new {
-                                                Car = x,
-                                                Skins = GoodShuffle.Get(x.EnabledOnlySkins)
-                                            }).ToList();
-                var opponentsCarsShuffled = GoodShuffle.Get(opponentsCarsEntries);
-
-                var playerCarEntry = opponentsCarsEntries.FirstOrDefault(x => x.Car == selectedCar);
-                if (playerCarEntry != null) {
-                    opponentsCarsShuffled.IgnoreOnce(playerCarEntry);
-                    playerCarEntry.Skins.IgnoreOnce(selectedCar.SelectedSkin);
-                }
-
-                List<int> aiLevels;
-                if (AiLevelFixed) {
-                    aiLevels = null;
-                } else {
-                    var aiLevelsInner = from i in Enumerable.Range(0, opponentsNumber)
-                                        select AiLevelMin + (int)((opponentsNumber < 2 ? 1f : (float)i / (opponentsNumber - 1)) * (AiLevel - AiLevelMin));
-                    if (AiLevelArrangeRandomly) {
-                        aiLevelsInner = GoodShuffle.Get(aiLevelsInner);
-                    } else if (!AiLevelArrangeReverse) {
-                        aiLevelsInner = aiLevelsInner.Reverse();
-                    }
-
-                    aiLevels = AiLevelFixed ? null : aiLevelsInner.Take(opponentsNumber).ToList();
-                }
-
-                return from i in Enumerable.Range(0, opponentsNumber)
-                       let entry = opponentsCarsShuffled.Next
-                       let level = aiLevels?[i] ?? 100
-                       let name = nameNationalities?[i].Name ?? @"AI #" + i
-                       let nationality = nameNationalities?[i].Nationality ?? trackCountry
-                       select new Game.AiCar {
-                           AiLevel = level,
-                           CarId = entry.Car.Id,
-                           DriverName = AiLevelInDriverName ? $"{name} ({level}%)" : name,
-                           Nationality = nationality,
-                           Setup = "",
-                           SkinId = entry.Skins.Next?.Id
-                       };
-            }
-
-            [CanBeNull]
-            private TrackObjectBase _selectedTrack;
-            private GridType _selectedGridType;
-
             public override void OnSelectedUpdated(CarObject selectedCar, TrackObjectBase selectedTrack) {
-                SelectedCar = selectedCar;
-
-                if (_selectedTrack != null) {
-                    _selectedTrack.PropertyChanged -= SelectedTrack_PropertyChanged;
-                }
-
-                _selectedTrack = selectedTrack;
-                if (_selectedTrack == null) return;
-
-                TrackPitsNumber = FlexibleParser.ParseInt(_selectedTrack.SpecsPitboxes, 2);
-                _selectedTrack.PropertyChanged += SelectedTrack_PropertyChanged;
+                RaceGridViewModel.PlayerCar = selectedCar;
+                RaceGridViewModel.PlayerTrack = selectedTrack;
             }
 
-            void SelectedTrack_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-                if (_selectedTrack != null && e.PropertyName == nameof(_selectedTrack.SpecsPitboxes)) {
-                    TrackPitsNumber = FlexibleParser.ParseInt(_selectedTrack.SpecsPitboxes, 2);
-                }
-            }
+            public object GetPreview(object item) {
+                var preset = item as ISavedPresetEntry;
+                if (preset == null) return null;
 
-            int IComparer.Compare(object x, object y) {
-                return (x as AcObjectNew)?.CompareTo(y as AcObjectNew) ?? 0;
+                RaceGridViewModel.SaveableData saved;
+                try {
+                    var data = preset.ReadData();
+                    saved = JsonConvert.DeserializeObject<RaceGridViewModel.SaveableData>(data);
+                } catch (Exception) {
+                    return null;
+                }
+
+                var mode = RaceGridViewModel.Modes.HierarchicalGetByIdOrDefault<IRaceGridMode>(saved.ModeId);
+                if (mode == null) return null;
+
+                var displayMode = mode.CandidatesMode ? $"{mode.DisplayName} ({"Random"})" : mode.DisplayName;
+                var opponentsNumber = mode.CandidatesMode ? saved.OpponentsNumber : saved.CarIds?.Length;
+                var description = new[] {
+                    $"Mode: [b]{displayMode}[/b]",
+                    mode == BuiltInGridMode.Custom
+                            ? $"Opponents: [b]{(saved.CarIds?.Length ?? saved.OpponentsNumber ?? 0).ToInvariantString() ?? @"?"}[/b]" : null,
+                    mode == BuiltInGridMode.CandidatesManual ? $"Candidates: [b]{saved.CarIds?.Length.ToInvariantString() ?? @"?"}[/b]" : null,
+                    !string.IsNullOrWhiteSpace(saved.FilterValue) ? $"Filter: [b]“{saved.FilterValue}”[/b]" : null,
+                    saved.StartingPosition.HasValue && opponentsNumber.HasValue
+                            ? $"Starting position: [b]{GetDisplayPosition(saved.StartingPosition.Value, opponentsNumber.Value)}[/b]" : null,
+                }.NonNull().JoinToString(Environment.NewLine);
+                return new BbCodeBlock { BbCode = description };
             }
         }
 
-        private void OpponentsCarsFilterTextBox_OnLostFocus(object sender, RoutedEventArgs e) {
-            ((ViewModel)Model).AddOpponentsCarsFilter();
+        public static string GetDisplayPosition(int startingPosition, int limit) {
+            return startingPosition == 0 ? AppStrings.Drive_Ordinal_Random
+                    : startingPosition == limit ? AppStrings.Drive_Ordinal_Last : startingPosition.ToOrdinalShort(AppStrings.Drive_Ordinal_Parameter);
         }
+
+        private class InnerStartingPositionConverter : IMultiValueConverter {
+            public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+                return values.Length != 2 ? null : GetDisplayPosition(values[0].AsInt(), values[1].AsInt());
+            }
+
+            public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+                return new object[] { FlexibleParser.TryParseInt(value?.ToString()) ?? 0, 0 };
+            }
+        }
+
+        public static IMultiValueConverter StartingPositionConverter = new InnerStartingPositionConverter();
     }
 }

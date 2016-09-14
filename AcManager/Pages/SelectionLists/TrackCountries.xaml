@@ -4,7 +4,7 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:selectionLists="clr-namespace:AcManager.Pages.SelectionLists"
         mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="OnLoaded"
-        d:DataContext="{d:DesignInstance di:TrackCountries}">
+        d:DataContext="{d:DesignInstance selectionLists:TrackCountries}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

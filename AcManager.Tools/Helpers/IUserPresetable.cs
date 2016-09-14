@@ -1,11 +1,14 @@
 using System;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public interface IUserPresetable {
         bool CanBeSaved { get; }
 
+        [NotNull]
         string PresetableCategory { get; }
 
+        [NotNull]
         string PresetableKey { get; }
 
         string DefaultPreset { get; }
@@ -14,6 +17,6 @@ namespace AcManager.Tools.Helpers {
 
         event EventHandler Changed;
 
-        void ImportFromPresetData(string data);
+        void ImportFromPresetData([NotNull] string data);
     }
 }

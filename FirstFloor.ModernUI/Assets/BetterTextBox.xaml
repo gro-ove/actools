@@ -141,6 +141,12 @@
         <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Borderless}" />
     </Style>
 
+    <Style x:Key="Borderless.Label" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
+        <Setter Property="FontFamily" Value="/FirstFloor.ModernUI;component/Fonts/#Segoe Condensed" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style x:Key="Borderless.Heading2" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontSize" Value="16" />

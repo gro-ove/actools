@@ -117,25 +117,25 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(BetterTextBox));
 
         protected override void OnPreviewKeyDown(KeyEventArgs e) {
-            if (AcceptsReturn) {
-                switch (e.Key) {
-                    case Key.Escape:
-                        e.Handled = FocusAdvancement.RemoveFocus(this);
-                        break;
+            switch (e.Key) {
+                case Key.Escape:
+                    e.Handled = FocusAdvancement.RemoveFocus(this);
+                    break;
 
-                    case Key.Enter:
+                case Key.Enter:
+                    if (!AcceptsReturn) {
                         e.Handled = FocusAdvancement.MoveFocus(this);
-                        break;
+                    }
+                    break;
 
-                    case Key.Up:
-                    case Key.Down:
-                        if (Mode != SpecialMode.None) {
-                            var processed = ProcessText(Mode, Text, e.Key == Key.Up ? 1d : -1d, Minimum, Maximum);
-                            if (processed != null) SetTextBoxText(this, processed);
-                            e.Handled = true;
-                        }
-                        break;
-                }
+                case Key.Up:
+                case Key.Down:
+                    if (Mode != SpecialMode.None) {
+                        var processed = ProcessText(Mode, Text, e.Key == Key.Up ? 1d : -1d, Minimum, Maximum);
+                        if (processed != null) SetTextBoxText(this, processed);
+                        e.Handled = true;
+                    }
+                    break;
             }
 
             if (!e.Handled) {

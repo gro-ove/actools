@@ -4,15 +4,20 @@ using System.IO;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.DataFile;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Starters {
     public class SseStarter : BaseStarter {
+        public static string OptionStartName = null;
+
         public const string AddonId = "SSE";
 
         private const string AcSteamId = "244210";
         private const string ConfigName = "_.ini";
 
         private string _filename;
+
+        protected override string AcsName => OptionStartName ?? base.AcsName;
 
         public override void Run() {
             var acRoot = AcRootDirectory.Instance.RequireValue;
@@ -21,6 +26,7 @@ namespace AcManager.Tools.Starters {
 
             _filename = addon.GetFilename(ConfigName);
 
+            Logging.Debug(AcsName);
             new IniFile {
                 ["Launcher"] = {
                     ["Target"] = Path.Combine(acRoot, AcsName),

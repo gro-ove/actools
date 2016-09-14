@@ -2,8 +2,10 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcTools.Utils.Helpers {
@@ -189,6 +191,50 @@ namespace AcTools.Utils.Helpers {
             }
 
             return result;
+        }
+    }
+
+    /// <summary>
+    /// Serialization without reflection.
+    /// </summary>
+    [LocalizationRequired(false)]
+    public static class JsonSerializationExtension {
+        public static void Write(this JsonTextWriter writer, string key, bool? value) {
+            if (value == null) return;
+            writer.WritePropertyName(key);
+            writer.WriteValue(value.Value);
+        }
+
+        public static void Write(this JsonTextWriter writer, string key, int? value) {
+            if (value == null) return;
+            writer.WritePropertyName(key);
+            writer.WriteValue(value.Value);
+        }
+        
+        public static void Write(this JsonTextWriter writer, string key, string value) {
+            if (value == null) return;
+            writer.WritePropertyName(key);
+            writer.WriteValue(value);
+        }
+        
+        public static void Write(this JsonTextWriter writer, string key, string[] value) {
+            if (value == null) return;
+            writer.WritePropertyName(key);
+            writer.WriteStartArray();
+            for (var i = 0; i < value.Length; i++) {
+                writer.WriteValue(value[i]);
+            }
+            writer.WriteEndArray();
+        }
+        
+        public static void Write(this JsonTextWriter writer, string key, int[] value) {
+            if (value == null) return;
+            writer.WritePropertyName(key);
+            writer.WriteStartArray();
+            for (var i = 0; i < value.Length; i++) {
+                writer.WriteValue(value[i].ToString(CultureInfo.InvariantCulture));
+            }
+            writer.WriteEndArray();
         }
     }
 }

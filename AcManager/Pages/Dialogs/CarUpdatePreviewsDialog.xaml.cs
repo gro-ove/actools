@@ -502,6 +502,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public event EventHandler Changed;
+
         public void ImportFromPresetData(string data) {
             _saveable.FromSerializedString(data);
         }

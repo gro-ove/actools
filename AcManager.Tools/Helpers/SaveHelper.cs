@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -19,17 +21,23 @@ namespace AcManager.Tools.Helpers {
 
         bool HasSavedData { get; }
 
+        [CanBeNull]
         string ToSerializedString();
 
-        void FromSerializedString(string data);
+        void FromSerializedString([NotNull] string data);
 
-        void FromSerializedStringWithoutSaving(string data);
+        void FromSerializedStringWithoutSaving([NotNull] string data);
 
         void Save();
 
         void SaveLater();
+
+        void RegisterUpgrade<TObsolete>(Func<string, bool> test, Action<TObsolete> load);
     }
 
+    public interface IStringSerializable {
+        string Serialize();
+    }
 
     public class SaveHelper<T> : ISaveHelper {
         [CanBeNull]
@@ -43,6 +51,39 @@ namespace AcManager.Tools.Helpers {
             _save = save;
             _load = load;
             _reset = reset;
+        }
+
+        private List<IUpgradeEntry> _upgradeEntries;
+
+        private interface IUpgradeEntry {
+            bool Test(string serializedData);
+
+            void Load(string serializedData);
+        }
+
+        private class UpgradeEntry<TObsolete> : IUpgradeEntry {
+            private readonly Func<string, bool> _test;
+            private readonly Action<TObsolete> _load;
+
+            public UpgradeEntry(Func<string, bool> test, Action<TObsolete> load) {
+                _test = test;
+                _load = load;
+            }
+
+            public bool Test(string serializedData) {
+                return _test(serializedData);
+            }
+
+            public void Load(string serializedData) {
+                _load(JsonConvert.DeserializeObject<TObsolete>(serializedData));
+            }
+        }
+
+        public void RegisterUpgrade<TObsolete>(Func<string, bool> test, Action<TObsolete> load) {
+            if (_upgradeEntries == null) {
+                _upgradeEntries = new List<IUpgradeEntry>(1);
+            }
+            _upgradeEntries.Add(new UpgradeEntry<TObsolete>(test, load));
         }
 
         public bool IsLoading { get; private set; }
@@ -64,6 +105,15 @@ namespace AcManager.Tools.Helpers {
             IsLoading = false;
         }
 
+        private void LoadInner([NotNull] string data) {
+            var obsolete = _upgradeEntries?.FirstOrDefault(x => x.Test(data));
+            if (obsolete != null) {
+                obsolete.Load(data);
+            } else {
+                _load(JsonConvert.DeserializeObject<T>(data));
+            }
+        }
+
         public bool Load() {
             if (_key == null) return false;
 
@@ -72,7 +122,7 @@ namespace AcManager.Tools.Helpers {
 
             try {
                 IsLoading = true;
-                _load(JsonConvert.DeserializeObject<T>(data));
+                LoadInner(data);
                 return true;
             } catch (Exception e) {
                 Logging.Warning("Cannot load data: " + e);
@@ -83,17 +133,21 @@ namespace AcManager.Tools.Helpers {
             return false;
         }
 
+        private string Serialize<TAny>(TAny obj) {
+            return (obj as IStringSerializable)?.Serialize() ?? JsonConvert.SerializeObject(obj);
+        }
+
         public bool HasSavedData => _key != null && ValuesStorage.Contains(_key);
 
         public string ToSerializedString() {
             var obj = _save();
-            return obj == null ? null : JsonConvert.SerializeObject(obj);
+            return obj == null ? null : Serialize(obj);
         }
 
-        public void FromSerializedString(string data, bool disableSaving) {
+        public void FromSerializedString([NotNull] string data, bool disableSaving) {
             try {
                 IsLoading = disableSaving;
-                _load(JsonConvert.DeserializeObject<T>(data));
+                LoadInner(data);
             } catch (Exception e) {
                 Logging.Warning("Cannot load data: " + e);
             } finally {

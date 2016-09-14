@@ -32,35 +32,9 @@ namespace AcManager.Pages.Drive {
         public ViewModel ActualModel => (ViewModel)DataContext;
 
         public class ViewModel : QuickDrive_Race.ViewModel {
+            protected override bool IgnoreStartingPosition => true;
+
             public ViewModel(bool initialize = true) : base(initialize) {}
-
-            private new class SaveableData : QuickDrive_Race.ViewModel.SaveableData {}
-
-            protected override void Save(QuickDrive_Race.ViewModel.SaveableData result) {
-                base.Save(result);
-                var r = (SaveableData)result;
-            }
-
-            protected override void Load(QuickDrive_Race.ViewModel.SaveableData o) {
-                base.Load(o);
-                var r = (SaveableData)o;
-            }
-
-            protected override void Reset() {
-                Penalties = false;
-                AiLevelFixed = false;
-                AiLevelArrangeRandomly = true;
-                AiLevelArrangeReverse = false;
-                AiLevel = 95;
-                AiLevelMin = 85;
-                OpponentsNumber = 12;
-                SelectedGridType = GridType.SameCar;
-                OpponentsCarsFilter = string.Empty;
-
-                JumpStartPenalty = Game.JumpStartPenaltyType.None;
-                LapsNumber = 1;
-                StartingPosition = 1;
-            }
 
             protected override void InitializeSaveable() {
                 Saveable = new SaveHelper<SaveableData>("__QuickDrive_Trackday", () => {
@@ -68,22 +42,19 @@ namespace AcManager.Pages.Drive {
                     Save(r);
                     return r;
                 }, Load, Reset);
+                Saveable.RegisterUpgrade<OldSaveableData>(OldSaveableData.Test, Load);
             }
-
+            
             protected override Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
-                return new Game.TrackdayProperties {
-                    AiLevel = AiLevelFixed ? AiLevel : 100,
-                    Penalties = Penalties,
+                return new Game.WeekendProperties {
+                    AiLevel = RaceGridViewModel.AiLevelFixed ? RaceGridViewModel.AiLevel : 100,
+                    Penalties = false,
                     JumpStartPenalty = Game.JumpStartPenaltyType.None,
-                    StartingPosition = StartingPosition == 0 ? MathUtils.Random(1, OpponentsNumber + 2) : StartingPosition,
+                    StartingPosition = 1,
                     RaceLaps = LapsNumber,
                     BotCars = botCars
                 };
             }
-        }
-
-        private void OpponentsCarsFilterTextBox_OnLostFocus(object sender, RoutedEventArgs e) {
-            ((ViewModel)Model).AddOpponentsCarsFilter();
         }
     }
 }
