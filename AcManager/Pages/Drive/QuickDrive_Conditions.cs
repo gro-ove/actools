@@ -177,7 +177,7 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _switchLocalWeatherCommand;
 
-            public ICommand SwitchLocalWeatherCommand => _switchLocalWeatherCommand ?? (_switchLocalWeatherCommand = new AsyncCommand(async o => {
+            public ICommand SwitchLocalWeatherCommand => _switchLocalWeatherCommand ?? (_switchLocalWeatherCommand = new ProperAsyncCommand(async o => {
                 if (string.IsNullOrWhiteSpace(SettingsHolder.Drive.LocalAddress)) {
                     var entry = await Task.Run(() => IpGeoProvider.Get());
                     var localAddress = entry == null ? "" : $"{entry.City}, {entry.Country}";

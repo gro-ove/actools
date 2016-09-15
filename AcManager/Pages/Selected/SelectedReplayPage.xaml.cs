@@ -118,9 +118,9 @@ namespace AcManager.Pages.Selected {
                                 : $"{ToolsStrings.Common_AcReplay} ({Car.DisplayName}, {Track.DisplayName})");
             }
 
-            private AsyncCommand _shareCommand;
+            private ProperAsyncCommand _shareCommand;
 
-            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async o => {
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(async o => {
                 UploadResult result;
 
                 try {
@@ -167,7 +167,7 @@ namespace AcManager.Pages.Selected {
 
             private ICommand _playCommand;
 
-            public ICommand PlayCommand => _playCommand ?? (_playCommand = new AsyncCommand(async o => {
+            public ICommand PlayCommand => _playCommand ?? (_playCommand = new ProperAsyncCommand(async o => {
                 await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
                     Name = SelectedObject.Id,
                     TrackId = SelectedObject.TrackId,

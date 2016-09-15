@@ -110,9 +110,9 @@ namespace AcManager.Pages.Selected {
             }
 
             #region Open In Showroom
-            private RelayCommand _openInShowroomCommand;
+            private ProperCommand _openInShowroomCommand;
 
-            public RelayCommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new RelayCommand(o => {
+            public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new ProperCommand(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
                     OpenInCustomShowroomCommand.Execute(o);
                     return;
@@ -124,33 +124,33 @@ namespace AcManager.Pages.Selected {
                 }
             }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private RelayCommand _openInShowroomOptionsCommand;
+            private ProperCommand _openInShowroomOptionsCommand;
 
-            public RelayCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new RelayCommand(o => {
+            public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new ProperCommand(o => {
                 new CarOpenInShowroomDialog(SelectedObject, SelectedObject.SelectedSkin?.Id).ShowDialog();
             }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private AsyncCommand _openInCustomShowroomCommand;
+            private ProperAsyncCommand _openInCustomShowroomCommand;
 
-            public AsyncCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new AsyncCommand(o => {
+            public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new ProperAsyncCommand(o => {
                 var type = o as CustomShowroomMode?;
                 return type.HasValue
                         ? CustomShowroomWrapper.StartAsync(type.Value, SelectedObject, SelectedObject.SelectedSkin)
                         : CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin);
             }));
 
-            private RelayCommand _driveCommand;
+            private ProperCommand _driveCommand;
 
-            public RelayCommand DriveCommand => _driveCommand ?? (_driveCommand = new RelayCommand(o => {
+            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new ProperCommand(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !QuickDrive.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
                     DriveOptionsCommand.Execute(null);
                 }
             }, o => SelectedObject.Enabled));
 
-            private RelayCommand _driveOptionsCommand;
+            private ProperCommand _driveOptionsCommand;
 
-            public RelayCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new RelayCommand(o => {
+            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new ProperCommand(o => {
                 QuickDrive.Show(SelectedObject, SelectedObject.SelectedSkin?.Id);
             }, o => SelectedObject.Enabled));
             #endregion
@@ -158,19 +158,19 @@ namespace AcManager.Pages.Selected {
             #region Auto-Update Previews
             private ICommand _updatePreviewsCommand;
 
-            public ICommand UpdatePreviewsCommand => _updatePreviewsCommand ?? (_updatePreviewsCommand = new RelayCommand(o => {
+            public ICommand UpdatePreviewsCommand => _updatePreviewsCommand ?? (_updatePreviewsCommand = new ProperCommand(o => {
                 new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             }, o => SelectedObject.Enabled));
 
             private ICommand _updatePreviewsManuallyCommand;
 
-            public ICommand UpdatePreviewsManuallyCommand => _updatePreviewsManuallyCommand ?? (_updatePreviewsManuallyCommand = new RelayCommand(o => {
+            public ICommand UpdatePreviewsManuallyCommand => _updatePreviewsManuallyCommand ?? (_updatePreviewsManuallyCommand = new ProperCommand(o => {
                 new CarUpdatePreviewsDialog(SelectedObject, CarUpdatePreviewsDialog.DialogMode.StartManual).ShowDialog();
             }, o => SelectedObject.Enabled));
 
             private ICommand _updatePreviewsOptionsCommand;
 
-            public ICommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ?? (_updatePreviewsOptionsCommand = new RelayCommand(o => {
+            public ICommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ?? (_updatePreviewsOptionsCommand = new ProperCommand(o => {
                 new CarUpdatePreviewsDialog(SelectedObject, CarUpdatePreviewsDialog.DialogMode.Options).ShowDialog();
             }, o => SelectedObject.Enabled));
 
@@ -237,17 +237,17 @@ namespace AcManager.Pages.Selected {
             }
             #endregion
 
-            private RelayCommand _manageSkinsCommand;
+            private ProperCommand _manageSkinsCommand;
 
-            public RelayCommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new RelayCommand(o => {
+            public ICommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new ProperCommand(o => {
                 new CarSkinsDialog(SelectedObject) {
                     ShowInTaskbar = false
                 }.ShowDialogWithoutBlocking();
             }));
 
-            private RelayCommand _manageSetupsCommand;
+            private ProperCommand _manageSetupsCommand;
 
-            public RelayCommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new RelayCommand(o => {
+            public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new ProperCommand(o => {
                 new CarSetupsDialog(SelectedObject) {
                     ShowInTaskbar = false
                 }.ShowDialogWithoutBlocking();
@@ -255,9 +255,9 @@ namespace AcManager.Pages.Selected {
 
             private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
 
-            private RelayCommand _readDataCommand;
+            private ProperCommand _readDataCommand;
 
-            public RelayCommand ReadDataCommand => _readDataCommand ?? (_readDataCommand = new RelayCommand(o => {
+            public ICommand ReadDataCommand => _readDataCommand ?? (_readDataCommand = new ProperCommand(o => {
                 var source = Path.Combine(SelectedObject.Location, "data.a" + "cd");
                 try {
                     var destination = FileUtils.EnsureUnique(DataDirectory);
@@ -268,9 +268,9 @@ namespace AcManager.Pages.Selected {
                 }
             }, o => SettingsHolder.Common.MsMode && SelectedObject.AcdData.IsPacked));
 
-            private RelayCommand _packDataCommand;
+            private ProperCommand _packDataCommand;
 
-            public RelayCommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new RelayCommand(o => {
+            public ICommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new ProperCommand(o => {
                 try {
                     var destination = Path.Combine(SelectedObject.Location, "data.a" + "cd");
                     var exists = File.Exists(destination);
@@ -293,9 +293,9 @@ namespace AcManager.Pages.Selected {
                 }
             }, o => SettingsHolder.Common.DeveloperMode && Directory.Exists(DataDirectory)));
 
-            private AsyncCommand _replaceSoundCommand;
+            private ProperAsyncCommand _replaceSoundCommand;
 
-            public AsyncCommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(async o => {
+            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new ProperAsyncCommand(async o => {
                 var donor = SelectCarDialog.Show();
                 if (donor == null) return;
 

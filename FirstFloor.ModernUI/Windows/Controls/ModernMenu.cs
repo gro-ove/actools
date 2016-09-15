@@ -20,18 +20,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public ModernMenu() {
             InputBindings.AddRange(new[] {
-                new InputBinding(new RelayCommand(NewTab), new KeyGesture(Key.T, ModifierKeys.Control)),
-                new InputBinding(new RelayCommand(CloseTab), new KeyGesture(Key.W, ModifierKeys.Control)),
-                new InputBinding(new RelayCommand(CloseTab), new KeyGesture(Key.F4, ModifierKeys.Control)),
-                new InputBinding(new RelayCommand(RestoreTab), new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Shift)),
-                new InputBinding(new RelayCommand(FocusCurrentTab), new KeyGesture(Key.F6)),
-                new InputBinding(new RelayCommand(FocusCurrentTab), new KeyGesture(Key.L, ModifierKeys.Control)),
-                new InputBinding(new RelayCommand(NextTab), new KeyGesture(Key.Tab, ModifierKeys.Control)),
-                new InputBinding(new RelayCommand(PreviousTab), new KeyGesture(Key.Tab, ModifierKeys.Control | ModifierKeys.Shift))
+                new InputBinding(new ProperCommand(NewTab), new KeyGesture(Key.T, ModifierKeys.Control)),
+                new InputBinding(new ProperCommand(CloseTab), new KeyGesture(Key.W, ModifierKeys.Control)),
+                new InputBinding(new ProperCommand(CloseTab), new KeyGesture(Key.F4, ModifierKeys.Control)),
+                new InputBinding(new ProperCommand(RestoreTab), new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(new ProperCommand(FocusCurrentTab), new KeyGesture(Key.F6)),
+                new InputBinding(new ProperCommand(FocusCurrentTab), new KeyGesture(Key.L, ModifierKeys.Control)),
+                new InputBinding(new ProperCommand(NextTab), new KeyGesture(Key.Tab, ModifierKeys.Control)),
+                new InputBinding(new ProperCommand(PreviousTab), new KeyGesture(Key.Tab, ModifierKeys.Control | ModifierKeys.Shift))
             });
 
             foreach (var i in Enumerable.Range(0, 9)) {
-                InputBindings.Add(new InputBinding(new RelayCommand(o => SwitchTab(i, false)), new KeyGesture(Key.D1 + i, ModifierKeys.Control)));
+                InputBindings.Add(new InputBinding(new ProperCommand(o => SwitchTab(i, false)), new KeyGesture(Key.D1 + i, ModifierKeys.Control)));
             }
         }
 

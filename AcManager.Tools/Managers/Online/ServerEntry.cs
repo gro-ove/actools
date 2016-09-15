@@ -1075,7 +1075,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private ICommand _refreshCommand;
 
-        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new RelayCommand(o => {
+        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new ProperCommand(o => {
             Update(UpdateMode.Full).Forget();
         }));
 

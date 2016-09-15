@@ -36,7 +36,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKey = typeof(ModernDialog);
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            CloseCommand = new RelayCommand(o => CloseWithResult(o as MessageBoxResult?));
+            CloseCommand = new ProperCommand(o => CloseWithResult(o as MessageBoxResult?));
             Buttons = new[] { CloseButton };
         }
 
@@ -84,7 +84,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static Button CreateExtraDialogButton(string content, Action action) {
-            return CreateExtraDialogButton(content, new RelayCommand(o => action()));
+            return CreateExtraDialogButton(content, new ProperCommand(o => action()));
         }
 
         public Button CreateExtraStyledDialogButton(string styleKey, string content, ICommand command) {
@@ -301,19 +301,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private ICommand _copyCommand;
 
-        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new RelayCommand(o => {
+        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new ProperCommand(o => {
             Clipboard.SetText(StackTrace);
         }));
 
         private ICommand _restartCommand;
 
-        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new RelayCommand(o => {
+        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new ProperCommand(o => {
             _restartHelper?.Restart();
         }));
 
         private ICommand _exitCommand;
 
-        public ICommand ExitCommand => _exitCommand ?? (_exitCommand = new RelayCommand(o => {
+        public ICommand ExitCommand => _exitCommand ?? (_exitCommand = new ProperCommand(o => {
             Environment.Exit(1);
         }));
 

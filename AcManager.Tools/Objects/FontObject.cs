@@ -81,7 +81,8 @@ namespace AcManager.Tools.Objects {
         }
 
         private ICommand _toggleCommand;
-        public override ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new RelayCommand(o => {
+
+        public override ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new ProperCommand(o => {
             if (Enabled && UsingsCarsIds.Length > 0 &&
                 ModernDialog.ShowMessage(ToolsStrings.FontObject_Disabling_SomeCarsNeedThisFont, ToolsStrings.FontObject_DisableFont,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;

@@ -132,6 +132,27 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="BetterTextBoxControlTemplate.Borderless.ReadOnly" TargetType="{x:Type c:BetterTextBox}">
+        <c:Cell>
+            <ScrollViewer x:Name="PART_ContentHost" RenderOptions.ClearTypeHint="Enabled" Margin="-2 0"
+                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Visibility="Collapsed" Opacity="0.5" IsHitTestVisible="False"
+                    RenderOptions.ClearTypeHint="Enabled" />
+        </c:Cell>
+        <ControlTemplate.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="Text" Value="" />
+                    <Condition Property="IsFocused" Value="False" />
+                </MultiTrigger.Conditions>
+                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+            </MultiTrigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
     <Style TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource {x:Type TextBoxBase}}">
         <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Basic}" />
     </Style>
@@ -139,6 +160,11 @@
     <Style x:Key="Borderless" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource TextBoxBase.CommonBase}">
         <Setter Property="Padding" Value="0" />
         <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Borderless}" />
+        <Style.Triggers>
+            <Trigger Property="IsReadOnly" Value="True">
+                <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Borderless.ReadOnly}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="Borderless.Label" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource Borderless}">

@@ -68,12 +68,13 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _keyRevoked)) return;
                     _keyRevoked = value;
                     OnPropertyChanged();
+                    _revokedKeyMessageCommand?.OnCanExecuteChanged();
                 }
             }
 
-            private RelayCommand _revokedKeyMessageCommand;
+            private ProperCommand _revokedKeyMessageCommand;
 
-            public RelayCommand RevokedKeyMessageCommand => _revokedKeyMessageCommand ?? (_revokedKeyMessageCommand = new RelayCommand(o => {
+            public ICommand RevokedKeyMessageCommand => _revokedKeyMessageCommand ?? (_revokedKeyMessageCommand = new ProperCommand(o => {
                 ShowRevokedMessage();
             }, o => KeyRevoked));
 
@@ -87,8 +88,8 @@ namespace AcManager.Pages.Dialogs {
 
                     OnPropertyChanged();
                     OnErrorsChanged(nameof(Value));
-                    ApplyCommand.OnCanExecuteChanged();
-                    GetNewKeyCommand.OnCanExecuteChanged();
+                    _applyCommand?.OnCanExecuteChanged();
+                    _getNewKeyCommand?.OnCanExecuteChanged();
                 }
             }
 
@@ -100,22 +101,22 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _offlineModeAvailable)) return;
                     _offlineModeAvailable = value;
                     OnPropertyChanged();
-                    OfflineModeCommand.OnCanExecuteChanged();
+                    _offlineModeCommand?.OnCanExecuteChanged();
                 }
             }
 
             private int _attemptsCounter;
 
-            private RelayCommand _tryAgainCommand;
+            private ProperCommand _tryAgainCommand;
 
-            public RelayCommand TryAgainCommand => _tryAgainCommand ?? (_tryAgainCommand = new RelayCommand(o => {
+            public ICommand TryAgainCommand => _tryAgainCommand ?? (_tryAgainCommand = new ProperCommand(o => {
                 _attemptsCounter++;
                 TestValue();
             }));
 
-            private RelayCommand _offlineModeCommand;
+            private ProperCommand _offlineModeCommand;
 
-            public RelayCommand OfflineModeCommand => _offlineModeCommand ?? (_offlineModeCommand = new RelayCommand(o => {
+            public ICommand OfflineModeCommand => _offlineModeCommand ?? (_offlineModeCommand = new ProperCommand(o => {
                 OptionOfflineMode = true;
                 OfflineModeAvailable = false;
                 TestValue();
@@ -130,7 +131,7 @@ namespace AcManager.Pages.Dialogs {
                     _internetConnectionRequired = value;
                     OnPropertyChanged();
                     OnErrorsChanged(nameof(Value));
-                    ApplyCommand.OnCanExecuteChanged();
+                    _applyCommand?.OnCanExecuteChanged();
                 }
             }
 
@@ -144,8 +145,8 @@ namespace AcManager.Pages.Dialogs {
 
                     OnPropertyChanged();
                     OnErrorsChanged();
-                    ApplyCommand.OnCanExecuteChanged();
-                    GetNewKeyCommand.OnCanExecuteChanged();
+                    _applyCommand?.OnCanExecuteChanged();
+                    _getNewKeyCommand?.OnCanExecuteChanged();
 
                     TestValue();
                 }
@@ -159,7 +160,7 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _checkingInProgress)) return;
                     _checkingInProgress = value;
                     OnPropertyChanged();
-                    ApplyCommand.OnCanExecuteChanged();
+                    _applyCommand?.OnCanExecuteChanged();
                 }
             }
 
@@ -197,9 +198,9 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            private RelayCommand _applyCommand;
+            private ProperCommand _applyCommand;
 
-            public RelayCommand ApplyCommand => _applyCommand ?? (_applyCommand = new RelayCommand(o => {
+            public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new ProperCommand(o => {
                 ValuesStorage.Remove(AppKeyRevokedKey);
                 AppKeyHolder.Instance.SetKey(Value);
 
@@ -207,9 +208,9 @@ namespace AcManager.Pages.Dialogs {
                 WindowsHelper.RestartCurrentApplication();
             }, o => IsValueAcceptable && !CheckingInProgress && !InternetConnectionRequired && !string.IsNullOrWhiteSpace(Value)));
 
-            private RelayCommand _getNewKeyCommand;
+            private ProperCommand _getNewKeyCommand;
 
-            public RelayCommand GetNewKeyCommand => _getNewKeyCommand ?? (_getNewKeyCommand = new RelayCommand(o => {
+            public ICommand GetNewKeyCommand => _getNewKeyCommand ?? (_getNewKeyCommand = new ProperCommand(o => {
                 Process.Start("http://acstuff.ru/app/cm/key/get");
             }, o => !IsValueAcceptable || string.IsNullOrWhiteSpace(Value)));
 

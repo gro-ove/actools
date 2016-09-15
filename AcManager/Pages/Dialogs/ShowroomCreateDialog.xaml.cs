@@ -78,7 +78,7 @@ namespace AcManager.Pages.Dialogs {
 
             private ICommand _selectPanoramaFileCommand;
 
-            public ICommand SelectPanoramaFileCommand => _selectPanoramaFileCommand ?? (_selectPanoramaFileCommand = new RelayCommand(o => {
+            public ICommand SelectPanoramaFileCommand => _selectPanoramaFileCommand ?? (_selectPanoramaFileCommand = new ProperCommand(o => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.TexturesFilter,
                     FileName = PanoramaFilename,
@@ -92,7 +92,7 @@ namespace AcManager.Pages.Dialogs {
 
             private ICommand _createCommand;
 
-            public ICommand CreateCommand => _createCommand ?? (_createCommand = new RelayCommand(o => {
+            public ICommand CreateCommand => _createCommand ?? (_createCommand = new ProperCommand(o => {
                 // TODO: async
                 Create();
             }, o => PanoramaFilename != null && File.Exists(PanoramaFilename)));

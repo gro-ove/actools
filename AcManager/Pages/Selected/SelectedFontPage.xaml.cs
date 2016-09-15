@@ -30,9 +30,9 @@ namespace AcManager.Pages.Selected {
 
             public FontsManager Manager => FontsManager.Instance;
 
-            private AsyncCommand _usingsRescanCommand;
+            private ProperAsyncCommand _usingsRescanCommand;
 
-            public AsyncCommand UsingsRescanCommand => _usingsRescanCommand ?? (_usingsRescanCommand = new AsyncCommand(async o => {
+            public ICommand UsingsRescanCommand => _usingsRescanCommand ?? (_usingsRescanCommand = new ProperAsyncCommand(async o => {
                 List<string> missing;
                 using (var waiting = new WaitingDialog()) {
                     missing = await FontsManager.Instance.UsingsRescan(waiting, waiting.CancellationToken);
@@ -43,9 +43,9 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private AsyncCommand _disableUnusedCommand;
+            private ProperAsyncCommand _disableUnusedCommand;
 
-            public AsyncCommand DisableUnusedCommand => _disableUnusedCommand ?? (_disableUnusedCommand = new AsyncCommand(async o => {
+            public ICommand DisableUnusedCommand => _disableUnusedCommand ?? (_disableUnusedCommand = new ProperAsyncCommand(async o => {
                 using (var waiting = new WaitingDialog(ToolsStrings.Common_Scanning)) {
                     await FontsManager.Instance.UsingsRescan(waiting, waiting.CancellationToken);
                     if (waiting.CancellationToken.IsCancellationRequested) return;
@@ -61,9 +61,9 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private RelayCommand _createNewFontCommand;
+            private ProperCommand _createNewFontCommand;
 
-            public RelayCommand CreateNewFontCommand => _createNewFontCommand ?? (_createNewFontCommand = new RelayCommand(o => {
+            public ICommand CreateNewFontCommand => _createNewFontCommand ?? (_createNewFontCommand = new ProperCommand(o => {
                 Process.Start(FontCreationTool);
             }, o => File.Exists(FontCreationTool)));
 

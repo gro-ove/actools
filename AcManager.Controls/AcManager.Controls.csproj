@@ -175,6 +175,7 @@
     <Compile Include="ChangedPresetEventArgs.cs" />
     <Compile Include="Converters\AuthorVersionUrlToLabelConverter.cs" />
     <Compile Include="Dialogs\PromptCodeFromBrowser.cs" />
+    <Compile Include="Helpers\AppShortcut.cs" />
     <Compile Include="Helpers\AwesomiumResolverService.cs" />
     <Compile Include="Helpers\BetterWebControl.cs" />
     <Compile Include="Helpers\ControlsPresets.cs" />

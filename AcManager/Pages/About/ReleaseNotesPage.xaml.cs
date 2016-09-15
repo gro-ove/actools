@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Input;
 using AcManager.About;
 using AcManager.Internal;
 using AcManager.Tools.About;
@@ -20,9 +21,9 @@ namespace AcManager.Pages.About {
                 NotesList.MoveCurrentToFirst();
             }
 
-            private RelayCommand _markAllAsReadCommand;
+            private ProperCommand _markAllAsReadCommand;
 
-            public RelayCommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new RelayCommand(o => {
+            public ICommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new ProperCommand(o => {
                 foreach (var note in ReleaseNotes.Entries.Where(x => x.IsNew)) {
                     note.MarkAsRead();
                 }

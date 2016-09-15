@@ -37,7 +37,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private ICommand _closeCommand;
 
-        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new RelayCommand(o => {
+        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new ProperCommand(o => {
             Close?.Invoke(this, EventArgs.Empty);
         }));
 

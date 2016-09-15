@@ -117,9 +117,9 @@ namespace AcManager.UserControls {
 
         public ICommand SavePresetCommand => Model?.SavePresetCommand;
 
-        private RelayCommand _addOpponentCarCommand;
+        private ProperCommand _addOpponentCarCommand;
 
-        public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new RelayCommand(o => {
+        public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new ProperCommand(o => {
             AddSelected();
         }, o => SelectedCar != null));
 
@@ -159,7 +159,7 @@ namespace AcManager.UserControls {
 
         private ICommand _setupCommand;
 
-        public ICommand SetupCommand => _setupCommand ?? (_setupCommand = new RelayCommand(o => {
+        public ICommand SetupCommand => _setupCommand ?? (_setupCommand = new ProperCommand(o => {
             var model = Model;
             if (model == null) return;
 

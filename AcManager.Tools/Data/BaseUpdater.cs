@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -99,7 +98,7 @@ namespace AcManager.Tools.Data {
                 if (Equals(value, _isGetting)) return;
                 _isGetting = value;
                 OnPropertyChanged();
-                CommandManager.InvalidateRequerySuggested();
+                _checkAndUpdateIfNeededCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -112,7 +111,10 @@ namespace AcManager.Tools.Data {
                 if (Equals(value, _installedVersion)) return;
                 _installedVersion = value;
                 OnPropertyChanged();
-                CommandManager.InvalidateRequerySuggested();
+
+                // specially for LocaleUpdater
+                // TODO: mistake in OOP terms
+                _checkAndUpdateIfNeededCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -121,7 +123,7 @@ namespace AcManager.Tools.Data {
         public virtual async Task CheckAndUpdateIfNeeded() {
             if (_checkingInProcess) return;
             _checkingInProcess = true;
-            CommandManager.InvalidateRequerySuggested();
+            _checkAndUpdateIfNeededCommand?.OnCanExecuteChanged();
 
             LatestError = null;
 
@@ -138,7 +140,7 @@ namespace AcManager.Tools.Data {
                 Logging.Warning("Cannot check and update: " + e);
             } finally {
                 _checkingInProcess = false;
-                CommandManager.InvalidateRequerySuggested();
+                _checkAndUpdateIfNeededCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -146,10 +148,10 @@ namespace AcManager.Tools.Data {
             return !_checkingInProcess && !IsGetting;
         }
 
-        private ICommand _contentCheckForUpdatesCommand;
+        private ProperCommand _checkAndUpdateIfNeededCommand;
 
-        public ICommand CheckAndUpdateIfNeededCommand => _contentCheckForUpdatesCommand ??
-                (_contentCheckForUpdatesCommand = new RelayCommand(o => CheckAndUpdateIfNeeded().Forget(), o => CanBeUpdated()));
+        public ICommand CheckAndUpdateIfNeededCommand => _checkAndUpdateIfNeededCommand ??
+                (_checkAndUpdateIfNeededCommand = new ProperCommand(o => CheckAndUpdateIfNeeded().Forget(), o => CanBeUpdated()));
 
         /// <summary>
         /// Check and install/prepare update.

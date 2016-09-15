@@ -100,7 +100,7 @@ namespace AcManager.Pages.Windows {
             SettingsHolder.Online.PropertyChanged += Online_PropertyChanged;
 
             if (!OfficialStarterNotification() && PluginsManager.Instance.HasAnyNew()) {
-                Toast.Show("Don’t forget to install plugins!", ""); // TODO
+                Toast.Show("Don’t forget to install plugins!", ""); // TODO?
             }
 
             EntryPoint.HandleSecondInstanceMessages(this, HandleMessagesAsync);
@@ -259,9 +259,9 @@ namespace AcManager.Pages.Windows {
         private ViewModel Model => (ViewModel)DataContext;
 
         public class ViewModel : NotifyPropertyChanged {
-            private RelayCommand _enterKeyCommand;
+            private ProperCommand _enterKeyCommand;
 
-            public RelayCommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new RelayCommand(o => {
+            public ICommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new ProperCommand(o => {
                 new AppKeyDialog().ShowDialog();
             }));
 
@@ -385,7 +385,7 @@ namespace AcManager.Pages.Windows {
 
         private ICommand _quickSwitchesCommand;
 
-        public ICommand QuickSwitchesCommand => _quickSwitchesCommand ?? (_quickSwitchesCommand = new RelayCommand(o => {
+        public ICommand QuickSwitchesCommand => _quickSwitchesCommand ?? (_quickSwitchesCommand = new ProperCommand(o => {
             ToggleQuickSwitches();
         }));
 

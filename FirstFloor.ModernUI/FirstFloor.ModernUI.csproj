@@ -163,6 +163,7 @@
     <Compile Include="Windows\Attached\Draggable.cs" />
     <Compile Include="Windows\Controls\AdornedControl.cs" />
     <Compile Include="Windows\Controls\BaseSwitch.cs" />
+    <Compile Include="Windows\Controls\BetterScrollBar.cs" />
     <Compile Include="Windows\Controls\BetterTextBox.cs" />
     <Compile Include="Windows\Controls\Cell.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />

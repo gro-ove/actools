@@ -28,7 +28,7 @@ namespace AcManager.Controls {
         }
 
         public UserPresetsControl() {
-            SaveCommand = new RelayCommand(SaveExecute, SaveCanExecute);
+            SaveCommand = new ProperCommand(SaveExecute, SaveCanExecute);
             Loaded += UserPresetsControl_Loaded;
             Unloaded += UserPresetsControl_Unloaded;
         }
@@ -167,7 +167,7 @@ namespace AcManager.Controls {
             _partiallyIgnoreNext = false;
         }
 
-        public ICommand SaveCommand { get; set; }
+        public ICommand SaveCommand { get; }
 
         public bool SaveCanExecute(object parameter) {
             return _presetable != null && _presetable.CanBeSaved;

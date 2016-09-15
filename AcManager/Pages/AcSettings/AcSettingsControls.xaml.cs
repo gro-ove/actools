@@ -46,9 +46,9 @@ namespace AcManager.Pages.AcSettings {
         public class ViewModel : NotifyPropertyChanged {
             internal ViewModel() {}
 
-            private RelayCommand _saveCommand;
+            private ProperCommand _saveCommand;
 
-            public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
+            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new ProperCommand(o => {
                 var dialog = new SaveFileDialog {
                     InitialDirectory = Controls.UserPresetsDirectory,
                     FileName = Path.GetFileNameWithoutExtension(Controls.CurrentPresetFilename),
@@ -84,15 +84,15 @@ namespace AcManager.Pages.AcSettings {
                 Controls.SavePreset(filename);
             }));
 
-            private RelayCommand _testCommand;
+            private ProperCommand _testCommand;
 
-            public RelayCommand TestCommand => _testCommand ?? (_testCommand = new RelayCommand(o => {
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new ProperCommand(o => {
                 QuickDrive.Run();
             }));
 
-            private AsyncCommand _shareCommand;
+            private ProperAsyncCommand _shareCommand;
 
-            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
 
             private async Task Share(object o) {
                 if (o as string == @"FFBOnly") {

@@ -23,16 +23,16 @@ namespace AcManager.Pages.Selected {
 
             public PpFiltersManager Manager => PpFiltersManager.Instance;
 
-            private AsyncCommand _shareCommand;
+            private ProperAsyncCommand _shareCommand;
 
-            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(o => {
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(o => {
                 var data = SelectedObject.Content ?? FileUtils.ReadAllText(SelectedObject.Location);
                 return SharingUiHelper.ShareAsync(SharedEntryType.PpFilter, SelectedObject.Name, null, data);
             }));
 
-            private RelayCommand _testCommand;
+            private ProperCommand _testCommand;
 
-            public RelayCommand TestCommand => _testCommand ?? (_testCommand = new RelayCommand(o => {
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new ProperCommand(o => {
                 var car = CarsManager.Instance.GetDefault();
                 CarOpenInShowroomDialog.Run(car, car?.SelectedSkin?.Id, SelectedObject.AcId);
             }));

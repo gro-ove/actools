@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
@@ -25,9 +26,9 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            private RelayCommand _navigateCommand;
+            private ProperCommand _navigateCommand;
 
-            public RelayCommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new RelayCommand(o => {
+            public ICommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new ProperCommand(o => {
                 (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri(o?.ToString() ?? "", UriKind.RelativeOrAbsolute));
             }));
         }

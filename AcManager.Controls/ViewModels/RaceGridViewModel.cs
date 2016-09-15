@@ -300,7 +300,7 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _savePresetCommand;
 
-        public ICommand SavePresetCommand => _savePresetCommand ?? (_savePresetCommand = new RelayCommand(o => {
+        public ICommand SavePresetCommand => _savePresetCommand ?? (_savePresetCommand = new ProperCommand(o => {
             string resultFilename;
             if (!PresetsManager.Instance.SavePresetUsingDialog(PresetableCategory,
                                                                ExportToPresetData(),
@@ -508,7 +508,7 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _switchModeCommand;
 
-        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new RelayCommand(o => {
+        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new ProperCommand(o => {
             var mode = o as BuiltInGridMode;
             if (mode != null) {
                 Mode = mode;

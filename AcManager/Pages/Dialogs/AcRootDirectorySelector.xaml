@@ -23,8 +23,7 @@
             <TextBlock Text="{x:Static g:AppStrings.AcRoot_Prompt}" Style="{StaticResource Heading2}" />
             <DockPanel Margin="20 8 0 0">
                 <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding ChangeAcRootCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
-                <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" mui:WatermarkService.Watermark="?"
-                        mui:FocusAdvancement.AdvancesByEnterKey="True" />
+                <mui:BetterTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Placeholder="?" />
             </DockPanel>
         </StackPanel>
 
@@ -33,9 +32,20 @@
             <TextBlock Text="{x:Static g:AppStrings.AcRoot_SteamId_Prompt}" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
             <DockPanel Margin="20 8 0 0">
                 <Button Content="{x:Static c:ControlsStrings.Common_Change}" Command="{Binding GetSteamIdCommand}" DockPanel.Dock="Right" Margin="4 0 0 0" />
-                <ComboBox ItemsSource="{Binding SteamProfiles}" SelectedItem="{Binding SteamProfile}" mui:WatermarkService.Watermark="?"
-                        mui:FocusAdvancement.AdvancesByEnterKey="True" Foreground="{DynamicResource InputText}" DisplayMemberPath="DisplayName" />
+                <mui:BetterComboBox ItemsSource="{Binding SteamProfiles}" SelectedItem="{Binding SteamProfile}" Placeholder="?"
+                        Foreground="{DynamicResource InputText}" DisplayMemberPath="DisplayName" IsEditable="False" />
             </DockPanel>
+        </StackPanel>
+
+        <!--shortcut-->
+        <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <TextBlock Text="Add a shortcut to Start Menu?"
+                    Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+            <TextBlock Margin="20 8 0 0" Text="With it, CM will be able to use proper notifications in Windows 8, 8.1 or 10." Style="{StaticResource Small}" />
+            <StackPanel Margin="20 8 0 0" Orientation="Horizontal">
+                <Button Content="Create" Command="{x:Static c:AppShortcut.CreateShortcutCommand}" Margin="0 0 4 0" />
+                <Button Content="Delete" Command="{x:Static c:AppShortcut.DeleteShortcutCommand}" Margin="0 0 4 0" />
+            </StackPanel>
         </StackPanel>
 
         <!--plugins-->

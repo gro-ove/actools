@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -46,6 +47,24 @@ namespace AcManager.Pages.Settings {
 
             internal ViewModel() {
                 UpdateSteamId();
+                AppShortcutExists = AppShortcut.HasShortcut();
+            }
+
+            private bool _appShortcutExists;
+
+            public bool AppShortcutExists {
+                get { return _appShortcutExists; }
+                set {
+                    if (Equals(value, _appShortcutExists)) return;
+                    _appShortcutExists = value;
+                    OnPropertyChanged();
+
+                    if (value) {
+                        AppShortcut.CreateShortcut();
+                    } else {
+                        AppShortcut.DeleteShortcut();
+                    }
+                }
             }
 
             public void Load() {
@@ -69,7 +88,7 @@ namespace AcManager.Pages.Settings {
 
             private ICommand _changeAcRootCommand;
 
-            public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new RelayCommand(o => {
+            public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new ProperCommand(o => {
                 if (ModernDialog.ShowMessage(AppStrings.Settings_General_ChangeAcRoot_Message, AppStrings.Settings_General_ChangeAcRoot,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
                 AcRootDirectory.Instance.Reset();
@@ -78,16 +97,16 @@ namespace AcManager.Pages.Settings {
 
             private ICommand _changeSteamIdCommand;
 
-            public ICommand ChangeSteamIdCommand => _changeSteamIdCommand ?? (_changeSteamIdCommand = new RelayCommand(o => {
+            public ICommand ChangeSteamIdCommand => _changeSteamIdCommand ?? (_changeSteamIdCommand = new ProperCommand(o => {
                 if (ModernDialog.ShowMessage("Do you want to change Steam ID? App will be restarted; also, RSR and SRS progress will be nulled.",
                                 "Change Steam ID", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
                 new AcRootDirectorySelector(false, true).ShowDialog();
                 WindowsHelper.RestartCurrentApplication();
             }));
 
-            private RelayCommand _changeAppKeyCommand;
+            private ICommand _changeAppKeyCommand;
 
-            public RelayCommand ChangeAppKeyCommand => _changeAppKeyCommand ?? (_changeAppKeyCommand = new RelayCommand(o => {
+            public ICommand ChangeAppKeyCommand => _changeAppKeyCommand ?? (_changeAppKeyCommand = new ProperCommand(o => {
                 new AppKeyDialog().ShowDialog();
             }));
 
@@ -97,10 +116,10 @@ namespace AcManager.Pages.Settings {
 
             public DataUpdater DataUpdater => DataUpdater.Instance;
 
-            private RelayCommand _cleanUpStorageCommand;
+            private ICommand _cleanUpStorageCommand;
 
             [Localizable(false)]
-            public RelayCommand CleanUpStorageCommand => _cleanUpStorageCommand ?? (_cleanUpStorageCommand = new RelayCommand(o => {
+            public ICommand CleanUpStorageCommand => _cleanUpStorageCommand ?? (_cleanUpStorageCommand = new ProperCommand(o => {
                 ValuesStorage.Storage.CleanUp(x =>
                         x.StartsWith(".") || 
                         x.StartsWith("KunosCareerObject.SelectedEvent__") ||

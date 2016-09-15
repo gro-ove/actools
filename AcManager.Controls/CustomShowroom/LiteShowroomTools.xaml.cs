@@ -32,7 +32,7 @@ namespace AcManager.Controls.CustomShowroom {
                 new InputBinding(Model.NextSkinCommand, new KeyGesture(Key.PageDown)),
                 new InputBinding(Model.Car.ViewInExplorerCommand, new KeyGesture(Key.F, ModifierKeys.Alt)),
                 new InputBinding(Model.OpenSkinDirectoryCommand, new KeyGesture(Key.F, ModifierKeys.Control)),
-                new InputBinding(new RelayCommand(o => Model.Renderer?.Deselect()), new KeyGesture(Key.D, ModifierKeys.Control))
+                new InputBinding(new ProperCommand(o => Model.Renderer?.Deselect()), new KeyGesture(Key.D, ModifierKeys.Control))
             });
             InitializeComponent();
             Buttons = new Button[0];
@@ -162,16 +162,16 @@ namespace AcManager.Controls.CustomShowroom {
                         break;
 
                     case nameof(Renderer.SelectedObject):
-                        ViewObjectCommand.OnCanExecuteChanged();
+                        _viewObjectCommand?.OnCanExecuteChanged();
                         break;
 
                     case nameof(Renderer.SelectedMaterial):
-                        ViewMaterialCommand.OnCanExecuteChanged();
+                        _viewMaterialCommand?.OnCanExecuteChanged();
                         break;
 
                     case nameof(Renderer.AmbientShadowSizeChanged):
-                        AmbientShadowSizeSaveCommand.OnCanExecuteChanged();
-                        AmbientShadowSizeResetCommand.OnCanExecuteChanged();
+                        _ambientShadowSizeSaveCommand?.OnCanExecuteChanged();
+                        _ambientShadowSizeResetCommand?.OnCanExecuteChanged();
                         break;
                 }
             }
@@ -192,9 +192,9 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private RelayCommand _toggleAmbientShadowModeCommand;
+            private ProperCommand _toggleAmbientShadowModeCommand;
 
-            public RelayCommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new RelayCommand(o => {
+            public ICommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new ProperCommand(o => {
                 AmbientShadowsMode = !AmbientShadowsMode;
                 if (!AmbientShadowsMode && Renderer != null) {
                     Renderer.AmbientShadowHighlight = false;
@@ -264,9 +264,9 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private AsyncCommand _updateAmbientShadowCommand;
+            private ProperAsyncCommand _updateAmbientShadowCommand;
 
-            public AsyncCommand UpdateAmbientShadowCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new AsyncCommand(async o => {
+            public ICommand UpdateAmbientShadowCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new ProperAsyncCommand(async o => {
                 if (Renderer?.AmbientShadowSizeChanged == true) {
                     AmbientShadowSizeSaveCommand.Execute(null);
 
@@ -311,9 +311,9 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }));
 
-            private RelayCommand _ambientShadowSizeSaveCommand;
+            private ProperCommand _ambientShadowSizeSaveCommand;
 
-            public RelayCommand AmbientShadowSizeSaveCommand => _ambientShadowSizeSaveCommand ?? (_ambientShadowSizeSaveCommand = new RelayCommand(o => {
+            public ICommand AmbientShadowSizeSaveCommand => _ambientShadowSizeSaveCommand ?? (_ambientShadowSizeSaveCommand = new ProperCommand(o => {
                 if (Renderer == null || File.Exists(Path.Combine(Car.Location, "data.acd")) && ModernDialog.ShowMessage(
                         ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedDataMessage,
                         ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedData, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
@@ -330,47 +330,47 @@ namespace AcManager.Controls.CustomShowroom {
                 Renderer.AmbientShadowSizeChanged = false;
             }, o => Renderer?.AmbientShadowSizeChanged == true));
 
-            private RelayCommand _ambientShadowResetCommand;
+            private ProperCommand _ambientShadowResetCommand;
 
-            public RelayCommand AmbientShadowResetCommand => _ambientShadowResetCommand ?? (_ambientShadowResetCommand = new RelayCommand(o => {
+            public ICommand AmbientShadowResetCommand => _ambientShadowResetCommand ?? (_ambientShadowResetCommand = new ProperCommand(o => {
                 Reset(true);
             }));
 
-            private RelayCommand _ambientShadowSizeFitCommand;
+            private ProperCommand _ambientShadowSizeFitCommand;
 
-            public RelayCommand AmbientShadowSizeFitCommand => _ambientShadowSizeFitCommand ?? (_ambientShadowSizeFitCommand = new RelayCommand(o => {
+            public ICommand AmbientShadowSizeFitCommand => _ambientShadowSizeFitCommand ?? (_ambientShadowSizeFitCommand = new ProperCommand(o => {
                 Renderer?.FitAmbientShadowSize();
             }, o => Renderer != null));
 
-            private RelayCommand _ambientShadowSizeResetCommand;
+            private ProperCommand _ambientShadowSizeResetCommand;
 
-            public RelayCommand AmbientShadowSizeResetCommand => _ambientShadowSizeResetCommand ?? (_ambientShadowSizeResetCommand = new RelayCommand(o => {
+            public ICommand AmbientShadowSizeResetCommand => _ambientShadowSizeResetCommand ?? (_ambientShadowSizeResetCommand = new ProperCommand(o => {
                 Renderer?.ResetAmbientShadowSize();
             }, o => Renderer?.AmbientShadowSizeChanged == true));
             #endregion
 
             #region Commands
-            private RelayCommand _nextSkinCommand;
+            private ProperCommand _nextSkinCommand;
 
-            public RelayCommand NextSkinCommand => _nextSkinCommand ?? (_nextSkinCommand = new RelayCommand(o => {
+            public ICommand NextSkinCommand => _nextSkinCommand ?? (_nextSkinCommand = new ProperCommand(o => {
                 Renderer?.SelectNextSkin();
             }));
 
-            private RelayCommand _previewSkinCommand;
+            private ProperCommand _previewSkinCommand;
 
-            public RelayCommand PreviewSkinCommand => _previewSkinCommand ?? (_previewSkinCommand = new RelayCommand(o => {
+            public ICommand PreviewSkinCommand => _previewSkinCommand ?? (_previewSkinCommand = new ProperCommand(o => {
                 Renderer?.SelectPreviousSkin();
             }));
 
-            private RelayCommand _openSkinDirectoryCommand;
+            private ProperCommand _openSkinDirectoryCommand;
 
-            public RelayCommand OpenSkinDirectoryCommand => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new RelayCommand(o => {
+            public ICommand OpenSkinDirectoryCommand => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new ProperCommand(o => {
                 Skin.ViewInExplorer();
             }, o => Skin != null));
 
-            private AsyncCommand _unpackKn5Command;
+            private ProperAsyncCommand _unpackKn5Command;
 
-            public AsyncCommand UnpackKn5Command => _unpackKn5Command ?? (_unpackKn5Command = new AsyncCommand(async o => {
+            public ICommand UnpackKn5Command => _unpackKn5Command ?? (_unpackKn5Command = new ProperAsyncCommand(async o => {
                 if (Renderer?.Kn5 == null) return;
 
                 try {
@@ -430,9 +430,9 @@ namespace AcManager.Controls.CustomShowroom {
                 dlg.ShowDialog();
             }
 
-            private RelayCommand _viewObjectCommand;
+            private ProperCommand _viewObjectCommand;
 
-            public RelayCommand ViewObjectCommand => _viewObjectCommand ?? (_viewObjectCommand = new RelayCommand(o => {
+            public ICommand ViewObjectCommand => _viewObjectCommand ?? (_viewObjectCommand = new ProperCommand(o => {
                 var obj = Renderer?.SelectedObject.OriginalNode;
                 if (obj == null) return;
 
@@ -448,9 +448,9 @@ namespace AcManager.Controls.CustomShowroom {
                 return property.ValueA.ToInvariantString();
             }
 
-            private RelayCommand _viewMaterialCommand;
+            private ProperCommand _viewMaterialCommand;
 
-            public RelayCommand ViewMaterialCommand => _viewMaterialCommand ?? (_viewMaterialCommand = new RelayCommand(o => {
+            public ICommand ViewMaterialCommand => _viewMaterialCommand ?? (_viewMaterialCommand = new ProperCommand(o => {
                 var material = Renderer?.SelectedMaterial;
                 if (material == null) return;
 
@@ -477,9 +477,9 @@ namespace AcManager.Controls.CustomShowroom {
                 ShowMessage(sb.ToString(), material.Name);
             }, o => Renderer?.SelectedMaterial != null));
 
-            private RelayCommand _viewTextureCommand;
+            private ProperCommand _viewTextureCommand;
 
-            public RelayCommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new RelayCommand(o => {
+            public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new ProperCommand(o => {
                 if (Renderer == null) return;
                 new CarTextureDialog(Renderer.Kn5, ((ToolsKn5ObjectRenderer.TextureInformation)o).TextureName).ShowDialog();
             }, o => o is ToolsKn5ObjectRenderer.TextureInformation));

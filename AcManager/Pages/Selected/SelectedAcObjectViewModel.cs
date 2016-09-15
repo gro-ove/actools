@@ -31,13 +31,13 @@ namespace AcManager.Pages.Selected {
 
         private ICommand _findInformationCommand;
 
-        public ICommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new RelayCommand(o => {
+        public ICommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new ProperCommand(o => {
             new FindInformationDialog((AcJsonObjectNew)SelectedAcObject).ShowDialog();
         }, o => SelectedAcObject is AcJsonObjectNew));
 
         private ICommand _changeIdCommand;
 
-        public ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new RelayCommand(o => {
+        public ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new ProperCommand(o => {
             var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.Toolbar_ChangeId, SelectedObject.Id, @"?", AppStrings.AcObject_ChangeId_Tooltip);
             if (string.IsNullOrWhiteSpace(newId)) return;
             SelectedObject.ChangeIdCommand.Execute(newId);
@@ -45,7 +45,7 @@ namespace AcManager.Pages.Selected {
 
         private ICommand _cloneCommand;
 
-        public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand(async o => {
+        public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new ProperAsyncCommand(async o => {
             var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.Toolbar_Clone, SelectedObject.Id, @"?");
             if (string.IsNullOrWhiteSpace(newId)) return;
 
@@ -60,15 +60,15 @@ namespace AcManager.Pages.Selected {
             (Application.Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive)?.CurrentLinkGroup as LinkGroupFilterable)?.AddAndSelect(filter);
         }
 
-        private RelayCommand _filterTagCommand;
+        private ProperCommand _filterTagCommand;
 
-        public RelayCommand FilterTagCommand => _filterTagCommand ?? (_filterTagCommand = new RelayCommand(o => {
+        public ICommand FilterTagCommand => _filterTagCommand ?? (_filterTagCommand = new ProperCommand(o => {
             NewFilterTab($"tag:{Filter.Encode(o as string ?? "")}");
         }, o => o is string));
 
-        private RelayCommand _filterCommand;
+        private ProperCommand _filterCommand;
 
-        public RelayCommand FilterCommand => _filterCommand ?? (_filterCommand = new RelayCommand(o => FilterExec(o as string)));
+        public ProperCommand FilterCommand => _filterCommand ?? (_filterCommand = new ProperCommand(o => FilterExec(o as string)));
 
         protected void FilterRange([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
             var delta = (relative ? range * value : range) / 2d;

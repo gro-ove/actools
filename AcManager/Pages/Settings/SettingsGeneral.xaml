@@ -39,13 +39,13 @@
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_AppKeyLabel}" />
                 <Button Command="{Binding ChangeAppKeyCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
-                <TextBlock Text="{Binding Source={x:Static in:AppKeyHolder.KeySafe}, Mode=OneTime}" mui:WatermarkService.Watermark="?" />
+                <mui:PlaceholderTextBlock Text="{Binding Source={x:Static in:AppKeyHolder.KeySafe}, Mode=OneTime}" Placeholder="?" />
             </DockPanel>
 
-            <CheckBox IsChecked="{Binding Common.CreateStartMenuShortcutIfMissing}" ToolTip="{x:Static g:AppStrings.Settings_General_WindowsShortcut_Tooltip}">
+            <CheckBox IsChecked="{Binding AppShortcutExists}" ToolTip="{x:Static g:AppStrings.Settings_General_WindowsShortcut_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_General_WindowsShortcut}" />
             </CheckBox>
-
+            
             <!--versions-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_AutoUpdatesHeader}" />
 
@@ -74,8 +74,8 @@
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_ContentVersionLabel}" />
                 <Button Command="{Binding DataUpdater.CheckAndUpdateIfNeededCommand}" Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
-                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding DataUpdater.InstalledVersion, Mode=OneWay}"
-                        mui:WatermarkService.Watermark="?" />
+                <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding DataUpdater.InstalledVersion, Mode=OneWay}"
+                        Placeholder="?" IsReadOnly="True" />
             </DockPanel>
             <TextBlock Text="{Binding DataUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
                     Visibility="{Binding DataUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -93,7 +93,7 @@
 
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_ValuesSavingTimeLabel}" />
-                <TextBlock mui:WatermarkService.Watermark="?"
+                <mui:PlaceholderTextBlock Placeholder="?"
                         Text="{Binding ValuesStorage.PreviosSaveTime.TotalMilliseconds, StringFormat={x:Static g:AppStrings.Common_MillisecondsFormat}, Mode=OneWay}" />
             </DockPanel>
 

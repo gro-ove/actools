@@ -10,15 +10,15 @@ using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class TagsList : Control {
-        private RelayCommand _closeCommand;
+        private ProperCommand _closeCommand;
 
-        public RelayCommand CloseCommand => _closeCommand ?? (_closeCommand = new RelayCommand(o => {
+        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new ProperCommand(o => {
             ItemsSource.Remove(o as string);
         }));
 
-        private RelayCommand _changeCommand;
+        private ProperCommand _changeCommand;
 
-        public RelayCommand ChangeCommand => _changeCommand ?? (_changeCommand = new RelayCommand(o => {
+        public ICommand ChangeCommand => _changeCommand ?? (_changeCommand = new ProperCommand(o => {
             var target = o as TextBox;
             var originalValue = target?.DataContext as string;
             if (originalValue == null) return;

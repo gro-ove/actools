@@ -47,15 +47,15 @@ namespace AcManager.Pages.Selected {
                 base.FilterExec(type);
             }
 
-            private RelayCommand _createJsonCommand;
+            private ProperCommand _createJsonCommand;
 
-            public RelayCommand CreateJsonCommand => _createJsonCommand ?? (_createJsonCommand = new RelayCommand(o => {
+            public ICommand CreateJsonCommand => _createJsonCommand ?? (_createJsonCommand = new ProperCommand(o => {
                 SelectedObject.Save();
             }));
 
-            private RelayCommand _deleteJsonCommand;
+            private ProperCommand _deleteJsonCommand;
 
-            public RelayCommand DeleteJsonCommand => _deleteJsonCommand ?? (_deleteJsonCommand = new RelayCommand(o => {
+            public ICommand DeleteJsonCommand => _deleteJsonCommand ?? (_deleteJsonCommand = new ProperCommand(o => {
                 try {
                     if (File.Exists(SelectedObject.JsonFilename)) {
                         FileUtils.Recycle(SelectedObject.JsonFilename);
@@ -65,28 +65,28 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private RelayCommand _updatePreviewCommand;
+            private ProperCommand _updatePreviewCommand;
 
-            public RelayCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new RelayCommand(o => {
+            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new ProperCommand(o => {
                 new CarUpdatePreviewsDialog(Car, new[] { SelectedObject.Id },
                         SelectedCarPage.ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             }, o => SelectedObject.Enabled));
 
-            private RelayCommand _changeLiveryCommand;
+            private ProperCommand _changeLiveryCommand;
 
-            public RelayCommand ChangeLiveryCommand => _changeLiveryCommand ?? (_changeLiveryCommand = new RelayCommand(o => {
+            public ICommand ChangeLiveryCommand => _changeLiveryCommand ?? (_changeLiveryCommand = new ProperCommand(o => {
                 new LiveryIconEditor(SelectedObject).ShowDialog();
             }));
 
-            private AsyncCommand _generateLiveryCommand;
+            private ProperAsyncCommand _generateLiveryCommand;
 
-            public AsyncCommand GenerateLiveryCommand
-                => _generateLiveryCommand ?? (_generateLiveryCommand = new AsyncCommand(o => LiveryIconEditor.GenerateAsync(SelectedObject)));
+            public ICommand GenerateLiveryCommand
+                => _generateLiveryCommand ?? (_generateLiveryCommand = new ProperAsyncCommand(o => LiveryIconEditor.GenerateAsync(SelectedObject)));
 
-            private AsyncCommand _generateRandomLiveryCommand;
+            private ProperAsyncCommand _generateRandomLiveryCommand;
 
-            public AsyncCommand GenerateRandomLiveryCommand
-                => _generateRandomLiveryCommand ?? (_generateRandomLiveryCommand = new AsyncCommand(o => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));
+            public ICommand GenerateRandomLiveryCommand
+                => _generateRandomLiveryCommand ?? (_generateRandomLiveryCommand = new ProperAsyncCommand(o => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));
         }
 
         private string _carId, _id;

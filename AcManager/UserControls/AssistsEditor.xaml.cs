@@ -15,7 +15,7 @@ namespace AcManager.UserControls {
 
         private ICommand _shareCommand;
 
-        public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
+        public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
 
         private async Task Share(object o) {
             var model = DataContext as AssistsViewModel;

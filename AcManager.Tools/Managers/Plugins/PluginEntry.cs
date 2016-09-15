@@ -79,12 +79,15 @@ namespace AcManager.Tools.Managers.Plugins {
         /// </summary>
         public bool IsReady => IsInstalled && IsEnabled;
 
+        private bool _isInstalling;
+
         public bool IsInstalling {
             get { return _isInstalling; }
             set {
                 if (value == _isInstalling) return;
                 _isInstalling = value;
                 OnPropertyChanged();
+                _installCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -98,6 +101,7 @@ namespace AcManager.Tools.Managers.Plugins {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsInstalled));
                 OnPropertyChanged(nameof(AvailableToInstall));
+                _installCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -176,10 +180,9 @@ namespace AcManager.Tools.Managers.Plugins {
         [JsonConstructor, UsedImplicitly]
         private PluginEntry() { }
 
-        private ICommand _installCommand;
-        private bool _isInstalling;
+        private ProperAsyncCommand _installCommand;
 
-        public ICommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(
+        public ICommand InstallCommand => _installCommand ?? (_installCommand = new ProperAsyncCommand(
                 Install,
                 x => !IsInstalled && !IsInstalling));
 
@@ -200,9 +203,9 @@ namespace AcManager.Tools.Managers.Plugins {
             _cancellation = null;
         }
 
-        private RelayCommand _cancellationCommand;
+        private ProperCommand _cancellationCommand;
 
-        public RelayCommand CancellationCommand => _cancellationCommand ?? (_cancellationCommand = new RelayCommand(o => {
+        public ICommand CancellationCommand => _cancellationCommand ?? (_cancellationCommand = new ProperCommand(o => {
             _cancellation?.Cancel();
         }));
 

@@ -321,7 +321,7 @@
                                         <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" Grid.Row="1" Grid.ColumnSpan="2"
                                                 CanContentScroll="{TemplateBinding CanContentScroll}" />
 
-                                        <ScrollBar Grid.Row="1" Grid.Column="1" x:Name="PART_VerticalScrollBar" HorizontalAlignment="Right"
+                                        <c:BetterScrollBar Grid.Row="1" Grid.Column="1" x:Name="PART_VerticalScrollBar" HorizontalAlignment="Right"
                                                 AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow"
                                                 Maximum="{TemplateBinding ScrollableHeight}" Minimum="0"
                                                 Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
@@ -389,7 +389,7 @@
                 </Style.Triggers>
             </Style>
         </Style.Resources>
-        
+
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="SelectionUnit" Value="FullRow" />
         <Setter Property="SelectionMode" Value="Single" />
@@ -435,7 +435,7 @@
                                             Visibility="{Binding HeadersVisibility, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, ConverterParameter={x:Static DataGridHeadersVisibility.Column}}" />
                                     <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" Grid.Row="1"
                                             CanContentScroll="{TemplateBinding CanContentScroll}" />
-                                    <ScrollBar Grid.Row="1" x:Name="PART_VerticalScrollBar" HorizontalAlignment="Right"
+                                    <c:BetterScrollBar Grid.Row="1" x:Name="PART_VerticalScrollBar" HorizontalAlignment="Right"
                                             AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}"
                                             Minimum="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
                                             Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"

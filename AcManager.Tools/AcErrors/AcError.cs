@@ -68,7 +68,7 @@ namespace AcManager.Tools.AcErrors {
 
         private ICommand _startErrorFixerCommand;
 
-        public ICommand StartErrorFixerCommand => _startErrorFixerCommand ?? (_startErrorFixerCommand = new RelayCommand(o => {
+        public ICommand StartErrorFixerCommand => _startErrorFixerCommand ?? (_startErrorFixerCommand = new ProperCommand(o => {
             _acErrorFixer?.Run(this);
         }, o => _acErrorFixer != null));
         #endregion

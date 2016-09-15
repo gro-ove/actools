@@ -56,7 +56,7 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _selectedText)) return;
                     _selectedText = value;
                     OnPropertyChanged();
-                    SaveCommand.OnCanExecuteChanged();
+                    _saveCommand?.OnCanExecuteChanged();
                     UpdateSaveLabel();
                 }
             }
@@ -118,9 +118,9 @@ namespace AcManager.Pages.Dialogs {
                         ).Trim() : SelectedText;
             }
 
-            private RelayCommand _saveCommand;
+            private ProperCommand _saveCommand;
 
-            public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
+            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new ProperCommand(o => {
                 Save();
             }, o => !string.IsNullOrEmpty(SelectedText)));
         }

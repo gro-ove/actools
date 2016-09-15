@@ -81,7 +81,7 @@ namespace AcManager.Pages.Lists {
 
             private ICommand _resetPriorityCommand;
 
-            public ICommand ResetPriorityCommand => _resetPriorityCommand ?? (_resetPriorityCommand = new AsyncCommand(async o => {
+            public ICommand ResetPriorityCommand => _resetPriorityCommand ?? (_resetPriorityCommand = new ProperAsyncCommand(async o => {
                 var list = MainList.OfType<AcItemWrapper>().Select(x => x.Value as CarSkinObject).Where(x => x.Priority.HasValue).ToList();
                 var i = 0;
                 using (var waiting = new WaitingDialog()) {

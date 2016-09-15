@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
@@ -43,9 +44,9 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            private RelayCommand _restartCommand;
+            private ProperCommand _restartCommand;
 
-            public RelayCommand RestartCommand => _restartCommand ?? (_restartCommand = new RelayCommand(o => {
+            public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new ProperCommand(o => {
                 WindowsHelper.RestartCurrentApplication();
             }));
 

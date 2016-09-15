@@ -159,14 +159,14 @@ namespace AcManager.Pages.Drive {
                 base.OnCurrentChanged(sender, e);
                 if (CurrentItem == null) return;
                 CurrentItem.Loaded();
-                SelectSeriesCommand.OnCanExecuteChanged();
+                _selectSeriesCommand?.OnCanExecuteChanged();
                 
                 FancyBackgroundManager.Instance.ChangeBackground((CurrentItem.Value as KunosCareerObject)?.PreviewImage);
             }
 
-            private RelayCommand _selectSeriesCommand;
+            private ProperCommand _selectSeriesCommand;
 
-            public RelayCommand SelectSeriesCommand => _selectSeriesCommand ?? (_selectSeriesCommand = new RelayCommand(o => {
+            public ICommand SelectSeriesCommand => _selectSeriesCommand ?? (_selectSeriesCommand = new ProperCommand(o => {
                 var career = CurrentItem?.Loaded() as KunosCareerObject;
                 if (career == null) return;
                 NavigateToCareerPage(career);

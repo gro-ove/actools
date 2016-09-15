@@ -47,18 +47,18 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private RelayCommand _driveCommand;
+            private ProperCommand _driveCommand;
 
-            public RelayCommand DriveCommand => _driveCommand ?? (_driveCommand = new RelayCommand(o => {
+            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new ProperCommand(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !QuickDrive.Run(track: SelectedTrackConfiguration)) {
                     DriveOptionsCommand.Execute(null);
                 }
             }, o => SelectedTrackConfiguration.Enabled));
 
-            private RelayCommand _driveOptionsCommand;
+            private ProperCommand _driveOptionsCommand;
 
-            public RelayCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new RelayCommand(o => {
+            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new ProperCommand(o => {
                 QuickDrive.Show(track: SelectedTrackConfiguration);
             }, o => SelectedTrackConfiguration.Enabled));
 
@@ -135,9 +135,9 @@ namespace AcManager.Pages.Selected {
                 }
             }, o => SelectedObject.Enabled));
 
-            private RelayCommand _updatePreviewDirectCommand;
+            private ProperCommand _updatePreviewDirectCommand;
 
-            public RelayCommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new RelayCommand(o => {
+            public ICommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new ProperCommand(o => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
                     Title = AppStrings.Common_SelectImageForPreview,

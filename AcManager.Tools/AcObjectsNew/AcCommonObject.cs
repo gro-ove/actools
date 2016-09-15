@@ -136,6 +136,7 @@ namespace AcManager.Tools.AcObjectsNew {
                 if (value == _changed || !Loaded) return;
                 _changed = value;
                 OnPropertyChanged(nameof(Changed));
+                _saveCommand?.OnCanExecuteChanged();
             }
         }
 

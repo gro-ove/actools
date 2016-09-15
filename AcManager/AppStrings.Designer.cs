@@ -6592,7 +6592,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create Start Menu shortcut if it’s missing; required for showing proper notifications in Windows 8 and 10.
+        ///   Looks up a localized string similar to Create Start Menu shortcut; required for showing proper notifications in Windows 8, 8.1 and 10.
         /// </summary>
         public static string Settings_General_WindowsShortcut_Tooltip {
             get {

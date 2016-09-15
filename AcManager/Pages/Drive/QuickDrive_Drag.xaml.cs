@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Processes;
 using AcTools.Utils;
-using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Drag : IQuickDriveModeControl {

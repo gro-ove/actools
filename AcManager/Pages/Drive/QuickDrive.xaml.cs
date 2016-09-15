@@ -379,7 +379,7 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _changeCarCommand;
 
-            public ICommand ChangeCarCommand => _changeCarCommand ?? (_changeCarCommand = new RelayCommand(o => {
+            public ICommand ChangeCarCommand => _changeCarCommand ?? (_changeCarCommand = new ProperCommand(o => {
                 var dialog = new SelectCarDialog(SelectedCar);
                 dialog.ShowDialog();
                 if (!dialog.IsResultOk || dialog.SelectedCar == null) return;
@@ -392,7 +392,7 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _changeTrackCommand;
 
-            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new RelayCommand(o => {
+            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new ProperCommand(o => {
                 var dialog = new SelectTrackDialog(SelectedTrack);
                 dialog.ShowDialog();
                 if (!dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null) return;
@@ -402,13 +402,13 @@ namespace AcManager.Pages.Drive {
 
             private QuickDriveModeViewModel _selectedModeViewModel;
 
-            private AsyncCommand _goCommand;
+            private ProperAsyncCommand _goCommand;
 
-            public AsyncCommand GoCommand => _goCommand ?? (_goCommand =
-                    new AsyncCommand(o => Go(), o => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
+            public ICommand GoCommand => _goCommand ?? (_goCommand =
+                    new ProperAsyncCommand(o => Go(), o => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
 
             internal async Task Go() {
-                GoCommand.OnCanExecuteChanged();
+                _goCommand?.OnCanExecuteChanged();
 
                 var selectedMode = SelectedModeViewModel;
                 if (selectedMode == null) return;
@@ -431,7 +431,7 @@ namespace AcManager.Pages.Drive {
                         WeatherName = SelectedWeather?.Id
                     }, SelectedTrackPropertiesPreset.Properties);
                 } finally {
-                    GoCommand.OnCanExecuteChanged();
+                    _goCommand?.OnCanExecuteChanged();
                 }
             }
 

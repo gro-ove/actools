@@ -39,7 +39,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public ObservableCollection<NonfatalErrorEntry> Errors { get; } = new ObservableCollection<NonfatalErrorEntry>();
 
-        public ICommand ViewErrorsCommand { get; } = new RelayCommand(o => {
+        public ICommand ViewErrorsCommand { get; } = new ProperCommand(o => {
             new NonfatalErrorsDialog().ShowDialog();
         });
 

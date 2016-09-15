@@ -14,7 +14,7 @@ namespace FirstFloor.ModernUI.Presentation {
         /// <param name="execute"></param>
         /// <param name="canExecute"></param>
         /// <param name="additionalDelay">In milliseconds, optional</param>
-        public AsyncCommand(Func<object, Task> execute, Func<object, bool> canExecute = null, int additionalDelay = 0) {
+        public AsyncCommand(Func<object, Task> execute, Func<object, bool> canExecute, int additionalDelay = 0) {
             if (execute == null) {
                 throw new ArgumentNullException(nameof(execute));
             }
@@ -23,8 +23,6 @@ namespace FirstFloor.ModernUI.Presentation {
             _additionalDelay = additionalDelay;
             _canExecute = canExecute ?? (o => true);
         }
-
-        public AsyncCommand(Func<object, Task> execute, int additionalDelay) : this(execute, null, additionalDelay) {}
 
         public override bool CanExecute(object parameter) {
             return !_inProcess && _canExecute(parameter);

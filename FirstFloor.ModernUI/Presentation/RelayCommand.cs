@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Presentation {
         /// </summary>
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null) {
+        public RelayCommand(Action<object> execute, Func<object, bool> canExecute) {
             if (execute == null) {
                 throw new ArgumentNullException(nameof(execute));
             }

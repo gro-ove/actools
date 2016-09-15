@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using AcManager.Controls;
 using AcManager.Tools;
@@ -20,7 +21,7 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
 
             Buttons = new[] {
-                CreateExtraDialogButton(ToolsStrings.TrackGeoTags_FindIt, new RelayCommand(o => {
+                CreateExtraDialogButton(ToolsStrings.TrackGeoTags_FindIt, new ProperCommand(o => {
                     MapWebBrowser.InvokeScript(@"moveTo", GetQuery(Model.Track));
                 })),
                 CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, new CombinedCommand(Model.SaveCommand, CloseCommand)),
@@ -90,7 +91,7 @@ namespace AcManager.Pages.Dialogs {
                     if (value == _latitude) return;
                     _latitude = value;
                     OnPropertyChanged();
-                    SaveCommand.OnCanExecuteChanged();
+                    _saveCommand?.OnCanExecuteChanged();
                 }
             }
             private string _longitude;
@@ -101,7 +102,7 @@ namespace AcManager.Pages.Dialogs {
                     if (value == _longitude) return;
                     _longitude = value;
                     OnPropertyChanged();
-                    SaveCommand.OnCanExecuteChanged();
+                    _saveCommand?.OnCanExecuteChanged();
                 }
             }
 
@@ -119,9 +120,9 @@ namespace AcManager.Pages.Dialogs {
 
             public TrackObjectBase Track { get; }
 
-            private RelayCommand _saveCommand;
+            private ProperCommand _saveCommand;
 
-            public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
+            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new ProperCommand(o => {
                 Track.GeoTags = new GeoTagsEntry(Latitude, Longitude);
             }, o => Latitude != null && Longitude != null));
         }

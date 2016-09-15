@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Input;
 using System.Windows.Threading;
-using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Internal;
 using AcManager.Properties;
 using AcManager.Tools;
-using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -96,9 +94,9 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private RelayCommand _gotItCommand;
+            private ProperCommand _gotItCommand;
 
-            public RelayCommand GotItCommand => _gotItCommand ?? (_gotItCommand = new RelayCommand(o => {
+            public ICommand GotItCommand => _gotItCommand ?? (_gotItCommand = new ProperCommand(o => {
                 ShowExtensionMessage = false;
             }));
 
@@ -264,18 +262,18 @@ namespace AcManager.Pages.Drive {
                     new AsyncCommand(o => Go(), o => _server?.Ip != null && _server.Port.HasValue && _player != null && _carId != null));
         }
 
-        private AsyncCommand _quitCommand;
+        private ProperAsyncCommand _quitCommand;
 
-        public AsyncCommand QuitCommand => _quitCommand ?? (_quitCommand = new AsyncCommand(async o => {
+        public ICommand QuitCommand => _quitCommand ?? (_quitCommand = new ProperAsyncCommand(async o => {
             WebBrowser.Navigate(Model.QuitUrl);
             await Task.Delay(500);
             WebBrowser.Navigate(Model.StartPage);
             await Task.Delay(500);
         }, o => Model.CanQuit));
 
-        private RelayCommand _testCommand;
+        private ProperCommand _testCommand;
 
-        public RelayCommand TestCommand => _testCommand ?? (_testCommand = new RelayCommand(o => {
+        public ICommand TestCommand => _testCommand ?? (_testCommand = new ProperCommand(o => {
             WebBrowser.Execute(@"location.reload(true)");
         }));
 

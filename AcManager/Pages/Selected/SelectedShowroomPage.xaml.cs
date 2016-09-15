@@ -9,7 +9,6 @@ using AcManager.Properties;
 using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
@@ -23,7 +22,7 @@ namespace AcManager.Pages.Selected {
             public ViewModel([NotNull] ShowroomObject acObject) : base(acObject) {}
             
             private ICommand _updatePreviewCommand;
-            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new RelayCommand(o => {
+            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new ProperCommand(o => {
                 UpdatePreview();
             }, o => SelectedObject.Enabled));
 
@@ -79,7 +78,7 @@ namespace AcManager.Pages.Selected {
 
             private ICommand _createNewShowroomCommand;
 
-            public ICommand CreateNewShowroomCommand => _createNewShowroomCommand ?? (_createNewShowroomCommand = new RelayCommand(o => {
+            public ICommand CreateNewShowroomCommand => _createNewShowroomCommand ?? (_createNewShowroomCommand = new ProperCommand(o => {
                 CreateNewShowroom();
             }));
 

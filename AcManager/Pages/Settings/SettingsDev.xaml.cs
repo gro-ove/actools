@@ -26,7 +26,7 @@ namespace AcManager.Pages.Settings {
         public class ViewModel : NotifyPropertyChanged {
             private ICommand _sendYearsCommand;
 
-            public ICommand SendYearsCommand => _sendYearsCommand ?? (_sendYearsCommand = new AsyncCommand(async o => {
+            public ICommand SendYearsCommand => _sendYearsCommand ?? (_sendYearsCommand = new ProperAsyncCommand(async o => {
                 try {
                     await CarsManager.Instance.EnsureLoadedAsync();
                     await TracksManager.Instance.EnsureLoadedAsync();
@@ -45,7 +45,7 @@ namespace AcManager.Pages.Settings {
 
             private ICommand _decryptHelperCommand;
 
-            public ICommand DecryptHelperCommand => _decryptHelperCommand ?? (_decryptHelperCommand = new RelayCommand(o => {
+            public ICommand DecryptHelperCommand => _decryptHelperCommand ?? (_decryptHelperCommand = new ProperCommand(o => {
                 var m = Prompt.Show("DH:", "DH", watermark: "<key>=<value>");
                 if (m == null) return;
 
@@ -57,7 +57,7 @@ namespace AcManager.Pages.Settings {
 
             private ICommand _magickNetMemoryLeakingCommand;
 
-            public ICommand MagickNetMemoryLeakingCommand => _magickNetMemoryLeakingCommand ?? (_magickNetMemoryLeakingCommand = new AsyncCommand(async o => {
+            public ICommand MagickNetMemoryLeakingCommand => _magickNetMemoryLeakingCommand ?? (_magickNetMemoryLeakingCommand = new ProperAsyncCommand(async o => {
                 var image = FileUtils.GetDocumentsScreensDirectory();
                 var filename = new DirectoryInfo(image).GetFiles("*.bmp")
                                                        .OrderByDescending(f => f.LastWriteTime)

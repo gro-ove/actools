@@ -781,9 +781,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Save();
         }
 
-        private RelayCommand _toggleWaitingCommand;
+        private ProperCommand _toggleWaitingCommand;
 
-        public RelayCommand ToggleWaitingCommand => _toggleWaitingCommand ?? (_toggleWaitingCommand = new RelayCommand(o => {
+        public ICommand ToggleWaitingCommand => _toggleWaitingCommand ?? (_toggleWaitingCommand = new ProperCommand(o => {
             var b = o as IEntry;
             if (b == null) return;
 

@@ -45,7 +45,7 @@ namespace AcManager.Controls.Helpers {
         public static void Show(string title, string message, [NotNull] Uri icon, Action click = null) {
             if (!_winToasterIsNotAvailable && !OptionFallbackMode) {
                 try {
-                    ToastWin8Helper.Instance.ShowToast(title, message, icon, click ?? _defaultAction);
+                    ToastWin8Helper.ShowToast(title, message, icon, click ?? _defaultAction);
                     return;
                 } catch (Exception e) {
                     Logging.Warning("Win8 Toaster is not available: " + e);
@@ -66,7 +66,7 @@ namespace AcManager.Controls.Helpers {
                     }
                 }
 
-                var text = title + "\n" + message;
+                var text = title + Environment.NewLine + message;
                 using (var notifyIcon = new NotifyIcon {
                     Icon = _fallbackIcon,
                     Text = text.Length > 63 ? text.Substring(0, 63) : text
@@ -81,7 +81,7 @@ namespace AcManager.Controls.Helpers {
                     notifyIcon.Visible = false;
                 }
             } catch (Exception e) {
-                Logging.Warning("ShowFallback(): " + e);
+                Logging.Error(e);
             }
         }
     }

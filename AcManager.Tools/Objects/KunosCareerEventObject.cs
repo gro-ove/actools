@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Data.GameSpecific;
@@ -41,7 +42,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _userAiLevel)) return;
                 _userAiLevel = value;
                 OnPropertyChanged();
-                ResetUserAiLevelCommand.OnCanExecuteChanged();
+                _resetUserAiLevelCommand?.OnCanExecuteChanged();
 
                 if (value == AiLevel) {
                     ValuesStorage.Remove(UserAiLevelKey);
@@ -119,9 +120,9 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private RelayCommand _resetUserAiLevelCommand;
+        private ProperCommand _resetUserAiLevelCommand;
 
-        public RelayCommand ResetUserAiLevelCommand => _resetUserAiLevelCommand ?? (_resetUserAiLevelCommand = new RelayCommand(o => {
+        public ICommand ResetUserAiLevelCommand => _resetUserAiLevelCommand ?? (_resetUserAiLevelCommand = new ProperCommand(o => {
             UserAiLevel = AiLevel;
         }, o => UserAiLevel != AiLevel));
 

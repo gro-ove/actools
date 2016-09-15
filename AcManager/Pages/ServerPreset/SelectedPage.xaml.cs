@@ -10,7 +10,6 @@ using System.Windows.Input;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Selected;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -87,7 +86,7 @@ namespace AcManager.Pages.ServerPreset {
 
             private ICommand _changeTrackCommand;
 
-            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new RelayCommand(o => {
+            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new ProperCommand(o => {
                 Track = SelectTrackDialog.Show(Track);
             }));
 

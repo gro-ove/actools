@@ -39,8 +39,8 @@ namespace AcManager.Pages.Drive {
             DataContext = new ViewModel();
             InitializeComponent();
             InputBindings.AddRange(new[] {
-                new InputBinding(new RelayCommand(o => Model.Selected?.GoCommand.Execute(o)), new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(new RelayCommand(o => Model.Selected?.ViewInExplorerCommand.Execute(o)), new KeyGesture(Key.F, ModifierKeys.Control))
+                new InputBinding(new ProperCommand(o => Model.Selected?.GoCommand.Execute(o)), new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(new ProperCommand(o => Model.Selected?.ViewInExplorerCommand.Execute(o)), new KeyGesture(Key.F, ModifierKeys.Control))
             });
         }
 
@@ -84,7 +84,7 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _updateProgressCommand;
 
-            public ICommand SyncronizeProgressCommand => _updateProgressCommand ?? (_updateProgressCommand = new AsyncCommand(async o => {
+            public ICommand SyncronizeProgressCommand => _updateProgressCommand ?? (_updateProgressCommand = new ProperAsyncCommand(async o => {
                 try {
                     using (var waiting = new WaitingDialog()) {
                         await SpecialEventsManager.Instance.UpdateProgress(waiting, waiting.CancellationToken);
@@ -97,7 +97,7 @@ namespace AcManager.Pages.Drive {
             private ICommand _syncronizeProgressUsingModuleCommand;
 
             public ICommand SyncronizeProgressUsingModuleCommand
-                => _syncronizeProgressUsingModuleCommand ?? (_syncronizeProgressUsingModuleCommand = new AsyncCommand(async o => {
+                => _syncronizeProgressUsingModuleCommand ?? (_syncronizeProgressUsingModuleCommand = new ProperAsyncCommand(async o => {
                     try {
                         using (var waiting = new WaitingDialog()) {
                             await SpecialEventsManager.Instance.UpdateProgressViaModule(waiting, waiting.CancellationToken);

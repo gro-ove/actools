@@ -410,15 +410,15 @@ namespace AcManager.Pages.Drive {
                 new SettingEntry("ping", AppStrings.Online_Sorting_Ping),
             };
 
-            private RelayCommand _changeSortingCommand;
+            private ProperCommand _changeSortingCommand;
 
-            public RelayCommand ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new RelayCommand(o => {
+            public ICommand ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new ProperCommand(o => {
                 SortingMode = SortingModes.GetByIdOrDefault(o as string) ?? SortingModes[0];
             }));
 
-            private AsyncCommand _addNewServerCommand;
+            private ProperCommand _addNewServerCommand;
 
-            public AsyncCommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new AsyncCommand(async o => {
+            public ICommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new ProperCommand(async o => {
                 var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "", // TODO
                         @"127.0.0.1:8081", AppStrings.Online_AddServer_Tooltip);
                 if (address == null) return;

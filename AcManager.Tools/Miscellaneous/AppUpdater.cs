@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Internal;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -28,7 +29,7 @@ namespace AcManager.Tools.Miscellaneous {
             Debug.Assert(Instance == null);
 
             PreviousVersion = ValuesStorage.GetString(KeyPreviousVersion);
-            if (PreviousVersion != BuildInformation.AppVersion) {
+            if (PreviousVersion?.IsVersionOlderThan(BuildInformation.AppVersion) == true) {
                 JustUpdated = true;
                 ValuesStorage.Set(KeyPreviousVersion, BuildInformation.AppVersion);
             }
@@ -120,7 +121,7 @@ namespace AcManager.Tools.Miscellaneous {
                 if (Equals(value, _updateIsReady)) return;
                 _updateIsReady = value;
                 OnPropertyChanged();
-                FinishUpdateCommand.OnCanExecuteChanged();
+                _finishUpdateCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -173,9 +174,9 @@ namespace AcManager.Tools.Miscellaneous {
             return false;
         }
 
-        private RelayCommand _loadAndInstallCommand;
+        private ProperCommand _finishUpdateCommand;
 
-        public RelayCommand FinishUpdateCommand => _loadAndInstallCommand ?? (_loadAndInstallCommand = new RelayCommand(o => {
+        public ICommand FinishUpdateCommand => _finishUpdateCommand ?? (_finishUpdateCommand = new ProperCommand(o => {
             RunUpdateExeAndExitIfExists();
         }, o => UpdateIsReady != null));
 

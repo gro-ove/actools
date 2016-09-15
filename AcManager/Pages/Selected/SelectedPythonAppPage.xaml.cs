@@ -33,9 +33,9 @@ namespace AcManager.Pages.Selected {
 
             public PythonAppsManager Manager => PythonAppsManager.Instance;
 
-            private RelayCommand _testCommand;
+            private ProperCommand _testCommand;
 
-            public RelayCommand TestCommand => _testCommand ?? (_testCommand = new RelayCommand(o => {
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new ProperCommand(o => {
                 //var car = CarsManager.Instance.GetDefault();
                 //CarOpenInShowroomDialog.Run(car, car?.SelectedSkin?.Id, SelectedObject.AcId);
             }));

@@ -157,11 +157,19 @@ namespace AcManager.Controls.Dialogs {
 
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(CurrentImage));
+                    OnPropertyChanged(nameof(CurrentImageName));
+                    OnPropertyChanged(nameof(CurrentOriginalImage));
 
                     var last = _images.Length - 1;
-                    if (oldPosition == 0 || value == 0 || oldPosition == last || value == last) {
-                        CommandManager.InvalidateRequerySuggested();
+                    if (oldPosition == 0 || value == 0) {
+                        _previousCommand?.OnCanExecuteChanged();
                     }
+
+                    if (oldPosition == last || value == last) {
+                        _nextCommand?.OnCanExecuteChanged();
+                    }
+
+                    _saveCommand?.OnCanExecuteChanged();
                 }
             }
 
@@ -176,7 +184,7 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            private string _saveableTitle = Controls.ControlsStrings.ImageViewer_Save_Title;
+            private string _saveableTitle = ControlsStrings.ImageViewer_Save_Title;
 
             public string SaveableTitle {
                 get { return _saveableTitle; }
@@ -224,7 +232,7 @@ namespace AcManager.Controls.Dialogs {
 
             public object CurrentOriginalImage => _originalImages[_currentPosition];
 
-            public string CurrentImageName => Path.GetFileName(CurrentOriginalImage as string ?? Controls.ControlsStrings.ImageViewer_DefaultName);
+            public string CurrentImageName => Path.GetFileName(CurrentOriginalImage as string ?? ControlsStrings.ImageViewer_DefaultName);
 
             private bool _selectionMode;
 
@@ -237,21 +245,21 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            private RelayCommand _previousCommand;
+            private ProperCommand _previousCommand;
 
-            public RelayCommand PreviousCommand => _previousCommand ?? (_previousCommand = new RelayCommand(o => {
+            public ICommand PreviousCommand => _previousCommand ?? (_previousCommand = new ProperCommand(o => {
                 CurrentPosition--;
             }, o => CurrentPosition > 0));
 
-            private RelayCommand _nextCommand;
+            private ProperCommand _nextCommand;
 
-            public RelayCommand NextCommand => _nextCommand ?? (_nextCommand = new RelayCommand(o => {
+            public ICommand NextCommand => _nextCommand ?? (_nextCommand = new ProperCommand(o => {
                 CurrentPosition++;
             }, o => CurrentPosition < _images.Length - 1));
 
-            private AsyncCommand _saveCommand;
+            private ProperAsyncCommand _saveCommand;
 
-            public AsyncCommand SaveCommand => _saveCommand ?? (_saveCommand = new AsyncCommand(async o => {
+            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new ProperAsyncCommand(async o => {
                 var origin = CurrentOriginalImage as string;
                 if (origin == null) {
                     throw new NotSupportedException();
@@ -272,7 +280,7 @@ namespace AcManager.Controls.Dialogs {
                 try {
                     await Task.Run(() => File.Copy(origin, dialog.FileName));
                 } catch (Exception ex) {
-                    NonfatalError.Notify(Controls.ControlsStrings.ImageViewer_CannotSave, ex);
+                    NonfatalError.Notify(ControlsStrings.ImageViewer_CannotSave, ex);
                 }
             }, o => CurrentOriginalImage is string));
         }

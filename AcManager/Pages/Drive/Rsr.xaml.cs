@@ -66,9 +66,9 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private RelayCommand _gotItCommand;
+            private ProperCommand _gotItCommand;
 
-            public RelayCommand GotItCommand => _gotItCommand ?? (_gotItCommand = new RelayCommand(o => {
+            public ICommand GotItCommand => _gotItCommand ?? (_gotItCommand = new ProperCommand(o => {
                 ShowExtensionMessage = false;
             }));
 
@@ -253,8 +253,7 @@ namespace AcManager.Pages.Drive {
             public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(o => Go(), o => EventId != null));
         }
 
-        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        [ComVisible(true)]
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
         public class ScriptProvider : ScriptProviderBase {
             private readonly ViewModel _model;
 

@@ -10,7 +10,6 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -41,7 +40,7 @@ namespace AcManager.Tools.Objects {
                 return true;
             }
 
-            var tail = (Path.GetFileName(filename) ?? "").ToLower();
+            var tail = Path.GetFileName(filename).ToLower();
             if (tail.StartsWith(Id + @".bank") || tail.StartsWith(@"track.wav")) {
                 CheckSound();
             }
@@ -62,6 +61,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _hasSound)) return;
                 _hasSound = value;
                 OnPropertyChanged();
+                _toggleSoundCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -183,9 +183,9 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private ICommand _toggleSoundCommand;
+        private ProperCommand _toggleSoundCommand;
 
-        public ICommand ToggleSoundCommand => _toggleSoundCommand ?? (_toggleSoundCommand = new RelayCommand(o => {
+        public ICommand ToggleSoundCommand => _toggleSoundCommand ?? (_toggleSoundCommand = new ProperCommand(o => {
             try {
                 ToggleSound();
             } catch (ToggleException ex) {

@@ -12,14 +12,15 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcCommonObject {
-        private ICommand _viewInExplorerCommand;
-        public virtual ICommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new RelayCommand(o => {
+        private ProperCommand _viewInExplorerCommand;
+
+        public virtual ICommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new ProperCommand(o => {
             ViewInExplorer();
         }));
 
-        private RelayCommand _copyIdCommand;
+        private ProperCommand _copyIdCommand;
 
-        public RelayCommand CopyIdCommand => _copyIdCommand ?? (_copyIdCommand = new RelayCommand(o => {
+        public ICommand CopyIdCommand => _copyIdCommand ?? (_copyIdCommand = new ProperCommand(o => {
             switch (o as string) {
                 case "name":
                     Clipboard.SetText(DisplayName);
@@ -35,8 +36,9 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private ICommand _changeIdCommand;
-        public virtual ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new RelayCommand(o => {
+        private ProperCommand _changeIdCommand;
+
+        public virtual ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new ProperCommand(o => {
             try {
                 var newId = (o as string)?.Trim();
                 if (string.IsNullOrWhiteSpace(newId)) return;
@@ -48,7 +50,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }, o => !string.IsNullOrWhiteSpace(o as string)));
 
-        public virtual async Task CloneAsync(string id) {
+        public async Task CloneAsync(string id) {
             try {
                 id = id?.Trim();
                 if (string.IsNullOrWhiteSpace(id)) return;
@@ -62,10 +64,12 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         private ICommand _cloneCommand;
+
         public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand(o => CloneAsync(o as string), o => !string.IsNullOrWhiteSpace(o as string)));
 
-        private ICommand _toggleCommand;
-        public virtual ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new RelayCommand(o => {
+        private ProperCommand _toggleCommand;
+
+        public virtual ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new ProperCommand(o => {
             try {
                 Toggle();
             } catch (ToggleException ex) {
@@ -75,9 +79,9 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private ICommand _deleteCommand;
+        private ProperCommand _deleteCommand;
 
-        public virtual ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
+        public virtual ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new ProperCommand(o => {
             try {
                 if (!SettingsHolder.Content.DeleteConfirmation ||
                         ModernDialog.ShowMessage(string.Format("Are you sure you want to move {0} to the Recycle Bin?", DisplayName), "Are You Sure?",
@@ -89,8 +93,9 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private ICommand _reloadCommand;
-        public virtual ICommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new RelayCommand(o => {
+        private ProperCommand _reloadCommand;
+
+        public virtual ICommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new ProperCommand(o => {
             if (o as string == @"full") {
                 Manager.Reload(Id);
             } else {
@@ -98,8 +103,9 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private ICommand _saveCommand;
-        public virtual ICommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(o => {
+        private ProperCommand _saveCommand;
+
+        public virtual ICommand SaveCommand => _saveCommand ?? (_saveCommand = new ProperCommand(o => {
             Save();
         }, o => Changed));
     }

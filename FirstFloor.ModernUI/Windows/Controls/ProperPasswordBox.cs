@@ -8,7 +8,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public ProperPasswordBox() {
             DefaultStyleKey = typeof(ProperPasswordBox);
 
-            TogglePasswordVisibilityCommand = new RelayCommand(o => {
+            TogglePasswordVisibilityCommand = new ProperCommand(o => {
                 TogglePasswordVisibility();
             });
         }
@@ -85,11 +85,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty TogglePasswordVisibilityCommandProperty = DependencyProperty.Register(
-                nameof(TogglePasswordVisibilityCommand), typeof(RelayCommand),
+                nameof(TogglePasswordVisibilityCommand), typeof(ProperCommand),
                 typeof(ProperPasswordBox));
 
-        public RelayCommand TogglePasswordVisibilityCommand {
-            get { return (RelayCommand)GetValue(TogglePasswordVisibilityCommandProperty); }
+        public ProperCommand TogglePasswordVisibilityCommand {
+            get { return (ProperCommand)GetValue(TogglePasswordVisibilityCommandProperty); }
             set { SetValue(TogglePasswordVisibilityCommandProperty, value); }
         }
 

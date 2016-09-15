@@ -7,9 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.LargeFilesSharing;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -31,7 +29,9 @@ namespace AcManager.Pages.Settings {
                     if (Equals(value, _selectedUploader)) return;
                     _selectedUploader = value;
                     OnPropertyChanged();
-                    SignInCommand.OnCanExecuteChanged();
+                    _signInCommand?.OnCanExecuteChanged();
+                    _updateDirectoriesCommand?.OnCanExecuteChanged();
+                    _resetCommand?.OnCanExecuteChanged();
 
                     SelectedUploader.Prepare(default(CancellationToken)).Forget();
                 }
@@ -60,9 +60,9 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            private AsyncCommand _signInCommand;
+            private ProperAsyncCommand _signInCommand;
 
-            public AsyncCommand SignInCommand => _signInCommand ?? (_signInCommand = new AsyncCommand(async o => {
+            public ICommand SignInCommand => _signInCommand ?? (_signInCommand = new ProperAsyncCommand(async o => {
                 if (SelectedUploader == null) return;
 
                 try {
@@ -70,18 +70,23 @@ namespace AcManager.Pages.Settings {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t sign in", "Make sure Internet-connection works.", e);
                 }
+
+                _signInCommand?.OnCanExecuteChanged();
+                _updateDirectoriesCommand?.OnCanExecuteChanged();
             }, o => SelectedUploader?.IsReady == false));
 
-            private RelayCommand _resetCommand;
+            private ProperCommand _resetCommand;
 
-            public RelayCommand ResetCommand => _resetCommand ?? (_resetCommand = new RelayCommand(o => {
+            public ICommand ResetCommand => _resetCommand ?? (_resetCommand = new ProperCommand(o => {
                 SelectedUploader.Reset();
-                CommandManager.InvalidateRequerySuggested();
+
+                _signInCommand?.OnCanExecuteChanged();
+                _updateDirectoriesCommand?.OnCanExecuteChanged();
             }, o => SelectedUploader?.IsReady == true));
 
-            private AsyncCommand _updateDirectoriesCommand;
+            private ProperAsyncCommand _updateDirectoriesCommand;
 
-            public AsyncCommand UpdateDirectoriesCommand => _updateDirectoriesCommand ?? (_updateDirectoriesCommand = new AsyncCommand(async o => {
+            public ICommand UpdateDirectoriesCommand => _updateDirectoriesCommand ?? (_updateDirectoriesCommand = new ProperAsyncCommand(async o => {
                 if (SelectedUploader == null) return;
 
                 try {
@@ -90,7 +95,7 @@ namespace AcManager.Pages.Settings {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t load list of directories", "Make sure Internet-connection works.", e);
                 }
-            }, o => SelectedUploader?.SupportsDirectories == true));
+            }, o => SelectedUploader?.SupportsDirectories == true && SelectedUploader.IsReady));
 
             public SharingViewModel() {
                 SelectedUploader = UploadersList.FirstOrDefault();

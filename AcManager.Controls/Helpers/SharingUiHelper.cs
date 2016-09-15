@@ -5,11 +5,11 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -30,9 +30,9 @@ namespace AcManager.Controls.Helpers {
             Instance = new SharingUiHelper();
         }
 
-        private RelayCommand _removeCommand;
+        private ProperCommand _removeCommand;
 
-        public RelayCommand RemoveCommand => _removeCommand ?? (_removeCommand = new RelayCommand(o => {
+        public ICommand RemoveCommand => _removeCommand ?? (_removeCommand = new ProperCommand(o => {
             var entry = o as SharedEntry;
             if (entry == null) return;
 
@@ -52,7 +52,7 @@ namespace AcManager.Controls.Helpers {
             try {
                 var contentName = defaultName;
                 if (!SettingsHolder.Sharing.ShareWithoutName) {
-                    contentName = Prompt.Show(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, defaultName, Tools.ToolsStrings.Common_None, maxLength: 60);
+                    contentName = Prompt.Show(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, defaultName, ToolsStrings.Common_None, maxLength: 60);
                     if (contentName == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(contentName)) {
                         contentName = null;
@@ -61,7 +61,7 @@ namespace AcManager.Controls.Helpers {
 
                 string id = null;
                 if (SettingsHolder.Sharing.CustomIds) {
-                    id = Prompt.Show(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "", Tools.ToolsStrings.Common_None, maxLength: 200)?.Trim();
+                    id = Prompt.Show(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "", ToolsStrings.Common_None, maxLength: 200)?.Trim();
                     if (id == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(id)) {
                         id = null;

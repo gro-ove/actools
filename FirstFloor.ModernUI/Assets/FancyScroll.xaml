@@ -151,7 +151,7 @@
                                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}"
                                         CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}"
                                         Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
-                                <ScrollBar x:Name="PART_VerticalScrollBar" HorizontalAlignment="Right" AutomationProperties.AutomationId="VerticalScrollBar"
+                                <c:BetterScrollBar x:Name="PART_VerticalScrollBar" HorizontalAlignment="Right" AutomationProperties.AutomationId="VerticalScrollBar"
                                         Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0"
                                         Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
                                         Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
@@ -169,7 +169,7 @@
                                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}"
                                         CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}"
                                         Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
-                                <ScrollBar x:Name="PART_HorizontalScrollBar" VerticalAlignment="Bottom" AutomationProperties.AutomationId="HorizontalScrollBar"
+                                <c:BetterScrollBar x:Name="PART_HorizontalScrollBar" VerticalAlignment="Bottom" AutomationProperties.AutomationId="HorizontalScrollBar"
                                         HorizontalAlignment="Stretch" Cursor="Arrow" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0"
                                         Orientation="Horizontal" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                                         Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"

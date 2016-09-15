@@ -135,7 +135,7 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _deleteCommand;
 
-        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(o => {
+        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new ProperCommand(o => {
             Deleted?.Invoke(this, EventArgs.Empty);
         }));
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
@@ -184,8 +185,8 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        private AsyncCommand _usedRescanCommand;
+        private ProperAsyncCommand _usedRescanCommand;
 
-        public AsyncCommand UsingsRescanCommand => _usedRescanCommand ?? (_usedRescanCommand = new AsyncCommand(o => UsingsRescan()));
+        public ICommand UsingsRescanCommand => _usedRescanCommand ?? (_usedRescanCommand = new ProperAsyncCommand(o => UsingsRescan()));
     }
 }

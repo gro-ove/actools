@@ -57,7 +57,7 @@ namespace AcManager.Pages.Drive {
             if (!(DataContext is ViewModel)) return;
             InitializeComponent();
             InputBindings.AddRange(new[] {
-                new InputBinding(new RelayCommand(o => Model.AcObject.SelectedEvent?.GoCommand.Execute(o)), new KeyGesture(Key.G, ModifierKeys.Control))
+                new InputBinding(new ProperCommand(o => Model.AcObject.SelectedEvent?.GoCommand.Execute(o)), new KeyGesture(Key.G, ModifierKeys.Control))
             });
 
             var acObject = Model.AcObject;

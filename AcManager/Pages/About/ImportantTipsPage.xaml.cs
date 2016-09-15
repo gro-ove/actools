@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Input;
 using AcManager.About;
 using AcManager.Internal;
 using FirstFloor.ModernUI.Helpers;
@@ -26,9 +27,9 @@ namespace AcManager.Pages.About {
                 }
             }
 
-            private RelayCommand _markAllAsReadCommand;
+            private ICommand _markAllAsReadCommand;
 
-            public RelayCommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new RelayCommand(o => {
+            public ICommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new ProperCommand(o => {
                 foreach (var note in ImportantTips.Entries.Where(x => x.IsNew)) {
                     note.MarkAsRead();
                 }

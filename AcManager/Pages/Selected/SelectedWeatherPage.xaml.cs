@@ -140,21 +140,21 @@ namespace AcManager.Pages.Selected {
 
             private const long SharingSizeLimit = 2 * 1024 * 1024;
 
-            private AsyncCommand _shareCommand;
+            private ProperAsyncCommand _shareCommand;
 
-            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async o => {
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(async o => {
                 byte[] data = null;
 
                 try {
                     if (!File.Exists(SelectedObject.IniFilename)) {
                         NonfatalError.Notify(AppStrings.Weather_CannotShare,
-                                String.Format(AppStrings.Common_FileIsMissingDot, Path.GetFileName(SelectedObject.IniFilename)));
+                                string.Format(AppStrings.Common_FileIsMissingDot, Path.GetFileName(SelectedObject.IniFilename)));
                         return;
                     }
 
                     if (!File.Exists(SelectedObject.ColorCurvesIniFilename)) {
                         NonfatalError.Notify(AppStrings.Weather_CannotShare,
-                                String.Format(AppStrings.Common_FileIsMissingDot, Path.GetFileName(SelectedObject.ColorCurvesIniFilename)));
+                                string.Format(AppStrings.Common_FileIsMissingDot, Path.GetFileName(SelectedObject.ColorCurvesIniFilename)));
                         return;
                     }
 
@@ -182,7 +182,7 @@ namespace AcManager.Pages.Selected {
 
                     if (data.Length > SharingSizeLimit) {
                         NonfatalError.Notify(AppStrings.Weather_CannotShare,
-                                String.Format(AppStrings.Weather_CannotShare_Commentary, SharingSizeLimit.ToReadableSize()));
+                                string.Format(AppStrings.Weather_CannotShare_Commentary, SharingSizeLimit.ToReadableSize()));
                         return;
                     }
                 } catch (Exception e) {
@@ -205,15 +205,15 @@ namespace AcManager.Pages.Selected {
 
             private ICommand _viewTemperatureReadmeCommand;
 
-            public ICommand ViewTemperatureReadmeCommand => _viewTemperatureReadmeCommand ?? (_viewTemperatureReadmeCommand = new RelayCommand(o => {
+            public ICommand ViewTemperatureReadmeCommand => _viewTemperatureReadmeCommand ?? (_viewTemperatureReadmeCommand = new ProperCommand(o => {
                 ModernDialog.ShowMessage(AppStrings.Weather_KunosReadme);
             }));
 
             private const string KeyUpdatePreviewMessageShown = "swp.upms";
 
-            private AsyncCommand _updatePreviewCommand;
+            private ProperAsyncCommand _updatePreviewCommand;
 
-            public AsyncCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new AsyncCommand(async o => {
+            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new ProperAsyncCommand(async o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
                     UpdatePreviewDirectCommand.Execute(o);
                     return;
@@ -257,9 +257,9 @@ namespace AcManager.Pages.Selected {
                 }
             }, o => SelectedObject.Enabled));
 
-            private RelayCommand _updatePreviewDirectCommand;
+            private ProperCommand _updatePreviewDirectCommand;
 
-            public RelayCommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new RelayCommand(o => {
+            public ICommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new ProperCommand(o => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
                     Title = AppStrings.Common_SelectImageForPreview,
@@ -302,7 +302,7 @@ namespace AcManager.Pages.Selected {
 
         private ICommand _toggleEditModeCommand;
 
-        public ICommand ToggleEditModeCommand => _toggleEditModeCommand ?? (_toggleEditModeCommand = new RelayCommand(o => {
+        public ICommand ToggleEditModeCommand => _toggleEditModeCommand ?? (_toggleEditModeCommand = new ProperCommand(o => {
             EditMode = !EditMode;
             OnPropertyChanged(nameof(EditMode));
             ValuesStorage.Set(KeyEditMode, EditMode);

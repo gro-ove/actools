@@ -4,6 +4,6 @@ using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.QuickSwitches {
     public static class QuickSwitchCommands {
-        public static ICommand GoCommand = new AsyncCommand(o => QuickDrive.RunAsync());
+        public static ICommand GoCommand = new ProperAsyncCommand(o => QuickDrive.RunAsync());
     }
 }

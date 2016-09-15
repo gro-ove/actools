@@ -314,21 +314,6 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _createStartMenuShortcutIfMissing;
-
-            public bool CreateStartMenuShortcutIfMissing {
-                get {
-                    return _createStartMenuShortcutIfMissing ??
-                            (_createStartMenuShortcutIfMissing = ValuesStorage.GetBool("Settings.CommonSettings.CreateStartMenuShortcutIfMissing", false)).Value;
-                }
-                set {
-                    if (Equals(value, _createStartMenuShortcutIfMissing)) return;
-                    _createStartMenuShortcutIfMissing = value;
-                    ValuesStorage.Set("Settings.CommonSettings.CreateStartMenuShortcutIfMissing", value);
-                    OnPropertyChanged();
-                }
-            }
-
             private bool? _showDetailedChangelog;
 
             public bool ShowDetailedChangelog {

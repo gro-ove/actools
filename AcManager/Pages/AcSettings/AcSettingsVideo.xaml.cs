@@ -32,18 +32,18 @@ namespace AcManager.Pages.AcSettings {
 
             private ICommand _manageFiltersCommand;
 
-            public ICommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new RelayCommand(o => {
+            public ICommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new ProperCommand(o => {
                 (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/PpFiltersListPage.xaml", UriKind.RelativeOrAbsolute));
-            }, o => AppKeyHolder.IsAllRight));
+            }));
 
             private ICommand _benchmarkCommand;
 
             public ICommand BenchmarkCommand => _benchmarkCommand ??
-                    (_benchmarkCommand = new AsyncCommand(o => GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()))));
+                    (_benchmarkCommand = new ProperAsyncCommand(o => GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()))));
 
             private ICommand _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
 
             private async Task Share(object o) {
                 await SharingUiHelper.ShareAsync(SharedEntryType.VideoSettingsPreset,

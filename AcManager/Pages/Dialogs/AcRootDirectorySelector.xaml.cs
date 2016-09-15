@@ -14,7 +14,6 @@ using AcManager.Controls.Dialogs;
 using AcManager.Internal;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
@@ -49,7 +48,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             Buttons = new[] {
-                CreateExtraDialogButton(UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new RelayCommand(o => {
+                CreateExtraDialogButton(UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new ProperCommand(o => {
                     if (Model.FirstRun || Model.ReviewMode) {
                         new MainWindow {
                             Owner = null
@@ -124,7 +123,7 @@ namespace AcManager.Pages.Dialogs {
                     _isValueAcceptable = value;
                     OnPropertyChanged();
                     OnErrorsChanged(nameof(Value));
-                    ApplyCommand.OnCanExecuteChanged();
+                    _applyCommand?.OnCanExecuteChanged();
                 }
             }
 
@@ -139,7 +138,7 @@ namespace AcManager.Pages.Dialogs {
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsValueAcceptable));
                     OnErrorsChanged();
-                    ApplyCommand.OnCanExecuteChanged();
+                    _applyCommand?.OnCanExecuteChanged();
                 }
             }
 
@@ -153,17 +152,6 @@ namespace AcManager.Pages.Dialogs {
                     _steamProfile = value;
                     OnPropertyChanged();
                 }
-            }
-
-            private string _steamName;
-
-            public string SteamName {
-                get { return _steamName; }
-                set {
-                    if (Equals(value, _steamName)) return;
-                    _steamName = value;
-                    OnPropertyChanged();
-                } 
             }
 
             public BetterObservableCollection<SteamProfile> SteamProfiles { get; }
@@ -194,7 +182,7 @@ namespace AcManager.Pages.Dialogs {
 
             private ICommand _changeAcRootCommand;
 
-            public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new RelayCommand(o => {
+            public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new ProperCommand(o => {
                 var dialog = new FolderBrowserDialog {
                     ShowNewFolderButton = false,
                     SelectedPath = Value
@@ -207,7 +195,7 @@ namespace AcManager.Pages.Dialogs {
 
             private ICommand _getSteamIdCommand;
 
-            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new AsyncCommand(async o => {
+            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new ProperAsyncCommand(async o => {
                 using (_cancellationTokenSource = new CancellationTokenSource()) {
                     try {
                         var packed = await PromptCodeFromBrowser.Show($"http://acstuff.ru/u/steam?s={AdditionalSalt}",
@@ -222,9 +210,9 @@ namespace AcManager.Pages.Dialogs {
                 _cancellationTokenSource = null;
             }));
 
-            private RelayCommand _applyCommand;
+            private ProperCommand _applyCommand;
 
-            public RelayCommand ApplyCommand => _applyCommand ?? (_applyCommand = new RelayCommand(o => {
+            public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new ProperCommand(o => {
                 Logging.Write($"[Initial setup] AC root=“{Value}”, Steam ID=“{SteamProfile.SteamId}”");
                 AcRootDirectory.Instance.Value = Value;
                 SteamIdHelper.Instance.Value = SteamProfile.SteamId;

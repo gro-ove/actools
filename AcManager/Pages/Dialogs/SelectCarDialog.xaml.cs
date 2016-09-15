@@ -66,7 +66,11 @@ namespace AcManager.Pages.Dialogs {
 
             SelectedTunableVersion = value;
             OnPropertyChanged(nameof(SelectedCar));
-            CommandManager.InvalidateRequerySuggested();
+
+            _openInShowroomCommand?.OnCanExecuteChanged();
+            _openInCustomShowroomCommand?.OnCanExecuteChanged();
+            _openInShowroomOptionsCommand?.OnCanExecuteChanged();
+            CommandManager.InvalidateRequerySuggested(); // TODO
 
             if (value != null) {
                 SelectedSkin = value.SelectedSkin;
@@ -137,9 +141,9 @@ namespace AcManager.Pages.Dialogs {
 
         public BetterObservableCollection<CarObject> TunableVersions { get; } = new BetterObservableCollection<CarObject>();
 
-        private RelayCommand _manageSetupsCommand;
+        private ProperCommand _manageSetupsCommand;
 
-        public RelayCommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new RelayCommand(o => {
+        public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new ProperCommand(o => {
             if (_selectedCar.Value == null) return;
             new CarSetupsDialog(_selectedCar.Value) {
                 ShowInTaskbar = false
@@ -282,24 +286,24 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private RelayCommand _openInShowroomCommand;
+        private ProperCommand _openInShowroomCommand;
 
-        public RelayCommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new RelayCommand(o => {
+        public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new ProperCommand(o => {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                     !CarOpenInShowroomDialog.Run(SelectedCar, SelectedSkin?.Id)) {
                 OpenInShowroomOptionsCommand.Execute(null);
             }
         }, o => SelectedCar != null && SelectedSkin != null));
 
-        private RelayCommand _openInCustomShowroomCommand;
+        private ProperCommand _openInCustomShowroomCommand;
 
-        public RelayCommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new RelayCommand(o => {
+        public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new ProperCommand(o => {
             CustomShowroomWrapper.StartAsync(SelectedCar, SelectedSkin);
         }, o => SelectedCar != null && SelectedSkin != null));
 
-        private RelayCommand _openInShowroomOptionsCommand;
+        private ProperCommand _openInShowroomOptionsCommand;
 
-        public RelayCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new RelayCommand(o => {
+        public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new ProperCommand(o => {
             new CarOpenInShowroomDialog(SelectedCar, SelectedSkin?.Id).ShowDialog();
         }, o => SelectedCar != null && SelectedSkin != null));
 
