@@ -99,6 +99,17 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                         Logging.Warning("Can’t attach AC Log.txt: " + e);
                     }
 
+                    string wpfVersion;
+                    try {
+                        using (var r = Registry.LocalMachine.OpenSubKey(
+                                                @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Setup\Windows Presentation Foundation")) {
+                            wpfVersion = r?.GetValue("Version")?.ToString();
+                        }
+                    } catch (Exception e) {
+                        Logging.Warning("Can’t get WPF version: " + e);
+                        wpfVersion = null;
+                    }
+
                     try {
                         writer.WriteString("Description.txt", JsonConvert.SerializeObject(new {
                             BuildInformation.AppVersion,
@@ -107,7 +118,9 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                             Environment.OSVersion,
                             Environment.CommandLine,
                             Environment = Environment.GetEnvironmentVariables(),
-                            SteamId = SteamIdHelper.Instance.Value
+                            SteamId = SteamIdHelper.Instance.Value,
+                            typeof(string).Assembly.ImageRuntimeVersion,
+                            WpfVersion = wpfVersion
                         }, Formatting.Indented));
                     } catch (Exception e) {
                         Logging.Warning("Can’t attach Description.txt: " + e);

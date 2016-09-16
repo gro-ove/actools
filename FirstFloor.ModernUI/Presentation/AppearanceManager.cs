@@ -86,8 +86,6 @@ namespace FirstFloor.ModernUI.Presentation {
         public Color AccentColor {
             get { return Application.Current.Resources[KeyAccentColor] as Color? ?? Color.FromArgb(0xff, 0x1b, 0xa1, 0xe2); }
             set {
-                Logging.Write("AccentColor=" + value);
-
                 Application.Current.Resources[KeyAccentColor] = value;
                 Application.Current.Resources[KeyAccent] = new SolidColorBrush(value);
 

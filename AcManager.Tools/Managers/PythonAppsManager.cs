@@ -7,12 +7,9 @@ using AcManager.Tools.Objects;
 
 namespace AcManager.Tools.Managers {
     public class PythonAppsManager : AcManagerNew<PythonAppObject> {
-        public static PythonAppsManager Instance { get; private set; }
+        private static PythonAppsManager _instance;
 
-        public static PythonAppsManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new PythonAppsManager();
-        }
+        public static PythonAppsManager Instance => _instance ?? (_instance = new PythonAppsManager());
 
         protected override bool Filter(string filename) {
             return !string.Equals(Path.GetFileName(filename), @"system", StringComparison.OrdinalIgnoreCase);

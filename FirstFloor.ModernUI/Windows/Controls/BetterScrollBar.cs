@@ -1,18 +1,29 @@
+// #define ENABLED
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class BetterScrollBar : ScrollBar {
+
         public static readonly DependencyProperty MinThumbLengthProperty = DependencyProperty.Register(nameof(MinThumbLength), typeof(double),
                 typeof(BetterScrollBar), new UIPropertyMetadata(40d, OnMinThumbLengthPropertyChanged));
-
-        private double? _originalViewportSize;
         
         public double MinThumbLength {
             get { return (double)GetValue(MinThumbLengthProperty); }
             set { SetValue(MinThumbLengthProperty, value); }
         }
+
+        private static void OnMinThumbLengthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+#if ENABLED
+            BetterScrollBar instance = d as BetterScrollBar;
+            instance?.OnMinThumbLengthChanged();
+#endif
+        }
+
+#if ENABLED
+        private double? _originalViewportSize;
 
         public BetterScrollBar() {
             SizeChanged += OnSizeChanged;
@@ -28,11 +39,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_trackSubscribed || Track == null) return;
             Track.SizeChanged += OnTrackSizeChanged;
             _trackSubscribed = true;
-        }
-
-        private static void OnMinThumbLengthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            BetterScrollBar instance = d as BetterScrollBar;
-            instance?.OnMinThumbLengthChanged();
         }
 
         private void OnTrackSizeChanged(object sender, SizeChangedEventArgs e) {
@@ -66,5 +72,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 ViewportSize = MinThumbLength * (Maximum - Minimum) / (trackLength + MinThumbLength);
             }
         }
+#endif
     }
 }

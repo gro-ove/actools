@@ -1,121 +1,94 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
-using FirstFloor.ModernUI.Windows.Media;
 
 namespace AcManager.Pages.Settings {
-    public partial class SettingsQuickSwitches {
+    public partial class SettingsQuickSwitches : ILoadableContent {
+        public async Task LoadAsync(CancellationToken cancellationToken) {
+            InitializeComponent();
+            if (_widgets == null) {
+                // creating a list of widget’s IDs
+                _widgets = Resources.MergedDictionaries.SelectMany(x => x.Keys.OfType<string>()).Where(x => x.StartsWith(@"Widget")).ToArray();
+            }
+
+            var widgets = new Dictionary<string, WidgetEntry>(_widgets.Length);
+            foreach (var key in _widgets) {
+                widgets[key] = new WidgetEntry(key, (FrameworkElement)FindResource(key));
+                await Task.Delay(10, cancellationToken);
+                if (cancellationToken.IsCancellationRequested) return;
+            }
+
+            DataContext = new ViewModel(widgets);
+        }
+
+        public void Load() {
+            InitializeComponent();
+            if (_widgets == null) {
+                // creating a list of widget’s IDs
+                _widgets = Resources.MergedDictionaries.SelectMany(x => x.Keys.OfType<string>()).Where(x => x.StartsWith(@"Widget")).ToArray();
+            }
+
+            DataContext = new ViewModel(_widgets.Select(x => new WidgetEntry(x, (FrameworkElement)FindResource(x))).ToDictionary(x => x.Key, x => x));
+        }
+
+        public void Initialize() {}
+
         private static string[] _widgets;
 
-        public SettingsQuickSwitchesViewModel Model => (SettingsQuickSwitchesViewModel)DataContext;
+        public class WidgetEntry : IDraggable {
+            public const string DraggableFormat = "Data-Widget";
 
-        public SettingsQuickSwitches() {
-            DataContext = new SettingsQuickSwitchesViewModel();
-            InitializeComponent();
+            public WidgetEntry(string key, FrameworkElement element) {
+                Key = key;
+                Element = element;
+            }
 
-            var active = SettingsHolder.Drive.QuickSwitchesList;
+            public string Key { get; }
 
-            if (_widgets == null) {
-                _widgets = Resources.MergedDictionaries.SelectMany(x => x.Keys.OfType<string>()).Where(x => x.StartsWith(@"Widget")).ToArray();
-                if (active.Any(x => !_widgets.Contains(x))) {
-                    active = active.Where(x => _widgets.Contains(x)).ToArray();
+            public FrameworkElement Element { get; }
+
+            public object ToolTip => Element.ToolTip;
+
+            string IDraggable.DraggableFormat => DraggableFormat;
+        }
+
+        public ViewModel Model => (ViewModel)DataContext;
+
+        public class ViewModel : NotifyPropertyChanged {
+            public IReadOnlyDictionary<string, WidgetEntry> Widgets { get; }
+
+            public BetterObservableCollection<WidgetEntry> Added { get; }
+
+            public BetterObservableCollection<WidgetEntry> Stored { get; }
+
+            public ViewModel(IReadOnlyDictionary<string, WidgetEntry> widgets) {
+                Widgets = widgets;
+
+                var active = SettingsHolder.Drive.QuickSwitchesList;
+                
+                // clean up all invalid entries from saved list
+                if (active.Any(x => !widgets.Keys.Contains(x))) {
+                    active = active.Where(widgets.Keys.Contains).ToArray();
                     SettingsHolder.Drive.QuickSwitchesList = active;
                 }
+
+                Stored = new BetterObservableCollection<WidgetEntry>(Widgets.Values.Where(x => !active.Contains(x.Key)));
+                Added = new BetterObservableCollection<WidgetEntry>(active.Select(x => Widgets.GetValueOrDefault(x)).NonNull());
+                Added.CollectionChanged += Added_CollectionChanged;
             }
 
-            foreach (var key in active) {
-                var widget = (FrameworkElement)FindResource(key);
-                widget.Tag = key;
-                (widget.Parent as ListBox)?.Items.Remove(widget);
-                AddedItems.Items.Add(widget);
+            private void Added_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+                SettingsHolder.Drive.QuickSwitchesList = Added.Select(x => x.Key).ToArray();
             }
 
-            foreach (var key in _widgets.Where(x => !active.Contains(x))) {
-                var widget = (FrameworkElement)FindResource(key);
-                widget.Tag = key;
-                (widget.Parent as ListBox)?.Items.Remove(widget);
-                StoredItems.Items.Add(widget);
-            }
-        }
-
-        public void Save() {
-            SettingsHolder.Drive.QuickSwitchesList =
-                    AddedItems.Items.OfType<FrameworkElement>().Select(x => x.Tag).OfType<string>().ToArray();
-        }
-
-        public class SettingsQuickSwitchesViewModel : NotifyPropertyChanged {
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
-        }
-
-        private void Item_OnPreviewMouseLeftButtonDown(object sender, MouseEventArgs e) {
-            if (e.LeftButton != MouseButtonState.Pressed) return;
-
-            var item = sender as ListBoxItem;
-            if (item == null) return;
-
-            var source = AddedItems.Items.Contains(item.DataContext) ? AddedItems : StoredItems;
-            source.SelectedItem = item;
-
-            using (new DragPreview(item)) {
-                var data = new DataObject();
-                data.SetData(AdditionalDataFormats.Widget, item.DataContext);
-                data.SetData(AdditionalDataFormats.Source, source);
-                if (DragDrop.DoDragDrop(item, data, DragDropEffects.Move) == DragDropEffects.Move) {
-                    Save();
-                }
-            }
-        }
-
-        private void Item_OnPreviewDoubleClick(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton != MouseButton.Left) return;
-
-            var item = sender as ListBoxItem;
-            if (item == null) return;
-
-            var list = AddedItems.Items.Contains(item.DataContext) ? AddedItems : StoredItems;
-            var anotherList = ReferenceEquals(list, AddedItems) ? StoredItems : AddedItems;
-            var value = item.DataContext;
-
-            list.Items.Remove(value);
-            anotherList.Items.Add(value);
-
-            Save();
-        }
-
-        private static class AdditionalDataFormats {
-            public const string Widget = "Data-Widget";
-            public const string Source = "Data-Source";
-        }
-        
-        private void List_OnDrop(object sender, DragEventArgs e) {
-            var destination = (ListBox)sender;
-
-            var widget = e.Data.GetData(AdditionalDataFormats.Widget);
-            var source = e.Data.GetData(AdditionalDataFormats.Source) as ItemsControl;
-
-            if (widget == null || source == null) {
-                e.Effects = DragDropEffects.None;
-                return;
-            }
-            
-            var newIndex = destination.GetMouseItemIndex();
-            
-            source.Items.Remove(widget);
-            if (newIndex == -1) {
-                destination.Items.Add(widget);
-            } else {
-                destination.Items.Insert(newIndex, widget);
-            }
-
-            e.Effects = DragDropEffects.Move;
         }
     }
 }

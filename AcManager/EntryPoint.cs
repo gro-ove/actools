@@ -89,7 +89,7 @@ namespace AcManager {
             AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
             RenameContentToData();
 
-            var logFilename = AppArguments.GetBool(AppFlag.LogPacked, true) ? GetLogName("Packed Log") : null;
+            var logFilename = AppArguments.GetBool(AppFlag.LogPacked) ? GetLogName("Packed Log") : null;
             AppDomain.CurrentDomain.AssemblyResolve += new PackedHelper("AcTools_ContentManager", "AcManager.References", logFilename).Handler;
             MainInner(a);
         }

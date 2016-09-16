@@ -72,11 +72,11 @@ document.addEventListener('mousedown', function(e){
             try {
                 _inner.InvokeScript(@"eval", js);
             } catch (InvalidOperationException e) {
-                Logging.Warning("Execute() InvalidOperationException: " + e.Message);
+                Logging.Warning("InvalidOperationException: " + e.Message);
             } catch (COMException e) {
-                Logging.Warning("Execute() COMException: " + e.Message);
+                Logging.Warning("COMException: " + e.Message);
             } catch (Exception e) {
-                Logging.Warning("Execute(): " + e);
+                Logging.Warning(e);
             }
         }
 

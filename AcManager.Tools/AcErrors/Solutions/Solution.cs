@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Data;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.AcErrors.Solutions {
     public class Solution : SolutionBase {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Dialogs;
@@ -46,14 +47,26 @@ namespace FirstFloor.ModernUI.Helpers {
         private static readonly TimeSpan ErrorsTimeout = TimeSpan.FromSeconds(3);
         private const int ErrorsLimit = 30;
 
-        private static void NotifyInner(NonfatalErrorEntry entry, bool message) {
-            Logging.Warning($"{entry.DisplayName}:\n{entry.Exception}");
+        private static void NotifyInner([NotNull] string message, [CanBeNull] string commentary, [CanBeNull] Exception exception,
+                [CanBeNull] IEnumerable<INonfatalErrorSolution> solutions, bool show, string m, string p, int l) {
+            if (exception is UserCancelledException) return;
+
+            var i = exception as InformativeException;
+            if (i != null) {
+                message = i.Message;
+                commentary = i.SolutionCommentary;
+                exception = i.InnerException;
+            }
+
+            Logging.Write('•', $"{message}:\n{exception}", m, p, l);
+
+            var entry = new NonfatalErrorEntry(message, commentary, exception, solutions ?? new INonfatalErrorSolution[0]);
             Application.Current.Dispatcher.InvokeAsync(() => {
                 try {
                     var active = _active;
                     _active = true;
 
-                    if (message && !active && DateTime.Now - _previous > ErrorsTimeout) {
+                    if (show && !active && DateTime.Now - _previous > ErrorsTimeout) {
                         ErrorMessage.Show(entry);
                     }
 
@@ -74,71 +87,68 @@ namespace FirstFloor.ModernUI.Helpers {
             });
         }
 
-        private static void NotifyInner(string problemDescription, string solutionCommentary, Exception exception,
-                [CanBeNull] IEnumerable<INonfatalErrorSolution> solutions, bool message) {
-            NotifyInner(new NonfatalErrorEntry(problemDescription, solutionCommentary, exception, solutions ?? new INonfatalErrorSolution[0]), message);
+        /// <summary>
+        /// Notify about some non-fatal exception. User will see some message.
+        /// </summary>
+        /// <param name="message">Ex.: “Can’t do this and that”.</param>
+        /// <param name="commentary">Ex.: “Make sure A is something and B is something else.”</param>
+        /// <param name="exception">Exception which caused the problem.</param>
+        /// <param name="solutions">A bunch of possible solutions.</param>
+        /// <param name="m">Member at which error occured.</param>
+        /// <param name="p">File at which error occured.</param>
+        /// <param name="l">Line at which error occured.</param>
+        public static void Notify([LocalizationRequired, NotNull] string message, [LocalizationRequired, CanBeNull] string commentary, Exception exception = null,
+                IEnumerable<INonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null,
+                [CallerLineNumber] int l = -1) {
+            NotifyInner(message, commentary, exception, solutions, true, m, p, l);
         }
 
         /// <summary>
         /// Notify about some non-fatal exception. User will see some message.
         /// </summary>
-        /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
-        /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
+        /// <param name="message">Ex.: “Can’t do this and that”.</param>
         /// <param name="exception">Exception which caused the problem.</param>
         /// <param name="solutions">A bunch of possible solutions.</param>
-        public static void Notify([LocalizationRequired] string problemDescription, [LocalizationRequired] string solutionCommentary, Exception exception = null,
-                IEnumerable<INonfatalErrorSolution> solutions = null) {
-            if (exception is UserCancelledException) return;
-
-            var i = exception as InformativeException;
-            if (i != null) {
-                NotifyInner(i.Message, i.SolutionCommentary, i.InnerException, solutions, true);
-            } else {
-                NotifyInner(problemDescription, solutionCommentary, exception, solutions, true);
-            }
-        }
-
-        /// <summary>
-        /// Notify about some non-fatal exception. User will see some message.
-        /// </summary>
-        /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
-        /// <param name="exception">Exception which caused the problem.</param>
-        /// <param name="solutions">A bunch of possible solutions.</param>
-        public static void Notify([LocalizationRequired] string problemDescription, Exception exception = null,
-                IEnumerable<INonfatalErrorSolution> solutions = null) {
-            Notify(problemDescription, null, exception, solutions);
+        /// <param name="m">Member at which error occured.</param>
+        /// <param name="p">File at which error occured.</param>
+        /// <param name="l">Line at which error occured.</param>
+        public static void Notify([LocalizationRequired, NotNull] string message, Exception exception = null,
+                IEnumerable<INonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null,
+                [CallerLineNumber] int l = -1) {
+            NotifyInner(message, null, exception, solutions, true, m, p, l);
         }
 
         /// <summary>
         /// Notify about some non-fatal exception. User will see a new entry in
         /// errors list.
         /// </summary>
-        /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
-        /// <param name="solutionCommentary">Ex.: “Make sure A is something and B is something else.”</param>
+        /// <param name="message">Ex.: “Can’t do this and that”.</param>
+        /// <param name="commentary">Ex.: “Make sure A is something and B is something else.”</param>
         /// <param name="exception">Exception which caused the problem.</param>
         /// <param name="solutions">A bunch of possible solutions.</param>
-        public static void NotifyBackground([LocalizationRequired] string problemDescription, [LocalizationRequired] string solutionCommentary,
-                Exception exception = null, IEnumerable<INonfatalErrorSolution> solutions = null) {
-            if (exception is UserCancelledException) return;
-
-            var i = exception as InformativeException;
-            if (i != null) {
-                NotifyInner(i.Message, i.SolutionCommentary, i.InnerException, solutions, false);
-            } else {
-                NotifyInner(problemDescription, solutionCommentary, exception, solutions, false);
-            }
+        /// <param name="m">Member at which error occured.</param>
+        /// <param name="p">File at which error occured.</param>
+        /// <param name="l">Line at which error occured.</param>
+        public static void NotifyBackground([LocalizationRequired, NotNull] string message, [LocalizationRequired, CanBeNull] string commentary,
+                Exception exception = null, IEnumerable<INonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null,
+                [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+            NotifyInner(message, commentary, exception, solutions, false, m, p, l);
         }
 
         /// <summary>
         /// Notify about some non-fatal exception. User will see a new entry in
         /// errors list.
         /// </summary>
-        /// <param name="problemDescription">Ex.: “Can’t do this and that”.</param>
+        /// <param name="message">Ex.: “Can’t do this and that”.</param>
         /// <param name="exception">Exception which caused the problem.</param>
         /// <param name="solutions">A bunch of possible solutions.</param>
-        public static void NotifyBackground([LocalizationRequired] string problemDescription, Exception exception = null,
-                IEnumerable<INonfatalErrorSolution> solutions = null) {
-            NotifyBackground(problemDescription, null, exception, solutions);
+        /// <param name="m">Member at which error occured.</param>
+        /// <param name="p">File at which error occured.</param>
+        /// <param name="l">Line at which error occured.</param>
+        public static void NotifyBackground([LocalizationRequired, NotNull] string message, Exception exception = null,
+                IEnumerable<INonfatalErrorSolution> solutions = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null,
+                [CallerLineNumber] int l = -1) {
+            NotifyInner(message, null, exception, solutions, false, m, p, l);
         }
     }
 }

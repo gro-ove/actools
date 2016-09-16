@@ -185,7 +185,6 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             var deviceId = section.GetInt("JOY", -1);
             var device = devices.FirstOrDefault(x => x.OriginalIniIds.Contains(deviceId));
             Input = device?.GetAxle(section.GetInt("AXLE", -1));
-            Logging.Write($"device: {device}, input: {Input}");
 
             if (RangeMode) {
                 if (GammaMode) {

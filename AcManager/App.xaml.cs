@@ -42,7 +42,6 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows.Controls;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using StringBasedFilter;
 
 namespace AcManager {
@@ -61,7 +60,7 @@ namespace AcManager {
 
             if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
                 var logFilename = EntryPoint.GetLogName("Main Log");
-                Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename));
+                Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename), AppArguments.GetBool(AppFlag.OptimizeLogging, true));
                 Logging.Write($"App version: {BuildInformation.AppVersion} ({BuildInformation.Platform}, {WindowsVersionHelper.GetVersion()})");
             }
 
@@ -331,6 +330,7 @@ namespace AcManager {
         }
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e) {
+            Logging.Flush();
             Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
         }

@@ -37,11 +37,8 @@ namespace AcManager {
             SystemCultureName = CultureInfo.CurrentUICulture.Name;
 
             var langId = AppArguments.Get(AppFlag.ForceLocale) ?? SettingsHolder.Locale.LocaleName;
-            Logging.Write("Locale: " + langId);
-
             bool found;
             if (IsSupported(langId)) {
-                Logging.Write("Fully supported already");
                 CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(langId);
                 found = true;
             } else {

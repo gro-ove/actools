@@ -31,7 +31,7 @@ namespace AcManager {
         /// <summary>
         /// Force specific locale even if it’s not supported at the moment. Could be useful
         /// if you want app to load locale from Locales folder.
-        /// Example: --force-locale=ru-RU.
+        /// Example: --force-locale=ru.
         /// </summary>
         ForceLocale,
 
@@ -66,6 +66,12 @@ namespace AcManager {
         /// Example: --disable-logging.
         /// </summary>
         DisableLogging,
+
+        /// <summary>
+        /// Optimizes logging by keeping the stream open. Enabled by default.
+        /// Example: --optimize-logging=no.
+        /// </summary>
+        OptimizeLogging,
 
         /// <summary>
         /// Saves Values.data without compressing. Takes more space.

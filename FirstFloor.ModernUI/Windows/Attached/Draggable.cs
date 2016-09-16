@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
@@ -43,8 +46,6 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             var grid = element as DataGrid;
             if (grid != null) {
                 handler = DataGrid_MouseMove;
-                grid.BeginningEdit += DataGrid_BeginningEdit;
-                grid.CellEditEnding += DataGrid_CellEditEnding;
             } else if (element is ListBox) {
                 handler = ListBox_MouseMove;
             } else {
@@ -61,14 +62,6 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 element.PreviewMouseMove -= handler;
                 element.AllowDrop = false;
             }
-        }
-
-        private static void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e) {
-            // throw new System.NotImplementedException();
-        }
-
-        private static void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e) {
-            // throw new System.NotImplementedException();
         }
 
         private static bool _dragging;
@@ -175,6 +168,79 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private static void DataGrid_MouseMove(object sender, MouseEventArgs e) {
             e.Handled = e.Handled || IsDragging(sender, e) && MoveFromDataGrid((FrameworkElement)sender, e);
+        }
+
+        public static string GetDestination(DependencyObject obj) {
+            return (string)obj.GetValue(DestinationProperty);
+        }
+
+        public static void SetDestination(DependencyObject obj, string value) {
+            obj.SetValue(DestinationProperty, value);
+        }
+
+        public static readonly DependencyProperty DestinationProperty = DependencyProperty.RegisterAttached("Destination", typeof(string),
+                typeof(Draggable), new UIPropertyMetadata(OnDestinationChanged));
+
+        private static void OnDestinationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            var element = d as ItemsControl;
+            if (element == null || !(e.NewValue is string)) return;
+
+            var newValue = (string)e.NewValue;
+            if (newValue != null) {
+                element.Drop += Destination_Drop;
+            } else {
+                element.Drop -= Destination_Drop;
+            }
+        }
+
+        private static void Destination_Drop(object sender, DragEventArgs e) {
+            var destination = (ListBox)sender;
+            var format = GetDestination(destination);
+            var widget = e.Data.GetData(format) as IDraggable;
+            var source = e.Data.GetData(SourceFormat) as ItemsControl;
+
+            if (widget == null || source == null) {
+                e.Effects = DragDropEffects.None;
+                return;
+            }
+
+            var newIndex = destination.GetMouseItemIndex();
+            var type = widget.GetType();
+
+            try {
+                if (newIndex == -1) {
+                    var method = (from x in destination.ItemsSource.GetType().GetMethods()
+                                  where x.Name == "Add"
+                                  let p = x.GetParameters()
+                                  where p.Length == 1 && p[0].ParameterType == type
+                                  select x).FirstOrDefault();
+                    if (method == null) {
+                        e.Effects = DragDropEffects.None;
+                        return;
+                    }
+
+                    ((IList)source.ItemsSource).Remove(widget);
+                    method.Invoke(destination.ItemsSource, new object[] { widget });
+                } else {
+                    var method = (from x in destination.ItemsSource.GetType().GetMethods()
+                                  where x.Name == "Insert"
+                                  let p = x.GetParameters()
+                                  where p.Length == 2 && p[1].ParameterType == type
+                                  select x).FirstOrDefault();
+                    if (method == null) {
+                        e.Effects = DragDropEffects.None;
+                        return;
+                    }
+
+                    ((IList)source.ItemsSource).Remove(widget);
+                    method.Invoke(destination.ItemsSource, new object[] { newIndex, widget });
+                }
+
+                e.Effects = DragDropEffects.Move;
+            } catch (Exception ex) {
+                Logging.Debug(ex);
+                e.Effects = DragDropEffects.None;
+            }
         }
     }
 }

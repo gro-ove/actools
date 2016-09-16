@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Windows.Navigation;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
     /// <summary>
@@ -66,6 +67,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             }
         }
 
+        [CanBeNull]
         private readonly FrameworkElement _source;
 
         /// <summary>
@@ -73,11 +75,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="source">The framework source element this parser operates in.</param>
-        public BbCodeParser(string value, FrameworkElement source)
-            : base(new BbCodeLexer(value)) {
-            if (source == null) {
-                throw new ArgumentNullException(nameof(source));
-            }
+        public BbCodeParser(string value, [CanBeNull] FrameworkElement source) : base(new BbCodeLexer(value)) {
             _source = source;
         }
 
@@ -177,7 +175,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                 link.Command = command;
                                 link.CommandParameter = parameter;
                                 if (targetName != null) {
-                                    link.CommandTarget = _source.FindName(targetName) as IInputElement;
+                                    link.CommandTarget = _source?.FindName(targetName) as IInputElement;
                                 }
                             } else {
                                 link.NavigateUri = uri;

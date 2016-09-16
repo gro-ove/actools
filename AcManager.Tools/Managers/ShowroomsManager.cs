@@ -8,12 +8,9 @@ using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Managers {
     public class ShowroomsManager : AcManagerNew<ShowroomObject> {
-        public static ShowroomsManager Instance { get; private set; }
+        private static ShowroomsManager _instance;
 
-        public static ShowroomsManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new ShowroomsManager();
-        }
+        public static ShowroomsManager Instance => _instance ?? (_instance = new ShowroomsManager());
 
         protected override ShowroomObject CreateAcObject(string id, bool enabled) {
             return new ShowroomObject(this, id, enabled);

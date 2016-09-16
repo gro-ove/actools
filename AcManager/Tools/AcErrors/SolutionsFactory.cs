@@ -31,12 +31,12 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Data_JsonIsDamaged:
                     return new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_RestoreJsonFile,
-                                AcManager.AppStrings.Solution_RestoreJsonFile_Details,
+                                AppStrings.Solution_RestoreJsonFile,
+                                AppStrings.Solution_RestoreJsonFile_Details,
                                 e => {
                                     var t = (AcJsonObjectNew)e.Target;
                                     if (!Solve.TryToRestoreDamagedJsonFile(t.JsonFilename, JObjectRestorationSchemeProvider.GetScheme(t))) {
-                                        throw new SolvingException(AcManager.AppStrings.Solution_CannotRestoreJsonFile);
+                                        throw new SolvingException(AppStrings.Solution_CannotRestoreJsonFile);
                                     }
                                 }),
                         Solve.TryToCreateNewFile((AcJsonObjectNew)error.Target)
@@ -45,17 +45,17 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Data_ObjectNameIsMissing:
                     return new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_SetName,
-                                AcManager.AppStrings.Solution_SetName_Details,
+                                AppStrings.Solution_SetName,
+                                AppStrings.Solution_SetName_Details,
                                 e => {
-                                    var value = Prompt.Show(AcManager.AppStrings.Solution_SetName_Prompt, AcManager.AppStrings.Common_NewName,
+                                    var value = Prompt.Show(AppStrings.Solution_SetName_Prompt, AppStrings.Common_NewName,
                                             AcStringValues.NameFromId(e.Target.Id), maxLength: 200);
                                     if (value == null) throw new SolvingException();
                                     e.Target.NameEditable = value;
                                 }) { IsUiSolution = true },
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_SetNameFromId,
-                                string.Format(AcManager.AppStrings.Solution_SetNameFromId_Details, AcStringValues.NameFromId(error.Target.Id)),
+                                AppStrings.Solution_SetNameFromId,
+                                string.Format(AppStrings.Solution_SetNameFromId_Details, AcStringValues.NameFromId(error.Target.Id)),
                                 e => {
                                     e.Target.NameEditable = AcStringValues.NameFromId(e.Target.Id);
                                 }),
@@ -65,18 +65,18 @@ namespace AcManager.Tools.AcErrors {
                     var guess = AcStringValues.BrandFromName(error.Target.DisplayName);
                     return new[] {
                         new Solution(
-                                AcManager.AppStrings.Solution_SetBrandName,
-                                AcManager.AppStrings.Solution_SetBrandName_Details,
+                                AppStrings.Solution_SetBrandName,
+                                AppStrings.Solution_SetBrandName_Details,
                                 e => {
-                                    var value = Prompt.Show(AcManager.AppStrings.Solution_SetBrandName_Prompt, AcManager.AppStrings.Common_NewBrandName, guess,
+                                    var value = Prompt.Show(AppStrings.Solution_SetBrandName_Prompt, AppStrings.Common_NewBrandName, guess,
                                             maxLength: 200,
                                             suggestions: SuggestionLists.CarBrandsList);
                                     if (value == null) throw new SolvingException();
                                     ((CarObject)e.Target).Brand = value;
                                 }) { IsUiSolution = true },
                         guess == null ? null : new Solution(
-                                AcManager.AppStrings.Solution_SetBrandNameFromName,
-                                string.Format(AcManager.AppStrings.Solution_SetBrandNameFromName_Details, guess),
+                                AppStrings.Solution_SetBrandNameFromName,
+                                string.Format(AppStrings.Solution_SetBrandNameFromName_Details, guess),
                                 e => {
                                     ((CarObject)e.Target).Brand = guess;
                                 })
@@ -86,8 +86,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Data_IniIsMissing:
                     return Solve.TryToFindRenamedFile(error.Target.Location, ((AcIniObject)error.Target).IniFilename).Union(new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_RemoveObject,
-                                AcManager.AppStrings.Solution_RemoveObject_Details,
+                                AppStrings.Solution_RemoveObject,
+                                AppStrings.Solution_RemoveObject_Details,
                                 e => {
                                     e.Target.DeleteCommand.Execute(null);
                                 })
@@ -96,14 +96,14 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Weather_ColorCurvesIniIsMissing:
                     return Solve.TryToFindRenamedFile(error.Target.Location, ((WeatherObject)error.Target).ColorCurvesIniFilename).Union(new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_GenerateNew,
-                                AcManager.AppStrings.Solution_GenerateNew_Details,
+                                AppStrings.Solution_GenerateNew,
+                                AppStrings.Solution_GenerateNew_Details,
                                 e => {
                                     File.WriteAllText(((WeatherObject)e.Target).ColorCurvesIniFilename, "");
                                 }),
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_RemoveObject,
-                                AcManager.AppStrings.Solution_RemoveObject_Details,
+                                AppStrings.Solution_RemoveObject,
+                                AppStrings.Solution_RemoveObject_Details,
                                 e => {
                                     e.Target.DeleteCommand.Execute(null);
                                 })
@@ -112,8 +112,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Data_IniIsDamaged:
                     return Solve.TryToFindRenamedFile(error.Target.Location, ((AcIniObject)error.Target).IniFilename).Union(new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_RemoveObject,
-                                AcManager.AppStrings.Solution_RemoveObject_Details,
+                                AppStrings.Solution_RemoveObject,
+                                AppStrings.Solution_RemoveObject_Details,
                                 e => {
                                     e.Target.DeleteCommand.Execute(null);
                                 })
@@ -126,14 +126,14 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Car_ParentIsMissing:
                     return new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_MakeIndependent,
-                                AcManager.AppStrings.Solution_MakeIndependent_Details,
+                                AppStrings.Solution_MakeIndependent,
+                                AppStrings.Solution_MakeIndependent_Details,
                                 e => {
                                     ((CarObject)e.Target).ParentId = null;
                                 }),
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_ChangeParent,
-                                AcManager.AppStrings.Solution_ChangeParent_Details,
+                                AppStrings.Solution_ChangeParent,
+                                AppStrings.Solution_ChangeParent_Details,
                                 e => {
                                     var target = (CarObject)e.Target;
                                     new ChangeCarParentDialog(target).ShowDialog();
@@ -148,8 +148,8 @@ namespace AcManager.Tools.AcErrors {
                     var fit = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $"{car.Brand}.png");
                     return new ISolution[] {
                         fit.Exists ? new MultiSolution(
-                                string.Format(AcManager.AppStrings.Solution_SetBrandBadge, car.Brand),
-                                AcManager.AppStrings.Solution_SetBrandBadge_Details,
+                                string.Format(AppStrings.Solution_SetBrandBadge, car.Brand),
+                                AppStrings.Solution_SetBrandBadge_Details,
                                 e => {
                                     var c = (CarObject)e.Target;
                                     var f = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $"{c.Brand}.png");
@@ -157,8 +157,8 @@ namespace AcManager.Tools.AcErrors {
                                     File.Copy(f.Filename, c.BrandBadge);
                                 }) : null,
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_ChangeBrandBadge,
-                                AcManager.AppStrings.Solution_ChangeBrandBadge_Details,
+                                AppStrings.Solution_ChangeBrandBadge,
+                                AppStrings.Solution_ChangeBrandBadge_Details,
                                 e => {
                                     var target = (CarObject)e.Target;
                                     new BrandBadgeEditor(target).ShowDialog();
@@ -175,8 +175,8 @@ namespace AcManager.Tools.AcErrors {
                     var fit = FilesStorage.Instance.GetContentFile(ContentCategory.UpgradeIcons, $"{label}.png");
                     return new ISolution[] {
                         fit.Exists ? new MultiSolution(
-                                string.Format(AcManager.AppStrings.Solution_SetUpgradeIcon, label),
-                                AcManager.AppStrings.Solution_SetUpgradeIcon_Details,
+                                string.Format(AppStrings.Solution_SetUpgradeIcon, label),
+                                AppStrings.Solution_SetUpgradeIcon_Details,
                                 e => {
                                     var c = (CarObject)e.Target;
                                     var l = UpgradeIconEditor.TryToGuessLabel(c.DisplayName) ?? @"S1";
@@ -185,8 +185,8 @@ namespace AcManager.Tools.AcErrors {
                                     File.Copy(f.Filename, c.UpgradeIcon);
                                 }) : null,
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_ChangeUpgradeIcon,
-                                AcManager.AppStrings.Solution_ChangeUpgradeIcon_Details,
+                                AppStrings.Solution_ChangeUpgradeIcon,
+                                AppStrings.Solution_ChangeUpgradeIcon_Details,
                                 e => {
                                     var target = (CarObject)e.Target;
                                     new UpgradeIconEditor(target).ShowDialog();
@@ -200,8 +200,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Showroom_Kn5IsMissing:
                     return new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_MakeEmptyModel,
-                                AcManager.AppStrings.Solution_MakeEmptyModel_Details,
+                                AppStrings.Solution_MakeEmptyModel,
+                                AppStrings.Solution_MakeEmptyModel_Details,
                                 e => {
                                     Kn5.CreateEmpty().SaveAll(((ShowroomObject)e.Target).Kn5Filename);
                                 })
@@ -225,8 +225,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.CarSkins_SkinsAreMissing:
                     return new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_CreateEmptySkin,
-                                AcManager.AppStrings.Solution_CreateEmptySkin_Details,
+                                AppStrings.Solution_CreateEmptySkin,
+                                AppStrings.Solution_CreateEmptySkin_Details,
                                 e => {
                                     var target = Path.Combine(((CarObject)e.Target).SkinsDirectory, "default");
                                     Directory.CreateDirectory(target);
@@ -239,8 +239,8 @@ namespace AcManager.Tools.AcErrors {
                                     }));
                                 })
                     }.Union(((CarObject)error.Target).SkinsManager.WrappersList.Where(x => !x.Value.Enabled).Select(x => new MultiSolution(
-                            string.Format(AcManager.AppStrings.Solution_EnableSkin, x.Value.DisplayName),
-                            AcManager.AppStrings.Solution_EnableSkin_Details,
+                            string.Format(AppStrings.Solution_EnableSkin, x.Value.DisplayName),
+                            AppStrings.Solution_EnableSkin_Details,
                             (IAcError e) => {
                                 ((CarSkinObject)x.Loaded()).ToggleCommand.Execute(null);
                             }
@@ -256,8 +256,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Font_UsedButDisabled:
                     return new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_Enable,
-                                AcManager.AppStrings.Solution_Enable_Details,
+                                AppStrings.Solution_Enable,
+                                AppStrings.Solution_Enable_Details,
                                 e => {
                                     e.Target.ToggleCommand.Execute(null);
                                 })
@@ -266,14 +266,14 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.CarSetup_TrackIsMissing:
                     return new[] {
                         new Solution(
-                                AcManager.AppStrings.Solution_FindTrack,
-                                AcManager.AppStrings.Solution_FindTrack_Details,
+                                AppStrings.Solution_FindTrack,
+                                AppStrings.Solution_FindTrack_Details,
                                 e => {
                                     Process.Start($@"http://assetto-db.com/track/{((CarSetupObject)e.Target).TrackId}");
                                 }),
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_MakeGeneric,
-                                AcManager.AppStrings.Solution_MakeGeneric_Details,
+                                AppStrings.Solution_MakeGeneric,
+                                AppStrings.Solution_MakeGeneric_Details,
                                 e => {
                                     ((CarSetupObject)e.Target).TrackId = null;
                                 })
@@ -282,8 +282,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.CarSkin_PreviewIsMissing:
                     return new ISolution[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_GeneratePreview,
-                                AcManager.AppStrings.Solution_GeneratePreview_Details,
+                                AppStrings.Solution_GeneratePreview,
+                                AppStrings.Solution_GeneratePreview_Details,
                                 e => {
                                     var list = e.ToList();
                                     var carId = ((CarSkinObject)list[0].Target).CarId;
@@ -294,8 +294,8 @@ namespace AcManager.Tools.AcErrors {
                                     }
                                 }) { IsUiSolution = true },
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_SetupPreview,
-                                AcManager.AppStrings.Solution_SetupPreview_Details,
+                                AppStrings.Solution_SetupPreview,
+                                AppStrings.Solution_SetupPreview_Details,
                                 e => {
                                     var list = e.ToList();
                                     var carId = ((CarSkinObject)list[0].Target).CarId;
@@ -310,16 +310,16 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.CarSkin_LiveryIsMissing:
                     return new ISolution[] {
                         new AsyncMultiSolution(
-                                AcManager.AppStrings.Solution_GenerateLivery,
-                                AcManager.AppStrings.Solution_GenerateLivery_Details,
+                                AppStrings.Solution_GenerateLivery,
+                                AppStrings.Solution_GenerateLivery_Details,
                                 e => LiveryIconEditor.GenerateAsync((CarSkinObject)e.Target)),
                         new AsyncMultiSolution(
-                                AcManager.AppStrings.Solution_RandomLivery,
-                                AcManager.AppStrings.Solution_RandomLivery_Details,
+                                AppStrings.Solution_RandomLivery,
+                                AppStrings.Solution_RandomLivery_Details,
                                 e => LiveryIconEditor.GenerateRandomAsync((CarSkinObject)e.Target)),
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_SetupLivery,
-                                AcManager.AppStrings.Solution_SetupLivery_Details,
+                                AppStrings.Solution_SetupLivery,
+                                AppStrings.Solution_SetupLivery_Details,
                                 e => {
                                     if (!new LiveryIconEditor((CarSkinObject)e.Target).ShowDialog()) {
                                         throw new SolvingException();
@@ -331,8 +331,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Replay_TrackIsMissing:
                     return new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_RemoveReplay,
-                                AcManager.AppStrings.Solution_RemoveReplay_Details,
+                                AppStrings.Solution_RemoveReplay,
+                                AppStrings.Solution_RemoveReplay_Details,
                                 e => {
                                     e.Target.DeleteCommand.Execute(null);
                                 })
@@ -341,8 +341,8 @@ namespace AcManager.Tools.AcErrors {
                 case AcErrorType.Replay_InvalidName:
                     return new[] {
                         new MultiSolution(
-                                AcManager.AppStrings.Solution_FixName,
-                                AcManager.AppStrings.Solution_FixName_Details,
+                                AppStrings.Solution_FixName,
+                                AppStrings.Solution_FixName_Details,
                                 e => {
                                     e.Target.NameEditable = Regex.Replace(e.Target.NameEditable ?? @"-", @"[\[\]]", "");
                                 })

@@ -413,7 +413,9 @@ namespace AcManager.Controls.CustomShowroom {
                 var dlg = new ModernDialog {
                     Title = title,
                     Content = new ScrollViewer {
-                        Content = new BbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
+                        Content = new SelectableBbCodeBlock {
+                            BbCode = text
+                        },
                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                         HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
                     },
@@ -481,7 +483,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new ProperCommand(o => {
                 if (Renderer == null) return;
-                new CarTextureDialog(Renderer.Kn5, ((ToolsKn5ObjectRenderer.TextureInformation)o).TextureName).ShowDialog();
+                new CarTextureDialog(Skin, Renderer.Kn5, ((ToolsKn5ObjectRenderer.TextureInformation)o).TextureName).ShowDialog();
             }, o => o is ToolsKn5ObjectRenderer.TextureInformation));
             #endregion
         }

@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsQuickSwitches" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300"
-        FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsQuickSwitches+SettingsQuickSwitchesViewModel}"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:se="clr-namespace:AcManager.Pages.Settings"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+        d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance se:SettingsQuickSwitches+ViewModel}"
         mui:ModernFrame.KeepAlive="False">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -11,80 +11,53 @@
                 <mui:SharedResourceDictionary Source="/QuickSwitches/QuickSwitchesWidgets.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                <EventSetter Event="PreviewMouseMove" Handler="Item_OnPreviewMouseLeftButtonDown" />
-                <EventSetter Event="PreviewMouseDoubleClick" Handler="Item_OnPreviewDoubleClick" />
-                <Setter Property="AllowDrop" Value="True" />
-                <Setter Property="Template">
+            <DataTemplate x:Key="ItemTemplate" DataType="{x:Type se:SettingsQuickSwitches+WidgetEntry}">
+                <mui:Cell>
+                    <ContentPresenter Content="{Binding Element}" />
+                    <Border Background="Transparent" ToolTip="{Binding ToolTip}" />
+                </mui:Cell>
+            </DataTemplate>
+
+            <Style x:Key="WidgetsList" TargetType="{x:Type ListBox}" BasedOn="{StaticResource {x:Type ListBox}}">
+                <Setter Property="mui:Draggable.Enabled" Value="True" />
+                <Setter Property="mui:Draggable.Destination" Value="{x:Static se:SettingsQuickSwitches+WidgetEntry.DraggableFormat}" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+                <Setter Property="ItemTemplate" Value="{StaticResource ItemTemplate}" />
+                <Setter Property="ItemsPanel">
                     <Setter.Value>
-                        <ControlTemplate TargetType="ListBoxItem">
-                            <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                                <Grid>
-                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                    <Grid Background="Transparent" ToolTip="{Binding ToolTip}" />
-                                </Grid>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
-                                </Trigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer>
-        <StackPanel Style="{StaticResource SettingsPanel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" MinWidth="100" MaxWidth="400" />
+            <ColumnDefinition Width="9" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource SettingsPanel}" Margin="0 0 0 20">
             <CheckBox IsChecked="{Binding Drive.QuickSwitches}">
                 <Label Content="{x:Static g:AppStrings.Settings_QuickSwitches_Enable}" />
             </CheckBox>
-            <mui:BbCodeBlock Margin="0 0 0 20" TextWrapping="Wrap" BbCode="{x:Static g:AppStrings.Settings_QuickSwitches_Description}" />
-
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="400" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="260" />
-                    <ColumnDefinition Width="9" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource Label}" Margin="0 0 0 4"
-                        Text="{x:Static g:AppStrings.Settings_QuickSwitches_AddedLabel}" />
-                <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource Label}" Margin="0 0 0 4"
-                        Text="{x:Static g:AppStrings.Settings_QuickSwitches_LibraryLabel}" />
-
-                <ListBox x:Name="AddedItems" Grid.Row="1" Grid.Column="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ItemContainerStyle="{StaticResource ListBoxItem}" Background="Transparent" AllowDrop="True" Drop="List_OnDrop">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
-
-                <Rectangle Fill="{DynamicResource SeparatorBackground}" Grid.Column="1" Grid.Row="1" Width="1" HorizontalAlignment="Center"
-                        VerticalAlignment="Stretch" />
-
-                <ListBox x:Name="StoredItems" Grid.Row="1" Grid.Column="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ItemContainerStyle="{StaticResource ListBoxItem}" Background="Transparent" AllowDrop="True" Drop="List_OnDrop">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                </ListBox>
-            </Grid>
+            <mui:BbCodeBlock TextWrapping="Wrap" BbCode="{x:Static g:AppStrings.Settings_QuickSwitches_Description}" />
         </StackPanel>
-    </ScrollViewer>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource Label}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Settings_QuickSwitches_AddedLabel}" />
+        <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource Label}" Margin="0 0 0 4"
+                Text="{x:Static g:AppStrings.Settings_QuickSwitches_LibraryLabel}" />
+
+        <ListBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding Added}" Style="{StaticResource WidgetsList}" />
+        <mui:ModernTabSplitter Grid.Row="2" Grid.Column="1" SaveKey=".QuickSwitches:Splitter" />
+        <ListBox Grid.Row="2" Grid.Column="2" ItemsSource="{Binding Stored}" Style="{StaticResource WidgetsList}" />
+    </Grid>
 </UserControl>

@@ -500,7 +500,10 @@ namespace FirstFloor.ModernUI.Helpers {
             if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Contains(key)) return defaultValue;
             try {
-                var bytes = BitConverter.GetBytes(GetInt(key));
+                var intValue = GetIntNullable(key);
+                if (!intValue.HasValue) return defaultValue;
+
+                var bytes = BitConverter.GetBytes(intValue.Value);
                 return Color.FromArgb(bytes[0], bytes[1], bytes[2], bytes[3]);
             } catch (Exception e) {
                 Logging.Warning("Cannot load uri: " + e);

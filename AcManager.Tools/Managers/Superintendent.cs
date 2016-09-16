@@ -21,11 +21,7 @@ namespace AcManager.Tools.Managers {
 
             _managers = new IAcManagerNew[] {
                 CarsManager.Initialize(),
-                TracksManager.Initialize(),
-                ShowroomsManager.Initialize(),
-                WeatherManager.Initialize(),
-                PpFiltersManager.Initialize(),
-                PythonAppsManager.Initialize()
+                TracksManager.Initialize()
             };
 
             if (IsReady) {

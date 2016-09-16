@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
@@ -12,7 +11,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         private static int _entries;
 
-        // just for in case
+        // just in case
         private const int EntriesLimit = 2000;
 
         private static string Time() {
@@ -20,10 +19,49 @@ namespace FirstFloor.ModernUI.Helpers {
             return $"{t.Hour:D2}:{t.Minute:D2}:{t.Second:D2}.{t.Millisecond:D3}";
         }
 
-        public static void Initialize(string filename) {
+        [CanBeNull]
+        private static StreamWriter _streamWriter;
+
+        private static void WriteLine(string s, bool append) {
+            try {
+                lock (Locker) {
+                    if (_streamWriter != null) {
+                        _streamWriter.WriteLine(s);
+                    } else {
+                        using (var writer = new StreamWriter(Filename, append)) {
+                            writer.WriteLine(s);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.Diagnostics.Debug.WriteLine($"[LOGGING EXCEPTION] {e}");
+            }
+        }
+
+        public static void Initialize(string filename, bool keepStream) {
             Filename = filename;
-            using (var file = new StreamWriter(Filename, false)) {
-                file.WriteLine($"{Time()}: Initialized");
+
+            if (keepStream) {
+                try {
+                    _streamWriter = new StreamWriter(File.Open(Filename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite));
+                } catch (Exception e) {
+                    System.Diagnostics.Debug.WriteLine($"[LOGGING INITIALIZE EXCEPTION] {e}");
+                }
+            }
+
+            WriteLine($"{Time()}: Initialized", false);
+        }
+
+        public static void Flush() {
+            try {
+                lock (Locker) {
+                    if (_streamWriter == null) return;
+                    _streamWriter.Flush();
+                    _streamWriter.Dispose();
+                    _streamWriter = null;
+                }
+            } catch (Exception e) {
+                System.Diagnostics.Debug.WriteLine($"[LOGGING FLUSH EXCEPTION] {e}");
             }
         }
 
@@ -33,44 +71,38 @@ namespace FirstFloor.ModernUI.Helpers {
 
         private static readonly object Locker = new object();
 
-        private static void WriteInner(char c, [CanBeNull] string s, string m, string p, int l) {
-            s = s?.Replace("\n", "\n\t") ?? "<NULL>";
-            if (p != null) {
-                p = Path.GetFileNameWithoutExtension(p);
-                if (p.EndsWith(".xaml")) p = p.Substring(0, p.Length - 5);
+        internal static void Write(char c, [CanBeNull] object o, string m, string p, int l) {
+            var s = o?.ToString().Replace("\n", "\n\t") ?? "<NULL>";
+            if (m != null && (s.Length == 0 || s[0] != '[')) {
+                if (p != null) {
+                    p = Path.GetFileNameWithoutExtension(p);
+                    if (p.EndsWith(".xaml")) p = p.Substring(0, p.Length - 5);
+                }
+
+                s = $"[{p}:{l}] {m}(): {s}";
             }
 
-            System.Diagnostics.Debug.WriteLine(s);
-
-            if (!IsInitialized()) return;
-            if (++_entries > EntriesLimit) return;
-
-            try {
-                lock (Locker) {
-                    using (var writer = new StreamWriter(Filename, true)) {
-                        writer.WriteLine(m == null || s.Length > 0 && s[0] == '[' ? $"{Time()}: {c} {s}" :
-                                p == null || l == -1 ? $"{Time()}: {c} {m}(): {s}" : $"{Time()}: {c} [{p}:{l}] {m}(): {s}");
-                    }
-                }
-            } catch (Exception e) {
-                System.Diagnostics.Debug.WriteLine($"[LOGGING EXCEPTION] {e}");
+            var n = $"{Time()}: {c} {s}";
+            System.Diagnostics.Debug.WriteLine(n);
+            if (IsInitialized() && ++_entries <= EntriesLimit) {
+                WriteLine(n, true);
             }
         }
 
         public static void Write(object s, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-            WriteInner('→', s?.ToString(), m, p, l);
+            Write('→', s, m, p, l);
         }
 
         public static void Debug(object s, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-            WriteInner('…', s?.ToString(), m, p, l);
+            Write('…', s, m, p, l);
         }
 
         public static void Warning(object s, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-            WriteInner('⚠', s?.ToString(), m, p, l);
+            Write('⚠', s, m, p, l);
         }
 
         public static void Error(object s, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-            WriteInner('×', s?.ToString(), m, p, l);
+            Write('×', s, m, p, l);
         }
     }
 }

@@ -137,7 +137,7 @@ namespace AcManager.Tools.Data {
                 LatestError = e.ToSingleString();
             } catch (Exception e) {
                 LatestError = ToolsStrings.Common_UnhandledError_Commentary;
-                Logging.Warning("Cannot check and update: " + e);
+                Logging.Warning(e);
             } finally {
                 _checkingInProcess = false;
                 _checkAndUpdateIfNeededCommand?.OnCanExecuteChanged();

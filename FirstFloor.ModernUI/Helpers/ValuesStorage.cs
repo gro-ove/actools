@@ -118,6 +118,7 @@ namespace FirstFloor.ModernUI.Helpers {
         public static Color? GetColor([NotNull, LocalizationRequired(false)] string key) {
             return Storage.GetColor(key);
         }
+
         [Pure]
         public static Color GetColor([NotNull, LocalizationRequired(false)] string key, Color defaultValue) {
             return Storage.GetColor(key, defaultValue);

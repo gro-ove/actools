@@ -41,6 +41,8 @@ namespace AcManager.Controls.Presentation {
             try {
                 _loading = true;
                 AccentColor = ValuesStorage.GetColor(KeyAccentColor, AccentColors.First());
+                if (AccentColor.A == 0) AccentColor = AccentColors.First();
+
                 AccentDisplayColor = ValuesStorage.GetString(KeyAccentDisplayColor);
                 IdealFormattingMode = ValuesStorage.GetBool(KeyIdealFormattingMode, OptionIdealFormattingModeDefaultValue);
                 SmallFont = ValuesStorage.GetBool(KeySmallFont);

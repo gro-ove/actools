@@ -35,7 +35,6 @@ namespace AcManager.Tools.Data {
             }
         }
 
-
         protected override async Task<bool> CheckAndUpdateIfNeededInner() {
             InstalledVersion = GetInstalledVersion();
             var latest = await GetLatestVersion();
@@ -48,6 +47,7 @@ namespace AcManager.Tools.Data {
         }
 
         private async Task<string> GetLatestVersion() {
+            // BUG: somewhere here might happen InvalidOperationException, don’t know yet why
             if (IsGetting) return null;
             IsGetting = true;
 

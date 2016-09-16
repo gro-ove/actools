@@ -7,12 +7,9 @@ using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Managers {
     public class WeatherManager : AcManagerNew<WeatherObject> {
-        public static WeatherManager Instance { get; private set; }
+        private static WeatherManager _instance;
 
-        public static WeatherManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new WeatherManager();
-        }
+        public static WeatherManager Instance => _instance ?? (_instance = new WeatherManager());
 
         private static readonly string[] WatchedFiles = {
             @"preview.jpg",

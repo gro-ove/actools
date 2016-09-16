@@ -32,33 +32,30 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="mui:ModernToggleButton">
-                    <Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderThickness="0" BorderBrush="Transparent">
-                        <DockPanel Margin="{TemplateBinding Padding}">
-                            <StackPanel HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}" Orientation="Horizontal">
-                                <Ellipse x:Name="PART_Mark" Fill="{DynamicResource Accent}" Width="8" Height="8" VerticalAlignment="Center">
-                                    <Ellipse.RenderTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform ScaleX="0" ScaleY="0" CenterX="4" CenterY="4" />
-                                        </TransformGroup>
-                                    </Ellipse.RenderTransform>
-                                </Ellipse>
-                                <TextBlock x:Name="PART_Text" DataContext="{TemplateBinding Content}"
-                                        Text="{Binding Converter={StaticResource ToUpperConverter}}" TextTrimming="CharacterEllipsis"
-                                        Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" FontFamily="{StaticResource FontFamily}"
-                                        FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" Margin="4 0 0 0">
-                                    <TextBlock.RenderTransform>
-                                        <TransformGroup>
-                                            <TranslateTransform X="-6" />
-                                        </TransformGroup>
-                                    </TextBlock.RenderTransform>
-                                </TextBlock>
-                            </StackPanel>
-
-                            <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{TemplateBinding IconWidth}" Height="{TemplateBinding IconHeight}"
-                                    Fill="{TemplateBinding Foreground}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    SnapsToDevicePixels="True" Opacity="0.36" />
-                        </DockPanel>
-                    </Border>
+                    <DockPanel Margin="{TemplateBinding Padding}">
+                        <StackPanel HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}" Orientation="Horizontal">
+                            <Ellipse x:Name="PART_Mark" Fill="{DynamicResource Accent}" Width="8" Height="8" VerticalAlignment="Center">
+                                <Ellipse.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="0" ScaleY="0" CenterX="4" CenterY="4" />
+                                    </TransformGroup>
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                            <TextBlock x:Name="PART_Text" DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
+                                    TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"
+                                    FontFamily="{StaticResource FontFamily}" FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}"
+                                    Margin="4 0 0 0">
+                                <TextBlock.RenderTransform>
+                                    <TransformGroup>
+                                        <TranslateTransform X="-6" />
+                                    </TransformGroup>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+                        </StackPanel>
+                        <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{TemplateBinding IconWidth}" Height="{TemplateBinding IconHeight}"
+                                Fill="{TemplateBinding Foreground}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                SnapsToDevicePixels="True" Opacity="0.36" />
+                    </DockPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="PART_Icon" Property="Opacity" Value="1" />
@@ -99,12 +96,6 @@
                             <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
                             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
                         </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource Accent}" />
-                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -126,21 +117,19 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="mui:ModernButton">
-                    <Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderThickness="0" BorderBrush="Transparent">
-                        <DockPanel Margin="{TemplateBinding Padding}">
-                            <TextBlock DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
-                                    TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" FontFamily="{StaticResource FontFamily}"
-                                    FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" HorizontalAlignment="Center"
-                                    DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}" />
-                            <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{TemplateBinding IconWidth}" Height="{TemplateBinding IconHeight}"
-                                    Fill="{TemplateBinding Foreground}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    SnapsToDevicePixels="True">
-                                <Path.RenderTransform>
-                                    <TranslateTransform Y="0" />
-                                </Path.RenderTransform>
-                            </Path>
-                        </DockPanel>
-                    </Border>
+                    <DockPanel Margin="{TemplateBinding Padding}">
+                        <TextBlock DataContext="{TemplateBinding Content}" Text="{Binding Converter={StaticResource ToUpperConverter}}"
+                                TextTrimming="CharacterEllipsis" Foreground="{TemplateBinding Foreground}" FontFamily="{StaticResource FontFamily}"
+                                FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" HorizontalAlignment="Center"
+                                DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}" />
+                        <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{TemplateBinding IconWidth}" Height="{TemplateBinding IconHeight}"
+                                Fill="{TemplateBinding Foreground}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                SnapsToDevicePixels="True">
+                            <Path.RenderTransform>
+                                <TranslateTransform Y="0" />
+                            </Path.RenderTransform>
+                        </Path>
+                    </DockPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsPressed" Value="True">
                             <Trigger.EnterActions>
@@ -168,12 +157,6 @@
                             <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
                             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
                         </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{DynamicResource Accent}" />
-                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -200,44 +183,32 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type qs:QuickSwitchComboBox}">
                     <DockPanel>
-                        <Grid x:Name="MainGrid" SnapsToDevicePixels="True" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="0 0 0 4">
-                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" Placement="Bottom" Margin="1"
+                        <mui:Cell x:Name="MainGrid" SnapsToDevicePixels="True" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Margin="0 0 0 4">
+                            <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
                                     IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                     PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-                                <Grid Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <mui:Cell Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                     <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                                     <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-
                                     <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}"
                                             BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1" Margin="0 -1 0 0">
                                         <!-- popup border thickness not dependent on BorderThickness property-->
                                         <ScrollViewer x:Name="DropDownScrollViewer">
-                                            <Grid RenderOptions.ClearTypeHint="Enabled">
-                                                <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                    <Rectangle x:Name="OpaqueRect" Height="{Binding ElementName=DropDownBorder,Path=ActualHeight}"
-                                                            Width="{Binding ElementName=DropDownBorder,Path=ActualWidth}"
-                                                            Fill="{Binding ElementName=DropDownBorder,Path=Background}" />
-                                                </Canvas>
-                                                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
-                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                            </Grid>
+                                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained"
+                                                    RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                         </ScrollViewer>
                                     </Border>
-                                </Grid>
+                                </mui:Cell>
                             </Popup>
-
                             <ToggleButton Background="Transparent" BorderThickness="0"
                                     IsChecked="{Binding IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" />
-
                             <Path x:Name="Arrow" Margin="3 1 0 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}"
                                     HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
-
                             <TextBlock x:Name="PART_Text" IsHitTestVisible="False" DataContext="{TemplateBinding SelectionBoxItem}"
                                     Text="{Binding Converter={StaticResource ToUpperConverter}}" TextTrimming="CharacterEllipsis"
                                     Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" FontFamily="{StaticResource FontFamily}"
                                     FontWeight="{StaticResource FontWeight}" FontSize="{StaticResource FontSize}" Margin="0 0 11 0" />
-                        </Grid>
-
+                        </mui:Cell>
                         <Path x:Name="PART_Icon" Data="{TemplateBinding IconData}" Width="{StaticResource IconSize}" Height="{StaticResource IconSize}"
                                 Fill="{TemplateBinding Foreground}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"
                                 SnapsToDevicePixels="True" />
@@ -248,14 +219,6 @@
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True" />
-                        <Trigger Property="IsGrouping" Value="True">
-                            <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
-                        </Trigger>
-                        <Trigger SourceName="DropDownScrollViewer" Property="ScrollViewer.CanContentScroll" Value="False">
-                            <Setter TargetName="OpaqueRect" Property="Canvas.Top" Value="{Binding ElementName=DropDownScrollViewer, Path=VerticalOffset}" />
-                            <Setter TargetName="OpaqueRect" Property="Canvas.Left" Value="{Binding ElementName=DropDownScrollViewer, Path=HorizontalOffset}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

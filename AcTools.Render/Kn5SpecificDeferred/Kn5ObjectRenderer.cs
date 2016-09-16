@@ -239,7 +239,7 @@ namespace AcTools.Render.Kn5SpecificDeferred {
 
             var asList = mainNode as Kn5RenderableList;
             if (asList != null) {
-                Scene.AddRange(_carHelper.LoadAmbientShadows(asList, 0f));
+                Scene.AddRange(_carHelper.LoadAmbientShadows(asList, 0.001f));
 
                 _carHelper.AdjustPosition(asList);
                 _carHelper.LoadMirrors(asList, DeviceContextHolder);

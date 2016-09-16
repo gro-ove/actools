@@ -20,7 +20,7 @@ using System.Windows;
 namespace AcManager {
     [Localizable(false)]
     internal class PackedHelper {
-        public static bool OptionCache = false;
+        public static bool OptionCache = true;
 
         private readonly string _logFilename;
         private readonly string _temporaryDirectory;

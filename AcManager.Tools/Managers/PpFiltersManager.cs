@@ -8,12 +8,9 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers {
     public class PpFiltersManager : AcManagerFileSpecific<PpFilterObject> {
-        public static PpFiltersManager Instance { get; private set; }
+        private static PpFiltersManager _instance;
 
-        public static PpFiltersManager Initialize() {
-            if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new PpFiltersManager();
-        }
+        public static PpFiltersManager Instance => _instance ?? (_instance = new PpFiltersManager());
 
         [CanBeNull]
         public PpFilterObject GetByAcId(string v) {

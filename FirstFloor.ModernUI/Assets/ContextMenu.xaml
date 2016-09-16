@@ -53,4 +53,9 @@
         <Separator />
         <MenuItem Command="ApplicationCommands.SelectAll" />
     </c:InheritingContextMenu>
+
+    <c:InheritingContextMenu x:Key="TextBoxReadOnlyContextMenu">
+        <MenuItem Command="ApplicationCommands.Copy" />
+        <MenuItem Command="ApplicationCommands.SelectAll" />
+    </c:InheritingContextMenu>
 </ResourceDictionary>

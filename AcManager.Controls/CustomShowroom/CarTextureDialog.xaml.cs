@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
@@ -20,14 +21,16 @@ namespace AcManager.Controls.CustomShowroom {
     public partial class CarTextureDialog {
         private CarTextureDialogViewModel Model => (CarTextureDialogViewModel)DataContext;
 
-        public CarTextureDialog(Kn5 kn5, string textureName) {
-            DataContext = new CarTextureDialogViewModel(kn5, textureName);
+        public CarTextureDialog([CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5, [NotNull] string textureName) {
+            DataContext = new CarTextureDialogViewModel(activeSkin, kn5, textureName);
             InitializeComponent();
 
             Buttons = new[] { CloseButton };
         }
 
         public class CarTextureDialogViewModel : NotifyPropertyChanged {
+            [CanBeNull]
+            private readonly CarSkinObject _activeSkin;
             private readonly Kn5 _kn5;
 
             public string TextureName { get; }
@@ -80,7 +83,8 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            public CarTextureDialogViewModel(Kn5 kn5, string textureName) {
+            public CarTextureDialogViewModel([CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5, [NotNull] string textureName) {
+                _activeSkin = activeSkin;
                 _kn5 = kn5;
                 TextureName = textureName;
 
@@ -158,13 +162,14 @@ namespace AcManager.Controls.CustomShowroom {
                 }.ShowDialog();
             }));
 
-            private AsyncCommand _exportCommand;
+            private ProperAsyncCommand _exportCommand;
 
-            public AsyncCommand ExportCommand => _exportCommand ?? (_exportCommand = new AsyncCommand(async o => {
+            public ICommand ExportCommand => _exportCommand ?? (_exportCommand = new ProperAsyncCommand(async o => {
                 var dialog = new SaveFileDialog {
-                    InitialDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
+                    InitialDirectory = _activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename),
                     Filter = string.Format(@"Textures (*.{0})|*.{0}", TextureFormat.ToLower()),
-                    DefaultExt = TextureFormat.ToLower()
+                    DefaultExt = TextureFormat.ToLower(),
+                    FileName = TextureName
                 };
 
                 if (dialog.ShowDialog() != true) return;

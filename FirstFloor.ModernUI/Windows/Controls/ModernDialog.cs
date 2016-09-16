@@ -216,7 +216,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var dlg = new ModernDialog {
                 Title = title,
                 Content = new ScrollViewer {
-                    Content = new BbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
+                    Content = new SelectableBbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
                 },
