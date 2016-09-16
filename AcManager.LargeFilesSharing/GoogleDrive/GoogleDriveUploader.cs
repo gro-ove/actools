@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,7 +8,6 @@ using System.Web;
 using AcManager.Controls.Dialogs;
 using AcManager.Internal;
 using AcManager.Tools;
-using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;

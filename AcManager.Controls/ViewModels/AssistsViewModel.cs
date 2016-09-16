@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using AcManager.Tools.Helpers;
-using JetBrains.Annotations;
 
 namespace AcManager.Controls.ViewModels {
     /// <summary>

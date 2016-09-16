@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Presentation;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class ProperPasswordBox : Control {

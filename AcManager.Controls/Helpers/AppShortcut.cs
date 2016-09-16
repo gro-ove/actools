@@ -2,7 +2,6 @@
 using System.IO;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Controls.Helpers {
     public static class AppShortcut {

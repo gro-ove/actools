@@ -12,7 +12,6 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
-using OxyPlot.Reporting;
 
 namespace AcManager.Pages.Dialogs {
     public partial class FindInformationDialog {

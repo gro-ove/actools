@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using AcManager.Tools;
-using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;

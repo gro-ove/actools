@@ -6,7 +6,6 @@ using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.Miscellaneous;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.UserControls {
     public partial class AssistsEditor {

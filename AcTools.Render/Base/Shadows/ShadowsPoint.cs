@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
 using SlimDX;
 using SlimDX.Direct3D11;
-using SlimDX.DXGI;
 
 namespace AcTools.Render.Base.Shadows {
     public class ShadowsPoint : IDisposable {

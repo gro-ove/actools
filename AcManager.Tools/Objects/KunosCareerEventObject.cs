@@ -12,7 +12,6 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.Objects {
     public class KunosCareerEventObject : KunosEventObjectBase {

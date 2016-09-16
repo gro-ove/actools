@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.Services {
     public static class ImageViewerService {

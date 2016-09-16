@@ -1,12 +1,9 @@
 ﻿using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Navigation;
 using System;
-using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Media.Animation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {

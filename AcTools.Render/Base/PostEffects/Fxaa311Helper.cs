@@ -1,4 +1,3 @@
-using System;
 using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;

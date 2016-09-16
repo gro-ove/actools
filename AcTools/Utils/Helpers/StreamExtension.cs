@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {

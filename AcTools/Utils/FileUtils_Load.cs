@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Text;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.Utils {

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using AcManager.Tools.Managers.Presets;
-using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls.Helpers {

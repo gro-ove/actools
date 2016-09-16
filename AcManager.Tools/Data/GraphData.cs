@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {

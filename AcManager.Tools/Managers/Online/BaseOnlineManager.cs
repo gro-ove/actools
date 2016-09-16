@@ -7,11 +7,9 @@ using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
-using AcManager.Tools.Lists;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Managers.Online {

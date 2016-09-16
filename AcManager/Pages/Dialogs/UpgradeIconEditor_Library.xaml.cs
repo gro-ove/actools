@@ -8,7 +8,6 @@ using AcManager.Annotations;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 

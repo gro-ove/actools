@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using System.Windows.Data;
-using AcTools.DataFile;
-using AcTools.Utils;
-using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.AcSettings {

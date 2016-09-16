@@ -18,7 +18,6 @@ using AcManager.Tools.Helpers.Api;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Miscellaneous {

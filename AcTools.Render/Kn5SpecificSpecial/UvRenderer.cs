@@ -10,7 +10,6 @@ using AcTools.Render.Base.Shaders;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5Specific.Utils;
 using AcTools.Utils.Helpers;
 using SlimDX;

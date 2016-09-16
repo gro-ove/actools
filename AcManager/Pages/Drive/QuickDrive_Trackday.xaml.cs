@@ -2,7 +2,6 @@
 using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.Processes;
-using AcTools.Utils;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Trackday : IQuickDriveModeControl {

@@ -1,5 +1,4 @@
-﻿using System;
-using FirstFloor.ModernUI.Helpers;
+﻿using FirstFloor.ModernUI.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FirstFloor.ModernUI.Tests {

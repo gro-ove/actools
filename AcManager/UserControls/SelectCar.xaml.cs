@@ -6,7 +6,6 @@ using System.Windows;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
 

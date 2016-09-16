@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AcTools.DataFile;
-using AcTools.Utils.Helpers;
 
 namespace AcTools.Utils.Physics {
     public class TurboDescription {

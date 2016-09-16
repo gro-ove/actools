@@ -13,7 +13,6 @@ using System.Windows.Threading;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;

@@ -12,7 +12,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Clipboard = System.Windows.Clipboard;

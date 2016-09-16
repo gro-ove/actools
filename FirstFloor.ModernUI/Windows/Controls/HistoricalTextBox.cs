@@ -6,7 +6,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class HistoricalTextBox : BetterComboBox {

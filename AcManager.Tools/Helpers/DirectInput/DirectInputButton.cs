@@ -1,4 +1,3 @@
-using System;
 using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Helpers.DirectInput {

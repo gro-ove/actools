@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Managers;
-using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;

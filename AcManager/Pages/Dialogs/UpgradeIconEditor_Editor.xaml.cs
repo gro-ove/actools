@@ -9,7 +9,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Pages.Dialogs {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using AcTools.Utils;
+﻿using AcTools.Utils;
 using System.Diagnostics;
 using System.IO;
 using AcTools.DataFile;

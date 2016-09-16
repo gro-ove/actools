@@ -2,7 +2,6 @@
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Managers;
-using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AcManager.Tools.Helpers {
+﻿namespace AcManager.Tools.Helpers {
     public static class HashAlgorithmExtension {
         public static string ToHexString(this byte[] data) {
             var lookup = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };

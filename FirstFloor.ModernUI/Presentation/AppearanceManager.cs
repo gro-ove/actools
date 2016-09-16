@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class AppearanceManager : NotifyPropertyChanged {

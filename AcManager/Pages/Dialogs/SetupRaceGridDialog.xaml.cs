@@ -1,5 +1,4 @@
 ﻿using AcManager.Controls.ViewModels;
-using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.Dialogs {
     public partial class SetupRaceGridDialog {

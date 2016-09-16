@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;

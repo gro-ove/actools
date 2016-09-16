@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;

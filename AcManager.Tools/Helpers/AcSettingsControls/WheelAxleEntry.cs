@@ -3,7 +3,6 @@ using System.Linq;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 using AcTools.Utils;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {

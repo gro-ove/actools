@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcJsonObjectNew {

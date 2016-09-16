@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.Managers;
-using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;

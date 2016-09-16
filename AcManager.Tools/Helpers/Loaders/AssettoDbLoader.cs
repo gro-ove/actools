@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.Loaders {

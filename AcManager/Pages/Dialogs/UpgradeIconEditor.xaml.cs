@@ -7,7 +7,6 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Microsoft.Win32;

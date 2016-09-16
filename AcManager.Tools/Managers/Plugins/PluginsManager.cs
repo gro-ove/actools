@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.Lists;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
