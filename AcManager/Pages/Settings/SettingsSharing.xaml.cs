@@ -9,6 +9,7 @@ using AcManager.LargeFilesSharing;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -60,9 +61,9 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            private ProperAsyncCommand _signInCommand;
+            private ICommandExt _signInCommand;
 
-            public ICommand SignInCommand => _signInCommand ?? (_signInCommand = new ProperAsyncCommand(async o => {
+            public ICommand SignInCommand => _signInCommand ?? (_signInCommand = new AsyncCommand(async () => {
                 if (SelectedUploader == null) return;
 
                 try {
@@ -73,20 +74,20 @@ namespace AcManager.Pages.Settings {
 
                 _signInCommand?.OnCanExecuteChanged();
                 _updateDirectoriesCommand?.OnCanExecuteChanged();
-            }, o => SelectedUploader?.IsReady == false));
+            }, () => SelectedUploader?.IsReady == false));
 
-            private ProperCommand _resetCommand;
+            private ICommandExt _resetCommand;
 
-            public ICommand ResetCommand => _resetCommand ?? (_resetCommand = new ProperCommand(o => {
+            public ICommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
                 SelectedUploader.Reset();
 
                 _signInCommand?.OnCanExecuteChanged();
                 _updateDirectoriesCommand?.OnCanExecuteChanged();
-            }, o => SelectedUploader?.IsReady == true));
+            }, () => SelectedUploader?.IsReady == true));
 
-            private ProperAsyncCommand _updateDirectoriesCommand;
+            private ICommandExt _updateDirectoriesCommand;
 
-            public ICommand UpdateDirectoriesCommand => _updateDirectoriesCommand ?? (_updateDirectoriesCommand = new ProperAsyncCommand(async o => {
+            public ICommand UpdateDirectoriesCommand => _updateDirectoriesCommand ?? (_updateDirectoriesCommand = new AsyncCommand(async () => {
                 if (SelectedUploader == null) return;
 
                 try {
@@ -95,7 +96,7 @@ namespace AcManager.Pages.Settings {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t load list of directories", "Make sure Internet-connection works.", e);
                 }
-            }, o => SelectedUploader?.SupportsDirectories == true && SelectedUploader.IsReady));
+            }, () => SelectedUploader?.SupportsDirectories == true && SelectedUploader.IsReady));
 
             public SharingViewModel() {
                 SelectedUploader = UploadersList.FirstOrDefault();

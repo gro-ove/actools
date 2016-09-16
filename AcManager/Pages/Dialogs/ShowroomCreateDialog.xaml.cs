@@ -8,10 +8,10 @@ using AcManager.Properties;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
-using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using Microsoft.Win32;
@@ -62,6 +62,7 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _panoramaFilename)) return;
                     _panoramaFilename = value;
                     OnPropertyChanged();
+                    CommandManager.InvalidateRequerySuggested();
                 }
             }
 
@@ -78,7 +79,7 @@ namespace AcManager.Pages.Dialogs {
 
             private ICommand _selectPanoramaFileCommand;
 
-            public ICommand SelectPanoramaFileCommand => _selectPanoramaFileCommand ?? (_selectPanoramaFileCommand = new ProperCommand(o => {
+            public ICommand SelectPanoramaFileCommand => _selectPanoramaFileCommand ?? (_selectPanoramaFileCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.TexturesFilter,
                     FileName = PanoramaFilename,
@@ -92,10 +93,8 @@ namespace AcManager.Pages.Dialogs {
 
             private ICommand _createCommand;
 
-            public ICommand CreateCommand => _createCommand ?? (_createCommand = new ProperCommand(o => {
-                // TODO: async
-                Create();
-            }, o => PanoramaFilename != null && File.Exists(PanoramaFilename)));
+            // TODO: async
+            public ICommand CreateCommand => _createCommand ?? (_createCommand = new DelegateCommand(Create, () => PanoramaFilename != null && File.Exists(PanoramaFilename)));
 
             private void Create() {
                 if (ResultId == string.Empty) {
@@ -170,7 +169,7 @@ namespace AcManager.Pages.Dialogs {
             DataContext = _model = new ViewModel();
             Buttons = new[] { OkButton, CancelButton };
 
-            OkButton.Command = new RelayCommand(o => {
+            OkButton.Command = new DelegateCommand(() => {
                 try {
                     _model.CreateCommand.Execute(null);
                 } catch (Exception e) {
@@ -180,7 +179,7 @@ namespace AcManager.Pages.Dialogs {
 
                 ResultId = _model.ResultId;
                 CloseWithResult(MessageBoxResult.OK);
-            }, _model.CreateCommand.CanExecute);
+            }, () => _model.CreateCommand.CanExecute(null));
         }
 
         public string ResultId { get; private set; }

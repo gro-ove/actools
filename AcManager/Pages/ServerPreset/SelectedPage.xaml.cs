@@ -14,6 +14,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -86,7 +87,7 @@ namespace AcManager.Pages.ServerPreset {
 
             private ICommand _changeTrackCommand;
 
-            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new ProperCommand(o => {
+            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
                 Track = SelectTrackDialog.Show(Track);
             }));
 

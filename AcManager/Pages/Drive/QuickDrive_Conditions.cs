@@ -13,6 +13,7 @@ using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -177,7 +178,7 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _switchLocalWeatherCommand;
 
-            public ICommand SwitchLocalWeatherCommand => _switchLocalWeatherCommand ?? (_switchLocalWeatherCommand = new ProperAsyncCommand(async o => {
+            public ICommand SwitchLocalWeatherCommand => _switchLocalWeatherCommand ?? (_switchLocalWeatherCommand = new AsyncCommand(async () => {
                 if (string.IsNullOrWhiteSpace(SettingsHolder.Drive.LocalAddress)) {
                     var entry = await Task.Run(() => IpGeoProvider.Get());
                     var localAddress = entry == null ? "" : $"{entry.City}, {entry.Country}";

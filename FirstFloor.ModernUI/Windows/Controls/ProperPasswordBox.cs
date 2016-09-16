@@ -1,16 +1,14 @@
 ﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class ProperPasswordBox : Control {
         public ProperPasswordBox() {
             DefaultStyleKey = typeof(ProperPasswordBox);
-
-            TogglePasswordVisibilityCommand = new ProperCommand(o => {
-                TogglePasswordVisibility();
-            });
+            TogglePasswordVisibilityCommand = new DelegateCommand(TogglePasswordVisibility);
         }
 
         private PasswordBox _passwordBox;
@@ -85,11 +83,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty TogglePasswordVisibilityCommandProperty = DependencyProperty.Register(
-                nameof(TogglePasswordVisibilityCommand), typeof(ProperCommand),
+                nameof(TogglePasswordVisibilityCommand), typeof(DelegateCommand),
                 typeof(ProperPasswordBox));
 
-        public ProperCommand TogglePasswordVisibilityCommand {
-            get { return (ProperCommand)GetValue(TogglePasswordVisibilityCommandProperty); }
+        public DelegateCommand TogglePasswordVisibilityCommand {
+            get { return (DelegateCommand)GetValue(TogglePasswordVisibilityCommandProperty); }
             set { SetValue(TogglePasswordVisibilityCommandProperty, value); }
         }
 

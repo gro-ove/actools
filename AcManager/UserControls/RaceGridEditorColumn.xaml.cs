@@ -14,6 +14,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -27,7 +28,7 @@ namespace AcManager.UserControls {
     public partial class RaceGridEditorColumn : INotifyPropertyChanged {
         public RaceGridEditorColumn() {
             InputBindings.AddRange(new[] {
-                new InputBinding(new ProperCommand(o => {
+                new InputBinding(new DelegateCommand(() => {
                     if (SelectCarPopup.IsOpen) {
                         var model = Model;
                         var selectCar = (SelectCarPopup.Content as DependencyObject)?.FindLogicalChild<SelectCar>();
@@ -44,15 +45,15 @@ namespace AcManager.UserControls {
                         if (dataGrid == null) return;
 
                         foreach (var entry in dataGrid.SelectedItems.OfType<RaceGridEntry>().ToList()) {
-                            entry.DeleteCommand.Execute(o);
+                            entry.DeleteCommand.Execute(null);
                         }
                     } else {
                         foreach (var entry in ListBox.SelectedItems.OfType<RaceGridEntry>().ToList()) {
-                            entry.DeleteCommand.Execute(o);
+                            entry.DeleteCommand.Execute(null);
                         }
                     }
                 }), new KeyGesture(Key.Delete)),
-                new InputBinding(new ProperCommand(o => {
+                new InputBinding(new DelegateCommand(() => {
                     if (SelectCarPopup.IsOpen) {
                         AddOpponentCarCommand.Execute(null);
                     }
@@ -89,7 +90,7 @@ namespace AcManager.UserControls {
 
         private ICommand _cloneSelectedCommand;
 
-        public ICommand CloneSelectedCommand => _cloneSelectedCommand ?? (_cloneSelectedCommand = new ProperCommand(o => {
+        public ICommand CloneSelectedCommand => _cloneSelectedCommand ?? (_cloneSelectedCommand = new DelegateCommand(() => {
             var items = ListBox.SelectedItems.OfType<RaceGridEntry>().Select(x => x.Clone()).ToList();
             if (items.Count == 0 || Model == null) return;
 
@@ -106,7 +107,7 @@ namespace AcManager.UserControls {
 
         private ICommand _deleteSelectedCommand;
 
-        public ICommand DeleteSelectedCommand => _deleteSelectedCommand ?? (_deleteSelectedCommand = new ProperCommand(o => {
+        public ICommand DeleteSelectedCommand => _deleteSelectedCommand ?? (_deleteSelectedCommand = new DelegateCommand(() => {
             var items = ListBox.SelectedItems.OfType<RaceGridEntry>().ToList();
             if (items.Count == 0 || Model == null) return;
             
@@ -117,11 +118,10 @@ namespace AcManager.UserControls {
 
         public ICommand SavePresetCommand => Model?.SavePresetCommand;
 
-        private ProperCommand _addOpponentCarCommand;
+        private ICommandExt _addOpponentCarCommand;
 
-        public ICommand AddOpponentCarCommand => _addOpponentCarCommand ?? (_addOpponentCarCommand = new ProperCommand(o => {
-            AddSelected();
-        }, o => SelectedCar != null));
+        public ICommand AddOpponentCarCommand => _addOpponentCarCommand ??
+                (_addOpponentCarCommand = new DelegateCommand(AddSelected, () => SelectedCar != null));
 
         private void AddSelected() {
             var model = Model;
@@ -139,7 +139,7 @@ namespace AcManager.UserControls {
 
         private ICommand _closeAddingPopupCommand;
 
-        public ICommand ClosePopupsCommand => _closeAddingPopupCommand ?? (_closeAddingPopupCommand = new ProperCommand(o => {
+        public ICommand ClosePopupsCommand => _closeAddingPopupCommand ?? (_closeAddingPopupCommand = new DelegateCommand(() => {
             SelectCarPopup.IsOpen = false;
             DetailsPopup.IsOpen = false;
         }));
@@ -159,7 +159,7 @@ namespace AcManager.UserControls {
 
         private ICommand _setupCommand;
 
-        public ICommand SetupCommand => _setupCommand ?? (_setupCommand = new ProperCommand(o => {
+        public ICommand SetupCommand => _setupCommand ?? (_setupCommand = new DelegateCommand(() => {
             var model = Model;
             if (model == null) return;
 

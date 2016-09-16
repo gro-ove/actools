@@ -19,6 +19,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
@@ -225,7 +226,7 @@ namespace AcManager.Pages.Settings {
 
             private ICommand _prepareCustomCommand;
 
-            public ICommand PrepareUnpackedCommand => _prepareCustomCommand ?? (_prepareCustomCommand = new ProperAsyncCommand(async o => {
+            public ICommand PrepareUnpackedCommand => _prepareCustomCommand ?? (_prepareCustomCommand = new AsyncCommand(async () => {
                 var localeName = Prompt.Show(
                         "What locale are you going to work with (you can see some of them [url=\"https://msdn.microsoft.com/en-us/library/ms533052(v=vs.85).aspx\"]here[/url])? Enter it (but you can always change it later):",
                         "Locale ID", SettingsHolder.Locale.LocaleName, "?", "You can use some country-specific locale as well as just language-specific",
@@ -254,7 +255,7 @@ namespace AcManager.Pages.Settings {
 
             private ICommand _submitUnpackedCommand;
 
-            public ICommand SubmitUnpackedCommand => _submitUnpackedCommand ?? (_submitUnpackedCommand = new AsyncCommand(async o => {
+            public ICommand SubmitUnpackedCommand => _submitUnpackedCommand ?? (_submitUnpackedCommand = new AsyncCommand(async () => {
                 var directory = FilesStorage.Instance.CombineFilename("Locales", Locale.LocaleName);
                 if (!Directory.Exists(directory)) return;
 
@@ -269,23 +270,23 @@ namespace AcManager.Pages.Settings {
                     NonfatalError.Notify("Can’t send unpacked locale",
                             "Please, try another way, like, for example, through [url=\"mailto:cm-support@assettocorsa.club\"]e-mail[/url].", e);
                 }
-            }, o => Directory.Exists(FilesStorage.Instance.CombineFilename("Locales", Locale.LocaleName)), 3000));
+            }, () => Directory.Exists(FilesStorage.Instance.CombineFilename("Locales", Locale.LocaleName)), 3000));
 
             private ICommand _restartCommand;
 
-            public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new ProperCommand(o => {
+            public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => {
                 WindowsHelper.RestartCurrentApplication();
             }));
 
             private ICommand _moreInformationCommand;
 
-            public ICommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new ProperCommand(o => {
+            public ICommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new DelegateCommand(() => {
                 WindowsHelper.ViewInBrowser("http://acstuff.ru/f/d/7-content-manager-how-to-localize");
             }));
 
             private ICommand _navigateCommand;
 
-            public ICommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new ProperCommand(o => {
+            public ICommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new DelegateCommand<object>(o => {
                 WindowsHelper.ViewInBrowser(o?.ToString());
             }));
         }

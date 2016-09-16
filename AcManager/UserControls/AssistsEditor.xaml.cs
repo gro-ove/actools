@@ -5,6 +5,7 @@ using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.Miscellaneous;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.UserControls {
@@ -15,9 +16,9 @@ namespace AcManager.UserControls {
 
         private ICommand _shareCommand;
 
-        public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
+        public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
-        private async Task Share(object o) {
+        private async Task Share() {
             var model = DataContext as AssistsViewModel;
             if (model == null) return;
 

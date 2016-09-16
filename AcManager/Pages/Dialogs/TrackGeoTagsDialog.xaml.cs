@@ -9,6 +9,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -21,7 +22,7 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
 
             Buttons = new[] {
-                CreateExtraDialogButton(ToolsStrings.TrackGeoTags_FindIt, new ProperCommand(o => {
+                CreateExtraDialogButton(ToolsStrings.TrackGeoTags_FindIt, new DelegateCommand(() => {
                     MapWebBrowser.InvokeScript(@"moveTo", GetQuery(Model.Track));
                 })),
                 CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, new CombinedCommand(Model.SaveCommand, CloseCommand)),
@@ -120,11 +121,11 @@ namespace AcManager.Pages.Dialogs {
 
             public TrackObjectBase Track { get; }
 
-            private ProperCommand _saveCommand;
+            private ICommandExt _saveCommand;
 
-            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new ProperCommand(o => {
+            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(() => {
                 Track.GeoTags = new GeoTagsEntry(Latitude, Longitude);
-            }, o => Latitude != null && Longitude != null));
+            }, () => Latitude != null && Longitude != null));
         }
 
         private static string GetQuery(TrackObjectBase track) {

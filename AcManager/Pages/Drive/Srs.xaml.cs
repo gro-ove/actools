@@ -21,6 +21,7 @@ using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -94,9 +95,9 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private ProperCommand _gotItCommand;
+            private ICommandExt _gotItCommand;
 
-            public ICommand GotItCommand => _gotItCommand ?? (_gotItCommand = new ProperCommand(o => {
+            public ICommand GotItCommand => _gotItCommand ?? (_gotItCommand = new DelegateCommand(() => {
                 ShowExtensionMessage = false;
             }));
 
@@ -154,7 +155,7 @@ namespace AcManager.Pages.Drive {
             private bool _available;
 
             private void Update() {
-                var available = GoCommand.CanExecute(null);
+                var available = CanGo();
                 if (available == _available) return;
 
                 _available = available;
@@ -256,24 +257,27 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private AsyncCommand _goCommand;
+            private bool CanGo() {
+                return _server?.Ip != null && _server.Port.HasValue && _player != null && _carId != null;
+            }
 
-            public AsyncCommand GoCommand => _goCommand ?? (_goCommand =
-                    new AsyncCommand(o => Go(), o => _server?.Ip != null && _server.Port.HasValue && _player != null && _carId != null));
+            private ICommandExt _goCommand;
+
+            public ICommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(Go, CanGo));
         }
 
-        private ProperAsyncCommand _quitCommand;
+        private ICommandExt _quitCommand;
 
-        public ICommand QuitCommand => _quitCommand ?? (_quitCommand = new ProperAsyncCommand(async o => {
+        public ICommand QuitCommand => _quitCommand ?? (_quitCommand = new AsyncCommand(async () => {
             WebBrowser.Navigate(Model.QuitUrl);
             await Task.Delay(500);
             WebBrowser.Navigate(Model.StartPage);
             await Task.Delay(500);
-        }, o => Model.CanQuit));
+        }, () => Model.CanQuit));
 
-        private ProperCommand _testCommand;
+        private ICommandExt _testCommand;
 
-        public ICommand TestCommand => _testCommand ?? (_testCommand = new ProperCommand(o => {
+        public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
             WebBrowser.Execute(@"location.reload(true)");
         }));
 

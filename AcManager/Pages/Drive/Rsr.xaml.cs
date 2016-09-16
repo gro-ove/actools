@@ -20,6 +20,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -66,9 +67,9 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private ProperCommand _gotItCommand;
+            private ICommandExt _gotItCommand;
 
-            public ICommand GotItCommand => _gotItCommand ?? (_gotItCommand = new ProperCommand(o => {
+            public ICommand GotItCommand => _gotItCommand ?? (_gotItCommand = new DelegateCommand(() => {
                 ShowExtensionMessage = false;
             }));
 
@@ -250,7 +251,7 @@ namespace AcManager.Pages.Drive {
 
             private AsyncCommand _goCommand;
 
-            public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(o => Go(), o => EventId != null));
+            public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(Go, () => EventId != null));
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]

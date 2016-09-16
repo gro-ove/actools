@@ -13,6 +13,7 @@ using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -185,8 +186,8 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        private ProperAsyncCommand _usedRescanCommand;
+        private ICommandExt _usedRescanCommand;
 
-        public ICommand UsingsRescanCommand => _usedRescanCommand ?? (_usedRescanCommand = new ProperAsyncCommand(o => UsingsRescan()));
+        public ICommand UsingsRescanCommand => _usedRescanCommand ?? (_usedRescanCommand = new AsyncCommand(() => UsingsRescan()));
     }
 }

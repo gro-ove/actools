@@ -18,6 +18,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -48,7 +49,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             Buttons = new[] {
-                CreateExtraDialogButton(UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new ProperCommand(o => {
+                CreateExtraDialogButton(UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new DelegateCommand(() => {
                     if (Model.FirstRun || Model.ReviewMode) {
                         new MainWindow {
                             Owner = null
@@ -182,7 +183,7 @@ namespace AcManager.Pages.Dialogs {
 
             private ICommand _changeAcRootCommand;
 
-            public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new ProperCommand(o => {
+            public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new DelegateCommand(() => {
                 var dialog = new FolderBrowserDialog {
                     ShowNewFolderButton = false,
                     SelectedPath = Value
@@ -195,7 +196,7 @@ namespace AcManager.Pages.Dialogs {
 
             private ICommand _getSteamIdCommand;
 
-            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new ProperAsyncCommand(async o => {
+            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new AsyncCommand(async () => {
                 using (_cancellationTokenSource = new CancellationTokenSource()) {
                     try {
                         var packed = await PromptCodeFromBrowser.Show($"http://acstuff.ru/u/steam?s={AdditionalSalt}",
@@ -210,14 +211,14 @@ namespace AcManager.Pages.Dialogs {
                 _cancellationTokenSource = null;
             }));
 
-            private ProperCommand _applyCommand;
+            private ICommandExt _applyCommand;
 
-            public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new ProperCommand(o => {
+            public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new DelegateCommand(() => {
                 Logging.Write($"[Initial setup] AC root=“{Value}”, Steam ID=“{SteamProfile.SteamId}”");
                 AcRootDirectory.Instance.Value = Value;
                 SteamIdHelper.Instance.Value = SteamProfile.SteamId;
                 JustReviewed();
-            }, o => IsValueAcceptable));
+            }, () => IsValueAcceptable));
 
             public IEnumerable GetErrors(string propertyName) {
                 switch (propertyName) {

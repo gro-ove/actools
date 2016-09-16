@@ -11,6 +11,7 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.TextEditing;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -23,16 +24,16 @@ namespace AcManager.Pages.Selected {
 
             public PpFiltersManager Manager => PpFiltersManager.Instance;
 
-            private ProperAsyncCommand _shareCommand;
+            private ICommandExt _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(o => {
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(() => {
                 var data = SelectedObject.Content ?? FileUtils.ReadAllText(SelectedObject.Location);
                 return SharingUiHelper.ShareAsync(SharedEntryType.PpFilter, SelectedObject.Name, null, data);
             }));
 
-            private ProperCommand _testCommand;
+            private ICommandExt _testCommand;
 
-            public ICommand TestCommand => _testCommand ?? (_testCommand = new ProperCommand(o => {
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
                 var car = CarsManager.Instance.GetDefault();
                 CarOpenInShowroomDialog.Run(car, car?.SelectedSkin?.Id, SelectedObject.AcId);
             }));

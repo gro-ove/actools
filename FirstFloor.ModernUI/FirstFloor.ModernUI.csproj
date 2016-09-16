@@ -143,6 +143,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BinaryResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Commands\CommandManagerHelper.cs" />
+    <Compile Include="Commands\ICommandExt.cs" />
     <Compile Include="Dialogs\AsyncProgressEntry.cs" />
     <Compile Include="Dialogs\ErrorMessage.cs" />
     <Compile Include="Dialogs\NonfatalErrorsDialog.xaml.cs">
@@ -151,8 +153,7 @@
     <Compile Include="Dialogs\ScreenColorPickerDialog.xaml.cs">
       <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presentation\ProperAsyncCommand.cs" />
-    <Compile Include="Presentation\ProperCommand.cs" />
+    <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="TaskExtension.cs" />
     <Compile Include="Dialogs\WaitingDialog.xaml.cs">
       <DependentUpon>WaitingDialog.xaml</DependentUpon>
@@ -210,10 +211,10 @@
     <Compile Include="Localizable\Pluralizing.cs" />
     <Compile Include="Localizable\Titling.cs" />
     <Compile Include="ModernUiHelper.cs" />
-    <Compile Include="Presentation\AsyncCommand.cs" />
+    <Compile Include="Commands\AsyncCommand.cs" />
     <Compile Include="Presentation\AutoCompleteBehavior.cs" />
     <Compile Include="Presentation\BindingProxy.cs" />
-    <Compile Include="Presentation\CombinedCommand.cs" />
+    <Compile Include="Commands\CombinedCommand.cs" />
     <Compile Include="Presentation\CustomLink.cs" />
     <Compile Include="Presentation\LimitedQueue.cs" />
     <Compile Include="Presentation\LinkChangedEventArgs.cs" />
@@ -224,16 +225,14 @@
     <Compile Include="Presentation\NewLinkEventHandler.cs" />
     <Compile Include="Presentation\ReadOnlyLinkGroupCollection.cs" />
     <Compile Include="Presentation\FontSize.cs" />
-    <Compile Include="Presentation\CommandBase.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Presentation\LinkGroupCollection.cs" />
     <Compile Include="Presentation\Displayable.cs" />
     <Compile Include="Presentation\Link.cs" />
     <Compile Include="Presentation\LinkCollection.cs" />
     <Compile Include="Presentation\LinkGroup.cs" />
     <Compile Include="Presentation\NotifyPropertyChanged.cs" />
-    <Compile Include="Presentation\RelayCommand.cs" />
     <Compile Include="Presentation\AppearanceManager.cs" />
-    <Compile Include="Presentation\RelayPropertyCommand.cs" />
     <Compile Include="Presentation\SharedResourceDictionary.cs" />
     <Compile Include="Presentation\TitleLink.cs" />
     <Compile Include="ProcessDpiAwareness.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -12,9 +13,9 @@ namespace AcManager.Controls.Helpers {
             ShortcutLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Microsoft\Windows\Start Menu\Programs\Content Manager.lnk");
         }
 
-        public static ProperCommand CreateShortcutCommand { get; } = new ProperCommand(CreateShortcut, () => !HasShortcut());
+        public static DelegateCommand CreateShortcutCommand { get; } = new DelegateCommand(CreateShortcut, () => !HasShortcut());
 
-        public static ProperCommand DeleteShortcutCommand { get; } = new ProperCommand(DeleteShortcut, HasShortcut);
+        public static DelegateCommand DeleteShortcutCommand { get; } = new DelegateCommand(DeleteShortcut, HasShortcut);
 
         public static bool HasShortcut() {
             if (!File.Exists(ShortcutLocation)) return false;

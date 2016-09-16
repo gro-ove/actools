@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -245,21 +246,21 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            private ProperCommand _previousCommand;
+            private ICommandExt _previousCommand;
 
-            public ICommand PreviousCommand => _previousCommand ?? (_previousCommand = new ProperCommand(o => {
+            public ICommand PreviousCommand => _previousCommand ?? (_previousCommand = new DelegateCommand(() => {
                 CurrentPosition--;
-            }, o => CurrentPosition > 0));
+            }, () => CurrentPosition > 0));
 
-            private ProperCommand _nextCommand;
+            private ICommandExt _nextCommand;
 
-            public ICommand NextCommand => _nextCommand ?? (_nextCommand = new ProperCommand(o => {
+            public ICommand NextCommand => _nextCommand ?? (_nextCommand = new DelegateCommand(() => {
                 CurrentPosition++;
-            }, o => CurrentPosition < _images.Length - 1));
+            }, () => CurrentPosition < _images.Length - 1));
 
-            private ProperAsyncCommand _saveCommand;
+            private ICommandExt _saveCommand;
 
-            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new ProperAsyncCommand(async o => {
+            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new AsyncCommand(async () => {
                 var origin = CurrentOriginalImage as string;
                 if (origin == null) {
                     throw new NotSupportedException();
@@ -282,7 +283,7 @@ namespace AcManager.Controls.Dialogs {
                 } catch (Exception ex) {
                     NonfatalError.Notify(ControlsStrings.ImageViewer_CannotSave, ex);
                 }
-            }, o => CurrentOriginalImage is string));
+            }, () => CurrentOriginalImage is string));
         }
     }
 }

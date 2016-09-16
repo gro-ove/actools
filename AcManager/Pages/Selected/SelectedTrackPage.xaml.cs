@@ -19,6 +19,7 @@ using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -47,20 +48,20 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private ProperCommand _driveCommand;
+            private ICommandExt _driveCommand;
 
-            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new ProperCommand(o => {
+            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !QuickDrive.Run(track: SelectedTrackConfiguration)) {
                     DriveOptionsCommand.Execute(null);
                 }
-            }, o => SelectedTrackConfiguration.Enabled));
+            }, () => SelectedTrackConfiguration.Enabled));
 
-            private ProperCommand _driveOptionsCommand;
+            private ICommandExt _driveOptionsCommand;
 
-            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new ProperCommand(o => {
+            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
                 QuickDrive.Show(track: SelectedTrackConfiguration);
-            }, o => SelectedTrackConfiguration.Enabled));
+            }, () => SelectedTrackConfiguration.Enabled));
 
             public HierarchicalItemsView QuickDrivePresets {
                 get { return _quickDrivePresets; }
@@ -91,9 +92,9 @@ namespace AcManager.Pages.Selected {
 
             private AsyncCommand _updatePreviewCommand;
 
-            public AsyncCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new AsyncCommand(async o => {
+            public AsyncCommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new AsyncCommand(async () => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    UpdatePreviewDirectCommand.Execute(o);
+                    UpdatePreviewDirectCommand.Execute(null);
                     return;
                 }
 
@@ -133,11 +134,11 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                 }
-            }, o => SelectedObject.Enabled));
+            }, () => SelectedObject.Enabled));
 
-            private ProperCommand _updatePreviewDirectCommand;
+            private ICommandExt _updatePreviewDirectCommand;
 
-            public ICommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new ProperCommand(o => {
+            public ICommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
                     Title = AppStrings.Common_SelectImageForPreview,

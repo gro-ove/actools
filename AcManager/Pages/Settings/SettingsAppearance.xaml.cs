@@ -4,6 +4,7 @@ using System.Windows.Media;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Settings {
@@ -44,9 +45,9 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            private ProperCommand _restartCommand;
+            private ICommandExt _restartCommand;
 
-            public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new ProperCommand(o => {
+            public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => {
                 WindowsHelper.RestartCurrentApplication();
             }));
 

@@ -26,6 +26,7 @@ using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -166,7 +167,7 @@ namespace AcManager.Pages.Dialogs {
                 SaveLater();
 
                 if (!update) return;
-                foreach (var command in Buttons.Select(x => x.Command).OfType<RelayCommand>().Where(x => x != null)) {
+                foreach (var command in Buttons.Select(x => x.Command).OfType<ICommandExt>().NonNull()) {
                     command.OnCanExecuteChanged();
                 }
             }
@@ -186,7 +187,7 @@ namespace AcManager.Pages.Dialogs {
                 SaveLater();
 
                 if (!update) return;
-                foreach (var command in Buttons.Select(x => x.Command).OfType<RelayCommand>().Where(x => x != null)) {
+                foreach (var command in Buttons.Select(x => x.Command).OfType<ICommandExt>().NonNull()) {
                     command.OnCanExecuteChanged();
                 }
             }
@@ -596,10 +597,10 @@ namespace AcManager.Pages.Dialogs {
                     ResultPhase.Visibility = Visibility.Collapsed;
                     ErrorPhase.Visibility = Visibility.Collapsed;
                     Resize(540d, 400d, false);
-                    var manual = CreateExtraDialogButton(AppStrings.CarPreviews_Manual, o => RunShootingProcess(true), o => CanBeSaved);
+                    var manual = CreateExtraDialogButton(AppStrings.CarPreviews_Manual, () => RunShootingProcess(true), () => CanBeSaved);
                     manual.ToolTip = AppStrings.CarPreviews_Manual_Tooltip;
                     Buttons = new[] {
-                        CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go, o => RunShootingProcess(), o => CanBeSaved),
+                        CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go, () => RunShootingProcess(), () => CanBeSaved),
                         manual,
                         CloseButton
                     };

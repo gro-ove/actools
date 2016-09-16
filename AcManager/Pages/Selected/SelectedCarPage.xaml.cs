@@ -23,6 +23,7 @@ using AcManager.Tools.Objects;
 using AcTools.AcdFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -66,7 +67,7 @@ namespace AcManager.Pages.Selected {
             private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(AcCommonObject.Year):
-                        FilterCommand.OnCanExecuteChanged();
+                        InnerFilterCommand?.OnCanExecuteChanged();
                         break;
                 }
             }
@@ -110,9 +111,9 @@ namespace AcManager.Pages.Selected {
             }
 
             #region Open In Showroom
-            private ProperCommand _openInShowroomCommand;
+            private ICommandExt _openInShowroomCommand;
 
-            public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new ProperCommand(o => {
+            public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
                     OpenInCustomShowroomCommand.Execute(o);
                     return;
@@ -124,55 +125,53 @@ namespace AcManager.Pages.Selected {
                 }
             }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private ProperCommand _openInShowroomOptionsCommand;
+            private ICommandExt _openInShowroomOptionsCommand;
 
-            public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new ProperCommand(o => {
+            public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
                 new CarOpenInShowroomDialog(SelectedObject, SelectedObject.SelectedSkin?.Id).ShowDialog();
-            }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
+            }, () => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private ProperAsyncCommand _openInCustomShowroomCommand;
+            private ICommandExt _openInCustomShowroomCommand;
 
-            public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new ProperAsyncCommand(o => {
-                var type = o as CustomShowroomMode?;
-                return type.HasValue
-                        ? CustomShowroomWrapper.StartAsync(type.Value, SelectedObject, SelectedObject.SelectedSkin)
-                        : CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin);
-            }));
+            public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
+                    (_openInCustomShowroomCommand = new AsyncCommand<CustomShowroomMode?>(type => type.HasValue
+                            ? CustomShowroomWrapper.StartAsync(type.Value, SelectedObject, SelectedObject.SelectedSkin)
+                            : CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin)));
 
-            private ProperCommand _driveCommand;
+            private ICommandExt _driveCommand;
 
-            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new ProperCommand(o => {
+            public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                         !QuickDrive.Run(SelectedObject, SelectedObject.SelectedSkin?.Id)) {
                     DriveOptionsCommand.Execute(null);
                 }
-            }, o => SelectedObject.Enabled));
+            }, () => SelectedObject.Enabled));
 
-            private ProperCommand _driveOptionsCommand;
+            private ICommandExt _driveOptionsCommand;
 
-            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new ProperCommand(o => {
+            public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
                 QuickDrive.Show(SelectedObject, SelectedObject.SelectedSkin?.Id);
-            }, o => SelectedObject.Enabled));
+            }, () => SelectedObject.Enabled));
             #endregion
 
             #region Auto-Update Previews
             private ICommand _updatePreviewsCommand;
 
-            public ICommand UpdatePreviewsCommand => _updatePreviewsCommand ?? (_updatePreviewsCommand = new ProperCommand(o => {
+            public ICommand UpdatePreviewsCommand => _updatePreviewsCommand ?? (_updatePreviewsCommand = new DelegateCommand(() => {
                 new CarUpdatePreviewsDialog(SelectedObject, GetAutoUpdatePreviewsDialogMode()).ShowDialog();
-            }, o => SelectedObject.Enabled));
+            }, () => SelectedObject.Enabled));
 
             private ICommand _updatePreviewsManuallyCommand;
 
-            public ICommand UpdatePreviewsManuallyCommand => _updatePreviewsManuallyCommand ?? (_updatePreviewsManuallyCommand = new ProperCommand(o => {
+            public ICommand UpdatePreviewsManuallyCommand => _updatePreviewsManuallyCommand ?? (_updatePreviewsManuallyCommand = new DelegateCommand(() => {
                 new CarUpdatePreviewsDialog(SelectedObject, CarUpdatePreviewsDialog.DialogMode.StartManual).ShowDialog();
-            }, o => SelectedObject.Enabled));
+            }, () => SelectedObject.Enabled));
 
             private ICommand _updatePreviewsOptionsCommand;
 
-            public ICommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ?? (_updatePreviewsOptionsCommand = new ProperCommand(o => {
+            public ICommand UpdatePreviewsOptionsCommand => _updatePreviewsOptionsCommand ?? (_updatePreviewsOptionsCommand = new DelegateCommand(() => {
                 new CarUpdatePreviewsDialog(SelectedObject, CarUpdatePreviewsDialog.DialogMode.Options).ShowDialog();
-            }, o => SelectedObject.Enabled));
+            }, () => SelectedObject.Enabled));
 
             public static CarUpdatePreviewsDialog.DialogMode GetAutoUpdatePreviewsDialogMode() {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) return CarUpdatePreviewsDialog.DialogMode.Options;
@@ -237,17 +236,17 @@ namespace AcManager.Pages.Selected {
             }
             #endregion
 
-            private ProperCommand _manageSkinsCommand;
+            private ICommandExt _manageSkinsCommand;
 
-            public ICommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new ProperCommand(o => {
+            public ICommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => {
                 new CarSkinsDialog(SelectedObject) {
                     ShowInTaskbar = false
                 }.ShowDialogWithoutBlocking();
             }));
 
-            private ProperCommand _manageSetupsCommand;
+            private ICommandExt _manageSetupsCommand;
 
-            public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new ProperCommand(o => {
+            public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
                 new CarSetupsDialog(SelectedObject) {
                     ShowInTaskbar = false
                 }.ShowDialogWithoutBlocking();
@@ -255,9 +254,9 @@ namespace AcManager.Pages.Selected {
 
             private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
 
-            private ProperCommand _readDataCommand;
+            private ICommandExt _readDataCommand;
 
-            public ICommand ReadDataCommand => _readDataCommand ?? (_readDataCommand = new ProperCommand(o => {
+            public ICommand ReadDataCommand => _readDataCommand ?? (_readDataCommand = new DelegateCommand(() => {
                 var source = Path.Combine(SelectedObject.Location, "data.a" + "cd");
                 try {
                     var destination = FileUtils.EnsureUnique(DataDirectory);
@@ -266,11 +265,11 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify(ToolsStrings.Common_CannotReadData, e);
                 }
-            }, o => SettingsHolder.Common.MsMode && SelectedObject.AcdData.IsPacked));
+            }, () => SettingsHolder.Common.MsMode && SelectedObject.AcdData.IsPacked));
 
-            private ProperCommand _packDataCommand;
+            private ICommandExt _packDataCommand;
 
-            public ICommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new ProperCommand(o => {
+            public ICommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new DelegateCommand(() => {
                 try {
                     var destination = Path.Combine(SelectedObject.Location, "data.a" + "cd");
                     var exists = File.Exists(destination);
@@ -291,11 +290,11 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify(AppStrings.Car_CannotPackData, ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
                 }
-            }, o => SettingsHolder.Common.DeveloperMode && Directory.Exists(DataDirectory)));
+            }, () => SettingsHolder.Common.DeveloperMode && Directory.Exists(DataDirectory)));
 
-            private ProperAsyncCommand _replaceSoundCommand;
+            private ICommandExt _replaceSoundCommand;
 
-            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new ProperAsyncCommand(async o => {
+            public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(async () => {
                 var donor = SelectCarDialog.Show();
                 if (donor == null) return;
 

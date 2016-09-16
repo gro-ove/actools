@@ -31,21 +31,21 @@
 
             <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeCarCommand}" HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch" Background="Gray" Margin="0 0 20 0" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True" Drop="Car_OnDrop">
-                <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
+                <mui:Cell Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
                     <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
                     <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333"
                             Text="{Binding SelectedCar.DisplayName}" Foreground="White" />
-                </Grid>
+                </mui:Cell>
             </Button>
 
             <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeTrackCommand}" HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch" Margin="0 0 20 0" Grid.Column="1" Background="Gray">
-                <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding SelectedTrack}">
+                <mui:Cell Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding SelectedTrack}">
                     <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
                     <mui:BetterImage Source="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
                     <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#99333333" Text="{Binding Name}"
                             Foreground="White" />
-                </Grid>
+                </mui:Cell>
             </Button>
 
             <Grid Grid.Column="2">
@@ -62,14 +62,14 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="0" IsEnabled="{Binding ManualTime}">
-                    <Grid Margin="0 0 0 4">
+                    <mui:Cell Margin="0 0 0 4">
                         <mui:ValueLabel Value="{Binding DisplayTime}" Mode="Time" Margin="0" Content="{x:Static g:AppStrings.Drive_Time}" />
                         <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                                 Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 ToolTip="{x:Static g:AppStrings.Drive_Time_Warning}">
                             <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
                         </Border>
-                    </Grid>
+                    </mui:Cell>
                     <Slider Minimum="{x:Static drive:QuickDrive.TimeMinimum}" Maximum="{x:Static drive:QuickDrive.TimeMaximum}" Value="{Binding Time}"
                             Margin="0 0 0 4" x:Name="TimeSlider" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
                 </StackPanel>
@@ -104,7 +104,7 @@
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="1"
                         IsEnabled="{Binding RealConditions, Converter={StaticResource InvertBooleanConverter}}">
-                    <Grid Margin="0 0 0 4">
+                    <mui:Cell Margin="0 0 0 4">
                         <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource LabelWithPadding}" />
                         <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                                 Visibility="{Binding IsWeatherNotSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -119,7 +119,7 @@
                             </Border.ToolTip>
                             <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
                         </Border>
-                    </Grid>
+                    </mui:Cell>
                     <ComboBox Margin="4 0 4 0" ItemsSource="{Binding WeatherList}" SelectedItem="{Binding SelectedWeather}" />
                 </StackPanel>
 
@@ -131,8 +131,8 @@
                             <ToolTip Content="{Binding RoadTemperature}" ContentStringFormat="{x:Static g:AppStrings.Common_RoadTemperatureFormat}" />
                         </mui:ValueLabel.ToolTip>
                     </mui:ValueLabel>
-                    <Grid Margin="0 0 0 4" Background="Transparent">
-                        <Grid.ToolTip>
+                    <mui:Cell Margin="0 0 0 4" Background="Transparent">
+                        <mui:Cell.ToolTip>
                             <ToolTip Visibility="{Binding RealConditions, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Grid Margin="4">
                                     <Grid.ColumnDefinitions>
@@ -161,17 +161,17 @@
                                             RenderOptions.BitmapScalingMode="HighQuality" />
                                 </Grid>
                             </ToolTip>
-                        </Grid.ToolTip>
+                        </mui:Cell.ToolTip>
 
                         <Slider Minimum="{x:Static drive:QuickDrive.TemperatureMinimum}" Maximum="{x:Static drive:QuickDrive.TemperatureMaximum}"
-                                Value="{Binding Temperature}" x:Name="TemperatureSlider" TickFrequency="6" IsSnapToTickEnabled="False"
+                                Value="{Binding Temperature}" TickFrequency="6" IsSnapToTickEnabled="False"
                                 TickPlacement="BottomRight" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 -8" Height="16">
                             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform"
                                     Visibility="{Binding IsTemperatureClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     ToolTip="{x:Static g:AppStrings.Drive_Temperature_Warning}" />
                         </StackPanel>
-                    </Grid>
+                    </mui:Cell>
                 </StackPanel>
 
                 <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">

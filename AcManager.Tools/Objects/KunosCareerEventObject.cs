@@ -10,6 +10,7 @@ using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -62,7 +63,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _isAvailable)) return;
                 _isAvailable = value;
                 OnPropertyChanged();
-                GoCommand.OnCanExecuteChanged();
+                _goCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -120,11 +121,11 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private ProperCommand _resetUserAiLevelCommand;
+        private ICommandExt _resetUserAiLevelCommand;
 
-        public ICommand ResetUserAiLevelCommand => _resetUserAiLevelCommand ?? (_resetUserAiLevelCommand = new ProperCommand(o => {
+        public ICommand ResetUserAiLevelCommand => _resetUserAiLevelCommand ?? (_resetUserAiLevelCommand = new DelegateCommand(() => {
             UserAiLevel = AiLevel;
-        }, o => UserAiLevel != AiLevel));
+        }, () => UserAiLevel != AiLevel));
 
         protected override void SetCustomSkinId(IniFile ini) {
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
@@ -161,9 +162,10 @@ namespace AcManager.Tools.Objects {
             return ini;
         }
 
-        private RelayPropertyCommand _goCommand;
+        private ICommandExt _goCommand;
 
-        public RelayPropertyCommand GoCommand => _goCommand ?? (_goCommand = new RelayPropertyCommand(async o => {
+        // TODO: async command
+        public ICommand GoCommand => _goCommand ?? (_goCommand = new DelegateCommand<Game.AssistsProperties>(async o => {
             await GameWrapper.StartAsync(new Game.StartProperties {
                 AdditionalPropertieses = {
                     ConditionType.HasValue ? new PlaceConditions {
@@ -175,7 +177,7 @@ namespace AcManager.Tools.Objects {
                     new KunosCareerManager.CareerProperties { CareerId = KunosCareerId, EventId = Id }
                 },
                 PreparedConfig = ConvertConfig(new IniFile(IniFilename)),
-                AssistsProperties = o as Game.AssistsProperties
+                AssistsProperties = o
             });
         }, o => IsAvailable));
     }

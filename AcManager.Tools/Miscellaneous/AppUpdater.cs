@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define FORCE_UPDATE
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -14,6 +16,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;
@@ -68,6 +71,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         public override Task CheckAndUpdateIfNeeded() {
+#if !FORCE_UPDATE || !DEBUG
             if (!MainExecutingFile.IsPacked) {
                 LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
                 IsSupported = false;
@@ -79,12 +83,17 @@ namespace AcManager.Tools.Miscellaneous {
                 IsSupported = false;
                 return Task.Delay(0);
             }
+#endif
 
             return base.CheckAndUpdateIfNeeded();
         }
 
         protected override async Task<bool> CheckAndUpdateIfNeededInner() {
+#if FORCE_UPDATE && DEBUG
+            return ((await GetLatestVersion())?.IsVersionNewerThan(BuildInformation.AppVersion) == true || true) && await LoadAndPrepare();
+#else
             return (await GetLatestVersion())?.IsVersionNewerThan(BuildInformation.AppVersion) == true && await LoadAndPrepare();
+#endif
         }
 
         private async Task<string> GetLatestVersion() {
@@ -128,11 +137,13 @@ namespace AcManager.Tools.Miscellaneous {
         private bool _isPreparing;
 
         private async Task<bool> LoadAndPrepare() {
+#if !FORCE_UPDATE || !DEBUG
             if (!MainExecutingFile.IsPacked) {
                 NonfatalError.Notify(ToolsStrings.AppUpdater_CannotUpdateApp, ToolsStrings.AppUpdater_UnpackedVersionMessage);
                 LatestError = ToolsStrings.AppUpdater_UnpackedVersionMessage;
                 return false;
             }
+#endif
 
             if (_isPreparing) return false;
             _isPreparing = true;
@@ -174,11 +185,10 @@ namespace AcManager.Tools.Miscellaneous {
             return false;
         }
 
-        private ProperCommand _finishUpdateCommand;
+        private ICommandExt _finishUpdateCommand;
 
-        public ICommand FinishUpdateCommand => _finishUpdateCommand ?? (_finishUpdateCommand = new ProperCommand(o => {
-            RunUpdateExeAndExitIfExists();
-        }, o => UpdateIsReady != null));
+        public ICommand FinishUpdateCommand => _finishUpdateCommand ??
+                (_finishUpdateCommand = new DelegateCommand(RunUpdateExeAndExitIfExists, () => UpdateIsReady != null));
 
         private const string ExecutableExtension = ".exe";
 

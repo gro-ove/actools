@@ -9,6 +9,7 @@ using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -28,7 +29,7 @@ namespace AcManager.Controls {
         }
 
         public UserPresetsControl() {
-            SaveCommand = new ProperCommand(SaveExecute, SaveCanExecute);
+            SaveCommand = new DelegateCommand(SaveExecute, SaveCanExecute);
             Loaded += UserPresetsControl_Loaded;
             Unloaded += UserPresetsControl_Unloaded;
         }
@@ -169,11 +170,11 @@ namespace AcManager.Controls {
 
         public ICommand SaveCommand { get; }
 
-        public bool SaveCanExecute(object parameter) {
+        public bool SaveCanExecute() {
             return _presetable != null && _presetable.CanBeSaved;
         }
 
-        public void SaveExecute(object parameter) {
+        public void SaveExecute() {
             if (_presetable == null) return;
 
             var entry = CurrentUserPreset;
@@ -377,7 +378,7 @@ namespace AcManager.Controls {
             var entry = _comboBox?.SelectedItem as ISavedPresetEntry;
             if (entry == null) return;
 
-            if (CurrentUserPreset != entry) {
+            if (!ReferenceEquals(CurrentUserPreset, entry)) {
                 CurrentUserPreset = entry;
             } else {
                 SelectionChanged(entry);

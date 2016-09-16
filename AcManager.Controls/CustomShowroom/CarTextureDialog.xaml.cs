@@ -12,6 +12,7 @@ using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -107,15 +108,14 @@ namespace AcManager.Controls.CustomShowroom {
 
             private const string KeyDimensions = "__CarTextureDialog.Dimensions";
 
-            private ProperAsyncCommand _uvCommand;
+            private ICommandExt _uvCommand;
 
-            public ICommand UvCommand => _uvCommand ?? (_uvCommand = new ProperAsyncCommand(async o => {
+            public ICommand UvCommand => _uvCommand ?? (_uvCommand = new AsyncCommand<string>(async o => {
                 var filename = FilesStorage.Instance.GetTemporaryFilename(
                         FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName)) + " UV.png");
-
-                var p = o?.ToString();
+                
                 int width, height;
-                switch (p) {
+                switch (o) {
                     case "custom":
                         var result = Prompt.Show(ControlsStrings.CustomShowroom_ViewMapping_Prompt, ControlsStrings.CustomShowroom_ViewMapping,
                                 ValuesStorage.GetString(KeyDimensions, ""), @"2048x2048");
@@ -140,7 +140,7 @@ namespace AcManager.Controls.CustomShowroom {
                         break;
 
                     default:
-                        width = height = FlexibleParser.TryParseInt(p) ?? 2048;
+                        width = height = FlexibleParser.TryParseInt(o) ?? 2048;
                         break;
                 }
 
@@ -162,9 +162,9 @@ namespace AcManager.Controls.CustomShowroom {
                 }.ShowDialog();
             }));
 
-            private ProperAsyncCommand _exportCommand;
+            private ICommandExt _exportCommand;
 
-            public ICommand ExportCommand => _exportCommand ?? (_exportCommand = new ProperAsyncCommand(async o => {
+            public ICommand ExportCommand => _exportCommand ?? (_exportCommand = new AsyncCommand(async () => {
                 var dialog = new SaveFileDialog {
                     InitialDirectory = _activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename),
                     Filter = string.Format(@"Textures (*.{0})|*.{0}", TextureFormat.ToLower()),
@@ -179,7 +179,7 @@ namespace AcManager.Controls.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotExport, e);
                 }
-            }, o => Data != null));
+            }, () => Data != null));
 
             private class LoadedImage {
                 public BitmapImage Image;

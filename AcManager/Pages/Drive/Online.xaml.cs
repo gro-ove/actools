@@ -16,6 +16,7 @@ using AcManager.Tools.Filters;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -410,15 +411,15 @@ namespace AcManager.Pages.Drive {
                 new SettingEntry("ping", AppStrings.Online_Sorting_Ping),
             };
 
-            private ProperCommand _changeSortingCommand;
+            private ICommandExt _changeSortingCommand;
 
-            public ICommand ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new ProperCommand(o => {
-                SortingMode = SortingModes.GetByIdOrDefault(o as string) ?? SortingModes[0];
+            public ICommand ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new DelegateCommand<string>(o => {
+                SortingMode = SortingModes.GetByIdOrDefault(o) ?? SortingModes[0];
             }));
 
-            private ProperCommand _addNewServerCommand;
+            private ICommand _addNewServerCommand;
 
-            public ICommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new ProperCommand(async o => {
+            public ICommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = new DelegateCommand(async () => {
                 var address = Prompt.Show(AppStrings.Online_AddServer, AppStrings.Online_AddServer_Title, "", // TODO
                         @"127.0.0.1:8081", AppStrings.Online_AddServer_Tooltip);
                 if (address == null) return;
@@ -433,7 +434,7 @@ namespace AcManager.Pages.Drive {
                         NonfatalError.Notify(AppStrings.Online_CannotAddServer, e);
                     }
                 }
-            }, o => Manager is RecentManager));
+            }, () => Manager is RecentManager));
 
             protected override void OnCurrentChanged(object sender, EventArgs e) {
                 base.OnCurrentChanged(sender, e);

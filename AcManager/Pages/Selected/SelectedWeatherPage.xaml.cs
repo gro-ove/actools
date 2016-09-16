@@ -24,6 +24,7 @@ using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -140,9 +141,9 @@ namespace AcManager.Pages.Selected {
 
             private const long SharingSizeLimit = 2 * 1024 * 1024;
 
-            private ProperAsyncCommand _shareCommand;
+            private ICommandExt _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(async o => {
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async () => {
                 byte[] data = null;
 
                 try {
@@ -196,26 +197,26 @@ namespace AcManager.Pages.Selected {
 
             private ICommand _testCommand;
 
-            public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(o => {
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand<string>(o => {
                 SelectedObject.SaveCommand.Execute(null);
 
                 int time;
-                return QuickDrive.RunAsync(weatherId: SelectedObject.Id, time: FlexibleParser.TryParseTime(o as string, out time) ? time : (int?)null);
+                return QuickDrive.RunAsync(weatherId: SelectedObject.Id, time: FlexibleParser.TryParseTime(o, out time) ? time : (int?)null);
             }, o => SelectedObject.Enabled));
 
             private ICommand _viewTemperatureReadmeCommand;
 
-            public ICommand ViewTemperatureReadmeCommand => _viewTemperatureReadmeCommand ?? (_viewTemperatureReadmeCommand = new ProperCommand(o => {
+            public ICommand ViewTemperatureReadmeCommand => _viewTemperatureReadmeCommand ?? (_viewTemperatureReadmeCommand = new DelegateCommand(() => {
                 ModernDialog.ShowMessage(AppStrings.Weather_KunosReadme);
             }));
 
             private const string KeyUpdatePreviewMessageShown = "swp.upms";
 
-            private ProperAsyncCommand _updatePreviewCommand;
+            private ICommandExt _updatePreviewCommand;
 
-            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new ProperAsyncCommand(async o => {
+            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new AsyncCommand(async () => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    UpdatePreviewDirectCommand.Execute(o);
+                    UpdatePreviewDirectCommand.Execute(null);
                     return;
                 }
 
@@ -255,11 +256,11 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);
                 }
-            }, o => SelectedObject.Enabled));
+            }, () => SelectedObject.Enabled));
 
-            private ProperCommand _updatePreviewDirectCommand;
+            private ICommandExt _updatePreviewDirectCommand;
 
-            public ICommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new ProperCommand(o => {
+            public ICommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {
                     Filter = FileDialogFilters.ImagesFilter,
                     Title = AppStrings.Common_SelectImageForPreview,
@@ -302,7 +303,7 @@ namespace AcManager.Pages.Selected {
 
         private ICommand _toggleEditModeCommand;
 
-        public ICommand ToggleEditModeCommand => _toggleEditModeCommand ?? (_toggleEditModeCommand = new ProperCommand(o => {
+        public ICommand ToggleEditModeCommand => _toggleEditModeCommand ?? (_toggleEditModeCommand = new DelegateCommand(() => {
             EditMode = !EditMode;
             OnPropertyChanged(nameof(EditMode));
             ValuesStorage.Set(KeyEditMode, EditMode);

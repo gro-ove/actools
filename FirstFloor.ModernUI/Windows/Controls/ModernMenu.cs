@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -20,18 +21,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public ModernMenu() {
             InputBindings.AddRange(new[] {
-                new InputBinding(new ProperCommand(NewTab), new KeyGesture(Key.T, ModifierKeys.Control)),
-                new InputBinding(new ProperCommand(CloseTab), new KeyGesture(Key.W, ModifierKeys.Control)),
-                new InputBinding(new ProperCommand(CloseTab), new KeyGesture(Key.F4, ModifierKeys.Control)),
-                new InputBinding(new ProperCommand(RestoreTab), new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Shift)),
-                new InputBinding(new ProperCommand(FocusCurrentTab), new KeyGesture(Key.F6)),
-                new InputBinding(new ProperCommand(FocusCurrentTab), new KeyGesture(Key.L, ModifierKeys.Control)),
-                new InputBinding(new ProperCommand(NextTab), new KeyGesture(Key.Tab, ModifierKeys.Control)),
-                new InputBinding(new ProperCommand(PreviousTab), new KeyGesture(Key.Tab, ModifierKeys.Control | ModifierKeys.Shift))
+                new InputBinding(new DelegateCommand(NewTab), new KeyGesture(Key.T, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(CloseTab), new KeyGesture(Key.W, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(CloseTab), new KeyGesture(Key.F4, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(RestoreTab), new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Shift)),
+                new InputBinding(new DelegateCommand(FocusCurrentTab), new KeyGesture(Key.F6)),
+                new InputBinding(new DelegateCommand(FocusCurrentTab), new KeyGesture(Key.L, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(NextTab), new KeyGesture(Key.Tab, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(PreviousTab), new KeyGesture(Key.Tab, ModifierKeys.Control | ModifierKeys.Shift))
             });
 
             foreach (var i in Enumerable.Range(0, 9)) {
-                InputBindings.Add(new InputBinding(new ProperCommand(o => SwitchTab(i, false)), new KeyGesture(Key.D1 + i, ModifierKeys.Control)));
+                InputBindings.Add(new InputBinding(new DelegateCommand(() => SwitchTab(i, false)), new KeyGesture(Key.D1 + i, ModifierKeys.Control)));
             }
         }
 
@@ -54,7 +55,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         #region Browser-like commands
-        private void NewTab(object param) {
+        private void NewTab() {
             if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null) return;
             var textBox = _subMenuListBox.ItemContainerGenerator
                     .ContainerFromIndex(_subMenuListBox.Items.Count - 1)?.FindChild<TextBox>("NameTextBox");
@@ -63,20 +64,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             textBox.SelectAll();
         }
 
-        private void CloseTab(object param) {
+        private void CloseTab() {
             if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null) return;
             _subMenuListBox.ItemContainerGenerator
                     .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<Button>("CloseButton")?.Command?.Execute(null);
             _subMenuListBox.Focus();
         }
 
-        private void RestoreTab(object param) {
+        private void RestoreTab() {
             if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null) return;
             ((LinkGroupFilterable)SelectedLinkGroup).RestoreLastClosed();
             _subMenuListBox.Focus();
         }
 
-        private void FocusCurrentTab(object param) {
+        private void FocusCurrentTab() {
             if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null) return;
             _subMenuListBox.ItemContainerGenerator
                     .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<TextBox>("NameTextBox")?.Focus();
@@ -91,12 +92,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _subMenuListBox.Focus();
         }
 
-        private void NextTab(object param) {
+        private void NextTab() {
             if (_subMenuListBox == null) return;
             SwitchTab(_subMenuListBox.SelectedIndex + 1, true);
         }
 
-        private void PreviousTab(object param) {
+        private void PreviousTab() {
             if (_subMenuListBox == null) return;
             SwitchTab(_subMenuListBox.SelectedIndex - 1, true);
         }

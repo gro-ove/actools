@@ -42,7 +42,7 @@ namespace AcManager.Pages.Dialogs {
             Buttons = new[] {
                 OkButton,
                 CreateExtraDialogButton(AppStrings.Common_SelectFile, SelectFile),
-                CreateExtraDialogButton(AppStrings.Common_ViewUserFolder, o => FilesStorage.Instance.OpenContentDirectoryInExplorer(ContentCategory.BrandBadges)),
+                CreateExtraDialogButton(AppStrings.Common_ViewUserFolder, () => FilesStorage.Instance.OpenContentDirectoryInExplorer(ContentCategory.BrandBadges)),
                 CancelButton
             };
 

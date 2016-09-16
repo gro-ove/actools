@@ -3,6 +3,7 @@ using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -62,7 +63,7 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _randomSkinCommand;
 
-        public ICommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand = new ProperCommand(o => {
+        public ICommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand = new DelegateCommand(() => {
             CarSkin = null;
         }));
 
@@ -135,7 +136,7 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _deleteCommand;
 
-        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new ProperCommand(o => {
+        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
             Deleted?.Invoke(this, EventArgs.Empty);
         }));
 

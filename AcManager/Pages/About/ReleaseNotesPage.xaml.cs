@@ -6,6 +6,7 @@ using AcManager.About;
 using AcManager.Internal;
 using AcManager.Tools.About;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.About {
@@ -21,13 +22,13 @@ namespace AcManager.Pages.About {
                 NotesList.MoveCurrentToFirst();
             }
 
-            private ProperCommand _markAllAsReadCommand;
+            private ICommandExt _markAllAsReadCommand;
 
-            public ICommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new ProperCommand(o => {
+            public ICommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new DelegateCommand(() => {
                 foreach (var note in ReleaseNotes.Entries.Where(x => x.IsNew)) {
                     note.MarkAsRead();
                 }
-            }, o => ReleaseNotes.Entries.Any(x => x.IsNew)));
+            }, () => ReleaseNotes.Entries.Any(x => x.IsNew)));
 
             private ListCollectionView _notesList;
 

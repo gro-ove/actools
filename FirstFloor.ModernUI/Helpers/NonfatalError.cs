@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -40,7 +41,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public ObservableCollection<NonfatalErrorEntry> Errors { get; } = new ObservableCollection<NonfatalErrorEntry>();
 
-        public ICommand ViewErrorsCommand { get; } = new ProperCommand(o => {
+        public ICommand ViewErrorsCommand { get; } = new DelegateCommand(() => {
             new NonfatalErrorsDialog().ShowDialog();
         });
 

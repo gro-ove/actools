@@ -5,16 +5,16 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
-using AcManager.Controls.Dialogs;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcErrors.Solutions;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
-using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Pages.Dialogs {
     public partial class AcErrorSolutionSelector : INotifyPropertyChanged {
@@ -132,9 +132,11 @@ namespace AcManager.Pages.Dialogs {
 
         private AsyncCommand _runCommand;
 
-        public AsyncCommand RunCommand => _runCommand ?? (_runCommand = new AsyncCommand(async o => {
+        public AsyncCommand RunCommand => _runCommand ?? (_runCommand = new AsyncCommand(async () => {
             var solution = SelectedSolution;
             if (solution == null) return;
+
+            Logging.Debug($"AcError={AcError.Type}, Solution={solution.Name}");
 
             try {
                 _solvingInProgress = true;
@@ -164,13 +166,15 @@ namespace AcManager.Pages.Dialogs {
             }
             
             Close();
-        }, o => SelectedSolution != null));
+        }, () => SelectedSolution != null));
 
         private AsyncCommand _runAllCommand;
 
-        public AsyncCommand RunAllCommand => _runAllCommand ?? (_runAllCommand = new AsyncCommand(async o => {
+        public AsyncCommand RunAllCommand => _runAllCommand ?? (_runAllCommand = new AsyncCommand(async () => {
             var solution = SelectedSolution as IMultiSolution;
             if (solution == null) return;
+
+            Logging.Debug($"AcError={AcError.Type}, Solution={solution.Name}");
 
             try {
                 _solvingInProgress = true;
@@ -200,7 +204,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             Close();
-        }, o => IsMultiSolutionSelected));
+        }, () => IsMultiSolutionSelected));
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -36,7 +37,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKey = typeof(ModernDialog);
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            CloseCommand = new ProperCommand(o => CloseWithResult(o as MessageBoxResult?));
+            CloseCommand = new DelegateCommand<MessageBoxResult?>(CloseWithResult);
             Buttons = new[] { CloseButton };
         }
 
@@ -79,12 +80,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
-        public static Button CreateExtraDialogButton(string content, Action<object> action, Func<object, bool> canExecute = null) {
-            return CreateExtraDialogButton(content, new RelayCommand(action, canExecute));
+        public static Button CreateExtraDialogButton(string content, Action action, Func<bool> canExecute) {
+            return CreateExtraDialogButton(content, new DelegateCommand(action, canExecute));
         }
 
         public static Button CreateExtraDialogButton(string content, Action action) {
-            return CreateExtraDialogButton(content, new ProperCommand(o => action()));
+            return CreateExtraDialogButton(content, new DelegateCommand(action));
         }
 
         public Button CreateExtraStyledDialogButton(string styleKey, string content, ICommand command) {
@@ -98,15 +99,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
-        public Button CreateExtraStyledDialogButton([Localizable(false)] string styleKey, string content, Action<object> action,
-                Func<object, bool> canExecute = null) {
-            return CreateExtraStyledDialogButton(styleKey, content, new RelayCommand(action, canExecute));
+        public Button CreateExtraStyledDialogButton([Localizable(false)] string styleKey, string content, Action action, Func<bool> canExecute = null) {
+            return CreateExtraStyledDialogButton(styleKey, content, new DelegateCommand(action, canExecute));
         }
 
         public Button CreateCloseDialogButton(string content, bool isDefault, bool isCancel, MessageBoxResult result, Action action = null) {
             return new Button {
                 Content = content,
-                Command = action == null ? CloseCommand : new CombinedCommand(CloseCommand, new ProperCommand(action)),
+                Command = action == null ? CloseCommand : new CombinedCommand(CloseCommand, new DelegateCommand(action)),
                 CommandParameter = result,
                 IsDefault = isDefault,
                 IsCancel = isCancel,
@@ -120,7 +120,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Action action = null) {
             return new Button {
                 Content = content,
-                Command = action == null ? CloseCommand : new CombinedCommand(CloseCommand, new ProperCommand(action)),
+                Command = action == null ? CloseCommand : new CombinedCommand(CloseCommand, new DelegateCommand(action)),
                 CommandParameter = result,
                 IsDefault = isDefault,
                 IsCancel = isCancel,
@@ -301,19 +301,19 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private ICommand _copyCommand;
 
-        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new ProperCommand(o => {
+        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new DelegateCommand(() => {
             Clipboard.SetText(StackTrace);
         }));
 
         private ICommand _restartCommand;
 
-        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new ProperCommand(o => {
+        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => {
             _restartHelper?.Restart();
         }));
 
         private ICommand _exitCommand;
 
-        public ICommand ExitCommand => _exitCommand ?? (_exitCommand = new ProperCommand(o => {
+        public ICommand ExitCommand => _exitCommand ?? (_exitCommand = new DelegateCommand(() => {
             Environment.Exit(1);
         }));
 

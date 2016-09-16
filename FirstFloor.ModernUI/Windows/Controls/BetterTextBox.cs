@@ -23,14 +23,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKey = typeof(BetterComboBox);
             PreviewMouseWheel += ComboBox_PreviewMouseWheel;
         }
-        
-        public static readonly DependencyProperty TrimProperty = DependencyProperty.Register(nameof(Trim), typeof(bool),
-                typeof(BetterComboBox), new PropertyMetadata(true));
-
-        public bool Trim {
-            get { return (bool)GetValue(TrimProperty); }
-            set { SetValue(TrimProperty, value); }
-        }
 
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string),
                 typeof(BetterComboBox));
@@ -70,39 +62,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public class BetterTextBox : TextBox {
         public BetterTextBox() {
             DefaultStyleKey = typeof(BetterTextBox);
-        }
-
-        protected override void OnTextChanged(TextChangedEventArgs e) {
-            base.OnTextChanged(e);
-
-            if (Trim) {
-                TrimText();
-            }
-        }
-
-        public static readonly DependencyProperty TrimProperty = DependencyProperty.Register(nameof(Trim), typeof(bool),
-                typeof(BetterTextBox), new PropertyMetadata(true, OnTrimChanged));
-
-        public bool Trim {
-            get { return (bool)GetValue(TrimProperty); }
-            set { SetValue(TrimProperty, value); }
-        }
-
-        private static void OnTrimChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((BetterTextBox)o).OnTrimChanged((bool)e.NewValue);
-        }
-
-        private void OnTrimChanged(bool newValue) {
-            if (newValue) {
-                TrimText();
-            }
-        }
-
-        private void TrimText() {
-            var text = Text;
-            if (text?.Length > 0 && (char.IsWhiteSpace(text[0]) || char.IsWhiteSpace(text[text.Length - 1]))) {
-                Text = text.Trim();
-            }
         }
 
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string),

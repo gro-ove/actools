@@ -15,6 +15,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -39,8 +40,8 @@ namespace AcManager.Pages.Drive {
             DataContext = new ViewModel();
             InitializeComponent();
             InputBindings.AddRange(new[] {
-                new InputBinding(new ProperCommand(o => Model.Selected?.GoCommand.Execute(o)), new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(new ProperCommand(o => Model.Selected?.ViewInExplorerCommand.Execute(o)), new KeyGesture(Key.F, ModifierKeys.Control))
+                new InputBinding(new DelegateCommand(() => Model.Selected?.GoCommand.Execute(null)), new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(() => Model.Selected?.ViewInExplorerCommand.Execute(null)), new KeyGesture(Key.F, ModifierKeys.Control))
             });
         }
 
@@ -84,28 +85,29 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _updateProgressCommand;
 
-            public ICommand SyncronizeProgressCommand => _updateProgressCommand ?? (_updateProgressCommand = new ProperAsyncCommand(async o => {
-                try {
-                    using (var waiting = new WaitingDialog()) {
-                        await SpecialEventsManager.Instance.UpdateProgress(waiting, waiting.CancellationToken);
-                    }
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t get challenges progress", e);
-                }
-            }, o => SteamIdHelper.Instance.Value != null));
+            public ICommand SyncronizeProgressCommand => _updateProgressCommand ??
+                    (_updateProgressCommand = new AsyncCommand(async () => {
+                        try {
+                            using (var waiting = new WaitingDialog()) {
+                                await SpecialEventsManager.Instance.UpdateProgress(waiting, waiting.CancellationToken);
+                            }
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Can’t get challenges progress", e);
+                        }
+                    }, () => SteamIdHelper.Instance.Value != null));
 
             private ICommand _syncronizeProgressUsingModuleCommand;
 
-            public ICommand SyncronizeProgressUsingModuleCommand
-                => _syncronizeProgressUsingModuleCommand ?? (_syncronizeProgressUsingModuleCommand = new ProperAsyncCommand(async o => {
-                    try {
-                        using (var waiting = new WaitingDialog()) {
-                            await SpecialEventsManager.Instance.UpdateProgressViaModule(waiting, waiting.CancellationToken);
+            public ICommand SyncronizeProgressUsingModuleCommand => _syncronizeProgressUsingModuleCommand ??
+                    (_syncronizeProgressUsingModuleCommand = new AsyncCommand(async () => {
+                        try {
+                            using (var waiting = new WaitingDialog()) {
+                                await SpecialEventsManager.Instance.UpdateProgressViaModule(waiting, waiting.CancellationToken);
+                            }
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Can’t get challenges progress", e);
                         }
-                    } catch (Exception e) {
-                        NonfatalError.Notify("Can’t get challenges progress", e);
-                    }
-                }, o => SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.UiModuleStarterType));
+                    }, () => SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.UiModuleStarterType));
         }
 
         private ScrollViewer _scroll;

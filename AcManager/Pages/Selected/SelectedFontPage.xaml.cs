@@ -16,6 +16,7 @@ using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -30,9 +31,9 @@ namespace AcManager.Pages.Selected {
 
             public FontsManager Manager => FontsManager.Instance;
 
-            private ProperAsyncCommand _usingsRescanCommand;
+            private ICommandExt _usingsRescanCommand;
 
-            public ICommand UsingsRescanCommand => _usingsRescanCommand ?? (_usingsRescanCommand = new ProperAsyncCommand(async o => {
+            public ICommand UsingsRescanCommand => _usingsRescanCommand ?? (_usingsRescanCommand = new AsyncCommand(async () => {
                 List<string> missing;
                 using (var waiting = new WaitingDialog()) {
                     missing = await FontsManager.Instance.UsingsRescan(waiting, waiting.CancellationToken);
@@ -43,9 +44,9 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private ProperAsyncCommand _disableUnusedCommand;
+            private ICommandExt _disableUnusedCommand;
 
-            public ICommand DisableUnusedCommand => _disableUnusedCommand ?? (_disableUnusedCommand = new ProperAsyncCommand(async o => {
+            public ICommand DisableUnusedCommand => _disableUnusedCommand ?? (_disableUnusedCommand = new AsyncCommand(async () => {
                 using (var waiting = new WaitingDialog(ToolsStrings.Common_Scanning)) {
                     await FontsManager.Instance.UsingsRescan(waiting, waiting.CancellationToken);
                     if (waiting.CancellationToken.IsCancellationRequested) return;
@@ -61,11 +62,11 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private ProperCommand _createNewFontCommand;
+            private ICommandExt _createNewFontCommand;
 
-            public ICommand CreateNewFontCommand => _createNewFontCommand ?? (_createNewFontCommand = new ProperCommand(o => {
+            public ICommand CreateNewFontCommand => _createNewFontCommand ?? (_createNewFontCommand = new DelegateCommand(() => {
                 Process.Start(FontCreationTool);
-            }, o => File.Exists(FontCreationTool)));
+            }, () => File.Exists(FontCreationTool)));
 
             public string FontCreationTool => Path.Combine(AcRootDirectory.Instance.RequireValue, @"sdk", @"dev", @"ksFontGenerator", @"ksFontGenerator.exe");
         }

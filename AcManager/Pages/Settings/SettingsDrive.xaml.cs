@@ -4,6 +4,7 @@ using System.Windows.Input;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Settings {
@@ -26,9 +27,9 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            private ProperCommand _navigateCommand;
+            private ICommandExt _navigateCommand;
 
-            public ICommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new ProperCommand(o => {
+            public ICommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new DelegateCommand<object>(o => {
                 (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri(o?.ToString() ?? "", UriKind.RelativeOrAbsolute));
             }));
         }

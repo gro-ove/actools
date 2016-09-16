@@ -10,6 +10,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -30,14 +31,11 @@ namespace AcManager.Controls.Helpers {
             Instance = new SharingUiHelper();
         }
 
-        private ProperCommand _removeCommand;
+        private ICommandExt _removeCommand;
 
-        public ICommand RemoveCommand => _removeCommand ?? (_removeCommand = new ProperCommand(o => {
-            var entry = o as SharedEntry;
-            if (entry == null) return;
-
+        public ICommand RemoveCommand => _removeCommand ?? (_removeCommand = new DelegateCommand<SharedEntry>(o => {
             // TODO
-        }, o => o is SharedEntry));
+        }, o => o != null));
 
         private static bool _sharingInProcess;
 

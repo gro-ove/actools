@@ -4,6 +4,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.About;
 using AcManager.Internal;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -29,11 +30,11 @@ namespace AcManager.Pages.About {
 
             private ICommand _markAllAsReadCommand;
 
-            public ICommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new ProperCommand(o => {
+            public ICommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new DelegateCommand(() => {
                 foreach (var note in ImportantTips.Entries.Where(x => x.IsNew)) {
                     note.MarkAsRead();
                 }
-            }, o => ImportantTips.Entries.Any(x => x.IsNew)));
+            }, () => ImportantTips.Entries.Any(x => x.IsNew)));
 
             private ListCollectionView _notesList;
 

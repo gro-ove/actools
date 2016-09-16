@@ -11,6 +11,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -22,9 +23,7 @@ namespace AcManager.Pages.Selected {
             public ViewModel([NotNull] ShowroomObject acObject) : base(acObject) {}
             
             private ICommand _updatePreviewCommand;
-            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new ProperCommand(o => {
-                UpdatePreview();
-            }, o => SelectedObject.Enabled));
+            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new DelegateCommand(UpdatePreview, () => SelectedObject.Enabled));
 
             private async void UpdatePreview() {
                 await Task.Run(() => {
@@ -78,7 +77,7 @@ namespace AcManager.Pages.Selected {
 
             private ICommand _createNewShowroomCommand;
 
-            public ICommand CreateNewShowroomCommand => _createNewShowroomCommand ?? (_createNewShowroomCommand = new ProperCommand(o => {
+            public ICommand CreateNewShowroomCommand => _createNewShowroomCommand ?? (_createNewShowroomCommand = new DelegateCommand(() => {
                 CreateNewShowroom();
             }));
 

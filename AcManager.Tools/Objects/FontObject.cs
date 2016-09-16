@@ -12,6 +12,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -82,7 +83,7 @@ namespace AcManager.Tools.Objects {
 
         private ICommand _toggleCommand;
 
-        public override ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new ProperCommand(o => {
+        public override ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new DelegateCommand(() => {
             if (Enabled && UsingsCarsIds.Length > 0 &&
                 ModernDialog.ShowMessage(ToolsStrings.FontObject_Disabling_SomeCarsNeedThisFont, ToolsStrings.FontObject_DisableFont,
                         MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;

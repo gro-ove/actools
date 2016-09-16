@@ -29,6 +29,7 @@ using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -259,9 +260,9 @@ namespace AcManager.Pages.Windows {
         private ViewModel Model => (ViewModel)DataContext;
 
         public class ViewModel : NotifyPropertyChanged {
-            private ProperCommand _enterKeyCommand;
+            private ICommandExt _enterKeyCommand;
 
-            public ICommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new ProperCommand(o => {
+            public ICommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new DelegateCommand(() => {
                 new AppKeyDialog().ShowDialog();
             }));
 
@@ -385,7 +386,7 @@ namespace AcManager.Pages.Windows {
 
         private ICommand _quickSwitchesCommand;
 
-        public ICommand QuickSwitchesCommand => _quickSwitchesCommand ?? (_quickSwitchesCommand = new ProperCommand(o => {
+        public ICommand QuickSwitchesCommand => _quickSwitchesCommand ?? (_quickSwitchesCommand = new DelegateCommand(() => {
             ToggleQuickSwitches();
         }));
 

@@ -2,6 +2,7 @@
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Settings {
@@ -16,11 +17,10 @@ namespace AcManager.Pages.Settings {
 
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 
-            private ProperCommand _addReplaysExtensionsCommand;
+            private ICommandExt _addReplaysExtensionsCommand;
 
-            public ICommand AddReplaysExtensionsCommand => _addReplaysExtensionsCommand ?? (_addReplaysExtensionsCommand = new ProperCommand(o => {
-                ReplaysExtensionSetter.RenameAll();
-            }, o => ReplaysExtensionSetter.HasWithoutExtension()));
+            public ICommand AddReplaysExtensionsCommand => _addReplaysExtensionsCommand ??
+                    (_addReplaysExtensionsCommand = new DelegateCommand(ReplaysExtensionSetter.RenameAll, ReplaysExtensionSetter.HasWithoutExtension));
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,10 +7,9 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -47,15 +45,15 @@ namespace AcManager.Pages.Selected {
                 base.FilterExec(type);
             }
 
-            private ProperCommand _createJsonCommand;
+            private ICommandExt _createJsonCommand;
 
-            public ICommand CreateJsonCommand => _createJsonCommand ?? (_createJsonCommand = new ProperCommand(o => {
+            public ICommand CreateJsonCommand => _createJsonCommand ?? (_createJsonCommand = new DelegateCommand(() => {
                 SelectedObject.Save();
             }));
 
-            private ProperCommand _deleteJsonCommand;
+            private ICommandExt _deleteJsonCommand;
 
-            public ICommand DeleteJsonCommand => _deleteJsonCommand ?? (_deleteJsonCommand = new ProperCommand(o => {
+            public ICommand DeleteJsonCommand => _deleteJsonCommand ?? (_deleteJsonCommand = new DelegateCommand(() => {
                 try {
                     if (File.Exists(SelectedObject.JsonFilename)) {
                         FileUtils.Recycle(SelectedObject.JsonFilename);
@@ -65,28 +63,28 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private ProperCommand _updatePreviewCommand;
+            private ICommandExt _updatePreviewCommand;
 
-            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new ProperCommand(o => {
+            public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new DelegateCommand(() => {
                 new CarUpdatePreviewsDialog(Car, new[] { SelectedObject.Id },
                         SelectedCarPage.ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
-            }, o => SelectedObject.Enabled));
+            }, () => SelectedObject.Enabled));
 
-            private ProperCommand _changeLiveryCommand;
+            private ICommandExt _changeLiveryCommand;
 
-            public ICommand ChangeLiveryCommand => _changeLiveryCommand ?? (_changeLiveryCommand = new ProperCommand(o => {
+            public ICommand ChangeLiveryCommand => _changeLiveryCommand ?? (_changeLiveryCommand = new DelegateCommand(() => {
                 new LiveryIconEditor(SelectedObject).ShowDialog();
             }));
 
-            private ProperAsyncCommand _generateLiveryCommand;
+            private ICommandExt _generateLiveryCommand;
 
             public ICommand GenerateLiveryCommand
-                => _generateLiveryCommand ?? (_generateLiveryCommand = new ProperAsyncCommand(o => LiveryIconEditor.GenerateAsync(SelectedObject)));
+                => _generateLiveryCommand ?? (_generateLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateAsync(SelectedObject)));
 
-            private ProperAsyncCommand _generateRandomLiveryCommand;
+            private ICommandExt _generateRandomLiveryCommand;
 
             public ICommand GenerateRandomLiveryCommand
-                => _generateRandomLiveryCommand ?? (_generateRandomLiveryCommand = new ProperAsyncCommand(o => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));
+                => _generateRandomLiveryCommand ?? (_generateRandomLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));
         }
 
         private string _carId, _id;

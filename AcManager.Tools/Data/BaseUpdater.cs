@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -148,10 +149,10 @@ namespace AcManager.Tools.Data {
             return !_checkingInProcess && !IsGetting;
         }
 
-        private ProperCommand _checkAndUpdateIfNeededCommand;
+        private ICommandExt _checkAndUpdateIfNeededCommand;
 
         public ICommand CheckAndUpdateIfNeededCommand => _checkAndUpdateIfNeededCommand ??
-                (_checkAndUpdateIfNeededCommand = new ProperCommand(o => CheckAndUpdateIfNeeded().Forget(), o => CanBeUpdated()));
+                (_checkAndUpdateIfNeededCommand = new DelegateCommand(() => CheckAndUpdateIfNeeded().Forget(), CanBeUpdated));
 
         /// <summary>
         /// Check and install/prepare update.

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Windows.Input;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Data.GameSpecific;
@@ -8,7 +9,7 @@ using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -142,9 +143,10 @@ namespace AcManager.Tools.Objects {
             return ini;
         }
 
-        private RelayPropertyCommand _goCommand;
+        private ICommand _goCommand;
 
-        public RelayPropertyCommand GoCommand => _goCommand ?? (_goCommand = new RelayPropertyCommand(async o => {
+        // TODO: async command
+        public ICommand GoCommand => _goCommand ?? (_goCommand = new DelegateCommand<Game.AssistsProperties>(async o => {
             await GameWrapper.StartAsync(new Game.StartProperties {
                 AdditionalPropertieses = {
                     ConditionType.HasValue ? new PlaceConditions {
@@ -156,7 +158,7 @@ namespace AcManager.Tools.Objects {
                     new SpecialEventsManager.EventProperties { EventId = Id }
                 },
                 PreparedConfig = ConvertConfig(new IniFile(IniFilename)),
-                AssistsProperties = o as Game.AssistsProperties
+                AssistsProperties = o
             });
         }));
     }

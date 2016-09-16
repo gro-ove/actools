@@ -21,6 +21,7 @@ using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -300,7 +301,7 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _savePresetCommand;
 
-        public ICommand SavePresetCommand => _savePresetCommand ?? (_savePresetCommand = new ProperCommand(o => {
+        public ICommand SavePresetCommand => _savePresetCommand ?? (_savePresetCommand = new DelegateCommand(() => {
             string resultFilename;
             if (!PresetsManager.Instance.SavePresetUsingDialog(PresetableCategory,
                                                                ExportToPresetData(),
@@ -310,9 +311,9 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _shareCommand;
 
-        public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
+        public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
-        private async Task Share(object o) {
+        private async Task Share() {
             await SharingUiHelper.ShareAsync(SharedEntryType.RaceGridPreset,
                     Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(PresetableKeyValue)), null,
                     ExportToPresetData());
@@ -508,12 +509,9 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _switchModeCommand;
 
-        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new ProperCommand(o => {
-            var mode = o as BuiltInGridMode;
-            if (mode != null) {
-                Mode = mode;
-            }
-        }, o => o is BuiltInGridMode));
+        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new DelegateCommand<BuiltInGridMode>(o => {
+            Mode = o;
+        }, o => o != null));
 
         private void UpdateRandomModes() {
             Logging.Debug("UpdateRandomModes()");

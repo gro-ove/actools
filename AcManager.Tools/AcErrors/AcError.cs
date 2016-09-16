@@ -6,6 +6,7 @@ using System.Windows.Input;
 using AcManager.Tools.AcErrors.Solutions;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -68,9 +69,9 @@ namespace AcManager.Tools.AcErrors {
 
         private ICommand _startErrorFixerCommand;
 
-        public ICommand StartErrorFixerCommand => _startErrorFixerCommand ?? (_startErrorFixerCommand = new ProperCommand(o => {
+        public ICommand StartErrorFixerCommand => _startErrorFixerCommand ?? (_startErrorFixerCommand = new DelegateCommand(() => {
             _acErrorFixer?.Run(this);
-        }, o => _acErrorFixer != null));
+        }, () => _acErrorFixer != null));
         #endregion
 
         #region Solutions

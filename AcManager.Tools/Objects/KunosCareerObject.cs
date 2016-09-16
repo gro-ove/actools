@@ -15,6 +15,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -121,11 +122,11 @@ namespace AcManager.Tools.Objects {
                 _baseError = baseError;
             }
 
-            private RelayCommand _startErrorFixerCommand;
+            private ICommand _startErrorFixerCommand;
 
-            public override ICommand StartErrorFixerCommand => _startErrorFixerCommand ?? (_startErrorFixerCommand = new RelayCommand(o => {
+            public override ICommand StartErrorFixerCommand => _startErrorFixerCommand ?? (_startErrorFixerCommand = new DelegateCommand(() => {
                 _baseError.StartErrorFixerCommand.Execute(_ev);
-            }, o => _baseError.StartErrorFixerCommand.CanExecute(_ev)));
+            }, () => _baseError.StartErrorFixerCommand.CanExecute(_ev)));
         }
 
         private void EventsManager_EventHasErrorChanged(object sender, EventArgs e) {
@@ -268,7 +269,7 @@ namespace AcManager.Tools.Objects {
                 _type = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(DisplayType));
-                ChampionshipResetCommand.OnCanExecuteChanged();
+                _championshipResetCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -409,7 +410,7 @@ namespace AcManager.Tools.Objects {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(DisplayGo));
                 OnPropertyChanged(nameof(IsStarted));
-                ChampionshipResetCommand.OnCanExecuteChanged();
+                _championshipResetCommand?.OnCanExecuteChanged();
             }
         }
 
@@ -729,11 +730,11 @@ namespace AcManager.Tools.Objects {
             return c == null ? base.CompareTo(o) : AlphanumComparatorFast.Compare(Id, c.Id);
         }
 
-        private RelayPropertyCommand _championshipResetCommand;
+        private ICommandExt _championshipResetCommand;
 
-        public RelayPropertyCommand ChampionshipResetCommand => _championshipResetCommand ?? (_championshipResetCommand = new RelayPropertyCommand(o => {
+        public ICommand ChampionshipResetCommand => _championshipResetCommand ?? (_championshipResetCommand = new DelegateCommand(() => {
             KunosCareerProgress.Instance.UpdateEntry(Id, new KunosCareerProgressEntry(0, new int[0], 0, new int[0]), true);
             KunosCareerProgress.Instance.Completed = KunosCareerProgress.Instance.Completed.ApartFrom(Id).ToArray();
-        }, o => Type == KunosCareerObjectType.Championship && IsStarted));
+        }, () => Type == KunosCareerObjectType.Championship && IsStarted));
     }
 }

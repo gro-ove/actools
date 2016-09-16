@@ -15,6 +15,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -57,7 +58,7 @@ namespace AcManager.Pages.Drive {
             if (!(DataContext is ViewModel)) return;
             InitializeComponent();
             InputBindings.AddRange(new[] {
-                new InputBinding(new ProperCommand(o => Model.AcObject.SelectedEvent?.GoCommand.Execute(o)), new KeyGesture(Key.G, ModifierKeys.Control))
+                new InputBinding(new DelegateCommand(() => Model.AcObject.SelectedEvent?.GoCommand.Execute(null)), new KeyGesture(Key.G, ModifierKeys.Control))
             });
 
             var acObject = Model.AcObject;

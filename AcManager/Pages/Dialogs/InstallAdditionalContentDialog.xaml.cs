@@ -9,6 +9,7 @@ using AcManager.Annotations;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.ContentInstallation;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
@@ -173,7 +174,7 @@ namespace AcManager.Pages.Dialogs {
 
         private AsyncCommand _installCommand;
 
-        public AsyncCommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(async o => {
+        public AsyncCommand InstallCommand => _installCommand ?? (_installCommand = new AsyncCommand(async () => {
             using (var waiting = new WaitingDialog()) {
                 foreach (var wrapper in Entries.Where(entry => entry.InstallEntry)) {
                     waiting.Title = String.Format(AppStrings.AdditionalContent_Installing, wrapper.Entry.Name);
@@ -193,7 +194,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             Close();
-        }, o => Entries?.Any(x => x.InstallEntry) == true));
+        }, () => Entries?.Any(x => x.InstallEntry) == true));
 
         public event PropertyChangedEventHandler PropertyChanged;
 

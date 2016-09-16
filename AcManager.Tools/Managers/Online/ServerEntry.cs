@@ -18,6 +18,7 @@ using AcManager.Tools.SemiGui;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
@@ -897,20 +898,20 @@ namespace AcManager.Tools.Managers.Online {
             AvailableUpdate();
         }
 
-        private ProperCommand _addToRecentCommand;
+        private ICommandExt _addToRecentCommand;
 
-        public ICommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new ProperCommand(o => {
+        public ICommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new DelegateCommand(() => {
             RecentManager.Instance.AddRecentServer(OriginalInformation);
-        }, o => Status == ServerStatus.Ready && RecentManager.Instance.GetWrapperById(Id) == null));
+        }, () => Status == ServerStatus.Ready && RecentManager.Instance.GetWrapperById(Id) == null));
 
-        private ProperAsyncCommand _joinCommand;
+        private ICommandExt _joinCommand;
 
-        public ICommand JoinCommand => _joinCommand ?? (_joinCommand = new ProperAsyncCommand(Join,
+        public ICommand JoinCommand => _joinCommand ?? (_joinCommand = new AsyncCommand<object>(Join,
                 o => ReferenceEquals(o, ForceJoin) || IsAvailable));
 
-        private ProperAsyncCommand _cancelBookingCommand;
+        private ICommandExt _cancelBookingCommand;
 
-        public ICommand CancelBookingCommand => _cancelBookingCommand ?? (_cancelBookingCommand = new ProperAsyncCommand(CancelBooking, () => IsBooked));
+        public ICommand CancelBookingCommand => _cancelBookingCommand ?? (_cancelBookingCommand = new AsyncCommand(CancelBooking, () => IsBooked));
 
         [CanBeNull]
         private IBookingUi _ui;
@@ -1075,7 +1076,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private ICommand _refreshCommand;
 
-        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new ProperCommand(o => {
+        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand(() => {
             Update(UpdateMode.Full).Forget();
         }));
 

@@ -9,6 +9,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using StringBasedFilter;
@@ -31,13 +32,13 @@ namespace AcManager.Pages.Selected {
 
         private ICommand _findInformationCommand;
 
-        public ICommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new ProperCommand(o => {
+        public ICommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new DelegateCommand(() => {
             new FindInformationDialog((AcJsonObjectNew)SelectedAcObject).ShowDialog();
-        }, o => SelectedAcObject is AcJsonObjectNew));
+        }, () => SelectedAcObject is AcJsonObjectNew));
 
         private ICommand _changeIdCommand;
 
-        public ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new ProperCommand(o => {
+        public ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new DelegateCommand(() => {
             var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.Toolbar_ChangeId, SelectedObject.Id, @"?", AppStrings.AcObject_ChangeId_Tooltip);
             if (string.IsNullOrWhiteSpace(newId)) return;
             SelectedObject.ChangeIdCommand.Execute(newId);
@@ -45,7 +46,7 @@ namespace AcManager.Pages.Selected {
 
         private ICommand _cloneCommand;
 
-        public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new ProperAsyncCommand(async o => {
+        public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand(async () => {
             var newId = Prompt.Show(AppStrings.AcObject_EnterNewId, AppStrings.Toolbar_Clone, SelectedObject.Id, @"?");
             if (string.IsNullOrWhiteSpace(newId)) return;
 
@@ -60,15 +61,16 @@ namespace AcManager.Pages.Selected {
             (Application.Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive)?.CurrentLinkGroup as LinkGroupFilterable)?.AddAndSelect(filter);
         }
 
-        private ProperCommand _filterTagCommand;
+        private ICommandExt _filterTagCommand;
 
-        public ICommand FilterTagCommand => _filterTagCommand ?? (_filterTagCommand = new ProperCommand(o => {
-            NewFilterTab($"tag:{Filter.Encode(o as string ?? "")}");
-        }, o => o is string));
+        public ICommand FilterTagCommand => _filterTagCommand ?? (_filterTagCommand = new DelegateCommand<string>(o => {
+            NewFilterTab($"tag:{Filter.Encode(o)}");
+        }, o => o != null));
 
-        private ProperCommand _filterCommand;
+        [CanBeNull]
+        protected ICommandExt InnerFilterCommand;
 
-        public ProperCommand FilterCommand => _filterCommand ?? (_filterCommand = new ProperCommand(o => FilterExec(o as string)));
+        public ICommand FilterCommand => InnerFilterCommand ?? (InnerFilterCommand = new DelegateCommand<string>(FilterExec));
 
         protected void FilterRange([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
             var delta = (relative ? range * value : range) / 2d;

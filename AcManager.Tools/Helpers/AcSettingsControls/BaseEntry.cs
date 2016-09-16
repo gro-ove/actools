@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -60,10 +61,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             Input = null;
         }
 
-        private ProperCommand _clearCommand;
+        private ICommandExt _clearCommand;
 
-        public ICommand ClearCommand => _clearCommand ?? (_clearCommand = new ProperCommand(o => {
-            Clear();
-        }, o => Input != null));
+        public ICommand ClearCommand => _clearCommand ?? (_clearCommand = new DelegateCommand(Clear, () => Input != null));
     }
 }

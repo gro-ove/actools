@@ -7,6 +7,7 @@ using AcManager.Tools;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -33,9 +34,9 @@ namespace AcManager.Pages.Selected {
 
             public PythonAppsManager Manager => PythonAppsManager.Instance;
 
-            private ProperCommand _testCommand;
+            private ICommandExt _testCommand;
 
-            public ICommand TestCommand => _testCommand ?? (_testCommand = new ProperCommand(o => {
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
                 //var car = CarsManager.Instance.GetDefault();
                 //CarOpenInShowroomDialog.Run(car, car?.SelectedSkin?.Id, SelectedObject.AcId);
             }));

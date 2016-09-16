@@ -14,6 +14,7 @@ using AcManager.Tools.Filters;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -164,13 +165,13 @@ namespace AcManager.Pages.Drive {
                 FancyBackgroundManager.Instance.ChangeBackground((CurrentItem.Value as KunosCareerObject)?.PreviewImage);
             }
 
-            private ProperCommand _selectSeriesCommand;
+            private ICommandExt _selectSeriesCommand;
 
-            public ICommand SelectSeriesCommand => _selectSeriesCommand ?? (_selectSeriesCommand = new ProperCommand(o => {
+            public ICommand SelectSeriesCommand => _selectSeriesCommand ?? (_selectSeriesCommand = new DelegateCommand(() => {
                 var career = CurrentItem?.Loaded() as KunosCareerObject;
                 if (career == null) return;
                 NavigateToCareerPage(career);
-            }, o => {
+            }, () => {
                 var career = CurrentItem?.Loaded() as KunosCareerObject;
                 if (career == null) return false;
                 return !career.HasErrors && career.IsAvailable;

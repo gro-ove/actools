@@ -17,6 +17,7 @@ using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -32,7 +33,7 @@ namespace AcManager.Controls.CustomShowroom {
                 new InputBinding(Model.NextSkinCommand, new KeyGesture(Key.PageDown)),
                 new InputBinding(Model.Car.ViewInExplorerCommand, new KeyGesture(Key.F, ModifierKeys.Alt)),
                 new InputBinding(Model.OpenSkinDirectoryCommand, new KeyGesture(Key.F, ModifierKeys.Control)),
-                new InputBinding(new ProperCommand(o => Model.Renderer?.Deselect()), new KeyGesture(Key.D, ModifierKeys.Control))
+                new InputBinding(new DelegateCommand(() => Model.Renderer?.Deselect()), new KeyGesture(Key.D, ModifierKeys.Control))
             });
             InitializeComponent();
             Buttons = new Button[0];
@@ -192,9 +193,9 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private ProperCommand _toggleAmbientShadowModeCommand;
+            private ICommand _toggleAmbientShadowModeCommand;
 
-            public ICommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new ProperCommand(o => {
+            public ICommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new DelegateCommand(() => {
                 AmbientShadowsMode = !AmbientShadowsMode;
                 if (!AmbientShadowsMode && Renderer != null) {
                     Renderer.AmbientShadowHighlight = false;
@@ -264,9 +265,9 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private ProperAsyncCommand _updateAmbientShadowCommand;
+            private ICommandExt _updateAmbientShadowCommand;
 
-            public ICommand UpdateAmbientShadowCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new ProperAsyncCommand(async o => {
+            public ICommand UpdateAmbientShadowCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new AsyncCommand(async () => {
                 if (Renderer?.AmbientShadowSizeChanged == true) {
                     AmbientShadowSizeSaveCommand.Execute(null);
 
@@ -311,9 +312,9 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }));
 
-            private ProperCommand _ambientShadowSizeSaveCommand;
+            private ICommandExt _ambientShadowSizeSaveCommand;
 
-            public ICommand AmbientShadowSizeSaveCommand => _ambientShadowSizeSaveCommand ?? (_ambientShadowSizeSaveCommand = new ProperCommand(o => {
+            public ICommand AmbientShadowSizeSaveCommand => _ambientShadowSizeSaveCommand ?? (_ambientShadowSizeSaveCommand = new DelegateCommand(() => {
                 if (Renderer == null || File.Exists(Path.Combine(Car.Location, "data.acd")) && ModernDialog.ShowMessage(
                         ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedDataMessage,
                         ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedData, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
@@ -328,49 +329,49 @@ namespace AcManager.Controls.CustomShowroom {
                 }.SaveAs(Path.Combine(data, "ambient_shadows.ini"));
 
                 Renderer.AmbientShadowSizeChanged = false;
-            }, o => Renderer?.AmbientShadowSizeChanged == true));
+            }, () => Renderer?.AmbientShadowSizeChanged == true));
 
-            private ProperCommand _ambientShadowResetCommand;
+            private ICommand _ambientShadowResetCommand;
 
-            public ICommand AmbientShadowResetCommand => _ambientShadowResetCommand ?? (_ambientShadowResetCommand = new ProperCommand(o => {
+            public ICommand AmbientShadowResetCommand => _ambientShadowResetCommand ?? (_ambientShadowResetCommand = new DelegateCommand(() => {
                 Reset(true);
             }));
 
-            private ProperCommand _ambientShadowSizeFitCommand;
+            private ICommand _ambientShadowSizeFitCommand;
 
-            public ICommand AmbientShadowSizeFitCommand => _ambientShadowSizeFitCommand ?? (_ambientShadowSizeFitCommand = new ProperCommand(o => {
+            public ICommand AmbientShadowSizeFitCommand => _ambientShadowSizeFitCommand ?? (_ambientShadowSizeFitCommand = new DelegateCommand(() => {
                 Renderer?.FitAmbientShadowSize();
-            }, o => Renderer != null));
+            }, () => Renderer != null));
 
-            private ProperCommand _ambientShadowSizeResetCommand;
+            private ICommandExt _ambientShadowSizeResetCommand;
 
-            public ICommand AmbientShadowSizeResetCommand => _ambientShadowSizeResetCommand ?? (_ambientShadowSizeResetCommand = new ProperCommand(o => {
+            public ICommand AmbientShadowSizeResetCommand => _ambientShadowSizeResetCommand ?? (_ambientShadowSizeResetCommand = new DelegateCommand(() => {
                 Renderer?.ResetAmbientShadowSize();
-            }, o => Renderer?.AmbientShadowSizeChanged == true));
+            }, () => Renderer?.AmbientShadowSizeChanged == true));
             #endregion
 
             #region Commands
-            private ProperCommand _nextSkinCommand;
+            private ICommand _nextSkinCommand;
 
-            public ICommand NextSkinCommand => _nextSkinCommand ?? (_nextSkinCommand = new ProperCommand(o => {
+            public ICommand NextSkinCommand => _nextSkinCommand ?? (_nextSkinCommand = new DelegateCommand(() => {
                 Renderer?.SelectNextSkin();
             }));
 
-            private ProperCommand _previewSkinCommand;
+            private ICommand _previewSkinCommand;
 
-            public ICommand PreviewSkinCommand => _previewSkinCommand ?? (_previewSkinCommand = new ProperCommand(o => {
+            public ICommand PreviewSkinCommand => _previewSkinCommand ?? (_previewSkinCommand = new DelegateCommand(() => {
                 Renderer?.SelectPreviousSkin();
             }));
 
-            private ProperCommand _openSkinDirectoryCommand;
+            private ICommandExt _openSkinDirectoryCommand;
 
-            public ICommand OpenSkinDirectoryCommand => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new ProperCommand(o => {
+            public ICommand OpenSkinDirectoryCommand => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new DelegateCommand(() => {
                 Skin.ViewInExplorer();
-            }, o => Skin != null));
+            }, () => Skin != null));
 
-            private ProperAsyncCommand _unpackKn5Command;
+            private ICommandExt _unpackKn5Command;
 
-            public ICommand UnpackKn5Command => _unpackKn5Command ?? (_unpackKn5Command = new ProperAsyncCommand(async o => {
+            public ICommand UnpackKn5Command => _unpackKn5Command ?? (_unpackKn5Command = new AsyncCommand(async () => {
                 if (Renderer?.Kn5 == null) return;
 
                 try {
@@ -405,7 +406,7 @@ namespace AcManager.Controls.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify(string.Format(Tools.ToolsStrings.Common_CannotUnpack, Tools.ToolsStrings.Common_KN5), e);
                 }
-            }, o => SettingsHolder.Common.MsMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.Kn5 != null));
+            }, () => SettingsHolder.Common.MsMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.Kn5 != null));
             #endregion
 
             #region Materials & Textures
@@ -432,16 +433,16 @@ namespace AcManager.Controls.CustomShowroom {
                 dlg.ShowDialog();
             }
 
-            private ProperCommand _viewObjectCommand;
+            private ICommandExt _viewObjectCommand;
 
-            public ICommand ViewObjectCommand => _viewObjectCommand ?? (_viewObjectCommand = new ProperCommand(o => {
+            public ICommand ViewObjectCommand => _viewObjectCommand ?? (_viewObjectCommand = new DelegateCommand(() => {
                 var obj = Renderer?.SelectedObject.OriginalNode;
                 if (obj == null) return;
 
                 ShowMessage(string.Format(ControlsStrings.CustomShowroom_ObjectInformation, obj.Name, obj.NodeClass.GetDescription(), obj.Active,
                         obj.IsRenderable, obj.IsVisible, obj.IsTransparent, obj.CastShadows, obj.Layer,
                         obj.LodIn, obj.LodOut, Renderer.SelectedMaterial?.Name ?? @"?"), obj.Name);
-            }, o => Renderer?.SelectedObject != null));
+            }, () => Renderer?.SelectedObject != null));
 
             private static string MaterialPropertyToString(Kn5Material.ShaderProperty property) {
                 if (property.ValueD.Any(x => !Equals(x, 0f))) return $"({property.ValueD.JoinToString(@", ")})";
@@ -450,9 +451,9 @@ namespace AcManager.Controls.CustomShowroom {
                 return property.ValueA.ToInvariantString();
             }
 
-            private ProperCommand _viewMaterialCommand;
+            private ICommandExt _viewMaterialCommand;
 
-            public ICommand ViewMaterialCommand => _viewMaterialCommand ?? (_viewMaterialCommand = new ProperCommand(o => {
+            public ICommand ViewMaterialCommand => _viewMaterialCommand ?? (_viewMaterialCommand = new DelegateCommand(() => {
                 var material = Renderer?.SelectedMaterial;
                 if (material == null) return;
 
@@ -477,14 +478,14 @@ namespace AcManager.Controls.CustomShowroom {
                 }
 
                 ShowMessage(sb.ToString(), material.Name);
-            }, o => Renderer?.SelectedMaterial != null));
+            }, () => Renderer?.SelectedMaterial != null));
 
-            private ProperCommand _viewTextureCommand;
+            private ICommandExt _viewTextureCommand;
 
-            public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new ProperCommand(o => {
+            public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation>(o => {
                 if (Renderer == null) return;
-                new CarTextureDialog(Skin, Renderer.Kn5, ((ToolsKn5ObjectRenderer.TextureInformation)o).TextureName).ShowDialog();
-            }, o => o is ToolsKn5ObjectRenderer.TextureInformation));
+                new CarTextureDialog(Skin, Renderer.Kn5, o.TextureName).ShowDialog();
+            }, o => o != null));
             #endregion
         }
     }

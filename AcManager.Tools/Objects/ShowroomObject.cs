@@ -12,6 +12,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json.Linq;
@@ -183,15 +184,15 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private ProperCommand _toggleSoundCommand;
+        private ICommandExt _toggleSoundCommand;
 
-        public ICommand ToggleSoundCommand => _toggleSoundCommand ?? (_toggleSoundCommand = new ProperCommand(o => {
+        public ICommand ToggleSoundCommand => _toggleSoundCommand ?? (_toggleSoundCommand = new DelegateCommand(() => {
             try {
                 ToggleSound();
             } catch (ToggleException ex) {
                 NonfatalError.Notify(ToolsStrings.ShowroomObject_CannotToggleSound,
                     ToolsStrings.ShowroomObject_CannotToggleSound_Commentary, ex);
             }
-        }, o => HasSound));
+        }, () => HasSound));
     }
 }

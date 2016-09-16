@@ -9,6 +9,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Lists;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using StringBasedFilter;
@@ -147,9 +148,9 @@ namespace AcManager.Tools.Managers.Online {
 
         private ICommand _refreshCommand;
 
-        public ICommand RefreshListCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(o => {
+        public ICommand RefreshListCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(() => {
             InnerWrappersList.Clear();
             return RescanAsync();
-        }, o => !ErrorFatal));
+        }, () => !ErrorFatal));
     }
 }

@@ -17,6 +17,7 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -118,9 +119,9 @@ namespace AcManager.Pages.Selected {
                                 : $"{ToolsStrings.Common_AcReplay} ({Car.DisplayName}, {Track.DisplayName})");
             }
 
-            private ProperAsyncCommand _shareCommand;
+            private ICommandExt _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(async o => {
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async () => {
                 UploadResult result;
 
                 try {
@@ -167,14 +168,14 @@ namespace AcManager.Pages.Selected {
 
             private ICommand _playCommand;
 
-            public ICommand PlayCommand => _playCommand ?? (_playCommand = new ProperAsyncCommand(async o => {
+            public ICommand PlayCommand => _playCommand ?? (_playCommand = new AsyncCommand(async () => {
                 await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {
                     Name = SelectedObject.Id,
                     TrackId = SelectedObject.TrackId,
                     TrackConfiguration = SelectedObject.TrackConfiguration,
                     WeatherId = SelectedObject.WeatherId
                 }));
-            }, o => !SelectedObject.HasError(AcErrorType.Replay_TrackIsMissing)));
+            }, () => !SelectedObject.HasError(AcErrorType.Replay_TrackIsMissing)));
         }
 
         private string _id;

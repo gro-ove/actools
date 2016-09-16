@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -34,8 +35,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private ICommand _deleteCommand;
 
-        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new ProperCommand(o => {
-            if (_filtersHistory.Remove(o as string)) {
+        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand<string>(o => {
+            if (_filtersHistory.Remove(o)) {
                 var saveKey = SaveKey;
                 if (saveKey != null) {
                     ValuesStorage.Set(saveKey, _filtersHistory);

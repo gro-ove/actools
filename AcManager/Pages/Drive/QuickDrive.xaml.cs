@@ -18,6 +18,7 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -379,7 +380,7 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _changeCarCommand;
 
-            public ICommand ChangeCarCommand => _changeCarCommand ?? (_changeCarCommand = new ProperCommand(o => {
+            public ICommand ChangeCarCommand => _changeCarCommand ?? (_changeCarCommand = new DelegateCommand(() => {
                 var dialog = new SelectCarDialog(SelectedCar);
                 dialog.ShowDialog();
                 if (!dialog.IsResultOk || dialog.SelectedCar == null) return;
@@ -392,7 +393,7 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _changeTrackCommand;
 
-            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new ProperCommand(o => {
+            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
                 var dialog = new SelectTrackDialog(SelectedTrack);
                 dialog.ShowDialog();
                 if (!dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null) return;
@@ -402,10 +403,10 @@ namespace AcManager.Pages.Drive {
 
             private QuickDriveModeViewModel _selectedModeViewModel;
 
-            private ProperAsyncCommand _goCommand;
+            private ICommandExt _goCommand;
 
             public ICommand GoCommand => _goCommand ?? (_goCommand =
-                    new ProperAsyncCommand(o => Go(), o => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
+                    new AsyncCommand(Go, () => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
 
             internal async Task Go() {
                 _goCommand?.OnCanExecuteChanged();
@@ -437,9 +438,9 @@ namespace AcManager.Pages.Drive {
 
             private ICommand _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
-            private async Task Share(object o) {
+            private async Task Share() {
                 await SharingUiHelper.ShareAsync(SharedEntryType.QuickDrivePreset,
                         Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(PresetableKeyValue)), null,
                         ExportToPresetData());

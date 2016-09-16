@@ -15,6 +15,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -141,9 +142,9 @@ namespace AcManager.Pages.Dialogs {
 
         public BetterObservableCollection<CarObject> TunableVersions { get; } = new BetterObservableCollection<CarObject>();
 
-        private ProperCommand _manageSetupsCommand;
+        private ICommandExt _manageSetupsCommand;
 
-        public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new ProperCommand(o => {
+        public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
             if (_selectedCar.Value == null) return;
             new CarSetupsDialog(_selectedCar.Value) {
                 ShowInTaskbar = false
@@ -286,26 +287,26 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private ProperCommand _openInShowroomCommand;
+        private ICommandExt _openInShowroomCommand;
 
-        public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new ProperCommand(o => {
+        public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand(() => {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
                     !CarOpenInShowroomDialog.Run(SelectedCar, SelectedSkin?.Id)) {
                 OpenInShowroomOptionsCommand.Execute(null);
             }
-        }, o => SelectedCar != null && SelectedSkin != null));
+        }, () => SelectedCar != null && SelectedSkin != null));
 
-        private ProperCommand _openInCustomShowroomCommand;
+        private ICommandExt _openInCustomShowroomCommand;
 
-        public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new ProperCommand(o => {
+        public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new DelegateCommand(() => {
             CustomShowroomWrapper.StartAsync(SelectedCar, SelectedSkin);
-        }, o => SelectedCar != null && SelectedSkin != null));
+        }, () => SelectedCar != null && SelectedSkin != null));
 
-        private ProperCommand _openInShowroomOptionsCommand;
+        private ICommandExt _openInShowroomOptionsCommand;
 
-        public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new ProperCommand(o => {
+        public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
             new CarOpenInShowroomDialog(SelectedCar, SelectedSkin?.Id).ShowDialog();
-        }, o => SelectedCar != null && SelectedSkin != null));
+        }, () => SelectedCar != null && SelectedSkin != null));
 
         public event PropertyChangedEventHandler PropertyChanged;
 

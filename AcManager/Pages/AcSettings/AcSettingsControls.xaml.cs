@@ -18,6 +18,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
@@ -46,9 +47,9 @@ namespace AcManager.Pages.AcSettings {
         public class ViewModel : NotifyPropertyChanged {
             internal ViewModel() {}
 
-            private ProperCommand _saveCommand;
+            private ICommandExt _saveCommand;
 
-            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new ProperCommand(o => {
+            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand<string>(o => {
                 var dialog = new SaveFileDialog {
                     InitialDirectory = Controls.UserPresetsDirectory,
                     FileName = Path.GetFileNameWithoutExtension(Controls.CurrentPresetFilename),
@@ -64,7 +65,7 @@ namespace AcManager.Pages.AcSettings {
                 }
 
                 if (o != null) {
-                    dialog.FileName = o as string;
+                    dialog.FileName = o;
                 }
 
                 if (dialog.ShowDialog() != true) {
@@ -84,31 +85,34 @@ namespace AcManager.Pages.AcSettings {
                 Controls.SavePreset(filename);
             }));
 
-            private ProperCommand _testCommand;
+            private ICommandExt _testCommand;
 
-            public ICommand TestCommand => _testCommand ?? (_testCommand = new ProperCommand(o => {
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
                 QuickDrive.Run();
             }));
 
-            private ProperAsyncCommand _shareCommand;
+            private ICommandExt _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand<string>(Share));
 
-            private async Task Share(object o) {
-                if (o as string == @"FFBOnly") {
-                    var iniFile = new IniFile();
-                    AcSettingsHolder.Controls.SaveFfbToIni(iniFile);
-                    AcSettingsHolder.System.SaveFfbToIni(iniFile);
+            private async Task Share(string o) {
+                switch (o) {
+                    case @"FFBOnly":
+                        var iniFile = new IniFile();
+                        AcSettingsHolder.Controls.SaveFfbToIni(iniFile);
+                        AcSettingsHolder.System.SaveFfbToIni(iniFile);
 
-                    await SharingUiHelper.ShareAsync(SharedEntryType.ForceFeedbackPreset,
-                            string.Format(AppStrings.Controls_SharedFfbOnly, Path.GetFileName(Controls.CurrentPresetName)), null, iniFile.Stringify());
-                } else if (o as string == @"Basic") {
-                    var target = Controls.InputMethod.Id == "KEYBOARD" ? AppStrings.Controls_SharedFor_Keyboard :
-                            Controls.InputMethod.Id == "X360" ? AppStrings.Controls_SharedFor_XboxController :
-                                    Controls.WheelAxleEntries.FirstOrDefault()?.Input?.Device?.DisplayName;
+                        await SharingUiHelper.ShareAsync(SharedEntryType.ForceFeedbackPreset,
+                                string.Format(AppStrings.Controls_SharedFfbOnly, Path.GetFileName(Controls.CurrentPresetName)), null, iniFile.Stringify());
+                        break;
+                    case @"Basic":
+                        var target = Controls.InputMethod.Id == "KEYBOARD" ? AppStrings.Controls_SharedFor_Keyboard :
+                                Controls.InputMethod.Id == "X360" ? AppStrings.Controls_SharedFor_XboxController :
+                                        Controls.WheelAxleEntries.FirstOrDefault()?.Input?.Device?.DisplayName;
 
-                    await SharingUiHelper.ShareAsync(SharedEntryType.ControlsPreset, Path.GetFileName(Controls.CurrentPresetName), target,
-                            File.ReadAllBytes(Controls.Filename));
+                        await SharingUiHelper.ShareAsync(SharedEntryType.ControlsPreset, Path.GetFileName(Controls.CurrentPresetName), target,
+                                File.ReadAllBytes(Controls.Filename));
+                        break;
                 }
             }
 

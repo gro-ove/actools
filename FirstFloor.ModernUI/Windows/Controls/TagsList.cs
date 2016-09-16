@@ -5,25 +5,25 @@ using FirstFloor.ModernUI.Presentation;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class TagsList : Control {
-        private ProperCommand _closeCommand;
+        private ICommandExt _closeCommand;
 
-        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new ProperCommand(o => {
-            ItemsSource.Remove(o as string);
+        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand<string>(o => {
+            ItemsSource.Remove(o);
         }));
 
-        private ProperCommand _changeCommand;
+        private ICommandExt _changeCommand;
 
-        public ICommand ChangeCommand => _changeCommand ?? (_changeCommand = new ProperCommand(o => {
-            var target = o as TextBox;
-            var originalValue = target?.DataContext as string;
+        public ICommand ChangeCommand => _changeCommand ?? (_changeCommand = new DelegateCommand<TextBox>(o => {
+            var originalValue = o?.DataContext as string;
             if (originalValue == null) return;
 
-            var newValue = target.Text.Trim();
+            var newValue = o.Text.Trim();
             if (Equals(originalValue, newValue)) return;
 
             if (string.IsNullOrEmpty(newValue)) {
@@ -32,7 +32,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var index = ItemsSource.IndexOf(originalValue);
                 if (index == -1) return;
 
-                ItemsSource[index] = target.Text;
+                ItemsSource[index] = o.Text;
             }
         }));
 

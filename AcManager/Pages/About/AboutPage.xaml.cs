@@ -6,6 +6,7 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -39,13 +40,13 @@ namespace AcManager.Pages.About {
         public class ViewModel : NotifyPropertyChanged {
             private ICommand _moreInformationCommand;
 
-            public ICommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new ProperCommand(o => {
+            public ICommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new DelegateCommand(() => {
                 WindowsHelper.ViewInBrowser("http://acstuff.ru/app");
             }));
 
             private ICommand _recentChangesCommand;
 
-            public ICommand RecentChangesCommand => _recentChangesCommand ?? (_recentChangesCommand = new ProperCommand(o => {
+            public ICommand RecentChangesCommand => _recentChangesCommand ?? (_recentChangesCommand = new DelegateCommand(() => {
                 WindowsHelper.ViewInBrowser("http://acstuff.ru/f/d/10-content-manager-detailed-changelog");
             }));
 
@@ -53,7 +54,7 @@ namespace AcManager.Pages.About {
 
             private ICommand _sendLogsCommand;
 
-            public ICommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new ProperAsyncCommand(async o => {
+            public ICommand SendLogsCommand => _sendLogsCommand ?? (_sendLogsCommand = new AsyncCommand(async () => {
                 try {
                     var message = Prompt.Show(
                             AppStrings.About_ReportAnIssue_Prompt,
@@ -65,7 +66,7 @@ namespace AcManager.Pages.About {
                 } catch (Exception e) {
                     NonfatalError.Notify(AppStrings.About_ReportAnIssue_CannotSend, e);
                 }
-            }, o => DateTime.Now - ValuesStorage.GetDateTimeOrEpochTime(KeyLogsSentTime) > TimeSpan.FromHours(0.0001), 3000));
+            }, () => DateTime.Now - ValuesStorage.GetDateTimeOrEpochTime(KeyLogsSentTime) > TimeSpan.FromHours(0.0001), 3000));
         }
     }
 }

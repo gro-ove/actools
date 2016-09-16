@@ -14,6 +14,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -781,18 +782,15 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Save();
         }
 
-        private ProperCommand _toggleWaitingCommand;
+        private ICommandExt _toggleWaitingCommand;
 
-        public ICommand ToggleWaitingCommand => _toggleWaitingCommand ?? (_toggleWaitingCommand = new ProperCommand(o => {
-            var b = o as IEntry;
-            if (b == null) return;
-
-            foreach (var entry in Entries.ApartFrom(b)) {
+        public ICommand ToggleWaitingCommand => _toggleWaitingCommand ?? (_toggleWaitingCommand = new DelegateCommand<IEntry>(o => {
+            foreach (var entry in Entries.ApartFrom(o)) {
                 entry.Waiting = false;
             }
 
-            b.Waiting = !b.Waiting;
-        }, o => o is IEntry));
+            o.Waiting = !o.Waiting;
+        }, o => o != null));
 
         [CanBeNull]
         public IEntry GetWaiting() {

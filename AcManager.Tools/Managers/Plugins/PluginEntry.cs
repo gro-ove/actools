@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -180,15 +181,14 @@ namespace AcManager.Tools.Managers.Plugins {
         [JsonConstructor, UsedImplicitly]
         private PluginEntry() { }
 
-        private ProperAsyncCommand _installCommand;
+        private ICommandExt _installCommand;
 
-        public ICommand InstallCommand => _installCommand ?? (_installCommand = new ProperAsyncCommand(
-                Install,
-                x => !IsInstalled && !IsInstalling));
+        public ICommand InstallCommand => _installCommand ??
+                (_installCommand = new AsyncCommand(Install, () => !IsInstalled && !IsInstalling));
 
         private CancellationTokenSource _cancellation;
 
-        private async Task Install(object x) {
+        private async Task Install() {
             using (_cancellation = new CancellationTokenSource()) {
                 Report(0d);
 
@@ -203,9 +203,9 @@ namespace AcManager.Tools.Managers.Plugins {
             _cancellation = null;
         }
 
-        private ProperCommand _cancellationCommand;
+        private ICommandExt _cancellationCommand;
 
-        public ICommand CancellationCommand => _cancellationCommand ?? (_cancellationCommand = new ProperCommand(o => {
+        public ICommand CancellationCommand => _cancellationCommand ?? (_cancellationCommand = new DelegateCommand(() => {
             _cancellation?.Cancel();
         }));
 

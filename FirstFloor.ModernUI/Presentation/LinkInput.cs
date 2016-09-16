@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Presentation {
@@ -37,7 +38,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private ICommand _closeCommand;
 
-        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new ProperCommand(o => {
+        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand(() => {
             Close?.Invoke(this, EventArgs.Empty);
         }));
 

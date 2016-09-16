@@ -15,6 +15,7 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -53,21 +54,21 @@ namespace AcManager.Pages.Selected {
                 WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);
             }
 
-            private ProperCommand _changeTrackCommand;
+            private ICommandExt _changeTrackCommand;
 
-            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new ProperCommand(o => {
+            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
                 var dialog = new SelectTrackDialog(SelectedObject.Track);
                 dialog.ShowDialog();
                 if (!dialog.IsResultOk || dialog.Model.SelectedTrackConfiguration == null) return;
                 SelectedObject.Track = dialog.Model.SelectedTrack;
             }));
 
-            private ProperCommand _clearTrackCommand;
+            private ICommandExt _clearTrackCommand;
 
-            public ICommand ClearTrackCommand => _clearTrackCommand ?? (_clearTrackCommand = new ProperCommand(o => {
+            public ICommand ClearTrackCommand => _clearTrackCommand ?? (_clearTrackCommand = new DelegateCommand(() => {
                 SelectedObject.TrackId = null;
                 _clearTrackCommand?.OnCanExecuteChanged();
-            }, o => SelectedObject.TrackId != null));
+            }, () => SelectedObject.TrackId != null));
 
             private void Handler(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
@@ -77,9 +78,9 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private ProperAsyncCommand _shareCommand;
+            private ICommandExt _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(o => {
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(() => {
                 var data = SharingHelper.SetMetadata(SharedEntryType.CarSetup, FileUtils.ReadAllText(SelectedObject.Location),
                         new SharedMetadata {
                             [@"car"] = Car.Id,
@@ -89,9 +90,9 @@ namespace AcManager.Pages.Selected {
                 return SharingUiHelper.ShareAsync(SharedEntryType.CarSetup, SelectedObject.Name, target, data);
             }));
 
-            private ProperAsyncCommand _testCommand;
+            private ICommandExt _testCommand;
 
-            public ICommand TestCommand => _testCommand ?? (_testCommand = new ProperAsyncCommand(o => {
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(() => {
                 var setupId = SelectedObject.Id.ApartFromLast(SelectedObject.Extension).Replace('\\', '/');
                 return QuickDrive.RunAsync(Car, track: SelectedObject.Track, carSetupId: setupId);
             }));

@@ -9,6 +9,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using OxyPlot.Reporting;
@@ -118,11 +119,9 @@ namespace AcManager.Pages.Dialogs {
                         ).Trim() : SelectedText;
             }
 
-            private ProperCommand _saveCommand;
+            private ICommandExt _saveCommand;
 
-            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new ProperCommand(o => {
-                Save();
-            }, o => !string.IsNullOrEmpty(SelectedText)));
+            public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => !string.IsNullOrEmpty(SelectedText)));
         }
         
         private static string GetMapAddress(AcCommonObject obj) {

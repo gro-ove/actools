@@ -14,6 +14,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
@@ -32,20 +33,20 @@ namespace AcManager.Pages.AcSettings {
 
             private ICommand _manageFiltersCommand;
 
-            public ICommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new ProperCommand(o => {
+            public ICommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new DelegateCommand(() => {
                 (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/PpFiltersListPage.xaml", UriKind.RelativeOrAbsolute));
             }));
 
             private ICommand _benchmarkCommand;
 
             public ICommand BenchmarkCommand => _benchmarkCommand ??
-                    (_benchmarkCommand = new ProperAsyncCommand(o => GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()))));
+                    (_benchmarkCommand = new AsyncCommand(() => GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()))));
 
             private ICommand _shareCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new ProperAsyncCommand(Share));
+            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
-            private async Task Share(object o) {
+            private async Task Share() {
                 await SharingUiHelper.ShareAsync(SharedEntryType.VideoSettingsPreset,
                         Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(Presets.PresetableKey)), null,
                         Presets.ExportToPresetData());
