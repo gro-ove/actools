@@ -329,7 +329,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 _wrongPassword = false;
                 OnPropertyChanged(nameof(WrongPassword));
-                _joinCommand?.OnCanExecuteChanged();
+                _joinCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -349,7 +349,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 _wrongPassword = false;
                 OnPropertyChanged(nameof(WrongPassword));
-                _joinCommand?.OnCanExecuteChanged();
+                _joinCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -361,7 +361,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _wrongPassword)) return;
                 _wrongPassword = value;
                 OnPropertyChanged();
-                _joinCommand?.OnCanExecuteChanged();
+                _joinCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -397,7 +397,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _bookingMode)) return;
                 _bookingMode = value;
                 OnPropertyChanged();
-                _joinCommand?.OnCanExecuteChanged();
+                _joinCommand?.RaiseCanExecuteChanged();
 
                 if (!value) {
                     DisposeHelper.Dispose(ref _ui);
@@ -497,8 +497,8 @@ namespace AcManager.Tools.Managers.Online {
                 _status = value;
                 OnPropertyChanged();
 
-                _joinCommand?.OnCanExecuteChanged();
-                _addToRecentCommand?.OnCanExecuteChanged();
+                _joinCommand?.RaiseCanExecuteChanged();
+                _addToRecentCommand?.RaiseCanExecuteChanged();
 
                 if (value != ServerStatus.Loading) {
                     HasErrors = value == ServerStatus.Error;
@@ -560,7 +560,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _isAvailable)) return;
                 _isAvailable = value;
                 OnPropertyChanged();
-                _joinCommand?.OnCanExecuteChanged();
+                _joinCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -681,7 +681,7 @@ namespace AcManager.Tools.Managers.Online {
                 _sessions = value;
                 OnPropertyChanged();
                 CurrentSessionType = Sessions.FirstOrDefault(x => x.IsActive)?.Type;
-                _joinCommand?.OnCanExecuteChanged();
+                _joinCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -937,7 +937,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _isBooked)) return;
                 _isBooked = value;
                 OnPropertyChanged();
-                _cancelBookingCommand?.OnCanExecuteChanged();
+                _cancelBookingCommand?.RaiseCanExecuteChanged();
             }
         }
 

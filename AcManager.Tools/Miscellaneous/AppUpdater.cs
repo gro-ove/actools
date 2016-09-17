@@ -1,4 +1,4 @@
-﻿#define FORCE_UPDATE
+﻿// #define FORCE_UPDATE
 
 using System;
 using System.Collections.Generic;
@@ -129,7 +129,7 @@ namespace AcManager.Tools.Miscellaneous {
                 if (Equals(value, _updateIsReady)) return;
                 _updateIsReady = value;
                 OnPropertyChanged();
-                _finishUpdateCommand?.OnCanExecuteChanged();
+                _finishUpdateCommand?.RaiseCanExecuteChanged();
             }
         }
 

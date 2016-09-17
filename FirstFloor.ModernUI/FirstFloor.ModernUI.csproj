@@ -144,6 +144,7 @@
       <DependentUpon>BinaryResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Commands\CommandManagerHelper.cs" />
+    <Compile Include="Commands\DelegateCommandExtensions.cs" />
     <Compile Include="Commands\ICommandExt.cs" />
     <Compile Include="Dialogs\AsyncProgressEntry.cs" />
     <Compile Include="Dialogs\ErrorMessage.cs" />

@@ -152,7 +152,7 @@ namespace AcManager.UserControls {
                 _selectedCar = value;
                 OnPropertyChanged();
                 ValuesStorage.Set(KeySelectedCar, value.Id);
-                _addOpponentCarCommand?.OnCanExecuteChanged();
+                _addOpponentCarCommand?.RaiseCanExecuteChanged();
             }
         }
 

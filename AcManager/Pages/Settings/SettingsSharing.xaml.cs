@@ -30,9 +30,9 @@ namespace AcManager.Pages.Settings {
                     if (Equals(value, _selectedUploader)) return;
                     _selectedUploader = value;
                     OnPropertyChanged();
-                    _signInCommand?.OnCanExecuteChanged();
-                    _updateDirectoriesCommand?.OnCanExecuteChanged();
-                    _resetCommand?.OnCanExecuteChanged();
+                    _signInCommand?.RaiseCanExecuteChanged();
+                    _updateDirectoriesCommand?.RaiseCanExecuteChanged();
+                    _resetCommand?.RaiseCanExecuteChanged();
 
                     SelectedUploader.Prepare(default(CancellationToken)).Forget();
                 }
@@ -72,8 +72,8 @@ namespace AcManager.Pages.Settings {
                     NonfatalError.Notify("Can’t sign in", "Make sure Internet-connection works.", e);
                 }
 
-                _signInCommand?.OnCanExecuteChanged();
-                _updateDirectoriesCommand?.OnCanExecuteChanged();
+                _signInCommand?.RaiseCanExecuteChanged();
+                _updateDirectoriesCommand?.RaiseCanExecuteChanged();
             }, () => SelectedUploader?.IsReady == false));
 
             private ICommandExt _resetCommand;
@@ -81,8 +81,8 @@ namespace AcManager.Pages.Settings {
             public ICommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
                 SelectedUploader.Reset();
 
-                _signInCommand?.OnCanExecuteChanged();
-                _updateDirectoriesCommand?.OnCanExecuteChanged();
+                _signInCommand?.RaiseCanExecuteChanged();
+                _updateDirectoriesCommand?.RaiseCanExecuteChanged();
             }, () => SelectedUploader?.IsReady == true));
 
             private ICommandExt _updateDirectoriesCommand;

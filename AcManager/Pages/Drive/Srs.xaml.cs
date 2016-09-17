@@ -134,7 +134,7 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _player)) return;
                     _player = value;
                     OnPropertyChanged();
-                    _goCommand?.OnCanExecuteChanged();
+                    _goCommand?.RaiseCanExecuteChanged();
                     Update();
                 }
             }
@@ -147,7 +147,7 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _server)) return;
                     _server = value;
                     OnPropertyChanged();
-                    _goCommand?.OnCanExecuteChanged();
+                    _goCommand?.RaiseCanExecuteChanged();
                     Update();
                 }
             }
@@ -197,7 +197,7 @@ namespace AcManager.Pages.Drive {
 
                     Car = string.IsNullOrWhiteSpace(value) ? null : CarsManager.Instance.GetById(value);
                     OnPropertyChanged(nameof(Car));
-                    _goCommand?.OnCanExecuteChanged();
+                    _goCommand?.RaiseCanExecuteChanged();
 
                     CarSkin = null;
                     Update();

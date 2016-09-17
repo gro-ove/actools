@@ -26,8 +26,8 @@ namespace AcManager.Controls.Helpers {
         public static void DeleteShortcut() {
             if (File.Exists(ShortcutLocation)) {
                 File.Delete(ShortcutLocation);
-                CreateShortcutCommand.OnCanExecuteChanged();
-                DeleteShortcutCommand.OnCanExecuteChanged();
+                CreateShortcutCommand.RaiseCanExecuteChanged();
+                DeleteShortcutCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -47,8 +47,8 @@ namespace AcManager.Controls.Helpers {
                     shortcut.Save(ShortcutLocation);
                 }
 
-                CreateShortcutCommand.OnCanExecuteChanged();
-                DeleteShortcutCommand.OnCanExecuteChanged();
+                CreateShortcutCommand.RaiseCanExecuteChanged();
+                DeleteShortcutCommand.RaiseCanExecuteChanged();
             } catch (Exception e) {
                 NonfatalError.NotifyBackground("Can’t create shortcut", e);
             }

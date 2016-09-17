@@ -42,7 +42,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _userAiLevel)) return;
                 _userAiLevel = value;
                 OnPropertyChanged();
-                _resetUserAiLevelCommand?.OnCanExecuteChanged();
+                _resetUserAiLevelCommand?.RaiseCanExecuteChanged();
 
                 if (value == AiLevel) {
                     ValuesStorage.Remove(UserAiLevelKey);
@@ -62,7 +62,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _isAvailable)) return;
                 _isAvailable = value;
                 OnPropertyChanged();
-                _goCommand?.OnCanExecuteChanged();
+                _goCommand?.RaiseCanExecuteChanged();
             }
         }
 

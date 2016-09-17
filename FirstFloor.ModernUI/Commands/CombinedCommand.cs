@@ -19,7 +19,7 @@ namespace FirstFloor.ModernUI.Presentation {
             WeakEventManager<ICommand, EventArgs>.AddHandler(second, nameof(ICommand.CanExecuteChanged), Handler);
         }
 
-        public void OnCanExecuteChanged() {
+        public void RaiseCanExecuteChanged() {
             CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
         }
 
@@ -35,7 +35,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         private void Handler(object sender, EventArgs eventArgs) {
-            OnCanExecuteChanged();
+            RaiseCanExecuteChanged();
         }
 
         public void Execute(object parameter) {

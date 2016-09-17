@@ -269,7 +269,7 @@ namespace AcManager.Tools.Objects {
                 _type = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(DisplayType));
-                _championshipResetCommand?.OnCanExecuteChanged();
+                _championshipResetCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -410,7 +410,7 @@ namespace AcManager.Tools.Objects {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(DisplayGo));
                 OnPropertyChanged(nameof(IsStarted));
-                _championshipResetCommand?.OnCanExecuteChanged();
+                _championshipResetCommand?.RaiseCanExecuteChanged();
             }
         }
 

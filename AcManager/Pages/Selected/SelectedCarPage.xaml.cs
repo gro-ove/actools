@@ -66,7 +66,7 @@ namespace AcManager.Pages.Selected {
             private void SelectedObject_PropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(AcCommonObject.Year):
-                        InnerFilterCommand?.OnCanExecuteChanged();
+                        InnerFilterCommand?.RaiseCanExecuteChanged();
                         break;
                 }
             }

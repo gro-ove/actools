@@ -56,7 +56,7 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _selectedText)) return;
                     _selectedText = value;
                     OnPropertyChanged();
-                    _saveCommand?.OnCanExecuteChanged();
+                    _saveCommand?.RaiseCanExecuteChanged();
                     UpdateSaveLabel();
                 }
             }

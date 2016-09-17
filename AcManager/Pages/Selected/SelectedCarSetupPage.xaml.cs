@@ -66,7 +66,7 @@ namespace AcManager.Pages.Selected {
 
             public ICommand ClearTrackCommand => _clearTrackCommand ?? (_clearTrackCommand = new DelegateCommand(() => {
                 SelectedObject.TrackId = null;
-                _clearTrackCommand?.OnCanExecuteChanged();
+                _clearTrackCommand?.RaiseCanExecuteChanged();
             }, () => SelectedObject.TrackId != null));
 
             private void Handler(object sender, PropertyChangedEventArgs e) {

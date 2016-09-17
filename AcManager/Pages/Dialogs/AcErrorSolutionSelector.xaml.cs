@@ -113,7 +113,7 @@ namespace AcManager.Pages.Dialogs {
                 _selectedSolution = value;
                 OnPropertyChanged();
                 IsMultiSolutionSelected = value is IMultiSolution;
-                RunCommand.OnCanExecuteChanged();
+                RunCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -125,7 +125,7 @@ namespace AcManager.Pages.Dialogs {
                 if (Equals(value, _isMultiSolutionSelected)) return;
                 _isMultiSolutionSelected = value;
                 OnPropertyChanged();
-                RunAllCommand.OnCanExecuteChanged();
+                RunAllCommand.RaiseCanExecuteChanged();
             }
         }
 

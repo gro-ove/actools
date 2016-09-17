@@ -88,7 +88,7 @@ namespace AcManager.Tools.Managers.Plugins {
                 if (value == _isInstalling) return;
                 _isInstalling = value;
                 OnPropertyChanged();
-                _installCommand?.OnCanExecuteChanged();
+                _installCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -102,7 +102,7 @@ namespace AcManager.Tools.Managers.Plugins {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsInstalled));
                 OnPropertyChanged(nameof(AvailableToInstall));
-                _installCommand?.OnCanExecuteChanged();
+                _installCommand?.RaiseCanExecuteChanged();
             }
         }
 

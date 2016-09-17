@@ -4,6 +4,7 @@ using System.Windows.Input;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Commands {
+    // based on http://stackoverflow.com/a/1857619/4267982
     public class DelegateCommand : ICommandExt {
         private readonly Action _execute;
         private readonly Func<bool> _canExecute;
@@ -29,9 +30,8 @@ namespace FirstFloor.ModernUI.Commands {
             if (!CanExecute()) return;
             _execute?.Invoke();
         }
-
-        // TODO: rename me to RaiseCanExecuteChanged
-        public void OnCanExecuteChanged() {
+        
+        public void RaiseCanExecuteChanged() {
             CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
         }
         
@@ -81,7 +81,7 @@ namespace FirstFloor.ModernUI.Commands {
             _execute?.Invoke(parameter);
         }
         
-        public void OnCanExecuteChanged() {
+        public void RaiseCanExecuteChanged() {
             CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
         }
 

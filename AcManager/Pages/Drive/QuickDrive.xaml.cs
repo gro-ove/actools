@@ -409,7 +409,7 @@ namespace AcManager.Pages.Drive {
                     new AsyncCommand(Go, () => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
 
             internal async Task Go() {
-                _goCommand?.OnCanExecuteChanged();
+                _goCommand?.RaiseCanExecuteChanged();
 
                 var selectedMode = SelectedModeViewModel;
                 if (selectedMode == null) return;
@@ -432,7 +432,7 @@ namespace AcManager.Pages.Drive {
                         WeatherName = SelectedWeather?.Id
                     }, SelectedTrackPropertiesPreset.Properties);
                 } finally {
-                    _goCommand?.OnCanExecuteChanged();
+                    _goCommand?.RaiseCanExecuteChanged();
                 }
             }
 

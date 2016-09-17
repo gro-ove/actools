@@ -99,7 +99,7 @@ namespace AcManager.Tools.Data {
                 if (Equals(value, _isGetting)) return;
                 _isGetting = value;
                 OnPropertyChanged();
-                _checkAndUpdateIfNeededCommand?.OnCanExecuteChanged();
+                _checkAndUpdateIfNeededCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -115,7 +115,7 @@ namespace AcManager.Tools.Data {
 
                 // specially for LocaleUpdater
                 // TODO: mistake in OOP terms
-                _checkAndUpdateIfNeededCommand?.OnCanExecuteChanged();
+                _checkAndUpdateIfNeededCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -124,7 +124,7 @@ namespace AcManager.Tools.Data {
         public virtual async Task CheckAndUpdateIfNeeded() {
             if (_checkingInProcess) return;
             _checkingInProcess = true;
-            _checkAndUpdateIfNeededCommand?.OnCanExecuteChanged();
+            _checkAndUpdateIfNeededCommand?.RaiseCanExecuteChanged();
 
             LatestError = null;
 
@@ -141,7 +141,7 @@ namespace AcManager.Tools.Data {
                 Logging.Warning(e);
             } finally {
                 _checkingInProcess = false;
-                _checkAndUpdateIfNeededCommand?.OnCanExecuteChanged();
+                _checkAndUpdateIfNeededCommand?.RaiseCanExecuteChanged();
             }
         }
 

@@ -69,7 +69,7 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _keyRevoked)) return;
                     _keyRevoked = value;
                     OnPropertyChanged();
-                    _revokedKeyMessageCommand?.OnCanExecuteChanged();
+                    _revokedKeyMessageCommand?.RaiseCanExecuteChanged();
                 }
             }
 
@@ -87,8 +87,8 @@ namespace AcManager.Pages.Dialogs {
 
                     OnPropertyChanged();
                     OnErrorsChanged(nameof(Value));
-                    _applyCommand?.OnCanExecuteChanged();
-                    _getNewKeyCommand?.OnCanExecuteChanged();
+                    _applyCommand?.RaiseCanExecuteChanged();
+                    _getNewKeyCommand?.RaiseCanExecuteChanged();
                 }
             }
 
@@ -100,7 +100,7 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _offlineModeAvailable)) return;
                     _offlineModeAvailable = value;
                     OnPropertyChanged();
-                    _offlineModeCommand?.OnCanExecuteChanged();
+                    _offlineModeCommand?.RaiseCanExecuteChanged();
                 }
             }
 
@@ -130,7 +130,7 @@ namespace AcManager.Pages.Dialogs {
                     _internetConnectionRequired = value;
                     OnPropertyChanged();
                     OnErrorsChanged(nameof(Value));
-                    _applyCommand?.OnCanExecuteChanged();
+                    _applyCommand?.RaiseCanExecuteChanged();
                 }
             }
 
@@ -144,8 +144,8 @@ namespace AcManager.Pages.Dialogs {
 
                     OnPropertyChanged();
                     OnErrorsChanged();
-                    _applyCommand?.OnCanExecuteChanged();
-                    _getNewKeyCommand?.OnCanExecuteChanged();
+                    _applyCommand?.RaiseCanExecuteChanged();
+                    _getNewKeyCommand?.RaiseCanExecuteChanged();
 
                     TestValue();
                 }
@@ -159,7 +159,7 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _checkingInProgress)) return;
                     _checkingInProgress = value;
                     OnPropertyChanged();
-                    _applyCommand?.OnCanExecuteChanged();
+                    _applyCommand?.RaiseCanExecuteChanged();
                 }
             }
 

@@ -163,16 +163,16 @@ namespace AcManager.Controls.CustomShowroom {
                         break;
 
                     case nameof(Renderer.SelectedObject):
-                        _viewObjectCommand?.OnCanExecuteChanged();
+                        _viewObjectCommand?.RaiseCanExecuteChanged();
                         break;
 
                     case nameof(Renderer.SelectedMaterial):
-                        _viewMaterialCommand?.OnCanExecuteChanged();
+                        _viewMaterialCommand?.RaiseCanExecuteChanged();
                         break;
 
                     case nameof(Renderer.AmbientShadowSizeChanged):
-                        _ambientShadowSizeSaveCommand?.OnCanExecuteChanged();
-                        _ambientShadowSizeResetCommand?.OnCanExecuteChanged();
+                        _ambientShadowSizeSaveCommand?.RaiseCanExecuteChanged();
+                        _ambientShadowSizeResetCommand?.RaiseCanExecuteChanged();
                         break;
                 }
             }

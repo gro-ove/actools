@@ -83,7 +83,7 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _eventId)) return;
                     _eventId = value;
                     OnPropertyChanged();
-                    GoCommand.OnCanExecuteChanged();
+                    GoCommand.RaiseCanExecuteChanged();
 
                     if (EventId != null) {
                         LoadData().Forget();

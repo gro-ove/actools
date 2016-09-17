@@ -61,7 +61,7 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _hasSound)) return;
                 _hasSound = value;
                 OnPropertyChanged();
-                _toggleSoundCommand?.OnCanExecuteChanged();
+                _toggleSoundCommand?.RaiseCanExecuteChanged();
             }
         }
 

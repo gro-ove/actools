@@ -162,14 +162,14 @@ namespace AcManager.Controls.Dialogs {
 
                     var last = _images.Length - 1;
                     if (oldPosition == 0 || value == 0) {
-                        _previousCommand?.OnCanExecuteChanged();
+                        _previousCommand?.RaiseCanExecuteChanged();
                     }
 
                     if (oldPosition == last || value == last) {
-                        _nextCommand?.OnCanExecuteChanged();
+                        _nextCommand?.RaiseCanExecuteChanged();
                     }
 
-                    _saveCommand?.OnCanExecuteChanged();
+                    _saveCommand?.RaiseCanExecuteChanged();
                 }
             }
 

@@ -67,9 +67,9 @@ namespace AcManager.Pages.Dialogs {
             SelectedTunableVersion = value;
             OnPropertyChanged(nameof(SelectedCar));
 
-            _openInShowroomCommand?.OnCanExecuteChanged();
-            _openInCustomShowroomCommand?.OnCanExecuteChanged();
-            _openInShowroomOptionsCommand?.OnCanExecuteChanged();
+            _openInShowroomCommand?.RaiseCanExecuteChanged();
+            _openInCustomShowroomCommand?.RaiseCanExecuteChanged();
+            _openInShowroomOptionsCommand?.RaiseCanExecuteChanged();
             CommandManager.InvalidateRequerySuggested(); // TODO
 
             if (value != null) {

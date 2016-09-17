@@ -92,7 +92,7 @@ namespace AcManager.Pages.Dialogs {
                     if (value == _latitude) return;
                     _latitude = value;
                     OnPropertyChanged();
-                    _saveCommand?.OnCanExecuteChanged();
+                    _saveCommand?.RaiseCanExecuteChanged();
                 }
             }
             private string _longitude;
@@ -103,7 +103,7 @@ namespace AcManager.Pages.Dialogs {
                     if (value == _longitude) return;
                     _longitude = value;
                     OnPropertyChanged();
-                    _saveCommand?.OnCanExecuteChanged();
+                    _saveCommand?.RaiseCanExecuteChanged();
                 }
             }
 

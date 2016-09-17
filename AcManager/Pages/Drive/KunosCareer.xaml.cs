@@ -160,7 +160,7 @@ namespace AcManager.Pages.Drive {
                 base.OnCurrentChanged(sender, e);
                 if (CurrentItem == null) return;
                 CurrentItem.Loaded();
-                _selectSeriesCommand?.OnCanExecuteChanged();
+                _selectSeriesCommand?.RaiseCanExecuteChanged();
                 
                 FancyBackgroundManager.Instance.ChangeBackground((CurrentItem.Value as KunosCareerObject)?.PreviewImage);
             }

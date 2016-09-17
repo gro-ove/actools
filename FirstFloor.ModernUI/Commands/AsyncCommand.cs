@@ -31,7 +31,7 @@ namespace FirstFloor.ModernUI.Commands {
         public async Task Execute() {
             try {
                 _inProcess = true;
-                OnCanExecuteChanged();
+                RaiseCanExecuteChanged();
 
                 await _execute();
 
@@ -40,11 +40,11 @@ namespace FirstFloor.ModernUI.Commands {
                 }
             } finally {
                 _inProcess = false;
-                OnCanExecuteChanged();
+                RaiseCanExecuteChanged();
             }
         }
 
-        public void OnCanExecuteChanged() {
+        public void RaiseCanExecuteChanged() {
             CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
         }
 
@@ -91,7 +91,7 @@ namespace FirstFloor.ModernUI.Commands {
         public async Task Execute(T parameter) {
             try {
                 _inProcess = true;
-                OnCanExecuteChanged();
+                RaiseCanExecuteChanged();
 
                 await _execute(parameter);
 
@@ -100,11 +100,11 @@ namespace FirstFloor.ModernUI.Commands {
                 }
             } finally {
                 _inProcess = false;
-                OnCanExecuteChanged();
+                RaiseCanExecuteChanged();
             }
         }
 
-        public void OnCanExecuteChanged() {
+        public void RaiseCanExecuteChanged() {
             CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
         }
 

@@ -124,7 +124,7 @@ namespace AcManager.Pages.Dialogs {
                     _isValueAcceptable = value;
                     OnPropertyChanged();
                     OnErrorsChanged(nameof(Value));
-                    _applyCommand?.OnCanExecuteChanged();
+                    _applyCommand?.RaiseCanExecuteChanged();
                 }
             }
 
@@ -139,7 +139,7 @@ namespace AcManager.Pages.Dialogs {
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsValueAcceptable));
                     OnErrorsChanged();
-                    _applyCommand?.OnCanExecuteChanged();
+                    _applyCommand?.RaiseCanExecuteChanged();
                 }
             }
 

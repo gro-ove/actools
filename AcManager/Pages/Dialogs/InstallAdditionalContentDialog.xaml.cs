@@ -73,7 +73,7 @@ namespace AcManager.Pages.Dialogs {
                 foreach (var wrapper in _entries) {
                     wrapper.PropertyChanged += (sender, args) => {
                         if (args.PropertyName == nameof(EntryWrapper.InstallEntry)) {
-                            InstallCommand.OnCanExecuteChanged();
+                            InstallCommand.RaiseCanExecuteChanged();
                         }
                     };
                 }

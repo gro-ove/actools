@@ -46,7 +46,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 Waiting = false;
                 OnPropertyChanged();
 
-                _clearCommand?.OnCanExecuteChanged();
+                _clearCommand?.RaiseCanExecuteChanged();
             }
         }
 
