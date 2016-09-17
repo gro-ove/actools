@@ -758,7 +758,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _kunosCareerUserAiLevel;
 
             public bool KunosCareerUserAiLevel {
-                get { return _kunosCareerUserAiLevel ?? (_kunosCareerUserAiLevel = ValuesStorage.GetBool("Settings.DriveSettings.KunosCareerUserAiLevel", false)).Value; }
+                get { return _kunosCareerUserAiLevel ?? (_kunosCareerUserAiLevel = ValuesStorage.GetBool("Settings.DriveSettings.KunosCareerUserAiLevel", true)).Value; }
                 set {
                     if (Equals(value, _kunosCareerUserAiLevel)) return;
                     _kunosCareerUserAiLevel = value;
