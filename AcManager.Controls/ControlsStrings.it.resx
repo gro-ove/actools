@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -119,5 +119,221 @@
   </resheader>
   <data name="Theme_Nordschleife" xml:space="preserve">
     <value>Nordschleife</value>
+  </data>
+  <data name="Common_Clear" xml:space="preserve">
+    <value>Limpido</value>
+  </data>
+  <data name="Common_Cancelled" xml:space="preserve">
+    <value>Annullato</value>
+  </data>
+  <data name="Common_FpsPostfix" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="Common_LapsPostfix" xml:space="preserve">
+    <value>giro</value>
+  </data>
+  <data name="Common_MetersPostfix" xml:space="preserve">
+    <value>m</value>
+  </data>
+  <data name="Common_MinutesPostfix" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="Common_MinutePostfix" xml:space="preserve">
+    <value>minuto</value>
+  </data>
+  <data name="Common_MillisecondsPostfix" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="Common_OpponentsPostfix" xml:space="preserve">
+    <value>avversari</value>
+  </data>
+  <data name="Common_PointsPostfix" xml:space="preserve">
+    <value>punti</value>
+  </data>
+  <data name="Common_SecondsPostfix" xml:space="preserve">
+    <value>sec</value>
+  </data>
+  <data name="KunosCareer_Error" xml:space="preserve">
+    <value>{0} errore</value>
+  </data>
+  <data name="Common_OpponentsFormat" xml:space="preserve">
+    <value>{0} avversario</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
+    <value>Ombre ambientali</value>
+  </data>
+  <data name="Common_ExposureLabel" xml:space="preserve">
+    <value>Esposizione:</value>
+  </data>
+  <data name="Controls_MiscellaneousHeader" xml:space="preserve">
+    <value>Varie:</value>
+  </data>
+  <data name="Controls_KerbEffect" xml:space="preserve">
+    <value>Effetto cordoli</value>
+  </data>
+  <data name="Controls_RoadEffect" xml:space="preserve">
+    <value>Effetto asfalto</value>
+  </data>
+  <data name="Controls_EffectsHeader" xml:space="preserve">
+    <value>Effetti:</value>
+  </data>
+  <data name="Controls_Gain" xml:space="preserve">
+    <value>Guadagno</value>
+  </data>
+  <data name="Common_Downloading" xml:space="preserve">
+    <value>Scaricamento..</value>
+  </data>
+  <data name="Common_Installing" xml:space="preserve">
+    <value>Installazione...</value>
+  </data>
+  <data name="Common_OfflineMode" xml:space="preserve">
+    <value>Modo offline</value>
+  </data>
+  <data name="Common_TryAgain" xml:space="preserve">
+    <value>Prova ancora</value>
+  </data>
+  <data name="Common_Preparing" xml:space="preserve">
+    <value>Preparazione...</value>
+  </data>
+  <data name="Common_Compressing" xml:space="preserve">
+    <value>Compressione...</value>
+  </data>
+  <data name="Common_CelsiusPostfix" xml:space="preserve">
+    <value>°C</value>
+  </data>
+  <data name="AcObject_TyresLabel" xml:space="preserve">
+    <value>Gomme:</value>
+  </data>
+  <data name="AcObject_FuelLabel" xml:space="preserve">
+    <value>Carburante:</value>
+  </data>
+  <data name="AcObject_Fuel" xml:space="preserve">
+    <value>Carburante</value>
+  </data>
+  <data name="Common_Generic" xml:space="preserve">
+    <value>Generico</value>
+  </data>
+  <data name="Common_Change" xml:space="preserve">
+    <value>Cambia</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="AssistsPreset_Gamer" xml:space="preserve">
+    <value>Giocatore</value>
+  </data>
+  <data name="AssistsPreset_Intermediate" xml:space="preserve">
+    <value>Intermedio</value>
+  </data>
+  <data name="AssistsPreset_Pro" xml:space="preserve">
+    <value>Pro</value>
+  </data>
+  <data name="Common_Loading" xml:space="preserve">
+    <value>Caricamento...</value>
+  </data>
+  <data name="Common_GoodNews" xml:space="preserve">
+    <value>Buone notizie!</value>
+  </data>
+  <data name="Online_PasswordRequired" xml:space="preserve">
+    <value>Password richiesta</value>
+  </data>
+  <data name="Common_Waiting" xml:space="preserve">
+    <value>Attendere...</value>
+  </data>
+  <data name="Common_Finished" xml:space="preserve">
+    <value>Finito</value>
+  </data>
+  <data name="AcObject_AuthorLabel" xml:space="preserve">
+    <value>Autore</value>
+  </data>
+  <data name="Controls_InvertAxis" xml:space="preserve">
+    <value>Inverti</value>
+  </data>
+  <data name="Controls_DegressLabel" xml:space="preserve">
+    <value>Gradi</value>
+  </data>
+  <data name="Controls_RangeFromAxis" xml:space="preserve">
+    <value>Da</value>
+  </data>
+  <data name="Controls_RangeToAxis" xml:space="preserve">
+    <value>a</value>
+  </data>
+  <data name="Controls_FilterAxis" xml:space="preserve">
+    <value>Filtro</value>
+  </data>
+  <data name="AcObject_VersionLabel" xml:space="preserve">
+    <value>Versione:</value>
+  </data>
+  <data name="AcObject_UrlLabel" xml:space="preserve">
+    <value>URL:</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
+    <value>Salva</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
+    <value>Nascondi volante</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
+    <value>Iterazioni</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
+    <value>Luminosità</value>
+  </data>
+  <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
+    <value>Oggetti:</value>
+  </data>
+  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
+    <value>FPS:</value>
+  </data>
+  <data name="CustomShowroom_StatsHeader" xml:space="preserve">
+    <value>Stato</value>
+  </data>
+  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
+    <value>Nome:</value>
+  </data>
+  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+    <value>Materiale:</value>
+  </data>
+  <data name="CustomShowroom_Tools_Title" xml:space="preserve">
+    <value>Strumenti</value>
+  </data>
+  <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
+    <value>Selezionati</value>
+  </data>
+  <data name="CustomShowroom_Loading" xml:space="preserve">
+    <value>Caricamento modello...</value>
+  </data>
+  <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
+    <value>Tipo:</value>
+  </data>
+  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
+    <value>Formato:</value>
+  </data>
+  <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
+    <value>Dimensioni:</value>
+  </data>
+  <data name="CustomShowroom_Export" xml:space="preserve">
+    <value>Esporta</value>
+  </data>
+  <data name="Showroom_DialogHeader" xml:space="preserve">
+    <value>Showroom</value>
+  </data>
+  <data name="Showroom_ShowroomLabel" xml:space="preserve">
+    <value>Showroom:</value>
+  </data>
+  <data name="AcObject_YearLabel" xml:space="preserve">
+    <value>Anno:</value>
+  </data>
+  <data name="Animation_Up" xml:space="preserve">
+    <value>Su</value>
+  </data>
+  <data name="Presets_Unsaved" xml:space="preserve">
+    <value>Non salvato</value>
+  </data>
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
+    <value>Tipo Gomme:</value>
   </data>
 </root>

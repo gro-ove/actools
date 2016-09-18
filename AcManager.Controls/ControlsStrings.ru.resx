@@ -133,7 +133,7 @@
   </data>
   <data name="AcObject_ErrorsHeader" xml:space="preserve">
     <value>{Ошибка}:</value>
-  </data>
+  <alternative>{!Ошибка}:</alternative></data>
   <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
     <value>Координаты:</value>
   </data>
@@ -496,5 +496,26 @@
   </data>
   <data name="Replay_CrMessage_Commentary" xml:space="preserve">
     <value>Вы можете перейти в настройки и включить опцию "Сохранять повторы автоматически", чтобы не потерять что-то ценное.</value>
+  </data>
+  <data name="VideoViewer_CannotPlay" xml:space="preserve">
+    <value>Не получится проиграть видео</value>
+  </data>
+  <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
+    <value>Размер:</value>
+  </data>
+  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
+    <value>Имя:</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="AcObject_FuelLabel" xml:space="preserve">
+    <value>Расход топлива:</value>
+  </data>
+  <data name="Showroom_DialogHeader" xml:space="preserve">
+    <value>Шоурум</value>
   </data>
 </root>

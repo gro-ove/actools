@@ -389,7 +389,7 @@
   </data>
   <data name="Settings_General" xml:space="preserve">
     <value>Общее</value>
-  </data>
+  <alternative>общее</alternative></data>
   <data name="Settings_QuickSwitches" xml:space="preserve">
     <value>Переключатели</value>
   </data>
@@ -398,7 +398,7 @@
   </data>
   <data name="Settings_Appearance" xml:space="preserve">
     <value>Оформление</value>
-  </data>
+  <alternative>оформление</alternative></data>
   <data name="Settings_Dev" xml:space="preserve">
     <value>Системное</value>
   </data>
@@ -894,7 +894,7 @@
   </data>
   <data name="Drive_TrackStateLabel" xml:space="preserve">
     <value>Состояние трассы:</value>
-  </data>
+  <alternative>Трасса:</alternative></data>
   <data name="KunosCareer_TimeLabel" xml:space="preserve">
     <value>Время:</value>
   </data>
@@ -966,5 +966,53 @@
   </data>
   <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
     <value>Очистить</value>
+  </data>
+  <data name="Settings_Drive_OnlineName_Tooltip" xml:space="preserve">
+    <value>Использовать специальное имя для онлайна</value>
+  </data>
+  <data name="AcObject_GeoTagsLabel" xml:space="preserve">
+    <value>Координаты:</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="Online_ServersFormat" xml:space="preserve">
+    <value>{0} сервер</value>
+  </data>
+  <data name="Online_FilterBooking_Short" xml:space="preserve">
+    <value>Регистрация</value>
+  </data>
+  <data name="Online_Sorting_Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="Race_Preparing" xml:space="preserve">
+    <value>Подготовка…</value>
+  </data>
+  <data name="LiveryIcon_ColorLabel" xml:space="preserve">
+    <value>Цвет:</value>
+  </data>
+  <data name="LiveryIcon_NumberHeader" xml:space="preserve">
+    <value>Номер:</value>
+  </data>
+  <data name="LiveryIcon_Number_Light" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="Select_All" xml:space="preserve">
+    <value>Всё</value>
+  </data>
+  <data name="CreateShowroom_Title" xml:space="preserve">
+    <value>Создать новый шоурум</value>
+  </data>
+  <data name="CreateShowroom_NameLabel" xml:space="preserve">
+    <value>Имя:</value>
+  </data>
+  <data name="AcSettings_Miscellaneous" xml:space="preserve">
+    <value>Разное</value>
+  </data>
+  <data name="AcSettings_Video_Fullscreen" xml:space="preserve">
+    <value>На весь экран</value>
+  </data>
+  <data name="AcSettings_Video_QualityHeader" xml:space="preserve">
+    <value>Качество:</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -360,9 +360,9 @@
     <comment>Numero di servizi trovati, saranno pluralizati automaticamente</comment>
   </data>
   <data name="Online_Session_LapsDuration" xml:space="preserve">
-    <value>{0} lap</value>
+    <value>{0} giro</value>
     <comment>Numero di giri della sessione di gara, saranno pluralizati automaticamente</comment>
-  </data>
+  <alternative>{0} lap</alternative></data>
   <data name="Online_Server_CarIsMissing" xml:space="preserve">
     <value>Macchina {0} è mancante.</value>
   </data>
@@ -408,7 +408,7 @@
   </data>
   <data name="Online_Server_UnhandledError" xml:space="preserve">
     <value>Errore non gestito: {0}.</value>
-  </data>
+  <alternative>Errore non gestito.</alternative></data>
   <data name="Plugins_CannotInstall" xml:space="preserve">
     <value>Impossibile installare plugin</value>
   </data>
@@ -748,8 +748,8 @@
     <value>modello KN5</value>
   </data>
   <data name="Common_AcReplay" xml:space="preserve">
-    <value>AC replay</value>
-  </data>
+    <value>Replay AC </value>
+  <alternative>AC replay</alternative></data>
   <data name="Common_Disabled" xml:space="preserve">
     <value>Disattivato</value>
   </data>
@@ -1044,7 +1044,7 @@
   </data>
   <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
     <value>Evento condizioni “{0}” non sono supportati</value>
-  </data>
+  <alternative>Evento condizioni non sono supportati</alternative></data>
   <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
     <value> Il contenuto richiesto è mancante</value>
   </data>
@@ -1079,11 +1079,11 @@
     <value>Setup’s track ({0}) è mancante</value>
   </data>
   <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
-    <value>Skin’s livery ({0}/livery.png) è mancante</value>
-  </data>
+    <value>Skin’s livrea ({0}/livery.png) è mancante</value>
+  <alternative>Skin’s livery ({0}/livery.png) è mancante</alternative></data>
   <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
-    <value>Skin’s preview ({0}/preview.jpg) è mancante</value>
-  </data>
+    <value>Skin’s manca({0}/preview.jpg) è mancante</value>
+  <alternative>Skin’s preview ({0}/preview.jpg) è mancante</alternative></data>
   <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
     <value>Modello (file KN5) è mancante</value>
   </data>
@@ -1137,5 +1137,111 @@
   </data>
   <data name="Settings_Period_Startup" xml:space="preserve">
     <value>Solo all'avvio</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
+    <alternative>ABS:  </alternative>
+  </data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>Aggiungi nuova macchina alla lista</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Tipo Gomme</value>
+  </data>
+  <data name="Common_InvalidFormat" xml:space="preserve">
+    <value>Formato non valido</value>
+  </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="Championship" xml:space="preserve">
+    <value>Campionato</value>
+  </data>
+  <data name="SingleEvents" xml:space="preserve">
+    <value>Eventi Singoli</value>
+  </data>
+  <data name="CarParentIsMissing" xml:space="preserve">
+    <value>Car’s parent è mancante</value>
+  </data>
+  <data name="Settings_Period_OnOpening" xml:space="preserve">
+    <value>Solo all'apertura</value>
+  </data>
+  <data name="AcSettings_View_Vertical" xml:space="preserve">
+    <value>Verticale</value>
+  </data>
+  <data name="AcSettings_View_Lateral" xml:space="preserve">
+    <value>Laterale</value>
+  </data>
+  <data name="AcSettings_View_Locked" xml:space="preserve">
+    <value>Bloccato</value>
+  </data>
+  <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
+    <value>Unità:</value>
+  </data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>Tempo</value>
+  </data>
+  <data name="Common_Number" xml:space="preserve">
+    <value>Numero</value>
+  </data>
+  <data name="Common_Radius" xml:space="preserve">
+    <value>Raggio</value>
+  </data>
+  <data name="Common_Height" xml:space="preserve">
+    <value>Altezza</value>
+  </data>
+  <data name="Common_IdIsMissing" xml:space="preserve">
+    <value>Manca ID</value>
+  </data>
+  <data name="Common_CarIdIsMissing" xml:space="preserve">
+    <value>Manca ID Auto</value>
+  </data>
+  <data name="Common_Speed" xml:space="preserve">
+    <value>Velocità</value>
+  </data>
+  <data name="Common_Warning" xml:space="preserve">
+    <value>Attenzione</value>
+  </data>
+  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
+    <value>Ideale</value>
+  </data>
+  <data name="Common_CannotReadData" xml:space="preserve">
+    <value>Non riesco a leggere i dati</value>
+  </data>
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
+    <value>Normale</value>
+  </data>
+  <data name="Common_Exporting" xml:space="preserve">
+    <value>Esportazione...</value>
+  </data>
+  <data name="Common_Destination" xml:space="preserve">
+    <value>Destinazione</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Lunghezza</value>
+  </data>
+  <data name="Common_Width" xml:space="preserve">
+    <value>Larghezza</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Potenza</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Coppia</value>
+  </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>CV</value>
+  </data>
+  <data name="AcError_CarIsMissing" xml:space="preserve">
+    <value>Auto “{0}” è mancante</value>
+  </data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>Fine settimana</value>
+  </data>
+  <data name="AcSettings_View_ViewHeader" xml:space="preserve">
+    <value>Vista:</value>
+  </data>
+  <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
+    <value>Molto basso</value>
   </data>
 </root>

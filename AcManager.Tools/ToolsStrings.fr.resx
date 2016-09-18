@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -399,7 +399,7 @@
   </data>
   <data name="Online_Server_UnhandledError" xml:space="preserve">
     <value>Erreur non gérée: {0}.</value>
-  </data>
+  <alternative>erreur non gérée.</alternative></data>
   <data name="Plugins_CannotInstall" xml:space="preserve">
     <value>Impossible d'installer le plugin</value>
   </data>
@@ -1023,7 +1023,7 @@
   </data>
   <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
     <value>Conditions “{0}” de l'évenements non supporté</value>
-  </data>
+  <alternative>Conditions de l'évenements non supporté</alternative></data>
   <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
     <value>Le contenu requis est absent</value>
   </data>
@@ -1122,5 +1122,17 @@
 	</data>
   <data name="Settings_Period_Startup" xml:space="preserve">
     <value>Au démarrage uniquement</value>
+  </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="Championship" xml:space="preserve">
+    <value>Carriere Championnat</value>
+  </data>
+  <data name="SingleEvents" xml:space="preserve">
+    <value>Evenements unique</value>
+  </data>
+  <data name="CarParentIsMissing" xml:space="preserve">
+    <value>Car’s parent is missing</value>
   </data>
 </root>

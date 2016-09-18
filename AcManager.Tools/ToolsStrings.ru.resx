@@ -657,4 +657,25 @@
   <data name="ReplayObject_PreviousSession" xml:space="preserve">
     <value>Предыдущая сессия</value>
   </data>
+  <data name="KunosCareer_Championship" xml:space="preserve">
+    <value>Чемпионат</value>
+  </data>
+  <data name="KunosCareer_SingleEvents" xml:space="preserve">
+    <value>События</value>
+  </data>
+  <data name="AcRootDirectory_MissingFile" xml:space="preserve">
+    <value>Файл «{0}» отсутствует</value>
+  </data>
+  <data name="Weather_Clear" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="AcSettings_View_LockCamera" xml:space="preserve">
+    <value>Привязать камеру к горизонту</value>
+  </data>
+  <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
+    <value>Скрыть руль</value>
+  </data>
+  <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
+    <value>Привязать рулевое колесо</value>
+  </data>
 </root>
