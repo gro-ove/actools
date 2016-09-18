@@ -4,22 +4,29 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using AcTools.AcdFile;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public class IniFile : AbstractDataFile, IEnumerable<KeyValuePair<string, IniFileSection>> {
-        public IniFile(string carDir, string filename, Acd loadedAcd) : base(carDir, filename, loadedAcd) {}
+        /// <summary>
+        /// Saving is much slower when enabled.
+        /// </summary>
+        public static bool OptionKeepComments = false;
 
-        public IniFile(string carDir, string filename) : base(carDir, filename) {}
+        public IniFile(string carDir, string filename, Acd loadedAcd) : base(carDir, filename, loadedAcd) { }
 
-        public IniFile(string filename) : base(filename) {}
+        public IniFile(string carDir, string filename) : base(carDir, filename) { }
 
-        public IniFile() {}
+        public IniFile(string filename) : base(filename) { }
+
+        public IniFile() { }
 
         public readonly Dictionary<string, IniFileSection> Content = new Dictionary<string, IniFileSection>();
 
@@ -48,41 +55,77 @@ namespace AcTools.DataFile {
             set { Content[key] = value; }
         }
 
-        private static Regex _splitRegex, _commentRegex;
+        private static void ParseStringFinish(IniFileSection currentSection, string data, int nonSpace, ref string key, ref int tokenStarted) {
+            if (key != null) {
+                string value;
+                if (tokenStarted != -1) {
+                    var length = 1 + nonSpace - tokenStarted;
+                    value = length < 0 ? null : data.Substring(tokenStarted, length);
+                } else {
+                    value = null;
+                }
+
+                currentSection.SetDirect(key, value);
+                key = null;
+            }
+
+            tokenStarted = -1;
+        }
 
         protected override void ParseString(string data) {
             Clear();
 
-            if (_splitRegex == null) {
-                _splitRegex = new Regex(@"\r?\n|\r|(?=\[[A-Z])", RegexOptions.Compiled);
-                _commentRegex = new Regex(@"//|;", RegexOptions.CultureInvariant | RegexOptions.Compiled);
-            }
-
             IniFileSection currentSection = null;
-            foreach (var line in _splitRegex.Split(data).Select(x => {
-                var m = _commentRegex.Match(x);
-                return (m.Success ? x.Substring(0, m.Index) : x).Trim();
-            }).Where(x => x.Length > 0)) {
-                if (line[0] == '[' && line[line.Length - 1] == ']') {
-                    this[line.Substring(1, line.Length - 2)] = currentSection = new IniFileSection();
-                } else if (currentSection != null) {
-                    var at = line.IndexOf('=');
+            var started = -1;
+            var nonSpace = -1;
+            string key = null;
+            for (var i = 0; i < data.Length; i++) {
+                var c = data[i];
+                switch (c) {
+                    case '[':
+                        ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
 
-                    if (at < 1) continue;
+                        var s = ++i;
+                        if (s == data.Length) break;
+                        for (; i < data.Length && data[i] != ']'; i++) { }
 
-                    var invalidName = false;
-                    for (var i = 0; i < at; i++) {
-                        var c = line[i];
-                        if (!(c >= 'A' && c <= 'Z' || c == '_' || c >= '0' && c <= '9')) {
-                            invalidName = true;
+                        this[data.Substring(s, i - s)] = currentSection = new IniFileSection();
+                        break;
+
+                    case '\n':
+                        ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+                        break;
+
+                    case '=':
+                        if (started != -1) {
+                            key = data.Substring(started, i - started);
+                            started = -1;
                         }
-                    }
+                        break;
 
-                    if (!invalidName) {
-                        currentSection.SetDirect(line.Substring(0, at), line.Substring(at + 1));
-                    }
+                    case '/':
+                        if (i + 1 < data.Length && data[i + 1] == '/') {
+                            goto case ';';
+                        }
+                        goto default;
+
+                    case ';':
+                        ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
+                        for (i++; i < data.Length && data[i] != '\n'; i++) { }
+                        break;
+
+                    default:
+                        if (!char.IsWhiteSpace(c)) {
+                            nonSpace = i;
+                            if (started == -1) {
+                                started = i;
+                            }
+                        }
+                        break;
                 }
             }
+
+            ParseStringFinish(currentSection, data, nonSpace, ref key, ref started);
         }
 
         public static IniFile Parse(string text) {
@@ -99,7 +142,7 @@ namespace AcTools.DataFile {
 
         public override string Stringify() {
             if (_cleanUp == null) {
-                _cleanUp = new Regex(@"[\[\]]|;", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+                _cleanUp = new Regex(@"[\[\];]", RegexOptions.Compiled);
             }
 
             var s = new StringBuilder();
@@ -138,6 +181,82 @@ namespace AcTools.DataFile {
             }
 
             return s.ToString();
+        }
+
+        #region Shitty comment-keeping saving
+        /// <summary>
+        /// This is the shittiest form of saving I can think of.
+        /// </summary>
+        /// <param name="filename">Destination.</param>
+        /// <param name="backup">Move original file to Recycle Bin.</param>
+        private void SaveToKeepComments(string filename, bool backup) {
+            // if there is no original file — there is no comments, save it as usual
+            if (!File.Exists(filename)) {
+                File.WriteAllText(filename, Stringify());
+            }
+
+            // so called backup
+            if (backup) {
+                var backupFilename = FileUtils.EnsureUnique(filename);
+                File.Copy(filename, backupFilename);
+                FileUtils.Recycle(backupFilename);
+            }
+
+            var previousText = File.ReadAllText(filename);
+            var previousParsed = Parse(previousText);
+            var lines = previousText.Replace("\r", "").Split('\n').ToList();
+
+            foreach (var removedSectionKey in previousParsed.Keys.Where(x => !ContainsKey(x))) {
+                RemoveSection(lines, removedSectionKey);
+            }
+
+            foreach (var sectionPair in this) {
+                if (previousParsed.ContainsKey(sectionPair.Key)) {
+                    // section in actual data existed before
+                    foreach (var valuePair in sectionPair.Value) {
+                        // write all values
+                        SetValue(lines, sectionPair.Key, valuePair.Key, valuePair.Value);
+                    }
+
+                    foreach (var removedValueKey in previousParsed[sectionPair.Key].Keys.Where(x => !sectionPair.Value.ContainsKey(x))) {
+                        // remove obsoleted values
+                        RemoveValue(lines, sectionPair.Key, removedValueKey);
+                    }
+                } else {
+                    // this is a new section
+                    AddSection(lines, sectionPair.Key, sectionPair.Value);
+                }
+            }
+        }
+
+        private static void SetValue(List<string> list, string section, string key, string value) {
+            throw new NotImplementedException();
+        }
+
+        private static void RemoveValue(List<string> list, string section, string key) {
+            throw new NotImplementedException();
+        }
+
+        private static void AddSection(List<string> list, string sectionName, IniFileSection section) {
+            if (list.Any()) {
+                list.Add("");
+            }
+
+            list.Add($"[{section}]");
+            list.AddRange(section.Select(pair => $"{pair.Key}={pair.Value}"));
+        }
+
+        private static void RemoveSection(List<string> list, string sectionName) {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        protected override void SaveTo(string filename, bool backup) {
+            if (OptionKeepComments) {
+                SaveToKeepComments(filename, backup);
+            } else {
+                base.SaveTo(filename, backup);
+            }
         }
 
         public override string ToString() {
