@@ -507,7 +507,7 @@ namespace AcTools.Processes {
             }
 
             public override IDisposable Set() {
-                ToIniFile().SaveAs(FileUtils.GetAssistsIniFilename());
+                ToIniFile().Save(FileUtils.GetAssistsIniFilename());
                 return null;
             }
 

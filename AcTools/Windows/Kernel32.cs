@@ -51,6 +51,9 @@ namespace AcTools.Windows {
         public static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
 
         [DllImport("kernel32.dll")]
+        public static extern long WritePrivateProfileSection(string section, string val, string filePath);
+
+        [DllImport("kernel32.dll")]
         public static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
         #endregion
 

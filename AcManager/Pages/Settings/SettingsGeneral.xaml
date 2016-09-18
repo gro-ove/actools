@@ -3,7 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:AcManager.Pages.Settings"
         xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
         xmlns:t="http://acstuff.ru/app/tools" xmlns:in="clr-namespace:AcManager.Internal;assembly=AcManager.Internal" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsGeneral+ViewModel}" Loaded="OnLoaded"  Unloaded="OnUnloaded">
+        d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance settings:SettingsGeneral+ViewModel}" Loaded="OnLoaded"
+        Unloaded="OnUnloaded">
     <UserControl.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
     </UserControl.Resources>
@@ -12,20 +13,20 @@
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_AcFolderLabel}" />
                 <Button Command="{Binding ChangeAcRootCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
-                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
+                <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
             </DockPanel>
 
             <DockPanel ToolTip="Used for online">
                 <Label Content="Steam profile:" />
                 <Button Command="{Binding ChangeSteamIdCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
-                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}">
+                <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True">
                     <TextBox.Text>
                         <MultiBinding StringFormat="{}{0} ({1})" Mode="OneWay">
                             <Binding Path="SteamId" TargetNullValue="None" />
                             <Binding Path="SteamProfileName" TargetNullValue="?" />
                         </MultiBinding>
                     </TextBox.Text>
-                </TextBox>
+                </mui:BetterTextBox>
             </DockPanel>
 
             <CheckBox IsChecked="{Binding Common.DeveloperMode}"
@@ -45,7 +46,7 @@
             <CheckBox IsChecked="{Binding AppShortcutExists}" ToolTip="{x:Static g:AppStrings.Settings_General_WindowsShortcut_Tooltip}">
                 <Label Content="{x:Static g:AppStrings.Settings_General_WindowsShortcut}" />
             </CheckBox>
-            
+
             <!--versions-->
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_AutoUpdatesHeader}" />
 
@@ -59,8 +60,8 @@
                 <Label Content="{x:Static g:AppStrings.Settings_General_AppVersionLabel}" />
                 <Button Command="{Binding AppUpdater.CheckAndUpdateIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}"
                         Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
-                <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding Source={x:Static t:BuildInformation.AppVersion}, Mode=OneTime}"
-                        mui:WatermarkService.Watermark="?" />
+                <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding Source={x:Static t:BuildInformation.AppVersion}, Mode=OneTime}"
+                        Placeholder="?" IsReadOnly="True" />
             </DockPanel>
 
             <TextBlock Text="{Binding AppUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"
@@ -74,8 +75,8 @@
             <DockPanel>
                 <Label Content="{x:Static g:AppStrings.Settings_General_ContentVersionLabel}" />
                 <Button Command="{Binding DataUpdater.CheckAndUpdateIfNeededCommand}" Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
-                <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding DataUpdater.InstalledVersion, Mode=OneWay}"
-                        Placeholder="?" IsReadOnly="True" />
+                <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding DataUpdater.InstalledVersion, Mode=OneWay}" Placeholder="?"
+                        IsReadOnly="True" />
             </DockPanel>
             <TextBlock Text="{Binding DataUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
                     Visibility="{Binding DataUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />

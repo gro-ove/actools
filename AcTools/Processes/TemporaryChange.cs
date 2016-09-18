@@ -51,7 +51,7 @@ namespace AcTools.Processes {
                 File.Delete(_backup);
             }
             File.Move(_filename, _backup);
-            video.SaveAs(_filename);
+            video.Save(_filename);
         }
 
         public void Dispose() {

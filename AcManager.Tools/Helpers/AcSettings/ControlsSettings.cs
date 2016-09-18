@@ -943,7 +943,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     ini["SHIFTER"].Set(entry.Id, entry.Input?.Id);
                 }
 
-                ini.SaveAs(filename);
+                ini.Save(filename);
             }
         }
 
@@ -1002,7 +1002,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             CurrentPresetChanged = false;
 
             SaveImmediately(); // save original PRESET_NAME
-            Ini.SaveAs(filename); // and as a preset
+            Ini.Save(filename); // and as a preset
         }
         #endregion
     }

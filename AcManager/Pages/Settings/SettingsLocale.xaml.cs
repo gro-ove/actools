@@ -272,9 +272,7 @@ namespace AcManager.Pages.Settings {
 
             private ICommand _restartCommand;
 
-            public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => {
-                WindowsHelper.RestartCurrentApplication();
-            }));
+            public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(WindowsHelper.RestartCurrentApplication));
 
             private ICommand _moreInformationCommand;
 

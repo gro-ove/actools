@@ -129,7 +129,7 @@ namespace AcManager.Pages.Dialogs {
                         ["LOCK_SUN"] = @"1",
                         ["SUN_DIRECTION"] = @"1,1,0.8"
                     }
-                }.SaveAs(Path.Combine(location, "settings.ini"));
+                }.Save(Path.Combine(location, "settings.ini"));
 
                 File.WriteAllText(Path.Combine(location, @"ui", @"ui_showroom.json"), new JObject {
                     [@"author"] = SettingsHolder.Sharing.SharingName,

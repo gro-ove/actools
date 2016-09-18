@@ -8,12 +8,16 @@
                 <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="Focusable" Value="False" />
                 </Style>
+                <Style TargetType="{x:Type mui:SelectableBbCodeBlock}" BasedOn="{StaticResource {x:Type mui:SelectableBbCodeBlock}}">
+                    <Setter Property="Width" Value="400" />
+                </Style>
             </Style.Resources>
         </Style>
     </UserControl.Style>
-    <TreeView ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-        <TreeViewItem Header="Modern UI for WPF (MUI)">
-            <mui:BbCodeBlock TextWrapping="Wrap">[url="https://github.com/firstfloorsoftware/mui"]Homepage[/url][br]
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <TreeView Margin="20" PreviewMouseWheel="TreeView_OnPreviewMouseWheel">
+            <TreeViewItem Header="Modern UI for WPF (MUI)">
+                <mui:BbCodeBlock>[url="https://github.com/firstfloorsoftware/mui"]Homepage[/url][br]
 [br][mono]Microsoft Public License (Ms-PL)
 [br]
 [br]This license governs use of the accompanying software. If you use the software, you accept this license. If you do not accept the license, do not use the software.
@@ -46,9 +50,9 @@
 [br]
 [br](E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
 [/mono]</mui:BbCodeBlock>
-        </TreeViewItem>
-        <TreeViewItem Header="C# LZF Real-Time Compression Algorithm">
-            <mui:BbCodeBlock>[url="https://csharplzfcompression.codeplex.com/"]Homepage[/url][br]
+            </TreeViewItem>
+            <TreeViewItem Header="C# LZF Real-Time Compression Algorithm">
+                <mui:BbCodeBlock>[url="https://csharplzfcompression.codeplex.com/"]Homepage[/url][br]
 [br][mono]Improved version to C# LibLZF Port:
 [br]Copyright (c) 2010 Roman Atachiants &lt;kelindar@gmail.com&gt;
 [br]
@@ -92,9 +96,9 @@
 [br]you do not delete the provisions above, a recipient may use your version
 [br]of this file under either the BSD or the GPL.
 [/mono]</mui:BbCodeBlock>
-        </TreeViewItem>
-        <TreeViewItem Header="OxyPlot">
-            <mui:BbCodeBlock>[url="http://www.oxyplot.org/"]Homepage[/url][br]
+            </TreeViewItem>
+            <TreeViewItem Header="OxyPlot">
+                <mui:BbCodeBlock>[url="http://www.oxyplot.org/"]Homepage[/url][br]
 [br][mono]The MIT License (MIT)
 [br]
 [br]Copyright (c) 2014 OxyPlot contributors
@@ -118,9 +122,9 @@
 [br]TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 [br]SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [/mono]</mui:BbCodeBlock>
-        </TreeViewItem>
-        <TreeViewItem Header="AvalonEdit">
-            <mui:BbCodeBlock>[url="https://github.com/icsharpcode/AvalonEdit"]Homepage[/url][br]
+            </TreeViewItem>
+            <TreeViewItem Header="AvalonEdit">
+                <mui:BbCodeBlock>[url="https://github.com/icsharpcode/AvalonEdit"]Homepage[/url][br]
 [br][mono]The MIT License (MIT)
 [br]
 [br]Permission is hereby granted, free of charge, to any person obtaining a
@@ -142,9 +146,9 @@
 [br]TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 [br]SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [/mono]</mui:BbCodeBlock>
-        </TreeViewItem>
-        <TreeViewItem Header="Json.NET">
-            <mui:BbCodeBlock>[url="http://www.newtonsoft.com/json"]Homepage[/url][br]
+            </TreeViewItem>
+            <TreeViewItem Header="Json.NET">
+                <mui:BbCodeBlock>[url="http://www.newtonsoft.com/json"]Homepage[/url][br]
 [br][mono]The MIT License (MIT)
 [br]
 [br]Copyright (c) 2007 James Newton-King
@@ -155,9 +159,9 @@
 [br]
 [br]THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [/mono]</mui:BbCodeBlock>
-        </TreeViewItem>
-        <TreeViewItem Header="SharpCompress">
-            <mui:BbCodeBlock>[url="https://github.com/adamhathcock/sharpcompress"]Homepage[/url][br]
+            </TreeViewItem>
+            <TreeViewItem Header="SharpCompress">
+                <mui:BbCodeBlock>[url="https://github.com/adamhathcock/sharpcompress"]Homepage[/url][br]
 [br][mono]The MIT License (MIT)
 [br]
 [br]Copyright (c) 2014  Adam Hathcock
@@ -180,12 +184,12 @@
 [br]OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 [br]THE SOFTWARE.
 [/mono]</mui:BbCodeBlock>
-        </TreeViewItem>
-        <TreeViewItem Header="Meta.Vlc">
-            <mui:BbCodeBlock>[url="https://github.com/higankanshi/Meta.Vlc"]Homepage[/url]</mui:BbCodeBlock>
-        </TreeViewItem>
-        <TreeViewItem Header="MoonSharp">
-            <mui:BbCodeBlock>[url="http://www.moonsharp.org/"]Homepage[/url][br]
+            </TreeViewItem>
+            <TreeViewItem Header="Meta.Vlc">
+                <mui:BbCodeBlock>[url="https://github.com/higankanshi/Meta.Vlc"]Homepage[/url]</mui:BbCodeBlock>
+            </TreeViewItem>
+            <TreeViewItem Header="MoonSharp">
+                <mui:BbCodeBlock>[url="http://www.moonsharp.org/"]Homepage[/url][br]
 [br][mono]Copyright (c) 2014, Marco Mastropaolo
 [br]All rights reserved.
 [br]
@@ -223,9 +227,9 @@
 [br]OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 [br]OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 [/mono]</mui:BbCodeBlock>
-        </TreeViewItem>
-        <TreeViewItem Header="SlimDX">
-            <mui:BbCodeBlock>[url="https://slimdx.org/"]Homepage[/url][br]
+            </TreeViewItem>
+            <TreeViewItem Header="SlimDX">
+                <mui:BbCodeBlock>[url="https://slimdx.org/"]Homepage[/url][br]
 [br][mono]Copyright (c) 2007-2011 SlimDX Group
 [br]
 [br]Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -246,9 +250,9 @@
 [br]OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 [br]THE SOFTWARE.
 [/mono]</mui:BbCodeBlock>
-        </TreeViewItem>
-        <TreeViewItem Header="NVIDIA FXAA Shader">
-            <mui:BbCodeBlock>[url="https://gist.github.com/bkaradzic/6011431"]Homepage[/url][br]
+            </TreeViewItem>
+            <TreeViewItem Header="NVIDIA FXAA Shader">
+                <mui:BbCodeBlock>[url="https://gist.github.com/bkaradzic/6011431"]Homepage[/url][br]
 [br][mono]Copyright (c) 2014, NVIDIA CORPORATION. All rights reserved.
 [br]
 [br]Redistribution and use in source and binary forms, with or without
@@ -275,6 +279,7 @@
 [br](INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 [br]OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 [/mono]</mui:BbCodeBlock>
-        </TreeViewItem>
-    </TreeView>
+            </TreeViewItem>
+        </TreeView>
+    </ScrollViewer>
 </UserControl>

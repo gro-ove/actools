@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,70 +67,67 @@ namespace AcTools.DataFile {
             }
         }
 
+        public Task SaveAsync(string filename = null, bool backup = false) {
+            if (filename == null || SourceFilename == filename) {
+                if (Mode != StorageMode.UnpackedFile) {
+                    UpdateAcd(backup);
+                    return Task.Delay(0);
+                }
+
+                filename = SourceFilename;
+            }
+
+            return SaveToAsync(filename, backup);
+        }
+
         public void Save(string filename, bool backup = false) {
-            if (SourceFilename == filename) {
-                Save(backup);
-                return;
+            if (filename == null || SourceFilename == filename) {
+                if (Mode != StorageMode.UnpackedFile) {
+                    UpdateAcd(backup);
+                    return;
+                }
+
+                filename = SourceFilename;
             }
 
-            if (UnpackedFilename != null || SourceFilename != null) {
-                throw new InvalidDataException();
-            }
-
-            SaveAs(filename, backup);
-        }
-
-        public void SaveAs(string filename, bool backup = false) {
-            if (SourceFilename == filename) {
-                Save(backup);
-                return;
-            }
-
-            if (File.Exists(filename) && backup) {
-                FileUtils.Recycle(filename);
-            }
-
-            File.WriteAllText(filename, Stringify());
-        }
-
-        public async Task SaveAsAsync(string filename, bool backup = false) {
-            if (SourceFilename == filename) {
-                Save(backup);
-                return;
-            }
-
-            if (File.Exists(filename) && backup) {
-                FileUtils.Recycle(filename);
-            }
-
-            await FileUtils.WriteAllBytesAsync(filename, Encoding.UTF8.GetBytes(Stringify()));
+            SaveTo(filename, backup);
         }
 
         public void Save(bool backup = false) {
+            Save(null, backup);
+        }
+
+        protected void UpdateAcd(bool backup) {
             if (UnpackedFilename == null || SourceFilename == null) {
-                throw new InvalidDataException();
+                throw new Exception("File wasn’t loaded to be saved like this");
             }
 
-            var data = Stringify();
-            if (Mode == StorageMode.UnpackedFile) {
-                if (File.Exists(SourceFilename) && backup) {
+            var acd = Acd.FromFile(SourceFilename);
+            acd.SetEntry(UnpackedFilename, Stringify());
+
+            if (File.Exists(SourceFilename)) {
+                if (backup) {
                     FileUtils.Recycle(SourceFilename);
+                } else {
+                    File.Delete(SourceFilename);
                 }
-                File.WriteAllText(SourceFilename, data);
-            } else {
-                var acd = Acd.FromFile(SourceFilename);
-                acd.SetEntry(UnpackedFilename, data);
-
-                if (File.Exists(SourceFilename)) {
-                    if (backup) {
-                        FileUtils.Recycle(SourceFilename);
-                    } else {
-                        File.Delete(SourceFilename);
-                    }
-                }
-
-                acd.Save(SourceFilename);
             }
+
+            acd.Save(SourceFilename);
+        }
+
+        protected virtual void SaveTo(string filename, bool backup) {
+            if (File.Exists(filename) && backup) {
+                FileUtils.Recycle(filename);
+            }
+            File.WriteAllText(filename, Stringify());
+        }
+
+        protected virtual Task SaveToAsync(string filename, bool backup) {
+            if (File.Exists(filename) && backup) {
+                FileUtils.Recycle(filename);
+            }
+            return FileUtils.WriteAllBytesAsync(filename, Encoding.UTF8.GetBytes(Stringify()));
         }
 
         public bool Exists() {

@@ -56,8 +56,8 @@
                 <DockPanel>
                     <Label Content="Locale version:" />
                     <Button Command="{Binding LocaleUpdater.CheckAndUpdateIfNeededCommand}" Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
-                    <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding LocaleUpdater.InstalledVersion, Mode=OneWay}"
-                            mui:WatermarkService.Watermark="?" />
+                    <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding LocaleUpdater.InstalledVersion, Mode=OneWay}"
+                            Placeholder="?" IsReadOnly="True" />
                 </DockPanel>
                 <TextBlock Text="{Binding LocaleUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"
                         Visibility="{Binding LocaleUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
@@ -69,7 +69,6 @@
             </StackPanel>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Custom Translations" />
-
             <Button Command="{Binding MoreInformationCommand}" ToolTip="Please, read this instruction first" Content="How To Translate" Margin="0 0 0 8" />
 
             <DockPanel>

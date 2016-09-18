@@ -326,7 +326,7 @@ namespace AcManager.Controls.CustomShowroom {
                         ["WIDTH"] = Renderer.AmbientShadowWidth,
                         ["LENGTH"] = Renderer.AmbientShadowLength,
                     }
-                }.SaveAs(Path.Combine(data, "ambient_shadows.ini"));
+                }.Save(Path.Combine(data, "ambient_shadows.ini"));
 
                 Renderer.AmbientShadowSizeChanged = false;
             }, () => Renderer?.AmbientShadowSizeChanged == true));

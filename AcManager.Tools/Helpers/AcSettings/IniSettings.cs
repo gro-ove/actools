@@ -70,7 +70,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         protected void Replace(IniFile ini, bool backup = false) {
             _saving = false;
             IgnoreChangesForAWhile();
-            ini.SaveAs(Filename, backup);
+            ini.Save(Filename, backup);
             Ini = ini;
             IsLoading = true;
             LoadFromIni();
@@ -137,7 +137,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             try {
                 SetToIni();
                 IgnoreChangesForAWhile();
-                await Ini.SaveAsAsync(Filename);
+                await Ini.SaveAsync(Filename);
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
             } finally {
@@ -149,7 +149,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             try {
                 SetToIni();
                 IgnoreChangesForAWhile();
-                Ini.SaveAs(Filename);
+                Ini.Save(Filename);
             } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.AcSettings_CannotSave, ToolsStrings.AcSettings_CannotSave_Commentary, e);
             } finally {

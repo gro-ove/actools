@@ -204,7 +204,7 @@ namespace AcManager.Tools.Objects {
                     ini["PRESSURE_" + entry.Id].Set("VALUE", entry.Value);
                 }
 
-                ini.SaveAs(Location);
+                ini.Save(Location);
             } catch (Exception e) {
                 Logging.Warning("Can’t save file: " + e);
             }
