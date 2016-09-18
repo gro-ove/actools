@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -273,11 +273,11 @@
     <value>LAN</value>
   </data>
   <data name="Main_Screenshots" xml:space="preserve">
-    <value>Скриншоты</value>
-  </data>
+    <value>Снимки экрана</value>
+  <alternative>Скриншоты</alternative></data>
   <data name="Main_Replays" xml:space="preserve">
-    <value>Реплеи</value>
-  </data>
+    <value>Повторы</value>
+  <alternative>Реплеи</alternative></data>
   <data name="Main_Cars" xml:space="preserve">
     <value>Машины</value>
   </data>
@@ -855,5 +855,116 @@
   </data>
   <data name="Toolbar_Refresh" xml:space="preserve">
     <value>Обновить</value>
+  </data>
+  <data name="About_DeveloperMode" xml:space="preserve">
+    <value>Включить режим разработчика?</value>
+  </data>
+  <data name="About_DeveloperMode_Title" xml:space="preserve">
+    <value>Режим разработчика</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent_Message" xml:space="preserve">
+    <value>Спасибо за помощь!</value>
+  </data>
+  <data name="Controls_Axles" xml:space="preserve">
+    <value>Оси</value>
+  </data>
+  <data name="Controls_Buttons" xml:space="preserve">
+    <value>Кнопки</value>
+  </data>
+  <data name="Drive_TyreBlankets" xml:space="preserve">
+    <value>Прогретые шины</value>
+  </data>
+  <data name="Drive_Penalties" xml:space="preserve">
+    <value>Штрафы</value>
+  </data>
+  <data name="Drive_RealConditions" xml:space="preserve">
+    <value>Реальные условия</value>
+  </data>
+  <data name="Drive_ConsiderTimezones" xml:space="preserve">
+    <value>Реальный часовой пояс</value>
+  </data>
+  <data name="Drive_WeatherLabel" xml:space="preserve">
+    <value>Погода:</value>
+  </data>
+  <data name="Drive_Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="Drive_Temperature" xml:space="preserve">
+    <value>Температура</value>
+  </data>
+  <data name="Drive_TrackStateLabel" xml:space="preserve">
+    <value>Состояние трассы:</value>
+  </data>
+  <data name="KunosCareer_TimeLabel" xml:space="preserve">
+    <value>Время:</value>
+  </data>
+  <data name="KunosCareer_TemperatureLabel" xml:space="preserve">
+    <value>Температура:</value>
+  </data>
+  <data name="KunosCareer_WeatherLabel" xml:space="preserve">
+    <value>Погода:</value>
+  </data>
+  <data name="KunosCareer_TrackState" xml:space="preserve">
+    <value>Состояние трассы:</value>
+  </data>
+  <data name="KunosCareer_LapsLabel" xml:space="preserve">
+    <value>Круги:</value>
+  </data>
+  <data name="KunosCareer_AiLevelLabel" xml:space="preserve">
+    <value>Уровень ИИ:</value>
+  </data>
+  <data name="KunosCareer_StartingPositionLabel" xml:space="preserve">
+    <value>Стартовая позиция:</value>
+  </data>
+  <data name="Srs_Commentary" xml:space="preserve">
+    <value>Если вы не можете присоединиться с помощью этого раздела (или пропустили время присоединения), используйте вместо этого раздел ОНЛАЙН.</value>
+  </data>
+  <data name="Rsr_Commentary" xml:space="preserve">
+    <value>Если вы используете Chrome-подобный браузер, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]здесь[/url] находится расширение для запуска событий RSR напрямую из браузера!</value>
+  </data>
+  <data name="Toolbar_Join" xml:space="preserve">
+    <value>Присоединиться</value>
+  </data>
+  <data name="Online_TimeLabel" xml:space="preserve">
+    <value>Время:</value>
+  </data>
+  <data name="Online_SessionsLabel" xml:space="preserve">
+    <value>Сессия:</value>
+  </data>
+  <data name="Online_LeftLabel" xml:space="preserve">
+    <value>Осталось:</value>
+  </data>
+  <data name="Online_ClientsLabel" xml:space="preserve">
+    <value>Клиенты:</value>
+  </data>
+  <data name="Online_SortByLabel" xml:space="preserve">
+    <value>Сортировать по:</value>
+  </data>
+  <data name="Settings_General_CheckForUpdates" xml:space="preserve">
+    <value>Проверять обновления</value>
+  </data>
+  <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
+    <value>Проверять обновления:</value>
+  </data>
+  <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
+    <value>Авто обновление:</value>
+  </data>
+  <data name="Settings_Locale_RestartMessage" xml:space="preserve">
+    <value>Не забудьте перезапустить приложение после каких-либо изменений</value>
+  </data>
+  <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
+    <value>Доступ к тестированию:</value>
+  </data>
+  <data name="Settings_General_TestingAccess" xml:space="preserve">
+    <value>Обновить до не тестированной версии</value>
+  </data>
+  <data name="Settings_General_AcFolderLabel" xml:space="preserve">
+    <value>Каталог Assetto Corsa:</value>
+  </data>
+  <data name="AcRoot_Prompt" xml:space="preserve">
+    <value>Корневой каталог Assetto Corsa:</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
+    <value>Очистить</value>
   </data>
 </root>

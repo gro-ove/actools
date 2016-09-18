@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -626,5 +626,35 @@
   </data>
   <data name="KunosCareer_Place" xml:space="preserve">
     <value>место</value>
+  </data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>Автоматическая КПП</value>
+  </data>
+  <data name="Assists_AutoClutch" xml:space="preserve">
+    <value>Автоматическое сцепление</value>
+  </data>
+  <data name="Assists_AutoBlip" xml:space="preserve">
+    <value>Автоматическая перегазовка</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Идеальная траектория</value>
+  </data>
+  <data name="Assists_FuelConsumption" xml:space="preserve">
+    <value>Расход топлива</value>
+  </data>
+  <data name="Assists_TyreBlankets" xml:space="preserve">
+    <value>Прогретые шины</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Износ шин</value>
+  </data>
+  <data name="Assists_MechanicalDamage" xml:space="preserve">
+    <value>Механические повреждения</value>
+  </data>
+  <data name="Assists_StabilityControl" xml:space="preserve">
+    <value>Контроль устойчивости</value>
+  </data>
+  <data name="ReplayObject_PreviousSession" xml:space="preserve">
+    <value>Предыдущая сессия</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -490,5 +490,11 @@
   </data>
   <data name="Common_Downloading" xml:space="preserve">
     <value>Скачивание…</value>
+  </data>
+  <data name="Replay_CrMessage" xml:space="preserve">
+    <value>Повтор будет перезаписан после следующей гонки. Переименуйте его, чтобы сохранить.</value>
+  </data>
+  <data name="Replay_CrMessage_Commentary" xml:space="preserve">
+    <value>Вы можете перейти в настройки и включить опцию "Сохранять повторы автоматически", чтобы не потерять что-то ценное.</value>
   </data>
 </root>
