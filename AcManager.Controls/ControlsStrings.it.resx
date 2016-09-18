@@ -145,8 +145,8 @@
     <value>ms</value>
   </data>
   <data name="Common_OpponentsPostfix" xml:space="preserve">
-    <value>avversari</value>
-  </data>
+    <value>avversario</value>
+  <alternative>avversari</alternative></data>
   <data name="Common_PointsPostfix" xml:space="preserve">
     <value>punti</value>
   </data>
