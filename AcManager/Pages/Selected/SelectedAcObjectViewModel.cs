@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Controls.Dialogs;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;

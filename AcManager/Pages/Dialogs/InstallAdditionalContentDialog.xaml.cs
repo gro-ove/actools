@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.ContentInstallation;
 using AcTools.Utils.Helpers;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Controls;
 using AcManager.Controls.CustomShowroom;
 using AcManager.Controls.Dialogs;

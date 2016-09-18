@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Pages.Selected {

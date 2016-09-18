@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Tools;
 using AcManager.Tools.Objects;
 using AcTools;

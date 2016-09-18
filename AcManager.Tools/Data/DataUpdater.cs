@@ -47,7 +47,6 @@ namespace AcManager.Tools.Data {
         }
 
         private async Task<string> GetLatestVersion() {
-            // BUG: somewhere here might happen InvalidOperationException, don’t know yet why
             if (IsGetting) return null;
             IsGetting = true;
 

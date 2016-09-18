@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Filters;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
 using AcManager.Tools.Filters;

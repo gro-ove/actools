@@ -158,10 +158,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>cd $(ProjectDir)\Properties
-copy AssemblyInfo.cs AssemblyInfo.cs~
-perl -0pe 's/(?:\d+\.){3}\K(\d+)/$1+1/ge' AssemblyInfo.cs~ &gt; AssemblyInfo.cs
-del AssemblyInfo.cs~</PreBuildEvent>
+    <PreBuildEvent>vsincver --smart $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release packedhelper "$(ProjectPath)"</PostBuildEvent>

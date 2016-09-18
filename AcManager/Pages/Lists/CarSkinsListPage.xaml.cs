@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;

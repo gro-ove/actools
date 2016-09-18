@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;

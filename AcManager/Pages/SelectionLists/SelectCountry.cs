@@ -1,5 +1,5 @@
 using System;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;

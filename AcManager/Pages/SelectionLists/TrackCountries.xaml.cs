@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;

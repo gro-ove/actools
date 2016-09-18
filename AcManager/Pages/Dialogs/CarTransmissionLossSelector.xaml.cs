@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using AcManager.Annotations;
+using JetBrains.Annotations;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 

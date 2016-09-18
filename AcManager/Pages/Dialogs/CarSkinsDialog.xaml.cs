@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AcManager.Annotations;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarSkinsDialog {
