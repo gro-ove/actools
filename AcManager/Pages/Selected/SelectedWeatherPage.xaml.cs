@@ -139,7 +139,7 @@ namespace AcManager.Pages.Selected {
 
             private const long SharingSizeLimit = 2 * 1024 * 1024;
 
-            private ICommandExt _shareCommand;
+            private CommandBase _shareCommand;
 
             public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async () => {
                 byte[] data = null;
@@ -210,7 +210,7 @@ namespace AcManager.Pages.Selected {
 
             private const string KeyUpdatePreviewMessageShown = "swp.upms";
 
-            private ICommandExt _updatePreviewCommand;
+            private CommandBase _updatePreviewCommand;
 
             public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new AsyncCommand(async () => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
@@ -256,7 +256,7 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => SelectedObject.Enabled));
 
-            private ICommandExt _updatePreviewDirectCommand;
+            private CommandBase _updatePreviewDirectCommand;
 
             public ICommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {

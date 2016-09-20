@@ -245,19 +245,19 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            private ICommandExt _previousCommand;
+            private CommandBase _previousCommand;
 
             public ICommand PreviousCommand => _previousCommand ?? (_previousCommand = new DelegateCommand(() => {
                 CurrentPosition--;
             }, () => CurrentPosition > 0));
 
-            private ICommandExt _nextCommand;
+            private CommandBase _nextCommand;
 
             public ICommand NextCommand => _nextCommand ?? (_nextCommand = new DelegateCommand(() => {
                 CurrentPosition++;
             }, () => CurrentPosition < _images.Length - 1));
 
-            private ICommandExt _saveCommand;
+            private CommandBase _saveCommand;
 
             public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new AsyncCommand(async () => {
                 var origin = CurrentOriginalImage as string;

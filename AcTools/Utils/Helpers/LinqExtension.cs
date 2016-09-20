@@ -517,13 +517,13 @@ namespace AcTools.Utils.Helpers {
         [Pure]
         public static IEnumerable<T> Append<T>([NotNull] this IEnumerable<T> source, params T[] additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            return source.Union(additionalItems);
+            return source.Concat(additionalItems);
         }
 
         [Pure]
         public static IEnumerable<T> Prepend<T>([NotNull] this IEnumerable<T> source, params T[] additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            return additionalItems.Union(source);
+            return additionalItems.Concat(source);
         }
 
         [Pure]

@@ -108,7 +108,7 @@ namespace AcManager.Controls.CustomShowroom {
 
             private const string KeyDimensions = "__CarTextureDialog.Dimensions";
 
-            private ICommandExt _uvCommand;
+            private CommandBase _uvCommand;
 
             public ICommand UvCommand => _uvCommand ?? (_uvCommand = new AsyncCommand<string>(async o => {
                 var filename = FilesStorage.Instance.GetTemporaryFilename(
@@ -162,7 +162,7 @@ namespace AcManager.Controls.CustomShowroom {
                 }.ShowDialog();
             }));
 
-            private ICommandExt _exportCommand;
+            private CommandBase _exportCommand;
 
             public ICommand ExportCommand => _exportCommand ?? (_exportCommand = new AsyncCommand(async () => {
                 var dialog = new SaveFileDialog {

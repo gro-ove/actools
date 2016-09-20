@@ -205,16 +205,20 @@ namespace AcManager.Pages.Windows {
             LimitedStorage.Move(LimitedSpace.SelectedEntry, oldKey, newKey);
         }
 
-        private class NavigateCommand : CommandBase {
+        private class NavigateCommand : CommandExt {
             private readonly MainWindow _window;
             private readonly string _key;
 
-            public NavigateCommand(MainWindow window, string key) {
+            public NavigateCommand(MainWindow window, string key) : base(true, false) {
                 _window = window;
                 _key = key;
             }
 
-            protected override void OnExecute(object parameter) {
+            protected override bool CanExecuteOverride() {
+                return true;
+            }
+
+            protected override void ExecuteOverride() {
                 var link = _window.TitleLinks.OfType<TitleLink>().FirstOrDefault(x => x.GroupKey == _key);
                 if (link == null || !link.IsEnabled || link.NonSelectable) return;
                 _window.NavigateTo(link.Source);
@@ -260,7 +264,7 @@ namespace AcManager.Pages.Windows {
         private ViewModel Model => (ViewModel)DataContext;
 
         public class ViewModel : NotifyPropertyChanged {
-            private ICommandExt _enterKeyCommand;
+            private CommandBase _enterKeyCommand;
 
             public ICommand EnterKeyCommand => _enterKeyCommand ?? (_enterKeyCommand = new DelegateCommand(() => {
                 new AppKeyDialog().ShowDialog();

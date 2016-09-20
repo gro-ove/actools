@@ -33,7 +33,7 @@ namespace AcManager.Pages.Selected {
 
             public PythonAppsManager Manager => PythonAppsManager.Instance;
 
-            private ICommandExt _testCommand;
+            private CommandBase _testCommand;
 
             public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
                 //var car = CarsManager.Instance.GetDefault();

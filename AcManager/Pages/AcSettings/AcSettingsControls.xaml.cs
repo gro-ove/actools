@@ -47,7 +47,7 @@ namespace AcManager.Pages.AcSettings {
         public class ViewModel : NotifyPropertyChanged {
             internal ViewModel() {}
 
-            private ICommandExt _saveCommand;
+            private CommandBase _saveCommand;
 
             public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand<string>(o => {
                 var dialog = new SaveFileDialog {
@@ -85,13 +85,13 @@ namespace AcManager.Pages.AcSettings {
                 Controls.SavePreset(filename);
             }));
 
-            private ICommandExt _testCommand;
+            private CommandBase _testCommand;
 
             public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
                 QuickDrive.Run();
             }));
 
-            private ICommandExt _shareCommand;
+            private CommandBase _shareCommand;
 
             public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand<string>(Share));
 

@@ -5,6 +5,13 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Keep comments in INI-files while saving. Might cause some issues with invald
+        /// files (for example, if there are two sections having the same name). Slower,
+        /// so disabled by default. Example: --keep-ini-comments.
+        /// </summary>
+        KeepIniComments,
+
+        /// <summary>
         /// Filter for ignoring specific in-game controls. Example: --ignore-controls=g27.
         /// </summary>
         IgnoreControls,

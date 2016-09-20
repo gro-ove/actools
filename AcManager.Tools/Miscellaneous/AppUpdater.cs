@@ -184,7 +184,7 @@ namespace AcManager.Tools.Miscellaneous {
             return false;
         }
 
-        private ICommandExt _finishUpdateCommand;
+        private CommandBase _finishUpdateCommand;
 
         public ICommand FinishUpdateCommand => _finishUpdateCommand ??
                 (_finishUpdateCommand = new DelegateCommand(RunUpdateExeAndExitIfExists, () => UpdateIsReady != null));

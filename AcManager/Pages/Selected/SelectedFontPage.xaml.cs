@@ -30,7 +30,7 @@ namespace AcManager.Pages.Selected {
 
             public FontsManager Manager => FontsManager.Instance;
 
-            private ICommandExt _usingsRescanCommand;
+            private CommandBase _usingsRescanCommand;
 
             public ICommand UsingsRescanCommand => _usingsRescanCommand ?? (_usingsRescanCommand = new AsyncCommand(async () => {
                 List<string> missing;
@@ -43,7 +43,7 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private ICommandExt _disableUnusedCommand;
+            private CommandBase _disableUnusedCommand;
 
             public ICommand DisableUnusedCommand => _disableUnusedCommand ?? (_disableUnusedCommand = new AsyncCommand(async () => {
                 using (var waiting = new WaitingDialog(ToolsStrings.Common_Scanning)) {
@@ -61,7 +61,7 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private ICommandExt _createNewFontCommand;
+            private CommandBase _createNewFontCommand;
 
             public ICommand CreateNewFontCommand => _createNewFontCommand ?? (_createNewFontCommand = new DelegateCommand(() => {
                 Process.Start(FontCreationTool);

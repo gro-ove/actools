@@ -45,13 +45,13 @@ namespace AcManager.Pages.Selected {
                 base.FilterExec(type);
             }
 
-            private ICommandExt _createJsonCommand;
+            private CommandBase _createJsonCommand;
 
             public ICommand CreateJsonCommand => _createJsonCommand ?? (_createJsonCommand = new DelegateCommand(() => {
                 SelectedObject.Save();
             }));
 
-            private ICommandExt _deleteJsonCommand;
+            private CommandBase _deleteJsonCommand;
 
             public ICommand DeleteJsonCommand => _deleteJsonCommand ?? (_deleteJsonCommand = new DelegateCommand(() => {
                 try {
@@ -63,25 +63,25 @@ namespace AcManager.Pages.Selected {
                 }
             }));
 
-            private ICommandExt _updatePreviewCommand;
+            private CommandBase _updatePreviewCommand;
 
             public ICommand UpdatePreviewCommand => _updatePreviewCommand ?? (_updatePreviewCommand = new DelegateCommand(() => {
                 new CarUpdatePreviewsDialog(Car, new[] { SelectedObject.Id },
                         SelectedCarPage.ViewModel.GetAutoUpdatePreviewsDialogMode()).ShowDialog();
             }, () => SelectedObject.Enabled));
 
-            private ICommandExt _changeLiveryCommand;
+            private CommandBase _changeLiveryCommand;
 
             public ICommand ChangeLiveryCommand => _changeLiveryCommand ?? (_changeLiveryCommand = new DelegateCommand(() => {
                 new LiveryIconEditor(SelectedObject).ShowDialog();
             }));
 
-            private ICommandExt _generateLiveryCommand;
+            private CommandBase _generateLiveryCommand;
 
             public ICommand GenerateLiveryCommand
                 => _generateLiveryCommand ?? (_generateLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateAsync(SelectedObject)));
 
-            private ICommandExt _generateRandomLiveryCommand;
+            private CommandBase _generateRandomLiveryCommand;
 
             public ICommand GenerateRandomLiveryCommand
                 => _generateRandomLiveryCommand ?? (_generateRandomLiveryCommand = new AsyncCommand(() => LiveryIconEditor.GenerateRandomAsync(SelectedObject)));

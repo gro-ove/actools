@@ -61,14 +61,14 @@ namespace AcManager.Pages.Selected {
             (Application.Current.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive)?.CurrentLinkGroup as LinkGroupFilterable)?.AddAndSelect(filter);
         }
 
-        private ICommandExt _filterTagCommand;
+        private CommandBase _filterTagCommand;
 
         public ICommand FilterTagCommand => _filterTagCommand ?? (_filterTagCommand = new DelegateCommand<string>(o => {
             NewFilterTab($"tag:{Filter.Encode(o)}");
         }, o => o != null));
 
         [CanBeNull]
-        protected ICommandExt InnerFilterCommand;
+        protected CommandBase InnerFilterCommand;
 
         public ICommand FilterCommand => InnerFilterCommand ?? (InnerFilterCommand = new DelegateCommand<string>(FilterExec));
 

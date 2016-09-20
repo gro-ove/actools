@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcTools.AcdFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -98,7 +97,7 @@ namespace AcTools.DataFile {
 
                     case '=':
                         if (started != -1) {
-                            key = data.Substring(started, i - started);
+                            key = data.Substring(started, 1 + nonSpace - started);
                             started = -1;
                         }
                         break;
@@ -138,13 +137,29 @@ namespace AcTools.DataFile {
             Content.Clear();
         }
 
-        private static Regex _cleanUp;
+        private static void Prepare(string v, StringBuilder s) {
+            for (var i = 0; i < v.Length; i++) {
+                var c = v[i];
+                switch (c) {
+                    case '[':
+                    case ']':
+                    case ';':
+                        s.Append('_');
+                        break;
+                    default:
+                        s.Append(c);
+                        break;
+                }
+            }
+        }
+
+        private static string Prepare(string v) {
+            var s = new StringBuilder(v.Length);
+            Prepare(v, s);
+            return s.ToString();
+        }
 
         public override string Stringify() {
-            if (_cleanUp == null) {
-                _cleanUp = new Regex(@"[\[\];]", RegexOptions.Compiled);
-            }
-
             var s = new StringBuilder();
 
             foreach (var pair in Content) {
@@ -167,7 +182,7 @@ namespace AcTools.DataFile {
                 foreach (var sub in section) {
                     s.Append(sub.Key);
                     s.Append('=');
-                    s.Append(_cleanUp.Replace(sub.Value, "_"));
+                    Prepare(sub.Value, s);
 
                     if (commentaries?.TryGetValue(sub.Key, out commentary) == true) {
                         s.Append(" ; ");
@@ -193,6 +208,7 @@ namespace AcTools.DataFile {
             // if there is no original file — there is no comments, save it as usual
             if (!File.Exists(filename)) {
                 File.WriteAllText(filename, Stringify());
+                return;
             }
 
             // so called backup
@@ -202,52 +218,150 @@ namespace AcTools.DataFile {
                 FileUtils.Recycle(backupFilename);
             }
 
-            var previousText = File.ReadAllText(filename);
-            var previousParsed = Parse(previousText);
-            var lines = previousText.Replace("\r", "").Split('\n').ToList();
+            var data = File.ReadAllText(filename);
+            var previous = Parse(data);
 
-            foreach (var removedSectionKey in previousParsed.Keys.Where(x => !ContainsKey(x))) {
-                RemoveSection(lines, removedSectionKey);
-            }
+            // remove obsoleted sections
+            data = previous.Keys.Where(x => !ContainsKey(x)).Aggregate(data, RemoveSection);
 
             foreach (var sectionPair in this) {
-                if (previousParsed.ContainsKey(sectionPair.Key)) {
-                    // section in actual data existed before
-                    foreach (var valuePair in sectionPair.Value) {
-                        // write all values
-                        SetValue(lines, sectionPair.Key, valuePair.Key, valuePair.Value);
-                    }
+                // section in actual data existed before
+                if (previous.ContainsKey(sectionPair.Key)) {
+                    // write all values
+                    data = sectionPair.Value.Aggregate(data, (c, p) => SetValue(c, sectionPair.Key, p.Key, Prepare(p.Value)));
 
-                    foreach (var removedValueKey in previousParsed[sectionPair.Key].Keys.Where(x => !sectionPair.Value.ContainsKey(x))) {
-                        // remove obsoleted values
-                        RemoveValue(lines, sectionPair.Key, removedValueKey);
-                    }
+                    // remove obsoleted values
+                    data = previous[sectionPair.Key].Keys.Where(x => !sectionPair.Value.ContainsKey(x))
+                                                    .Aggregate(data, (c, k) => RemoveValue(c, sectionPair.Key, k));
                 } else {
                     // this is a new section
-                    AddSection(lines, sectionPair.Key, sectionPair.Value);
+                    data = AddSection(data, sectionPair.Key, sectionPair.Value);
                 }
             }
+
+            File.WriteAllText(filename, data);
         }
 
-        private static void SetValue(List<string> list, string section, string key, string value) {
-            throw new NotImplementedException();
-        }
-
-        private static void RemoveValue(List<string> list, string section, string key) {
-            throw new NotImplementedException();
-        }
-
-        private static void AddSection(List<string> list, string sectionName, IniFileSection section) {
-            if (list.Any()) {
-                list.Add("");
+        private static bool SetValueFinish(bool current, string kkey, string value, ref string key, ref string data, int nonSpace, ref int tokenStarted) {
+            if (current && key == kkey) {
+                if (tokenStarted == -1) {
+                    data = data.Substring(0, nonSpace + 1) + value + data.Substring(nonSpace + 1);
+                } else {
+                    var length = 1 + nonSpace - tokenStarted;
+                    data = data.Substring(0, tokenStarted) + value + data.Substring(length < 0 ? tokenStarted : tokenStarted + length);
+                }
+                return true;
             }
 
-            list.Add($"[{section}]");
-            list.AddRange(section.Select(pair => $"{pair.Key}={pair.Value}"));
+            tokenStarted = -1;
+            key = null;
+            return false;
         }
 
-        private static void RemoveSection(List<string> list, string sectionName) {
-            throw new NotImplementedException();
+        private static string SetValue(string data, string section, string key, string value) {
+            var started = -1;
+            var nonSpace = -1;
+            string currentKey = null;
+            var current = false;
+            for (var i = 0; i < data.Length; i++) {
+                var c = data[i];
+                switch (c) {
+                    case '[':
+                        if (SetValueFinish(current, key, value, ref currentKey, ref data, nonSpace, ref started)) return data;
+                        if (current) {
+                            return data.Substring(0, i) + (data[i - 1] == '\n' ? "" : "\n") + key + "=" + value + "\n" + data.Substring(i);
+                        }
+
+                        var s = ++i;
+                        if (s == data.Length) break;
+                        for (; i < data.Length && data[i] != ']'; i++) { }
+
+                        current = data.Substring(s, i - s) == section;
+                        break;
+
+                    case '\n':
+                        if (SetValueFinish(current, key, value, ref currentKey, ref data, nonSpace, ref started)) return data;
+                        break;
+
+                    case '=':
+                        if (started != -1) {
+                            currentKey = data.Substring(started, 1 + nonSpace - started);
+                            started = -1;
+                            nonSpace = i;
+                        }
+                        break;
+
+                    case '/':
+                        if (i + 1 < data.Length && data[i + 1] == '/') {
+                            goto case ';';
+                        }
+                        goto default;
+
+                    case ';':
+                        if (SetValueFinish(current, key, value, ref currentKey, ref data, nonSpace, ref started)) return data;
+                        do { i++; } while (i < data.Length && data[i] != '\n');
+                        break;
+
+                    default:
+                        if (!char.IsWhiteSpace(c)) {
+                            nonSpace = i;
+                            if (started == -1) {
+                                started = i;
+                            }
+                        }
+                        break;
+                }
+            }
+
+            if (SetValueFinish(current, key, value, ref currentKey, ref data, nonSpace, ref started)) return data;
+            return data + (data.Length > 0 && data[data.Length - 1] == '\n' ? "" : "\n") + key + "=" + value;
+        }
+
+        private static string RemoveValue(string data, string section, string key) {
+            return SetValue(data, section, key, "");
+        }
+
+        private static string AddSection(string data, string sectionName, IniFileSection section) {
+            var s = new StringBuilder(data);
+
+            if (data.Length > 0 && data[data.Length - 1] != '\n') {
+                s.Append('\n');
+            }
+
+            s.Append($"[{sectionName}]\n");
+            foreach (var pair in section) {
+                s.Append(pair.Key);
+                s.Append('=');
+                Prepare(pair.Value, s);
+                s.Append('\n');
+            }
+
+            return s.ToString();
+        }
+
+        private static string RemoveSection(string data, string section) {
+            var started = -1;
+            var current = false;
+            for (var i = 0; i < data.Length; i++) {
+                var c = data[i];
+                switch (c) {
+                    case '[':
+                        if (current) return data.Substring(0, started) + data.Substring(i);
+                        for (started = i++; i < data.Length && data[i] != ']'; i++) { }
+                        current = data.Substring(started + 1, i - started - 1) == section;
+                        break;
+                    case '/':
+                        if (i + 1 < data.Length && data[i + 1] == '/') {
+                            goto case ';';
+                        }
+                        break;
+                    case ';':
+                        do { i++; } while (i < data.Length && data[i] != '\n');
+                        break;
+                }
+            }
+
+            return current ? data.Substring(0, started) : data;
         }
         #endregion
 
@@ -257,6 +371,15 @@ namespace AcTools.DataFile {
             } else {
                 base.SaveTo(filename, backup);
             }
+        }
+
+        protected override Task SaveToAsync(string filename, bool backup) {
+            if (OptionKeepComments) {
+                SaveToKeepComments(filename, backup);
+                return Task.Delay(0);
+            }
+
+            return base.SaveToAsync(filename, backup);
         }
 
         public override string ToString() {

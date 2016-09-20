@@ -95,7 +95,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private ICommandExt _gotItCommand;
+            private CommandBase _gotItCommand;
 
             public ICommand GotItCommand => _gotItCommand ?? (_gotItCommand = new DelegateCommand(() => {
                 ShowExtensionMessage = false;
@@ -261,12 +261,12 @@ namespace AcManager.Pages.Drive {
                 return _server?.Ip != null && _server.Port.HasValue && _player != null && _carId != null;
             }
 
-            private ICommandExt _goCommand;
+            private CommandBase _goCommand;
 
             public ICommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(Go, CanGo));
         }
 
-        private ICommandExt _quitCommand;
+        private CommandBase _quitCommand;
 
         public ICommand QuitCommand => _quitCommand ?? (_quitCommand = new AsyncCommand(async () => {
             WebBrowser.Navigate(Model.QuitUrl);
@@ -275,7 +275,7 @@ namespace AcManager.Pages.Drive {
             await Task.Delay(500);
         }, () => Model.CanQuit));
 
-        private ICommandExt _testCommand;
+        private CommandBase _testCommand;
 
         public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
             WebBrowser.Execute(@"location.reload(true)");

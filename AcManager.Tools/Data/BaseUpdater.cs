@@ -149,7 +149,7 @@ namespace AcManager.Tools.Data {
             return !_checkingInProcess && !IsGetting;
         }
 
-        private ICommandExt _checkAndUpdateIfNeededCommand;
+        private CommandBase _checkAndUpdateIfNeededCommand;
 
         public ICommand CheckAndUpdateIfNeededCommand => _checkAndUpdateIfNeededCommand ??
                 (_checkAndUpdateIfNeededCommand = new DelegateCommand(() => CheckAndUpdateIfNeeded().Forget(), CanBeUpdated));

@@ -22,7 +22,7 @@ namespace AcManager.Pages.About {
                 NotesList.MoveCurrentToFirst();
             }
 
-            private ICommandExt _markAllAsReadCommand;
+            private CommandBase _markAllAsReadCommand;
 
             public ICommand MarkAllAsReadCommand => _markAllAsReadCommand ?? (_markAllAsReadCommand = new DelegateCommand(() => {
                 foreach (var note in ReleaseNotes.Entries.Where(x => x.IsNew)) {

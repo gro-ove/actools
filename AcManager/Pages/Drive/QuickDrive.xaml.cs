@@ -403,7 +403,7 @@ namespace AcManager.Pages.Drive {
 
             private QuickDriveModeViewModel _selectedModeViewModel;
 
-            private ICommandExt _goCommand;
+            private CommandBase _goCommand;
 
             public ICommand GoCommand => _goCommand ?? (_goCommand =
                     new AsyncCommand(Go, () => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));

@@ -121,7 +121,7 @@ namespace AcManager.Pages.Dialogs {
 
             public TrackObjectBase Track { get; }
 
-            private ICommandExt _saveCommand;
+            private CommandBase _saveCommand;
 
             public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(() => {
                 Track.GeoTags = new GeoTagsEntry(Latitude, Longitude);

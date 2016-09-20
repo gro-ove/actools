@@ -104,5 +104,8 @@ namespace AcTools.Windows {
         public const int DUPLICATE_CLOSE_SOURCE = 1;
         public const int DUPLICATE_SAME_ACCESS = 2;
         #endregion
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool SetDllDirectory(string lpPathName);
     }
 }

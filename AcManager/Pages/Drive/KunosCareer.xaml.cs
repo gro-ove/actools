@@ -165,7 +165,7 @@ namespace AcManager.Pages.Drive {
                 FancyBackgroundManager.Instance.ChangeBackground((CurrentItem.Value as KunosCareerObject)?.PreviewImage);
             }
 
-            private ICommandExt _selectSeriesCommand;
+            private CommandBase _selectSeriesCommand;
 
             public ICommand SelectSeriesCommand => _selectSeriesCommand ?? (_selectSeriesCommand = new DelegateCommand(() => {
                 var career = CurrentItem?.Loaded() as KunosCareerObject;

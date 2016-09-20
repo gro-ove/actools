@@ -61,7 +61,7 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            private ICommandExt _signInCommand;
+            private CommandBase _signInCommand;
 
             public ICommand SignInCommand => _signInCommand ?? (_signInCommand = new AsyncCommand(async () => {
                 if (SelectedUploader == null) return;
@@ -76,7 +76,7 @@ namespace AcManager.Pages.Settings {
                 _updateDirectoriesCommand?.RaiseCanExecuteChanged();
             }, () => SelectedUploader?.IsReady == false));
 
-            private ICommandExt _resetCommand;
+            private CommandBase _resetCommand;
 
             public ICommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
                 SelectedUploader.Reset();
@@ -85,7 +85,7 @@ namespace AcManager.Pages.Settings {
                 _updateDirectoriesCommand?.RaiseCanExecuteChanged();
             }, () => SelectedUploader?.IsReady == true));
 
-            private ICommandExt _updateDirectoriesCommand;
+            private CommandBase _updateDirectoriesCommand;
 
             public ICommand UpdateDirectoriesCommand => _updateDirectoriesCommand ?? (_updateDirectoriesCommand = new AsyncCommand(async () => {
                 if (SelectedUploader == null) return;

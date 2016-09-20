@@ -458,7 +458,8 @@
                         </c:ModernPopup>
 
                         <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}" VerticalAlignment="Bottom"
-                                CommandParameter="{Binding Source={x:Static c:AssistsViewModel.Instance}}" Content="{x:Static g:AppStrings.Common_Go}" />
+                                CommandParameter="{Binding Source={x:Static c:AssistsViewModel.Instance}}" Content="{x:Static g:AppStrings.Common_Go}"
+                                ToolTip="{Binding IsAvailable}" />
                     </DockPanel>
                 </Grid>
             </Grid>

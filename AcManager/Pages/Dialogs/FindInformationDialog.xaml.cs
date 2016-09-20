@@ -118,7 +118,7 @@ namespace AcManager.Pages.Dialogs {
                         ).Trim() : SelectedText;
             }
 
-            private ICommandExt _saveCommand;
+            private CommandBase _saveCommand;
 
             public ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => !string.IsNullOrEmpty(SelectedText)));
         }

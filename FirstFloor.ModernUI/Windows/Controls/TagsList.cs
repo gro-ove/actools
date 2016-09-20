@@ -10,13 +10,13 @@ using FirstFloor.ModernUI.Windows.Media;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class TagsList : Control {
-        private ICommandExt _closeCommand;
+        private CommandBase _closeCommand;
 
         public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand<string>(o => {
             ItemsSource.Remove(o);
         }));
 
-        private ICommandExt _changeCommand;
+        private CommandBase _changeCommand;
 
         public ICommand ChangeCommand => _changeCommand ?? (_changeCommand = new DelegateCommand<TextBox>(o => {
             var originalValue = o?.DataContext as string;

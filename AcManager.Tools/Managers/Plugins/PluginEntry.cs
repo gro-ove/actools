@@ -181,7 +181,7 @@ namespace AcManager.Tools.Managers.Plugins {
         [JsonConstructor, UsedImplicitly]
         private PluginEntry() { }
 
-        private ICommandExt _installCommand;
+        private CommandBase _installCommand;
 
         public ICommand InstallCommand => _installCommand ??
                 (_installCommand = new AsyncCommand(Install, () => !IsInstalled && !IsInstalling));
@@ -203,7 +203,7 @@ namespace AcManager.Tools.Managers.Plugins {
             _cancellation = null;
         }
 
-        private ICommandExt _cancellationCommand;
+        private CommandBase _cancellationCommand;
 
         public ICommand CancellationCommand => _cancellationCommand ?? (_cancellationCommand = new DelegateCommand(() => {
             _cancellation?.Cancel();

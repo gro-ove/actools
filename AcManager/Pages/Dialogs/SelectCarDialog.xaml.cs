@@ -141,7 +141,7 @@ namespace AcManager.Pages.Dialogs {
 
         public BetterObservableCollection<CarObject> TunableVersions { get; } = new BetterObservableCollection<CarObject>();
 
-        private ICommandExt _manageSetupsCommand;
+        private CommandBase _manageSetupsCommand;
 
         public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
             if (_selectedCar.Value == null) return;
@@ -286,7 +286,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private ICommandExt _openInShowroomCommand;
+        private CommandBase _openInShowroomCommand;
 
         public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand(() => {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
@@ -295,13 +295,13 @@ namespace AcManager.Pages.Dialogs {
             }
         }, () => SelectedCar != null && SelectedSkin != null));
 
-        private ICommandExt _openInCustomShowroomCommand;
+        private CommandBase _openInCustomShowroomCommand;
 
         public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ?? (_openInCustomShowroomCommand = new DelegateCommand(() => {
             CustomShowroomWrapper.StartAsync(SelectedCar, SelectedSkin);
         }, () => SelectedCar != null && SelectedSkin != null));
 
-        private ICommandExt _openInShowroomOptionsCommand;
+        private CommandBase _openInShowroomOptionsCommand;
 
         public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
             new CarOpenInShowroomDialog(SelectedCar, SelectedSkin?.Id).ShowDialog();

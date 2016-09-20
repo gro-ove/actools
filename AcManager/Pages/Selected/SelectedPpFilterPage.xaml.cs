@@ -23,14 +23,14 @@ namespace AcManager.Pages.Selected {
 
             public PpFiltersManager Manager => PpFiltersManager.Instance;
 
-            private ICommandExt _shareCommand;
+            private CommandBase _shareCommand;
 
             public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(() => {
                 var data = SelectedObject.Content ?? FileUtils.ReadAllText(SelectedObject.Location);
                 return SharingUiHelper.ShareAsync(SharedEntryType.PpFilter, SelectedObject.Name, null, data);
             }));
 
-            private ICommandExt _testCommand;
+            private CommandBase _testCommand;
 
             public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
                 var car = CarsManager.Instance.GetDefault();

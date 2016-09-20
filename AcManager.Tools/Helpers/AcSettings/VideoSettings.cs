@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
@@ -12,14 +14,17 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class VideoSettings : IniPresetableSettings {
-        public class ResolutionEntry : Displayable, IEquatable<ResolutionEntry> {
+        public class ResolutionEntry : Displayable, IEquatable<ResolutionEntry>, IWithId<int> {
             private readonly bool _custom;
+            private readonly int _index;
+
+            public int Index => _custom ? 0 : _index;
 
             private int _width;
             private int _height;
-            private int _framerate;
+            private double _framerate;
 
-            public int Volume => Width * Height * Framerate;
+            public double Volume => Width * Height * Framerate;
 
             public int Width {
                 get { return _width; }
@@ -41,10 +46,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 }
             }
 
-            public int Framerate {
+            public double Framerate {
                 get { return _framerate; }
                 set {
-                    if (value == _framerate) return;
+                    if (Equals(value, _framerate)) return;
                     _framerate = value;
                     OnPropertyChanged();
                 }
@@ -57,15 +62,16 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 DisplayName = ToolsStrings.AcSettings_CustomResolution;
             }
 
-            internal ResolutionEntry(int width, int height, int framerate) {
+            internal ResolutionEntry(int index, int width, int height, double framerate) {
+                _index = index;
                 _width = width;
                 _height = height;
-                _framerate = framerate;
+                _framerate = framerate.Round(0.01);
                 DisplayName = string.Format(ToolsStrings.AcSettings_ResolutionFormat, Width, Height, Framerate);
             }
 
             public bool Same(ResolutionEntry other) {
-                return other != null && Width == other.Width && Height == other.Height && Framerate == other.Framerate;
+                return other != null && Width == other.Width && Height == other.Height && Equals(Framerate, other.Framerate);
             }
 
             public bool Equals(ResolutionEntry other) {
@@ -79,17 +85,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
             public override int GetHashCode() {
                 unchecked {
                     var hashCode = _custom.GetHashCode();
-                    if (_custom) return hashCode;
-
-                    // Those members are readonly if it’s not a custom entry
-                    // ReSharper disable NonReadonlyMemberInGetHashCode
                     hashCode = (hashCode * 397) ^ _width;
                     hashCode = (hashCode * 397) ^ _height;
-                    hashCode = (hashCode * 397) ^ _framerate;
-                    // ReSharper restore NonReadonlyMemberInGetHashCode
+                    hashCode = (hashCode * 397) ^ _framerate.GetHashCode();
                     return hashCode;
                 }
             }
+
+            int IWithId<int>.Id => Index;
         }
 
         internal VideoSettings() : base(@"video") {
@@ -198,15 +201,62 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        private static bool _acVideoModesInitialized;
+
+        public static bool InitializeAcVideoModes() {
+            if (!_acVideoModesInitialized) {
+                if (!AcRootDirectory.Instance.IsReady) return false;
+                Kernel32.SetDllDirectory(AcRootDirectory.Instance.Value);
+                _acVideoModesInitialized = true;
+            }
+
+            return true;
+        }
+
+        public static IReadOnlyList<ResolutionEntry> GetResolutions() {
+            if (InitializeAcVideoModes()) {
+                try {
+                    return AcVideoModes.GetResolutionEntries().ToList();
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t get a proper list of resolutions", e);
+                }
+            }
+
+            var d = new User32.DEVMODE();
+            return LinqExtension.RangeFrom()
+                                .Select(i => User32.EnumDisplaySettings(null, i, ref d)
+                                        ? new ResolutionEntry(i + 1, d.dmPelsWidth, d.dmPelsHeight, d.dmDisplayFrequency) : null)
+                                .TakeWhile(x => x != null).Distinct().ToList();
+        }
+
+        private static class AcVideoModes {
+            [StructLayout(LayoutKind.Sequential)]
+            private struct VideoMode {
+                public int Index;
+                public int Width;
+                public int Height;
+                public float Refresh;
+            }
+
+            public static IReadOnlyList<ResolutionEntry> GetResolutionEntries() {
+                var mode = new VideoMode();
+                return Enumerable.Range(0, acInitVideoModes())
+                                 .Select(i => {
+                                     acGetVideoMode(i, ref mode);
+                                     return new ResolutionEntry(mode.Index + 1, mode.Width, mode.Height, Math.Round(mode.Refresh, 2));
+                                 }).Distinct().ToList();
+            }
+
+            [DllImport("acVideoModes.dll")]
+            private static extern int acInitVideoModes();
+
+            [DllImport("acVideoModes.dll")]
+            private static extern int acGetVideoMode(int index, ref VideoMode mode);
+        }
+
         private void UpdateResolutionsList() {
             var r = Resolution;
-            var d = new User32.DEVMODE();
-            var l = LinqExtension.RangeFrom()
-                                 .Select(i => User32.EnumDisplaySettings(null, i, ref d)
-                                         ? new ResolutionEntry(d.dmPelsWidth, d.dmPelsHeight, d.dmDisplayFrequency) : null)
-                                 .TakeWhile(x => x != null)
-                                 .Append(CustomResolution).ToArray();
-            Resolutions = l;
+            Resolutions = GetResolutions().Append(CustomResolution).ToArray();
             Resolution = Resolutions.FirstOrDefault(x => x.Equals(r)) ?? GetPreferredResolution();
         }
 
@@ -622,7 +672,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         [NotNull]
         private ResolutionEntry GetClosestToCustom() {
             return Resolutions.FirstOrDefault(
-                    x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height && x.Framerate == CustomResolution.Framerate) ??
+                    x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height && Equals(x.Framerate, CustomResolution.Framerate)) ??
                     Resolutions.FirstOrDefault(x => x.Width == CustomResolution.Width && x.Height == CustomResolution.Height) ?? GetPreferredResolution();
         } 
 
@@ -636,7 +686,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             CustomResolution.Height = section.GetInt("HEIGHT", 0);
             CustomResolution.Framerate = section.GetInt("REFRESH", 0);
 
-            var resolution = Resolutions.FirstOrDefault(x => x.Same(CustomResolution)) ?? CustomResolution;
+            var resolution = Resolutions.GetByIdOrDefault(section.GetInt("INDEX", 0)) ??
+                    Resolutions.FirstOrDefault(x => x.Same(CustomResolution)) ?? CustomResolution;
             if (Fullscreen && ReferenceEquals(resolution, CustomResolution) && SettingsHolder.Common.FixResolutionAutomatically) {
                 Resolution = GetClosestToCustom();
                 ForceSave();
@@ -694,6 +745,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("WIDTH", Resolution.Width);
             section.Set("HEIGHT", Resolution.Height);
             section.Set("REFRESH", Resolution.Framerate);
+            section.Set("INDEX", Resolution.Index);
 
             section.Set("FULLSCREEN", Fullscreen);
             section.Set("VSYNC", VerticalSyncronization);
@@ -701,6 +753,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("ANISOTROPIC", AnisotropicLevel);
             section.Set("SHADOW_MAP_SIZE", ShadowMapSize);
             section.Set("FPS_CAP_MS", FramerateLimitEnabled ? 1e3 / FramerateLimit : 0d);
+
             ini["CAMERA"].Set("MODE", CameraMode);
 
             section = ini["ASSETTOCORSA"];

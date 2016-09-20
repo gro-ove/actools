@@ -730,7 +730,7 @@ namespace AcManager.Tools.Objects {
             return c == null ? base.CompareTo(o) : AlphanumComparatorFast.Compare(Id, c.Id);
         }
 
-        private ICommandExt _championshipResetCommand;
+        private CommandBase _championshipResetCommand;
 
         public ICommand ChampionshipResetCommand => _championshipResetCommand ?? (_championshipResetCommand = new DelegateCommand(() => {
             KunosCareerProgress.Instance.UpdateEntry(Id, new KunosCareerProgressEntry(0, new int[0], 0, new int[0]), true);

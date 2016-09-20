@@ -110,7 +110,7 @@ namespace AcManager.Pages.Selected {
             }
 
             #region Open In Showroom
-            private ICommandExt _openInShowroomCommand;
+            private CommandBase _openInShowroomCommand;
 
             public ICommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
@@ -124,20 +124,20 @@ namespace AcManager.Pages.Selected {
                 }
             }, o => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private ICommandExt _openInShowroomOptionsCommand;
+            private CommandBase _openInShowroomOptionsCommand;
 
             public ICommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
                 new CarOpenInShowroomDialog(SelectedObject, SelectedObject.SelectedSkin?.Id).ShowDialog();
             }, () => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
-            private ICommandExt _openInCustomShowroomCommand;
+            private CommandBase _openInCustomShowroomCommand;
 
             public ICommand OpenInCustomShowroomCommand => _openInCustomShowroomCommand ??
                     (_openInCustomShowroomCommand = new AsyncCommand<CustomShowroomMode?>(type => type.HasValue
                             ? CustomShowroomWrapper.StartAsync(type.Value, SelectedObject, SelectedObject.SelectedSkin)
                             : CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin)));
 
-            private ICommandExt _driveCommand;
+            private CommandBase _driveCommand;
 
             public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
@@ -146,7 +146,7 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => SelectedObject.Enabled));
 
-            private ICommandExt _driveOptionsCommand;
+            private CommandBase _driveOptionsCommand;
 
             public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
                 QuickDrive.Show(SelectedObject, SelectedObject.SelectedSkin?.Id);
@@ -235,7 +235,7 @@ namespace AcManager.Pages.Selected {
             }
             #endregion
 
-            private ICommandExt _manageSkinsCommand;
+            private CommandBase _manageSkinsCommand;
 
             public ICommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => {
                 new CarSkinsDialog(SelectedObject) {
@@ -243,7 +243,7 @@ namespace AcManager.Pages.Selected {
                 }.ShowDialogWithoutBlocking();
             }));
 
-            private ICommandExt _manageSetupsCommand;
+            private CommandBase _manageSetupsCommand;
 
             public ICommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
                 new CarSetupsDialog(SelectedObject) {
@@ -253,7 +253,7 @@ namespace AcManager.Pages.Selected {
 
             private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
 
-            private ICommandExt _readDataCommand;
+            private CommandBase _readDataCommand;
 
             public ICommand ReadDataCommand => _readDataCommand ?? (_readDataCommand = new DelegateCommand(() => {
                 var source = Path.Combine(SelectedObject.Location, "data.a" + "cd");
@@ -266,7 +266,7 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => SettingsHolder.Common.MsMode && SelectedObject.AcdData.IsPacked));
 
-            private ICommandExt _packDataCommand;
+            private CommandBase _packDataCommand;
 
             public ICommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new DelegateCommand(() => {
                 try {
@@ -291,7 +291,7 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => SettingsHolder.Common.DeveloperMode && Directory.Exists(DataDirectory)));
 
-            private ICommandExt _replaceSoundCommand;
+            private CommandBase _replaceSoundCommand;
 
             public ICommand ReplaceSoundCommand => _replaceSoundCommand ?? (_replaceSoundCommand = new AsyncCommand(async () => {
                 var donor = SelectCarDialog.Show();

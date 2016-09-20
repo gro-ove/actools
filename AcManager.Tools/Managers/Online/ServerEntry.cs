@@ -898,18 +898,18 @@ namespace AcManager.Tools.Managers.Online {
             AvailableUpdate();
         }
 
-        private ICommandExt _addToRecentCommand;
+        private CommandBase _addToRecentCommand;
 
         public ICommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new DelegateCommand(() => {
             RecentManager.Instance.AddRecentServer(OriginalInformation);
         }, () => Status == ServerStatus.Ready && RecentManager.Instance.GetWrapperById(Id) == null));
 
-        private ICommandExt _joinCommand;
+        private CommandBase _joinCommand;
 
         public ICommand JoinCommand => _joinCommand ?? (_joinCommand = new AsyncCommand<object>(Join,
                 o => ReferenceEquals(o, ForceJoin) || IsAvailable));
 
-        private ICommandExt _cancelBookingCommand;
+        private CommandBase _cancelBookingCommand;
 
         public ICommand CancelBookingCommand => _cancelBookingCommand ?? (_cancelBookingCommand = new AsyncCommand(CancelBooking, () => IsBooked));
 

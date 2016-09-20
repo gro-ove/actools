@@ -265,7 +265,7 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }
 
-            private ICommandExt _updateAmbientShadowCommand;
+            private CommandBase _updateAmbientShadowCommand;
 
             public ICommand UpdateAmbientShadowCommand => _updateAmbientShadowCommand ?? (_updateAmbientShadowCommand = new AsyncCommand(async () => {
                 if (Renderer?.AmbientShadowSizeChanged == true) {
@@ -312,7 +312,7 @@ namespace AcManager.Controls.CustomShowroom {
                 }
             }));
 
-            private ICommandExt _ambientShadowSizeSaveCommand;
+            private CommandBase _ambientShadowSizeSaveCommand;
 
             public ICommand AmbientShadowSizeSaveCommand => _ambientShadowSizeSaveCommand ?? (_ambientShadowSizeSaveCommand = new DelegateCommand(() => {
                 if (Renderer == null || File.Exists(Path.Combine(Car.Location, "data.acd")) && ModernDialog.ShowMessage(
@@ -343,7 +343,7 @@ namespace AcManager.Controls.CustomShowroom {
                 Renderer?.FitAmbientShadowSize();
             }, () => Renderer != null));
 
-            private ICommandExt _ambientShadowSizeResetCommand;
+            private CommandBase _ambientShadowSizeResetCommand;
 
             public ICommand AmbientShadowSizeResetCommand => _ambientShadowSizeResetCommand ?? (_ambientShadowSizeResetCommand = new DelegateCommand(() => {
                 Renderer?.ResetAmbientShadowSize();
@@ -363,13 +363,13 @@ namespace AcManager.Controls.CustomShowroom {
                 Renderer?.SelectPreviousSkin();
             }));
 
-            private ICommandExt _openSkinDirectoryCommand;
+            private CommandBase _openSkinDirectoryCommand;
 
             public ICommand OpenSkinDirectoryCommand => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new DelegateCommand(() => {
                 Skin.ViewInExplorer();
             }, () => Skin != null));
 
-            private ICommandExt _unpackKn5Command;
+            private CommandBase _unpackKn5Command;
 
             public ICommand UnpackKn5Command => _unpackKn5Command ?? (_unpackKn5Command = new AsyncCommand(async () => {
                 if (Renderer?.Kn5 == null) return;
@@ -433,7 +433,7 @@ namespace AcManager.Controls.CustomShowroom {
                 dlg.ShowDialog();
             }
 
-            private ICommandExt _viewObjectCommand;
+            private CommandBase _viewObjectCommand;
 
             public ICommand ViewObjectCommand => _viewObjectCommand ?? (_viewObjectCommand = new DelegateCommand(() => {
                 var obj = Renderer?.SelectedObject.OriginalNode;
@@ -451,7 +451,7 @@ namespace AcManager.Controls.CustomShowroom {
                 return property.ValueA.ToInvariantString();
             }
 
-            private ICommandExt _viewMaterialCommand;
+            private CommandBase _viewMaterialCommand;
 
             public ICommand ViewMaterialCommand => _viewMaterialCommand ?? (_viewMaterialCommand = new DelegateCommand(() => {
                 var material = Renderer?.SelectedMaterial;
@@ -480,7 +480,7 @@ namespace AcManager.Controls.CustomShowroom {
                 ShowMessage(sb.ToString(), material.Name);
             }, () => Renderer?.SelectedMaterial != null));
 
-            private ICommandExt _viewTextureCommand;
+            private CommandBase _viewTextureCommand;
 
             public ICommand ViewTextureCommand => _viewTextureCommand ?? (_viewTextureCommand = new DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation>(o => {
                 if (Renderer == null) return;

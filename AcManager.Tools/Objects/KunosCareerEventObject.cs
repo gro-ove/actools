@@ -120,7 +120,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private ICommandExt _resetUserAiLevelCommand;
+        private CommandBase _resetUserAiLevelCommand;
 
         public ICommand ResetUserAiLevelCommand => _resetUserAiLevelCommand ?? (_resetUserAiLevelCommand = new DelegateCommand(() => {
             UserAiLevel = AiLevel;
@@ -138,6 +138,14 @@ namespace AcManager.Tools.Objects {
             if (SettingsHolder.Drive.KunosCareerUserAiLevel) {
                 ini["RACE"].Set("AI_LEVEL", UserAiLevel);
             }
+
+            // why, Kunos, why
+            ini.Remove("SPECIAL_EVENT");
+
+            // well, just in case
+            ini["BENCHMARK"].Set("ACTIVE", false);
+            ini["REPLAY"].Set("ACTIVE", false);
+            ini["REMOTE"].Set("ACTIVE", false);
 
             IniFile opponentsIniFile = null;
             foreach (var i in Enumerable.Range(0, ini["RACE"].GetInt("CARS", 0)).Skip(1)) {
@@ -161,10 +169,10 @@ namespace AcManager.Tools.Objects {
             return ini;
         }
 
-        private ICommandExt _goCommand;
+        private DelegateCommand _goCommand;
 
         // TODO: async command
-        public ICommand GoCommand => _goCommand ?? (_goCommand = new DelegateCommand<Game.AssistsProperties>(async o => {
+        public DelegateCommand GoCommand => _goCommand ?? (_goCommand = new DelegateCommand(async () => {
             await GameWrapper.StartAsync(new Game.StartProperties {
                 AdditionalPropertieses = {
                     ConditionType.HasValue ? new PlaceConditions {
@@ -176,8 +184,8 @@ namespace AcManager.Tools.Objects {
                     new KunosCareerManager.CareerProperties { CareerId = KunosCareerId, EventId = Id }
                 },
                 PreparedConfig = ConvertConfig(new IniFile(IniFilename)),
-                AssistsProperties = o
+                AssistsProperties = null
             });
-        }, o => IsAvailable));
+        }, () => IsAvailable));
     }
 }

@@ -536,6 +536,8 @@ done:
     + local weather instead of track's one
         + http://ipinfo.io/geo
     + online: proper refresh button
+    + Ctrl+L as F6
+    + replace InvalidateRequerySuggested with proper stuff
 
 fixme:
     - notifypropertychanged for commands
@@ -556,16 +558,14 @@ fixme:
     - RebuildPresetsList() exception
     - track.name, car.name - empty?
         - car setup page
-    - fix popups behavior
 
 todo:
     - high CPU priority for acs.exe
-    - Ctrl+L as F6
+    - fix scrollbar in challenges
 
     - rework selectcardialog
     - rework selecttrackdialog
     - disable dragging in content tab
-    - replace InvalidateRequerySuggested with proper stuff
     - booking: show notification
 
     - include “dev apps” option to apps presets

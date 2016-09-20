@@ -30,7 +30,7 @@ namespace AcManager.Controls.Helpers {
             Instance = new SharingUiHelper();
         }
 
-        private ICommandExt _removeCommand;
+        private CommandBase _removeCommand;
 
         public ICommand RemoveCommand => _removeCommand ?? (_removeCommand = new DelegateCommand<SharedEntry>(o => {
             // TODO

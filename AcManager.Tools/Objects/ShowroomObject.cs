@@ -183,7 +183,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private ICommandExt _toggleSoundCommand;
+        private CommandBase _toggleSoundCommand;
 
         public ICommand ToggleSoundCommand => _toggleSoundCommand ?? (_toggleSoundCommand = new DelegateCommand(() => {
             try {

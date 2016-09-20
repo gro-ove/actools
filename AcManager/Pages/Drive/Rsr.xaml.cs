@@ -67,7 +67,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private ICommandExt _gotItCommand;
+            private CommandBase _gotItCommand;
 
             public ICommand GotItCommand => _gotItCommand ?? (_gotItCommand = new DelegateCommand(() => {
                 ShowExtensionMessage = false;

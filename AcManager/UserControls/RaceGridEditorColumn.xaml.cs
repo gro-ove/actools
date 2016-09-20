@@ -117,7 +117,7 @@ namespace AcManager.UserControls {
 
         public ICommand SavePresetCommand => Model?.SavePresetCommand;
 
-        private ICommandExt _addOpponentCarCommand;
+        private CommandBase _addOpponentCarCommand;
 
         public ICommand AddOpponentCarCommand => _addOpponentCarCommand ??
                 (_addOpponentCarCommand = new DelegateCommand(AddSelected, () => SelectedCar != null));

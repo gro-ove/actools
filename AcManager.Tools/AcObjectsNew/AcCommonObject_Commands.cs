@@ -12,11 +12,11 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcCommonObject {
-        private ICommandExt _viewInExplorerCommand;
+        private CommandBase _viewInExplorerCommand;
 
         public virtual ICommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(ViewInExplorer));
 
-        private ICommandExt _copyIdCommand;
+        private CommandBase _copyIdCommand;
 
         public ICommand CopyIdCommand => _copyIdCommand ?? (_copyIdCommand = new DelegateCommand<string>(o => {
             switch (o) {
@@ -34,7 +34,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private ICommandExt _changeIdCommand;
+        private CommandBase _changeIdCommand;
 
         public virtual ICommand ChangeIdCommand => _changeIdCommand ?? (_changeIdCommand = new DelegateCommand<string>(o => {
             try {
@@ -65,7 +65,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public ICommand CloneCommand => _cloneCommand ?? (_cloneCommand = new AsyncCommand<string>(CloneAsync, o => !string.IsNullOrWhiteSpace(o)));
 
-        private ICommandExt _toggleCommand;
+        private CommandBase _toggleCommand;
 
         public virtual ICommand ToggleCommand => _toggleCommand ?? (_toggleCommand = new DelegateCommand(() => {
             try {
@@ -77,7 +77,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private ICommandExt _deleteCommand;
+        private CommandBase _deleteCommand;
 
         public virtual ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
             try {
@@ -91,7 +91,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private ICommandExt _reloadCommand;
+        private CommandBase _reloadCommand;
 
         public virtual ICommand ReloadCommand => _reloadCommand ?? (_reloadCommand = new DelegateCommand<string>(o => {
             if (o == @"full") {
@@ -101,7 +101,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private ICommandExt _saveCommand;
+        private CommandBase _saveCommand;
 
         public virtual ICommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => Changed));
     }

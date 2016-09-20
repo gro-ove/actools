@@ -34,6 +34,7 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
+using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -101,6 +102,7 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.LiteStartupModeSupported, ref Pages.Windows.MainWindow.OptionLiteModeSupported);
             AppArguments.Set(AppFlag.NfsPorscheTribute, ref RaceGridViewModel.OptionNfsPorscheNames);
+            AppArguments.Set(AppFlag.KeepIniComments, ref IniFile.OptionKeepComments);
 
             LimitedSpace.Initialize();
             LimitedStorage.Initialize();

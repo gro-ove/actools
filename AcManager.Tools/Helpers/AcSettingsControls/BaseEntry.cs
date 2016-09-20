@@ -61,7 +61,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             Input = null;
         }
 
-        private ICommandExt _clearCommand;
+        private CommandBase _clearCommand;
 
         public ICommand ClearCommand => _clearCommand ?? (_clearCommand = new DelegateCommand(Clear, () => Input != null));
     }

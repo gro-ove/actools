@@ -185,7 +185,7 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        private ICommandExt _usedRescanCommand;
+        private CommandBase _usedRescanCommand;
 
         public ICommand UsingsRescanCommand => _usedRescanCommand ?? (_usedRescanCommand = new AsyncCommand(() => UsingsRescan()));
     }

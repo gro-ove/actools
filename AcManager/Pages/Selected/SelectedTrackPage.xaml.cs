@@ -47,7 +47,7 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private ICommandExt _driveCommand;
+            private CommandBase _driveCommand;
 
             public ICommand DriveCommand => _driveCommand ?? (_driveCommand = new DelegateCommand(() => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
@@ -56,7 +56,7 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => SelectedTrackConfiguration.Enabled));
 
-            private ICommandExt _driveOptionsCommand;
+            private CommandBase _driveOptionsCommand;
 
             public ICommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
                 QuickDrive.Show(track: SelectedTrackConfiguration);
@@ -135,7 +135,7 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => SelectedObject.Enabled));
 
-            private ICommandExt _updatePreviewDirectCommand;
+            private CommandBase _updatePreviewDirectCommand;
 
             public ICommand UpdatePreviewDirectCommand => _updatePreviewDirectCommand ?? (_updatePreviewDirectCommand = new DelegateCommand(() => {
                 var dialog = new OpenFileDialog {

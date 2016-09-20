@@ -8,7 +8,7 @@ namespace FirstFloor.ModernUI.Commands {
         /// Makes DelegateCommnand listen on PropertyChanged events of some object,
         /// so that DelegateCommnand can update its IsEnabled property.
         /// </summary>
-        public static ICommandExt ListenOn<T>(this ICommandExt delegateCommand, T observedObject, string propertyName) where T : INotifyPropertyChanged {
+        public static CommandBase ListenOn<T>(this CommandBase delegateCommand, T observedObject, string propertyName) where T : INotifyPropertyChanged {
             observedObject.PropertyChanged += (sender, e) => {
                 if (e.PropertyName == propertyName) {
                     delegateCommand.RaiseCanExecuteChanged();
@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Commands {
         /// Makes DelegateCommnand listen on PropertyChanged events of some object,
         /// so that DelegateCommnand can update its IsEnabled property.
         /// </summary>
-        public static ICommandExt ListenOnWeak<T>(this ICommandExt delegateCommand, T observedObject, string propertyName) where T : INotifyPropertyChanged {
+        public static CommandBase ListenOnWeak<T>(this CommandBase delegateCommand, T observedObject, string propertyName) where T : INotifyPropertyChanged {
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(observedObject, nameof(INotifyPropertyChanged.PropertyChanged),
                     (sender, e) => {
                         if (e.PropertyName == propertyName) {

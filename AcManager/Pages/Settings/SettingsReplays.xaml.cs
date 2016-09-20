@@ -17,7 +17,7 @@ namespace AcManager.Pages.Settings {
 
             public SettingsHolder.DriveSettings Drive => SettingsHolder.Drive;
 
-            private ICommandExt _addReplaysExtensionsCommand;
+            private CommandBase _addReplaysExtensionsCommand;
 
             public ICommand AddReplaysExtensionsCommand => _addReplaysExtensionsCommand ??
                     (_addReplaysExtensionsCommand = new DelegateCommand(ReplaysExtensionSetter.RenameAll, ReplaysExtensionSetter.HasWithoutExtension));

@@ -73,7 +73,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            private ICommandExt _revokedKeyMessageCommand;
+            private CommandBase _revokedKeyMessageCommand;
 
             public ICommand RevokedKeyMessageCommand => _revokedKeyMessageCommand ?? (_revokedKeyMessageCommand = new DelegateCommand(ShowRevokedMessage, () => KeyRevoked));
 
@@ -106,14 +106,14 @@ namespace AcManager.Pages.Dialogs {
 
             private int _attemptsCounter;
 
-            private ICommandExt _tryAgainCommand;
+            private CommandBase _tryAgainCommand;
 
             public ICommand TryAgainCommand => _tryAgainCommand ?? (_tryAgainCommand = new DelegateCommand(() => {
                 _attemptsCounter++;
                 TestValue();
             }));
 
-            private ICommandExt _offlineModeCommand;
+            private CommandBase _offlineModeCommand;
 
             public ICommand OfflineModeCommand => _offlineModeCommand ?? (_offlineModeCommand = new DelegateCommand(() => {
                 OptionOfflineMode = true;
@@ -197,7 +197,7 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            private ICommandExt _applyCommand;
+            private CommandBase _applyCommand;
 
             public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new DelegateCommand(() => {
                 ValuesStorage.Remove(AppKeyRevokedKey);
@@ -207,7 +207,7 @@ namespace AcManager.Pages.Dialogs {
                 WindowsHelper.RestartCurrentApplication();
             }, () => IsValueAcceptable && !CheckingInProgress && !InternetConnectionRequired && !string.IsNullOrWhiteSpace(Value)));
 
-            private ICommandExt _getNewKeyCommand;
+            private CommandBase _getNewKeyCommand;
 
             public ICommand GetNewKeyCommand => _getNewKeyCommand ?? (_getNewKeyCommand = new DelegateCommand(() => {
                 Process.Start("http://acstuff.ru/app/cm/key/get");

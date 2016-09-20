@@ -409,7 +409,7 @@ namespace AcManager.Pages.Drive {
                 new SettingEntry("ping", AppStrings.Online_Sorting_Ping),
             };
 
-            private ICommandExt _changeSortingCommand;
+            private CommandBase _changeSortingCommand;
 
             public ICommand ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new DelegateCommand<string>(o => {
                 SortingMode = SortingModes.GetByIdOrDefault(o) ?? SortingModes[0];

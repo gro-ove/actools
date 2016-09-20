@@ -145,7 +145,7 @@
     </Compile>
     <Compile Include="Commands\CommandManagerHelper.cs" />
     <Compile Include="Commands\DelegateCommandExtensions.cs" />
-    <Compile Include="Commands\ICommandExt.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Dialogs\AsyncProgressEntry.cs" />
     <Compile Include="Dialogs\ErrorMessage.cs" />
     <Compile Include="Dialogs\NonfatalErrorsDialog.xaml.cs">
@@ -226,7 +226,6 @@
     <Compile Include="Presentation\NewLinkEventHandler.cs" />
     <Compile Include="Presentation\ReadOnlyLinkGroupCollection.cs" />
     <Compile Include="Presentation\FontSize.cs" />
-    <Compile Include="Commands\CommandBase.cs" />
     <Compile Include="Presentation\LinkGroupCollection.cs" />
     <Compile Include="Presentation\Displayable.cs" />
     <Compile Include="Presentation\Link.cs" />

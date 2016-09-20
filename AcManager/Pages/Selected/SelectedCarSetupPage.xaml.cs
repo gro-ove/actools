@@ -53,7 +53,7 @@ namespace AcManager.Pages.Selected {
                 WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(acObject, nameof(PropertyChanged), Handler);
             }
 
-            private ICommandExt _changeTrackCommand;
+            private CommandBase _changeTrackCommand;
 
             public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
                 var dialog = new SelectTrackDialog(SelectedObject.Track);
@@ -62,7 +62,7 @@ namespace AcManager.Pages.Selected {
                 SelectedObject.Track = dialog.Model.SelectedTrack;
             }));
 
-            private ICommandExt _clearTrackCommand;
+            private CommandBase _clearTrackCommand;
 
             public ICommand ClearTrackCommand => _clearTrackCommand ?? (_clearTrackCommand = new DelegateCommand(() => {
                 SelectedObject.TrackId = null;
@@ -77,7 +77,7 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private ICommandExt _shareCommand;
+            private CommandBase _shareCommand;
 
             public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(() => {
                 var data = SharingHelper.SetMetadata(SharedEntryType.CarSetup, FileUtils.ReadAllText(SelectedObject.Location),
@@ -89,7 +89,7 @@ namespace AcManager.Pages.Selected {
                 return SharingUiHelper.ShareAsync(SharedEntryType.CarSetup, SelectedObject.Name, target, data);
             }));
 
-            private ICommandExt _testCommand;
+            private CommandBase _testCommand;
 
             public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand(() => {
                 var setupId = SelectedObject.Id.ApartFromLast(SelectedObject.Extension).Replace('\\', '/');

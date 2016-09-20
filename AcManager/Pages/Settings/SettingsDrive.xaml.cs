@@ -27,7 +27,7 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            private ICommandExt _navigateCommand;
+            private CommandBase _navigateCommand;
 
             public ICommand NavigateCommand => _navigateCommand ?? (_navigateCommand = new DelegateCommand<object>(o => {
                 (Application.Current.MainWindow as MainWindow)?.NavigateTo(new Uri(o?.ToString() ?? "", UriKind.RelativeOrAbsolute));

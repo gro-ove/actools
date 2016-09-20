@@ -167,7 +167,7 @@ namespace AcManager.Pages.Dialogs {
                 SaveLater();
 
                 if (!update) return;
-                foreach (var command in Buttons.Select(x => x.Command).OfType<ICommandExt>().NonNull()) {
+                foreach (var command in Buttons.Select(x => x.Command).OfType<CommandBase>().NonNull()) {
                     command.RaiseCanExecuteChanged();
                 }
             }
@@ -187,7 +187,7 @@ namespace AcManager.Pages.Dialogs {
                 SaveLater();
 
                 if (!update) return;
-                foreach (var command in Buttons.Select(x => x.Command).OfType<ICommandExt>().NonNull()) {
+                foreach (var command in Buttons.Select(x => x.Command).OfType<CommandBase>().NonNull()) {
                     command.RaiseCanExecuteChanged();
                 }
             }

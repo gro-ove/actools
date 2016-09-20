@@ -117,7 +117,7 @@ namespace AcManager.Pages.Selected {
                                 : $"{ToolsStrings.Common_AcReplay} ({Car.DisplayName}, {Track.DisplayName})");
             }
 
-            private ICommandExt _shareCommand;
+            private CommandBase _shareCommand;
 
             public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async () => {
                 UploadResult result;

@@ -211,7 +211,7 @@ namespace AcManager.Pages.Dialogs {
                 _cancellationTokenSource = null;
             }));
 
-            private ICommandExt _applyCommand;
+            private CommandBase _applyCommand;
 
             public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new DelegateCommand(() => {
                 Logging.Write($"[Initial setup] AC root=“{Value}”, Steam ID=“{SteamProfile.SteamId}”");

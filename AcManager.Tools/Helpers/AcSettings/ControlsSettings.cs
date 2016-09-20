@@ -164,6 +164,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private void RescanDevices() {
             var devices = _directInput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
+
+            if (OptionIgnoreControlsFilter != null) {
+                devices = devices.Where(x => OptionIgnoreControlsFilter.Test(x.ProductName)).ToList();
+            }
+
             var footprint = GetFootprint(devices);
             if (footprint == _devicesFootprint) return;
 
@@ -782,7 +787,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Save();
         }
 
-        private ICommandExt _toggleWaitingCommand;
+        private CommandBase _toggleWaitingCommand;
 
         public ICommand ToggleWaitingCommand => _toggleWaitingCommand ?? (_toggleWaitingCommand = new DelegateCommand<IEntry>(o => {
             foreach (var entry in Entries.ApartFrom(o)) {
